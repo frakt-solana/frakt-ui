@@ -29,6 +29,7 @@ main a {
   margin-top: 10px;
   text-decoration: none;
   color: white;
+  font-size: 54px;
 }
 
 main a:hover {
