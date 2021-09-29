@@ -25,6 +25,16 @@ main {
   flex-direction: column;
 }
 
+main a {
+  margin-top: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+main a:hover {
+  opacity: 0.7;
+}
+
 h1,
 h2 {
   text-align: center;

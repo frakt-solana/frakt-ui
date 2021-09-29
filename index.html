@@ -7,16 +7,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#000000" />
   <link rel="icon" href="./favicon.ico" />
-
+  <link rel="stylesheet" href="https://unpkg.com/jam-icons/css/jam.min.css">
   <title>Fraktionalizer</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
   <main>
-    <h1>BUY, SELL AND FRAKTIONILIZE NFTs</h1>
-    <h2>Launching soon on Solana</h2>
+    <h1 id="header">FRACTIONILIZE YOUR NFTs AND TRADE FRACTIONS</h1>
+    <h3>Launching soon on Solana</h3>    
+    <a href="https://twitter.com/fraktion_art"><span class="jam jam-backpack"></span></a>
   </main>
 </body>
+<script>
+  var example = ['FRACTIONILIZE YOUR NFTs AND TRADE FRACTIONS', 'FRAKTIONILIZE YOUR NFTs AND TRADE FRAKTIONS', 'FRACTIONILIZE YOUR NFTs AND TRADE FRACTIONS', 'FRAKTIONILIZE YOUR NFTs AND TRADE FRAKTIONS'];
 
+  textSequence(0);
+  function textSequence(i) {
+
+      if (example.length > i) {
+          setTimeout(function() {
+              document.getElementById("header").innerHTML = example[i];
+              textSequence(++i);
+          }, 500);
+
+      } else if (example.length == i) { // Loop
+          textSequence(0);
+      }
+
+  }
+</script>
 </html>
