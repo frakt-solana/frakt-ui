@@ -6,12 +6,12 @@ import { MarketProvider } from './external/contexts/market';
 
 import { URLS } from './constants';
 
-// import Page404 from './pages/Page404';
+import Page404 from './pages/Page404';
 import HomePage from './pages/HomePage';
-// import ExchangePage from './pages/ExchangePage';
-// import VaultsPage from './pages/VaultsPage';
-// import StakerPage from './pages/StakerPage';
-// import FraktionalizePage from './pages/FraktionalizePage';
+import ExchangePage from './pages/ExchangePage';
+import VaultsPage from './pages/VaultsPage';
+import StakerPage from './pages/StakerPage';
+import FraktionalizePage from './pages/FraktionalizePage';
 
 export function Routes(): JSX.Element {
   return (
@@ -26,7 +26,7 @@ export function Routes(): JSX.Element {
                   path={URLS.ROOT}
                   component={(): JSX.Element => <HomePage />}
                 />
-                {/* <Route
+                <Route
                   exact
                   path={URLS.VAULTS}
                   component={(): JSX.Element => <VaultsPage />}
@@ -56,7 +56,7 @@ export function Routes(): JSX.Element {
                   exact
                   path={'*'}
                   component={(): JSX.Element => <Page404 />}
-                /> */}
+                />
               </Switch>
             </MarketProvider>
           </AccountsProvider>
