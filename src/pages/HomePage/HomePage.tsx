@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import KeyPointsSection from './sections';
+import HowItWorksSection from './sections/HowItWorks';
 import styles from './styles.module.scss';
 
 const HomePage = (): JSX.Element => {
@@ -14,9 +14,15 @@ const HomePage = (): JSX.Element => {
         <h1 className={styles.title}>
           BUY, SELL AND <b>FRAKTIONALIZE</b> NFTs
         </h1>
-        <h2 className={styles.subtitle}>Launching soon on Solana</h2>
+        <h2 className={styles.subtitle}>
+          Fraktion is an open sourced protocol for NFT fractionalisation that
+          allows custodial partial ownership of NFTs and helps NFT owners free
+          up liquidity from their asset
+        </h2>
+        <h3 className={styles.launchingSoon}>Launching soon on Solana</h3>
         <div className={styles.separator} />
-        <KeyPointsSection />
+        {/* <KeyPointsSection /> */}
+        <HowItWorksSection />
       </Container>
       <footer className={styles.footer}>Fraktion</footer>
     </AppLayout>
