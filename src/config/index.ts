@@ -6,8 +6,7 @@ export type ENV = 'mainnet-beta' | 'testnet' | 'devnet' | 'localnet';
 export const ENDPOINTS = [
   {
     name: 'mainnet-beta' as ENV,
-    endpoint:
-      'https://withered-dawn-rain.solana-mainnet.quiknode.pro/0cdeb8d22478dfd10a69465e6179687022b07d28/',
+    endpoint: clusterApiUrl('mainnet-beta'),
     chainID: ChainID.MainnetBeta,
   },
   {
@@ -17,8 +16,7 @@ export const ENDPOINTS = [
   },
   {
     name: 'devnet' as ENV,
-    endpoint:
-      'https://weathered-summer-haze.solana-devnet.quiknode.pro/b07da26993397d1ce695394f636bc3415bc91a97/',
+    endpoint: clusterApiUrl('devnet'),
     chainID: ChainID.Devnet,
   },
   {
