@@ -1,4 +1,4 @@
-// import Header from '../Header';
+import Header from '../Header';
 
 interface AppLayoutProps {
   children: JSX.Element[] | JSX.Element;
@@ -11,7 +11,7 @@ export const AppLayout = ({
 }: AppLayoutProps): JSX.Element => {
   return (
     <div className={className}>
-      {/* <Header /> */}
+      <Header />
       {children}
     </div>
   );
