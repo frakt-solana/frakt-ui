@@ -1,0 +1,50 @@
+body {
+  .toggle, .toggle:global(.ant-switch-disabled) {
+    :global {
+      opacity: 1;
+      .ant-click-animating-node {
+        display: none;
+      }
+
+      .ant-switch-handle {
+        width: 32px;
+        height: 32px;
+        top: -9px;
+        left: -1px;
+      }
+
+      .ant-switch-handle::before {
+        width: 32px;
+        height: 32px;
+        background: var(--gray-color-1);
+        border-radius: 32px;
+      }
+
+      width: 51px;
+      height: 16px;
+      border: 1px solid var(--gray-color-2);
+      box-sizing: border-box;
+      background-color: transparent;
+      border-radius: 6px;
+      margin: 8px;
+    }
+  }
+
+  .toggle:global.ant-switch-checked {
+    background: var(--gray-color-2);
+    .ant-switch-handle {
+      transform: translateX(19px);
+    }
+    .ant-switch-handle::before {
+      background: var(--accent-color-1);
+      box-shadow: 0 0 6px 1px var(--accent-shadow-color);
+    }
+  }
+
+  .toggle:global.ant-switch-checked.ant-switch-disabled {
+    .ant-switch-handle::before {
+      background: var(--gray-color-1);
+      box-shadow: none;
+    }
+  }
+}

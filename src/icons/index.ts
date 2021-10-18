@@ -7,3 +7,4 @@ export { CopyClipboardIcon } from './CopyClipboardIcon';
 export { DiscordIcon } from './DiscordIcon';
 export { DownloadIcon } from './DownloadIcon';
 export { SpinnerIcon } from './SpinnerIcon';
+export { ChevronDownIcon } from './ChevronDownIcon';

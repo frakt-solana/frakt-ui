@@ -1,6 +1,6 @@
 {
-  "short_name": "Frakt art",
-  "name": "Frakt art",
+  "short_name": "Fraktion art",
+  "name": "Fraktion art",
   "display": "standalone",
   "start_url": "./",
   "theme_color": "#ffffff",
@@ -11,8 +11,8 @@
       "sizes": "192x192"
     },
     {
-      "src": "icons/icon-128x128.png",
-      "sizes": "128x128"
+      "src": "icons/icon-32x32.png",
+      "sizes": "32x32"
     },
     {
       "src": "icons/icon-512x512.png",
