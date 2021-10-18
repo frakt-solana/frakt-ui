@@ -1,9 +1,10 @@
 @import '../../scss/abstracts/variables.scss';
 
+
 .root {
   transition: 0.2s ease-in;
   border: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   cursor: pointer;
 
@@ -12,17 +13,47 @@
     color: var(--black-color);
   }
 
+  &.primary:hover {
+    background-color: var(--gray-color-4);
+    color: var(--black-color);
+  }
+
+  &.primary:active {
+    background-color: var(--black-color);
+    color: var(--white-color);
+  }
+
   &.secondary {
     background-color: var(--black-color);
     color: var(--white-color);
   }
 
-  &:hover {
-    background-color: var(--gray-color-4);
+  &.secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+
+  &.secondary:active {
+    background-color: var(--white-color);
     color: var(--black-color);
   }
 
-  & svg {
+  &.alternative {
+    background-color: var(--accent-color-1);
+    color: var(--white-color);
+  }
+
+  &.alternative:hover {
+    background-color: var(--accent-color-3);
+  }
+
+
+  &.alternative:active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white-color);
+  }
+
+    & svg {
     fill: var(--black-color);
   }
 
@@ -43,6 +74,10 @@
       margin-right: 5px;
     }
   }
+}
+
+.link {
+  display: inline-block;
 }
 
 .disabled {
