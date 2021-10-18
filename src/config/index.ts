@@ -6,7 +6,7 @@ export type ENV = 'mainnet-beta' | 'testnet' | 'devnet' | 'localnet';
 export const ENDPOINTS = [
   {
     name: 'mainnet-beta' as ENV,
-    endpoint: clusterApiUrl('mainnet-beta'),
+    endpoint: 'https://api.metaplex.solana.com/',
     chainID: ChainID.MainnetBeta,
   },
   {
