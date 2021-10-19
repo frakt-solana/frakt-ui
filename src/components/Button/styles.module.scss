@@ -1,82 +1,53 @@
 @import '../../scss/abstracts/variables.scss';
 
-
 .root {
-  transition: 0.2s ease-in;
-  border: none;
+  transition: background-color var(--transition-1),
+    border-color var(--transition-1), color var(--transition-1);
+  border: 1px solid transparent;
+  background-color: transparent;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
 
-  &.primary {
-    background-color: var(--white-color);
-    color: var(--black-color);
-  }
-
-  &.primary:hover {
-    background-color: var(--gray-color-4);
-    color: var(--black-color);
-  }
-
-  &.primary:active {
-    background-color: var(--black-color);
+  &.primary,
+  &.secondary {
+    font: var(--font-btn-mid);
+    border-color: var(--gray-color-5);
+    padding: 4px 20px;
     color: var(--white-color);
+
+    &:hover {
+      background-color: var(--gray-color-5);
+      border-color: var(--gray-color-5);
+    }
+
+    &:active {
+      color: var(--black-color);
+      background-color: var(--white-color);
+      border-color: var(--white-color);
+    }
   }
 
   &.secondary {
-    background-color: var(--black-color);
-    color: var(--white-color);
-  }
-
-  &.secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-
-  &.secondary:active {
-    background-color: var(--white-color);
-    color: var(--black-color);
+    font: var(--font-btn-small);
+    text-transform: uppercase;
   }
 
   &.alternative {
+    padding: 32px 20px;
     background-color: var(--accent-color-1);
+    border-color: var(--accent-color-1);
     color: var(--white-color);
-  }
 
-  &.alternative:hover {
-    background-color: var(--accent-color-3);
-  }
-
-
-  &.alternative:active {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--white-color);
-  }
-
-    & svg {
-    fill: var(--black-color);
-  }
-
-  &.sm {
-    font-size: 18px;
-    padding: 4.5px 18.5px;
-
-    & svg {
-      margin-right: 3px;
+    &:hover {
+      background-color: var(--accent-color-3);
+      border-color: var(--accent-color-3);
     }
-  }
 
-  &.md {
-    font-size: 24px;
-    padding: 4px 20px;
-
-    & svg {
-      margin-right: 5px;
+    &:active {
+      background-color: var(--gray-color-5);
+      border-color: var(--gray-color-5);
     }
-  }
-  &.xl {
-    font-size: 18px;
-    padding: 33px 20px;
   }
 }
 
@@ -87,22 +58,4 @@
 .disabled {
   opacity: 0.5;
   pointer-events: none;
-}
-
-@media screen and (max-width: 1023px) {
-  .root {
-    &.sm {
-      font-size: 12px;
-      padding: 2px 5px;
-
-      & svg {
-        margin-right: 2px;
-      }
-    }
-
-    &.md {
-      font-size: 14px;
-      padding: 3px 7px;
-    }
-  }
 }
