@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "npm run devnet",
-    "devnet": "cross-env cross-env REACT_APP_NETWORK=devnet craco start",
+    "devnet": "cross-env REACT_APP_NETWORK=devnet craco start",
     "mainnet": "craco start",
     "build": "craco build",
     "build:devnet": "REACT_APP_NETWORK=devnet craco build",
