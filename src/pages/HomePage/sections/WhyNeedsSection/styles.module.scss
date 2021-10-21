@@ -1,0 +1,43 @@
+.title {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font: var(--font-h3);
+  margin-bottom: 64px;
+}
+
+.cards {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.card {
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 350px;
+}
+
+.cardTitle {
+  font: var(--font-subtitle);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.cardText {
+  font: 400 16px var(--font-family-inter);
+  text-align: center;
+  a {
+    font: var(--font-link);
+    color: var(--white-color);
+    text-decoration: underline;
+
+    &:hover {
+      color: var(--white-color);
+      text-decoration: underline;
+    }
+  }
+}

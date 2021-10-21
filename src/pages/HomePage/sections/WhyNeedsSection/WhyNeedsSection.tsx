@@ -1,14 +1,15 @@
+import classNames from 'classnames/bind';
+
 import styles from './styles.module.scss';
 
-const HowItWorksSection = (): JSX.Element => {
+interface WhyNeedsSectionProps {
+  className?: string;
+}
+
+const WhyNeedsSection = ({ className }: WhyNeedsSectionProps): JSX.Element => {
   return (
-    <div className={styles.howItWorks}>
-      <h3 className={styles.howItWorksTitle}>Why NFT community needs this?</h3>
-      <h4 className={styles.howItWorksSubtitle}>
-        Fraktion is an open sourced protocol for NFT fractionalisation that
-        allows custodial partial ownership of NFTs and helps NFT owners free up
-        liquidity from their asset
-      </h4>
+    <div className={classNames([styles.whyNeeds, className])}>
+      <h3 className={styles.title}>Why NFT community needs this?</h3>
       <div className={styles.cards}>
         <div className={styles.card}>
           <h5 className={styles.cardTitle}>Accesibility</h5>
@@ -35,7 +36,9 @@ const HowItWorksSection = (): JSX.Element => {
           </p>
         </div>
         <div className={styles.card}>
-          <h5 className={styles.cardTitle}>Community-driven</h5>
+          <h5 className={styles.cardTitle}>
+            Open sourced and community-driven
+          </h5>
           <p className={styles.cardText}>
             Whole protocol source code is opensourced and built on top of
             Metaplex. As a project that highly depends on NFT communities we
@@ -47,4 +50,4 @@ const HowItWorksSection = (): JSX.Element => {
   );
 };
 
-export default HowItWorksSection;
+export default WhyNeedsSection;
