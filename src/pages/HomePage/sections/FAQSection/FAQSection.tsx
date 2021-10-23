@@ -26,6 +26,16 @@ const FAQSection = ({ className }: FAQSectionProps): JSX.Element => {
       <div className={styles.tab}>
         <input type="checkbox" id="tab2" />
         <label className={styles.tabLabel} htmlFor="tab2">
+          What is fractionalisation?
+        </label>
+        <div className={styles.tabContent}>
+          Fractionalisation is splitting up an NFT into fractions. In short the protocol locks the NFT in a vault and emits tokens representing parts of the original NFT. Those SPL tokens are emitted to the owner of the original NFT so they own all the fractions of the original NFT.
+        </div>
+      </div>
+
+      <div className={styles.tab}>
+        <input type="checkbox" id="tab3" />
+        <label className={styles.tabLabel} htmlFor="tab3">
           Why fractionalise NFTs?
         </label>
         <div className={styles.tabContent}>
@@ -38,8 +48,8 @@ const FAQSection = ({ className }: FAQSectionProps): JSX.Element => {
       </div>
 
       <div className={styles.tab}>
-        <input type="checkbox" id="tab3" />
-        <label className={styles.tabLabel} htmlFor="tab3">
+        <input type="checkbox" id="tab4" />
+        <label className={styles.tabLabel} htmlFor="tab4">
           Can people fractionalise any NFT?
         </label>
         <div className={styles.tabContent}>
@@ -51,8 +61,8 @@ const FAQSection = ({ className }: FAQSectionProps): JSX.Element => {
       </div>
 
       <div className={styles.tab}>
-        <input type="checkbox" id="tab4" />
-        <label className={styles.tabLabel} htmlFor="tab4">
+        <input type="checkbox" id="tab5" />
+        <label className={styles.tabLabel} htmlFor="tab5">
           Once I get fractions of an NFT what can I do with them?
         </label>
         <div className={styles.tabContent}>
@@ -67,8 +77,8 @@ const FAQSection = ({ className }: FAQSectionProps): JSX.Element => {
       </div>
 
       <div className={styles.tab}>
-        <input type="checkbox" id="tab5" />
-        <label className={styles.tabLabel} htmlFor="tab5">
+        <input type="checkbox" id="tab6" />
+        <label className={styles.tabLabel} htmlFor="tab6">
           Is my NFT safe while it’s fractonalised?
         </label>
         <div className={styles.tabContent}>
@@ -81,8 +91,8 @@ const FAQSection = ({ className }: FAQSectionProps): JSX.Element => {
       </div>
 
       <div className={styles.tab}>
-        <input type="checkbox" id="tab6" />
-        <label className={styles.tabLabel} htmlFor="tab6">
+        <input type="checkbox" id="tab7" />
+        <label className={styles.tabLabel} htmlFor="tab7">
           Can I buy fractions from different NFTs?
         </label>
         <div className={styles.tabContent}>
@@ -94,8 +104,8 @@ const FAQSection = ({ className }: FAQSectionProps): JSX.Element => {
       </div>
 
       <div className={styles.tab}>
-        <input type="checkbox" id="tab7" />
-        <label className={styles.tabLabel} htmlFor="tab7">
+        <input type="checkbox" id="tab8" />
+        <label className={styles.tabLabel} htmlFor="tab8">
           Is the protocol safe?
         </label>
         <div className={styles.tabContent}>
