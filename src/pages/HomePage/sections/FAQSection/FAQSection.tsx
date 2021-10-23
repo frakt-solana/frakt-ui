@@ -29,7 +29,10 @@ const FAQSection = ({ className }: FAQSectionProps): JSX.Element => {
           What is fractionalisation?
         </label>
         <div className={styles.tabContent}>
-          Fractionalisation is splitting up an NFT into fractions. In short the protocol locks the NFT in a vault and emits tokens representing parts of the original NFT. Those SPL tokens are emitted to the owner of the original NFT so they own all the fractions of the original NFT.
+          Fractionalisation is splitting up an NFT into fractions. In short the
+          protocol locks the NFT in a vault and emits tokens representing parts
+          of the original NFT. Those SPL tokens are emitted to the owner of the
+          original NFT so they own all the fractions of the original NFT.
         </div>
       </div>
 
