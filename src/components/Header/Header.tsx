@@ -3,8 +3,11 @@ import { NavLink } from 'react-router-dom';
 import styles from './styles.module.scss';
 import { URLS } from '../../constants';
 import { Container } from '../Layout';
+import { useWallet } from '../../external/contexts/wallet';
+import { shortenAddress } from '../../external/utils/utils';
 
 const Header = (): JSX.Element => {
+  const { select, wallet, connected } = useWallet();
   return (
     <header className={styles.root}>
       <Container component="nav" className={styles.container}>
@@ -29,12 +32,15 @@ const Header = (): JSX.Element => {
             </NavigationLink>
           </li>
           <li>
-            <button
-              className={styles.link}
-              onClick={() => alert('Connect wallet modal here')}
-            >
-              Connect wallet
-            </button>
+            {connected ? (
+              <button className={styles.link}>
+                {shortenAddress(wallet.publicKey.toString())}
+              </button>
+            ) : (
+              <button className={styles.link} onClick={select}>
+                Connect wallet
+              </button>
+            )}
           </li>
         </ul>
       </Container>

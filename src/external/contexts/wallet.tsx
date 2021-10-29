@@ -33,12 +33,6 @@ export const WALLET_PROVIDERS = [
     url: 'https://www.sollet.io',
     icon: `${ASSETS_URL}sollet.svg`,
   },
-  {
-    name: 'Solong',
-    url: 'https://solongwallet.com',
-    icon: `${ASSETS_URL}solong.png`,
-    adapter: SolongWalletAdapter,
-  },
 ];
 // {
 //   name: 'MathWallet',

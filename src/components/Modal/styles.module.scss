@@ -1,0 +1,35 @@
+.modal {
+  :global {
+    .ant-modal-content {
+      border: 1px solid var(--gray-color-3);
+    }
+
+    .ant-modal-body {
+      font-size: 18px;
+      color: var(--gray-color-8);
+    }
+
+    .ant-modal-content, .ant-modal-header, .ant-modal-footer {
+      background-color: black;
+    }
+
+    .ant-modal-header {
+      padding-bottom: 8px;
+      border-bottom: 0;
+    }
+
+    .ant-modal-title{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 48px;
+      line-height: 60px;
+      color: var(--white-color);
+    }
+
+  }
+}
+
+.close {
+  margin-top: 35px;
+  margin-right: 35px;
+}

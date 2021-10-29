@@ -1,0 +1,18 @@
+body .input {
+    &:not(.ant-input-affix-wrapper-disabled):hover {
+      border-bottom: 1px solid var(--gray-color-3);
+      outline: none;
+    }
+      border: 0;
+      border-bottom: 1px solid var(--gray-color-3);
+      padding-left: 0;
+      box-shadow: none!important;
+    :global {
+      .ant-input-prefix {
+        margin-right: 8px;
+      }
+      ::selection {
+        background: none;
+      }
+    }
+}
