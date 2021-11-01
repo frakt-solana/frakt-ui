@@ -8,12 +8,12 @@ import {
   Connection,
   PublicKey,
 } from '@solana/web3.js';
-import { AccountLayout, u64, MintInfo, MintLayout } from '@solana/spl-token';
+import { AccountLayout, MintInfo, MintLayout, u64 } from '@solana/spl-token';
 import { TokenAccount } from '../models';
 import { chunks } from '../utils/utils';
 import { EventEmitter } from '../utils/eventEmitter';
-import { useUserAccounts } from '../hooks/useUserAccounts';
-import { WRAPPED_SOL_MINT, programIds } from '../utils/ids';
+import { useUserAccounts } from '../hooks';
+import { programIds, WRAPPED_SOL_MINT } from '../utils/ids';
 
 const AccountsContext = React.createContext<any>(null);
 
@@ -50,15 +50,13 @@ export const MintParser = (
 
   const data = deserializeMint(buffer);
 
-  const details = {
+  return {
     pubkey: pubKey,
     account: {
       ...info,
     },
     info: data,
   } as ParsedAccountBase;
-
-  return details;
 };
 
 export const TokenAccountParser = (
@@ -68,15 +66,13 @@ export const TokenAccountParser = (
   const buffer = Buffer.from(info.data);
   const data = deserializeAccount(buffer);
 
-  const details = {
+  return {
     pubkey: pubKey,
     account: {
       ...info,
     },
     info: data,
   } as TokenAccount;
-
-  return details;
 };
 
 export const GenericAccountParser = (
@@ -85,15 +81,13 @@ export const GenericAccountParser = (
 ): ParsedAccountBase => {
   const buffer = Buffer.from(info.data);
 
-  const details = {
+  return {
     pubkey: pubKey,
     account: {
       ...info,
     },
     info: buffer,
   } as ParsedAccountBase;
-
-  return details;
 };
 
 export const keyToAccountParser = new Map<string, AccountParser>();
@@ -230,8 +224,7 @@ export const cache = {
     return txs;
   },
   getTransaction: (signature: string): ParsedLocalTransaction => {
-    const transaction = transactionCache.get(signature);
-    return transaction;
+    return transactionCache.get(signature);
   },
   getAllTransactions: (): Map<string, ParsedLocalTransaction> => {
     return transactionCache;
@@ -244,9 +237,7 @@ export const cache = {
 };
 
 export const useAccountsContext = (): any => {
-  const context = useContext(AccountsContext);
-
-  return context;
+  return useContext(AccountsContext);
 };
 
 function wrapNativeAccount(
@@ -375,23 +366,6 @@ export function AccountsProvider({ children = null as any }): JSX.Element {
   }, [nativeAccount, wallet, tokenAccounts, selectUserAccounts]);
 
   useEffect(() => {
-    const subs: number[] = [];
-    cache.emitter.onCache((args) => {
-      if (args.isNew) {
-        const id = args.id;
-        const deserialize = args.parser;
-        connection.onAccountChange(new PublicKey(id), (info) => {
-          cache.add(id, info, deserialize);
-        });
-      }
-    });
-
-    return (): void => {
-      subs.forEach((id) => connection.removeAccountChangeListener(id));
-    };
-  }, [connection]);
-
-  useEffect(() => {
     if (!connection || !publicKey) {
       setTokenAccounts([]);
     } else {
@@ -473,11 +447,10 @@ export const getMultipleAccounts = async (
             }
 
             const { data, ...rest } = acc;
-            const obj = {
+            return {
               ...rest,
               data: Buffer.from(data[0], 'base64'),
             } as AccountInfo<Buffer>;
-            return obj;
           })
           .filter((_) => _) as AccountInfo<Buffer>[],
     )
@@ -529,8 +502,7 @@ export function useMint(key?: string | PublicKey): MintInfo {
       .catch((err) => console.error(err));
 
     const dispose = cache.emitter.onCache((e) => {
-      const event = e;
-      if (event.id === id) {
+      if (e.id === id) {
         cache
           .query(connection, id, MintParser)
           .then((mint) => setMint(mint.info as any));
@@ -585,8 +557,7 @@ export function useAccount(pubKey?: PublicKey): TokenAccount {
     query();
 
     const dispose = cache.emitter.onCache((e) => {
-      const event = e;
-      if (event.id === key) {
+      if (e.id === key) {
         query();
       }
     });
