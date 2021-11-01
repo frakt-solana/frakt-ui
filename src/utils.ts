@@ -10,8 +10,8 @@ export interface Token {
   };
 }
 
+//eslint-disable-next-line
 export const getTokensList = () => {
-  //eslint-disable-line
   return tokens.spl;
 };
 
