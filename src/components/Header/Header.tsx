@@ -1,10 +1,12 @@
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 import { URLS } from '../../constants';
 import { Container } from '../Layout';
 import { useWallet } from '../../external/contexts/wallet';
 import { shortenAddress } from '../../external/utils/utils';
+import { ChevronDownIcon } from '../../icons';
 
 const Header = (): JSX.Element => {
   const { select, wallet, connected } = useWallet();
@@ -33,11 +35,17 @@ const Header = (): JSX.Element => {
           </li>
           <li>
             {connected ? (
-              <button className={styles.link}>
+              <button
+                className={classNames([
+                  styles.walletBtn,
+                  styles.walletBtn_connected,
+                ])}
+              >
                 {shortenAddress(wallet.publicKey.toString())}
+                <ChevronDownIcon className={styles.walletBtn__icon} />
               </button>
             ) : (
-              <button className={styles.link} onClick={select}>
+              <button className={styles.walletBtn} onClick={select}>
                 Connect wallet
               </button>
             )}
