@@ -1,4 +1,7 @@
-.input {
+html body .input {
+  input {
+    font-size: 24px!important;
+  }
   margin-bottom: 64px !important;
 }
 
@@ -8,6 +11,8 @@
   background: var(--gray-color-3);
   border-radius: 24px;
   margin-top: 4px;
+  flex-shrink: 0;
+  background-size: cover;
   margin-right: 8px;
 }
 
@@ -23,6 +28,7 @@
 }
 
 .row {
+  cursor: pointer;
   line-height: 32px;
   color: var(--white-color);
   display: flex;
@@ -33,4 +39,16 @@
   &:not(:last-child) {
     margin-bottom: 32px;
   }
+}
+
+.modal {
+  width: 730px!important;
+}
+
+.tokenList {
+  height: 284px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin-right: -23px;
+  padding-right: 12px;
 }
