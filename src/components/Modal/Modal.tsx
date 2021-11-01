@@ -18,6 +18,7 @@ export const Modal = ({
       {...props}
       footer={footer}
       className={styles.modal}
+      wrapClassName={styles.wrap}
       closeIcon={
         <CloseIcon width="24px" height="24px" className={styles.close} />
       }

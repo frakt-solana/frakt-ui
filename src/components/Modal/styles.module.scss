@@ -1,16 +1,24 @@
+.wrap {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+}
+
 .modal {
   :global {
     .ant-modal-content {
       border: 1px solid var(--gray-color-3);
+      border-radius: 0;
     }
 
     .ant-modal-body {
-      font-size: 18px;
+      font: var(--font-body-small);
       color: var(--gray-color-8);
     }
 
-    .ant-modal-content, .ant-modal-header, .ant-modal-footer {
-      background-color: black;
+    .ant-modal-content,
+    .ant-modal-header,
+    .ant-modal-footer {
+      background-color: var(--black-color);
     }
 
     .ant-modal-header {
@@ -18,14 +26,11 @@
       border-bottom: 0;
     }
 
-    .ant-modal-title{
+    .ant-modal-title {
       font-style: normal;
-      font-weight: 600;
-      font-size: 48px;
-      line-height: 60px;
+      font: var(--font-h4);
       color: var(--white-color);
     }
-
   }
 }
 
