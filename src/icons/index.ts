@@ -8,3 +8,5 @@ export { DiscordIcon } from './DiscordIcon';
 export { DownloadIcon } from './DownloadIcon';
 export { SpinnerIcon } from './SpinnerIcon';
 export { ChevronDownIcon } from './ChevronDownIcon';
+export { CloseIcon } from './CloseIcon';
+export { SolfareIcon, SolletIcon, PhantomIcon } from './WalletIcons';
