@@ -1,0 +1,22 @@
+.walletInfo {
+  font-size: 24px;
+  font-family: Oxanium;
+  font-style: normal;
+  font-weight: normal;
+  color: var(--black-color)
+}
+
+.btn {
+  margin-top: 39px;
+  width: 100%;
+  justify-content: center;
+  align-items: unset;
+  text-align: center;
+  color: var(--black-color) !important;
+  font-size: 18px;
+  line-height: 22px;
+  text-transform: unset !important;
+  &:hover {
+    color: var(--white-color) !important;
+  }
+}
