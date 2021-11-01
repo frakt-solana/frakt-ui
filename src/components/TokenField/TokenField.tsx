@@ -30,10 +30,6 @@ const TokenField = ({
   const inputRef = useRef<HTMLInputElement>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const onClickHandler = () => {
-    inputRef.current.focus();
-  };
-
   return (
     <div
       className={classNames([
@@ -42,7 +38,6 @@ const TokenField = ({
         { [styles.root_focused]: isFocused },
       ])}
       style={style}
-      onClick={onClickHandler}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
     >

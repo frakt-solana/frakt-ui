@@ -1,7 +1,4 @@
 html body .input {
-  input {
-    font-size: 24px!important;
-  }
   margin-bottom: 64px !important;
 }
 
@@ -14,13 +11,6 @@ html body .input {
   flex-shrink: 0;
   background-size: cover;
   margin-right: 8px;
-}
-
-.search {
-  svg {
-    font-size: 24px;
-    color: var(--gray-color-3);
-  }
 }
 
 .title {

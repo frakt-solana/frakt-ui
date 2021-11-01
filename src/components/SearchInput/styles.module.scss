@@ -1,0 +1,20 @@
+html body .input {
+  &:global(.ant-input-affix-wrapper-lg) {
+    font-size: 32px;
+    :local(.search) {
+      svg {
+        font-size: 32px;
+      }
+    }
+  }
+  input {
+    font-size: 24px!important;
+  }
+}
+
+.search {
+  svg {
+    font-size: 24px;
+    color: var(--gray-color-3);
+  }
+}

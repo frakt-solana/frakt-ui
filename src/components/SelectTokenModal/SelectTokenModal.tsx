@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
-import { Input } from '../Input';
-import { SearchOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import { getTokensList, getTokenImageUrl, Token } from '../../utils';
+import { SearchInput } from '../SearchInput';
 
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (value: Token) => void;
@@ -40,13 +39,11 @@ export const SelectTokenModal = ({
       visible={visible}
       className={classNames(className, styles.modal)}
     >
-      <Input
+      <SearchInput
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className={styles.input}
-        size="large"
         placeholder="ETH"
-        prefix={<SearchOutlined className={styles.search} />}
         {...props}
       />
       <div className={styles.tokenList}>
