@@ -96,7 +96,7 @@
   }
 }
 
-html body .walletInfo {
+body .walletInfo {
   width: 315px;
   max-width: unset;
   padding: 16px 0 0 0;
@@ -104,6 +104,7 @@ html body .walletInfo {
     .ant-tooltip-inner {
       background: var(--white-color);
       padding: 24px;
+      border-radius: 0;
     }
     .ant-tooltip-arrow {
       width: 30px;
