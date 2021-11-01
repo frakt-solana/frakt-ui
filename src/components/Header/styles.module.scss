@@ -9,10 +9,33 @@
   outline: none;
   border: none;
   cursor: pointer;
+  padding: 0 20px;
 
   &:hover {
     text-decoration: none;
     color: var(--white-color);
+  }
+}
+
+.walletBtn {
+  padding: 0 20px;
+  cursor: pointer;
+  background: none;
+  outline: none;
+  border: none;
+  min-width: 168px;
+
+  &_connected {
+    background: var(--gray-color-7);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    fill: var(--white-color);
   }
 }
 
@@ -43,7 +66,6 @@
 
   li {
     height: 100%;
-    padding: 0 20px;
 
     a,
     button {
@@ -68,7 +90,6 @@
 
 .activeLink {
   text-decoration: underline;
-  font-size: 20px;
 
   &:hover {
     text-decoration: underline;
