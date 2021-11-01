@@ -26,6 +26,7 @@ export const ConnectWalletModal = ({
     <Modal
       visible={isModalVisible}
       title={title || 'Connect wallet'}
+      onCancel={closeModal}
       {...props}
     >
       <p className={styles.text}>
