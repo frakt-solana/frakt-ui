@@ -7,6 +7,8 @@ import { Container } from '../Layout';
 import { useWallet } from '../../external/contexts/wallet';
 import { shortenAddress } from '../../external/utils/utils';
 import { ChevronDownIcon } from '../../icons';
+import { Tooltip } from 'antd';
+import { WalletInfo } from './WalletInfo';
 
 const Header = (): JSX.Element => {
   const { select, wallet, connected } = useWallet();
@@ -35,15 +37,22 @@ const Header = (): JSX.Element => {
           </li>
           <li>
             {connected ? (
-              <button
-                className={classNames([
-                  styles.walletBtn,
-                  styles.walletBtn_connected,
-                ])}
+              <Tooltip
+                overlayClassName={styles.walletInfo}
+                trigger="click"
+                placement="topRight"
+                title={WalletInfo}
               >
-                {shortenAddress(wallet.publicKey.toString())}
-                <ChevronDownIcon className={styles.walletBtn__icon} />
-              </button>
+                <button
+                  className={classNames([
+                    styles.walletBtn,
+                    styles.walletBtn_connected,
+                  ])}
+                >
+                  {shortenAddress(wallet.publicKey.toString())}
+                  <ChevronDownIcon className={styles.walletBtn__icon} />
+                </button>
+              </Tooltip>
             ) : (
               <button className={styles.walletBtn} onClick={select}>
                 Connect wallet
