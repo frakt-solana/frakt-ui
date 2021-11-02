@@ -17,6 +17,7 @@
     "classnames": "^2.3.1",
     "eventemitter3": "^4.0.7",
     "frakt-client": "^1.5.0",
+    "fraktionalizer-client-library": "^1.0.0",
     "moment": "^2.29.1",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -25,7 +26,8 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "react-router-hash-link": "^2.4.3",
-    "react-scripts": "^4.0.3"
+    "react-scripts": "^4.0.3",
+    "solana-nft-metadata": "^1.0.1"
   },
   "scripts": {
     "start": "npm run devnet",

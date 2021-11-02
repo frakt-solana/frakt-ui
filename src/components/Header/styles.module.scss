@@ -95,3 +95,27 @@
     text-decoration: underline;
   }
 }
+
+body .walletInfo {
+  width: 315px;
+  max-width: unset;
+  padding: 16px 0 0 0;
+  :global {
+    .ant-tooltip-inner {
+      background: var(--white-color);
+      padding: 24px;
+      border-radius: 0;
+    }
+    .ant-tooltip-arrow {
+      width: 30px;
+      height: 30px;
+      top: 0;
+    }
+    .ant-tooltip-arrow-content {
+      width: 30px;
+      height: 30px;
+      margin: auto;
+      background-color: var(--white-color);
+    }
+  }
+}

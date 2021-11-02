@@ -44,9 +44,9 @@ const Button = ({
       type="button"
       className={classNames([
         styles.root,
-        className,
         { [styles.disabled]: disabled },
         styles[type],
+        className,
       ])}
       onClick={onClick}
     >
