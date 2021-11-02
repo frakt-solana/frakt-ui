@@ -1,0 +1,45 @@
+.positionRelative {
+  position: relative;
+}
+
+.contentWrapper {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.contentReducer {
+  width: 75%;
+}
+
+.title {
+  font: var(--font-h4);
+  margin-bottom: 12px;
+}
+
+.search {
+  margin-bottom: 32px;
+}
+
+.connectBtn {
+  width: 100%;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: unset;
+}
+
+.sidebar {
+  position: fixed;
+  top: 89px;
+  right: 0;
+  width: 320px;
+  height: calc(100vh - 88px);
+  border-left: 1px solid var(--gray-color-6);
+}
+
+.artsList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}

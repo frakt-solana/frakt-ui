@@ -33,6 +33,13 @@ export const UserTokensProvider = ({
   const [tokensByMint, setTokensByMint] = useState<TokensByMint>({});
   const [loading, setLoading] = useState<boolean>(false);
 
+  const clearTokens = () => {
+    setTokens([]);
+    setTokensByMint({});
+    setLoading(false);
+    setFrktBalance(0);
+  };
+
   const updateFrktBalance = (userTokens: TokenView[]) => {
     if (connected && connection) {
       setFrktBalance(
@@ -80,6 +87,7 @@ export const UserTokensProvider = ({
 
   useEffect(() => {
     connected && fetchTokens();
+    return () => clearTokens();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected]);
 
