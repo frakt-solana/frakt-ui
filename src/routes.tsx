@@ -11,7 +11,7 @@ import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import FraktionalizePage from './pages/FraktionalizePage';
 import { ConnectWalletModal } from './components/ConnectWallerModal';
-import { FrktBalanceProvider } from './contexts/frktBalance';
+import { UserTokensProvider } from './contexts/userTokens';
 
 export function Routes(): JSX.Element {
   return (
@@ -19,7 +19,7 @@ export function Routes(): JSX.Element {
       <ConnectionProvider>
         <WalletProvider>
           <AccountsProvider>
-            <FrktBalanceProvider>
+            <UserTokensProvider>
               <Switch>
                 <Route
                   exact
@@ -57,7 +57,7 @@ export function Routes(): JSX.Element {
                   component={(): JSX.Element => <Page404 />}
                 />
               </Switch>
-            </FrktBalanceProvider>
+            </UserTokensProvider>
             <ConnectWalletModal />
           </AccountsProvider>
         </WalletProvider>
