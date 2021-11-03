@@ -37,8 +37,8 @@ const FraktionalizePage = (): JSX.Element => {
   ) => {
     createFraktionalizer(
       connection,
-      new BN(pricePerFraction),
-      new BN(fractionsAmount),
+      new BN(pricePerFraction * 1e9), //1e9 for SOL, 1e8 for FRKT
+      new BN(fractionsAmount * 1e8), //always 1e8
       3,
       new PublicKey(tokenMint),
       'So11111111111111111111111111111111111111112',
