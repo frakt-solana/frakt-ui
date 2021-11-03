@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 
@@ -15,7 +16,7 @@ export const Container = ({
 }: ContainerProps): JSX.Element => {
   return React.createElement(
     component,
-    { className: `${styles.container} ${className}` },
+    { className: classNames([styles.container, className]) },
     children,
   );
 };
