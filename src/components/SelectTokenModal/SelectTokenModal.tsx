@@ -33,6 +33,7 @@ export const SelectTokenModal = ({
 
   return (
     <Modal
+      width={730}
       title={title || 'Receive'}
       {...props}
       onCancel={onCancel}

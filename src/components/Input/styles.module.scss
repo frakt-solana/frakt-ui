@@ -7,7 +7,7 @@ body .input {
       border: 0;
       border-bottom: 1px solid var(--gray-color-3);
       padding-left: 0;
-      box-shadow: none!important;
+      box-shadow: none;
     :global {
       .ant-input-prefix {
         margin-right: 8px;

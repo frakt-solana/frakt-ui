@@ -1,5 +1,5 @@
-html body .input {
-  margin-bottom: 64px !important;
+.input {
+  margin-bottom: 64px;
 }
 
 .icon {
@@ -29,10 +29,6 @@ html body .input {
   &:not(:last-child) {
     margin-bottom: 32px;
   }
-}
-
-.modal {
-  width: 730px!important;
 }
 
 .tokenList {
