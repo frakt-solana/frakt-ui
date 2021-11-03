@@ -44,27 +44,15 @@ const FraktionalizePage = (): JSX.Element => {
       'So11111111111111111111111111111111111111112',
       wallet.publicKey,
       '9iAwxFwdxYSH5gw4QwRs78objbFHgDKGYmjCZPpgSgSA',
-      // async (txn, signers): Promise<void> => {
-      //   const { blockhash } = await connection.getRecentBlockhash();
-      //   txn.recentBlockhash = blockhash;
-      //   txn.feePayer = wallet.publicKey;
-      //   const signed = await wallet.signTransaction(txn);
-      //   const txid = await connection.sendRawTransaction(signed.serialize());
-      //   return void connection.confirmTransaction(txid);
-      // },
-      async (txn): Promise<void> => {
+      async (txn, signers): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();
         txn.recentBlockhash = blockhash;
         txn.feePayer = wallet.publicKey;
-
+        txn.sign(...signers);
         const signed = await wallet.signTransaction(txn);
-
         const txid = await connection.sendRawTransaction(signed.serialize());
-        // const txid = await connection.sendTransaction(signed, signers);
         return void connection.confirmTransaction(txid);
       },
-      // async (txn, signers) =>
-      //   void connection.sendTransaction(txn, [userKeypair, ...signers]),
     );
   };
 
