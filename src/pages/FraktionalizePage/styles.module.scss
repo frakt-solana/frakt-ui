@@ -29,15 +29,6 @@
   text-transform: unset;
 }
 
-.sidebar {
-  position: fixed;
-  top: 89px;
-  right: 0;
-  width: 320px;
-  height: calc(100vh - 88px);
-  border-left: 1px solid var(--gray-color-6);
-}
-
 .artsList {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
