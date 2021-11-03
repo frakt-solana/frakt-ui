@@ -5,19 +5,28 @@ interface NumericInputProps {
   value: string;
   placeholder?: string;
   onChange: (value: string) => void;
+  positiveOnly?: boolean;
+  integerOnly?: boolean;
+}
+
+function isNumeric(value: any): boolean {
+  return !isNaN(value - parseFloat(value));
 }
 
 const NumericInput = ({
   onChange,
   value,
   placeholder = '0.0',
+  positiveOnly = false,
+  integerOnly = false,
 }: NumericInputProps): JSX.Element => {
   const onChangeHanlder = (event) => {
     const { value } = event.target;
-    const reg = /^-?\d*(\.\d*)?$/;
-    if ((!isNaN(value) && reg.test(value)) || value === '') {
-      onChange(value);
-    }
+
+    if (positiveOnly && value?.[0] === '-') return;
+    if (integerOnly && value?.split('').includes('.')) return;
+    if (value === '-' || value === '') onChange(value);
+    if (isNumeric(value)) onChange(value);
   };
 
   return (

@@ -84,6 +84,7 @@ const TokenField = ({
           </button>
         </div>
         <SelectTokenModal
+          title={label}
           visible={isModalOpen}
           onChange={(token) =>
             onChange({
