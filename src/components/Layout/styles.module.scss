@@ -1,6 +1,7 @@
 .container {
   max-width: 1320px;
-  padding: 0 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   margin: 0 auto;
 }
 
@@ -20,4 +21,19 @@
   .container {
     max-width: 540px;
   }
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.content {
+  top: 89px;
+  position: fixed;
+  width: 100%;
+  height: calc(100vh - 89px);
+  overflow-y: auto;
 }

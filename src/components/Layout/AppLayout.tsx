@@ -1,4 +1,5 @@
 import Header from '../Header';
+import styles from './styles.module.scss';
 
 interface AppLayoutProps {
   children: JSX.Element[] | JSX.Element;
@@ -11,8 +12,8 @@ export const AppLayout = ({
 }: AppLayoutProps): JSX.Element => {
   return (
     <div className={className}>
-      <Header />
-      {children}
+      <Header className={styles.header} />
+      <div className={styles.content}>{children}</div>
     </div>
   );
 };

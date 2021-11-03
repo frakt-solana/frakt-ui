@@ -10,10 +10,14 @@ import { ChevronDownIcon } from '../../icons';
 import { Tooltip } from 'antd';
 import { WalletInfo } from './WalletInfo';
 
-const Header = (): JSX.Element => {
+interface HeaderProps {
+  className?: string;
+}
+
+const Header = ({ className }: HeaderProps): JSX.Element => {
   const { select, wallet, connected } = useWallet();
   return (
-    <header className={styles.root}>
+    <header className={classNames([styles.root, className])}>
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={URLS.ROOT}>
           Fraktion
