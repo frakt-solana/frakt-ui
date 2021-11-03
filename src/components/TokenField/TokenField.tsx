@@ -3,41 +3,32 @@ import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 import { ChevronDownIcon } from '../../icons';
+import { SelectTokenModal } from '../SelectTokenModal';
+import { getTokenImageUrl, Token } from '../../utils';
+
+export interface TokenFieldValue {
+  amount: number;
+  token: Token;
+}
 
 interface TokenFieldProps {
-  value: number;
-  onChange: (nextValue: number) => void;
+  value: TokenFieldValue;
+  onChange: (nextValue: TokenFieldValue) => void;
   onUseMaxButtonClick?: () => void;
-  onSelectTokenClick: () => void;
   className?: string;
   style?: React.CSSProperties;
-  token?: { name: string; imageSrc?: string };
 }
 
 const TokenField = ({
   value,
   onChange,
   onUseMaxButtonClick,
-  onSelectTokenClick,
   style = {},
   className = '',
-  token = { name: '---' },
 }: TokenFieldProps): JSX.Element => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>();
-
-  const onClickHandler = () => {
-    inputRef.current.focus();
-  };
-
-  const onValueChageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const nextValue =
-      event.target.value === '' ? null : Number(event.target.value);
-
-    if (value !== nextValue) {
-      onChange(nextValue);
-    }
-  };
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
     <div
@@ -47,19 +38,21 @@ const TokenField = ({
         { [styles.root_focused]: isFocused },
       ])}
       style={style}
-      onClick={onClickHandler}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
     >
       <input
         className={styles.valueInput}
-        value={value || value === 0 ? value : ''}
+        value={value.amount.toString()}
+        onChange={(e) =>
+          onChange({
+            amount: Number.parseFloat(e.target.value),
+            token: value.token,
+          })
+        }
         type="number"
-        onChange={(event) => onValueChageHandler(event)}
         min="0"
         placeholder="0.0"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
         ref={inputRef}
       />
       {!!onUseMaxButtonClick && (
@@ -70,20 +63,29 @@ const TokenField = ({
         </div>
       )}
       <div>
-        <button className={styles.selectTokenBtn} onClick={onSelectTokenClick}>
-          {token?.imageSrc ? (
-            <img
-              className={styles.tokenLogo}
-              src={token.imageSrc}
-              alt={token.name}
-            />
-          ) : (
-            <div className={styles.noTokenImg} />
-          )}
-          <span>{token.name}</span>
+        <button
+          className={styles.selectTokenBtn}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <img
+            className={styles.tokenLogo}
+            src={getTokenImageUrl(value.token.mint)}
+            alt={value.token.symbol}
+          />
+          <span>{value.token.symbol}</span>
           <ChevronDownIcon className={styles.arrowDownIcon} />
         </button>
       </div>
+      <SelectTokenModal
+        visible={isModalOpen}
+        onChange={(token) =>
+          onChange({
+            amount: value.amount,
+            token,
+          })
+        }
+        onCancel={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

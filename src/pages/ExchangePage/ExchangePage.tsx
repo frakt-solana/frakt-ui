@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import TokenField from '../../components/TokenField';
+import TokenField, { TokenFieldValue } from '../../components/TokenField';
+import { DEFAULT_TOKEN } from '../../utils';
 
 const ExchangePage = (): JSX.Element => {
-  const [value, setValue] = useState<number>(null);
+  const [value, setValue] = useState<TokenFieldValue>({
+    amount: 0,
+    token: DEFAULT_TOKEN,
+  });
 
-  const openSelectModal = () => {};
   const setMaxValue = () => {};
 
   return (
@@ -15,11 +18,6 @@ const ExchangePage = (): JSX.Element => {
         value={value}
         onChange={setValue}
         onUseMaxButtonClick={setMaxValue}
-        onSelectTokenClick={openSelectModal}
-        token={{
-          name: 'ETH',
-          imageSrc: 'https://img.paraswap.network/ETH.png',
-        }}
       />
       {/* <p>Exchange page</p> */}
     </AppLayout>
