@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import BN from 'bn.js';
 import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
 
 import { useConnection } from '../../external/contexts/connection';
@@ -17,7 +18,7 @@ const UserTokensContext = React.createContext<UserTokensInterface>({
   tokens: [],
   tokensByMint: {},
   loading: false,
-  frktBalance: 0,
+  frktBalance: new BN(0),
   updateFrktBalance: () => {},
 });
 
@@ -28,7 +29,7 @@ export const UserTokensProvider = ({
 }): JSX.Element => {
   const { wallet, connected } = useWallet();
   const connection = useConnection();
-  const [frktBalance, setFrktBalance] = useState<number>(0);
+  const [frktBalance, setFrktBalance] = useState<BN>(new BN(0));
   const [tokens, setTokens] = useState<UserToken[]>([]);
   const [tokensByMint, setTokensByMint] = useState<TokensByMint>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -37,16 +38,21 @@ export const UserTokensProvider = ({
     setTokens([]);
     setTokensByMint({});
     setLoading(false);
-    setFrktBalance(0);
+    setFrktBalance(new BN(0));
   };
 
   const updateFrktBalance = (userTokens: TokenView[]) => {
     if (connected && connection) {
-      setFrktBalance(
-        (userTokens as any).find(
-          ({ mint }) => mint === config.FRKT_TOKEN_MINT_PUBLIC_KEY,
-        )?.amount || 0,
+      const token = (userTokens as any).find(
+        ({ mint }) => mint === config.FRKT_TOKEN_MINT_PUBLIC_KEY,
       );
+      if (token?.amount) {
+        setFrktBalance(
+          token.amount === -1 ? token.amountBN : new BN(Number(token.amount)),
+        );
+      } else {
+        setFrktBalance(new BN(0));
+      }
     }
   };
 

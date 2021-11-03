@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { TokenView } from 'solana-nft-metadata';
 
 export interface ArweaveAttribute {
@@ -30,7 +31,7 @@ export interface UserTokensInterface {
   tokens: UserToken[];
   tokensByMint: TokensByMint;
   loading: boolean;
-  frktBalance: number;
+  frktBalance: BN;
   updateFrktBalance: (userTokens: TokenView[]) => void;
 }
 
@@ -41,6 +42,6 @@ export interface UseUserTokensInterface {
 }
 
 export interface UseFrktBalanceInterface {
-  balance: number;
+  balance: BN;
   updateBalance: (userTokens: TokenView[]) => void;
 }
