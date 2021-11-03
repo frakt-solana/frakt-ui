@@ -15,7 +15,7 @@ const ExchangePage = (): JSX.Element => {
   const setMaxValue = () => {};
 
   return (
-    <AppLayout className={styles.exchange}>
+    <AppLayout contentClassName={styles.exchange}>
       <div className={styles.container}>
         <h1 className={styles.title}>Buy</h1>
         <div className={styles.description}>
@@ -26,7 +26,7 @@ const ExchangePage = (): JSX.Element => {
         </div>
         <TokenField
           className={styles.input}
-          label="pay"
+          label="Pay"
           style={{ maxWidth: 730 }}
           value={value}
           onChange={setValue}
@@ -34,7 +34,7 @@ const ExchangePage = (): JSX.Element => {
         />
         <TokenField
           className={styles.secondInput}
-          label="receive"
+          label="Receive"
           style={{ maxWidth: 730 }}
           value={value}
           onChange={setValue}
