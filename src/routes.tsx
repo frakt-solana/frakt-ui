@@ -12,6 +12,7 @@ import StakerPage from './pages/StakerPage';
 import FraktionalizePage from './pages/FraktionalizePage';
 import { ConnectWalletModal } from './components/ConnectWallerModal';
 import { UserTokensProvider } from './contexts/userTokens';
+import { FraktionProvider } from './contexts/fraktion';
 
 export function Routes(): JSX.Element {
   return (
@@ -20,43 +21,45 @@ export function Routes(): JSX.Element {
         <WalletProvider>
           <AccountsProvider>
             <UserTokensProvider>
-              <Switch>
-                <Route
-                  exact
-                  path={URLS.ROOT}
-                  component={(): JSX.Element => <HomePage />}
-                />
-                <Route
-                  exact
-                  path={URLS.VAULTS}
-                  component={(): JSX.Element => <VaultsPage />}
-                />
-                <Route
-                  exact
-                  path={URLS.EXCHANGE}
-                  component={(): JSX.Element => <ExchangePage />}
-                />
-                <Route
-                  exact
-                  path={URLS.STAKER_PAGE}
-                  component={(): JSX.Element => <StakerPage />}
-                />
-                <Route
-                  exact
-                  path={URLS.FRAKTIONALIZE}
-                  component={(): JSX.Element => <FraktionalizePage />}
-                />
-                <Route
-                  exact
-                  path={URLS.PAGE_404}
-                  component={(): JSX.Element => <Page404 />}
-                />
-                <Route
-                  exact
-                  path={'*'}
-                  component={(): JSX.Element => <Page404 />}
-                />
-              </Switch>
+              <FraktionProvider>
+                <Switch>
+                  <Route
+                    exact
+                    path={URLS.ROOT}
+                    component={(): JSX.Element => <HomePage />}
+                  />
+                  <Route
+                    exact
+                    path={URLS.VAULTS}
+                    component={(): JSX.Element => <VaultsPage />}
+                  />
+                  <Route
+                    exact
+                    path={URLS.EXCHANGE}
+                    component={(): JSX.Element => <ExchangePage />}
+                  />
+                  <Route
+                    exact
+                    path={URLS.STAKER_PAGE}
+                    component={(): JSX.Element => <StakerPage />}
+                  />
+                  <Route
+                    exact
+                    path={URLS.FRAKTIONALIZE}
+                    component={(): JSX.Element => <FraktionalizePage />}
+                  />
+                  <Route
+                    exact
+                    path={URLS.PAGE_404}
+                    component={(): JSX.Element => <Page404 />}
+                  />
+                  <Route
+                    exact
+                    path={'*'}
+                    component={(): JSX.Element => <Page404 />}
+                  />
+                </Switch>
+              </FraktionProvider>
             </UserTokensProvider>
             <ConnectWalletModal />
           </AccountsProvider>

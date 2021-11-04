@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { createFraktionalizer } from 'fraktionalizer-client-library';
 
 import Button from '../../components/Button';
 import { Container } from '../../components/Layout';
@@ -11,13 +10,11 @@ import { UserToken } from '../../contexts/userTokens/userTokens.model';
 import { useWallet } from '../../external/contexts/wallet';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
-import { useConnection } from '../../external/contexts/connection';
-import BN from 'bn.js';
-import { PublicKey } from '@solana/web3.js';
+import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 
 const FraktionalizePage = (): JSX.Element => {
-  const { connected, select, wallet } = useWallet();
-  const connection = useConnection();
+  const { connected, select } = useWallet();
+  const { fraktionalize } = useFraktion();
   const { tokens } = useUserTokens();
 
   const [selectedToken, setSelectedToken] = useState<UserToken>(null);
@@ -35,25 +32,7 @@ const FraktionalizePage = (): JSX.Element => {
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
-    createFraktionalizer(
-      connection,
-      new BN(pricePerFraction * 1e9), //1e9 for SOL, 1e8 for FRKT
-      new BN(fractionsAmount * 1e3), //always 1e3
-      3,
-      new PublicKey(tokenMint),
-      'So11111111111111111111111111111111111111112',
-      wallet.publicKey,
-      '9iAwxFwdxYSH5gw4QwRs78objbFHgDKGYmjCZPpgSgSA',
-      async (txn, signers): Promise<void> => {
-        const { blockhash } = await connection.getRecentBlockhash();
-        txn.recentBlockhash = blockhash;
-        txn.feePayer = wallet.publicKey;
-        txn.sign(...signers);
-        const signed = await wallet.signTransaction(txn);
-        const txid = await connection.sendRawTransaction(signed.serialize());
-        return void connection.confirmTransaction(txid);
-      },
-    );
+    fraktionalize(tokenMint, pricePerFraction, fractionsAmount, 'SOL');
   };
 
   return (
