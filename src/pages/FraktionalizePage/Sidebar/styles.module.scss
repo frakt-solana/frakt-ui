@@ -87,10 +87,105 @@
     &:last-child {
       margin-bottom: unset;
     }
+
+    &Double {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 16px;
+    }
+  }
+
+  &__stringInput {
+    &,
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-visible {
+      border: 1px solid var(--gray-color-3);
+      border-color: var(--gray-color-3);
+      padding: 10px 16px;
+    }
   }
 
   &__continueBtn {
     justify-content: center;
     font: var(--font-btn-small);
+  }
+}
+
+body .sidebar__stringInput {
+  &,
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-visible {
+    border: 1px solid var(--gray-color-3);
+    border-color: var(--gray-color-3);
+    padding: 10px 16px;
+  }
+}
+
+.priceField {
+  border: 1px solid var(--gray-color-3);
+  display: flex;
+  justify-content: flex-end;
+  height: 61px;
+  transition: border-color var(--transition-1);
+
+  &__selectTokenBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+    padding: 0 24px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+
+    &::before {
+      position: absolute;
+      background: var(--gray-color-3);
+      left: 0;
+      top: 50%;
+      transform: translate(0, -50%);
+      content: '';
+      width: 1px;
+      height: 55%;
+    }
+  }
+
+  &__tokenLogo {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    border-radius: 50%;
+  }
+
+  &__arrowDownIcon {
+    width: 16px;
+    height: 16px;
+    fill: var(--white-color);
+  }
+}
+
+body .priceField__valueInput {
+  &,
+  &:focus,
+  &:hover,
+  &:focus-visible {
+    background: none;
+    border: none;
+    border-bottom: none;
+    outline: none;
+    border-color: transparent;
+  }
+
+  &:not(.ant-input-affix-wrapper-disabled):hover {
+    background: none;
+    border: none;
+    border-bottom: none;
+    outline: none;
+    border-color: transparent;
   }
 }

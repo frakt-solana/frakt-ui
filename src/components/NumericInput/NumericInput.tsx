@@ -1,3 +1,5 @@
+import classNames from 'classnames/bind';
+
 import { Input } from '../../components/Input';
 import styles from './styles.module.scss';
 
@@ -7,6 +9,7 @@ interface NumericInputProps {
   onChange: (value: string) => void;
   positiveOnly?: boolean;
   integerOnly?: boolean;
+  className?: string;
 }
 
 function isNumeric(value: any): boolean {
@@ -19,6 +22,7 @@ const NumericInput = ({
   placeholder = '0.0',
   positiveOnly = false,
   integerOnly = false,
+  className,
 }: NumericInputProps): JSX.Element => {
   const onChangeHanlder = (event) => {
     const { value } = event.target;
@@ -35,7 +39,7 @@ const NumericInput = ({
       onChange={onChangeHanlder}
       placeholder={placeholder}
       maxLength={25}
-      className={styles.numberInput}
+      className={classNames([styles.numberInput, className])}
     />
   );
 };
