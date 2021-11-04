@@ -7,7 +7,23 @@ import { UserToken } from '../../../contexts/userTokens/userTokens.model';
 
 import styles from './styles.module.scss';
 import { Input } from '../../../components/Input';
-import { ChevronDownIcon } from '../../../icons';
+import TokenField from '../../../components/TokenField';
+import { Token } from '../../../utils';
+
+export const MOCK_TOKEN_LIST = [
+  {
+    mint: 'So11111111111111111111111111111111111111112',
+    symbol: 'SOL',
+    img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
+    data: 'Some value 1',
+  },
+  {
+    mint: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
+    symbol: 'FRKT',
+    img: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
+    data: 'Some value 1',
+  },
+];
 
 interface SidebarProps {
   onRemoveClick?: () => void;
@@ -27,6 +43,7 @@ const Sidebar = ({
   const [buyoutPrice, setBuyoutPrice] = useState<string>(null);
   const [fractionsAmount, setFractionsAmount] = useState<string>(null);
   const [symbol, setSymbol] = useState<string>(null);
+  const [buyoutToken, setBuyoutToken] = useState<Token>(MOCK_TOKEN_LIST[0]);
 
   useEffect(() => {
     setBuyoutPrice(null);
@@ -105,7 +122,15 @@ const Sidebar = ({
         </div>
         <div className={styles.sidebar__fieldWrapper}>
           <p className={styles.sidebar__fieldLabel}>Buyout price</p>
-          <PriceField onChange={setBuyoutPrice} value={buyoutPrice} />
+          <TokenField
+            className={styles.priceField}
+            value={buyoutPrice}
+            onValueChange={setBuyoutPrice}
+            tokensList={MOCK_TOKEN_LIST}
+            currentToken={buyoutToken}
+            onTokenChange={setBuyoutToken}
+            modalTitle="Select token"
+          />
         </div>
       </div>
 
@@ -117,31 +142,6 @@ const Sidebar = ({
       >
         Continue
       </Button>
-    </div>
-  );
-};
-
-const PriceField = ({ onChange, value }): JSX.Element => {
-  return (
-    <div className={styles.priceField}>
-      <NumericInput
-        onChange={onChange}
-        value={value}
-        placeholder="0.0"
-        positiveOnly
-        className={styles.priceField__valueInput}
-      />
-      <div>
-        <button className={styles.priceField__selectTokenBtn}>
-          <img
-            className={styles.priceField__tokenLogo}
-            src="https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png"
-            alt="SOL logo"
-          />
-          <span>SOL</span>
-          <ChevronDownIcon className={styles.priceField__arrowDownIcon} />
-        </button>
-      </div>
     </div>
   );
 };

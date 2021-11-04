@@ -41,18 +41,23 @@
 }
 
 .valueInput {
-  &,
-  &:focus,
-  &:focus-visible {
-    background: none;
-    border: none;
-    outline: none;
-  }
-
   flex-grow: 1;
   padding-left: 24px;
   font: var(--font-btn-mid);
   min-width: 48px;
+}
+
+body input.valueInput {
+  &,
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-visible,
+  &:not(.styles_ant-input):hover {
+    background: none;
+    border: none;
+    outline: none;
+  }
 }
 
 .useMaxBtnContainer {
@@ -127,5 +132,6 @@
   justify-content: space-between;
   font-size: 14px;
   text-transform: uppercase;
-  color: var(--gray-color-3)
+  color: var(--gray-color-3);
+  transition: var(--transition-1);
 }

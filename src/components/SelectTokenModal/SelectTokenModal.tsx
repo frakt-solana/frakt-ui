@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
 import classNames from 'classnames';
-import { getTokensList, getTokenImageUrl, Token } from '../../utils';
+import { Token } from '../../utils';
 import { SearchInput } from '../SearchInput';
 
 interface SelectTokenModalProps extends ModalProps {
-  onChange?: (value: Token) => void;
+  onChange?: (token: Token) => void;
+  tokensList: Token[];
 }
-
-const tokens = getTokensList();
 
 export const SelectTokenModal = ({
   title,
+  tokensList,
   className,
   onChange,
   visible,
@@ -22,8 +22,8 @@ export const SelectTokenModal = ({
   const [search, setSearch] = useState<string>('');
   const searchUp = search.toUpperCase();
   const filterTokens = () => {
-    return Object.keys(tokens).filter((key) =>
-      tokens[key].symbol.toUpperCase().includes(searchUp),
+    return tokensList.filter(({ symbol }) =>
+      symbol.toUpperCase().includes(searchUp),
     );
   };
 
@@ -44,16 +44,16 @@ export const SelectTokenModal = ({
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className={styles.input}
-        placeholder="ETH"
+        placeholder="SOL"
         {...props}
       />
       <div className={styles.tokenList}>
-        {filterTokens().map((key) => (
+        {filterTokens().map((token) => (
           <div
-            key={key}
+            key={token.mint}
             className={styles.row}
             onClick={() => {
-              onChange(tokens[key]);
+              onChange(token);
               onCancel(null);
             }}
           >
@@ -61,14 +61,12 @@ export const SelectTokenModal = ({
               <div
                 className={styles.icon}
                 style={{
-                  backgroundImage: `url("${getTokenImageUrl(
-                    tokens[key].mint,
-                  )}")`,
+                  backgroundImage: `url("${token.img}")`,
                 }}
               />{' '}
-              <span className={styles.title}>{tokens[key].symbol}</span>
+              <span className={styles.title}>{token.symbol}</span>
             </div>
-            0.993020549647554908
+            {/* 0.993020549647554908 //TODO: When wallet connected display balance */}
           </div>
         ))}
       </div>
