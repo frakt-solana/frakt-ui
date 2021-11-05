@@ -11,7 +11,7 @@ interface FakeInfinityScrollProps {
   perPage?: number;
   infinityScrollProps?: Omit<
     InfinityScrollProps,
-    'dataLength' | 'next' | 'hasMore'
+    'dataLength' | 'next' | 'hasMore' | 'children'
   >;
   component: any;
   wrapperClassName?: string;
@@ -50,7 +50,7 @@ export const FakeInfinityScroll = ({
     setHasMore(true);
     getMoreData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allItems]);
+  }, [allItems, isLoading]);
 
   if (isLoading) {
     return (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '../../components/Button';
 import { Container } from '../../components/Layout';
@@ -15,10 +15,11 @@ import FakeInfinityScroll from '../../components/FakeInfinityScroll/FakeInfinity
 import { useDebounce } from '../../hooks';
 
 const FraktionalizePage = (): JSX.Element => {
+  const [search, setSearch] = useState('');
   const [items, setItems] = useState([]);
   const { connected, select } = useWallet();
   const { fraktionalize } = useFraktion();
-  const { tokens } = useUserTokens();
+  const { tokens, loading } = useUserTokens();
 
   const searchItems = useDebounce((search: string) => {
     const searchUp = search.toUpperCase();
@@ -26,6 +27,12 @@ const FraktionalizePage = (): JSX.Element => {
       tokens.filter((el) => el.metadata.name.toUpperCase().includes(searchUp)),
     );
   }, 300);
+
+  useEffect(() => {
+    setItems(tokens);
+    setSearch('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const [selectedToken, setSelectedToken] = useState<UserToken>(null);
 
@@ -53,11 +60,15 @@ const FraktionalizePage = (): JSX.Element => {
         onContinueClick={onContinueClick}
       />
       <Container component="main" className={styles.contentWrapper}>
-        <div className={styles.contentReducer}>
+        <div id="content-reducer" className={styles.contentReducer}>
           <h4 className={styles.title}>Select your NFT</h4>
           <SearchInput
+            value={search}
             size="large"
-            onChange={(e) => searchItems(e.target.value || '')}
+            onChange={(e) => {
+              setSearch(e.target.value || '');
+              searchItems(e.target.value || '');
+            }}
             className={styles.search}
             placeholder="Search by curator, collection or asset"
           />
@@ -77,6 +88,7 @@ const FraktionalizePage = (): JSX.Element => {
                 name: token.metadata.name,
                 selected: selectedToken && selectedToken.mint === token.mint,
               }))}
+              isLoading={loading}
               component={NFTCheckbox}
               wrapperClassName={styles.artsList}
             />
