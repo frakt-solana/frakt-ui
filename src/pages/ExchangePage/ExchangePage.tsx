@@ -86,6 +86,7 @@ const ExchangePage = (): JSX.Element => {
           value={receiveValue}
           onValueChange={(nextValue) => setReceiveValue(nextValue)}
           currentToken={receiveToken}
+          tokensList={MOCK_TOKEN_LIST}
           onTokenChange={setReceiveToken}
           onUseMaxButtonClick={setMaxValue}
           modalTitle="Receive"

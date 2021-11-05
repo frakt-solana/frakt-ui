@@ -73,7 +73,9 @@ body input.valueInput {
 
 .useMaxBtn {
   @include resetBtnStyle;
-  border: 1px solid var(--gray-color-2);
+  & {
+    border: 1px solid var(--gray-color-2);
+  }
   font: var(--font-btn-small);
   text-transform: uppercase;
   transition: background var(--transition-1), border-color var(--transition-1);
