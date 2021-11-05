@@ -3,8 +3,10 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
+import FakeInfinityScroll from '../../components/FakeInfinityScroll/FakeInfinityScroll';
+import { useDebounce } from '../../hooks';
+import { useState, useMemo } from 'react';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import { useMemo } from 'react';
 import { getNFTArweaveMetadataByMint } from '../../utils';
 import { VaultState } from '../../contexts/fraktion/fraktion.model';
 
@@ -18,6 +20,7 @@ interface VaultCardType {
 
 const VaultsPage = (): JSX.Element => {
   const { loading, safetyBoxes, vaultsMap } = useFraktion();
+  const [searchString, setSearchString] = useState<string>('');
 
   const vaultCards: VaultCardType[] = useMemo(() => {
     return safetyBoxes.reduce((acc, safetyBox): VaultCardType[] => {
@@ -44,27 +47,34 @@ const VaultsPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
+  const searchItems = useDebounce((search: string) => {
+    setSearchString(search.toUpperCase());
+  }, 300);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
         <SearchInput
           size="large"
+          onChange={(e) => searchItems(e.target.value || '')}
           className={styles.search}
           placeholder="Search by curator, collection or asset"
         />
-        <div className={styles.cards}>
-          {vaultCards.map((vaultCard) => {
-            return (
-              <VaultCard
-                key={vaultCard.vaultPubkey}
-                name={vaultCard.name}
-                owner={vaultCard.ownerPubkey}
-                tags={[vaultCard.state]}
-                imageSrc={vaultCard.image}
-              />
-            );
-          })}
-        </div>
+        <FakeInfinityScroll
+          items={vaultCards
+            .filter(({ name }) => name.toUpperCase().includes(searchString))
+            .map((vaultCard) => ({
+              name: vaultCard.name,
+              owner: vaultCard.ownerPubkey,
+              tags: [vaultCard.state],
+              imageSrc: vaultCard.image,
+            }))}
+          isLoading={loading}
+          component={VaultCard}
+          wrapperClassName={styles.cards}
+          perPage={12}
+          emptyMessage={'No vaults found'}
+        />
       </Container>
     </AppLayout>
   );

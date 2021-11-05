@@ -16,7 +16,10 @@ export const AppLayout = ({
   return (
     <div className={className}>
       <Header className={styles.header} />
-      <div className={classNames(styles.content, contentClassName)}>
+      <div
+        id="app-content"
+        className={classNames(styles.content, contentClassName)}
+      >
         {children}
       </div>
     </div>

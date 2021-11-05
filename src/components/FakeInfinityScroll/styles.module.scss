@@ -1,0 +1,14 @@
+.empty {
+  width: 100%;
+  font: var(--font-btn-mid);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.loader {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
