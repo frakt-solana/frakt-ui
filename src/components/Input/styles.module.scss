@@ -1,7 +1,8 @@
 body .input {
   font-size: 24px;
-  &:not(.ant-input-affix-wrapper-disabled):hover {
-    border-bottom: 1px solid var(--gray-color-3);
+  &:not(.ant-input-affix-wrapper-disabled):hover, &:global(.ant-input-affix-wrapper-focused) {
+    transition: var(--transition-1);
+    border: 1px solid var(--accent-color-1);
     outline: none;
     box-shadow: none;
   }

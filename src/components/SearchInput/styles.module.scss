@@ -1,4 +1,9 @@
-.input {
+html body .input {
+  &:not(.ant-input-affix-wrapper-disabled):hover, &:global(.ant-input-affix-wrapper-focused) {
+    border-width: 0 0 1px 0!important;
+  }
+  border-width: 0 0 1px 0!important;
+
   &:global(.ant-input-affix-wrapper-lg) {
     font-size: 32px;
     :local(.search) {

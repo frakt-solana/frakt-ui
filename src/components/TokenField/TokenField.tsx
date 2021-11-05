@@ -8,8 +8,8 @@ import { Token } from '../../utils';
 import NumericInput from '../NumericInput';
 
 interface TokenFieldProps {
-  tokensList: Token[];
-  onTokenChange: (nextToken: Token) => void;
+  tokensList?: Token[];
+  onTokenChange?: (nextToken: Token) => void;
   currentToken: Token;
   value: string;
   onValueChange: (nextValue: string) => void;
@@ -67,8 +67,10 @@ const TokenField = ({
         )}
         <div>
           <button
-            className={styles.selectTokenBtn}
-            onClick={() => setIsModalOpen(true)}
+            className={classNames(styles.selectTokenBtn, {
+              [styles.disabledTokens]: !tokensList,
+            })}
+            onClick={() => tokensList && setIsModalOpen(true)}
           >
             <img
               className={styles.tokenLogo}
@@ -79,13 +81,15 @@ const TokenField = ({
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>
-        <SelectTokenModal
-          title={modalTitle}
-          visible={isModalOpen}
-          tokensList={tokensList}
-          onChange={onTokenChange}
-          onCancel={() => setIsModalOpen(false)}
-        />
+        {tokensList && (
+          <SelectTokenModal
+            title={modalTitle}
+            visible={isModalOpen}
+            tokensList={tokensList}
+            onChange={onTokenChange}
+            onCancel={() => setIsModalOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

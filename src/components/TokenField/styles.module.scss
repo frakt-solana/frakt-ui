@@ -135,3 +135,7 @@ body input.valueInput {
   color: var(--gray-color-3);
   transition: var(--transition-1);
 }
+
+.disabledTokens .arrowDownIcon {
+  display: none;
+}
