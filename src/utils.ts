@@ -5,16 +5,16 @@ import mintMetadata from './mintMetadata.json';
 
 export const DECIMALS_PER_FRKT = 1e8;
 
-export const frktBNToString = (bn: BN): string => {
+export const frktBNToString = (bn: BN, precision = 6): string => {
   const bnStr = bn.toString(10);
   if (bnStr === '0') return '0';
   const integerPart = bnStr.slice(0, -8);
-  const floatPart = bnStr.padStart(8, '0').slice(-8, -2);
+  const floatPart = bnStr.padStart(8, '0').slice(-8, -8 + precision);
   return `${integerPart || 0}.${floatPart || 0}`;
 };
 
 export const getFrktBalanceValue = (balance: BN): string => {
-  const frktBalance = balance ? frktBNToString(balance) : '0';
+  const frktBalance = balance ? frktBNToString(balance, 2) : '0';
   return `${frktBalance !== '0' ? frktBalance : '--'}`;
 };
 
