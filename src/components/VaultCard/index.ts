@@ -1,2 +1,2 @@
-export { default, MOCK_PROPS } from './VaultCard';
+export { default } from './VaultCard';
 export type { VaultCardProps } from './VaultCard';
