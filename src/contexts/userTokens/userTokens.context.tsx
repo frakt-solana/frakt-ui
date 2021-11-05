@@ -11,8 +11,8 @@ import {
   UserTokensInterface,
   UseUserTokensInterface,
 } from './userTokens.model';
-import mintMetadata from './mintMetadata.json';
 import config from '../../config';
+import { getNFTArweaveMetadataByMint } from '../../utils';
 
 const UserTokensContext = React.createContext<UserTokensInterface>({
   tokens: [],
@@ -67,7 +67,7 @@ export const UserTokensProvider = ({
 
       const tokensWithMetadata = userTokens.reduce(
         (acc, { mint }): TokensByMint => {
-          const metadata = mintMetadata[mint as string];
+          const metadata = getNFTArweaveMetadataByMint(mint as string);
           metadata && (acc[mint as string] = metadata);
           return acc;
         },
