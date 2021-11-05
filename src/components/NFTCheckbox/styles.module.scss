@@ -1,3 +1,7 @@
+.wrapper {
+  padding: 0 10px 10px 0;
+}
+
 .root {
   width: 100%;
   cursor: pointer;
@@ -71,9 +75,4 @@
       }
     }
   }
-}
-
-.wrapper {
-  padding-bottom: 9px;
-  padding-right: 8px;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Button from '../../components/Button';
 import { Container } from '../../components/Layout';
@@ -16,23 +16,14 @@ import { useDebounce } from '../../hooks';
 
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
-  const [items, setItems] = useState([]);
   const { connected, select } = useWallet();
   const { fraktionalize } = useFraktion();
   const { tokens, loading } = useUserTokens();
+  const [searchString, setSearchString] = useState<string>('');
 
   const searchItems = useDebounce((search: string) => {
-    const searchUp = search.toUpperCase();
-    setItems(
-      tokens.filter((el) => el.metadata.name.toUpperCase().includes(searchUp)),
-    );
+    setSearchString(search.toUpperCase());
   }, 300);
-
-  useEffect(() => {
-    setItems(tokens);
-    setSearch('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
 
   const [selectedToken, setSelectedToken] = useState<UserToken>(null);
 
@@ -82,15 +73,21 @@ const FraktionalizePage = (): JSX.Element => {
             </Button>
           ) : (
             <FakeInfinityScroll
-              items={items.map((token) => ({
-                onClick: () => onCardClick(token),
-                imageUrl: token.metadata.image,
-                name: token.metadata.name,
-                selected: selectedToken && selectedToken.mint === token.mint,
-              }))}
+              items={tokens
+                .filter(({ metadata }) =>
+                  metadata.name.toUpperCase().includes(searchString),
+                )
+                .map((token) => ({
+                  onClick: () => onCardClick(token),
+                  imageUrl: token.metadata.image,
+                  name: token.metadata.name,
+                  selected: selectedToken && selectedToken.mint === token.mint,
+                }))}
               isLoading={loading}
               component={NFTCheckbox}
               wrapperClassName={styles.artsList}
+              perPage={15}
+              emptyMessage="Unfortunately, you don't have any NFTs available for fraktionalization"
             />
           )}
         </div>

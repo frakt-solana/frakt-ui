@@ -1,11 +1,9 @@
 .empty {
-  height: 100%;
-  text-align: center;
-  font-weight: bold;
-  font-size: 20px;
+  width: 100%;
+  font: var(--font-btn-mid);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .loader {

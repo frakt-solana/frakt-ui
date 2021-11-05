@@ -29,7 +29,7 @@ export const FakeInfinityScroll = ({
   wrapperClassName,
   loaderWrapperClassName,
   isLoading = false,
-  emptyMessage = "Unfortunately, you don't have any NFTs available for fraktionalization",
+  emptyMessage = 'No items found',
   emptyMessageClassName,
 }: FakeInfinityScrollProps): JSX.Element => {
   const page = useRef<number>(1);
@@ -62,7 +62,7 @@ export const FakeInfinityScroll = ({
 
   if (!allItems.length) {
     return (
-      <div className={classNames(emptyMessageClassName, styles.empty)}>
+      <div className={classNames(styles.empty, emptyMessageClassName)}>
         {emptyMessage}
       </div>
     );
