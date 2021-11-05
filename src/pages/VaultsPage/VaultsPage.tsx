@@ -22,7 +22,7 @@ const VaultsPage = (): JSX.Element => {
   const { loading, safetyBoxes, vaultsMap } = useFraktion();
   const [searchString, setSearchString] = useState<string>('');
 
-  const vaultCards: VaultCardType[] = useMemo(() => {
+  const rawVaultCards: VaultCardType[] = useMemo(() => {
     return safetyBoxes.reduce((acc, safetyBox): VaultCardType[] => {
       const arweaveMetadata = getNFTArweaveMetadataByMint(safetyBox.tokenMint);
       const vault = vaultsMap[safetyBox.vault];
@@ -51,6 +51,13 @@ const VaultsPage = (): JSX.Element => {
     setSearchString(search.toUpperCase());
   }, 300);
 
+  const vaultCards = useMemo(() => {
+    return rawVaultCards.filter(({ name }) =>
+      name.toUpperCase().includes(searchString),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchString, rawVaultCards]);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
@@ -61,14 +68,12 @@ const VaultsPage = (): JSX.Element => {
           placeholder="Search by curator, collection or asset"
         />
         <FakeInfinityScroll
-          items={vaultCards
-            .filter(({ name }) => name.toUpperCase().includes(searchString))
-            .map((vaultCard) => ({
-              name: vaultCard.name,
-              owner: vaultCard.ownerPubkey,
-              tags: [vaultCard.state],
-              imageSrc: vaultCard.image,
-            }))}
+          items={vaultCards.map((vaultCard) => ({
+            name: vaultCard.name,
+            owner: vaultCard.ownerPubkey,
+            tags: [vaultCard.state],
+            imageSrc: vaultCard.image,
+          }))}
           isLoading={loading}
           component={VaultCard}
           wrapperClassName={styles.cards}

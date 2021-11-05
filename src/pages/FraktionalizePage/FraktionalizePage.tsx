@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import Button from '../../components/Button';
 import { Container } from '../../components/Layout';
@@ -18,7 +18,7 @@ const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected, select } = useWallet();
   const { fraktionalize } = useFraktion();
-  const { tokens, loading } = useUserTokens();
+  const { tokens: rawTokens, loading } = useUserTokens();
   const [searchString, setSearchString] = useState<string>('');
 
   const searchItems = useDebounce((search: string) => {
@@ -42,6 +42,13 @@ const FraktionalizePage = (): JSX.Element => {
   ) => {
     fraktionalize(tokenMint, pricePerFraction, fractionsAmount, 'SOL');
   };
+
+  const tokens = useMemo(() => {
+    return rawTokens.filter(({ metadata }) =>
+      metadata.name.toUpperCase().includes(searchString),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchString, rawTokens]);
 
   return (
     <AppLayout className={styles.positionRelative}>
@@ -73,16 +80,12 @@ const FraktionalizePage = (): JSX.Element => {
             </Button>
           ) : (
             <FakeInfinityScroll
-              items={tokens
-                .filter(({ metadata }) =>
-                  metadata.name.toUpperCase().includes(searchString),
-                )
-                .map((token) => ({
-                  onClick: () => onCardClick(token),
-                  imageUrl: token.metadata.image,
-                  name: token.metadata.name,
-                  selected: selectedToken && selectedToken.mint === token.mint,
-                }))}
+              items={tokens.map((token) => ({
+                onClick: () => onCardClick(token),
+                imageUrl: token.metadata.image,
+                name: token.metadata.name,
+                selected: selectedToken && selectedToken.mint === token.mint,
+              }))}
               isLoading={loading}
               component={NFTCheckbox}
               wrapperClassName={styles.artsList}
