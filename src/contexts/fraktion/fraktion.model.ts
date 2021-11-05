@@ -30,6 +30,10 @@ export interface Vault {
   lockedPricePerShare: BN;
 }
 
+export interface VaultsMap {
+  [key: string]: Vault;
+}
+
 export interface SafetyBox {
   safetyBoxPubkey: string;
   key: VaultKey;
@@ -49,7 +53,7 @@ export interface CreateFraktionalizerResult {
 }
 
 export interface FetchVaultsResult {
-  vaults: Vault[];
+  vaults: VaultsMap;
   safetyBoxes: SafetyBox[];
 }
 
@@ -63,5 +67,10 @@ export type fraktionalizeFunction = (
 export type fetchVaultsFunction = () => Promise<FetchVaultsResult | null>;
 
 export interface FraktionContextType {
+  loading: boolean;
+  error: any;
+  safetyBoxes: SafetyBox[];
+  vaultsMap: VaultsMap;
   fraktionalize: fraktionalizeFunction;
+  fetchVaults: fetchVaultsFunction;
 }

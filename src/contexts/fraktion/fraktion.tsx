@@ -1,37 +1,14 @@
 import { Connection, PublicKey } from '@solana/web3.js';
-import {
-  createFraktionalizer,
-  getAllVaults,
-} from 'fraktionalizer-client-library';
+import { createFraktionalizer } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
 
 import { WalletAdapter } from '../../external/contexts/wallet';
-import {
-  CreateFraktionalizerResult,
-  FetchVaultsResult,
-} from './fraktion.model';
+import { CreateFraktionalizerResult } from './fraktion.model';
 import fraktionConfig from './config';
 import globalConfig from '../../config';
 import { notify } from '../../external/utils/notifications';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS } = fraktionConfig;
-
-export const fetchVaults = async (
-  connection: Connection,
-): Promise<FetchVaultsResult | null> => {
-  try {
-    const { vaults, safetyBoxes } = await getAllVaults(
-      new PublicKey(FRAKTION_PUBKEY),
-      connection,
-    );
-
-    return { vaults, safetyBoxes };
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return null;
-  }
-};
 
 export const fraktionalize = async (
   tokenMint: string,

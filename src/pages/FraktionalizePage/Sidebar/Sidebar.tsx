@@ -117,6 +117,8 @@ const Sidebar = ({
               onChange={(event) => setSymbol(event.target.value)}
               value={symbol}
               placeholder="XXX"
+              disableNumbers
+              disableSymbols
             />
           </div>
         </div>
