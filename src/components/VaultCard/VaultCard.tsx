@@ -15,7 +15,7 @@ export const MOCK_PROPS = {
   impliedValuation: '9.23B',
 };
 
-interface VaultCardProps {
+export interface VaultCardProps {
   name: string;
   owner: string;
   tags: string[];
