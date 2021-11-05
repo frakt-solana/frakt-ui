@@ -49,6 +49,7 @@ const VaultsPage = (): JSX.Element => {
 
   useEffect(() => {
     setItems(vaultCards);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, vaultCards);
 
   const searchItems = useDebounce((search: string) => {
@@ -57,8 +58,6 @@ const VaultsPage = (): JSX.Element => {
       vaultCards.filter((el) => el.name.toUpperCase().includes(searchUp)),
     );
   }, 300);
-
-  console.log(vaultCards, vaultsMap);
 
   return (
     <AppLayout>
