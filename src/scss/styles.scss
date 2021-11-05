@@ -17,18 +17,18 @@ h5 {
   color: var(--white-color);
 }
 
-// .frakt__notification {
-//   svg {
-//     fill: $color-gray-4;
-//   }
+.fraktion__notification {
+  svg.anticon {
+    fill: var(--accent-color-1);
+  }
 
-//   background: $color-black !important;
-//   border: 1px solid $color-gray-1;
-//   border-radius: 0 !important;
+  background: var(--black-color) !important;
+  border: 1px solid var(--gray-color-3);
+  border-radius: 0 !important;
 
-//   :global {
-//     .ant-notification-notice-message {
-//       color: $color-white;
-//     }
-//   }
-// }
+  :global {
+    .ant-notification-notice-message {
+      color: var(--white-color);
+    }
+  }
+}

@@ -85,7 +85,6 @@ const ExchangePage = (): JSX.Element => {
           className={styles.input}
           value={receiveValue}
           onValueChange={(nextValue) => setReceiveValue(nextValue)}
-          tokensList={MOCK_TOKEN_LIST}
           currentToken={receiveToken}
           onTokenChange={setReceiveToken}
           onUseMaxButtonClick={setMaxValue}

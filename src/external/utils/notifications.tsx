@@ -8,7 +8,7 @@ export function notify({
   type = 'info',
 }): void {
   (notification as any)[type]({
-    className: 'frakt__notification',
+    className: 'fraktion__notification',
     message,
     description,
     placement: 'bottomRight',

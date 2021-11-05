@@ -113,7 +113,7 @@ const Sidebar = ({
           <div className={styles.sidebar__fieldWrapper}>
             <p className={styles.sidebar__fieldLabel}>Symbol</p>
             <Input
-              className={styles.sidebar__stringInput}
+              // className={styles.sidebar__stringInput}
               onChange={(event) => setSymbol(event.target.value)}
               value={symbol}
               placeholder="XXX"

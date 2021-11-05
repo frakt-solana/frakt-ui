@@ -1,21 +1,21 @@
 body .input {
   font-size: 24px;
-  &:not(.ant-input-affix-wrapper-disabled):hover {
-    border-bottom: 1px solid var(--gray-color-3);
-    outline: none;
-    box-shadow: none;
-  }
   border-radius: 0;
-  border: 0;
-  border-bottom: 1px solid var(--gray-color-3);
-  padding-left: 0;
-  box-shadow: none !important;
-  :global {
-    .ant-input-prefix {
-      margin-right: 8px;
-    }
-    ::selection {
-      background: none;
-    }
+  padding: 10px 16px;
+
+  &,
+  &:hover {
+    border-color: unset;
+    border: 1px solid var(--gray-color-3);
+  }
+  &:focus,
+  &:focus-visible {
+    border: 1px solid var(--accent-color-1);
+  }
+
+  &,
+  &:global(.ant-input:focus),
+  &:global(.ant-input-focused) {
+    box-shadow: unset;
   }
 }

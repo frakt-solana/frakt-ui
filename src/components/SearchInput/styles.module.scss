@@ -1,9 +1,30 @@
-.input {
+html body .input {
+  padding: 0 0 4px;
+
+  &,
+  &:not(.ant-input-affix-wrapper-disabled):hover,
+  &:hover {
+    border: 0;
+    border-bottom: 1px solid var(--gray-color-3);
+  }
+
+  &:global(.ant-input-affix-wrapper-focused:hover),
+  &:global(.ant-input-affix-wrapper-focused) {
+    border-bottom: 1px solid var(--accent-color-1);
+    :local(.search) {
+      svg {
+        color: var(--white-color);
+      }
+    }
+  }
+
   &:global(.ant-input-affix-wrapper-lg) {
     font-size: 32px;
+    padding-bottom: 8px;
     :local(.search) {
       svg {
         font-size: 32px;
+        margin-right: 10px;
       }
     }
   }
@@ -15,6 +36,8 @@
 .search {
   svg {
     font-size: 24px;
+    transition: color var(--transition-1);
     color: var(--gray-color-3);
+    margin-right: 6px;
   }
 }
