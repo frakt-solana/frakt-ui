@@ -1,25 +1,2 @@
-body .numberInput {
-  & {
-    border: 1px solid var(--gray-color-3);
-    border-color: var(--gray-color-3);
-    padding: 10px 16px;
-  }
-  outline: none;
-  box-shadow: none;
-
-  &:hover,
-  &:active,
-  &:focus,
-  &:focus-visible {
-    transition: var(--transition-1);
-    border: 1px solid var(--accent-color-1);
-    outline: none;
-    box-shadow: none;
-  }
-
-  :global {
-    ::selection {
-      background: none;
-    }
-  }
-}
+// body .numberInput {
+// }

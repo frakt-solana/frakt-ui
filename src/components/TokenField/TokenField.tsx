@@ -68,7 +68,7 @@ const TokenField = ({
         <div>
           <button
             className={classNames(styles.selectTokenBtn, {
-              [styles.disabledTokens]: !tokensList,
+              [styles.disabledTokens]: !tokensList || !onTokenChange,
             })}
             onClick={() => tokensList && setIsModalOpen(true)}
           >
@@ -81,7 +81,7 @@ const TokenField = ({
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>
-        {tokensList && (
+        {!!tokensList && !!onTokenChange && (
           <SelectTokenModal
             title={modalTitle}
             visible={isModalOpen}
