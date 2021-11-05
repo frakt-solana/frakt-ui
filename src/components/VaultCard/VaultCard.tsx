@@ -1,28 +1,16 @@
 import styles from './styles.module.scss';
 import DoneIcon from '../../icons/DoneIcon';
 import Badge from '../Badge';
-
-import mockImage from './mock_image.png';
 import { shortenAddress } from '../../external/utils/utils';
 
-export const MOCK_PROPS = {
-  name: 'BAYC History -The Great Floor Sweep',
-  owner: 'GMdEr1CTnwstWEV2cTbjqXQDw1S5kX89F543ihpCCiUz',
-  tags: ['Collection', 'Live action'],
-  imageSrc: mockImage,
-  totalSupply: '930M',
-  collectableSupply: '0.00%',
-  impliedValuation: '9.23B',
-};
-
-interface VaultCardProps {
+export interface VaultCardProps {
   name: string;
   owner: string;
   tags: string[];
   imageSrc: string;
-  totalSupply: string;
-  collectableSupply: string;
-  impliedValuation: string;
+  totalSupply?: string;
+  collectableSupply?: string;
+  impliedValuation?: string;
 }
 
 const VaultCard = ({
@@ -30,9 +18,9 @@ const VaultCard = ({
   owner,
   tags,
   imageSrc,
-  totalSupply,
-  collectableSupply,
-  impliedValuation,
+  totalSupply = 'XXX',
+  collectableSupply = 'XXX',
+  impliedValuation = 'XXX',
 }: VaultCardProps): JSX.Element => (
   <div className={styles.cardContainer}>
     <div className={styles.card}>

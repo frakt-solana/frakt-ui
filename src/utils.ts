@@ -1,6 +1,7 @@
 import { formatNumber } from './external/utils/utils';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
+import mintMetadata from './mintMetadata.json';
 
 export const DECIMALS_PER_FRKT = 1e8;
 
@@ -29,4 +30,28 @@ export interface Token {
 
 export const getTokenImageUrl = (mint: string): string => {
   return `https://sdk.raydium.io/icons/${mint}.png`;
+};
+
+export interface ArweaveAttribute {
+  trait_type: string;
+  value: number | string;
+}
+
+export interface ArweaveMetadata {
+  name: string;
+  symbol: string;
+  description: string;
+  seller_fee_basis_points?: number;
+  image: string;
+  animation_url: string;
+  external_url: string;
+  attributes: ArweaveAttribute[];
+  properties: any;
+}
+
+export const getNFTArweaveMetadataByMint = (
+  mint: string,
+): ArweaveMetadata | null => {
+  const metadata = mintMetadata[mint];
+  return metadata ? (metadata as ArweaveMetadata) : null;
 };

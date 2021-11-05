@@ -1,22 +1,7 @@
 import BN from 'bn.js';
 import { TokenView } from 'solana-nft-metadata';
 
-export interface ArweaveAttribute {
-  trait_type: string;
-  value: number | string;
-}
-
-export interface ArweaveMetadata {
-  name: string;
-  symbol: string;
-  description: string;
-  seller_fee_basis_points?: number;
-  image: string;
-  animation_url: string;
-  external_url: string;
-  attributes: ArweaveAttribute[];
-  properties: any;
-}
+import { ArweaveMetadata } from '../../utils';
 
 export interface UserToken {
   mint: string;
