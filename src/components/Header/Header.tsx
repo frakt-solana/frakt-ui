@@ -31,9 +31,10 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
           </li>
         </ul>
         <ul className={styles.navigation}>
-          <li>
+          {/* //TODO: Uncomment link when exteranl page ready */}
+          {/* <li>
             <NavigationLink to={URLS.STAKER_PAGE}>Frakt Staker?</NavigationLink>
-          </li>
+          </li> */}
           <li className={styles.bgAccent}>
             <NavigationLink to={URLS.FRAKTIONALIZE}>
               Fraktionalize
