@@ -12,7 +12,7 @@ import {
   UseUserTokensInterface,
 } from './userTokens.model';
 import config from '../../config';
-import { getNFTArweaveMetadataByMint } from '../../utils';
+import { getArweaveMetadata } from '../../utils/getArweaveMetadata';
 
 const UserTokensContext = React.createContext<UserTokensInterface>({
   tokens: [],
@@ -62,23 +62,22 @@ export const UserTokensProvider = ({
       const userTokens = await getAllUserTokens(wallet.publicKey, {
         connection,
       });
-
       updateFrktBalance(userTokens);
 
-      const tokensWithMetadata = userTokens.reduce(
-        (acc, { mint }): TokensByMint => {
-          const metadata = getNFTArweaveMetadataByMint(mint as string);
-          metadata && (acc[mint as string] = metadata);
+      const mints = userTokens.map(({ mint }) => String(mint));
+      const arweaveMetadata = await getArweaveMetadata(mints);
+
+      const tokens = arweaveMetadata.map(({ mint, metadata }) => ({
+        mint,
+        metadata,
+      }));
+
+      const tokensWithMetadata: TokensByMint = tokens.reduce(
+        (acc: TokensByMint, { mint, metadata }): TokensByMint => {
+          acc[mint] = metadata;
           return acc;
         },
         {},
-      );
-
-      const tokens = Object.entries(tokensWithMetadata).map(
-        ([mint, metadata]) => ({
-          mint,
-          metadata,
-        }),
       );
 
       setTokensByMint(tokensWithMetadata);

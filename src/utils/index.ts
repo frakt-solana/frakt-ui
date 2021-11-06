@@ -1,7 +1,7 @@
-import { formatNumber } from './external/utils/utils';
+import { formatNumber } from '../external/utils/utils';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
-import mintMetadata from './mintMetadata.json';
+import mintMetadata from '../mintMetadata.json';
 
 export const DECIMALS_PER_FRKT = 1e8;
 
