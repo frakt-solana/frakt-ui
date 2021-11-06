@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
 import NumericInput from '../../../components/NumericInput';
-import { UserToken } from '../../../contexts/userTokens/userTokens.model';
+import { UserNFT } from '../../../contexts/userTokens/userTokens.model';
 
 import styles from './styles.module.scss';
 import { Input } from '../../../components/Input';
@@ -32,7 +32,7 @@ interface SidebarProps {
     pricePerFraction: number,
     fractionsAmount: number,
   ) => void;
-  token: UserToken;
+  token: UserNFT;
 }
 
 const Sidebar = ({

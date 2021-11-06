@@ -9,18 +9,20 @@ import {
   fetchVaultsFunction,
   FraktionContextType,
   SafetyBox,
+  VaultData,
   VaultsMap,
+  VaultState,
 } from './fraktion.model';
 import { fraktionalize } from './fraktion';
 import fraktionConfig from './config';
+import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
 const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
   error: null,
-  safetyBoxes: [],
-  vaultsMap: {},
+  vaults: [],
   fraktionalize: () => Promise.resolve(null),
-  fetchVaults: () => Promise.resolve(null),
+  refetch: () => Promise.resolve(null),
 });
 
 export const FraktionProvider = ({
@@ -33,8 +35,7 @@ export const FraktionProvider = ({
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
-  const [safetyBoxes, setSafetyBoxes] = useState<SafetyBox[]>([]);
-  const [vaultsMap, setVaultsMap] = useState<VaultsMap>({});
+  const [vaults, setVaults] = useState<VaultData[]>([]);
 
   const fetchVaults: fetchVaultsFunction = async () => {
     try {
@@ -45,13 +46,56 @@ export const FraktionProvider = ({
           connection,
         );
 
+      const nftMints = (rawSafetyBoxes as SafetyBox[]).map(
+        ({ tokenMint }) => tokenMint,
+      );
+
+      const metadataByMint = await getArweaveMetadataByMint(nftMints);
+
       const safetyBoxes = rawSafetyBoxes as SafetyBox[];
-      const vaults = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
+      const vaultsMap = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
 
-      setSafetyBoxes(safetyBoxes);
-      setVaultsMap(vaults);
+      const vaultsData: VaultData[] = safetyBoxes.reduce(
+        (acc, { vault: vaultPubkey, tokenMint: nftMint }) => {
+          const vault = vaultsMap[vaultPubkey];
+          const arweaveMetadata = metadataByMint[nftMint];
 
-      return { vaults, safetyBoxes };
+          if (vault && arweaveMetadata) {
+            const { name, image, attributes } = arweaveMetadata;
+            const {
+              authority,
+              fractionMint,
+              fractionsSupply,
+              lockedPricePerShare,
+              priceMint,
+              state,
+            } = vault;
+
+            const vaultData: VaultData = {
+              fractionMint,
+              authority,
+              supply: fractionsSupply,
+              lockedPricePerFraction: lockedPricePerShare,
+              priceTokenMint: priceMint,
+              publicKey: vaultPubkey,
+              state: VaultState[state],
+              nftMint,
+              name,
+              imageSrc: image,
+              nftAttributes: attributes,
+            };
+
+            return [...acc, vaultData];
+          }
+
+          return acc;
+        },
+        [],
+      );
+
+      setVaults(vaultsData);
+
+      return vaultsData;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -72,8 +116,7 @@ export const FraktionProvider = ({
       value={{
         loading,
         error,
-        safetyBoxes,
-        vaultsMap,
+        vaults,
         fraktionalize: (tokenMint, pricePerFraction, fractionsAmount, token) =>
           fraktionalize(
             tokenMint,
@@ -83,7 +126,7 @@ export const FraktionProvider = ({
             wallet,
             connection,
           ),
-        fetchVaults,
+        refetch: fetchVaults,
       }}
     >
       {children}
@@ -92,14 +135,18 @@ export const FraktionProvider = ({
 };
 
 export const useFraktion = (): FraktionContextType => {
-  const { loading, error, safetyBoxes, vaultsMap, fraktionalize, fetchVaults } =
-    useContext(FraktionContext);
+  const {
+    loading,
+    error,
+    vaults,
+    fraktionalize,
+    refetch: fetchVaults,
+  } = useContext(FraktionContext);
   return {
     loading,
     error,
-    safetyBoxes,
-    vaultsMap,
+    vaults,
     fraktionalize,
-    fetchVaults,
+    refetch: fetchVaults,
   };
 };

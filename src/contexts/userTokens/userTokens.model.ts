@@ -3,30 +3,36 @@ import { TokenView } from 'solana-nft-metadata';
 
 import { ArweaveMetadata } from '../../utils';
 
-export interface UserToken {
+export interface UserNFT {
   mint: string;
   metadata: ArweaveMetadata;
 }
 
-export interface TokensByMint {
+export interface nftsByMint {
   [key: string]: ArweaveMetadata;
 }
 
+export interface RawUserTokensByMint {
+  [mint: string]: TokenView;
+}
+
 export interface UserTokensInterface {
-  tokens: UserToken[];
-  tokensByMint: TokensByMint;
+  nfts: UserNFT[];
+  nftsByMint: nftsByMint;
+  rawUserTokensByMint: RawUserTokensByMint;
   loading: boolean;
   frktBalance: BN;
-  updateFrktBalance: (userTokens: TokenView[]) => void;
+  refetch: () => Promise<void>;
 }
 
 export interface UseUserTokensInterface {
-  tokens: UserToken[];
-  tokensByMint: TokensByMint;
+  nfts: UserNFT[];
+  nftsByMint: nftsByMint;
+  rawUserTokensByMint: RawUserTokensByMint;
   loading: boolean;
+  refetch: () => Promise<void>;
 }
 
 export interface UseFrktBalanceInterface {
   balance: BN;
-  updateBalance: (userTokens: TokenView[]) => void;
 }

@@ -1,25 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
 import BN from 'bn.js';
 import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
+import { keyBy } from 'lodash';
 
 import { useConnection } from '../../external/contexts/connection';
 import { useWallet } from '../../external/contexts/wallet';
 import {
-  TokensByMint,
+  nftsByMint,
+  RawUserTokensByMint,
   UseFrktBalanceInterface,
-  UserToken,
+  UserNFT,
   UserTokensInterface,
   UseUserTokensInterface,
 } from './userTokens.model';
 import config from '../../config';
-import { getArweaveMetadata } from '../../utils/getArweaveMetadata';
+import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
 const UserTokensContext = React.createContext<UserTokensInterface>({
-  tokens: [],
-  tokensByMint: {},
+  nfts: [],
+  nftsByMint: {},
+  rawUserTokensByMint: {},
   loading: false,
   frktBalance: new BN(0),
-  updateFrktBalance: () => {},
+  refetch: () => Promise.resolve(null),
 });
 
 export const UserTokensProvider = ({
@@ -30,13 +33,16 @@ export const UserTokensProvider = ({
   const { wallet, connected } = useWallet();
   const connection = useConnection();
   const [frktBalance, setFrktBalance] = useState<BN>(new BN(0));
-  const [tokens, setTokens] = useState<UserToken[]>([]);
-  const [tokensByMint, setTokensByMint] = useState<TokensByMint>({});
+  const [nfts, setNfts] = useState<UserNFT[]>([]);
+  const [nftsByMint, setNftsByMint] = useState<nftsByMint>({});
+  const [rawUserTokensByMint, setRawUserTokensByMint] =
+    useState<RawUserTokensByMint>({});
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const clearTokens = () => {
-    setTokens([]);
-    setTokensByMint({});
+    setNfts([]);
+    setNftsByMint({});
     setLoading(false);
     setFrktBalance(new BN(0));
   };
@@ -64,24 +70,21 @@ export const UserTokensProvider = ({
       });
       updateFrktBalance(userTokens);
 
-      const mints = userTokens.map(({ mint }) => String(mint));
-      const arweaveMetadata = await getArweaveMetadata(mints);
+      const rawUserTokensByMint = keyBy(userTokens, 'mint');
 
-      const tokens = arweaveMetadata.map(({ mint, metadata }) => ({
-        mint,
-        metadata,
-      }));
+      const mints = Object.keys(rawUserTokensByMint);
+      const arweaveMetadata = await getArweaveMetadataByMint(mints);
 
-      const tokensWithMetadata: TokensByMint = tokens.reduce(
-        (acc: TokensByMint, { mint, metadata }): TokensByMint => {
-          acc[mint] = metadata;
-          return acc;
-        },
-        {},
+      const tokensArray = Object.entries(arweaveMetadata).map(
+        ([mint, metadata]) => ({
+          mint,
+          metadata,
+        }),
       );
 
-      setTokensByMint(tokensWithMetadata);
-      setTokens(tokens as UserToken[]);
+      setNftsByMint(arweaveMetadata);
+      setNfts(tokensArray);
+      setRawUserTokensByMint(rawUserTokensByMint);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -98,7 +101,14 @@ export const UserTokensProvider = ({
 
   return (
     <UserTokensContext.Provider
-      value={{ tokens, tokensByMint, loading, frktBalance, updateFrktBalance }}
+      value={{
+        nfts,
+        nftsByMint,
+        rawUserTokensByMint,
+        loading,
+        frktBalance,
+        refetch: fetchTokens,
+      }}
     >
       {children}
     </UserTokensContext.Provider>
@@ -106,18 +116,20 @@ export const UserTokensProvider = ({
 };
 
 export const useUserTokens = (): UseUserTokensInterface => {
-  const { tokens, tokensByMint, loading } = useContext(UserTokensContext);
+  const { nfts, nftsByMint, rawUserTokensByMint, loading, refetch } =
+    useContext(UserTokensContext);
   return {
-    tokens,
-    tokensByMint,
+    nfts,
+    nftsByMint,
+    rawUserTokensByMint,
     loading,
+    refetch,
   };
 };
 
 export const useFrktBalance = (): UseFrktBalanceInterface => {
-  const { frktBalance, updateFrktBalance } = useContext(UserTokensContext);
+  const { frktBalance } = useContext(UserTokensContext);
   return {
     balance: frktBalance,
-    updateBalance: updateFrktBalance,
   };
 };

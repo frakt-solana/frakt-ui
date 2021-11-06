@@ -18,10 +18,20 @@ export interface ArweaveMetadata {
   properties: any;
 }
 
-export const getArweaveMetadata = async (
-  tokenMints: string[],
-): Promise<any> => {
-  const result = await getMeta(tokenMints, () => {}, config.ENDPOINT.endpoint);
+export interface MetadataByMint {
+  [mint: string]: ArweaveMetadata;
+}
 
-  return result;
+export const getArweaveMetadataByMint = async (
+  tokenMints: string[],
+): Promise<MetadataByMint> => {
+  const rawMeta = await getMeta(tokenMints, () => {}, config.ENDPOINT.endpoint);
+
+  const metadataByMint =
+    rawMeta?.reduce((acc, { mint, metadata }) => {
+      acc[mint] = metadata;
+      return acc;
+    }, {}) || {};
+
+  return metadataByMint as MetadataByMint;
 };

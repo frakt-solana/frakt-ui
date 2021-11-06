@@ -23,6 +23,7 @@ export interface Vault {
   authority: string;
   fractionTreasury: string;
   redeemTreasury: string;
+  priceMint: string;
   allowFurtherShareCreation: boolean;
   pricingLookupAddress: string;
   tokenTypeCount: number;
@@ -44,6 +45,20 @@ export interface SafetyBox {
   order: number;
 }
 
+export interface VaultData {
+  fractionMint: string; // mint address of fractions
+  authority: string; // who did the fraktionalization
+  supply: BN; // amount of fractions
+  lockedPricePerFraction: BN; // price per share that was initialized on fraktionalization
+  priceTokenMint: string; // mint address of SOL or FRKT token
+  publicKey: string; // vault public key
+  state: string;
+  nftMint: string; // mint address of fraktionalized NFT
+  name: string; // name of fraktionalized NFT
+  imageSrc: string; // image source of fraktionalized NFT
+  nftAttributes: { trait_type: string; value: string | number }[];
+}
+
 export interface CreateFraktionalizerResult {
   vault: string;
   fractionalMint: string;
@@ -53,11 +68,6 @@ export interface CreateFraktionalizerResult {
   signers: Keypair[];
 }
 
-export interface FetchVaultsResult {
-  vaults: VaultsMap;
-  safetyBoxes: SafetyBox[];
-}
-
 export type fraktionalizeFunction = (
   tokenMint: string,
   pricePerFraction: number,
@@ -65,13 +75,12 @@ export type fraktionalizeFunction = (
   token: 'SOL' | 'FRKT',
 ) => Promise<CreateFraktionalizerResult | null>;
 
-export type fetchVaultsFunction = () => Promise<FetchVaultsResult | null>;
+export type fetchVaultsFunction = () => Promise<VaultData[] | null>;
 
 export interface FraktionContextType {
   loading: boolean;
   error: any;
-  safetyBoxes: SafetyBox[];
-  vaultsMap: VaultsMap;
+  vaults: VaultData[];
   fraktionalize: fraktionalizeFunction;
-  fetchVaults: fetchVaultsFunction;
+  refetch: fetchVaultsFunction;
 }

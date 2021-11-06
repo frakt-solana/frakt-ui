@@ -1,5 +1,4 @@
-import BN from 'bn.js';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 
 import VaultCard from '../../components/VaultCard';
 import { Container } from '../../components/Layout';
@@ -11,91 +10,22 @@ import FakeInfinityScroll, {
 } from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import { getArweaveMetadata } from '../../utils/getArweaveMetadata';
-import { VaultState } from '../../contexts/fraktion/fraktion.model';
-
-interface VaultCardType {
-  vaultPubkey: string;
-  name: string;
-  ownerPubkey: string;
-  image: string;
-  state: string;
-  supply: BN;
-  pricePerFraction: BN;
-}
 
 const VaultsPage = (): JSX.Element => {
-  const { loading, safetyBoxes, vaultsMap } = useFraktion();
+  const { loading, vaults: rawVaults } = useFraktion();
   const [searchString, setSearchString] = useState<string>('');
-  const [vaultsMetadataLoading, setVaultsMetadataLoading] =
-    useState<boolean>(false);
-  const [rawVaultCards, setRawVaultCards] = useState<VaultCardType[]>([]);
   const { itemsToShow, next } = useFakeInfinityScroll(9);
-
-  useEffect(() => {
-    const fillRawVaultCards = async () => {
-      setVaultsMetadataLoading(true);
-      const arweaveMetadataArray = await getArweaveMetadata(
-        safetyBoxes.map(({ tokenMint }) => tokenMint),
-      );
-      const metadataByToken = arweaveMetadataArray.reduce(
-        (acc, { metadata, mint }) => {
-          acc[mint] = metadata;
-          return acc;
-        },
-        {},
-      );
-
-      const rawVaultCards = safetyBoxes.reduce(
-        (acc, safetyBox): VaultCardType[] => {
-          const arweaveMetadata = metadataByToken[safetyBox.tokenMint];
-          const vault = vaultsMap[safetyBox.vault];
-
-          if (arweaveMetadata && vault) {
-            const { name, image } = arweaveMetadata;
-            const {
-              vaultPubkey,
-              authority: ownerPubkey,
-              state,
-              lockedPricePerShare,
-              fractionsSupply,
-            } = vault;
-
-            const vaultCard: VaultCardType = {
-              vaultPubkey,
-              name,
-              image,
-              ownerPubkey,
-              state: VaultState[state],
-              supply: fractionsSupply,
-              pricePerFraction: lockedPricePerShare,
-            };
-
-            return [...acc, vaultCard];
-          }
-          return acc;
-        },
-        [],
-      );
-
-      setRawVaultCards(rawVaultCards);
-      setVaultsMetadataLoading(false);
-    };
-
-    !loading && safetyBoxes.length && fillRawVaultCards();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, safetyBoxes]);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const vaultCards = useMemo(() => {
-    return rawVaultCards.filter(({ name }) =>
+  const vaults = useMemo(() => {
+    return rawVaults.filter(({ name }) =>
       name.toUpperCase().includes(searchString),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchString, rawVaultCards]);
+  }, [searchString, rawVaults]);
 
   return (
     <AppLayout>
@@ -109,28 +39,28 @@ const VaultsPage = (): JSX.Element => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={loading || vaultsMetadataLoading}
+          isLoading={loading}
           wrapperClassName={styles.cards}
           emptyMessage={'No vaults found'}
         >
-          {vaultCards.map(
+          {vaults.map(
             ({
-              vaultPubkey,
+              publicKey,
               name,
-              ownerPubkey,
+              authority,
               state,
-              image,
+              imageSrc,
               supply,
-              pricePerFraction,
+              lockedPricePerFraction,
             }) => (
               <VaultCard
-                key={vaultPubkey}
+                key={publicKey}
                 name={name}
-                owner={ownerPubkey}
+                owner={authority}
                 tags={[state]}
-                imageSrc={image}
+                imageSrc={imageSrc}
                 supply={supply}
-                pricePerFraction={pricePerFraction}
+                pricePerFraction={lockedPricePerFraction}
               />
             ),
           )}

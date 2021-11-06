@@ -6,7 +6,7 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import NFTCheckbox from '../../components/NFTCheckbox';
 import { SearchInput } from '../../components/SearchInput';
 import { useUserTokens } from '../../contexts/userTokens';
-import { UserToken } from '../../contexts/userTokens/userTokens.model';
+import { UserNFT } from '../../contexts/userTokens/userTokens.model';
 import { useWallet } from '../../external/contexts/wallet';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
@@ -18,7 +18,8 @@ import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
 
 const useFraktionalizeTransactionModal = () => {
-  const { fraktionalize } = useFraktion();
+  const { refetch: refetchTokens } = useUserTokens();
+  const { fraktionalize, refetch: refetchVaults } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
   const [lastTxnData, setLastTxnData] = useState<{
@@ -62,6 +63,8 @@ const useFraktionalizeTransactionModal = () => {
     } else {
       setState('success');
       setFractionTokenMint(result.fractionalMint);
+      refetchTokens();
+      refetchVaults();
     }
   };
 
@@ -78,6 +81,8 @@ const useFraktionalizeTransactionModal = () => {
     } else {
       setState('success');
       setFractionTokenMint(result.fractionalMint);
+      refetchTokens();
+      refetchVaults();
     }
   };
 
@@ -101,9 +106,9 @@ const useFraktionalizeTransactionModal = () => {
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected, select } = useWallet();
-  const { tokens: rawTokens, loading } = useUserTokens();
+  const { nfts: rawNfts, loading } = useUserTokens();
   const [searchString, setSearchString] = useState<string>('');
-  const [selectedToken, setSelectedToken] = useState<UserToken>(null);
+  const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const {
     visible: txnModalVisible,
     open: openTxnModal,
@@ -120,12 +125,10 @@ const FraktionalizePage = (): JSX.Element => {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const clearSelectedToken = () => setSelectedToken(null);
+  const clearSelectedToken = () => setSelectedNft(null);
 
-  const onCardClick = (token: UserToken): void => {
-    selectedToken?.mint === token.mint
-      ? setSelectedToken(null)
-      : setSelectedToken(token);
+  const onCardClick = (nft: UserNFT): void => {
+    selectedNft?.mint === nft.mint ? setSelectedNft(null) : setSelectedNft(nft);
   };
 
   const runFraktionalization = (
@@ -134,15 +137,15 @@ const FraktionalizePage = (): JSX.Element => {
     fractionsAmount: number,
   ) => {
     openTxnModal(tokenMint, pricePerFraction, fractionsAmount);
-    setSelectedToken(null);
+    setSelectedNft(null);
   };
 
-  const tokens = useMemo(() => {
-    return rawTokens.filter(({ metadata }) =>
+  const nfts = useMemo(() => {
+    return rawNfts.filter(({ metadata }) =>
       metadata.name.toUpperCase().includes(searchString),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchString, rawTokens]);
+  }, [searchString, rawNfts]);
 
   const onTransactionModalCancel = () => {
     closeTxnModal();
@@ -152,7 +155,7 @@ const FraktionalizePage = (): JSX.Element => {
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar
-        token={selectedToken}
+        token={selectedNft}
         onRemoveClick={clearSelectedToken}
         onContinueClick={runFraktionalization}
       />
@@ -183,15 +186,15 @@ const FraktionalizePage = (): JSX.Element => {
               next={next}
               isLoading={loading}
               wrapperClassName={styles.artsList}
-              emptyMessage="Unfortunately, you don't have any NFTs available for fraktionalization"
+              emptyMessage="No suitable NFTs found"
             >
-              {tokens.map((token) => (
+              {nfts.map((token) => (
                 <NFTCheckbox
                   key={token.mint}
                   onClick={() => onCardClick(token)}
                   imageUrl={token.metadata.image}
                   name={token.metadata.name}
-                  selected={selectedToken?.mint === token.mint}
+                  selected={selectedNft?.mint === token.mint}
                 />
               ))}
             </FakeInfinityScroll>
