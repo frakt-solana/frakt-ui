@@ -54,7 +54,7 @@ const FakeInfinityScroll = ({
   if (isLoading) {
     return (
       <div className={classNames(styles.loader, loaderWrapperClassName)}>
-        <Loader />
+        <Loader size={'large'} />
       </div>
     );
   }

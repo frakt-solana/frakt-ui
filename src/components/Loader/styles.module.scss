@@ -1,0 +1,24 @@
+.loader {
+  width: 72px;
+  height: 72px;
+  margin: auto;
+  display: block;
+
+  &__firstCircle {
+    fill: var(--accent-color-1);
+  }
+
+  &__secondCircle {
+    fill: var(--accent-color-3);
+  }
+}
+
+.large {
+  width: 160px;
+  height: 160px;
+}
+
+.small {
+  width: 32px;
+  height: 32px;
+}
