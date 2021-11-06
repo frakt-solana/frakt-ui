@@ -13,19 +13,108 @@ import styles from './styles.module.scss';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import FakeInfinityScroll from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
+import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
+
+const useFraktionalizeTransactionModal = () => {
+  const { fraktionalize } = useFraktion();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
+  const [lastTxnData, setLastTxnData] = useState<{
+    tokenMint?: string;
+    pricePerFraction?: number;
+    fractionsAmount?: number;
+    token?: 'SOL' | 'FRKT';
+  }>({});
+  const [fractionTokenMint, setFractionTokenMint] = useState<string>('');
+
+  const open = (
+    tokenMint: string,
+    pricePerFraction: number,
+    fractionsAmount: number,
+  ) => {
+    setVisible(true);
+    runTransaction(tokenMint, pricePerFraction, fractionsAmount);
+  };
+
+  const runTransaction = async (
+    tokenMint: string,
+    pricePerFraction: number,
+    fractionsAmount: number,
+  ) => {
+    const result = await fraktionalize(
+      tokenMint,
+      pricePerFraction,
+      fractionsAmount,
+      'SOL',
+    );
+
+    setLastTxnData({
+      tokenMint,
+      pricePerFraction,
+      fractionsAmount,
+      token: 'SOL',
+    });
+
+    if (!result) {
+      setState('fail');
+    } else {
+      setState('success');
+      setFractionTokenMint(result.fractionalMint);
+    }
+  };
+
+  const retry = async () => {
+    const result = await fraktionalize(
+      lastTxnData.tokenMint,
+      lastTxnData.pricePerFraction,
+      lastTxnData.fractionsAmount,
+      lastTxnData.token,
+    );
+
+    if (!result) {
+      setState('fail');
+    } else {
+      setState('success');
+      setFractionTokenMint(result.fractionalMint);
+    }
+  };
+
+  const close = () => {
+    setLastTxnData({});
+    setVisible(false);
+    setFractionTokenMint('');
+  };
+
+  return {
+    visible,
+    open,
+    close,
+    state,
+    setState,
+    retry,
+    fractionTokenMint,
+  };
+};
 
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected, select } = useWallet();
-  const { fraktionalize } = useFraktion();
   const { tokens: rawTokens, loading } = useUserTokens();
   const [searchString, setSearchString] = useState<string>('');
+  const [selectedToken, setSelectedToken] = useState<UserToken>(null);
+  const {
+    visible: txnModalVisible,
+    open: openTxnModal,
+    close: closeTxnModal,
+    state: txnModalState,
+    setState: setTxnModalState,
+    retry: retryTxn,
+    fractionTokenMint,
+  } = useFraktionalizeTransactionModal();
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
-
-  const [selectedToken, setSelectedToken] = useState<UserToken>(null);
 
   const clearSelectedToken = () => setSelectedToken(null);
 
@@ -35,12 +124,12 @@ const FraktionalizePage = (): JSX.Element => {
       : setSelectedToken(token);
   };
 
-  const onContinueClick = (
+  const runFraktionalization = (
     tokenMint: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
-    fraktionalize(tokenMint, pricePerFraction, fractionsAmount, 'SOL');
+    openTxnModal(tokenMint, pricePerFraction, fractionsAmount);
   };
 
   const tokens = useMemo(() => {
@@ -50,12 +139,18 @@ const FraktionalizePage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchString, rawTokens]);
 
+  const onTransactionModalCancel = () => {
+    closeTxnModal();
+    setTxnModalState('loading');
+    setSelectedToken(null);
+  };
+
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar
         token={selectedToken}
         onRemoveClick={clearSelectedToken}
-        onContinueClick={onContinueClick}
+        onContinueClick={runFraktionalization}
       />
       <Container component="main" className={styles.contentWrapper}>
         <div id="content-reducer" className={styles.contentReducer}>
@@ -95,6 +190,13 @@ const FraktionalizePage = (): JSX.Element => {
           )}
         </div>
       </Container>
+      <FraktionalizeTransactionModal
+        visible={txnModalVisible}
+        onCancel={onTransactionModalCancel}
+        fractionsMintAddress={fractionTokenMint}
+        onRetryClick={retryTxn}
+        state={txnModalState}
+      />
     </AppLayout>
   );
 };

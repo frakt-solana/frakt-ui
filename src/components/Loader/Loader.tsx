@@ -1,5 +1,5 @@
-import { Spin } from 'antd';
+import { Spin, SpinProps as SpinProsAntd } from 'antd';
 
-export const Loader = (): JSX.Element => {
-  return <Spin />;
+export const Loader = (props: SpinProsAntd): JSX.Element => {
+  return <Spin {...props} />;
 };

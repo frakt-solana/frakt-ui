@@ -19,6 +19,7 @@ export function Routes(): JSX.Element {
     <Router>
       <ConnectionProvider>
         <WalletProvider>
+          {/* <AccountsProvider> */}
           <AccountsProvider>
             <UserTokensProvider>
               <FraktionProvider>
@@ -63,6 +64,7 @@ export function Routes(): JSX.Element {
             </UserTokensProvider>
             <ConnectWalletModal />
           </AccountsProvider>
+          {/* </AccountsProvider> */}
         </WalletProvider>
       </ConnectionProvider>
     </Router>
