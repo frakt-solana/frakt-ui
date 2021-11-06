@@ -48,13 +48,13 @@ const VaultCard = ({
         <div className={styles.item}>
           <div className={styles.title}>Fraction price</div>
           <div className={styles.value}>
-            {decimalBNToString(pricePerFraction, 3, 8)}
+            {decimalBNToString(pricePerFraction, 3, 9)}
           </div>
         </div>
         <div className={styles.item}>
           <div className={styles.title}>Buyout price</div>
           <div className={styles.value}>
-            {decimalBNToString(pricePerFraction.mul(supply), 2, 11)}
+            {decimalBNToString(pricePerFraction.mul(supply), 2, 12)}
           </div>
         </div>
       </div>
