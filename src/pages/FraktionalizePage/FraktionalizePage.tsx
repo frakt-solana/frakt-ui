@@ -163,7 +163,7 @@ const FraktionalizePage = (): JSX.Element => {
               searchItems(e.target.value || '');
             }}
             className={styles.search}
-            placeholder="Search by curator, collection or asset"
+            placeholder="Search by NFT name"
           />
           {!connected ? (
             <Button

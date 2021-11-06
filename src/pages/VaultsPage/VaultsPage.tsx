@@ -101,7 +101,7 @@ const VaultsPage = (): JSX.Element => {
           size="large"
           onChange={(e) => searchItems(e.target.value || '')}
           className={styles.search}
-          placeholder="Search by curator, collection or asset"
+          placeholder="Search by vault name"
         />
         <FakeInfinityScroll
           items={vaultCards.map((vaultCard) => ({
