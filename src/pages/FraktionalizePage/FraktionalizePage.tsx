@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import Button from '../../components/Button';
 import { Container } from '../../components/Layout';
@@ -11,7 +11,9 @@ import { useWallet } from '../../external/contexts/wallet';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import FakeInfinityScroll from '../../components/FakeInfinityScroll/FakeInfinityScroll';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../components/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
 
@@ -111,8 +113,10 @@ const FraktionalizePage = (): JSX.Element => {
     retry: retryTxn,
     fractionTokenMint,
   } = useFraktionalizeTransactionModal();
+  const { itemsToShow, next, setItemsToShow } = useFakeInfinityScroll(15);
 
   const searchItems = useDebounce((search: string) => {
+    setItemsToShow(15);
     setSearchString(search.toUpperCase());
   }, 300);
 
@@ -175,18 +179,22 @@ const FraktionalizePage = (): JSX.Element => {
             </Button>
           ) : (
             <FakeInfinityScroll
-              items={tokens.map((token) => ({
-                onClick: () => onCardClick(token),
-                imageUrl: token.metadata.image,
-                name: token.metadata.name,
-                selected: selectedToken && selectedToken.mint === token.mint,
-              }))}
+              itemsToShow={itemsToShow}
+              next={next}
               isLoading={loading}
-              component={NFTCheckbox}
               wrapperClassName={styles.artsList}
-              perPage={15}
               emptyMessage="Unfortunately, you don't have any NFTs available for fraktionalization"
-            />
+            >
+              {tokens.map((token) => (
+                <NFTCheckbox
+                  key={token.mint}
+                  onClick={() => onCardClick(token)}
+                  imageUrl={token.metadata.image}
+                  name={token.metadata.name}
+                  selected={selectedToken?.mint === token.mint}
+                />
+              ))}
+            </FakeInfinityScroll>
           )}
         </div>
       </Container>

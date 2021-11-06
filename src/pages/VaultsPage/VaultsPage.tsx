@@ -6,7 +6,9 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
-import FakeInfinityScroll from '../../components/FakeInfinityScroll/FakeInfinityScroll';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import { getArweaveMetadata } from '../../utils/getArweaveMetadata';
@@ -28,6 +30,7 @@ const VaultsPage = (): JSX.Element => {
   const [vaultsMetadataLoading, setVaultsMetadataLoading] =
     useState<boolean>(false);
   const [rawVaultCards, setRawVaultCards] = useState<VaultCardType[]>([]);
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
 
   useEffect(() => {
     const fillRawVaultCards = async () => {
@@ -104,20 +107,34 @@ const VaultsPage = (): JSX.Element => {
           placeholder="Search by vault name"
         />
         <FakeInfinityScroll
-          items={vaultCards.map((vaultCard) => ({
-            name: vaultCard.name,
-            owner: vaultCard.ownerPubkey,
-            tags: [vaultCard.state],
-            imageSrc: vaultCard.image,
-            supply: vaultCard.supply,
-            pricePerFraction: vaultCard.pricePerFraction,
-          }))}
+          itemsToShow={itemsToShow}
+          next={next}
           isLoading={loading || vaultsMetadataLoading}
-          component={VaultCard}
           wrapperClassName={styles.cards}
-          perPage={12}
           emptyMessage={'No vaults found'}
-        />
+        >
+          {vaultCards.map(
+            ({
+              vaultPubkey,
+              name,
+              ownerPubkey,
+              state,
+              image,
+              supply,
+              pricePerFraction,
+            }) => (
+              <VaultCard
+                key={vaultPubkey}
+                name={name}
+                owner={ownerPubkey}
+                tags={[state]}
+                imageSrc={image}
+                supply={supply}
+                pricePerFraction={pricePerFraction}
+              />
+            ),
+          )}
+        </FakeInfinityScroll>
       </Container>
     </AppLayout>
   );

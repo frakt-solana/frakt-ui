@@ -1,57 +1,56 @@
 import InfiniteScroll, {
   Props as InfinityScrollProps,
 } from 'react-infinite-scroll-component';
+import { useState } from 'react';
+
 import styles from './styles.module.scss';
-import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Loader } from '../Loader';
 
 interface FakeInfinityScrollProps {
-  items: any;
-  perPage?: number;
+  itemsToShow?: number;
+  next: () => void;
   infinityScrollProps?: Omit<
     InfinityScrollProps,
     'dataLength' | 'next' | 'hasMore' | 'children'
   >;
-  component: any;
   wrapperClassName?: string;
   emptyMessage?: string;
   emptyMessageClassName?: string;
   isLoading?: boolean;
   loaderWrapperClassName?: string;
+  children: JSX.Element[];
 }
 
-export const FakeInfinityScroll = ({
-  items: allItems,
-  perPage = 20,
-  infinityScrollProps,
-  component: Component,
+export const useFakeInfinityScroll = (
+  itemsPerScroll = 20,
+): {
+  itemsToShow: number;
+  next: () => void;
+  setItemsToShow: (itemsToShow: number) => void;
+} => {
+  const [itemsToShow, setItemsToShow] = useState<number>(itemsPerScroll);
+
+  const onScrollHandler = () => setItemsToShow((prev) => prev + itemsPerScroll);
+
+  return {
+    itemsToShow,
+    setItemsToShow,
+    next: onScrollHandler,
+  };
+};
+
+const FakeInfinityScroll = ({
+  itemsToShow = 20,
+  next,
   wrapperClassName,
   loaderWrapperClassName,
   isLoading = false,
   emptyMessage = 'No items found',
   emptyMessageClassName,
+  children,
+  infinityScrollProps,
 }: FakeInfinityScrollProps): JSX.Element => {
-  const page = useRef<number>(1);
-  const [items, setItems] = useState<any[]>([]);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-
-  const getMoreData = () => {
-    const lastIndex = page.current * perPage;
-    const newItems = allItems.slice(0, lastIndex);
-    if (lastIndex > allItems.length) setHasMore(false);
-    page.current++;
-    setItems(newItems);
-  };
-
-  useEffect(() => {
-    page.current = 1;
-    setItems([]);
-    setHasMore(true);
-    getMoreData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allItems, isLoading]);
-
   if (isLoading) {
     return (
       <div className={classNames(styles.loader, loaderWrapperClassName)}>
@@ -60,7 +59,7 @@ export const FakeInfinityScroll = ({
     );
   }
 
-  if (!allItems.length) {
+  if (!children.length) {
     return (
       <div className={classNames(styles.empty, emptyMessageClassName)}>
         {emptyMessage}
@@ -71,16 +70,14 @@ export const FakeInfinityScroll = ({
   return (
     <InfiniteScroll
       scrollableTarget="app-content"
-      loader={null}
+      next={next}
+      dataLength={itemsToShow}
+      hasMore={true}
+      loader={false}
       {...infinityScrollProps}
-      dataLength={items.length}
-      next={getMoreData}
-      hasMore={hasMore}
     >
       <div className={classNames(wrapperClassName)}>
-        {items.map((props, idx) => (
-          <Component key={idx} {...props} />
-        ))}
+        {children?.slice(0, itemsToShow).map((child) => child)}
       </div>
     </InfiniteScroll>
   );
