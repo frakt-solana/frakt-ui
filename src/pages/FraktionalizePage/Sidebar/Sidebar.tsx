@@ -114,11 +114,12 @@ const Sidebar = ({
             <p className={styles.sidebar__fieldLabel}>Symbol</p>
             <Input
               // className={styles.sidebar__stringInput}
-              onChange={(event) => setSymbol(event.target.value)}
+              onChange={(event) => setSymbol(event.target.value.toUpperCase())}
               value={symbol}
               placeholder="XXX"
               disableNumbers
               disableSymbols
+              maxLength={5}
             />
           </div>
         </div>
