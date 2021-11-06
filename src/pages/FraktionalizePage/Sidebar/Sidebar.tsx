@@ -128,9 +128,9 @@ const Sidebar = ({
             className={styles.priceField}
             value={buyoutPrice}
             onValueChange={setBuyoutPrice}
-            tokensList={MOCK_TOKEN_LIST}
-            currentToken={buyoutToken}
+            // tokensList={MOCK_TOKEN_LIST}
             onTokenChange={setBuyoutToken}
+            currentToken={buyoutToken}
             modalTitle="Select token"
           />
         </div>
