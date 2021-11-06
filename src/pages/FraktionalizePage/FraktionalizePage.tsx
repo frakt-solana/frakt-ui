@@ -130,6 +130,7 @@ const FraktionalizePage = (): JSX.Element => {
     fractionsAmount: number,
   ) => {
     openTxnModal(tokenMint, pricePerFraction, fractionsAmount);
+    setSelectedToken(null);
   };
 
   const tokens = useMemo(() => {
@@ -142,7 +143,6 @@ const FraktionalizePage = (): JSX.Element => {
   const onTransactionModalCancel = () => {
     closeTxnModal();
     setTxnModalState('loading');
-    setSelectedToken(null);
   };
 
   return (
