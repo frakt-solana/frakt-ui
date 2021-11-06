@@ -1,3 +1,6 @@
+import BN from 'bn.js';
+import { useState, useMemo, useEffect } from 'react';
+
 import VaultCard from '../../components/VaultCard';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -5,9 +8,8 @@ import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import FakeInfinityScroll from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
-import { useState, useMemo } from 'react';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import { getNFTArweaveMetadataByMint } from '../../utils';
+import { getArweaveMetadata } from '../../utils/getArweaveMetadata';
 import { VaultState } from '../../contexts/fraktion/fraktion.model';
 
 interface VaultCardType {
@@ -16,36 +18,70 @@ interface VaultCardType {
   ownerPubkey: string;
   image: string;
   state: string;
+  supply: BN;
+  pricePerFraction: BN;
 }
 
 const VaultsPage = (): JSX.Element => {
   const { loading, safetyBoxes, vaultsMap } = useFraktion();
   const [searchString, setSearchString] = useState<string>('');
+  const [vaultsMetadataLoading, setVaultsMetadataLoading] =
+    useState<boolean>(false);
+  const [rawVaultCards, setRawVaultCards] = useState<VaultCardType[]>([]);
 
-  const rawVaultCards: VaultCardType[] = useMemo(() => {
-    return safetyBoxes.reduce((acc, safetyBox): VaultCardType[] => {
-      const arweaveMetadata = getNFTArweaveMetadataByMint(safetyBox.tokenMint);
-      const vault = vaultsMap[safetyBox.vault];
+  useEffect(() => {
+    const fillRawVaultCards = async () => {
+      setVaultsMetadataLoading(true);
+      const arweaveMetadataArray = await getArweaveMetadata(
+        safetyBoxes.map(({ tokenMint }) => tokenMint),
+      );
+      const metadataByToken = arweaveMetadataArray.reduce(
+        (acc, { metadata, mint }) => {
+          acc[mint] = metadata;
+          return acc;
+        },
+        {},
+      );
 
-      if (arweaveMetadata && vault) {
-        const { name, image } = arweaveMetadata;
-        const { vaultPubkey, authority: ownerPubkey, state } = vault;
+      const rawVaultCards = safetyBoxes.reduce(
+        (acc, safetyBox): VaultCardType[] => {
+          const arweaveMetadata = metadataByToken[safetyBox.tokenMint];
+          const vault = vaultsMap[safetyBox.vault];
 
-        const vaultCard: VaultCardType = {
-          vaultPubkey,
-          name,
-          image,
-          ownerPubkey,
-          state: VaultState[state],
-        };
+          if (arweaveMetadata && vault) {
+            const { name, image } = arweaveMetadata;
+            const {
+              vaultPubkey,
+              authority: ownerPubkey,
+              state,
+              lockedPricePerShare,
+              fractionsSupply,
+            } = vault;
 
-        return [...acc, vaultCard];
-      }
+            const vaultCard: VaultCardType = {
+              vaultPubkey,
+              name,
+              image,
+              ownerPubkey,
+              state: VaultState[state],
+              supply: fractionsSupply,
+              pricePerFraction: lockedPricePerShare,
+            };
 
-      return acc;
-    }, []);
+            return [...acc, vaultCard];
+          }
+          return acc;
+        },
+        [],
+      );
+
+      setRawVaultCards(rawVaultCards);
+      setVaultsMetadataLoading(false);
+    };
+
+    !loading && safetyBoxes.length && fillRawVaultCards();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [loading, safetyBoxes]);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
@@ -73,8 +109,10 @@ const VaultsPage = (): JSX.Element => {
             owner: vaultCard.ownerPubkey,
             tags: [vaultCard.state],
             imageSrc: vaultCard.image,
+            supply: vaultCard.supply,
+            pricePerFraction: vaultCard.pricePerFraction,
           }))}
-          isLoading={loading}
+          isLoading={loading || vaultsMetadataLoading}
           component={VaultCard}
           wrapperClassName={styles.cards}
           perPage={12}

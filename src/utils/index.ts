@@ -5,6 +5,20 @@ import mintMetadata from '../mintMetadata.json';
 
 export const DECIMALS_PER_FRKT = 1e8;
 
+export const decimalBNToString = (
+  bn: BN,
+  precision = 2,
+  lamports = 8,
+): string => {
+  const bnStr = bn.toString(10);
+  if (bnStr === '0') return '0';
+  const integerPart = bnStr.slice(0, -lamports);
+  const floatPart = bnStr
+    .padStart(lamports, '0')
+    .slice(-lamports, -lamports + precision);
+  return `${integerPart || 0}.${floatPart || 0}`;
+};
+
 export const frktBNToString = (bn: BN, precision = 6): string => {
   const bnStr = bn.toString(10);
   if (bnStr === '0') return '0';

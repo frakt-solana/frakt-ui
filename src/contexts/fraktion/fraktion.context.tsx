@@ -12,6 +12,7 @@ import {
   VaultsMap,
 } from './fraktion.model';
 import { fraktionalize } from './fraktion';
+import fraktionConfig from './config';
 
 const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -40,7 +41,7 @@ export const FraktionProvider = ({
       setLoading(true);
       const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } =
         await getAllVaults(
-          new PublicKey('9iAwxFwdxYSH5gw4QwRs78objbFHgDKGYmjCZPpgSgSA'),
+          new PublicKey(fraktionConfig.FRAKTION_PUBKEY),
           connection,
         );
 

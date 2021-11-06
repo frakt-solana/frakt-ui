@@ -28,6 +28,7 @@ export interface Vault {
   tokenTypeCount: number;
   state: VaultState;
   lockedPricePerShare: BN;
+  fractionsSupply: BN;
 }
 
 export interface VaultsMap {
