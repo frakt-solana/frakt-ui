@@ -42,7 +42,7 @@ export const fraktionalize = async (
     );
 
     notify({
-      message: 'Fractionalized successfully',
+      message: 'Fraktionalized successfully',
       type: 'success',
     });
 
