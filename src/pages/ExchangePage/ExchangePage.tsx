@@ -103,7 +103,7 @@ const ExchangePage = (): JSX.Element => {
           <span>$0.00</span>
         </div>
       </div>
-      <Button className={styles.btn} type="alternative">
+      <Button className={styles.btn} type="alternative" disabled>
         Buy
       </Button>
     </AppLayout>

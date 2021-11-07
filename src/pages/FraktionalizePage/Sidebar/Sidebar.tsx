@@ -114,7 +114,7 @@ const Sidebar = ({
             <p className={styles.sidebar__fieldLabel}>Ticker</p>
             <Input
               // className={styles.sidebar__stringInput}
-              onChange={(event) => setTicker(event.target.value.toUpperCase())}
+              onChange={(event) => setTicker(event.target.value)}
               value={ticker}
               placeholder="XXX"
               disableNumbers
