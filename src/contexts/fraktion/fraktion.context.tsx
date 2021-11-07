@@ -13,7 +13,7 @@ import {
   VaultsMap,
   VaultState,
 } from './fraktion.model';
-import { fraktionalize } from './fraktion';
+import { buyout, fraktionalize } from './fraktion';
 import fraktionConfig from './config';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
@@ -22,6 +22,7 @@ const FraktionContext = React.createContext<FraktionContextType>({
   error: null,
   vaults: [],
   fraktionalize: () => Promise.resolve(null),
+  buyout: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
 });
 
@@ -56,7 +57,10 @@ export const FraktionProvider = ({
       const vaultsMap = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
 
       const vaultsData: VaultData[] = safetyBoxes.reduce(
-        (acc, { vault: vaultPubkey, tokenMint: nftMint }) => {
+        (
+          acc,
+          { vault: vaultPubkey, tokenMint: nftMint, safetyBoxPubkey, store },
+        ) => {
           const vault = vaultsMap[vaultPubkey];
           const arweaveMetadata = metadataByMint[nftMint];
 
@@ -69,6 +73,8 @@ export const FraktionProvider = ({
               lockedPricePerShare,
               priceMint,
               state,
+              fractionTreasury,
+              redeemTreasury,
             } = vault;
 
             const vaultData: VaultData = {
@@ -83,6 +89,10 @@ export const FraktionProvider = ({
               name,
               imageSrc: image,
               nftAttributes: attributes,
+              fractionTreasury,
+              redeemTreasury,
+              safetyBoxPubkey,
+              store,
             };
 
             return [...acc, vaultData];
@@ -126,6 +136,7 @@ export const FraktionProvider = ({
             wallet,
             connection,
           ),
+        buyout: (vault) => buyout(vault, wallet, connection),
         refetch: fetchVaults,
       }}
     >
@@ -140,6 +151,7 @@ export const useFraktion = (): FraktionContextType => {
     error,
     vaults,
     fraktionalize,
+    buyout,
     refetch: fetchVaults,
   } = useContext(FraktionContext);
   return {
@@ -147,6 +159,7 @@ export const useFraktion = (): FraktionContextType => {
     error,
     vaults,
     fraktionalize,
+    buyout,
     refetch: fetchVaults,
   };
 };

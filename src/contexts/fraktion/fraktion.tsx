@@ -1,9 +1,12 @@
-import { Connection } from '@solana/web3.js';
-import { createFraktionalizer } from 'fraktionalizer-client-library';
+import { Connection, Keypair, TransactionInstruction } from '@solana/web3.js';
+import {
+  createFraktionalizer,
+  closeFraktionalizer,
+} from 'fraktionalizer-client-library';
 import BN from 'bn.js';
 
 import { WalletAdapter } from '../../external/contexts/wallet';
-import { CreateFraktionalizerResult } from './fraktion.model';
+import { CreateFraktionalizerResult, VaultData } from './fraktion.model';
 import fraktionConfig from './config';
 import globalConfig from '../../config';
 import { notify } from '../../external/utils/notifications';
@@ -44,6 +47,70 @@ export const fraktionalize = async (
 
     notify({
       message: 'Fraktionalized successfully',
+      type: 'success',
+    });
+
+    return result;
+  } catch (error) {
+    notify({
+      message: 'Transaction failed',
+      type: 'error',
+    });
+    // eslint-disable-next-line no-console
+    console.error(error);
+    return null;
+  }
+};
+
+export const buyout = async (
+  vault: VaultData,
+  wallet: WalletAdapter,
+  connection: Connection,
+): Promise<{
+  instructions: TransactionInstruction[];
+  signers: Keypair[];
+} | null> => {
+  const {
+    supply,
+    lockedPricePerFraction,
+    publicKey,
+    nftMint,
+    fractionMint,
+    priceTokenMint,
+    fractionTreasury,
+    redeemTreasury,
+    safetyBoxPubkey,
+    store,
+  } = vault;
+
+  try {
+    const result = await closeFraktionalizer(
+      connection,
+      supply.toNumber(),
+      lockedPricePerFraction.toNumber(),
+      wallet.publicKey,
+      publicKey,
+      safetyBoxPubkey,
+      nftMint,
+      store,
+      fractionMint,
+      fractionTreasury,
+      redeemTreasury,
+      priceTokenMint,
+      FRAKTION_PUBKEY,
+      async (txn, signers): Promise<void> => {
+        const { blockhash } = await connection.getRecentBlockhash();
+        txn.recentBlockhash = blockhash;
+        txn.feePayer = wallet.publicKey;
+        txn.sign(...signers);
+        const signed = await wallet.signTransaction(txn);
+        const txid = await connection.sendRawTransaction(signed.serialize());
+        return void connection.confirmTransaction(txid);
+      },
+    );
+
+    notify({
+      message: 'Buyout passed successfully',
       type: 'success',
     });
 

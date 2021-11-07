@@ -28,8 +28,8 @@ export interface Vault {
   pricingLookupAddress: string;
   tokenTypeCount: number;
   state: VaultState;
-  lockedPricePerShare: BN;
   fractionsSupply: BN;
+  lockedPricePerShare: BN;
 }
 
 export interface VaultsMap {
@@ -56,7 +56,11 @@ export interface VaultData {
   nftMint: string; // mint address of fraktionalized NFT
   name: string; // name of fraktionalized NFT
   imageSrc: string; // image source of fraktionalized NFT
-  nftAttributes: { trait_type: string; value: string | number }[];
+  nftAttributes: { trait_type: string; value: string | number }[]; // arweave metadata attributes
+  safetyBoxPubkey: string;
+  store: string;
+  fractionTreasury: string;
+  redeemTreasury: string;
 }
 
 export interface CreateFraktionalizerResult {
@@ -75,6 +79,11 @@ export type fraktionalizeFunction = (
   token: 'SOL' | 'FRKT',
 ) => Promise<CreateFraktionalizerResult | null>;
 
+export type buyoutFunction = (vault: VaultData) => Promise<{
+  instructions: TransactionInstruction[];
+  signers: Keypair[];
+} | null>;
+
 export type fetchVaultsFunction = () => Promise<VaultData[] | null>;
 
 export interface FraktionContextType {
@@ -82,5 +91,6 @@ export interface FraktionContextType {
   error: any;
   vaults: VaultData[];
   fraktionalize: fraktionalizeFunction;
+  buyout: buyoutFunction;
   refetch: fetchVaultsFunction;
 }

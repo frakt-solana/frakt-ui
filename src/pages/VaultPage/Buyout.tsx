@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { useHistory } from 'react-router';
+
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
 import { VaultData } from '../../contexts/fraktion/fraktion.model';
@@ -5,6 +8,10 @@ import { useWallet } from '../../external/contexts/wallet';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../utils';
+import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import BuyoutTransactionModal from '../../components/BuyoutTransactionModal';
+import { useUserTokens } from '../../contexts/userTokens';
+import { URLS } from '../../constants';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -21,16 +28,83 @@ const MOCK_TOKEN_LIST = [
   },
 ];
 
+const useBuyoutTransactionModal = () => {
+  const { refetch: refetchTokens } = useUserTokens();
+  const history = useHistory();
+  const { buyout, refetch: refetchVaults } = useFraktion();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
+  const [lastVaultData, setLastVaultData] = useState<VaultData>(null);
+
+  const open = (vaultData: VaultData) => {
+    setVisible(true);
+    runTransaction(vaultData);
+  };
+
+  const runTransaction = async (vaultData: VaultData) => {
+    try {
+      setLastVaultData(vaultData);
+      const res = await buyout(vaultData);
+
+      if (res) {
+        setState('success');
+        refetchTokens();
+        refetchVaults();
+        history.push(URLS.VAULTS);
+      } else {
+        setState('fail');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      setState('fail');
+    }
+  };
+
+  const retry = async () => {
+    setState('loading');
+    await runTransaction(lastVaultData);
+  };
+
+  const close = () => {
+    setLastVaultData(null);
+    setVisible(false);
+  };
+
+  return {
+    visible,
+    open,
+    close,
+    state,
+    setState,
+    retry,
+  };
+};
+
 export const Buyout = ({
   vaultInfo,
 }: {
   vaultInfo: VaultData;
 }): JSX.Element => {
+  const {
+    visible: txnModalVisible,
+    open: openTxnModal,
+    close: closeTxnModal,
+    state: txnModalState,
+    setState: setTxnModalState,
+    retry: retryTxn,
+  } = useBuyoutTransactionModal();
+
   const { connected, select } = useWallet();
   const currency =
     vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
       ? 'SOL'
       : 'FRKT';
+
+  const onTransactionModalCancel = () => {
+    closeTxnModal();
+    setTxnModalState('loading');
+  };
 
   return (
     <div className={styles.buyout}>
@@ -53,11 +127,21 @@ export const Buyout = ({
             Connect wallet to make buyout
           </Button>
         ) : (
-          <Button className={styles.buyout__buyoutBtn} type="alternative">
+          <Button
+            className={styles.buyout__buyoutBtn}
+            type="alternative"
+            onClick={() => openTxnModal(vaultInfo)}
+          >
             Buyout
           </Button>
         )}
       </div>
+      <BuyoutTransactionModal
+        visible={txnModalVisible}
+        onCancel={onTransactionModalCancel}
+        onRetryClick={retryTxn}
+        state={txnModalState}
+      />
     </div>
   );
 };
