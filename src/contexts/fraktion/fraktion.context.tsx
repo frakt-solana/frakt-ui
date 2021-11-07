@@ -13,7 +13,7 @@ import {
   VaultsMap,
   VaultState,
 } from './fraktion.model';
-import { buyout, fraktionalize } from './fraktion';
+import { buyout, fraktionalize, redeem } from './fraktion';
 import fraktionConfig from './config';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
@@ -23,6 +23,7 @@ const FraktionContext = React.createContext<FraktionContextType>({
   vaults: [],
   fraktionalize: () => Promise.resolve(null),
   buyout: () => Promise.resolve(null),
+  redeem: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
 });
 
@@ -136,7 +137,9 @@ export const FraktionProvider = ({
             wallet,
             connection,
           ),
-        buyout: (vault) => buyout(vault, wallet, connection),
+        buyout: (vault, userTokensByMint) =>
+          buyout(vault, userTokensByMint, wallet, connection),
+        redeem: (vault) => redeem(vault, wallet, connection),
         refetch: fetchVaults,
       }}
     >
@@ -152,6 +155,7 @@ export const useFraktion = (): FraktionContextType => {
     vaults,
     fraktionalize,
     buyout,
+    redeem,
     refetch: fetchVaults,
   } = useContext(FraktionContext);
   return {
@@ -160,6 +164,7 @@ export const useFraktion = (): FraktionContextType => {
     vaults,
     fraktionalize,
     buyout,
+    redeem,
     refetch: fetchVaults,
   };
 };

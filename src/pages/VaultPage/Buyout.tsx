@@ -12,6 +12,7 @@ import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import BuyoutTransactionModal from '../../components/BuyoutTransactionModal';
 import { useUserTokens } from '../../contexts/userTokens';
 import { URLS } from '../../constants';
+import { Loader } from '../../components/Loader';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -29,7 +30,7 @@ const MOCK_TOKEN_LIST = [
 ];
 
 const useBuyoutTransactionModal = () => {
-  const { refetch: refetchTokens } = useUserTokens();
+  const { refetch: refetchTokens, rawUserTokensByMint } = useUserTokens();
   const history = useHistory();
   const { buyout, refetch: refetchVaults } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
@@ -44,7 +45,7 @@ const useBuyoutTransactionModal = () => {
   const runTransaction = async (vaultData: VaultData) => {
     try {
       setLastVaultData(vaultData);
-      const res = await buyout(vaultData);
+      const res = await buyout(vaultData, rawUserTokensByMint);
 
       if (res) {
         setState('success');
@@ -94,6 +95,7 @@ export const Buyout = ({
     setState: setTxnModalState,
     retry: retryTxn,
   } = useBuyoutTransactionModal();
+  const { loading: userTokensLoading } = useUserTokens();
 
   const { connected, select } = useWallet();
   const currency =
@@ -108,31 +110,42 @@ export const Buyout = ({
 
   return (
     <div className={styles.buyout}>
-      <h5 className={styles.buyout__title}>Buyout</h5>
+      <h5 className={styles.buyout__title}>{!userTokensLoading && 'Buyout'}</h5>
       <div className={styles.buyoutControls}>
-        <TokenField
-          className={styles.buyout__tokenField}
-          value={decimalBNToString(
-            vaultInfo.lockedPricePerFraction.mul(vaultInfo.supply),
-            2,
-            9,
-          )}
-          onValueChange={() => {}}
-          currentToken={
-            currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
-          }
-        />
-        {!connected ? (
-          <Button className={styles.buyout__connectWalletBtn} onClick={select}>
-            Connect wallet to make buyout
-          </Button>
-        ) : (
+        {userTokensLoading && (
+          <div className={styles.buyout__loader}>
+            <Loader />
+          </div>
+        )}
+
+        {!userTokensLoading && (
+          <TokenField
+            className={styles.buyout__tokenField}
+            value={decimalBNToString(
+              vaultInfo.lockedPricePerFraction.mul(vaultInfo.supply),
+              2,
+              9,
+            )}
+            onValueChange={() => {}}
+            currentToken={
+              currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
+            }
+          />
+        )}
+
+        {connected && !userTokensLoading && (
           <Button
             className={styles.buyout__buyoutBtn}
             type="alternative"
             onClick={() => openTxnModal(vaultInfo)}
           >
             Buyout
+          </Button>
+        )}
+
+        {!connected && (
+          <Button className={styles.buyout__connectWalletBtn} onClick={select}>
+            Connect wallet to make buyout
           </Button>
         )}
       </div>

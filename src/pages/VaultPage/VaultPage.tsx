@@ -75,6 +75,9 @@ const VaultPage = (): JSX.Element => {
               {vaultInfo.state === VaultState[2] && (
                 <Redeem vaultInfo={vaultInfo} />
               )}
+              {vaultInfo.state === VaultState[3] && (
+                <div className={styles.detailsPlaceholder} />
+              )}
             </div>
           </div>
         )}

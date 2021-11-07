@@ -2,7 +2,6 @@
   padding-top: 64px;
   padding-bottom: 64px;
   height: 100%;
-  // background: rgba(255, 0, 0, 0.308);
 }
 
 .loading {
@@ -113,6 +112,7 @@
   &__title {
     font: var(--font-btn-mid);
     margin-bottom: 6px;
+    min-height: 30px;
     font-weight: 700;
   }
 
@@ -165,4 +165,8 @@
     padding-top: unset;
     padding-bottom: unset;
   }
+}
+
+.detailsPlaceholder {
+  min-height: 97px;
 }

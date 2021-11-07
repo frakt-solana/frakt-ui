@@ -1,4 +1,6 @@
 import BN from 'bn.js';
+import { useState } from 'react';
+
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
 import { VaultData } from '../../contexts/fraktion/fraktion.model';
@@ -7,6 +9,8 @@ import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
+import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import BuyoutTransactionModal from '../../components/BuyoutTransactionModal';
 
 const { SOL_TOKEN_PUBKEY } = fraktionConfig;
 
@@ -25,11 +29,70 @@ const MOCK_TOKEN_LIST = [
   },
 ];
 
+const useRedeemTransactionModal = () => {
+  const { refetch: refetchTokens } = useUserTokens();
+  const { redeem, refetch: refetchVaults } = useFraktion();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
+  const [lastVaultData, setLastVaultData] = useState<VaultData>(null);
+
+  const open = (vaultData: VaultData) => {
+    setVisible(true);
+    runTransaction(vaultData);
+  };
+
+  const runTransaction = async (vaultData: VaultData) => {
+    try {
+      setLastVaultData(vaultData);
+      const res = await redeem(vaultData);
+
+      if (res) {
+        setState('success');
+        refetchTokens();
+        refetchVaults();
+      } else {
+        setState('fail');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      setState('fail');
+    }
+  };
+
+  const retry = async () => {
+    setState('loading');
+    await runTransaction(lastVaultData);
+  };
+
+  const close = () => {
+    setLastVaultData(null);
+    setVisible(false);
+  };
+
+  return {
+    visible,
+    open,
+    close,
+    state,
+    setState,
+    retry,
+  };
+};
+
 export const Redeem = ({
   vaultInfo,
 }: {
   vaultInfo: VaultData;
 }): JSX.Element => {
+  const {
+    visible: txnModalVisible,
+    open: openTxnModal,
+    close: closeTxnModal,
+    state: txnModalState,
+    setState: setTxnModalState,
+    retry: retryTxn,
+  } = useRedeemTransactionModal();
   const { loading, rawUserTokensByMint } = useUserTokens();
   const { connected, select } = useWallet();
   const currency =
@@ -45,6 +108,11 @@ export const Redeem = ({
 
   const userRedeemValue =
     userFractionsAmount.mul(vaultInfo.lockedPricePerFraction).toNumber() / 1e9;
+
+  const onTransactionModalCancel = () => {
+    closeTxnModal();
+    setTxnModalState('loading');
+  };
 
   return (
     <div className={styles.redeem}>
@@ -67,7 +135,11 @@ export const Redeem = ({
                 currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
               }
             />
-            <Button className={styles.redeem__redeemBtn} type="alternative">
+            <Button
+              className={styles.redeem__redeemBtn}
+              type="alternative"
+              onClick={() => openTxnModal(vaultInfo)}
+            >
               Redeem
             </Button>
           </>
@@ -83,6 +155,12 @@ export const Redeem = ({
           </Button>
         )}
       </div>
+      <BuyoutTransactionModal
+        visible={txnModalVisible}
+        onCancel={onTransactionModalCancel}
+        onRetryClick={retryTxn}
+        state={txnModalState}
+      />
     </div>
   );
 };

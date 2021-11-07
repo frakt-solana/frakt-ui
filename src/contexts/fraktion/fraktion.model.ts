@@ -1,3 +1,4 @@
+import { RawUserTokensByMint } from './../userTokens/userTokens.model';
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
 
@@ -79,7 +80,15 @@ export type fraktionalizeFunction = (
   token: 'SOL' | 'FRKT',
 ) => Promise<CreateFraktionalizerResult | null>;
 
-export type buyoutFunction = (vault: VaultData) => Promise<{
+export type buyoutFunction = (
+  vault: VaultData,
+  userTokensByMint: RawUserTokensByMint,
+) => Promise<{
+  instructions: TransactionInstruction[];
+  signers: Keypair[];
+} | null>;
+
+export type redeemFunction = (vault: VaultData) => Promise<{
   instructions: TransactionInstruction[];
   signers: Keypair[];
 } | null>;
@@ -92,5 +101,6 @@ export interface FraktionContextType {
   vaults: VaultData[];
   fraktionalize: fraktionalizeFunction;
   buyout: buyoutFunction;
+  redeem: redeemFunction;
   refetch: fetchVaultsFunction;
 }
