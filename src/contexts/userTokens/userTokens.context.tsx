@@ -43,6 +43,7 @@ export const UserTokensProvider = ({
   const clearTokens = () => {
     setNfts([]);
     setNftsByMint({});
+    setRawUserTokensByMint({});
     setLoading(false);
     setFrktBalance(new BN(0));
   };
