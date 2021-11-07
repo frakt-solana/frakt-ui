@@ -21,6 +21,12 @@
     flex-direction: column;
     position: relative;
     border: 1px solid var(--gray-color-6);
+    color: var(--white-color);
+    transition: border-color var(--transition-1);
+
+    &:hover {
+      border-color: var(--accent-color-1);
+    }
 
     .image {
       background-size: cover;

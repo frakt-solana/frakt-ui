@@ -10,6 +10,8 @@ import FakeInfinityScroll, {
 } from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { NavLink } from 'react-router-dom';
+import { URLS } from '../../constants';
 
 const VaultsPage = (): JSX.Element => {
   const { loading, vaults: rawVaults } = useFraktion();
@@ -54,16 +56,17 @@ const VaultsPage = (): JSX.Element => {
               lockedPricePerFraction,
               priceTokenMint,
             }) => (
-              <VaultCard
-                key={publicKey}
-                name={name}
-                owner={authority}
-                tags={[state]}
-                imageSrc={imageSrc}
-                supply={supply}
-                pricePerFraction={lockedPricePerFraction}
-                priceTokenMint={priceTokenMint}
-              />
+              <NavLink key={publicKey} to={`${URLS.VAULT}/${publicKey}`}>
+                <VaultCard
+                  name={name}
+                  owner={authority}
+                  tags={[state]}
+                  imageSrc={imageSrc}
+                  supply={supply}
+                  pricePerFraction={lockedPricePerFraction}
+                  priceTokenMint={priceTokenMint}
+                />
+              </NavLink>
             ),
           )}
         </FakeInfinityScroll>

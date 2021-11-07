@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage';
 import ExchangePage from './pages/ExchangePage';
 import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
+import VaultPage from './pages/VaultPage';
 import FraktionalizePage from './pages/FraktionalizePage';
 import { ConnectWalletModal } from './components/ConnectWallerModal';
 import { UserTokensProvider } from './contexts/userTokens';
@@ -19,7 +20,6 @@ export function Routes(): JSX.Element {
     <Router>
       <ConnectionProvider>
         <WalletProvider>
-          {/* <AccountsProvider> */}
           <AccountsProvider>
             <UserTokensProvider>
               <FraktionProvider>
@@ -33,6 +33,11 @@ export function Routes(): JSX.Element {
                     exact
                     path={URLS.VAULTS}
                     component={(): JSX.Element => <VaultsPage />}
+                  />
+                  <Route
+                    exact
+                    path={`${URLS.VAULT}/:vaultPubkey`}
+                    component={(): JSX.Element => <VaultPage />}
                   />
                   <Route
                     exact
@@ -64,7 +69,6 @@ export function Routes(): JSX.Element {
             </UserTokensProvider>
             <ConnectWalletModal />
           </AccountsProvider>
-          {/* </AccountsProvider> */}
         </WalletProvider>
       </ConnectionProvider>
     </Router>

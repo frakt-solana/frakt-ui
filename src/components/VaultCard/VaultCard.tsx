@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 
 import styles from './styles.module.scss';
-import DoneIcon from '../../icons/DoneIcon';
+import { DoneIcon } from '../../icons';
 import Badge from '../Badge';
 import { shortenAddress } from '../../external/utils/utils';
 import { decimalBNToString } from '../../utils';
