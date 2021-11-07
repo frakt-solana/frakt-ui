@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import { createFraktionalizer } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
 
@@ -21,14 +21,15 @@ export const fraktionalize = async (
   try {
     const result = await createFraktionalizer(
       connection,
-      new BN(pricePerFraction * (token === 'SOL' ? 1e9 : 1e8)), //1e9 for SOL, 1e8 for FRKT
-      new BN(fractionsAmount * Math.pow(10, FRACTION_DECIMALS)), //always 1e3
+      new BN(pricePerFraction * 1e6), //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
+      new BN(fractionsAmount).mul(new BN(1e3)),
       FRACTION_DECIMALS,
-      new PublicKey(tokenMint),
+      tokenMint,
+      fraktionConfig.ADMIN_PUBKEY,
       token === 'SOL'
         ? SOL_TOKEN_PUBKEY
         : globalConfig.FRKT_TOKEN_MINT_PUBLIC_KEY,
-      wallet.publicKey,
+      wallet.publicKey.toString(),
       FRAKTION_PUBKEY,
       async (txn, signers): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();

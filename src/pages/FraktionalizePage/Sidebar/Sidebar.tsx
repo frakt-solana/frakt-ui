@@ -42,13 +42,13 @@ const Sidebar = ({
 }: SidebarProps): JSX.Element => {
   const [buyoutPrice, setBuyoutPrice] = useState<string>(null);
   const [fractionsAmount, setFractionsAmount] = useState<string>(null);
-  const [symbol, setSymbol] = useState<string>(null);
+  const [ticker, setTicker] = useState<string>(null);
   const [buyoutToken, setBuyoutToken] = useState<Token>(MOCK_TOKEN_LIST[0]);
 
   useEffect(() => {
     setBuyoutPrice(null);
     setFractionsAmount(null);
-    setSymbol(null);
+    setTicker(null);
   }, [token]);
 
   const continueClickHanlder = () => {
@@ -64,8 +64,8 @@ const Sidebar = ({
       !buyoutPrice ||
       !fractionsAmount ||
       !token ||
-      !symbol ||
-      symbol?.length < 3
+      !ticker ||
+      ticker?.length < 3
     );
   };
 
@@ -111,11 +111,11 @@ const Sidebar = ({
             />
           </div>
           <div className={styles.sidebar__fieldWrapper}>
-            <p className={styles.sidebar__fieldLabel}>Symbol</p>
+            <p className={styles.sidebar__fieldLabel}>Ticker</p>
             <Input
               // className={styles.sidebar__stringInput}
-              onChange={(event) => setSymbol(event.target.value.toUpperCase())}
-              value={symbol}
+              onChange={(event) => setTicker(event.target.value.toUpperCase())}
+              value={ticker}
               placeholder="XXX"
               disableNumbers
               disableSymbols

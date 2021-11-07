@@ -52,6 +52,7 @@ const VaultsPage = (): JSX.Element => {
               imageSrc,
               supply,
               lockedPricePerFraction,
+              priceTokenMint,
             }) => (
               <VaultCard
                 key={publicKey}
@@ -61,6 +62,7 @@ const VaultsPage = (): JSX.Element => {
                 imageSrc={imageSrc}
                 supply={supply}
                 pricePerFraction={lockedPricePerFraction}
+                priceTokenMint={priceTokenMint}
               />
             ),
           )}

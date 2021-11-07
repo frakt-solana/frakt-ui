@@ -9,10 +9,10 @@ export enum VaultKey {
 }
 
 export enum VaultState {
-  Inactive = 0,
+  Damaged = 0,
   Active = 1,
-  Combined = 2,
-  Deactivated = 3,
+  Bought = 2,
+  Closed = 3,
 }
 
 export interface Vault {

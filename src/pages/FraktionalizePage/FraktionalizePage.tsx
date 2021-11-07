@@ -69,6 +69,7 @@ const useFraktionalizeTransactionModal = () => {
   };
 
   const retry = async () => {
+    setState('loading');
     const result = await fraktionalize(
       lastTxnData.tokenMint,
       lastTxnData.pricePerFraction,
