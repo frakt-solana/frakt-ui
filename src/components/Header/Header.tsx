@@ -26,7 +26,12 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
           <li>
             <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
           </li>
-          <li>
+          <li
+            style={{
+              pointerEvents: 'none',
+              opacity: 0.5,
+            }}
+          >
             <NavigationLink to={URLS.EXCHANGE}>Exchange</NavigationLink>
           </li>
         </ul>
