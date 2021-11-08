@@ -16,8 +16,8 @@ export const SupplyInput = ({
   setError = () => {},
 }: SupplyInputProps): JSX.Element => {
   const validate = (supply: string) => {
-    if (supply.length && (Number(supply) < 1000 || Number(supply) > 1e9)) {
-      return setError('Supply must be in the range: 1k - 1kkk');
+    if (supply.length && (Number(supply) < 1000 || Number(supply) > 1e8)) {
+      return setError('Supply must be in the range: 1k - 100kk');
     }
     setError('');
   };
