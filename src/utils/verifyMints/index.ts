@@ -92,7 +92,9 @@ export interface VerificationByMint {
   [mint: string]: VerificationStrategyResult;
 }
 
-const verifyMints = async (nftMints: string[]): Promise<VerificationByMint> => {
+export const verifyMints = async (
+  nftMints: string[],
+): Promise<VerificationByMint> => {
   const results = await Promise.allSettled(nftMints.map(verifyMint));
   return nftMints.reduce((acc, key, i) => ({ ...acc, [key]: results[i] }), {});
 };
