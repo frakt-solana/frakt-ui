@@ -9,7 +9,7 @@
     "@project-serum/serum": "^0.13.60",
     "@project-serum/sol-wallet-adapter": "^0.2.5",
     "@solana/spl-token": "0.1.8",
-    "@solana/spl-token-registry": "^0.2.274",
+    "@solana/spl-token-registry": "^0.2.287",
     "@solana/spl-token-swap": "0.1.2",
     "@solana/web3.js": "^1.29.2",
     "antd": "^4.6.6",

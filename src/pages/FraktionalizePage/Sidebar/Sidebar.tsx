@@ -1,29 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
-import NumericInput from '../../../components/NumericInput';
 import { UserNFT } from '../../../contexts/userTokens/userTokens.model';
-
 import styles from './styles.module.scss';
-import { Input } from '../../../components/Input';
-import TokenField from '../../../components/TokenField';
-import { Token } from '../../../utils';
-
-export const MOCK_TOKEN_LIST = [
-  {
-    mint: 'So11111111111111111111111111111111111111112',
-    symbol: 'SOL',
-    img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
-    data: 'Some value 1',
-  },
-  {
-    mint: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
-    symbol: 'FRKT',
-    img: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
-    data: 'Some value 1',
-  },
-];
+import { TickerInput } from './TickerInput';
+import { SupplyInput } from './SupplyInput';
+import { BuyoutField } from './BuyoutField';
 
 interface SidebarProps {
   onRemoveClick?: () => void;
@@ -33,39 +16,67 @@ interface SidebarProps {
     fractionsAmount: number,
   ) => void;
   token: UserNFT;
+  isTickerAvailable: (tickerName: string) => boolean;
 }
 
 const Sidebar = ({
   onRemoveClick,
   token,
   onContinueClick,
+  isTickerAvailable,
 }: SidebarProps): JSX.Element => {
-  const [buyoutPrice, setBuyoutPrice] = useState<string>(null);
-  const [fractionsAmount, setFractionsAmount] = useState<string>(null);
-  const [ticker, setTicker] = useState<string>(null);
-  const [buyoutToken, setBuyoutToken] = useState<Token>(MOCK_TOKEN_LIST[0]);
+  const [buyoutPrice, setBuyoutPrice] = useState<string>('');
+  const [supply, setSupply] = useState<string>('');
+  const [ticker, setTicker] = useState<string>('');
+
+  const [tickerError, setTickerError] = useState<string>('');
+  const [supplyError, setSupplyError] = useState<string>('');
+  const [buyoutPriceError, setBuyoutPriceError] = useState<string>('');
+  const [smallFractionPriceError, setSmallFractionPriceError] =
+    useState<string>('');
+
+  const validateFractionPrice = () => {
+    if (
+      supply.length &&
+      buyoutPrice.length &&
+      Number(buyoutPrice) / Number(supply) < 1e-6
+    ) {
+      return setSmallFractionPriceError(
+        'Price per fraction must be greater than 1e-6',
+      );
+    }
+    setSmallFractionPriceError('');
+  };
 
   useEffect(() => {
-    setBuyoutPrice(null);
-    setFractionsAmount(null);
-    setTicker(null);
+    validateFractionPrice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [supply, buyoutPrice]);
+
+  useEffect(() => {
+    setBuyoutPrice('');
+    setSupply('');
+    setTicker('');
   }, [token]);
 
   const continueClickHanlder = () => {
     onContinueClick(
       token.mint,
-      Number(buyoutPrice) / Number(fractionsAmount),
-      Number(fractionsAmount),
+      Number(buyoutPrice) / Number(supply),
+      Number(supply),
     );
   };
 
   const isBtnDisabled = () => {
     return (
+      !!smallFractionPriceError ||
       !buyoutPrice ||
-      !fractionsAmount ||
+      !!buyoutPriceError ||
+      !supply ||
+      !!supplyError ||
       !token ||
-      !ticker ||
-      ticker?.length < 3
+      ticker?.length < 3 ||
+      !!tickerError
     );
   };
 
@@ -102,38 +113,44 @@ const Sidebar = ({
         <div className={styles.sidebar__fieldWrapperDouble}>
           <div className={styles.sidebar__fieldWrapper}>
             <p className={styles.sidebar__fieldLabel}>Supply</p>
-            <NumericInput
-              onChange={setFractionsAmount}
-              value={fractionsAmount}
-              placeholder="0"
-              positiveOnly
-              integerOnly
+            <SupplyInput
+              supply={supply}
+              setSupply={setSupply}
+              error={supplyError}
+              setError={setSupplyError}
             />
           </div>
           <div className={styles.sidebar__fieldWrapper}>
             <p className={styles.sidebar__fieldLabel}>Ticker</p>
-            <Input
-              // className={styles.sidebar__stringInput}
-              onChange={(event) => setTicker(event.target.value)}
+            <TickerInput
               value={ticker}
-              placeholder="XXX"
-              disableNumbers
-              disableSymbols
-              maxLength={5}
+              setTicker={setTicker}
+              isTickerAvailable={isTickerAvailable}
+              tickerError={tickerError}
+              setTickerError={setTickerError}
             />
           </div>
         </div>
         <div className={styles.sidebar__fieldWrapper}>
           <p className={styles.sidebar__fieldLabel}>Buyout price</p>
-          <TokenField
-            className={styles.priceField}
-            value={buyoutPrice}
-            onValueChange={setBuyoutPrice}
-            // tokensList={MOCK_TOKEN_LIST}
-            onTokenChange={setBuyoutToken}
-            currentToken={buyoutToken}
-            modalTitle="Select token"
+          <BuyoutField
+            buyoutPrice={buyoutPrice}
+            setBuyoutPrice={setBuyoutPrice}
+            error={buyoutPriceError}
+            setError={setBuyoutPriceError}
           />
+        </div>
+        <div
+          className={classNames(
+            styles.sidebar__fieldWrapper,
+            styles.sidebar__fieldWrapper_error,
+          )}
+        >
+          {[smallFractionPriceError, buyoutPriceError, tickerError, supplyError]
+            .filter((error) => error)
+            .map((error, idx) => (
+              <p key={idx}>{error}</p>
+            ))}
         </div>
       </div>
 
