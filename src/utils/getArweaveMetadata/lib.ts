@@ -268,12 +268,11 @@ async function fetchMetadataFromPDA(pubkey: PublicKey, url: string) {
   return metadataInfo;
 }
 
-let mints = [];
-const createJsonObject =
-  (url: string) =>
-  async (key: string): Promise<unknown> => {
+const createJsonObject = (url: string) => {
+  const mints = [];
+  return async (mint: string): Promise<unknown> => {
     const tokenMetadata = await getMetadata(
-      new anchor.web3.PublicKey(key),
+      new anchor.web3.PublicKey(mint),
       url,
     );
     const arweaveData = await fetch(tokenMetadata.data.uri)
@@ -293,24 +292,22 @@ const createJsonObject =
         }),
       },
       metadata: arweaveData,
-      mint: key,
+      mint: mint,
     });
     return await new Promise((resolve) => {
       setTimeout(() => {
-        resolve(undefined);
+        resolve(mints);
       }, 150);
     });
   };
+};
 
-const resolveSequentially = function (items: any[], func, setCounter?) {
-  return items.reduce((previousPromise, item, i) => {
+const resolveSequentially = (mints: string[], func) => {
+  return mints.reduce((previousPromise, mint) => {
     return (
       previousPromise
         .then(() => {
-          if (setCounter) {
-            setCounter(i + 1);
-          }
-          return func(item);
+          return func(mint);
         })
         // eslint-disable-next-line no-console
         .catch((err) => console.error(err))
@@ -320,10 +317,8 @@ const resolveSequentially = function (items: any[], func, setCounter?) {
 
 export const getMeta = async (
   tokens: string[],
-  setCounter: (a: any) => void,
   url: string,
 ): Promise<any[]> => {
-  mints = [];
-  await resolveSequentially(tokens, createJsonObject(url), setCounter);
+  const mints = await resolveSequentially(tokens, createJsonObject(url));
   return mints;
 };

@@ -25,7 +25,7 @@ export interface MetadataByMint {
 export const getArweaveMetadataByMint = async (
   tokenMints: string[],
 ): Promise<MetadataByMint> => {
-  const rawMeta = await getMeta(tokenMints, () => {}, config.ENDPOINT.endpoint);
+  const rawMeta = await getMeta(tokenMints, config.ENDPOINT.endpoint);
 
   const metadataByMint =
     rawMeta?.reduce((acc, { mint, metadata }) => {
