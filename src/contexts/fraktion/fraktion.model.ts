@@ -62,6 +62,8 @@ export interface VaultData {
   store: string;
   fractionTreasury: string;
   redeemTreasury: string;
+  isNftVerified: boolean;
+  nftCollectionName?: string;
 }
 
 export interface CreateFraktionalizerResult {

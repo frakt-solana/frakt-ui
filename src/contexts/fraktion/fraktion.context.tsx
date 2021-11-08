@@ -16,6 +16,7 @@ import {
 import { buyout, fraktionalize, redeem } from './fraktion';
 import fraktionConfig from './config';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
+import verifyMints from '../../utils/verifyMints';
 
 const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -53,6 +54,7 @@ export const FraktionProvider = ({
       );
 
       const metadataByMint = await getArweaveMetadataByMint(nftMints);
+      const verificationByMint = await verifyMints(nftMints);
 
       const safetyBoxes = rawSafetyBoxes as SafetyBox[];
       const vaultsMap = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
@@ -64,6 +66,7 @@ export const FraktionProvider = ({
         ) => {
           const vault = vaultsMap[vaultPubkey];
           const arweaveMetadata = metadataByMint[nftMint];
+          const verification = verificationByMint[nftMint];
 
           if (vault && arweaveMetadata) {
             const { name, image, attributes } = arweaveMetadata;
@@ -94,6 +97,8 @@ export const FraktionProvider = ({
               redeemTreasury,
               safetyBoxPubkey,
               store,
+              isNftVerified: verification?.success || false,
+              nftCollectionName: verification?.collection,
             };
 
             return [...acc, vaultData];
