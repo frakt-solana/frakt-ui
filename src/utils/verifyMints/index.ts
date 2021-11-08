@@ -1,3 +1,9 @@
+import { ENV as ChainID } from '@solana/spl-token-registry';
+
+import config from '../../config';
+
+const { ENDPOINT } = config;
+
 interface VerificationStrategyResult {
   error?: boolean;
   success?: boolean;
@@ -70,7 +76,7 @@ const verifyMint = async (
   mintPubkey: string,
 ): Promise<VerificationStrategyResult> => {
   // * devnet check to prevent ddos
-  if (process.env.REACT_APP_NETWORK === 'devnet')
+  if (ENDPOINT.chainID === ChainID.Devnet)
     return {
       success: true,
       collection: 'test collection',
