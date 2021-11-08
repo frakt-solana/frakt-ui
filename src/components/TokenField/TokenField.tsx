@@ -18,6 +18,8 @@ interface TokenFieldProps {
   style?: React.CSSProperties;
   className?: string;
   onUseMaxButtonClick?: () => void;
+  error?: boolean;
+  placeholder?: string;
 }
 
 const TokenField = ({
@@ -31,6 +33,8 @@ const TokenField = ({
   style,
   className,
   onUseMaxButtonClick,
+  error,
+  placeholder = '0.0',
 }: TokenFieldProps): JSX.Element => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -38,7 +42,11 @@ const TokenField = ({
   return (
     <div
       style={style}
-      className={classNames([className, { [styles.root_focused]: isFocused }])}
+      className={classNames([
+        className,
+        { [styles.root_focused]: isFocused },
+        { [styles.root_error]: error },
+      ])}
     >
       {!!label && (
         <div className={styles.label}>
@@ -54,7 +62,7 @@ const TokenField = ({
         <NumericInput
           value={value}
           onChange={onValueChange}
-          placeholder="0.0"
+          placeholder={placeholder}
           positiveOnly
           className={styles.valueInput}
         />

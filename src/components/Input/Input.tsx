@@ -7,6 +7,7 @@ interface InputProps extends InputPropsAnt {
   disableSymbols?: boolean;
   disableNumbers?: boolean;
   customRegexp?: string;
+  error?: boolean;
 }
 
 export const Input = React.forwardRef(
@@ -16,6 +17,7 @@ export const Input = React.forwardRef(
       disableSymbols = false,
       disableNumbers = false,
       customRegexp,
+      error,
       ...props
     }: InputProps,
     ref,
@@ -33,7 +35,9 @@ export const Input = React.forwardRef(
 
     return (
       <InputAnt
-        className={classNames(styles.input, className)}
+        className={classNames(styles.input, className, {
+          [styles.inputError]: error,
+        })}
         ref={ref as LegacyRef<InputAnt>}
         {...props}
         onChange={onChange}

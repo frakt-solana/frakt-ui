@@ -45,6 +45,12 @@
   }
 }
 
+.root_error {
+  .root {
+    border-color: var(--red-color);
+  }
+}
+
 .valueInput {
   flex-grow: 1;
   padding-left: 24px;

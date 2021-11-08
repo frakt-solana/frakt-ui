@@ -11,6 +11,7 @@ interface NumericInputProps {
   positiveOnly?: boolean;
   integerOnly?: boolean;
   className?: string;
+  error?: boolean;
 }
 
 function isNumeric(value: any): boolean {
@@ -26,6 +27,7 @@ const NumericInput = React.forwardRef(
       positiveOnly = false,
       integerOnly = false,
       className,
+      error,
     }: NumericInputProps,
     ref,
   ) => {
@@ -46,6 +48,7 @@ const NumericInput = React.forwardRef(
         maxLength={25}
         className={classNames([styles.numberInput, className])}
         ref={ref}
+        error={error}
       />
     );
   },

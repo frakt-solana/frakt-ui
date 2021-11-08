@@ -93,6 +93,15 @@
       grid-template-columns: 3fr 2fr;
       gap: 16px;
     }
+
+    &_error {
+      color: var(--red-color);
+      font: var(--font-smallest);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
   }
 
   &__stringInput {

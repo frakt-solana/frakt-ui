@@ -18,4 +18,13 @@ body .input {
   &:global(.ant-input-focused) {
     box-shadow: unset;
   }
+
+  &Error {
+    &,
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      border: 1px solid var(--red-color);
+    }
+  }
 }

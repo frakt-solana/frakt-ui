@@ -16,6 +16,7 @@ import FakeInfinityScroll, {
 } from '../../components/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
+import { useSolanaTokenList } from '../../hooks/useSolanaTokenList';
 
 const useFraktionalizeTransactionModal = () => {
   const { refetch: refetchTokens } = useUserTokens();
@@ -108,6 +109,8 @@ const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected, select } = useWallet();
   const { nfts: rawNfts, loading } = useUserTokens();
+  const { isTickerAvailable, loading: solanaTokensLoading } =
+    useSolanaTokenList();
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const {
@@ -159,6 +162,7 @@ const FraktionalizePage = (): JSX.Element => {
         token={selectedNft}
         onRemoveClick={clearSelectedToken}
         onContinueClick={runFraktionalization}
+        isTickerAvailable={isTickerAvailable}
       />
       <Container component="main" className={styles.contentWrapper}>
         <div id="content-reducer" className={styles.contentReducer}>
@@ -185,7 +189,7 @@ const FraktionalizePage = (): JSX.Element => {
             <FakeInfinityScroll
               itemsToShow={itemsToShow}
               next={next}
-              isLoading={loading}
+              isLoading={loading || solanaTokensLoading}
               wrapperClassName={styles.artsList}
               emptyMessage="No suitable NFTs found"
             >
