@@ -93,7 +93,6 @@ export const buyout = async (
   } = vault;
 
   try {
-    const userWrappedSOLTokenView = userTokensByMint[SOL_TOKEN_PUBKEY];
     const userFractionTokenView = userTokensByMint[fractionMint];
 
     const userFractionTokenAmount =
@@ -125,7 +124,6 @@ export const buyout = async (
         const txid = await connection.sendRawTransaction(signed.serialize());
         return void connection.confirmTransaction(txid);
       },
-      new PublicKey(userWrappedSOLTokenView.tokenAccountPubkey),
     );
 
     notify({
