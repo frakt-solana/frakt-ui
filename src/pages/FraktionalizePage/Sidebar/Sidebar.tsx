@@ -158,11 +158,9 @@ const Sidebar = ({
 
       <div className={styles.sidebar__continueBtnContainer}>
         <p className={styles.sidebar__feeMessage}>
-          *Fraktionalization fees:
+          * Fraktionalization fees:
           <br />
-          0.5 SOL for buyout price less than 100 SOL
-          <br />
-          0.5% for buyout price greater than 100 SOL
+          0.5% of buyout price [min. 0.5 SOL]
         </p>
         <Button
           type="alternative"

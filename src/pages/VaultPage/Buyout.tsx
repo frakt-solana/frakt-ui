@@ -166,7 +166,7 @@ export const Buyout = ({
         )}
       </div>
       {!userTokensLoading && (
-        <p className={styles.buyout__fee}>* Price already includes 2% fee</p>
+        <p className={styles.buyout__fee}>* 2% fee included</p>
       )}
       <BuyoutTransactionModal
         visible={txnModalVisible}
