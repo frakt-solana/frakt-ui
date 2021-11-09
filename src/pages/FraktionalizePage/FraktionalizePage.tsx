@@ -156,6 +156,11 @@ const FraktionalizePage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchString, rawNfts]);
 
+  // eslint-disable-next-line no-console
+  console.log('rawNfts', rawNfts);
+  // eslint-disable-next-line no-console
+  console.log('nfts', nfts);
+
   const onTransactionModalCancel = () => {
     closeTxnModal();
     setTxnModalState('loading');
