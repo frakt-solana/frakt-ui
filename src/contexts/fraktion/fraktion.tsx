@@ -18,7 +18,8 @@ import globalConfig from '../../config';
 import { notify } from '../../external/utils/notifications';
 import { RawUserTokensByMint } from '../userTokens/userTokens.model';
 
-const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS } = fraktionConfig;
+const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
+  fraktionConfig;
 
 export const fraktionalize = async (
   tokenMint: string,
@@ -35,7 +36,7 @@ export const fraktionalize = async (
       new BN(fractionsAmount).mul(new BN(1e3)),
       FRACTION_DECIMALS,
       tokenMint,
-      fraktionConfig.ADMIN_PUBKEY,
+      ADMIN_PUBKEY,
       token === 'SOL'
         ? SOL_TOKEN_PUBKEY
         : globalConfig.FRKT_TOKEN_MINT_PUBLIC_KEY,
@@ -105,6 +106,7 @@ export const buyout = async (
         .mul(supply.sub(userFractionTokenAmount))
         .toNumber(),
       wallet.publicKey,
+      ADMIN_PUBKEY,
       new PublicKey(authority),
       publicKey,
       safetyBoxPubkey,
