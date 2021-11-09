@@ -283,13 +283,14 @@ const createJsonObject = (url: string) => {
     mints.push({
       tokenData: {
         ...tokenMetadata.data,
-        creators: tokenMetadata.data.creators.map((d) => {
-          return {
-            share: d.share,
-            address: new PublicKey(d.address).toBase58(),
-            verified: !!d.verified,
-          };
-        }),
+        creators:
+          tokenMetadata.data.creators?.map((d) => {
+            return {
+              share: d.share,
+              address: new PublicKey(d.address).toBase58(),
+              verified: !!d.verified,
+            };
+          }) || null,
       },
       metadata: arweaveData,
       mint: mint,
@@ -308,9 +309,9 @@ const resolveSequentially = (mints: string[], func) => {
       .then(() => {
         return func(mint);
       })
-      .catch(() => {
+      .catch((err) => {
         // eslint-disable-next-line no-console
-        // console.error(err); //? Remove errors from console. Uncomment on debug
+        console.error(err); //? Remove errors from console. Uncomment on debug
       });
   }, Promise.resolve());
 };
