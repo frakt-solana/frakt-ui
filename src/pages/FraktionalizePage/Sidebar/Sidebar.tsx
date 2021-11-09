@@ -11,7 +11,8 @@ import { BuyoutField } from './BuyoutField';
 interface SidebarProps {
   onRemoveClick?: () => void;
   onContinueClick: (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => void;
@@ -61,7 +62,8 @@ const Sidebar = ({
 
   const continueClickHanlder = () => {
     onContinueClick(
-      token.mint,
+      token,
+      ticker,
       Number(buyoutPrice) / Number(supply),
       Number(supply),
     );
@@ -154,14 +156,21 @@ const Sidebar = ({
         </div>
       </div>
 
-      <Button
-        type="alternative"
-        className={styles.sidebar__continueBtn}
-        disabled={isBtnDisabled()}
-        onClick={continueClickHanlder}
-      >
-        Continue
-      </Button>
+      <div className={styles.sidebar__continueBtnContainer}>
+        <p className={styles.sidebar__feeMessage}>
+          * Fraktionalization fees:
+          <br />
+          0.5% of buyout price [min. 0.5 SOL]
+        </p>
+        <Button
+          type="alternative"
+          className={styles.sidebar__continueBtn}
+          disabled={isBtnDisabled()}
+          onClick={continueClickHanlder}
+        >
+          Continue
+        </Button>
+      </div>
     </div>
   );
 };

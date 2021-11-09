@@ -21,7 +21,6 @@ const HomePage = (): JSX.Element => {
           allows custodial partial ownership of NFTs and helps NFT owners free
           up liquidity from their asset
         </h2>
-        <h3 className={styles.launchingSoon}>Launching soon on Solana</h3>
         <div className={styles.separatorDouble} />
         <WhyNeedsSection className={styles.whyNeeds} />
         <div className={styles.separator} />

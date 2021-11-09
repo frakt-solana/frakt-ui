@@ -55,10 +55,21 @@
   display: flex;
   align-items: center;
   margin-right: 62px;
+  position: relative;
+
+  &::after {
+    position: absolute;
+    content: 'BETA';
+    color: var(--accent-color-1);
+    font-size: 16px;
+    font-weight: 900;
+    right: -16px;
+    top: 18px;
+  }
 
   &:hover {
     text-decoration: none;
-    color: var(--white-color);
+    color: var(--font-btn-small);
   }
 }
 

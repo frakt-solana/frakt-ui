@@ -275,6 +275,9 @@ const createJsonObject = (url: string) => {
       new anchor.web3.PublicKey(mint),
       url,
     );
+    if (!tokenMetadata) {
+      return mints;
+    }
     const arweaveData = await fetch(tokenMetadata.data.uri)
       .then((res) => res.json().catch())
       .catch(() => {
@@ -283,13 +286,14 @@ const createJsonObject = (url: string) => {
     mints.push({
       tokenData: {
         ...tokenMetadata.data,
-        creators: tokenMetadata.data.creators.map((d) => {
-          return {
-            share: d.share,
-            address: new PublicKey(d.address).toBase58(),
-            verified: !!d.verified,
-          };
-        }),
+        creators:
+          tokenMetadata.data.creators?.map((d) => {
+            return {
+              share: d.share,
+              address: new PublicKey(d.address).toBase58(),
+              verified: !!d.verified,
+            };
+          }) || null,
       },
       metadata: arweaveData,
       mint: mint,
@@ -304,14 +308,14 @@ const createJsonObject = (url: string) => {
 
 const resolveSequentially = (mints: string[], func) => {
   return mints.reduce((previousPromise, mint) => {
-    return (
-      previousPromise
-        .then(() => {
-          return func(mint);
-        })
+    return previousPromise
+      .then(() => {
+        return func(mint);
+      })
+      .catch((err) => {
         // eslint-disable-next-line no-console
-        .catch((err) => console.error(err))
-    );
+        console.error(err); //? Remove errors from console. Uncomment on debug
+      });
   }, Promise.resolve());
 };
 

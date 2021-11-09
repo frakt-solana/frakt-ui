@@ -13,6 +13,7 @@ import BuyoutTransactionModal from '../../components/BuyoutTransactionModal';
 import { useUserTokens } from '../../contexts/userTokens';
 import { URLS } from '../../constants';
 import { Loader } from '../../components/Loader';
+import BN from 'bn.js';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -95,7 +96,26 @@ export const Buyout = ({
     setState: setTxnModalState,
     retry: retryTxn,
   } = useBuyoutTransactionModal();
-  const { loading: userTokensLoading } = useUserTokens();
+  const { loading: userTokensLoading, rawUserTokensByMint } = useUserTokens();
+
+  const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
+  const userFractionsAmount: BN = usetFractions?.amountBN || new BN(0);
+
+  const fee: BN = vaultInfo.lockedPricePerFraction
+    .mul(vaultInfo.supply)
+    .div(new BN(50));
+
+  const buyoutPrice = decimalBNToString(
+    vaultInfo.lockedPricePerFraction
+      .mul(
+        userFractionsAmount.toNumber()
+          ? vaultInfo.supply.sub(userFractionsAmount)
+          : vaultInfo.supply,
+      )
+      .add(fee),
+    2,
+    9,
+  );
 
   const { connected, select } = useWallet();
   const currency =
@@ -121,11 +141,7 @@ export const Buyout = ({
         {!userTokensLoading && (
           <TokenField
             className={styles.buyout__tokenField}
-            value={decimalBNToString(
-              vaultInfo.lockedPricePerFraction.mul(vaultInfo.supply),
-              2,
-              9,
-            )}
+            value={buyoutPrice}
             onValueChange={() => {}}
             currentToken={
               currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
@@ -149,6 +165,9 @@ export const Buyout = ({
           </Button>
         )}
       </div>
+      {!userTokensLoading && (
+        <p className={styles.buyout__fee}>* 2% fee included</p>
+      )}
       <BuyoutTransactionModal
         visible={txnModalVisible}
         onCancel={onTransactionModalCancel}

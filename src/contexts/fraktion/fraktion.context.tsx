@@ -133,9 +133,16 @@ export const FraktionProvider = ({
         loading,
         error,
         vaults,
-        fraktionalize: (tokenMint, pricePerFraction, fractionsAmount, token) =>
+        fraktionalize: (
+          userNft,
+          tickerName,
+          pricePerFraction,
+          fractionsAmount,
+          token,
+        ) =>
           fraktionalize(
-            tokenMint,
+            userNft,
+            tickerName,
             pricePerFraction,
             fractionsAmount,
             token,

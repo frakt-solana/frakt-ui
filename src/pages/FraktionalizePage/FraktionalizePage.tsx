@@ -16,15 +16,16 @@ import FakeInfinityScroll, {
 } from '../../components/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
-import { useSolanaTokenList } from '../../hooks/useSolanaTokenList';
+import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
 
 const useFraktionalizeTransactionModal = () => {
-  const { refetch: refetchTokens } = useUserTokens();
-  const { fraktionalize, refetch: refetchVaults } = useFraktion();
+  const { removeTokenOptimistic } = useUserTokens();
+  const { fraktionalize } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
   const [lastTxnData, setLastTxnData] = useState<{
-    tokenMint?: string;
+    userNft?: UserNFT;
+    tickerName?: string;
     pricePerFraction?: number;
     fractionsAmount?: number;
     token?: 'SOL' | 'FRKT';
@@ -32,28 +33,32 @@ const useFraktionalizeTransactionModal = () => {
   const [fractionTokenMint, setFractionTokenMint] = useState<string>('');
 
   const open = (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
     setVisible(true);
-    runTransaction(tokenMint, pricePerFraction, fractionsAmount);
+    runTransaction(userNft, tickerName, pricePerFraction, fractionsAmount);
   };
 
   const runTransaction = async (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
     const result = await fraktionalize(
-      tokenMint,
+      userNft,
+      tickerName,
       pricePerFraction,
       fractionsAmount,
       'SOL',
     );
 
     setLastTxnData({
-      tokenMint,
+      userNft,
+      tickerName,
       pricePerFraction,
       fractionsAmount,
       token: 'SOL',
@@ -64,15 +69,15 @@ const useFraktionalizeTransactionModal = () => {
     } else {
       setState('success');
       setFractionTokenMint(result.fractionalMint);
-      refetchTokens();
-      refetchVaults();
+      removeTokenOptimistic(userNft.mint);
     }
   };
 
   const retry = async () => {
     setState('loading');
     const result = await fraktionalize(
-      lastTxnData.tokenMint,
+      lastTxnData.userNft,
+      lastTxnData.tickerName,
       lastTxnData.pricePerFraction,
       lastTxnData.fractionsAmount,
       lastTxnData.token,
@@ -83,8 +88,7 @@ const useFraktionalizeTransactionModal = () => {
     } else {
       setState('success');
       setFractionTokenMint(result.fractionalMint);
-      refetchTokens();
-      refetchVaults();
+      removeTokenOptimistic(lastTxnData.userNft.mint);
     }
   };
 
@@ -110,7 +114,7 @@ const FraktionalizePage = (): JSX.Element => {
   const { connected, select } = useWallet();
   const { nfts: rawNfts, loading } = useUserTokens();
   const { isTickerAvailable, loading: solanaTokensLoading } =
-    useSolanaTokenList();
+    useSolanaTokenRegistry();
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const {
@@ -136,17 +140,18 @@ const FraktionalizePage = (): JSX.Element => {
   };
 
   const runFraktionalization = (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
-    openTxnModal(tokenMint, pricePerFraction, fractionsAmount);
+    openTxnModal(userNft, tickerName, pricePerFraction, fractionsAmount);
     setSelectedNft(null);
   };
 
   const nfts = useMemo(() => {
     return rawNfts.filter(({ metadata }) =>
-      metadata.name.toUpperCase().includes(searchString),
+      metadata?.name.toUpperCase().includes(searchString),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchString, rawNfts]);

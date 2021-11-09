@@ -23,6 +23,7 @@ export interface UserTokensInterface {
   loading: boolean;
   frktBalance: BN;
   refetch: () => Promise<void>;
+  removeTokenOptimistic: (tokenMint: string) => void;
 }
 
 export interface UseUserTokensInterface {
@@ -31,6 +32,7 @@ export interface UseUserTokensInterface {
   rawUserTokensByMint: RawUserTokensByMint;
   loading: boolean;
   refetch: () => Promise<void>;
+  removeTokenOptimistic: (tokenMint: string) => void;
 }
 
 export interface UseFrktBalanceInterface {

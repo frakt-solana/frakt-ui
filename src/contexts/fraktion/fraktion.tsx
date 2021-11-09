@@ -10,18 +10,23 @@ import {
   redeemRewardsFromShares,
 } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
+import { ENV as ChainID } from '@solana/spl-token-registry';
 
 import { WalletAdapter } from '../../external/contexts/wallet';
 import { CreateFraktionalizerResult, VaultData } from './fraktion.model';
 import fraktionConfig from './config';
 import globalConfig from '../../config';
 import { notify } from '../../external/utils/notifications';
-import { RawUserTokensByMint } from '../userTokens/userTokens.model';
+import { RawUserTokensByMint, UserNFT } from '../userTokens/userTokens.model';
+import { registerToken } from '../../utils/registerToken';
 
-const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS } = fraktionConfig;
+const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
+  fraktionConfig;
+const { ENDPOINT, FRKT_TOKEN_MINT_PUBLIC_KEY } = globalConfig;
 
 export const fraktionalize = async (
-  tokenMint: string,
+  userNft: UserNFT,
+  tickerName: string,
   pricePerFraction: number,
   fractionsAmount: number,
   token: 'SOL' | 'FRKT',
@@ -29,16 +34,16 @@ export const fraktionalize = async (
   connection: Connection,
 ): Promise<CreateFraktionalizerResult | null> => {
   try {
+    const { mint, metadata } = userNft;
+
     const result = await createFraktionalizer(
       connection,
       new BN(pricePerFraction * 1e6), //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
-      new BN(fractionsAmount).mul(new BN(1e3)),
+      new BN(fractionsAmount * 1e3),
       FRACTION_DECIMALS,
-      tokenMint,
-      fraktionConfig.ADMIN_PUBKEY,
-      token === 'SOL'
-        ? SOL_TOKEN_PUBKEY
-        : globalConfig.FRKT_TOKEN_MINT_PUBLIC_KEY,
+      mint,
+      ADMIN_PUBKEY,
+      token === 'SOL' ? SOL_TOKEN_PUBKEY : FRKT_TOKEN_MINT_PUBLIC_KEY,
       wallet.publicKey.toString(),
       FRAKTION_PUBKEY,
       async (txn, signers): Promise<void> => {
@@ -51,6 +56,18 @@ export const fraktionalize = async (
         return void connection.confirmTransaction(txid);
       },
     );
+
+    if (result && ENDPOINT.chainID === ChainID.MainnetBeta) {
+      const { fractionalMint, vault: vaultPubkey } = result;
+
+      registerToken(
+        tickerName,
+        fractionalMint,
+        metadata.image,
+        metadata.name,
+        vaultPubkey,
+      );
+    }
 
     notify({
       message: 'Fraktionalized successfully',
@@ -105,6 +122,7 @@ export const buyout = async (
         .mul(supply.sub(userFractionTokenAmount))
         .toNumber(),
       wallet.publicKey,
+      ADMIN_PUBKEY,
       new PublicKey(authority),
       publicKey,
       safetyBoxPubkey,

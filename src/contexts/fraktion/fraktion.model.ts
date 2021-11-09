@@ -1,4 +1,4 @@
-import { RawUserTokensByMint } from './../userTokens/userTokens.model';
+import { RawUserTokensByMint, UserNFT } from './../userTokens/userTokens.model';
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
 
@@ -76,7 +76,8 @@ export interface CreateFraktionalizerResult {
 }
 
 export type fraktionalizeFunction = (
-  tokenMint: string,
+  userNft: UserNFT,
+  tickerName: string,
   pricePerFraction: number,
   fractionsAmount: number,
   token: 'SOL' | 'FRKT',

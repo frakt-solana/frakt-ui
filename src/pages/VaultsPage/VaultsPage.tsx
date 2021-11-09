@@ -78,22 +78,26 @@ const VaultsPage = (): JSX.Element => {
         >
           {vaults.map(
             ({
+              fractionMint,
               publicKey,
               name,
               authority,
               state,
               imageSrc,
               supply,
+              isNftVerified,
               lockedPricePerFraction,
               priceTokenMint,
             }) => (
               <NavLink key={publicKey} to={`${URLS.VAULT}/${publicKey}`}>
                 <VaultCard
+                  fractionMint={fractionMint}
                   name={name}
                   owner={authority}
-                  tags={[state]}
+                  vaultState={state}
                   imageSrc={imageSrc}
                   supply={supply}
+                  isNftVerified={isNftVerified}
                   pricePerFraction={lockedPricePerFraction}
                   priceTokenMint={priceTokenMint}
                 />
