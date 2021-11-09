@@ -1,9 +1,29 @@
 .label {
   border: 1px solid var(--gray-color-3);
   padding: 6px 8px;
+  height: 30px;
   font-weight: bold;
   font-size: 14px;
   display: inline-block;
   cursor: pointer;
   color: var(--white-color);
+}
+
+.labelStrict {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+  text-transform: uppercase;
+  padding: 2px 8px;
+}
+
+.labelVerified {
+  border-color: var(--yellow-color);
+  color: var(--yellow-color);
+}
+
+.labelUnverified {
+  border-color: var(--red-color);
+  color: var(--red-color);
 }

@@ -84,6 +84,7 @@ const VaultsPage = (): JSX.Element => {
               state,
               imageSrc,
               supply,
+              isNftVerified,
               lockedPricePerFraction,
               priceTokenMint,
             }) => (
@@ -91,9 +92,10 @@ const VaultsPage = (): JSX.Element => {
                 <VaultCard
                   name={name}
                   owner={authority}
-                  tags={[state]}
+                  vaultState={state}
                   imageSrc={imageSrc}
                   supply={supply}
+                  isNftVerified={isNftVerified}
                   pricePerFraction={lockedPricePerFraction}
                   priceTokenMint={priceTokenMint}
                 />

@@ -1,8 +1,7 @@
 import BN from 'bn.js';
 
 import styles from './styles.module.scss';
-import { DoneIcon } from '../../icons';
-import Badge from '../Badge';
+import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
 import { shortenAddress } from '../../external/utils/utils';
 import { decimalBNToString } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
@@ -10,9 +9,10 @@ import fraktionConfig from '../../contexts/fraktion/config';
 export interface VaultCardProps {
   name: string;
   owner: string;
-  tags: string[];
+  vaultState: string;
   imageSrc: string;
   supply?: BN;
+  isNftVerified?: boolean;
   pricePerFraction?: BN;
   priceTokenMint: string;
 }
@@ -20,9 +20,10 @@ export interface VaultCardProps {
 const VaultCard = ({
   name,
   owner,
-  tags,
+  vaultState,
   imageSrc,
   supply = new BN(0),
+  isNftVerified,
   pricePerFraction = new BN(0),
   priceTokenMint,
 }: VaultCardProps): JSX.Element => {
@@ -37,10 +38,8 @@ const VaultCard = ({
           style={{ backgroundImage: `url(${imageSrc})` }}
         >
           <div className={styles.actions}>
-            <DoneIcon />
-            {tags.map((tag, idx) => (
-              <Badge key={idx} label={tag} className={styles.badge} />
-            ))}
+            {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
+            <Badge label={vaultState} className={styles.badge} />
           </div>
         </div>
         <div className={styles.nameContainer}>
