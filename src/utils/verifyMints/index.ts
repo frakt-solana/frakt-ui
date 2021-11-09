@@ -14,11 +14,13 @@ const deStrategy = async (
   mintPubkey: string,
 ): Promise<VerificationStrategyResult> => {
   try {
-    const result = await (
-      await fetch(
-        `https://us-central1-digitaleyes-prod.cloudfunctions.net/collection-retriever?mint=${mintPubkey}`,
-      )
-    ).json();
+    const result = JSON.parse(
+      await (
+        await fetch(
+          `https://us-central1-digitaleyes-prod.cloudfunctions.net/collection-retriever?mint=${mintPubkey}`,
+        )
+      ).json(),
+    );
 
     if (result?.name) {
       return { success: true, collection: result.name };
@@ -60,7 +62,7 @@ const exchangeStrategy = async (
       )
     ).json();
 
-    if (result?.[mintPubkey]) {
+    if (result?.[mintPubkey]?.collectionName) {
       return { success: true, collection: result[mintPubkey].collectionName };
     }
 
@@ -70,7 +72,7 @@ const exchangeStrategy = async (
   }
 };
 
-const strategies = [deStrategy, meStrategy, exchangeStrategy];
+const strategies = [exchangeStrategy, deStrategy];
 
 const verifyMint = async (
   mintPubkey: string,
@@ -88,6 +90,7 @@ const verifyMint = async (
 
     if (result.success) {
       endResult = result;
+      return endResult;
     }
   }
 
@@ -98,11 +101,31 @@ export interface VerificationByMint {
   [mint: string]: VerificationStrategyResult;
 }
 
+interface PromiseFulfilledResult<T> {
+  status: 'fulfilled';
+  value: T;
+}
+
+interface PromiseRejectedResult {
+  status: 'rejected';
+  reason: any;
+}
+
+type PromiseSettledResult<T> =
+  | PromiseFulfilledResult<T>
+  | PromiseRejectedResult;
+
 export const verifyMints = async (
   nftMints: string[],
-): Promise<VerificationByMint> => {
-  const results = await Promise.allSettled(nftMints.map(verifyMint));
-  return nftMints.reduce((acc, key, i) => ({ ...acc, [key]: results[i] }), {});
+): Promise<VerificationStrategyResult> => {
+  const results = (await Promise.allSettled(nftMints.map(verifyMint))).map(
+    (promise) => promise as PromiseFulfilledResult<VerificationStrategyResult>,
+  );
+
+  return nftMints.reduce(
+    (acc, key, i) => ({ ...acc, [key]: results[i].value }),
+    {},
+  );
 };
 
 export default verifyMints;
