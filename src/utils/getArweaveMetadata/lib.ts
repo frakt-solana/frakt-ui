@@ -275,6 +275,9 @@ const createJsonObject = (url: string) => {
       new anchor.web3.PublicKey(mint),
       url,
     );
+    if (!tokenMetadata) {
+      return mints;
+    }
     const arweaveData = await fetch(tokenMetadata.data.uri)
       .then((res) => res.json().catch())
       .catch(() => {
