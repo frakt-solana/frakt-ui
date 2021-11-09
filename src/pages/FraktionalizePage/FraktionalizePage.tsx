@@ -151,7 +151,7 @@ const FraktionalizePage = (): JSX.Element => {
 
   const nfts = useMemo(() => {
     return rawNfts.filter(({ metadata }) =>
-      metadata.name.toUpperCase().includes(searchString),
+      metadata?.name.toUpperCase().includes(searchString),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchString, rawNfts]);
