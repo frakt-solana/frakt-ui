@@ -5,8 +5,11 @@ import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
 import { shortenAddress } from '../../external/utils/utils';
 import { decimalBNToString } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
+import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
+import { useEffect, useState } from 'react';
 
 export interface VaultCardProps {
+  fractionMint: string;
   name: string;
   owner: string;
   vaultState: string;
@@ -18,6 +21,7 @@ export interface VaultCardProps {
 }
 
 const VaultCard = ({
+  fractionMint,
   name,
   owner,
   vaultState,
@@ -27,8 +31,15 @@ const VaultCard = ({
   pricePerFraction = new BN(0),
   priceTokenMint,
 }: VaultCardProps): JSX.Element => {
+  const { getTokerByMint, loading } = useSolanaTokenRegistry();
+  const [tokerName, setTokerName] = useState<string>('');
   const currency =
     priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
+
+  useEffect(() => {
+    !loading && setTokerName(getTokerByMint(fractionMint));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <div className={styles.cardContainer}>
@@ -43,7 +54,9 @@ const VaultCard = ({
           </div>
         </div>
         <div className={styles.nameContainer}>
-          <div className={styles.name}>{name}</div>
+          <div className={styles.name}>
+            {name} {tokerName ? `(${tokerName})` : ''}
+          </div>
           <div className={styles.owner}>{shortenAddress(owner)}</div>
         </div>
         <div className={styles.stats}>

@@ -78,6 +78,7 @@ const VaultsPage = (): JSX.Element => {
         >
           {vaults.map(
             ({
+              fractionMint,
               publicKey,
               name,
               authority,
@@ -90,6 +91,7 @@ const VaultsPage = (): JSX.Element => {
             }) => (
               <NavLink key={publicKey} to={`${URLS.VAULT}/${publicKey}`}>
                 <VaultCard
+                  fractionMint={fractionMint}
                   name={name}
                   owner={authority}
                   vaultState={state}

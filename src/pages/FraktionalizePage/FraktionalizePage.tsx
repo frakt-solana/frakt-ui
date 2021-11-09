@@ -16,7 +16,7 @@ import FakeInfinityScroll, {
 } from '../../components/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
-import { useSolanaTokenList } from '../../hooks/useSolanaTokenList';
+import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
 
 const useFraktionalizeTransactionModal = () => {
   const { removeTokenOptimistic } = useUserTokens();
@@ -114,7 +114,7 @@ const FraktionalizePage = (): JSX.Element => {
   const { connected, select } = useWallet();
   const { nfts: rawNfts, loading } = useUserTokens();
   const { isTickerAvailable, loading: solanaTokensLoading } =
-    useSolanaTokenList();
+    useSolanaTokenRegistry();
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const {

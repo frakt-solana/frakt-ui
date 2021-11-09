@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 
 import Badge, { UnverifiedBadge, VerifiedBadge } from '../../components/Badge';
@@ -12,6 +12,7 @@ import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
+import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
 
 export const MOCK_TOKEN_LIST = [
   {
@@ -37,6 +38,16 @@ const VaultPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
 
+  const { getTokerByMint, loading: registryLoading } = useSolanaTokenRegistry();
+  const [tokerName, setTokerName] = useState<string>('');
+
+  useEffect(() => {
+    !loading &&
+      vaultInfo &&
+      setTokerName(getTokerByMint(vaultInfo.fractionMint));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registryLoading, vaultInfo]);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.wrapper}>
@@ -53,10 +64,11 @@ const VaultPage = (): JSX.Element => {
                 backgroundImage: `url(${vaultInfo.imageSrc})`,
               }}
             />
-
             <div className={styles.details}>
               <div className={styles.detailsHeader}>
-                <h2 className={styles.title}>{vaultInfo.name}</h2>
+                <h2 className={styles.title}>
+                  {vaultInfo.name} {tokerName ? `(${tokerName})` : ''}
+                </h2>
                 <div className={styles.statusAndOwner}>
                   <div className={styles.status}>
                     {vaultInfo.isNftVerified ? (

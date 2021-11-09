@@ -39,7 +39,7 @@ export const fraktionalize = async (
     const result = await createFraktionalizer(
       connection,
       new BN(pricePerFraction * 1e6), //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
-      new BN(fractionsAmount).mul(new BN(1e3)),
+      new BN(fractionsAmount * 1e3),
       FRACTION_DECIMALS,
       mint,
       ADMIN_PUBKEY,
