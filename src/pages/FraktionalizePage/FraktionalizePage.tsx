@@ -19,8 +19,8 @@ import FraktionalizeTransactionModal from '../../components/FraktionalizeTransac
 import { useSolanaTokenList } from '../../hooks/useSolanaTokenList';
 
 const useFraktionalizeTransactionModal = () => {
-  const { refetch: refetchTokens } = useUserTokens();
-  const { fraktionalize, refetch: refetchVaults } = useFraktion();
+  const { removeTokenOptimistic } = useUserTokens();
+  const { fraktionalize } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
   const [lastTxnData, setLastTxnData] = useState<{
@@ -69,8 +69,7 @@ const useFraktionalizeTransactionModal = () => {
     } else {
       setState('success');
       setFractionTokenMint(result.fractionalMint);
-      refetchTokens();
-      refetchVaults();
+      removeTokenOptimistic(userNft.mint);
     }
   };
 
@@ -89,8 +88,7 @@ const useFraktionalizeTransactionModal = () => {
     } else {
       setState('success');
       setFractionTokenMint(result.fractionalMint);
-      refetchTokens();
-      refetchVaults();
+      removeTokenOptimistic(lastTxnData.userNft.mint);
     }
   };
 

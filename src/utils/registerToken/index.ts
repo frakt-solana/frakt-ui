@@ -12,6 +12,9 @@ export const registerToken = async (
   try {
     const res = await fetch(REGISTRAR_URL, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         symbol: tickerName,
         address: fractionalMint,

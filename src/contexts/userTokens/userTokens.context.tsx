@@ -22,6 +22,7 @@ const UserTokensContext = React.createContext<UserTokensInterface>({
   rawUserTokensByMint: {},
   loading: false,
   frktBalance: new BN(0),
+  removeTokenOptimistic: () => {},
   refetch: () => Promise.resolve(null),
 });
 
@@ -94,6 +95,25 @@ export const UserTokensProvider = ({
     }
   };
 
+  const removeTokenOptimistic = (tokenMint: string): void => {
+    const nftEntries = Object.entries(nftsByMint).filter(
+      ([key]) => key !== tokenMint,
+    );
+    const patchedRawUserTokensByMint = Object.fromEntries(
+      Object.entries(rawUserTokensByMint).filter(([key]) => key !== tokenMint),
+    );
+
+    const patchedNfts = nftEntries.map(([mint, metadata]) => ({
+      mint,
+      metadata,
+    }));
+    const patchedNftsByMint: nftsByMint = Object.fromEntries(nftEntries);
+
+    setNfts(patchedNfts);
+    setNftsByMint(patchedNftsByMint);
+    setRawUserTokensByMint(patchedRawUserTokensByMint);
+  };
+
   useEffect(() => {
     connected && fetchTokens();
     return () => clearTokens();
@@ -109,6 +129,7 @@ export const UserTokensProvider = ({
         loading,
         frktBalance,
         refetch: fetchTokens,
+        removeTokenOptimistic,
       }}
     >
       {children}
@@ -117,14 +138,21 @@ export const UserTokensProvider = ({
 };
 
 export const useUserTokens = (): UseUserTokensInterface => {
-  const { nfts, nftsByMint, rawUserTokensByMint, loading, refetch } =
-    useContext(UserTokensContext);
+  const {
+    nfts,
+    nftsByMint,
+    rawUserTokensByMint,
+    loading,
+    refetch,
+    removeTokenOptimistic,
+  } = useContext(UserTokensContext);
   return {
     nfts,
     nftsByMint,
     rawUserTokensByMint,
     loading,
     refetch,
+    removeTokenOptimistic,
   };
 };
 
