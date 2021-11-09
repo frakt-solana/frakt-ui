@@ -70,12 +70,19 @@ export const UserTokensProvider = ({
       const userTokens = await getAllUserTokens(wallet.publicKey, {
         connection,
       });
+
+      // eslint-disable-next-line no-console
+      console.log(userTokens);
+
       updateFrktBalance(userTokens);
 
       const rawUserTokensByMint = keyBy(userTokens, 'mint');
 
       const mints = Object.keys(rawUserTokensByMint);
       const arweaveMetadata = await getArweaveMetadataByMint(mints);
+
+      // eslint-disable-next-line no-console
+      console.log(arweaveMetadata);
 
       const tokensArray = Object.entries(arweaveMetadata).map(
         ([mint, metadata]) => ({
