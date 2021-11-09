@@ -156,14 +156,23 @@ const Sidebar = ({
         </div>
       </div>
 
-      <Button
-        type="alternative"
-        className={styles.sidebar__continueBtn}
-        disabled={isBtnDisabled()}
-        onClick={continueClickHanlder}
-      >
-        Continue
-      </Button>
+      <div className={styles.sidebar__continueBtnContainer}>
+        <p className={styles.sidebar__feeMessage}>
+          *Fraktionalization fees:
+          <br />
+          0.5 SOL for buyout price less than 100 SOL
+          <br />
+          0.5% for buyout price greater than 100 SOL
+        </p>
+        <Button
+          type="alternative"
+          className={styles.sidebar__continueBtn}
+          disabled={isBtnDisabled()}
+          onClick={continueClickHanlder}
+        >
+          Continue
+        </Button>
+      </div>
     </div>
   );
 };

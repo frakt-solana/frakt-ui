@@ -102,6 +102,10 @@
 }
 
 .buyout {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   &Controls {
     display: flex;
     align-items: center;
@@ -112,7 +116,6 @@
   &__title {
     font: var(--font-btn-mid);
     margin-bottom: 6px;
-    min-height: 30px;
     font-weight: 700;
   }
 
@@ -132,6 +135,13 @@
     height: 100%;
     padding-top: unset;
     padding-bottom: unset;
+  }
+
+  &__fee {
+    font: var(--font-smallest);
+    font-size: 12px;
+    color: var(--gray-color-8);
+    padding: 8px 0 0;
   }
 }
 

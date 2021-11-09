@@ -22,7 +22,9 @@ export const registerToken = async (
       }),
     });
 
-    if (res) {
+    const data = await res.json();
+
+    if (data?.success) {
       notify({
         message: 'Token regitered successfully',
         description: 'Token registration can take up to an hour',

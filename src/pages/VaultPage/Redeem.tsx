@@ -99,12 +99,7 @@ export const Redeem = ({
     vaultInfo?.priceTokenMint === SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
-
-  const userFractionsAmount = usetFractions?.amount
-    ? usetFractions.amount === -1
-      ? usetFractions.amountBN
-      : new BN(Number(usetFractions.amount))
-    : new BN(0);
+  const userFractionsAmount = usetFractions?.amountBN || new BN(0);
 
   const userRedeemValue =
     userFractionsAmount.mul(vaultInfo.lockedPricePerFraction).toNumber() / 1e9;

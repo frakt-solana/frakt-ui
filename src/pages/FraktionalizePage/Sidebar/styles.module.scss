@@ -117,8 +117,19 @@
   }
 
   &__continueBtn {
+    &Container {
+      width: 100%;
+    }
+    width: 100%;
     justify-content: center;
     font: var(--font-btn-small);
+  }
+
+  &__feeMessage {
+    font: var(--font-smallest);
+    font-size: 12px;
+    color: var(--gray-color-8);
+    padding: 0 24px 12px;
   }
 }
 
