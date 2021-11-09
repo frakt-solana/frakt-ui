@@ -24,7 +24,8 @@ const useFraktionalizeTransactionModal = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
   const [lastTxnData, setLastTxnData] = useState<{
-    tokenMint?: string;
+    userNft?: UserNFT;
+    tickerName?: string;
     pricePerFraction?: number;
     fractionsAmount?: number;
     token?: 'SOL' | 'FRKT';
@@ -32,28 +33,32 @@ const useFraktionalizeTransactionModal = () => {
   const [fractionTokenMint, setFractionTokenMint] = useState<string>('');
 
   const open = (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
     setVisible(true);
-    runTransaction(tokenMint, pricePerFraction, fractionsAmount);
+    runTransaction(userNft, tickerName, pricePerFraction, fractionsAmount);
   };
 
   const runTransaction = async (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
     const result = await fraktionalize(
-      tokenMint,
+      userNft,
+      tickerName,
       pricePerFraction,
       fractionsAmount,
       'SOL',
     );
 
     setLastTxnData({
-      tokenMint,
+      userNft,
+      tickerName,
       pricePerFraction,
       fractionsAmount,
       token: 'SOL',
@@ -72,7 +77,8 @@ const useFraktionalizeTransactionModal = () => {
   const retry = async () => {
     setState('loading');
     const result = await fraktionalize(
-      lastTxnData.tokenMint,
+      lastTxnData.userNft,
+      lastTxnData.tickerName,
       lastTxnData.pricePerFraction,
       lastTxnData.fractionsAmount,
       lastTxnData.token,
@@ -136,11 +142,12 @@ const FraktionalizePage = (): JSX.Element => {
   };
 
   const runFraktionalization = (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => {
-    openTxnModal(tokenMint, pricePerFraction, fractionsAmount);
+    openTxnModal(userNft, tickerName, pricePerFraction, fractionsAmount);
     setSelectedNft(null);
   };
 

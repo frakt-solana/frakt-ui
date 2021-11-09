@@ -304,14 +304,14 @@ const createJsonObject = (url: string) => {
 
 const resolveSequentially = (mints: string[], func) => {
   return mints.reduce((previousPromise, mint) => {
-    return (
-      previousPromise
-        .then(() => {
-          return func(mint);
-        })
+    return previousPromise
+      .then(() => {
+        return func(mint);
+      })
+      .catch(() => {
         // eslint-disable-next-line no-console
-        .catch((err) => console.error(err))
-    );
+        // console.error(err); //? Remove errors from console. Uncomment on debug
+      });
   }, Promise.resolve());
 };
 

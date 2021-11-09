@@ -11,7 +11,8 @@ import { BuyoutField } from './BuyoutField';
 interface SidebarProps {
   onRemoveClick?: () => void;
   onContinueClick: (
-    tokenMint: string,
+    userNft: UserNFT,
+    tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
   ) => void;
@@ -61,7 +62,8 @@ const Sidebar = ({
 
   const continueClickHanlder = () => {
     onContinueClick(
-      token.mint,
+      token,
+      ticker,
       Number(buyoutPrice) / Number(supply),
       Number(supply),
     );
