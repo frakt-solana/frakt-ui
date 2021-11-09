@@ -32,25 +32,25 @@ const deStrategy = async (
   }
 };
 
-const meStrategy = async (
-  mintPubkey: string,
-): Promise<VerificationStrategyResult> => {
-  try {
-    const result = await (
-      await fetch(
-        `https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/${mintPubkey}`,
-      )
-    ).json();
+// const meStrategy = async (
+//   mintPubkey: string,
+// ): Promise<VerificationStrategyResult> => {
+//   try {
+//     const result = await (
+//       await fetch(
+//         `https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/${mintPubkey}`,
+//       )
+//     ).json();
 
-    if (result?.results?.collectionTitle) {
-      return { success: true, collection: result.results.collectionTitle };
-    }
+//     if (result?.results?.collectionTitle) {
+//       return { success: true, collection: result.results.collectionTitle };
+//     }
 
-    return { error: true };
-  } catch (error) {
-    return { error: true };
-  }
-};
+//     return { error: true };
+//   } catch (error) {
+//     return { error: true };
+//   }
+// };
 
 const exchangeStrategy = async (
   mintPubkey: string,
@@ -105,15 +105,6 @@ interface PromiseFulfilledResult<T> {
   status: 'fulfilled';
   value: T;
 }
-
-interface PromiseRejectedResult {
-  status: 'rejected';
-  reason: any;
-}
-
-type PromiseSettledResult<T> =
-  | PromiseFulfilledResult<T>
-  | PromiseRejectedResult;
 
 export const verifyMints = async (
   nftMints: string[],
