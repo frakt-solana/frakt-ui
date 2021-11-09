@@ -1,0 +1,30 @@
+body .input {
+  font-size: 24px;
+  border-radius: 0;
+  padding: 10px 16px;
+
+  &,
+  &:hover {
+    border-color: unset;
+    border: 1px solid var(--gray-color-3);
+  }
+  &:focus,
+  &:focus-visible {
+    border: 1px solid var(--accent-color-1);
+  }
+
+  &,
+  &:global(.ant-input:focus),
+  &:global(.ant-input-focused) {
+    box-shadow: unset;
+  }
+
+  &Error {
+    &,
+    &:hover,
+    &:focus,
+    &:focus-visible {
+      border: 1px solid var(--red-color);
+    }
+  }
+}

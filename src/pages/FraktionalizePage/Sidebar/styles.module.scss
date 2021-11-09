@@ -1,0 +1,147 @@
+.sidebar {
+  position: fixed;
+  top: 89px;
+  right: 10px;
+  width: 320px;
+  height: calc(100vh - 88px);
+  border-left: 1px solid var(--gray-color-6);
+  transform: translateX(330px);
+  transition: transform var(--transition-1), opacity var(--transition-1);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+
+  &_visible {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  &__header {
+    padding: 24px 24px 0;
+    margin-bottom: 32px;
+  }
+
+  &__title {
+    font: var(--font-subtitle-2);
+    margin-bottom: 12px;
+  }
+
+  &__image {
+    width: 80px;
+    height: 80px;
+    background-color: var(--gray-color-7);
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  &__removeBtn {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--gray-color-3);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--black-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    &::before {
+      content: '-';
+    }
+  }
+
+  &__separator {
+    width: 100%;
+    height: 1px;
+    background-color: var(--gray-color-3);
+  }
+
+  &__details {
+    padding: 0 24px;
+    flex-grow: 1;
+  }
+
+  &__detailsTitle {
+    font: var(--font-btn-small);
+    margin-bottom: 24px;
+  }
+
+  &__fieldLabel {
+    margin-bottom: 4px;
+    font: var(--font-secondary);
+    opacity: 0.25;
+    text-transform: uppercase;
+  }
+
+  &__tokenName {
+    font: var(--font-btn-small);
+  }
+
+  &__fieldWrapper {
+    margin-bottom: 18px;
+
+    &:last-child {
+      margin-bottom: unset;
+    }
+
+    &Double {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 16px;
+    }
+
+    &_error {
+      color: var(--red-color);
+      font: var(--font-smallest);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  &__stringInput {
+    &,
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-visible {
+      border: 1px solid var(--gray-color-3);
+      border-color: var(--gray-color-3);
+      padding: 10px 16px;
+    }
+  }
+
+  &__continueBtn {
+    &Container {
+      width: 100%;
+    }
+    width: 100%;
+    justify-content: center;
+    font: var(--font-btn-small);
+  }
+
+  &__feeMessage {
+    font: var(--font-smallest);
+    font-size: 12px;
+    color: var(--gray-color-8);
+    padding: 0 24px 12px;
+  }
+}
+
+body .sidebar__stringInput {
+  &,
+  &:active {
+    border: 1px solid var(--gray-color-3);
+    border-color: var(--gray-color-3);
+    padding: 10px 16px;
+  }
+}
+
+.priceField {
+  height: 61px;
+}

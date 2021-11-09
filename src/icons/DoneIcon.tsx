@@ -14,5 +14,3 @@ const icon = (
 export const DoneIcon = (props: any): JSX.Element => (
   <IconSvg icon={icon} width={24} viewBox="0 0 24 24" {...props} />
 );
-
-export default DoneIcon;

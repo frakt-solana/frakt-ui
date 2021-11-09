@@ -21,8 +21,8 @@
       "./types"
     ],
     "jsx": "react-jsx",
-    "isolatedModules": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true
   },
   "include": [
     "src"

@@ -1,0 +1,87 @@
+.howItWorks {
+  display: flex;
+  justify-content: space-between;
+
+  &Left {
+    width: 450px;
+    margin-right: 64px;
+  }
+
+  &Right {
+    width: 500px;
+  }
+}
+
+.steps {
+  &Hidden {
+    display: none;
+  }
+  p {
+    font: var(--font-body-large);
+    color: var(--white-color);
+
+    margin-bottom: 128px;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -96px;
+      height: 65px;
+      width: 8px;
+      background: url('./arrow.svg');
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+
+      &::after {
+        display: none;
+      }
+    }
+  }
+}
+
+.title {
+  font: var(--font-h3);
+  margin-bottom: 64px;
+}
+
+.tabButtons {
+  margin-bottom: 64px;
+}
+
+.radio {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.subtitle {
+  font: 400 16px var(--font-family-inter);
+  color: var(--white-color);
+  opacity: 0.5;
+}
+
+.tabButton {
+  padding: 32px 24px;
+  font: var(--font-btn-small);
+  color: var(--white-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-1), color var(--transition-1);
+
+  &:hover {
+    background: var(--gray-color-7);
+  }
+
+  &Active,
+  &Active:hover {
+    background: var(--white-color);
+    color: var(--black-color);
+    pointer-events: none;
+  }
+}

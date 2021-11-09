@@ -1,7 +1,9 @@
 import { Helmet } from 'react-helmet';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import HowItWorksSection from './sections/HowItWorks';
+import WhyNeedsSection from './sections/WhyNeedsSection';
+import HowItWorksSection from './sections/HowItWorksSection';
+import FAQSection from './sections/FAQSection';
 import styles from './styles.module.scss';
 
 const HomePage = (): JSX.Element => {
@@ -19,10 +21,12 @@ const HomePage = (): JSX.Element => {
           allows custodial partial ownership of NFTs and helps NFT owners free
           up liquidity from their asset
         </h2>
-        <h3 className={styles.launchingSoon}>Launching soon on Solana</h3>
+        <div className={styles.separatorDouble} />
+        <WhyNeedsSection className={styles.whyNeeds} />
         <div className={styles.separator} />
-        {/* <KeyPointsSection /> */}
-        <HowItWorksSection />
+        <HowItWorksSection className={styles.howItWorks} />
+        <div className={styles.separator} />
+        <FAQSection />
       </Container>
       <footer className={styles.footer}>Fraktion</footer>
     </AppLayout>

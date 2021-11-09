@@ -1,88 +1,103 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 import { ChevronDownIcon } from '../../icons';
+import { SelectTokenModal } from '../SelectTokenModal';
+import { Token } from '../../utils';
+import NumericInput from '../NumericInput';
 
 interface TokenFieldProps {
-  value: number;
-  onChange: (nextValue: number) => void;
-  onUseMaxButtonClick?: () => void;
-  onSelectTokenClick: () => void;
-  className?: string;
+  tokensList?: Token[];
+  onTokenChange?: (nextToken: Token) => void;
+  currentToken: Token;
+  value: string;
+  onValueChange: (nextValue: string) => void;
+  modalTitle?: string;
+  label?: string;
   style?: React.CSSProperties;
-  token?: { name: string; imageSrc?: string };
+  className?: string;
+  onUseMaxButtonClick?: () => void;
+  error?: boolean;
+  placeholder?: string;
 }
 
 const TokenField = ({
+  tokensList,
+  onTokenChange,
+  currentToken,
   value,
-  onChange,
+  onValueChange,
+  modalTitle,
+  label,
+  style,
+  className,
   onUseMaxButtonClick,
-  onSelectTokenClick,
-  style = {},
-  className = '',
-  token = { name: '---' },
+  error,
+  placeholder = '0.0',
 }: TokenFieldProps): JSX.Element => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const inputRef = useRef<HTMLInputElement>();
-
-  const onClickHandler = () => {
-    inputRef.current.focus();
-  };
-
-  const onValueChageHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const nextValue =
-      event.target.value === '' ? null : Number(event.target.value);
-
-    if (value !== nextValue) {
-      onChange(nextValue);
-    }
-  };
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
     <div
+      style={style}
       className={classNames([
-        styles.root,
         className,
         { [styles.root_focused]: isFocused },
+        { [styles.root_error]: error },
       ])}
-      style={style}
-      onClick={onClickHandler}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
     >
-      <input
-        className={styles.valueInput}
-        value={value || value === 0 ? value : ''}
-        type="number"
-        onChange={(event) => onValueChageHandler(event)}
-        min="0"
-        placeholder="0.0"
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        ref={inputRef}
-      />
-      {!!onUseMaxButtonClick && (
-        <div className={styles.useMaxBtnContainer}>
-          <button className={styles.useMaxBtn} onClick={onUseMaxButtonClick}>
-            Use max
-          </button>
+      {!!label && (
+        <div className={styles.label}>
+          {label}
+          {/* <span>BALANCE: 0 {currentToken.symbol}</span> //TODO: display balance of selected token when wallet connected */}
         </div>
       )}
-      <div>
-        <button className={styles.selectTokenBtn} onClick={onSelectTokenClick}>
-          {token?.imageSrc ? (
+      <div
+        className={classNames([styles.root, className])}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+      >
+        <NumericInput
+          value={value}
+          onChange={onValueChange}
+          placeholder={placeholder}
+          positiveOnly
+          className={styles.valueInput}
+        />
+        {!!onUseMaxButtonClick && (
+          <div className={styles.useMaxBtnContainer}>
+            <button className={styles.useMaxBtn} onClick={onUseMaxButtonClick}>
+              Use max
+            </button>
+          </div>
+        )}
+        <div>
+          <button
+            className={classNames(styles.selectTokenBtn, {
+              [styles.disabledTokens]: !tokensList || !onTokenChange,
+            })}
+            onClick={() => tokensList && setIsModalOpen(true)}
+          >
             <img
               className={styles.tokenLogo}
-              src={token.imageSrc}
-              alt={token.name}
+              src={currentToken.img}
+              alt={currentToken.symbol}
             />
-          ) : (
-            <div className={styles.noTokenImg} />
-          )}
-          <span>{token.name}</span>
-          <ChevronDownIcon className={styles.arrowDownIcon} />
-        </button>
+            <span>{currentToken.symbol}</span>
+            <ChevronDownIcon className={styles.arrowDownIcon} />
+          </button>
+        </div>
+        {!!tokensList && !!onTokenChange && (
+          <SelectTokenModal
+            title={modalTitle}
+            visible={isModalOpen}
+            tokensList={tokensList}
+            onChange={onTokenChange}
+            onCancel={() => setIsModalOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

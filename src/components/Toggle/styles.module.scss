@@ -1,5 +1,10 @@
 body {
-  .toggle, .toggle:global(.ant-switch-disabled) {
+  .toggle,
+  .toggle:global(.ant-switch-disabled) {
+    &:focus {
+      outline: 0;
+      box-shadow: unset;
+    }
     :global {
       opacity: 1;
       .ant-click-animating-node {
@@ -12,7 +17,6 @@ body {
         top: -9px;
         left: -1px;
       }
-
       .ant-switch-handle::before {
         width: 32px;
         height: 32px;
@@ -22,7 +26,7 @@ body {
 
       width: 51px;
       height: 16px;
-      border: 1px solid var(--gray-color-2);
+      border: 1px solid var(--gray-color-9);
       box-sizing: border-box;
       background-color: transparent;
       border-radius: 6px;
@@ -31,7 +35,8 @@ body {
   }
 
   .toggle:global.ant-switch-checked {
-    background: var(--gray-color-2);
+    background: var(--gray-color-9);
+    border-color: var(--gray-color-9);
     .ant-switch-handle {
       transform: translateX(19px);
     }

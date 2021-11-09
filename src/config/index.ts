@@ -28,10 +28,12 @@ export const ENDPOINTS = [
 
 const devnet = {
   ENDPOINT: ENDPOINTS[2],
+  FRKT_TOKEN_MINT_PUBLIC_KEY: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
 };
 
 const mainnet = {
   ENDPOINT: ENDPOINTS[0],
+  FRKT_TOKEN_MINT_PUBLIC_KEY: 'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
 };
 
 export default process.env.REACT_APP_NETWORK === 'devnet' ? devnet : mainnet;

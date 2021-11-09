@@ -1,6 +1,7 @@
 .root {
   border-bottom: 1px solid var(--gray-color-3);
   font-family: var(--font-family-oxanium);
+  background: var(--black-color);
 }
 
 .link {
@@ -9,10 +10,33 @@
   outline: none;
   border: none;
   cursor: pointer;
+  padding: 0 20px;
 
   &:hover {
     text-decoration: none;
     color: var(--white-color);
+  }
+}
+
+.walletBtn {
+  padding: 0 20px;
+  cursor: pointer;
+  background: none;
+  outline: none;
+  border: none;
+  min-width: 168px;
+
+  &_connected {
+    background: var(--gray-color-7);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    fill: var(--white-color);
   }
 }
 
@@ -31,10 +55,21 @@
   display: flex;
   align-items: center;
   margin-right: 62px;
+  position: relative;
+
+  &::after {
+    position: absolute;
+    content: 'BETA';
+    color: var(--accent-color-1);
+    font-size: 16px;
+    font-weight: 900;
+    right: -16px;
+    top: 18px;
+  }
 
   &:hover {
     text-decoration: none;
-    color: var(--white-color);
+    color: var(--font-btn-small);
   }
 }
 
@@ -43,7 +78,6 @@
 
   li {
     height: 100%;
-    padding: 0 20px;
 
     a,
     button {
@@ -68,9 +102,32 @@
 
 .activeLink {
   text-decoration: underline;
-  font-size: 20px;
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+body .walletInfo {
+  width: 315px;
+  max-width: unset;
+  padding: 16px 0 0 0;
+  :global {
+    .ant-tooltip-inner {
+      background: var(--white-color);
+      padding: 24px;
+      border-radius: 0;
+    }
+    .ant-tooltip-arrow {
+      width: 30px;
+      height: 30px;
+      top: 0;
+    }
+    .ant-tooltip-arrow-content {
+      width: 30px;
+      height: 30px;
+      margin: auto;
+      background-color: var(--white-color);
+    }
   }
 }

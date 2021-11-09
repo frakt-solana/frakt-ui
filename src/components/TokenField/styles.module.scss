@@ -1,7 +1,12 @@
 @mixin resetBtnStyle {
-  background: none;
-  border: none;
-  cursor: pointer;
+  &,
+  &:focus,
+  &:focus-visible {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+  }
 }
 
 .root {
@@ -20,32 +25,50 @@
   }
 
   transition: border-color var(--transition-1);
+}
 
-  &_focused {
+.root_focused {
+  .root {
     border-color: var(--accent-color-1);
 
     .useMaxBtn {
       border-color: var(--accent-color-1);
+
       &:hover {
         background: var(--accent-color-1);
       }
     }
   }
+
+  .label {
+    color: var(--white-color);
+  }
+}
+
+.root_error {
+  .root {
+    border-color: var(--red-color);
+  }
 }
 
 .valueInput {
-  &,
-  &:focus,
-  &:focus-visible {
-    background: none;
-    border: none;
-    outline: none;
-  }
-
   flex-grow: 1;
   padding-left: 24px;
   font: var(--font-btn-mid);
   min-width: 48px;
+}
+
+body input.valueInput {
+  &,
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-visible,
+  &:not(.styles_ant-input):hover {
+    background: none;
+    border: none;
+    outline: none;
+  }
 }
 
 .useMaxBtnContainer {
@@ -56,7 +79,9 @@
 
 .useMaxBtn {
   @include resetBtnStyle;
-  border: 1px solid var(--gray-color-2);
+  & {
+    border: 1px solid var(--gray-color-2);
+  }
   font: var(--font-btn-small);
   text-transform: uppercase;
   transition: background var(--transition-1), border-color var(--transition-1);
@@ -111,4 +136,27 @@
   width: 16px;
   height: 16px;
   fill: var(--white-color);
+}
+
+.label {
+  margin-bottom: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--gray-color-3);
+  transition: var(--transition-1);
+}
+
+.disabledTokens {
+  &,
+  &:focus,
+  &:focus-visible {
+    cursor: unset;
+  }
+}
+
+.disabledTokens .arrowDownIcon {
+  display: none;
 }

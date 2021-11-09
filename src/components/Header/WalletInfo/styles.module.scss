@@ -1,0 +1,18 @@
+.walletInfo {
+  font: var(--font-btn-mid);
+  color: var(--black-color);
+}
+
+.btn {
+  margin-top: 40px;
+  width: 100%;
+  justify-content: center;
+  align-items: unset;
+  text-align: center;
+  color: var(--black-color);
+  font: var(--font-btn-small);
+  text-transform: unset;
+  &:hover {
+    color: var(--white-color);
+  }
+}

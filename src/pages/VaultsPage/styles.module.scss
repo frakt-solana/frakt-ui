@@ -1,0 +1,38 @@
+.content {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.search {
+  margin-bottom: 18px;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  margin-bottom: 35px;
+}
+
+.filterToggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  &__text {
+    font: var(--font-btn-mid);
+    transition: opacity (--transition-1);
+
+    &_muted {
+      opacity: 0.3;
+    }
+  }
+}
