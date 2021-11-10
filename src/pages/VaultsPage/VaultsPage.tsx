@@ -21,8 +21,8 @@ const VaultsPage = (): JSX.Element => {
   const [searchString, setSearchString] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const [filterActiveVaults, setFilterActiveVaults] = useState<boolean>(false);
-  const [filterBoughtVaults, setFilterBoughtVaults] = useState<boolean>(false);
-  const [filterClosedVaults, setFilterClosedVaults] = useState<boolean>(false);
+  const [filterBoughtVaults, setFilterBoughtVaults] = useState<boolean>(true);
+  const [filterClosedVaults, setFilterClosedVaults] = useState<boolean>(true);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
