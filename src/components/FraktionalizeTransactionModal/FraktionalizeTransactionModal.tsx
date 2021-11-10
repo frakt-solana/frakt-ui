@@ -29,12 +29,12 @@ const FraktionalizeTransactionModal = ({
     <div className={styles.successContent}>
       <h2 className={styles.successContent__title}>Congratulations!</h2>
       <p className={styles.successContent__subtitle}>
-        Now feel free to do anything with your fractions!
+        Now feel free to do anything with your fraktions!
       </p>
       {!!fractionsMintAddress && (
         <div className={styles.successContent__fractionsMintWrapper}>
           <span className={styles.successContent__fractionsMintTitle}>
-            Fractions mint address:
+            Fraktions mint address:
           </span>
           <b>{fractionsMintAddress}</b>
         </div>

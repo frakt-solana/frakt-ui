@@ -1,17 +1,15 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router';
 
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
-import { VaultData } from '../../contexts/fraktion/fraktion.model';
+import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
 import { useWallet } from '../../external/contexts/wallet';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../utils';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import BuyoutTransactionModal from '../../components/BuyoutTransactionModal';
+import TransactionModal from '../../components/TransactionModal';
 import { useUserTokens } from '../../contexts/userTokens';
-import { URLS } from '../../constants';
 import { Loader } from '../../components/Loader';
 import BN from 'bn.js';
 
@@ -31,9 +29,8 @@ const MOCK_TOKEN_LIST = [
 ];
 
 const useBuyoutTransactionModal = () => {
-  const { refetch: refetchTokens, rawUserTokensByMint } = useUserTokens();
-  const history = useHistory();
-  const { buyout, refetch: refetchVaults } = useFraktion();
+  const { rawUserTokensByMint, refetch: refetchUserTokens } = useUserTokens();
+  const { buyout, patchVault } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
   const [lastVaultData, setLastVaultData] = useState<VaultData>(null);
@@ -50,9 +47,8 @@ const useBuyoutTransactionModal = () => {
 
       if (res) {
         setState('success');
-        refetchTokens();
-        refetchVaults();
-        history.push(URLS.VAULTS);
+        refetchUserTokens();
+        patchVault({ ...vaultData, state: VaultState[2] });
       } else {
         setState('fail');
       }
@@ -161,18 +157,19 @@ export const Buyout = ({
 
         {!connected && (
           <Button className={styles.buyout__connectWalletBtn} onClick={select}>
-            Connect wallet to make buyout
+            Connect wallet
           </Button>
         )}
       </div>
       {!userTokensLoading && (
         <p className={styles.buyout__fee}>* 2% fee included</p>
       )}
-      <BuyoutTransactionModal
+      <TransactionModal
         visible={txnModalVisible}
         onCancel={onTransactionModalCancel}
         onRetryClick={retryTxn}
         state={txnModalState}
+        onSuccessMessage="You have successfully made a buyout"
       />
     </div>
   );

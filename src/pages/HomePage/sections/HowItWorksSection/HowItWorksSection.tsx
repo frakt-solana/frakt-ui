@@ -39,12 +39,12 @@ const HowItWorksSection = ({
               { [styles.tabButtonActive]: activeTab === 'buyer' },
             ])}
           >
-            For Fractions buyers
+            For Fraktions buyers
           </button>
         </div>
         <p className={styles.subtitle}>
           The NFT is bought if 100% of the buyout price is paid by someone. Once
-          the original NFT is sold the fraction holders get paid by the protocol
+          the original NFT is sold the fraktion holders get paid by the protocol
           from the payout proportionally to the parts they hold. They exchange
           their parts for the payout.
         </p>
@@ -73,7 +73,7 @@ const HowItWorksSection = ({
           ])}
         >
           <p>
-            If user wants to own a fraction of a certain NFT they can buy it
+            If user wants to own a fraktion of a certain NFT they can buy it
             from the issuer OTC, buy it from a liquidity pool on DEX, get it
             airdropped, etc.
           </p>
@@ -82,7 +82,7 @@ const HowItWorksSection = ({
             keep them or trade them.
           </p>
           <p>
-            Once the original NFT gets sold, users with fraction tokens can
+            Once the original NFT gets sold, users with fraktion tokens can
             exchange them in the protocol for a proportional compensation. (e.g.
             if user has 16% of a 300 SOL SMB they get 48 SOL from the protocol
             in exchange for their tokens).

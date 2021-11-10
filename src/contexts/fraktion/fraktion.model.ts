@@ -31,6 +31,7 @@ export interface Vault {
   state: VaultState;
   fractionsSupply: BN;
   lockedPricePerShare: BN;
+  createdAt: BN;
 }
 
 export interface VaultsMap {
@@ -64,6 +65,7 @@ export interface VaultData {
   redeemTreasury: string;
   isNftVerified: boolean;
   nftCollectionName?: string;
+  createdAt: number;
 }
 
 export interface CreateFraktionalizerResult {
@@ -98,6 +100,8 @@ export type redeemFunction = (vault: VaultData) => Promise<{
 
 export type fetchVaultsFunction = () => Promise<VaultData[] | null>;
 
+export type patchVaultFunction = (vaultInfo: VaultData) => void;
+
 export interface FraktionContextType {
   loading: boolean;
   error: any;
@@ -106,4 +110,5 @@ export interface FraktionContextType {
   buyout: buyoutFunction;
   redeem: redeemFunction;
   refetch: fetchVaultsFunction;
+  patchVault: patchVaultFunction;
 }

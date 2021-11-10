@@ -26,7 +26,7 @@ export const InfoTable = ({
       </div>
       <div className={styles.infoTable__cell}>
         <p className={styles.infoTable__cellName}>
-          Fraction price ({currency})
+          Fraktion price ({currency})
         </p>
         <p className={styles.infoTable__cellValue}>
           {decimalBNToString(

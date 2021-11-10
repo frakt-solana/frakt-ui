@@ -94,6 +94,21 @@
   &_left {
     flex-grow: 1;
   }
+
+  &__exchangeSoon {
+    pointer-events: none;
+    opacity: 0.5;
+    position: relative;
+    &::after {
+      position: absolute;
+      content: 'SOON';
+      color: var(--accent-color-1);
+      font-size: 12px;
+      font-weight: 900;
+      right: 4px;
+      top: 28px;
+    }
+  }
 }
 
 .bgAccent {

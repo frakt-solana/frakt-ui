@@ -6,7 +6,7 @@ import { URLS } from './constants';
 
 import Page404 from './pages/Page404';
 import HomePage from './pages/HomePage';
-import ExchangePage from './pages/ExchangePage';
+// import ExchangePage from './pages/ExchangePage';
 import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import VaultPage from './pages/VaultPage';
@@ -41,11 +41,11 @@ export function Routes(): JSX.Element {
                       path={`${URLS.VAULT}/:vaultPubkey`}
                       component={(): JSX.Element => <VaultPage />}
                     />
-                    <Route
+                    {/* <Route
                       exact
                       path={URLS.EXCHANGE}
                       component={(): JSX.Element => <ExchangePage />}
-                    />
+                    /> */}
                     <Route
                       exact
                       path={URLS.STAKER_PAGE}

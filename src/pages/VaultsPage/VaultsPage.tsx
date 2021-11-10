@@ -14,7 +14,12 @@ import { NavLink } from 'react-router-dom';
 import { URLS } from '../../constants';
 import Toggle from '../../components/Toggle';
 import classNames from 'classnames/bind';
-import { VaultState } from '../../contexts/fraktion/fraktion.model';
+import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
+
+const sortVaultsByNew = (vaults: VaultData[]) =>
+  [...vaults].sort(({ createdAt: createdAtA }, { createdAt: createdAtB }) => {
+    return createdAtB - createdAtA;
+  });
 
 const VaultsPage = (): JSX.Element => {
   const { loading, vaults: rawVaults } = useFraktion();
@@ -29,11 +34,12 @@ const VaultsPage = (): JSX.Element => {
   }, 300);
 
   const vaults = useMemo(() => {
-    return rawVaults
+    const filteredVaults = rawVaults
       .filter(({ state }) => !(filterActiveVaults && state === VaultState[1]))
       .filter(({ state }) => !(filterBoughtVaults && state === VaultState[2]))
       .filter(({ state }) => !(filterClosedVaults && state === VaultState[3]))
       .filter(({ name }) => name.toUpperCase().includes(searchString));
+    return sortVaultsByNew(filteredVaults);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     searchString,
