@@ -31,6 +31,7 @@ export interface Vault {
   state: VaultState;
   fractionsSupply: BN;
   lockedPricePerShare: BN;
+  createdAt: BN;
 }
 
 export interface VaultsMap {
@@ -64,6 +65,7 @@ export interface VaultData {
   redeemTreasury: string;
   isNftVerified: boolean;
   nftCollectionName?: string;
+  createdAt: number;
 }
 
 export interface CreateFraktionalizerResult {

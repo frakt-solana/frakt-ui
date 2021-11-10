@@ -79,6 +79,7 @@ export const FraktionProvider = ({
               state,
               fractionTreasury,
               redeemTreasury,
+              createdAt,
             } = vault;
 
             const vaultData: VaultData = {
@@ -99,6 +100,7 @@ export const FraktionProvider = ({
               store,
               isNftVerified: verification?.success || false,
               nftCollectionName: verification?.collection,
+              createdAt: createdAt.toNumber(),
             };
 
             return [...acc, vaultData];
