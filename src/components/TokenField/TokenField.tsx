@@ -43,9 +43,8 @@ const TokenField = ({
     <div
       style={style}
       className={classNames([
-        className,
-        { [styles.root_focused]: isFocused },
-        { [styles.root_error]: error },
+        { [styles.focused]: isFocused },
+        { [styles.error]: error },
       ])}
     >
       {!!label && (

@@ -27,7 +27,7 @@
   transition: border-color var(--transition-1);
 }
 
-.root_focused {
+.focused {
   .root {
     border-color: var(--accent-color-1);
 
@@ -45,7 +45,7 @@
   }
 }
 
-.root_error {
+.error {
   .root {
     border-color: var(--red-color);
   }
