@@ -112,12 +112,12 @@ export const Redeem = ({
   return (
     <div className={styles.redeem}>
       <h5 className={styles.redeem__title}>
-        {!connected && 'Have this fractions? Connect your wallet to redeem'}
+        {!connected && 'Have this fraktions? Connect your wallet to redeem'}
         {!!userRedeemValue && "You're available to redeem"}
         {connected &&
           !loading &&
           !userRedeemValue &&
-          "Seems like you don't have this fractions"}
+          "Seems like you don't have this fraktions"}
       </h5>
       <div className={styles.redeemControls}>
         {connected && !loading && !!userRedeemValue && (

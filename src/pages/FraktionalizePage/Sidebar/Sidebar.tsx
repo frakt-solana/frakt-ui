@@ -43,7 +43,7 @@ const Sidebar = ({
       Number(buyoutPrice) / Number(supply) < 1e-6
     ) {
       return setSmallFractionPriceError(
-        'Price per fraction must be greater than 1e-6',
+        'Price per fraktion must be greater than 1e-6',
       );
     }
     setSmallFractionPriceError('');

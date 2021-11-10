@@ -65,7 +65,7 @@ const VaultCard = ({
             <div className={styles.value}>{supply.toString().slice(0, -3)}</div>
           </div>
           <div className={styles.item}>
-            <div className={styles.title}>Fraction price ({currency})</div>
+            <div className={styles.title}>Fraktion price ({currency})</div>
             <div className={styles.value}>
               {decimalBNToString(pricePerFraction.mul(new BN(1e3)), 6, 9)}
             </div>
