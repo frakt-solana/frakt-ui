@@ -146,11 +146,14 @@
 }
 
 .redeem {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   &Controls {
     display: flex;
     align-items: center;
     gap: 10px;
-    height: 61px;
   }
 
   &__title {
@@ -167,11 +170,11 @@
   }
 
   &__connectWalletBtn {
-    height: 100%;
+    min-height: 61px;
   }
 
   &__redeemBtn {
-    height: 100%;
+    min-height: 61px;
     padding-top: unset;
     padding-bottom: unset;
   }

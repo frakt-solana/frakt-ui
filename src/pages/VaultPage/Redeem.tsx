@@ -10,7 +10,7 @@ import styles from './styles.module.scss';
 import { useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import BuyoutTransactionModal from '../../components/BuyoutTransactionModal';
+import TransactionModal from '../../components/TransactionModal';
 
 const { SOL_TOKEN_PUBKEY } = fraktionConfig;
 
@@ -31,7 +31,7 @@ const MOCK_TOKEN_LIST = [
 
 const useRedeemTransactionModal = () => {
   const { refetch: refetchTokens } = useUserTokens();
-  const { redeem, refetch: refetchVaults } = useFraktion();
+  const { redeem } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<'loading' | 'success' | 'fail'>('loading');
   const [lastVaultData, setLastVaultData] = useState<VaultData>(null);
@@ -49,7 +49,6 @@ const useRedeemTransactionModal = () => {
       if (res) {
         setState('success');
         refetchTokens();
-        refetchVaults();
       } else {
         setState('fail');
       }
@@ -100,7 +99,6 @@ export const Redeem = ({
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount = usetFractions?.amountBN || new BN(0);
-
   const userRedeemValue =
     userFractionsAmount.mul(vaultInfo.lockedPricePerFraction).toNumber() / 1e9;
 
@@ -113,7 +111,7 @@ export const Redeem = ({
     <div className={styles.redeem}>
       <h5 className={styles.redeem__title}>
         {!connected && 'Have this fraktions? Connect your wallet to redeem'}
-        {!!userRedeemValue && "You're available to redeem"}
+        {!!userRedeemValue && !loading && "You're available to redeem"}
         {connected &&
           !loading &&
           !userRedeemValue &&
@@ -150,11 +148,12 @@ export const Redeem = ({
           </Button>
         )}
       </div>
-      <BuyoutTransactionModal
+      <TransactionModal
         visible={txnModalVisible}
         onCancel={onTransactionModalCancel}
         onRetryClick={retryTxn}
         state={txnModalState}
+        onSuccessMessage="You have successfully made a redeem"
       />
     </div>
   );

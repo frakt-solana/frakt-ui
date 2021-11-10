@@ -8,7 +8,7 @@ import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../utils';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import BuyoutTransactionModal from '../../components/BuyoutTransactionModal';
+import TransactionModal from '../../components/TransactionModal';
 import { useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import BN from 'bn.js';
@@ -164,11 +164,12 @@ export const Buyout = ({
       {!userTokensLoading && (
         <p className={styles.buyout__fee}>* 2% fee included</p>
       )}
-      <BuyoutTransactionModal
+      <TransactionModal
         visible={txnModalVisible}
         onCancel={onTransactionModalCancel}
         onRetryClick={retryTxn}
         state={txnModalState}
+        onSuccessMessage="You have successfully made a buyout"
       />
     </div>
   );

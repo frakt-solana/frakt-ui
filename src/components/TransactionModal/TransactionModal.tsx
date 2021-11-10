@@ -3,19 +3,21 @@ import { Loader } from '../Loader';
 import { Modal } from '../Modal';
 import styles from './styles.module.scss';
 
-interface BuyoutTransactionModalProps {
+interface TransactionModalProps {
   state?: 'loading' | 'success' | 'fail';
   visible: boolean;
   onCancel: () => void;
   onRetryClick?: () => void;
+  onSuccessMessage?: string;
 }
 
-const BuyoutTransactionModal = ({
+const TransactionModal = ({
   visible,
   state = 'loading',
   onCancel,
   onRetryClick = () => {},
-}: BuyoutTransactionModalProps): JSX.Element => {
+  onSuccessMessage = 'Transaction was successful',
+}: TransactionModalProps): JSX.Element => {
   const loadingContent = (
     <div className={styles.loadingContent}>
       <Loader size="large" />
@@ -26,9 +28,7 @@ const BuyoutTransactionModal = ({
   const successContent = (
     <div className={styles.successContent}>
       <h2 className={styles.successContent__title}>Congratulations!</h2>
-      <p className={styles.successContent__subtitle}>
-        You have successfully made a buyout
-      </p>
+      <p className={styles.successContent__subtitle}>{onSuccessMessage}</p>
     </div>
   );
 
@@ -65,4 +65,4 @@ const BuyoutTransactionModal = ({
   );
 };
 
-export default BuyoutTransactionModal;
+export default TransactionModal;
