@@ -26,6 +26,7 @@ const FraktionContext = React.createContext<FraktionContextType>({
   buyout: () => Promise.resolve(null),
   redeem: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
+  patchVault: () => {},
 });
 
 export const FraktionProvider = ({
@@ -124,6 +125,17 @@ export const FraktionProvider = ({
     }
   };
 
+  const patchVault = (vaultInfo: VaultData): void => {
+    setVaults((vaults) =>
+      vaults.reduce((vaults, vault) => {
+        if (vault.publicKey === vaultInfo.publicKey) {
+          return [...vaults, vaultInfo];
+        }
+        return [...vaults, vault];
+      }, []),
+    );
+  };
+
   useEffect(() => {
     connection && fetchVaults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,6 +167,7 @@ export const FraktionProvider = ({
           buyout(vault, userTokensByMint, wallet, connection),
         redeem: (vault) => redeem(vault, wallet, connection),
         refetch: fetchVaults,
+        patchVault,
       }}
     >
       {children}
@@ -171,6 +184,7 @@ export const useFraktion = (): FraktionContextType => {
     buyout,
     redeem,
     refetch: fetchVaults,
+    patchVault,
   } = useContext(FraktionContext);
   return {
     loading,
@@ -180,5 +194,6 @@ export const useFraktion = (): FraktionContextType => {
     buyout,
     redeem,
     refetch: fetchVaults,
+    patchVault,
   };
 };
