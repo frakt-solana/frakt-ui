@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry';
 
+const VERIFIED_BY_FRAKT_TEAM_TOKENS_URL =
+  'https://raw.githubusercontent.com/frakt-solana/fraktion-tokens-list/main/tokens.json';
+
 interface SolanaTokenRegistryInterface {
   loading: boolean;
   tokens: TokenInfo[];
@@ -27,16 +30,13 @@ export const SolanaTokenRegistryProvider = ({
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetch(
-        'https://raw.githubusercontent.com/frakt-solana/fraktion-tokens-list/main/tokens.json',
-      ).then((r) => r.json()),
-      new TokenListProvider().resolve().then((tokens) => {
-        const tokenList = tokens.filterByClusterSlug('mainnet-beta').getList();
-        return tokenList;
-      }),
+      fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL).then((res) => res.json()),
+      new TokenListProvider()
+        .resolve()
+        .then((tokens) => tokens.filterByClusterSlug('mainnet-beta').getList()),
     ])
-      .then((lists) => {
-        setTokens([...lists[0], ...lists[1]]);
+      .then(([fraktList, solanaList]) => {
+        setTokens([...fraktList, ...solanaList]);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
