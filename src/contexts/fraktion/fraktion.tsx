@@ -36,10 +36,17 @@ export const fraktionalize = async (
   try {
     const { mint, metadata } = userNft;
 
+    let pricePerFractionBn = new BN(pricePerFraction * 1e6);
+    const fractionsAmountBn = new BN(fractionsAmount * 1e3);
+
+    if (pricePerFractionBn.mul(fractionsAmountBn).lt(new BN(1 * 1e9))) {
+      pricePerFractionBn = pricePerFractionBn.add(new BN(1));
+    }
+
     const result = await createFraktionalizer(
       connection,
-      new BN(pricePerFraction * 1e6), //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
-      new BN(fractionsAmount * 1e3),
+      pricePerFractionBn, //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
+      fractionsAmountBn,
       FRACTION_DECIMALS,
       mint,
       ADMIN_PUBKEY,
