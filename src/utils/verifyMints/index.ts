@@ -72,7 +72,28 @@ const exchangeStrategy = async (
   }
 };
 
-const strategies = [exchangeStrategy, deStrategy];
+const githubStrategy = async (mintPubkey: string) => {
+  //raw.githubusercontent.com/frakt-solana/verified-mints/main/mints.json
+
+  try {
+    const result = await (
+      await fetch(
+        `https://raw.githubusercontent.com/frakt-solana/verified-mints/main/mints.json`,
+      )
+    ).json();
+
+    const collectionMint = result.find(({ mint }) => mint === mintPubkey);
+    if (collectionMint) {
+      return { success: true, collection: collectionMint.collection };
+    }
+
+    return { error: true };
+  } catch (error) {
+    return { error: true };
+  }
+};
+
+const strategies = [exchangeStrategy, deStrategy, githubStrategy];
 
 const verifyMint = async (
   mintPubkey: string,
