@@ -161,7 +161,7 @@ export const Buyout = ({
 
         {!connected && (
           <Button className={styles.buyout__connectWalletBtn} onClick={select}>
-            Connect wallet to make buyout
+            Connect wallet
           </Button>
         )}
       </div>
