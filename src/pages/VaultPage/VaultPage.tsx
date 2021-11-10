@@ -67,7 +67,7 @@ const VaultPage = (): JSX.Element => {
             <div className={styles.details}>
               <div className={styles.detailsHeader}>
                 <h2 className={styles.title}>
-                  {vaultInfo.name} {tokerName ? `(${tokerName})` : ''}
+                  {vaultInfo.name} {tokerName ? `($${tokerName})` : ''}
                 </h2>
                 <div className={styles.statusAndOwner}>
                   <div className={styles.status}>

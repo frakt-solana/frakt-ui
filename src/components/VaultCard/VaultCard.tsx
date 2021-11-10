@@ -55,7 +55,7 @@ const VaultCard = ({
         </div>
         <div className={styles.nameContainer}>
           <div className={styles.name}>
-            {name} {tokerName ? `(${tokerName})` : ''}
+            {name} {tokerName ? `($${tokerName})` : ''}
           </div>
           <div className={styles.owner}>{shortenAddress(owner)}</div>
         </div>
