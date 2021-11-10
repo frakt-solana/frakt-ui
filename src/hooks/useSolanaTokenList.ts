@@ -11,11 +11,17 @@ export const useSolanaTokenList = (): {
 
   useEffect(() => {
     setLoading(true);
-    new TokenListProvider()
-      .resolve()
-      .then((tokens) => {
+    Promise.all([
+      fetch(
+        'https://raw.githubusercontent.com/frakt-solana/fraktion-tokens-list/main/tokens.json',
+      ).then((r) => r.json()),
+      new TokenListProvider().resolve().then((tokens) => {
         const tokenList = tokens.filterByClusterSlug('mainnet-beta').getList();
-        setTokens(tokenList);
+        return tokenList;
+      }),
+    ])
+      .then((lists) => {
+        setTokens([...lists[0], ...lists[1]]);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
