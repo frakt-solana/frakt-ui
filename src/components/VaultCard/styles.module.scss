@@ -7,7 +7,9 @@
 
 .cardContainer {
   padding: 0 10px 10px 0;
+  height: 100%;
   .card {
+    height: 100%;
     &:before {
       content: '';
       width: 100%;
