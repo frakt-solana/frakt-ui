@@ -20,6 +20,7 @@ interface TokenFieldProps {
   onUseMaxButtonClick?: () => void;
   error?: boolean;
   placeholder?: string;
+  onInputBlur?: () => void;
 }
 
 const TokenField = ({
@@ -34,6 +35,7 @@ const TokenField = ({
   className,
   onUseMaxButtonClick,
   error,
+  onInputBlur,
   placeholder = '0.0',
 }: TokenFieldProps): JSX.Element => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -64,6 +66,7 @@ const TokenField = ({
           placeholder={placeholder}
           positiveOnly
           className={styles.valueInput}
+          onBlur={onInputBlur}
         />
         {!!onUseMaxButtonClick && (
           <div className={styles.useMaxBtnContainer}>

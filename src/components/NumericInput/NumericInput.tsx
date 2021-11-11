@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 
-import { Input } from '../../components/Input';
+import { Input, InputProps } from '../../components/Input';
 import styles from './styles.module.scss';
 
-interface NumericInputProps {
+export interface NumericInputProps extends Omit<InputProps, 'onChange'> {
   value: string;
   placeholder?: string;
   onChange: (value: string) => void;
@@ -28,6 +28,7 @@ const NumericInput = React.forwardRef(
       integerOnly = false,
       className,
       error,
+      ...props
     }: NumericInputProps,
     ref,
   ) => {
@@ -49,6 +50,7 @@ const NumericInput = React.forwardRef(
         className={classNames([styles.numberInput, className])}
         ref={ref}
         error={error}
+        {...props}
       />
     );
   },
