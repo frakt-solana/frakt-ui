@@ -19,6 +19,7 @@ import globalConfig from '../../config';
 import { notify } from '../../external/utils/notifications';
 import { RawUserTokensByMint, UserNFT } from '../userTokens/userTokens.model';
 import { registerToken } from '../../utils/registerToken';
+import { adjustPricePerFraction } from './utils';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
@@ -36,12 +37,12 @@ export const fraktionalize = async (
   try {
     const { mint, metadata } = userNft;
 
-    let pricePerFractionBn = new BN(pricePerFraction * 1e6);
     const fractionsAmountBn = new BN(fractionsAmount * 1e3);
 
-    if (pricePerFractionBn.mul(fractionsAmountBn).lt(new BN(1 * 1e9))) {
-      pricePerFractionBn = pricePerFractionBn.add(new BN(1));
-    }
+    const pricePerFractionBn = adjustPricePerFraction(
+      new BN(pricePerFraction * 1e6),
+      fractionsAmountBn,
+    );
 
     const result = await createFraktionalizer(
       connection,
