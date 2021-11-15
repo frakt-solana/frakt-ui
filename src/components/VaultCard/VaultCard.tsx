@@ -3,7 +3,7 @@ import BN from 'bn.js';
 import styles from './styles.module.scss';
 import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
 import { shortenAddress } from '../../external/utils/utils';
-import { decimalBNToString } from '../../utils';
+import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
 import { useEffect, useState } from 'react';
@@ -67,13 +67,13 @@ const VaultCard = ({
           <div className={styles.item}>
             <div className={styles.title}>Fraction price ({currency})</div>
             <div className={styles.value}>
-              {decimalBNToString(pricePerFraction.mul(new BN(1e3)), 6, 9)}
+              {shortBigNumber(pricePerFraction.mul(new BN(1e3)), 6, 9)}
             </div>
           </div>
           <div className={styles.item}>
             <div className={styles.title}>Buyout price ({currency})</div>
             <div className={styles.value}>
-              {decimalBNToString(pricePerFraction.mul(supply), 2, 9)}
+              {shortBigNumber(pricePerFraction.mul(supply), 2, 9)}
             </div>
           </div>
         </div>
