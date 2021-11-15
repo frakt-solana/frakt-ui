@@ -62,12 +62,12 @@ const VaultCard = ({
         <div className={styles.stats}>
           <div className={styles.item}>
             <div className={styles.title}>Total supply</div>
-            <div className={styles.value}>{supply.toString().slice(0, -3)}</div>
+            <div className={styles.value}>{shortBigNumber(supply, 1, 3)}</div>
           </div>
           <div className={styles.item}>
             <div className={styles.title}>Fraction price ({currency})</div>
             <div className={styles.value}>
-              {shortBigNumber(pricePerFraction.mul(new BN(1e3)), 6, 9)}
+              {shortBigNumber(pricePerFraction, 6, 6)}
             </div>
           </div>
           <div className={styles.item}>

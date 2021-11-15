@@ -8,7 +8,7 @@ export const DECIMALS_PER_FRKT = 1e8;
 export const decimalBNToString = (
   bn: BN,
   precision = 2,
-  decimals = 8,
+  decimals = 9,
 ): string => {
   const bnStr = bn.toString(10).padStart(decimals, '0');
   if (bnStr === '0') return '0';
@@ -26,7 +26,7 @@ export const decimalBNToString = (
   return `${integerPart || 0}${floatPart}`;
 };
 
-export function shortBigNumber(bn: BN, precision = 2, decimals = 9) {
+export const shortBigNumber = (bn: BN, precision = 2, decimals = 9): string => {
   const abbrev = ['K', 'M', 'B', 'T'];
   const dec = [3, 6, 9, 12];
   const bnString = bn.toString();
@@ -49,88 +49,7 @@ export function shortBigNumber(bn: BN, precision = 2, decimals = 9) {
   }
 
   return decimalBNToString(bn, precision, decimals);
-}
-/*
-console.log('123 456 789 123 456 789.000000000')
-console.log(shortBigNumber(new BN('123456789123456789000000000')))
-
-console.log('456 789 123 456 789.000000000')
-console.log(shortBigNumber(new BN('456789123456789000000000')))
-
-console.log('56 789 123 456 789.000000000')
-console.log(shortBigNumber(new BN('56789123456789000000000')))
-
-console.log('6 789 123 456 789.000000000')
-console.log(shortBigNumber(new BN('6789123456789000000000')))
-
-console.log('789 123 456 789.000000000')
-console.log(shortBigNumber(new BN('789123456789000000000')))
-
-console.log('89 123 456 789.000000000')
-console.log(shortBigNumber(new BN('89123456789000000000')))
-
-console.log('9 123 456 789.000000000')
-console.log(shortBigNumber(new BN('9123456789000000000')))
-
-console.log('123 456 789.000000000')
-console.log(shortBigNumber(new BN('123456789000000000')))
-
-
-console.log('23 456 789.000000000')
-console.log(shortBigNumber(new BN('23456789000000000')))
-
-
-console.log('3 456 789.000000000')
-console.log(shortBigNumber(new BN('3456789000000000')))
-
-console.log('456 789.000000000')
-console.log(shortBigNumber(new BN('456789000000000')))
-
-console.log('56 789.000000000')
-console.log(shortBigNumber(new BN('56789000000000')))
-
-console.log('6 789.000000000')
-console.log(shortBigNumber(new BN('6789000000000')))
-
-console.log('789.000000000')
-console.log(shortBigNumber(new BN('789000000000')))
-
-console.log('89.000000000')
-console.log(shortBigNumber(new BN('89000000000')))
-
-console.log('9.000000000')
-console.log(shortBigNumber(new BN('9000000000')))
-
-console.log('0900000000')
-console.log(shortBigNumber(new BN('900000000')))
-
-console.log('0090000000')
-console.log(shortBigNumber(new BN('90000000')))
-
-console.log('0009000000')
-console.log(shortBigNumber(new BN('9000000')))
-
-console.log('000900000')
-console.log(shortBigNumber(new BN('900000')))
-
-console.log('0000090000')
-console.log(shortBigNumber(new BN('90000')))
-
-console.log('0000009000')
-console.log(shortBigNumber(new BN('9000')))
-
-console.log('0000000900')
-console.log(shortBigNumber(new BN('900')))
-
-console.log('0000000090')
-console.log(shortBigNumber(new BN('90')))
-
-console.log('0000000009')
-console.log(shortBigNumber(new BN('9')))
-
-console.log('1.002.000.000')
-console.log(shortBigNumber(new BN('1002000000')))
-*/
+};
 
 export const frktBNToString = (bn: BN, precision = 6): string => {
   const bnStr = bn.toString(10);
