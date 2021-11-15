@@ -32,25 +32,43 @@ const deStrategy = async (
   }
 };
 
-// const meStrategy = async (
-//   mintPubkey: string,
-// ): Promise<VerificationStrategyResult> => {
-//   try {
-//     const result = await (
-//       await fetch(
-//         `https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/${mintPubkey}`,
-//       )
-//     ).json();
+const meStrategy = async (
+  mintPubkey: string,
+): Promise<VerificationStrategyResult> => {
+  try {
+    const result = await (
+      await fetch(
+        `https://api-mainnet.magiceden.io/rpc/getNFTByMintAddress/${mintPubkey}`,
+      )
+    ).json();
 
-//     if (result?.results?.collectionTitle) {
-//       return { success: true, collection: result.results.collectionTitle };
-//     }
+    if (result?.results?.collectionTitle) {
+      return { success: true, collection: result.results.collectionTitle };
+    }
 
-//     return { error: true };
-//   } catch (error) {
-//     return { error: true };
-//   }
-// };
+    return { error: true };
+  } catch (error) {
+    return { error: true };
+  }
+};
+
+const solseaStrategy = async (
+  mintPubkey: string,
+): Promise<VerificationStrategyResult> => {
+  try {
+    const result = await (
+      await fetch(`https://api.all.art/v1/solana/${mintPubkey}`)
+    ).json();
+
+    if (result?.verified) {
+      return { success: true, collection: result.nft_collection.title };
+    }
+
+    return { error: true };
+  } catch (error) {
+    return { error: true };
+  }
+};
 
 const exchangeStrategy = async (
   mintPubkey: string,
@@ -93,7 +111,13 @@ const githubStrategy = async (mintPubkey: string) => {
   }
 };
 
-const strategies = [exchangeStrategy, deStrategy, githubStrategy];
+const strategies = [
+  exchangeStrategy,
+  deStrategy,
+  meStrategy,
+  solseaStrategy,
+  githubStrategy,
+];
 
 const verifyMint = async (
   mintPubkey: string,

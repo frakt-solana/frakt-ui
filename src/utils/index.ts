@@ -8,15 +8,47 @@ export const DECIMALS_PER_FRKT = 1e8;
 export const decimalBNToString = (
   bn: BN,
   precision = 2,
-  lamports = 8,
+  decimals = 9,
 ): string => {
-  const bnStr = bn.toString(10);
+  const bnStr = bn.toString(10).padStart(decimals, '0');
   if (bnStr === '0') return '0';
-  const integerPart = bnStr.slice(0, -lamports);
-  const floatPart = bnStr
-    .padStart(lamports, '0')
-    .slice(-lamports, -lamports + precision);
-  return `${integerPart || 0}.${floatPart || 0}`;
+  const integerPart = bnStr.slice(0, -decimals);
+
+  let floatPart = bnStr.slice(bnStr.length - decimals);
+  const number = floatPart.replace(/^0+/g, '').replace(/0+$/g, '');
+  floatPart = floatPart.replace(/0+$/g, '');
+
+  if (floatPart.length - number.length < precision) {
+    floatPart = floatPart.slice(0, precision);
+  }
+
+  if (floatPart) floatPart = '.' + floatPart;
+  return `${integerPart || 0}${floatPart}`;
+};
+
+export const shortBigNumber = (bn: BN, precision = 2, decimals = 9): string => {
+  const abbrev = ['K', 'M', 'B', 'T'];
+  const dec = [3, 6, 9, 12];
+  const bnString = bn.toString();
+
+  if (bnString.length >= decimals + dec[0]) {
+    const decimalString = bn.toString().slice(0, -decimals);
+
+    for (let i = dec.length - 1; i >= 0; i--) {
+      const curDec = dec[i];
+      if (decimalString.length <= curDec) continue;
+
+      const result = decimalString.slice(
+        0,
+        decimalString.length - curDec + precision,
+      );
+      let floatPart = result.slice(-precision).replace(/0+$/g, '');
+      if (floatPart) floatPart = '.' + floatPart;
+      return `${result.slice(0, -precision) || 0}${floatPart}${abbrev[i]}`;
+    }
+  }
+
+  return decimalBNToString(bn, precision, decimals);
 };
 
 export const frktBNToString = (bn: BN, precision = 6): string => {
