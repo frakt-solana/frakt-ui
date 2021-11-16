@@ -1,33 +1,58 @@
 import { Switch } from 'antd';
-import {
-  SwitchChangeEventHandler,
-  SwitchClickEventHandler,
-} from 'antd/lib/switch';
 import classNames from 'classnames/bind';
+import { Controller } from 'react-hook-form';
 import styles from './styles.module.scss';
 
 interface IToggleProps {
   className?: string;
   disabled?: boolean;
-  onClick?: SwitchClickEventHandler;
-  onChange?: SwitchChangeEventHandler;
-  checked?: boolean;
+  value?: boolean;
   defaultChecked?: boolean;
+  label?: string;
+  onChange?: (value: any) => void;
+}
+
+interface IControlledToggleProps extends IToggleProps {
+  control: any;
+  name: string;
 }
 
 const Toggle = ({
   className = '',
   disabled = false,
-  onClick = () => {},
   onChange = () => {},
-  checked = false,
+  value = false,
+  label = null,
 }: IToggleProps): JSX.Element => (
-  <Switch
-    className={classNames(className, styles.toggle)}
-    onChange={onChange}
-    onClick={onClick}
-    checked={checked}
-    disabled={disabled}
+  <div
+    className={classNames(className, styles.filterToggle)}
+    onClick={() => onChange(!value)}
+  >
+    <Switch className={styles.toggle} checked={value} disabled={disabled} />
+    {label && (
+      <p
+        className={classNames([
+          styles.filterToggle__text,
+          { [styles.filterToggle__text_muted]: !value },
+        ])}
+      >
+        {label}
+      </p>
+    )}
+  </div>
+);
+
+export const ControlledToggle = ({
+  control,
+  name,
+  ...props
+}: IControlledToggleProps): JSX.Element => (
+  <Controller
+    control={control}
+    name={name}
+    render={({ field }) => {
+      return <Toggle {...props} {...field} />;
+    }}
   />
 );
 

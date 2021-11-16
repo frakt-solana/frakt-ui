@@ -12,34 +12,129 @@ import { useDebounce } from '../../hooks';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import { NavLink } from 'react-router-dom';
 import { URLS } from '../../constants';
-import Toggle from '../../components/Toggle';
-import classNames from 'classnames/bind';
-import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
+import { VaultState } from '../../contexts/fraktion/fraktion.model';
+import { useForm } from 'react-hook-form';
+import { ControlledToggle } from '../../components/Toggle/Toggle';
+import { ControlledSelect } from '../../components/Select/Select';
+import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
+import { useWallet } from '../../external/contexts/wallet';
 
-const sortVaultsByNew = (vaults: VaultData[]) =>
-  [...vaults].sort(({ createdAt: createdAtA }, { createdAt: createdAtB }) => {
-    return createdAtB - createdAtA;
-  });
+const SORT_VALUES = [
+  {
+    label: (
+      <span>
+        Supply <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'supply_asc',
+  },
+  {
+    label: (
+      <span>
+        Supply <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'supply_desc',
+  },
+  {
+    label: (
+      <span>
+        Buyout price <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'buyoutPrice_asc',
+  },
+  {
+    label: (
+      <span>
+        Buyout price <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'buyoutPrice_desc',
+  },
+  {
+    label: (
+      <span>
+        Fraction price <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'lockedPricePerFraction_asc',
+  },
+  {
+    label: (
+      <span>
+        Fraction price <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'lockedPricePerFraction_desc',
+  },
+  {
+    label: (
+      <span>
+        Date created <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'createdAt_asc',
+  },
+  {
+    label: (
+      <span>
+        Date created <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'createdAt_desc',
+  },
+];
 
 const VaultsPage = (): JSX.Element => {
+  const { control, watch } = useForm({
+    defaultValues: {
+      filterActiveVaults: false,
+      filterBoughtVaults: false,
+      filterClosedVaults: false,
+      filterMyVaults: false,
+      sort: SORT_VALUES[7],
+    },
+  });
+  const filterActiveVaults = watch('filterActiveVaults');
+  const filterBoughtVaults = watch('filterBoughtVaults');
+  const filterClosedVaults = watch('filterClosedVaults');
+  const filterMyVaults = watch('filterMyVaults');
+  const sort = watch('sort');
+
   const { loading, vaults: rawVaults } = useFraktion();
+  const { connected, wallet } = useWallet();
   const [searchString, setSearchString] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(9);
-  const [filterActiveVaults, setFilterActiveVaults] = useState<boolean>(false);
-  const [filterBoughtVaults, setFilterBoughtVaults] = useState<boolean>(true);
-  const [filterClosedVaults, setFilterClosedVaults] = useState<boolean>(true);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
 
   const vaults = useMemo(() => {
-    const filteredVaults = rawVaults
+    const [sortField, sortOrder] = sort.value.split('_');
+    //TODO optimise it 4n instead of n
+    return rawVaults
       .filter(({ state }) => !(filterActiveVaults && state === VaultState[1]))
       .filter(({ state }) => !(filterBoughtVaults && state === VaultState[2]))
       .filter(({ state }) => !(filterClosedVaults && state === VaultState[3]))
-      .filter(({ name }) => name.toUpperCase().includes(searchString));
-    return sortVaultsByNew(filteredVaults);
+      .filter(
+        ({ authority }) =>
+          !(
+            connected &&
+            filterMyVaults &&
+            authority === wallet.publicKey.toString()
+          ),
+      )
+      .filter(({ name }) => name.toUpperCase().includes(searchString))
+      .sort((a, b) => {
+        if (sortField === 'createdAt') {
+          if (sortOrder === 'asc') return a.createdAt - b.createdAt;
+          return b.createdAt - a.createdAt;
+        }
+        if (sortOrder === 'asc') return a[sortField].cmp(b[sortField]);
+        return b[sortField].cmp(a[sortField]);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     searchString,
@@ -47,7 +142,10 @@ const VaultsPage = (): JSX.Element => {
     filterActiveVaults,
     filterBoughtVaults,
     filterClosedVaults,
+    filterMyVaults,
+    sort,
   ]);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
@@ -57,22 +155,40 @@ const VaultsPage = (): JSX.Element => {
           className={styles.search}
           placeholder="Search by vault name"
         />
-        <div className={styles.filters}>
-          <FilterToggle
-            checked={!filterActiveVaults}
-            toggleChecked={() => setFilterActiveVaults((prev) => !prev)}
-            name="Active Vaults"
-          />
-          <FilterToggle
-            checked={!filterBoughtVaults}
-            toggleChecked={() => setFilterBoughtVaults((prev) => !prev)}
-            name="Bought Vaults"
-          />
-          <FilterToggle
-            checked={!filterClosedVaults}
-            toggleChecked={() => setFilterClosedVaults((prev) => !prev)}
-            name="Closed Vaults"
-          />
+        <div className={styles.filtersWrapper}>
+          <div className={styles.filters}>
+            <ControlledToggle
+              control={control}
+              name="filterActiveVaults"
+              label="Active Vaults"
+            />
+            <ControlledToggle
+              control={control}
+              name="filterBoughtVaults"
+              label="Bought Vaults"
+            />
+            {connected && (
+              <ControlledToggle
+                control={control}
+                name="filterMyVaults"
+                label="My Vaults"
+              />
+            )}
+            <ControlledToggle
+              control={control}
+              name="filterClosedVaults"
+              label="Closed Vaults"
+            />
+          </div>
+          <div>
+            <ControlledSelect
+              valueContainerClassName={styles.valueContainer}
+              label="Sort by"
+              control={control}
+              name="sort"
+              options={SORT_VALUES}
+            />
+          </div>
         </div>
 
         <FakeInfinityScroll
@@ -94,6 +210,7 @@ const VaultsPage = (): JSX.Element => {
               isNftVerified,
               lockedPricePerFraction,
               priceTokenMint,
+              buyoutPrice,
             }) => (
               <NavLink key={publicKey} to={`${URLS.VAULT}/${publicKey}`}>
                 <VaultCard
@@ -106,6 +223,7 @@ const VaultsPage = (): JSX.Element => {
                   isNftVerified={isNftVerified}
                   pricePerFraction={lockedPricePerFraction}
                   priceTokenMint={priceTokenMint}
+                  buyoutPrice={buyoutPrice}
                 />
               </NavLink>
             ),
@@ -113,30 +231,6 @@ const VaultsPage = (): JSX.Element => {
         </FakeInfinityScroll>
       </Container>
     </AppLayout>
-  );
-};
-
-const FilterToggle = ({
-  checked,
-  toggleChecked = () => {},
-  name,
-}: {
-  checked?: boolean;
-  toggleChecked?: () => void;
-  name: string;
-}): JSX.Element => {
-  return (
-    <div className={styles.filterToggle} onClick={toggleChecked}>
-      <Toggle checked={!!checked} />
-      <p
-        className={classNames([
-          styles.filterToggle__text,
-          { [styles.filterToggle__text_muted]: !checked },
-        ])}
-      >
-        {name}
-      </p>
-    </div>
   );
 };
 

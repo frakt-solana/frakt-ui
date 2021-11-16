@@ -21,19 +21,29 @@
   margin-bottom: 35px;
 }
 
-.filterToggle {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
+.arrowUp, .arrowDown {
+  position: relative;
+  top: 2px;
+  path {
+    stroke: var(--white-color);
+  }
+}
 
-  &__text {
-    font: var(--font-btn-mid);
-    transition: opacity (--transition-1);
+.arrowDown {
+  transform: rotate(180deg);
+}
 
-    &_muted {
-      opacity: 0.3;
+.valueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+    path{
+      stroke: var(--accent-color-1);
     }
   }
+}
+
+.filtersWrapper {
+  display: flex;
+  justify-content: space-between;
 }
