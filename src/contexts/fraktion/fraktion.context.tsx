@@ -102,6 +102,7 @@ export const FraktionProvider = ({
               isNftVerified: verification?.success || false,
               nftCollectionName: verification?.collection,
               createdAt: createdAt.toNumber(),
+              buyoutPrice: lockedPricePerShare.mul(fractionsSupply),
             };
 
             return [...acc, vaultData];

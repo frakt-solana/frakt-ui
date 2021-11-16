@@ -17,23 +17,44 @@
 .filters {
   display: flex;
   align-items: center;
-  gap: 36px;
-  margin-bottom: 35px;
+  gap: 12px 36px;
+  flex-wrap: wrap;
 }
 
-.filterToggle {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
+.filter {
+  width: unset;
+}
 
-  &__text {
-    font: var(--font-btn-mid);
-    transition: opacity (--transition-1);
+.arrowUp,
+.arrowDown {
+  position: relative;
+  top: 2px;
+  path {
+    stroke: var(--white-color);
+  }
+}
 
-    &_muted {
-      opacity: 0.3;
+.arrowDown {
+  transform: rotate(180deg);
+}
+
+.sortingSelect {
+  min-width: 270px;
+}
+
+.sortingSelectValueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+    path {
+      stroke: var(--accent-color-1);
     }
   }
+}
+
+.filtersWrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 35px;
+  gap: 120px;
 }
