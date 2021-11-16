@@ -50,7 +50,7 @@ export const ControlledToggle = ({
   <Controller
     control={control}
     name={name}
-    render={({ field }) => {
+    render={({ field: { ref, ...field } }) => {
       return <Toggle {...props} {...field} />;
     }}
   />

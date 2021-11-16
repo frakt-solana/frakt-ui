@@ -61,6 +61,6 @@ export const ControlledSelect = ({
   <Controller
     control={control}
     name={name}
-    render={({ field }) => <Select {...props} {...field} />}
+    render={({ field: { ref, ...field } }) => <Select {...props} {...field} />}
   />
 );

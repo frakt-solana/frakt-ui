@@ -89,17 +89,17 @@ const SORT_VALUES = [
 const VaultsPage = (): JSX.Element => {
   const { control, watch } = useForm({
     defaultValues: {
-      filterActiveVaults: false,
-      filterBoughtVaults: false,
-      filterClosedVaults: false,
-      filterMyVaults: false,
+      showActiveVaults: true,
+      showBoughtVaults: false,
+      showClosedVaults: false,
+      showMyVaults: false,
       sort: SORT_VALUES[7],
     },
   });
-  const filterActiveVaults = watch('filterActiveVaults');
-  const filterBoughtVaults = watch('filterBoughtVaults');
-  const filterClosedVaults = watch('filterClosedVaults');
-  const filterMyVaults = watch('filterMyVaults');
+  const showActiveVaults = watch('showActiveVaults');
+  const showBoughtVaults = watch('showBoughtVaults');
+  const showClosedVaults = watch('showClosedVaults');
+  const showMyVaults = watch('showMyVaults');
   const sort = watch('sort');
 
   const { loading, vaults: rawVaults } = useFraktion();
@@ -115,18 +115,19 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     //TODO optimise it 4n instead of n
     return rawVaults
-      .filter(({ state }) => !(filterActiveVaults && state === VaultState[1]))
-      .filter(({ state }) => !(filterBoughtVaults && state === VaultState[2]))
-      .filter(({ state }) => !(filterClosedVaults && state === VaultState[3]))
-      .filter(
-        ({ authority }) =>
-          !(
-            connected &&
-            filterMyVaults &&
-            authority === wallet.publicKey.toString()
-          ),
-      )
-      .filter(({ name }) => name.toUpperCase().includes(searchString))
+      .filter(({ state, authority, name }) => {
+        if (
+          connected &&
+          showMyVaults &&
+          authority !== wallet.publicKey.toString()
+        )
+          return false;
+        if (!showActiveVaults && state === VaultState[1]) return false;
+        if (!showBoughtVaults && state === VaultState[2]) return false;
+        if (!showClosedVaults && state === VaultState[3]) return false;
+
+        return name.toUpperCase().includes(searchString);
+      })
       .sort((a, b) => {
         if (sortField === 'createdAt') {
           if (sortOrder === 'asc') return a.createdAt - b.createdAt;
@@ -139,10 +140,10 @@ const VaultsPage = (): JSX.Element => {
   }, [
     searchString,
     rawVaults,
-    filterActiveVaults,
-    filterBoughtVaults,
-    filterClosedVaults,
-    filterMyVaults,
+    showActiveVaults,
+    showBoughtVaults,
+    showClosedVaults,
+    showMyVaults,
     sort,
   ]);
 
@@ -159,27 +160,27 @@ const VaultsPage = (): JSX.Element => {
           <div className={styles.filters}>
             <ControlledToggle
               control={control}
-              name="filterActiveVaults"
+              name="showActiveVaults"
               label="Active Vaults"
               className={styles.filter}
             />
             <ControlledToggle
               control={control}
-              name="filterBoughtVaults"
+              name="showBoughtVaults"
               label="Bought Vaults"
               className={styles.filter}
             />
             {connected && (
               <ControlledToggle
                 control={control}
-                name="filterMyVaults"
+                name="showMyVaults"
                 label="My Vaults"
                 className={styles.filter}
               />
             )}
             <ControlledToggle
               control={control}
-              name="filterClosedVaults"
+              name="showClosedVaults"
               label="Closed Vaults"
               className={styles.filter}
             />
