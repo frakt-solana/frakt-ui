@@ -66,6 +66,7 @@ export interface VaultData {
   isNftVerified: boolean;
   nftCollectionName?: string;
   createdAt: number;
+  buyoutPrice: BN;
 }
 
 export interface CreateFraktionalizerResult {

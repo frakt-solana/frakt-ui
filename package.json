@@ -23,10 +23,12 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
+    "react-hook-form": "^7.19.5",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "react-router-hash-link": "^2.4.3",
     "react-scripts": "^4.0.3",
+    "react-select": "^5.2.1",
     "sass": "^1.43.4",
     "solana-nft-metadata": "^1.0.3"
   },

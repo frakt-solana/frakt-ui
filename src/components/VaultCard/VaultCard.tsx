@@ -18,6 +18,7 @@ export interface VaultCardProps {
   isNftVerified?: boolean;
   pricePerFraction?: BN;
   priceTokenMint: string;
+  buyoutPrice?: BN;
 }
 
 const VaultCard = ({
@@ -30,6 +31,7 @@ const VaultCard = ({
   isNftVerified,
   pricePerFraction = new BN(0),
   priceTokenMint,
+  buyoutPrice = new BN(0),
 }: VaultCardProps): JSX.Element => {
   const { getTokerByMint, loading } = useSolanaTokenRegistry();
   const [tokerName, setTokerName] = useState<string>('');
@@ -72,9 +74,7 @@ const VaultCard = ({
           </div>
           <div className={styles.item}>
             <div className={styles.title}>Buyout price ({currency})</div>
-            <div className={styles.value}>
-              {shortBigNumber(pricePerFraction.mul(supply), 2, 9)}
-            </div>
+            <div className={styles.value}>{shortBigNumber(buyoutPrice)}</div>
           </div>
         </div>
       </div>
