@@ -161,28 +161,33 @@ const VaultsPage = (): JSX.Element => {
               control={control}
               name="filterActiveVaults"
               label="Active Vaults"
+              className={styles.filter}
             />
             <ControlledToggle
               control={control}
               name="filterBoughtVaults"
               label="Bought Vaults"
+              className={styles.filter}
             />
             {connected && (
               <ControlledToggle
                 control={control}
                 name="filterMyVaults"
                 label="My Vaults"
+                className={styles.filter}
               />
             )}
             <ControlledToggle
               control={control}
               name="filterClosedVaults"
               label="Closed Vaults"
+              className={styles.filter}
             />
           </div>
           <div>
             <ControlledSelect
-              valueContainerClassName={styles.valueContainer}
+              className={styles.sortingSelect}
+              valueContainerClassName={styles.sortingSelectValueContainer}
               label="Sort by"
               control={control}
               name="sort"

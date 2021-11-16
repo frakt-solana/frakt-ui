@@ -1,6 +1,6 @@
 import { Switch } from 'antd';
 import classNames from 'classnames/bind';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import styles from './styles.module.scss';
 
 interface IToggleProps {
@@ -13,7 +13,7 @@ interface IToggleProps {
 }
 
 interface IControlledToggleProps extends IToggleProps {
-  control: any;
+  control: Control<any>;
   name: string;
 }
 

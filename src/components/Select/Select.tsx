@@ -2,7 +2,7 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 
 interface Options {
   label: any;
@@ -19,7 +19,7 @@ interface SelectProps {
 }
 
 interface ControlledSelectProps extends SelectProps {
-  control: any;
+  control: Control<any>;
   name: string;
 }
 

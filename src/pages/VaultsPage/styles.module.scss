@@ -17,11 +17,16 @@
 .filters {
   display: flex;
   align-items: center;
-  gap: 36px;
-  margin-bottom: 35px;
+  gap: 12px 36px;
+  flex-wrap: wrap;
 }
 
-.arrowUp, .arrowDown {
+.filter {
+  width: unset;
+}
+
+.arrowUp,
+.arrowDown {
   position: relative;
   top: 2px;
   path {
@@ -33,11 +38,15 @@
   transform: rotate(180deg);
 }
 
-.valueContainer {
+.sortingSelect {
+  min-width: 270px;
+}
+
+.sortingSelectValueContainer {
   svg {
     position: relative;
     top: 2px;
-    path{
+    path {
       stroke: var(--accent-color-1);
     }
   }
@@ -46,4 +55,6 @@
 .filtersWrapper {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 35px;
+  gap: 120px;
 }

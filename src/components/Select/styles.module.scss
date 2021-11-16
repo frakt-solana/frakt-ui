@@ -7,6 +7,10 @@
       background-color: transparent;
       border: transparent;
       cursor: pointer;
+      flex-wrap: nowrap;
+      min-height: 24px;
+      height: 24px;
+      justify-content: flex-end;
     }
     .custom-select__control--is-focused {
       box-shadow: none;
@@ -15,6 +19,7 @@
       background-color: var(--black-color);
       border: 1px solid var(--gray-color-3);
       border-radius: 0;
+      z-index: 5;
     }
     .custom-select__indicator-separator {
       display: none;
@@ -22,10 +27,27 @@
     .custom-select__control--menu-is-open .custom-select__dropdown-indicator{
       transform: rotate(180deg);
     }
+    .custom-select__menu-list {
+      padding: 6px 0; 
+    }
     .custom-select__option {
       background-color: transparent;
+      padding: 18px 24px;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: opacity var(--transition-1);
       &:active {
         background-color: transparent;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &--is-selected {
+        opacity: 1;
+        pointer-events: none;
+        cursor: default;
       }
     }
   }
