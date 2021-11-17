@@ -99,6 +99,11 @@
     font: var(--font-btn-mid);
     color: var(--white-color);
   }
+
+  &__cellValueCopy {
+    cursor: pointer;
+    display: flex;
+  }
 }
 
 .buyout {
@@ -183,4 +188,8 @@
 
 .detailsPlaceholder {
   min-height: 97px;
+}
+
+.copyIcon {
+  margin-left: 4px;
 }

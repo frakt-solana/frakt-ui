@@ -1,10 +1,12 @@
 import BN from 'bn.js';
-
 import { shortenAddress } from '../../external/utils/utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
-import { decimalBNToString } from '../../utils';
+import { copyToClipboard, decimalBNToString } from '../../utils';
 import { VaultData } from '../../contexts/fraktion/fraktion.model';
+import CopyClipboardIcon from '../../icons/CopyClipboardIcon';
+import classNames from 'classnames';
+import Tooltip from '../../components/Tooltip';
 
 export const InfoTable = ({
   vaultInfo,
@@ -58,14 +60,40 @@ export const InfoTable = ({
       </div>
       <div className={styles.infoTable__cell}>
         <p className={styles.infoTable__cellName}>NFT mint</p>
-        <p className={styles.infoTable__cellValue}>
+        <p
+          className={classNames(
+            styles.infoTable__cellValue,
+            styles.infoTable__cellValueCopy,
+          )}
+          onClick={() => copyToClipboard(vaultInfo.nftMint)}
+        >
           {shortenAddress(vaultInfo.nftMint)}
+          <Tooltip
+            placement="bottom"
+            trigger="hover"
+            overlay="Click to copy to clipboard"
+          >
+            <CopyClipboardIcon className={styles.copyIcon} width={24} />
+          </Tooltip>
         </p>
       </div>
       <div className={styles.infoTable__cell}>
         <p className={styles.infoTable__cellName}>Fractions mint</p>
-        <p className={styles.infoTable__cellValue}>
+        <p
+          className={classNames(
+            styles.infoTable__cellValue,
+            styles.infoTable__cellValueCopy,
+          )}
+          onClick={() => copyToClipboard(vaultInfo.fractionMint)}
+        >
           {shortenAddress(vaultInfo.fractionMint)}
+          <Tooltip
+            placement="bottom"
+            trigger="hover"
+            overlay="Click to copy to clipboard"
+          >
+            <CopyClipboardIcon className={styles.copyIcon} width={24} />
+          </Tooltip>
         </p>
       </div>
     </div>

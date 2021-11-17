@@ -1,0 +1,64 @@
+.rc-tooltip {
+  opacity: 1;
+}
+
+.rc-tooltip-placement-bottom .rc-tooltip-arrow, .rc-tooltip-placement-bottomLeft .rc-tooltip-arrow, .rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
+  border-bottom-color: var(--white-color);
+}
+
+.rc-tooltip-inner {
+  border-radius: 0;
+  border: none;
+  font-family: var(--font-family-oxanium);
+  font-size: 16px;
+  padding: 8px;
+}
+
+
+.rc-tooltip.custom-animation-appear,
+.rc-tooltip.custom-animation-enter {
+  opacity: 0;
+}
+.rc-tooltip.custom-animation-enter,
+.rc-tooltip.custom-animation-leave {
+  display: block;
+}
+.custom-animation-enter,
+.custom-animation-appear {
+  opacity: 0;
+  animation-duration: 0.1s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in;
+  animation-play-state: paused;
+}
+.custom-animation-leave {
+  animation-duration: 0.1s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in;
+  animation-play-state: paused;
+}
+.custom-animation-enter.custom-animation-enter-active,
+.custom-animation-appear.custom-animation-appear-active {
+  animation-name: rcToolTipZoomIn;
+  animation-play-state: running;
+}
+.custom-animation-leave.custom-animation-leave-active {
+  animation-name: rcToolTipZoomOut;
+  animation-play-state: running;
+}
+@keyframes rcToolTipZoomIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes rcToolTipZoomOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
