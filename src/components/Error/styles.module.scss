@@ -1,0 +1,14 @@
+.error {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  span {
+    margin: auto;
+  }
+}
+
+:global {
+  #root {
+    height: 100%;
+  }
+}

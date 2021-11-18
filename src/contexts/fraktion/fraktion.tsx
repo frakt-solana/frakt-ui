@@ -20,6 +20,7 @@ import { notify } from '../../external/utils/notifications';
 import { RawUserTokensByMint, UserNFT } from '../userTokens/userTokens.model';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
+import * as Sentry from '@sentry/react';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
@@ -88,8 +89,19 @@ export const fraktionalize = async (
       message: 'Transaction failed',
       type: 'error',
     });
-    // eslint-disable-next-line no-console
-    console.error(error);
+    Sentry.setContext('Failed Transaction', {
+      name: 'fraktionalize',
+      params: {
+        userNft: JSON.stringify(userNft),
+        tickerName,
+        pricePerFraction,
+        fractionsAmount,
+        token,
+        wallet: wallet.publicKey.toString(),
+      },
+      error: error.toString(),
+    });
+    Sentry.captureException(error);
     return null;
   }
 };
@@ -163,8 +175,16 @@ export const buyout = async (
       message: 'Transaction failed',
       type: 'error',
     });
-    // eslint-disable-next-line no-console
-    console.error(error);
+    Sentry.setContext('Failed Transaction', {
+      name: 'buyout',
+      params: {
+        vault: JSON.stringify(vault),
+        userTokensByMint: JSON.stringify(userTokensByMint),
+        wallet: wallet.publicKey.toString(),
+      },
+      error: error.toString(),
+    });
+    Sentry.captureException(error);
     return null;
   }
 };
@@ -209,8 +229,15 @@ export const redeem = async (
       message: 'Transaction failed',
       type: 'error',
     });
-    // eslint-disable-next-line no-console
-    console.error(error);
+    Sentry.setContext('Failed Transaction', {
+      name: 'redeem',
+      params: {
+        vault: JSON.stringify(vault),
+        wallet: wallet.publicKey.toString(),
+      },
+      error: error.toString(),
+    });
+    Sentry.captureException(error);
     return null;
   }
 };
