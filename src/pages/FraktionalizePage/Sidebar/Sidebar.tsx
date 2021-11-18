@@ -82,6 +82,7 @@ const Sidebar = ({
     );
   };
 
+  const pricePerFRKT = Number(buyoutPrice) / Number(supply);
   return (
     <div
       className={classNames([
@@ -133,6 +134,11 @@ const Sidebar = ({
             />
           </div>
         </div>
+        <div className={styles.frktPrice}>
+          Fraktion price
+          <span className={styles.line} />$
+          {pricePerFRKT ? pricePerFRKT.toFixed(2) : '0.00'}
+        </div>
         <div className={styles.sidebar__fieldWrapper}>
           <p className={styles.sidebar__fieldLabel}>Buyout price</p>
           <BuyoutField
@@ -151,7 +157,9 @@ const Sidebar = ({
           {[smallFractionPriceError, buyoutPriceError, tickerError, supplyError]
             .filter((error) => error)
             .map((error, idx) => (
-              <p key={idx}>{error}</p>
+              <p className={styles.err} key={idx}>
+                {error}
+              </p>
             ))}
         </div>
       </div>

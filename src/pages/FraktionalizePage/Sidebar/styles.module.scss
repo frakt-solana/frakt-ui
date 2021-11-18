@@ -145,3 +145,26 @@ body .sidebar__stringInput {
 .priceField {
   max-height: 61px;
 }
+
+.err {
+  font-size: 10px;
+  min-height: 32px;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.frktPrice {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.line {
+  display: inline-block;
+  height: 1px;
+  flex-grow: 1;
+  margin: 10px 12px 0 12px;
+  background-color: var(--gray-color-3);
+}
