@@ -2,6 +2,7 @@ import { formatNumber } from '../external/utils/utils';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
 import mintMetadata from '../mintMetadata.json';
+import { notify } from '../external/utils/notifications';
 
 export const DECIMALS_PER_FRKT = 1e8;
 
@@ -100,4 +101,12 @@ export const getNFTArweaveMetadataByMint = (
 ): ArweaveMetadata | null => {
   const metadata = mintMetadata[mint];
   return metadata ? (metadata as ArweaveMetadata) : null;
+};
+
+export const copyToClipboard = (value: string): void => {
+  navigator.clipboard.writeText(value);
+  notify({
+    message: 'Copied to clipboard',
+    type: 'success',
+  });
 };

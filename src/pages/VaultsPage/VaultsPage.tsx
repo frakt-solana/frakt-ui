@@ -92,12 +92,14 @@ const VaultsPage = (): JSX.Element => {
       showActiveVaults: true,
       showBoughtVaults: false,
       showClosedVaults: false,
+      showVerifiedVaults: true,
       showMyVaults: false,
       sort: SORT_VALUES[7],
     },
   });
   const showActiveVaults = watch('showActiveVaults');
   const showBoughtVaults = watch('showBoughtVaults');
+  const showVerifiedVaults = watch('showVerifiedVaults');
   const showClosedVaults = watch('showClosedVaults');
   const showMyVaults = watch('showMyVaults');
   const sort = watch('sort');
@@ -115,7 +117,7 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     //TODO optimise it 4n instead of n
     return rawVaults
-      .filter(({ state, authority, name }) => {
+      .filter(({ state, authority, name, isNftVerified }) => {
         if (
           connected &&
           showMyVaults &&
@@ -125,6 +127,7 @@ const VaultsPage = (): JSX.Element => {
         if (!showActiveVaults && state === VaultState[1]) return false;
         if (!showBoughtVaults && state === VaultState[2]) return false;
         if (!showClosedVaults && state === VaultState[3]) return false;
+        if (showVerifiedVaults && !isNftVerified) return false;
 
         return name.toUpperCase().includes(searchString);
       })
@@ -143,6 +146,7 @@ const VaultsPage = (): JSX.Element => {
     showActiveVaults,
     showBoughtVaults,
     showClosedVaults,
+    showVerifiedVaults,
     showMyVaults,
     sort,
   ]);
@@ -161,13 +165,25 @@ const VaultsPage = (): JSX.Element => {
             <ControlledToggle
               control={control}
               name="showActiveVaults"
-              label="Active Vaults"
+              label="Active"
               className={styles.filter}
             />
             <ControlledToggle
               control={control}
               name="showBoughtVaults"
-              label="Bought Vaults"
+              label="Bought"
+              className={styles.filter}
+            />
+            <ControlledToggle
+              control={control}
+              name="showClosedVaults"
+              label="Closed"
+              className={styles.filter}
+            />
+            <ControlledToggle
+              control={control}
+              name="showVerifiedVaults"
+              label="Verified"
               className={styles.filter}
             />
             {connected && (
@@ -178,12 +194,6 @@ const VaultsPage = (): JSX.Element => {
                 className={styles.filter}
               />
             )}
-            <ControlledToggle
-              control={control}
-              name="showClosedVaults"
-              label="Closed Vaults"
-              className={styles.filter}
-            />
           </div>
           <div>
             <ControlledSelect
