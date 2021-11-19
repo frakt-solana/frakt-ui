@@ -69,3 +69,24 @@ export class Metadata {
 }
 
 export type StringPublicKey = string;
+
+export interface ArweaveAttribute {
+  trait_type: string;
+  value: number | string;
+}
+
+export interface ArweaveMetadata {
+  name: string;
+  symbol: string;
+  description: string;
+  seller_fee_basis_points?: number;
+  image: string;
+  animation_url: string;
+  external_url: string;
+  attributes: ArweaveAttribute[];
+  properties: any;
+}
+
+export interface MetadataByMint {
+  [mint: string]: ArweaveMetadata;
+}

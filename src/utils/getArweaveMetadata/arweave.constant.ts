@@ -73,26 +73,6 @@ export const METADATA_SCHEMA = new Map<any, any>([
 ]);
 
 export const METADATA_PREFIX = 'metadata';
-export interface ArweaveAttribute {
-  trait_type: string;
-  value: number | string;
-}
-
-export interface ArweaveMetadata {
-  name: string;
-  symbol: string;
-  description: string;
-  seller_fee_basis_points?: number;
-  image: string;
-  animation_url: string;
-  external_url: string;
-  attributes: ArweaveAttribute[];
-  properties: any;
-}
-
-export interface MetadataByMint {
-  [mint: string]: ArweaveMetadata;
-}
 
 export const PROGRAM_IDS = {
   token: TOKEN_PROGRAM_ID,

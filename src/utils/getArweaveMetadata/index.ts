@@ -3,8 +3,7 @@ import { getMeta } from './lib';
 import { BinaryReader, BinaryWriter } from 'borsh';
 import { PublicKey } from '@solana/web3.js';
 import base58 from 'bs58';
-import { StringPublicKey } from './arweave.model';
-import { MetadataByMint } from './arweave.constant';
+import { StringPublicKey, MetadataByMint } from './arweave.model';
 
 (() => {
   // https://www.npmjs.com/package/borsh
