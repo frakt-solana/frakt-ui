@@ -20,6 +20,7 @@
     "eventemitter3": "^4.0.7",
     "fraktionalizer-client-library": "^1.5.1",
     "moment": "^2.29.1",
+    "rc-tooltip": "^5.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
