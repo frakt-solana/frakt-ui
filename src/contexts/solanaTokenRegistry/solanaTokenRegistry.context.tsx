@@ -7,6 +7,7 @@ const VERIFIED_BY_FRAKT_TEAM_TOKENS_URL =
 interface SolanaTokenRegistryInterface {
   loading: boolean;
   tokens: TokenInfo[];
+  fraktionTokens: TokenInfo[];
   isTickerAvailable: (ticker: string) => boolean;
   getTokerByMint: (tokenMint: string) => string | null;
 }
@@ -15,6 +16,7 @@ const SolanaTokenRegistryContext =
   React.createContext<SolanaTokenRegistryInterface>({
     loading: false,
     tokens: [],
+    fraktionTokens: [],
     isTickerAvailable: () => false,
     getTokerByMint: () => null,
   });
@@ -25,6 +27,7 @@ export const SolanaTokenRegistryProvider = ({
   children: JSX.Element;
 }): JSX.Element => {
   const [tokens, setTokens] = useState<TokenInfo[]>([]);
+  const [fraktionTokens, setFraktionTokens] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -37,6 +40,7 @@ export const SolanaTokenRegistryProvider = ({
     ])
       .then(([fraktList, solanaList]) => {
         setTokens([...fraktList, ...solanaList]);
+        setFraktionTokens(fraktList);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -57,7 +61,13 @@ export const SolanaTokenRegistryProvider = ({
 
   return (
     <SolanaTokenRegistryContext.Provider
-      value={{ loading, tokens, isTickerAvailable, getTokerByMint }}
+      value={{
+        loading,
+        tokens,
+        fraktionTokens,
+        isTickerAvailable,
+        getTokerByMint,
+      }}
     >
       {children}
     </SolanaTokenRegistryContext.Provider>
@@ -65,9 +75,8 @@ export const SolanaTokenRegistryProvider = ({
 };
 
 export const useSolanaTokenRegistry = (): SolanaTokenRegistryInterface => {
-  const { loading, tokens, isTickerAvailable, getTokerByMint } = useContext(
-    SolanaTokenRegistryContext,
-  );
+  const { loading, tokens, fraktionTokens, isTickerAvailable, getTokerByMint } =
+    useContext(SolanaTokenRegistryContext);
 
-  return { loading, tokens, isTickerAvailable, getTokerByMint };
+  return { loading, tokens, fraktionTokens, isTickerAvailable, getTokerByMint };
 };

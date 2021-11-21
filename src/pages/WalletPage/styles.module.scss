@@ -1,0 +1,37 @@
+.token {
+  margin: 4px;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .tokenData {
+    display: flex;
+    align-items: center;
+  }
+
+  .tokenLogoContainer {
+    margin-right: 10px;
+  }
+
+  .tokenLogo {
+    border-radius: 50%;
+    height: 44px;
+    width: 44px;
+  }
+
+  .tokenBalance {
+    opacity: 0.5;
+  }
+}
+
+.tokensContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.pageTitle {
+  font: var(--font-h4);
+  color: var(--white-color);
+  margin-bottom: 6 px;
+}

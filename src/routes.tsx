@@ -15,6 +15,7 @@ import { ConnectWalletModal } from './components/ConnectWallerModal';
 import { UserTokensProvider } from './contexts/userTokens';
 import { FraktionProvider } from './contexts/fraktion';
 import { SolanaTokenRegistryProvider } from './contexts/solanaTokenRegistry';
+import WalletPage from './pages/WalletPage';
 
 export function Routes(): JSX.Element {
   return (
@@ -55,6 +56,11 @@ export function Routes(): JSX.Element {
                       exact
                       path={URLS.FRAKTIONALIZE}
                       component={(): JSX.Element => <FraktionalizePage />}
+                    />
+                    <Route
+                      exact
+                      path={`${URLS.WALLET}/:walletPubkey`}
+                      component={(): JSX.Element => <WalletPage />}
                     />
                     <Route
                       exact
