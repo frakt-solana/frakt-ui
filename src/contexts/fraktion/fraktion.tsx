@@ -89,19 +89,23 @@ export const fraktionalize = async (
       message: 'Transaction failed',
       type: 'error',
     });
-    Sentry.setContext('Failed Transaction', {
-      name: 'fraktionalize',
-      params: {
-        userNft: JSON.stringify(userNft),
-        tickerName,
-        pricePerFraction,
-        fractionsAmount,
-        token,
-        wallet: wallet.publicKey.toString(),
-      },
-      error: error.toString(),
-    });
-    Sentry.captureException(error);
+
+    if (error?.code !== 4001) {
+      Sentry.setContext('Failed Transaction', {
+        name: 'fraktionalize',
+        params: {
+          userNft: JSON.stringify(userNft),
+          tickerName,
+          pricePerFraction,
+          fractionsAmount,
+          token,
+          wallet: wallet.publicKey.toString(),
+        },
+        error: error.toString(),
+      });
+      Sentry.captureException(error);
+    }
+
     return null;
   }
 };
@@ -175,16 +179,20 @@ export const buyout = async (
       message: 'Transaction failed',
       type: 'error',
     });
-    Sentry.setContext('Failed Transaction', {
-      name: 'buyout',
-      params: {
-        vault: JSON.stringify(vault),
-        userTokensByMint: JSON.stringify(userTokensByMint),
-        wallet: wallet.publicKey.toString(),
-      },
-      error: error.toString(),
-    });
-    Sentry.captureException(error);
+
+    if (error?.code !== 4001) {
+      Sentry.setContext('Failed Transaction', {
+        name: 'buyout',
+        params: {
+          vault: JSON.stringify(vault),
+          userTokensByMint: JSON.stringify(userTokensByMint),
+          wallet: wallet.publicKey.toString(),
+        },
+        error: error.toString(),
+      });
+      Sentry.captureException(error);
+    }
+
     return null;
   }
 };
@@ -229,15 +237,19 @@ export const redeem = async (
       message: 'Transaction failed',
       type: 'error',
     });
-    Sentry.setContext('Failed Transaction', {
-      name: 'redeem',
-      params: {
-        vault: JSON.stringify(vault),
-        wallet: wallet.publicKey.toString(),
-      },
-      error: error.toString(),
-    });
-    Sentry.captureException(error);
+
+    if (error?.code !== 4001) {
+      Sentry.setContext('Failed Transaction', {
+        name: 'redeem',
+        params: {
+          vault: JSON.stringify(vault),
+          wallet: wallet.publicKey.toString(),
+        },
+        error: error.toString(),
+      });
+      Sentry.captureException(error);
+    }
+
     return null;
   }
 };
