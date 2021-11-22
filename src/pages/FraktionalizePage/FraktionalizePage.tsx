@@ -7,7 +7,7 @@ import NFTCheckbox from '../../components/NFTCheckbox';
 import { SearchInput } from '../../components/SearchInput';
 import { useUserTokens } from '../../contexts/userTokens';
 import { UserNFT } from '../../contexts/userTokens/userTokens.model';
-import { useWallet } from '../../external/contexts/Wallet';
+import { useWallet } from '../../external';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';

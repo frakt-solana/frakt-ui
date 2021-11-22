@@ -1,8 +1,7 @@
 import Button from '../../Button';
 import styles from './styles.module.scss';
-import { useNativeAccount } from '../../../external/hooks';
+import { useNativeAccount, useWallet } from '../../../external';
 import { getFrktBalanceValue, getSolBalanceValue } from '../../../utils';
-import { useWallet } from '../../../external/contexts/Wallet';
 import { useFrktBalance } from '../../../contexts/userTokens';
 
 export const WalletInfo = (): JSX.Element => {

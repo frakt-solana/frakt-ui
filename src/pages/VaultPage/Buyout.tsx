@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
 import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
-import { useWallet } from '../../external/contexts/Wallet';
+import { useWallet } from '../../external';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../utils';

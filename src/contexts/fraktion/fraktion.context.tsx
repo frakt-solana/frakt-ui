@@ -3,8 +3,7 @@ import { keyBy } from 'lodash';
 import { PublicKey } from '@solana/web3.js';
 import { getAllVaults } from 'fraktionalizer-client-library';
 
-import { useWallet } from '../../external/contexts/Wallet';
-import { useConnection } from '../../external/contexts/Connection';
+import { useWallet, useConnection } from '../../external';
 import {
   fetchVaultsFunction,
   FraktionContextType,

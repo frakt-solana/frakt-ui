@@ -2,7 +2,7 @@ import BN from 'bn.js';
 
 import styles from './styles.module.scss';
 import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
-import { shortenAddress } from '../../external/utils/utils';
+import { shortenAddress } from '../../external';
 import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';

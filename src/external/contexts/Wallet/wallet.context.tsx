@@ -20,7 +20,7 @@ export const WalletContext = React.createContext<WalletContextInterface>({
   isSelectModalVisible: false,
 });
 
-const WalletProvider = ({
+export const WalletProvider = ({
   children = null,
   notify = (value) => {
     value;
@@ -80,11 +80,6 @@ const WalletProvider = ({
             type: 'error',
             message: 'Wallet not installed',
           });
-        } else {
-          notify({
-            type: 'error',
-            message: 'Something went wrong',
-          });
         }
       });
     }
@@ -133,5 +128,3 @@ const WalletProvider = ({
     </WalletContext.Provider>
   );
 };
-
-export default WalletProvider;

@@ -1,6 +1,6 @@
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
-import { useWallet, WALLET_PROVIDERS } from '../../external/contexts/Wallet';
+import { useWallet, WALLET_PROVIDERS } from '../../external';
 import {
   PhantomIcon,
   SolletIcon,

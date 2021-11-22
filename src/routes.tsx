@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import WalletConnection from './external/contexts/WalletConnection';
+import { WalletConnectionProvider } from './external';
 import { URLS } from './constants';
 
 import Page404 from './pages/Page404';
@@ -19,7 +19,11 @@ import { ENDPOINT, IS_DEVNET } from './config';
 export const Routes = (): JSX.Element => {
   return (
     <Router>
-      <WalletConnection endpoint={ENDPOINT} isDev={IS_DEVNET} notify={notify}>
+      <WalletConnectionProvider
+        endpoint={ENDPOINT}
+        isDev={IS_DEVNET}
+        notify={notify}
+      >
         <TokenListContextProvider>
           <UserTokensProvider>
             <FraktionProvider>
@@ -69,7 +73,7 @@ export const Routes = (): JSX.Element => {
           </UserTokensProvider>
         </TokenListContextProvider>
         <ConnectWalletModal />
-      </WalletConnection>
+      </WalletConnectionProvider>
     </Router>
   );
 };

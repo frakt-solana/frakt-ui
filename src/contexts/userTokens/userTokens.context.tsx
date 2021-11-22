@@ -3,8 +3,7 @@ import BN from 'bn.js';
 import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
 import { keyBy } from 'lodash';
 
-import { useConnection } from '../../external/contexts/Connection';
-import { useWallet } from '../../external/contexts/Wallet';
+import { useConnection, useWallet } from '../../external';
 import {
   nftsByMint,
   RawUserTokensByMint,

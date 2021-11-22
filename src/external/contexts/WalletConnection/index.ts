@@ -1,1 +1,1 @@
-export { default } from './walletConnection.context';
+export { WalletConnectionProvider } from './walletConnection.context';

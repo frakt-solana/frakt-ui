@@ -1,4 +1,4 @@
-export { default } from './connection.context';
+export { ConnectionProvider } from './connection.context';
 
 export * from './connection.hooks';
 export * from './connection.model';

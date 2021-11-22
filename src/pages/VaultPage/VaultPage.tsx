@@ -7,7 +7,7 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import { VaultState } from '../../contexts/fraktion/fraktion.model';
-import { shortenAddress } from '../../external/utils/utils';
+import { shortenAddress } from '../../external';
 import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';

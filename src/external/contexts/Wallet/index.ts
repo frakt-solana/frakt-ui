@@ -1,4 +1,4 @@
-export { default } from './wallet.context';
+export { WalletProvider } from './wallet.context';
 
 export * from './wallet.contants';
 export * from './wallet.model';

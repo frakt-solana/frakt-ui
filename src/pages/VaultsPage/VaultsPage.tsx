@@ -17,7 +17,7 @@ import { useForm } from 'react-hook-form';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
-import { useWallet } from '../../external/contexts/Wallet';
+import { useWallet } from '../../external';
 
 const SORT_VALUES = [
   {

@@ -17,7 +17,7 @@ import { IS_DEVNET, FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
 import { RawUserTokensByMint, UserNFT } from '../userTokens/userTokens.model';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
-import { WalletAdapter } from '../../external/contexts/Wallet';
+import { WalletAdapter } from '../../external';
 import { notify } from '../../utils';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =

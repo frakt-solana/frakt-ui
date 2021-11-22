@@ -19,7 +19,7 @@ export const ConnectionContext =
     chainId: ChainID.MainnetBeta,
   });
 
-const ConnectionProvider = ({
+export const ConnectionProvider = ({
   children = null,
   endpoint = DEFAULT_ENDPOINT,
   isDev = false,
@@ -66,5 +66,3 @@ const ConnectionProvider = ({
     </ConnectionContext.Provider>
   );
 };
-
-export default ConnectionProvider;
