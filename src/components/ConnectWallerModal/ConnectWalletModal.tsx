@@ -1,18 +1,7 @@
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
 import { useWallet, WALLET_PROVIDERS } from '../../external';
-import {
-  PhantomIcon,
-  SolletIcon,
-  SolfareIcon,
-  ArrowRightIcon,
-} from '../../icons';
-
-const CUSTOM_WALLET_IMAGES = {
-  Phantom: PhantomIcon,
-  Solflare: SolletIcon,
-  Sollet: SolfareIcon,
-};
+import { ArrowRightIcon } from '../../icons';
 
 export const ConnectWalletModal = ({
   title,
@@ -36,7 +25,6 @@ export const ConnectWalletModal = ({
         Connect with one of available wallet providers or create a new wallet.
       </p>
       {WALLET_PROVIDERS.map(({ url, name, icon }, idx) => {
-        const Img = CUSTOM_WALLET_IMAGES[name];
         return (
           <div
             key={idx}
@@ -48,7 +36,7 @@ export const ConnectWalletModal = ({
             }}
           >
             <div className={styles.walletName}>
-              {Img ? <Img /> : <img src={icon} alt="Wallet icon" />}
+              <img src={icon} alt="Wallet icon" />
               <span>{name}</span>
             </div>
             <ArrowRightIcon fill="white" />
