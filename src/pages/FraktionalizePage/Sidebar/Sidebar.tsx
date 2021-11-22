@@ -17,14 +17,12 @@ interface SidebarProps {
     fractionsAmount: number,
   ) => void;
   token: UserNFT;
-  isTickerAvailable: (tickerName: string) => boolean;
 }
 
 const Sidebar = ({
   onRemoveClick,
   token,
   onContinueClick,
-  isTickerAvailable,
 }: SidebarProps): JSX.Element => {
   const [buyoutPrice, setBuyoutPrice] = useState<string>('');
   const [supply, setSupply] = useState<string>('');
@@ -127,7 +125,6 @@ const Sidebar = ({
             <TickerInput
               value={ticker}
               setTicker={setTicker}
-              isTickerAvailable={isTickerAvailable}
               tickerError={tickerError}
               setTickerError={setTickerError}
             />

@@ -1,6 +1,6 @@
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
-import { useWallet, WALLET_PROVIDERS } from '../../external/contexts/wallet';
+import { useWallet, WALLET_PROVIDERS } from '../../external/contexts/Wallet';
 import {
   PhantomIcon,
   SolletIcon,
@@ -18,20 +18,24 @@ export const ConnectWalletModal = ({
   title,
   ...props
 }: ModalProps): JSX.Element => {
-  const { setProviderUrl, setAutoConnect, closeModal, isModalVisible } =
-    useWallet();
+  const {
+    setProviderUrl,
+    setAutoConnect,
+    closeSelectModal,
+    isSelectModalVisible,
+  } = useWallet();
 
   return (
     <Modal
-      visible={isModalVisible}
+      visible={isSelectModalVisible}
       title={title || 'Connect wallet'}
-      onCancel={closeModal}
+      onCancel={closeSelectModal}
       {...props}
     >
       <p className={styles.text}>
         Connect with one of available wallet providers or create a new wallet.
       </p>
-      {WALLET_PROVIDERS.map(({ url, name }, idx) => {
+      {WALLET_PROVIDERS.map(({ url, name, icon }, idx) => {
         const Img = CUSTOM_WALLET_IMAGES[name];
         return (
           <div
@@ -40,11 +44,11 @@ export const ConnectWalletModal = ({
             onClick={() => {
               setProviderUrl(url);
               setAutoConnect(true);
-              closeModal();
+              closeSelectModal();
             }}
           >
             <div className={styles.walletName}>
-              <Img />
+              {Img ? <Img /> : <img src={icon} alt="Wallet icon" />}
               <span>{name}</span>
             </div>
             <ArrowRightIcon fill="white" />

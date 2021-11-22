@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
 import { URLS } from '../../constants';
 import { Container } from '../Layout';
-import { useWallet } from '../../external/contexts/wallet';
+import { useWallet } from '../../external/contexts/Wallet';
 import { shortenAddress } from '../../external/utils/utils';
 import { ChevronDownIcon } from '../../icons';
 import { Tooltip } from 'antd';
@@ -15,7 +15,8 @@ interface HeaderProps {
 }
 
 const Header = ({ className }: HeaderProps): JSX.Element => {
-  const { select, wallet, connected } = useWallet();
+  const { openSelectModal, wallet, connected } = useWallet();
+
   return (
     <header className={classNames([styles.root, className])}>
       <Container component="nav" className={styles.container}>
@@ -59,7 +60,7 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
                 </button>
               </Tooltip>
             ) : (
-              <button className={styles.walletBtn} onClick={select}>
+              <button className={styles.walletBtn} onClick={openSelectModal}>
                 Connect wallet
               </button>
             )}

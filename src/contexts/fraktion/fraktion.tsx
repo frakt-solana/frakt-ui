@@ -10,20 +10,18 @@ import {
   redeemRewardsFromShares,
 } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
-import { ENV as ChainID } from '@solana/spl-token-registry';
 
-import { WalletAdapter } from '../../external/contexts/wallet';
 import { CreateFraktionalizerResult, VaultData } from './fraktion.model';
 import fraktionConfig from './config';
-import globalConfig from '../../config';
-import { notify } from '../../external/utils/notifications';
+import { IS_DEVNET, FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
 import { RawUserTokensByMint, UserNFT } from '../userTokens/userTokens.model';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
+import { WalletAdapter } from '../../external/contexts/Wallet';
+import { notify } from '../../utils';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
-const { ENDPOINT, FRKT_TOKEN_MINT_PUBLIC_KEY } = globalConfig;
 
 export const fraktionalize = async (
   userNft: UserNFT,
@@ -65,7 +63,7 @@ export const fraktionalize = async (
       },
     );
 
-    if (result && ENDPOINT.chainID === ChainID.MainnetBeta) {
+    if (result && !IS_DEVNET) {
       const { fractionalMint, vault: vaultPubkey } = result;
 
       registerToken(

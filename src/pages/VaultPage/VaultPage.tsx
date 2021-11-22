@@ -12,7 +12,7 @@ import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
-import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
+import { useTokenMap } from '../../contexts/TokenList';
 
 export const MOCK_TOKEN_LIST = [
   {
@@ -38,15 +38,16 @@ const VaultPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
 
-  const { getTokerByMint, loading: registryLoading } = useSolanaTokenRegistry();
+  const tokenMap = useTokenMap();
+
   const [tokerName, setTokerName] = useState<string>('');
 
   useEffect(() => {
     !loading &&
       vaultInfo &&
-      setTokerName(getTokerByMint(vaultInfo.fractionMint));
+      setTokerName(tokenMap.get(vaultInfo.fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [registryLoading, vaultInfo]);
+  }, [tokenMap, vaultInfo]);
 
   return (
     <AppLayout>

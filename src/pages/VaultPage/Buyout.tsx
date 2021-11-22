@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
 import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
-import { useWallet } from '../../external/contexts/wallet';
+import { useWallet } from '../../external/contexts/Wallet';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../utils';
@@ -113,7 +113,7 @@ export const Buyout = ({
     9,
   );
 
-  const { connected, select } = useWallet();
+  const { connected, openSelectModal } = useWallet();
   const currency =
     vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
       ? 'SOL'
@@ -156,7 +156,10 @@ export const Buyout = ({
         )}
 
         {!connected && (
-          <Button className={styles.buyout__connectWalletBtn} onClick={select}>
+          <Button
+            className={styles.buyout__connectWalletBtn}
+            onClick={openSelectModal}
+          >
             Connect wallet
           </Button>
         )}

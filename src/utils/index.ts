@@ -1,8 +1,22 @@
-import { formatNumber } from '../external/utils/utils';
+import { notification } from 'antd';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
-import mintMetadata from '../mintMetadata.json';
-import { notify } from '../external/utils/notifications';
+
+import { formatNumber } from '../external/utils/utils';
+import { Notify } from '../external/models';
+
+export const notify: Notify = ({
+  message = '',
+  description = null,
+  type = 'info',
+}) => {
+  (notification as any)[type]({
+    className: 'fraktion__notification',
+    message,
+    description,
+    placement: 'bottomRight',
+  });
+};
 
 export const DECIMALS_PER_FRKT = 1e8;
 
@@ -95,13 +109,6 @@ export interface ArweaveMetadata {
   attributes: ArweaveAttribute[];
   properties: any;
 }
-
-export const getNFTArweaveMetadataByMint = (
-  mint: string,
-): ArweaveMetadata | null => {
-  const metadata = mintMetadata[mint];
-  return metadata ? (metadata as ArweaveMetadata) : null;
-};
 
 export const copyToClipboard = (value: string): void => {
   navigator.clipboard.writeText(value);

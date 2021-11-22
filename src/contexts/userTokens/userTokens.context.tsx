@@ -3,8 +3,8 @@ import BN from 'bn.js';
 import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
 import { keyBy } from 'lodash';
 
-import { useConnection } from '../../external/contexts/connection';
-import { useWallet } from '../../external/contexts/wallet';
+import { useConnection } from '../../external/contexts/Connection';
+import { useWallet } from '../../external/contexts/Wallet';
 import {
   nftsByMint,
   RawUserTokensByMint,
@@ -13,7 +13,7 @@ import {
   UserTokensInterface,
   UseUserTokensInterface,
 } from './userTokens.model';
-import config from '../../config';
+import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
 const UserTokensContext = React.createContext<UserTokensInterface>({
@@ -52,7 +52,7 @@ export const UserTokensProvider = ({
   const updateFrktBalance = (userTokens: TokenView[]) => {
     if (connected && connection) {
       const token = (userTokens as any).find(
-        ({ mint }) => mint === config.FRKT_TOKEN_MINT_PUBLIC_KEY,
+        ({ mint }) => mint === FRKT_TOKEN_MINT_PUBLIC_KEY,
       );
       if (token?.amount) {
         setFrktBalance(

@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react';
+import BN from 'bn.js';
 import { MintInfo } from '@solana/spl-token';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { PublicKey } from '@solana/web3.js';
 
 import { TokenAccount } from '../models';
-import { PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
 import { WAD, ZERO } from '../constants';
-import { TokenInfo } from '@solana/spl-token-registry';
 
 export type KnownTokenMap = Map<string, TokenInfo>;
 
@@ -15,45 +14,16 @@ export const formatPriceNumber = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 8,
 });
 
-export function useLocalStorageState(key: string, defaultState?: string): any {
-  const [state, setState] = useState(() => {
-    // NOTE: Not sure if this is ok
-    const storedState = localStorage.getItem(key);
-    if (storedState) {
-      return JSON.parse(storedState);
-    }
-    return defaultState;
-  });
-
-  const setLocalStorageState = useCallback(
-    (newState) => {
-      const changed = state !== newState;
-      if (!changed) {
-        return;
-      }
-      setState(newState);
-      if (newState === null) {
-        localStorage.removeItem(key);
-      } else {
-        localStorage.setItem(key, JSON.stringify(newState));
-      }
-    },
-    [state, key],
-  );
-
-  return [state, setLocalStorageState];
-}
-
 // shorten the checksummed version of the input address to have 4 characters at start and end
-export function shortenAddress(address: string, chars = 4): string {
+export const shortenAddress = (address: string, chars = 4): string => {
   return `${address.slice(0, chars)}...${address.slice(-chars)}`;
-}
+};
 
-export function getTokenName(
+export const getTokenName = (
   map: KnownTokenMap,
   mint?: string | PublicKey,
   shorten = true,
-): string {
+): string => {
   const mintAddress = typeof mint === 'string' ? mint : mint?.toBase58();
 
   if (!mintAddress) {
@@ -66,12 +36,12 @@ export function getTokenName(
   }
 
   return shorten ? `${mintAddress.substring(0, 5)}...` : mintAddress;
-}
+};
 
-export function getTokenByName(
+export const getTokenByName = (
   tokenMap: KnownTokenMap,
   name: string,
-): TokenInfo {
+): TokenInfo => {
   let token: TokenInfo | null = null;
   for (const val of tokenMap.values()) {
     if (val.symbol === name) {
@@ -80,12 +50,12 @@ export function getTokenByName(
     }
   }
   return token;
-}
+};
 
-export function getTokenIcon(
+export const getTokenIcon = (
   map: KnownTokenMap,
   mintAddress?: string | PublicKey,
-): string | undefined {
+): string | undefined => {
   const address =
     typeof mintAddress === 'string' ? mintAddress : mintAddress?.toBase58();
   if (!address) {
@@ -93,27 +63,30 @@ export function getTokenIcon(
   }
 
   return map.get(address)?.logoURI;
-}
+};
 
-export function isKnownMint(map: KnownTokenMap, mintAddress: string): boolean {
+export const isKnownMint = (
+  map: KnownTokenMap,
+  mintAddress: string,
+): boolean => {
   return !!map.get(mintAddress);
-}
+};
 
 export const STABLE_COINS = new Set(['USDC', 'wUSDC', 'USDT']);
 
-export function chunks<T>(array: T[], size: number): T[][] {
+export const chunks = <T>(array: T[], size: number): T[][] => {
   return Array.apply(
     /*<number, T[], T[][]>*/ 0,
     new Array(Math.ceil(array.length / size)),
   ).map((_: any, index: number) =>
     array.slice(index * size, (index + 1) * size),
   );
-}
+};
 
-export function toLamports(
+export const toLamports = (
   account?: TokenAccount | number,
   mint?: MintInfo,
-): number {
+): number => {
   if (!account) {
     return 0;
   }
@@ -123,17 +96,17 @@ export function toLamports(
 
   const precision = Math.pow(10, mint?.decimals || 0);
   return Math.floor(amount * precision);
-}
+};
 
-export function wadToLamports(amount?: BN): BN {
+export const wadToLamports = (amount?: BN): BN => {
   return amount?.div(WAD) || ZERO;
-}
+};
 
-export function fromLamports(
+export const fromLamports = (
   account?: TokenAccount | number | BN,
   mint?: MintInfo,
   rate = 1.0,
-): number {
+): number => {
   if (!account) {
     return 0;
   }
@@ -148,7 +121,7 @@ export function fromLamports(
 
   const precision = Math.pow(10, mint?.decimals || 0);
   return (amount / precision) * rate;
-}
+};
 
 const SI_SYMBOL = ['', 'k', 'M', 'G', 'T', 'P', 'E'];
 
@@ -167,7 +140,7 @@ const abbreviateNumber = (number: number, precision: number): string => {
 export const formatAmount = (val: number, precision = 6, abbr = true): string =>
   abbr ? abbreviateNumber(val, precision) : val.toFixed(precision);
 
-export function formatTokenAmount(
+export const formatTokenAmount = (
   account?: TokenAccount,
   mint?: MintInfo,
   rate = 1.0,
@@ -175,7 +148,7 @@ export function formatTokenAmount(
   suffix = '',
   precision = 6,
   abbr = false,
-): string {
+): string => {
   if (!account) {
     return '';
   }
@@ -185,7 +158,7 @@ export function formatTokenAmount(
     precision,
     abbr,
   )}${suffix}`;
-}
+};
 
 export const formatUSD = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -227,11 +200,11 @@ export const formatPct = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2,
 });
 
-export function convert(
+export const convert = (
   account?: TokenAccount | number,
   mint?: MintInfo,
   rate = 1.0,
-): number {
+): number => {
   if (!account) {
     return 0;
   }
@@ -243,4 +216,4 @@ export function convert(
   const result = (amount / precision) * rate;
 
   return result;
-}
+};

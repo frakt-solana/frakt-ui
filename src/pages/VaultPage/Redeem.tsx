@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
 import { VaultData } from '../../contexts/fraktion/fraktion.model';
-import { useWallet } from '../../external/contexts/wallet';
+import { useWallet } from '../../external/contexts/Wallet';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { useUserTokens } from '../../contexts/userTokens';
@@ -93,7 +93,7 @@ export const Redeem = ({
     retry: retryTxn,
   } = useRedeemTransactionModal();
   const { loading, rawUserTokensByMint } = useUserTokens();
-  const { connected, select } = useWallet();
+  const { connected, openSelectModal } = useWallet();
   const currency =
     vaultInfo?.priceTokenMint === SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
@@ -143,7 +143,10 @@ export const Redeem = ({
           </div>
         )}
         {!connected && (
-          <Button onClick={select} className={styles.redeem__connectWalletBtn}>
+          <Button
+            onClick={openSelectModal}
+            className={styles.redeem__connectWalletBtn}
+          >
             Connect wallet
           </Button>
         )}
