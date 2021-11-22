@@ -15,7 +15,7 @@ import BN from 'bn.js';
 import { CreateFraktionalizerResult, VaultData } from './fraktion.model';
 import fraktionConfig from './config';
 import { IS_DEVNET, FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
-import { RawUserTokensByMint, UserNFT } from '../userTokens/userTokens.model';
+import { RawUserTokensByMint, UserNFT } from '../UserTokens';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
 import { notify } from '../../utils';

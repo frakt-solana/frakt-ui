@@ -20,10 +20,9 @@ import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import VaultPage from './pages/VaultPage';
 import FraktionalizePage from './pages/FraktionalizePage';
-// import { ConnectWalletModal } from './components/ConnectWallerModal';
-import { UserTokensProvider } from './contexts/userTokens';
-import { FraktionProvider } from './contexts/fraktion';
-import TokenListContextProvider from './contexts/TokenList';
+import { UserTokensProvider } from './contexts/UserTokens';
+import { FraktionProvider } from './contexts/Fraktion';
+import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 

@@ -6,11 +6,10 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import NFTCheckbox from '../../components/NFTCheckbox';
 import { SearchInput } from '../../components/SearchInput';
-import { useUserTokens } from '../../contexts/userTokens';
-import { UserNFT } from '../../contexts/userTokens/userTokens.model';
+import { useUserTokens, UserNFT } from '../../contexts/UserTokens';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
-import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { useFraktion } from '../../contexts/Fraktion/fraktion.context';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';

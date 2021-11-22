@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
-import { UserNFT } from '../../../contexts/userTokens/userTokens.model';
+import { UserNFT } from '../../../contexts/UserTokens';
 import styles from './styles.module.scss';
 import { TickerInput } from './TickerInput';
 import { SupplyInput } from './SupplyInput';

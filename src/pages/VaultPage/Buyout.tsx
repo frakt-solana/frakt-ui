@@ -3,13 +3,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
-import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
-import fraktionConfig from '../../contexts/fraktion/config';
+import { VaultData, VaultState } from '../../contexts/Fraktion';
+import fraktionConfig from '../../contexts/Fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../utils';
-import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { useFraktion } from '../../contexts/Fraktion/fraktion.context';
 import TransactionModal from '../../components/TransactionModal';
-import { useUserTokens } from '../../contexts/userTokens';
+import { useUserTokens } from '../../contexts/UserTokens';
 import { Loader } from '../../components/Loader';
 import BN from 'bn.js';
 import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';

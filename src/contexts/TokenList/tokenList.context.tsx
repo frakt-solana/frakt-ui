@@ -9,7 +9,7 @@ export const TokenListContext = React.createContext<TokenListContextInterface>({
   loading: false,
 });
 
-const TokenListContextProvider = ({
+export const TokenListContextProvider = ({
   children = null,
 }: {
   children: JSX.Element | null;
@@ -20,13 +20,13 @@ const TokenListContextProvider = ({
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL).then((res) => res.json()), //? For future implementation
+      fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL).then((res) => res.json()),
       new TokenListProvider()
         .resolve()
         .then((tokens) => tokens.filterByClusterSlug('mainnet-beta').getList()),
     ])
       .then(([fraktList, solanaList]) => {
-        setTokenList([...fraktList, ...solanaList]); //? Manually add a fake SOL mint for the native token. The component is opinionated in that it distinguishes between wrapped SOL and SOL.
+        setTokenList([...fraktList, ...solanaList]);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -77,5 +77,3 @@ const TokenListContextProvider = ({
     </TokenListContext.Provider>
   );
 };
-
-export default TokenListContextProvider;

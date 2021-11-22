@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { shortBigNumber } from '../../utils';
-import fraktionConfig from '../../contexts/fraktion/config';
+import fraktionConfig from '../../contexts/Fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { useEffect, useState } from 'react';
 
