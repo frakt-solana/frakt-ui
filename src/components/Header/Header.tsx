@@ -1,20 +1,23 @@
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames/bind';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import styles from './styles.module.scss';
 import { URLS } from '../../constants';
 import { Container } from '../Layout';
-import { useWallet, shortenAddress } from '../../external';
+import { shortenAddress } from '../../utils/solanaUtils';
 import { ChevronDownIcon } from '../../icons';
 import { Tooltip } from 'antd';
 import { WalletInfo } from './WalletInfo';
+import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
 
 interface HeaderProps {
   className?: string;
 }
 
 const Header = ({ className }: HeaderProps): JSX.Element => {
-  const { openSelectModal, wallet, connected } = useWallet();
+  const { connected, publicKey } = useWallet();
+  const { setVisible } = useWalletModal();
 
   return (
     <header className={classNames([styles.root, className])}>
@@ -54,12 +57,15 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
                     styles.walletBtn_connected,
                   ])}
                 >
-                  {shortenAddress(wallet.publicKey.toString())}
+                  {shortenAddress(publicKey.toString())}
                   <ChevronDownIcon className={styles.walletBtn__icon} />
                 </button>
               </Tooltip>
             ) : (
-              <button className={styles.walletBtn} onClick={openSelectModal}>
+              <button
+                className={styles.walletBtn}
+                onClick={() => setVisible(true)}
+              >
                 Connect wallet
               </button>
             )}

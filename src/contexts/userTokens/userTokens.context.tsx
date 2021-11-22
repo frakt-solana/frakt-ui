@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import BN from 'bn.js';
 import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
 import { keyBy } from 'lodash';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
-import { useConnection, useWallet } from '../../external';
 import {
   nftsByMint,
   RawUserTokensByMint,
@@ -30,8 +30,8 @@ export const UserTokensProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const { wallet, connected } = useWallet();
-  const connection = useConnection();
+  const { connected, publicKey } = useWallet();
+  const { connection } = useConnection();
   const [frktBalance, setFrktBalance] = useState<BN>(new BN(0));
   const [nfts, setNfts] = useState<UserNFT[]>([]);
   const [nftsByMint, setNftsByMint] = useState<nftsByMint>({});
@@ -66,7 +66,7 @@ export const UserTokensProvider = ({
   const fetchTokens = async () => {
     setLoading(true);
     try {
-      const userTokens = await getAllUserTokens(wallet.publicKey, {
+      const userTokens = await getAllUserTokens(publicKey, {
         connection,
       });
 

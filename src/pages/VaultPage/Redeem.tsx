@@ -1,16 +1,17 @@
 import BN from 'bn.js';
 import { useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
 import { VaultData } from '../../contexts/fraktion/fraktion.model';
-import { useWallet } from '../../external';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import TransactionModal from '../../components/TransactionModal';
+import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
 
 const { SOL_TOKEN_PUBKEY } = fraktionConfig;
 
@@ -93,7 +94,8 @@ export const Redeem = ({
     retry: retryTxn,
   } = useRedeemTransactionModal();
   const { loading, rawUserTokensByMint } = useUserTokens();
-  const { connected, openSelectModal } = useWallet();
+  const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
   const currency =
     vaultInfo?.priceTokenMint === SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
@@ -144,7 +146,7 @@ export const Redeem = ({
         )}
         {!connected && (
           <Button
-            onClick={openSelectModal}
+            onClick={() => setVisible(true)}
             className={styles.redeem__connectWalletBtn}
           >
             Connect wallet

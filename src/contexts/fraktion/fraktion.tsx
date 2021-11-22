@@ -2,6 +2,7 @@ import {
   Connection,
   Keypair,
   PublicKey,
+  Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
 import {
@@ -17,7 +18,6 @@ import { IS_DEVNET, FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
 import { RawUserTokensByMint, UserNFT } from '../userTokens/userTokens.model';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
-import { WalletAdapter } from '../../external';
 import { notify } from '../../utils';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
@@ -29,7 +29,8 @@ export const fraktionalize = async (
   pricePerFraction: number,
   fractionsAmount: number,
   token: 'SOL' | 'FRKT',
-  wallet: WalletAdapter,
+  walletPublicKey: PublicKey,
+  signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,
 ): Promise<CreateFraktionalizerResult | null> => {
   try {
@@ -50,14 +51,14 @@ export const fraktionalize = async (
       mint,
       ADMIN_PUBKEY,
       token === 'SOL' ? SOL_TOKEN_PUBKEY : FRKT_TOKEN_MINT_PUBLIC_KEY,
-      wallet.publicKey.toString(),
+      walletPublicKey.toString(),
       FRAKTION_PUBKEY,
       async (txn, signers): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();
         txn.recentBlockhash = blockhash;
-        txn.feePayer = wallet.publicKey;
+        txn.feePayer = walletPublicKey;
         txn.sign(...signers);
-        const signed = await wallet.signTransaction(txn);
+        const signed = await signTransaction(txn);
         const txid = await connection.sendRawTransaction(signed.serialize());
         return void connection.confirmTransaction(txid);
       },
@@ -95,7 +96,8 @@ export const fraktionalize = async (
 export const buyout = async (
   vault: VaultData,
   userTokensByMint: RawUserTokensByMint,
-  wallet: WalletAdapter,
+  walletPublicKey: PublicKey,
+  signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,
 ): Promise<{
   instructions: TransactionInstruction[];
@@ -127,7 +129,7 @@ export const buyout = async (
       lockedPricePerFraction
         .mul(supply.sub(userFractionTokenAmount))
         .toNumber(),
-      wallet.publicKey,
+      walletPublicKey,
       ADMIN_PUBKEY,
       new PublicKey(authority),
       publicKey,
@@ -142,9 +144,9 @@ export const buyout = async (
       async (txn, signers): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();
         txn.recentBlockhash = blockhash;
-        txn.feePayer = wallet.publicKey;
+        txn.feePayer = walletPublicKey;
         txn.sign(...signers);
-        const signed = await wallet.signTransaction(txn);
+        const signed = await signTransaction(txn);
         const txid = await connection.sendRawTransaction(signed.serialize());
         return void connection.confirmTransaction(txid);
       },
@@ -169,7 +171,8 @@ export const buyout = async (
 
 export const redeem = async (
   vault: VaultData,
-  wallet: WalletAdapter,
+  walletPublicKey: PublicKey,
+  signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,
 ): Promise<{
   instructions: TransactionInstruction[];
@@ -180,7 +183,7 @@ export const redeem = async (
   try {
     const result = await redeemRewardsFromShares(
       connection,
-      wallet.publicKey.toString(),
+      walletPublicKey.toString(),
       publicKey,
       priceTokenMint,
       fractionMint,
@@ -189,8 +192,8 @@ export const redeem = async (
       async (txn): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();
         txn.recentBlockhash = blockhash;
-        txn.feePayer = wallet.publicKey;
-        const signed = await wallet.signTransaction(txn);
+        txn.feePayer = walletPublicKey;
+        const signed = await signTransaction(txn);
         const txid = await connection.sendRawTransaction(signed.serialize());
         return void connection.confirmTransaction(txid);
       },

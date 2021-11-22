@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { shortenAddress } from '../../external';
+import { shortenAddress } from '../../utils/solanaUtils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { copyToClipboard, decimalBNToString } from '../../utils';

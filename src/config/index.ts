@@ -2,6 +2,8 @@ import { clusterApiUrl } from '@solana/web3.js';
 
 export const IS_DEVNET = process.env.REACT_APP_NETWORK === 'devnet';
 
+export const NETWORK = IS_DEVNET ? 'devnet' : 'mainnet-beta';
+
 export const ENDPOINT = IS_DEVNET
   ? clusterApiUrl('devnet')
   : 'https://ssc-dao.genesysgo.net/';

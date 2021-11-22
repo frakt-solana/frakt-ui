@@ -1,13 +1,11 @@
 import { AccountInfo } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
-
-import { useConnection } from '../contexts/Connection';
-import { useWallet } from '../contexts/Wallet';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 export const useNativeAccount = (): {
   account: AccountInfo<Buffer>;
 } => {
-  const connection = useConnection();
+  const { connection } = useConnection();
   const { wallet, publicKey } = useWallet();
 
   const [nativeAccount, setNativeAccount] = useState<AccountInfo<Buffer>>();

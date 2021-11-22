@@ -2,7 +2,7 @@ import { notification } from 'antd';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
 
-import { formatNumber, Notify } from '../external';
+import { formatNumber, Notify } from './solanaUtils';
 
 export const notify: Notify = ({
   message = '',
