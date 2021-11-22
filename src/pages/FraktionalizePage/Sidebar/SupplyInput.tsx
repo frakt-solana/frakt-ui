@@ -7,12 +7,14 @@ interface SupplyInputProps {
   setSupply: (supply: string) => void;
   error?: string;
   setError?: (error: string) => void;
+  maxLength: number;
 }
 
 export const SupplyInput = ({
   supply,
   setSupply,
   error,
+  maxLength,
   setError = () => {},
 }: SupplyInputProps): JSX.Element => {
   const validate = (supply: string) => {
@@ -35,6 +37,7 @@ export const SupplyInput = ({
       positiveOnly
       integerOnly
       error={!!error}
+      maxLength={maxLength}
     />
   );
 };

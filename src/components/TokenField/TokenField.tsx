@@ -20,6 +20,7 @@ interface TokenFieldProps {
   onUseMaxButtonClick?: () => void;
   error?: boolean;
   placeholder?: string;
+  amountMaxLength?: number;
 }
 
 const TokenField = ({
@@ -34,6 +35,7 @@ const TokenField = ({
   className,
   onUseMaxButtonClick,
   error,
+  amountMaxLength,
   placeholder = '0.0',
 }: TokenFieldProps): JSX.Element => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -60,6 +62,7 @@ const TokenField = ({
       >
         <NumericInput
           value={value}
+          maxLength={amountMaxLength}
           onChange={onValueChange}
           placeholder={placeholder}
           positiveOnly

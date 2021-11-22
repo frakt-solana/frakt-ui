@@ -1,8 +1,11 @@
 .sidebar {
+  overflow-y: auto;
   position: fixed;
   top: 89px;
   right: 10px;
-  width: 320px;
+  width: 425px;
+  background-color: var(--black-color);
+  z-index: 2;
   height: calc(100vh - 88px);
   border-left: 1px solid var(--gray-color-6);
   transform: translateX(330px);
@@ -159,6 +162,10 @@ body .sidebar__stringInput {
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 18px;
+}
+
+.frktPriceError {
+  color: var(--red-color);
 }
 
 .line {

@@ -7,6 +7,8 @@ import styles from './styles.module.scss';
 import { TickerInput } from './TickerInput';
 import { SupplyInput } from './SupplyInput';
 import { BuyoutField } from './BuyoutField';
+import BN from 'bn.js';
+import { shortBigNumber } from '../../../utils';
 
 interface SidebarProps {
   onRemoveClick?: () => void;
@@ -82,7 +84,10 @@ const Sidebar = ({
     );
   };
 
-  const pricePerFRKT = Number(buyoutPrice) / Number(supply);
+  const pricePerFRKT =
+    buyoutPrice && supply && Number(buyoutPrice) / Number(supply);
+  const pricePerFrktBN = pricePerFRKT ? new BN(pricePerFRKT * 10e5) : null;
+
   return (
     <div
       className={classNames([
@@ -120,6 +125,7 @@ const Sidebar = ({
               supply={supply}
               setSupply={setSupply}
               error={supplyError}
+              maxLength={9}
               setError={setSupplyError}
             />
           </div>
@@ -134,16 +140,27 @@ const Sidebar = ({
             />
           </div>
         </div>
-        <div className={styles.frktPrice}>
+        <div
+          className={classNames(styles.frktPrice, {
+            [styles.frktPriceError]: smallFractionPriceError,
+          })}
+        >
           Fraktion price
-          <span className={styles.line} />$
-          {pricePerFRKT ? pricePerFRKT.toFixed(2) : '0.00'}
+          <span className={styles.line} />
+          {!smallFractionPriceError && (
+            <>
+              {pricePerFrktBN ? shortBigNumber(pricePerFrktBN, 2, 6) : '0.00'}{' '}
+              SOL
+            </>
+          )}
+          {smallFractionPriceError && 'Error'}
         </div>
         <div className={styles.sidebar__fieldWrapper}>
           <p className={styles.sidebar__fieldLabel}>Buyout price</p>
           <BuyoutField
             buyoutPrice={buyoutPrice}
             setBuyoutPrice={setBuyoutPrice}
+            maxLength={5}
             error={buyoutPriceError}
             setError={setBuyoutPriceError}
           />
