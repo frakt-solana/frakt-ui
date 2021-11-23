@@ -1,5 +1,6 @@
 import BN from 'bn.js';
 import { WSOL } from '@raydium-io/raydium-sdk';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -65,7 +66,8 @@ const useTokenField = () => {
 };
 
 const SwapPage = (): JSX.Element => {
-  const { rawUserTokensByMint } = useUserTokens();
+  const { connected } = useWallet();
+  const { rawUserTokensByMint, loading: userTokensLoading } = useUserTokens();
 
   const { poolConfigs, tokenList, fetchPoolInfo, swap } = useTokenField();
 
@@ -75,7 +77,7 @@ const SwapPage = (): JSX.Element => {
   const [receiveValue, setReceiveValue] = useState<string>('');
   const [receiveToken, setReceiveToken] = useState<Token | null>(null);
 
-  const [, setPoolInfo] = useState(null);
+  const [poolInfo, setPoolInfo] = useState(null);
 
   useEffect(() => {
     const getPoolInfo = async () => {
@@ -150,6 +152,9 @@ const SwapPage = (): JSX.Element => {
     setReceiveToken(nextToken);
   };
 
+  const isSwapBtnEnabled =
+    !userTokensLoading && poolInfo && connected && Number(payValue) > 0;
+
   return (
     <AppLayout contentClassName={styles.exchange}>
       <div className={styles.container}>
@@ -192,7 +197,12 @@ const SwapPage = (): JSX.Element => {
           <span>---</span>
         </div>
       </div>
-      <Button className={styles.btn} type="alternative" onClick={swapTokens}>
+      <Button
+        className={styles.btn}
+        type="alternative"
+        onClick={swapTokens}
+        disabled={!isSwapBtnEnabled}
+      >
         Swap
       </Button>
     </AppLayout>

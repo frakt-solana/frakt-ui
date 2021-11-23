@@ -1,9 +1,10 @@
 import React from 'react';
+import BN from 'bn.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AccountInfo } from '@solana/web3.js';
 import { WSOL } from '@raydium-io/raydium-sdk';
 
-import { getSolBalanceValue, getTokenBalanceValue, Token } from '../../utils';
+import { decimalBNToString, Token } from '../../utils';
 import { RawUserTokensByMint, useUserTokens } from '../../contexts/userTokens';
 import { useNativeAccount } from '../../hooks';
 import TokenField, { TokenFieldProps } from './TokenField';
@@ -14,11 +15,15 @@ const getTokenBalance = (
   rawUserTokensByMint: RawUserTokensByMint,
 ): string => {
   if (token?.mint === WSOL.mint) {
-    return getSolBalanceValue(account);
+    return decimalBNToString(new BN(account?.lamports || 0), 3, 9);
   } else {
     const tokenAccount = rawUserTokensByMint[token?.mint];
 
-    return getTokenBalanceValue(tokenAccount?.amountBN, token?.data?.decimals);
+    return decimalBNToString(
+      tokenAccount?.amountBN || new BN(0),
+      3,
+      token?.data?.decimals || 9,
+    );
   }
 };
 
@@ -30,7 +35,7 @@ const getMintBalanceMap = (
   return tokensList.reduce((acc, token) => {
     const balance = getTokenBalance(token, account, rawUserTokensByMint);
 
-    balance && balance !== '--' && (acc[token.mint] = balance);
+    balance && balance !== '0' && (acc[token.mint] = balance);
 
     return acc;
   }, {});
