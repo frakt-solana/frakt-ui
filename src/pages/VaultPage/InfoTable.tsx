@@ -1,9 +1,9 @@
 import BN from 'bn.js';
 import { shortenAddress } from '../../utils/solanaUtils';
-import fraktionConfig from '../../contexts/Fraktion/config';
+import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { copyToClipboard, decimalBNToString } from '../../utils';
-import { VaultData } from '../../contexts/Fraktion';
+import { VaultData } from '../../contexts/fraktion';
 import CopyClipboardIcon from '../../icons/CopyClipboardIcon';
 import classNames from 'classnames';
 import Tooltip from '../../components/Tooltip';

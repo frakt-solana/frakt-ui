@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { RawUserTokensByMint } from '../UserTokens';
+import { RawUserTokensByMint } from '../userTokens';
 
 export interface PoolConfig {
   id: string;

@@ -14,7 +14,7 @@ import {
 import BN from 'bn.js';
 
 import { notify } from '../../utils';
-import { RawUserTokensByMint } from '../UserTokens';
+import { RawUserTokensByMint } from '../userTokens';
 import { RAYDIUM_POOLS_LIST_URL } from './swap.constants';
 import { PoolConfig, PoolInfo } from './swap.model';
 

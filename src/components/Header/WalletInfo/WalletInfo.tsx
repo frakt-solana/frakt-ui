@@ -3,7 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '../../Button';
 import styles from './styles.module.scss';
 import { getFrktBalanceValue, getSolBalanceValue } from '../../../utils';
-import { useFrktBalance } from '../../../contexts/UserTokens';
+import { useFrktBalance } from '../../../contexts/userTokens';
 import { useNativeAccount } from '../../../hooks';
 
 export const WalletInfo = (): JSX.Element => {

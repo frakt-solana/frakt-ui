@@ -10,7 +10,7 @@ import Button from '../../components/Button';
 import { TokenFieldWithBalance } from '../../components/TokenField';
 import { useSwapContext } from '../../contexts/Swap';
 import { useTokenMap } from '../../contexts/TokenList';
-import { useUserTokens } from '../../contexts/UserTokens';
+import { useUserTokens } from '../../contexts/userTokens';
 
 const SOL_TOKEN = {
   mint: WSOL.mint,

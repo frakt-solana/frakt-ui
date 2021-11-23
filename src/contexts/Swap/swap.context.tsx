@@ -14,7 +14,7 @@ import {
   SwapContextProviderProps,
 } from './swap.model';
 import { fetchPoolInfo, fetchRaydiumPools, swap } from './swap';
-import { RawUserTokensByMint } from '../UserTokens';
+import { RawUserTokensByMint } from '../userTokens';
 
 export const SwapContext = React.createContext<SwapContextInterface>({
   poolConfigs: [],

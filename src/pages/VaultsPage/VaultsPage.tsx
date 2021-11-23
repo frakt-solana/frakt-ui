@@ -10,10 +10,10 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
-import { useFraktion } from '../../contexts/Fraktion/fraktion.context';
+import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import { NavLink } from 'react-router-dom';
 import { URLS } from '../../constants';
-import { VaultState } from '../../contexts/Fraktion';
+import { VaultState } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
