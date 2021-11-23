@@ -1,0 +1,49 @@
+.ecosystem {
+  h2 {
+    font: var(--font-h2);
+    margin-bottom: 64px;
+  }
+
+  .description {
+    font: var(--font-body-large);
+    margin-bottom: 104px;
+  }
+
+  h3 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .imgWrapper, .linkWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .imgWrapper img {
+    max-width: 100%;
+  }
+  .linkWrapper {
+    margin-bottom: 64px;
+  }
+  .btnWrapper {
+    margin-bottom: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .link {
+    font-size: 18px;
+    font-family: var(--font-family-inter);
+    font-weight: bold;
+    color: var(--white-color);
+    text-decoration-line: underline;
+    display: inline-block;
+    margin: 0 auto;
+  }
+  .btn {
+    margin: 0 11px;
+  }
+}
