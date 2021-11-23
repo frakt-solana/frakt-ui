@@ -1,22 +1,21 @@
 import React, { useMemo, useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import Button from '../../components/Button';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import NFTCheckbox from '../../components/NFTCheckbox';
 import { SearchInput } from '../../components/SearchInput';
-import { useUserTokens } from '../../contexts/userTokens';
-import { UserNFT } from '../../contexts/userTokens/userTokens.model';
-import { useWallet } from '../../external/contexts/wallet';
+import { useUserTokens, UserNFT } from '../../contexts/UserTokens';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
-import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { useFraktion } from '../../contexts/Fraktion/fraktion.context';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
-import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
+import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
 
 const useFraktionalizeTransactionModal = () => {
   const { removeTokenOptimistic } = useUserTokens();
@@ -111,10 +110,10 @@ const useFraktionalizeTransactionModal = () => {
 
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
-  const { connected, select } = useWallet();
+  const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
   const { nfts: rawNfts, loading } = useUserTokens();
-  const { isTickerAvailable, loading: solanaTokensLoading } =
-    useSolanaTokenRegistry();
+
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const {
@@ -167,7 +166,6 @@ const FraktionalizePage = (): JSX.Element => {
         token={selectedNft}
         onRemoveClick={clearSelectedToken}
         onContinueClick={runFraktionalization}
-        isTickerAvailable={isTickerAvailable}
       />
       <Container component="main" className={styles.contentWrapper}>
         <div id="content-reducer" className={styles.contentReducer}>
@@ -186,7 +184,7 @@ const FraktionalizePage = (): JSX.Element => {
             <Button
               type="secondary"
               className={styles.connectBtn}
-              onClick={select}
+              onClick={() => setVisible(true)}
             >
               Connect wallet
             </Button>
@@ -194,7 +192,7 @@ const FraktionalizePage = (): JSX.Element => {
             <FakeInfinityScroll
               itemsToShow={itemsToShow}
               next={next}
-              isLoading={loading || solanaTokensLoading}
+              isLoading={loading}
               wrapperClassName={styles.artsList}
               emptyMessage="No suitable NFTs found"
             >

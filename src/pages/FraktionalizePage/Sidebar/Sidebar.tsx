@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
-import { UserNFT } from '../../../contexts/userTokens/userTokens.model';
+import { UserNFT } from '../../../contexts/UserTokens';
 import styles from './styles.module.scss';
 import { TickerInput } from './TickerInput';
 import { SupplyInput } from './SupplyInput';
@@ -17,14 +17,12 @@ interface SidebarProps {
     fractionsAmount: number,
   ) => void;
   token: UserNFT;
-  isTickerAvailable: (tickerName: string) => boolean;
 }
 
 const Sidebar = ({
   onRemoveClick,
   token,
   onContinueClick,
-  isTickerAvailable,
 }: SidebarProps): JSX.Element => {
   const [buyoutPrice, setBuyoutPrice] = useState<string>('');
   const [supply, setSupply] = useState<string>('');
@@ -127,7 +125,6 @@ const Sidebar = ({
             <TickerInput
               value={ticker}
               setTicker={setTicker}
-              isTickerAvailable={isTickerAvailable}
               tickerError={tickerError}
               setTickerError={setTickerError}
             />

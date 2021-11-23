@@ -1,21 +1,24 @@
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames/bind';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import styles from './styles.module.scss';
 import { URLS } from '../../constants';
 import { Container } from '../Layout';
-import { useWallet } from '../../external/contexts/wallet';
-import { shortenAddress } from '../../external/utils/utils';
+import { shortenAddress } from '../../utils/solanaUtils';
 import { ChevronDownIcon } from '../../icons';
 import { Tooltip } from 'antd';
 import { WalletInfo } from './WalletInfo';
+import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
 
 interface HeaderProps {
   className?: string;
 }
 
 const Header = ({ className }: HeaderProps): JSX.Element => {
-  const { select, wallet, connected } = useWallet();
+  const { connected, publicKey } = useWallet();
+  const { setVisible } = useWalletModal();
+
   return (
     <header className={classNames([styles.root, className])}>
       <Container component="nav" className={styles.container}>
@@ -26,8 +29,8 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
           <li>
             <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
           </li>
-          <li className={styles.navigation__exchangeSoon}>
-            <NavigationLink to={URLS.EXCHANGE}>Exchange</NavigationLink>
+          <li>
+            <NavigationLink to={URLS.EXCHANGE}>Swap</NavigationLink>
           </li>
         </ul>
         <ul className={styles.navigation}>
@@ -54,12 +57,15 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
                     styles.walletBtn_connected,
                   ])}
                 >
-                  {shortenAddress(wallet.publicKey.toString())}
+                  {shortenAddress(publicKey.toString())}
                   <ChevronDownIcon className={styles.walletBtn__icon} />
                 </button>
               </Tooltip>
             ) : (
-              <button className={styles.walletBtn} onClick={select}>
+              <button
+                className={styles.walletBtn}
+                onClick={() => setVisible(true)}
+              >
                 Connect wallet
               </button>
             )}

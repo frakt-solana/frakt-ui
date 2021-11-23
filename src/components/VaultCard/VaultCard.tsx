@@ -2,10 +2,10 @@ import BN from 'bn.js';
 
 import styles from './styles.module.scss';
 import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
-import { shortenAddress } from '../../external/utils/utils';
+import { shortenAddress } from '../../utils/solanaUtils';
 import { shortBigNumber } from '../../utils';
-import fraktionConfig from '../../contexts/fraktion/config';
-import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
+import fraktionConfig from '../../contexts/Fraktion/config';
+import { useTokenMap } from '../../contexts/TokenList';
 import { useEffect, useState } from 'react';
 
 export interface VaultCardProps {
@@ -33,15 +33,16 @@ const VaultCard = ({
   priceTokenMint,
   buyoutPrice = new BN(0),
 }: VaultCardProps): JSX.Element => {
-  const { getTokerByMint, loading } = useSolanaTokenRegistry();
+  const tokenMap = useTokenMap();
+
   const [tokerName, setTokerName] = useState<string>('');
   const currency =
     priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   useEffect(() => {
-    !loading && setTokerName(getTokerByMint(fractionMint));
+    setTokerName(tokenMap.get(fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [tokenMap]);
 
   return (
     <div className={styles.cardContainer}>
