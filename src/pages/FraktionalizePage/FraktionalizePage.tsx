@@ -106,6 +106,7 @@ const useFraktionalizeTransactionModal = () => {
     setState,
     retry,
     fractionTokenMint,
+    tickerName: lastTxnData.tickerName,
   };
 };
 
@@ -125,6 +126,7 @@ const FraktionalizePage = (): JSX.Element => {
     setState: setTxnModalState,
     retry: retryTxn,
     fractionTokenMint,
+    tickerName,
   } = useFraktionalizeTransactionModal();
   const { itemsToShow, next, setItemsToShow } = useFakeInfinityScroll(15);
 
@@ -214,6 +216,7 @@ const FraktionalizePage = (): JSX.Element => {
       <FraktionalizeTransactionModal
         visible={txnModalVisible}
         onCancel={onTransactionModalCancel}
+        tickerName={tickerName}
         fractionsMintAddress={fractionTokenMint}
         onRetryClick={retryTxn}
         state={txnModalState}

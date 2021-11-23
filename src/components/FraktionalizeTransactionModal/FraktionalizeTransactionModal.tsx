@@ -9,10 +9,12 @@ import { Loader } from '../Loader';
 import { Modal } from '../Modal';
 import styles from './styles.module.scss';
 import { useEffect, useState } from 'react';
+import { registerMarket } from '../../utils/registerMarket';
 
 interface FraktionalizeTransactionModalProps {
   state?: 'loading' | 'success' | 'fail';
   visible: boolean;
+  tickerName: string;
   onCancel: () => void;
   fractionsMintAddress?: string;
   onRetryClick?: () => void;
@@ -22,6 +24,7 @@ const FraktionalizeTransactionModal = ({
   visible,
   state = 'loading',
   fractionsMintAddress = '',
+  tickerName,
   onCancel,
   onRetryClick = () => {},
 }: FraktionalizeTransactionModalProps): JSX.Element => {
@@ -59,7 +62,11 @@ const FraktionalizeTransactionModal = ({
         dexProgramId,
       });
       setListedMarket(marketAddress.toBase58());
-      //
+      registerMarket(
+        tickerName,
+        marketAddress.toBase58(),
+        fractionsMintAddress,
+      );
     } catch (e) {
       console.warn(e);
       notify({
