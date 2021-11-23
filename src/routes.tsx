@@ -15,7 +15,7 @@ import {
 import { URLS } from './constants';
 import Page404 from './pages/Page404';
 import HomePage from './pages/HomePage';
-import ExchangePage from './pages/ExchangePage';
+import ExchangePage from './pages/SwapPage';
 import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import VaultPage from './pages/VaultPage';
@@ -25,6 +25,7 @@ import { FraktionProvider } from './contexts/Fraktion';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
+import { SwapContextProvider } from './contexts/Swap';
 
 const wallets = [
   getPhantomWallet(),
@@ -42,50 +43,52 @@ export const Routes = (): JSX.Element => {
           <WalletModalProvider>
             <TokenListContextProvider>
               <UserTokensProvider>
-                <FraktionProvider>
-                  <Switch>
-                    <Route
-                      exact
-                      path={URLS.ROOT}
-                      component={(): JSX.Element => <HomePage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.VAULTS}
-                      component={(): JSX.Element => <VaultsPage />}
-                    />
-                    <Route
-                      exact
-                      path={`${URLS.VAULT}/:vaultPubkey`}
-                      component={(): JSX.Element => <VaultPage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.EXCHANGE}
-                      component={(): JSX.Element => <ExchangePage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.STAKER_PAGE}
-                      component={(): JSX.Element => <StakerPage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.FRAKTIONALIZE}
-                      component={(): JSX.Element => <FraktionalizePage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.PAGE_404}
-                      component={(): JSX.Element => <Page404 />}
-                    />
-                    <Route
-                      exact
-                      path={'*'}
-                      component={(): JSX.Element => <Page404 />}
-                    />
-                  </Switch>
-                </FraktionProvider>
+                <SwapContextProvider>
+                  <FraktionProvider>
+                    <Switch>
+                      <Route
+                        exact
+                        path={URLS.ROOT}
+                        component={(): JSX.Element => <HomePage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.VAULTS}
+                        component={(): JSX.Element => <VaultsPage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.VAULT}/:vaultPubkey`}
+                        component={(): JSX.Element => <VaultPage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.EXCHANGE}
+                        component={(): JSX.Element => <ExchangePage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.STAKER_PAGE}
+                        component={(): JSX.Element => <StakerPage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.FRAKTIONALIZE}
+                        component={(): JSX.Element => <FraktionalizePage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.PAGE_404}
+                        component={(): JSX.Element => <Page404 />}
+                      />
+                      <Route
+                        exact
+                        path={'*'}
+                        component={(): JSX.Element => <Page404 />}
+                      />
+                    </Switch>
+                  </FraktionProvider>
+                </SwapContextProvider>
               </UserTokensProvider>
             </TokenListContextProvider>
           </WalletModalProvider>

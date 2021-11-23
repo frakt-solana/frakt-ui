@@ -81,6 +81,11 @@ export const getFrktBalanceValue = (balance: BN): string => {
 export const getSolBalanceValue = (account: AccountInfo<Buffer>): string =>
   `${formatNumber.format((account?.lamports || 0) / LAMPORTS_PER_SOL)}`;
 
+export const getTokenBalanceValue = (amountBN: BN, decimals: number): string =>
+  `${formatNumber.format(
+    (amountBN?.toNumber() || 0) / Math.pow(10, decimals),
+  )}`;
+
 export interface Token {
   mint: string;
   symbol: string;

@@ -6,6 +6,8 @@ import { VERIFIED_BY_FRAKT_TEAM_TOKENS_URL } from './tokenList.contants';
 export const TokenListContext = React.createContext<TokenListContextInterface>({
   tokenMap: new Map<string, TokenInfo>(),
   tokenList: [],
+  swappableTokensMap: new Map<string, TokenInfo>(),
+  swappableTokensList: [],
   loading: false,
 });
 
@@ -15,6 +17,9 @@ export const TokenListContextProvider = ({
   children: JSX.Element | null;
 }): JSX.Element => {
   const [tokenList, setTokenList] = useState<TokenInfo[]>([]);
+  const [swappableTokensList, setSwappableTokensList] = useState<TokenInfo[]>(
+    [],
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -27,6 +32,7 @@ export const TokenListContextProvider = ({
     ])
       .then(([fraktList, solanaList]) => {
         setTokenList([...fraktList, ...solanaList]);
+        setSwappableTokensList(fraktList);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -46,24 +52,14 @@ export const TokenListContextProvider = ({
     return tokenMap;
   }, [tokenList]);
 
-  //? Tokens with USD(x) quoted markets.
-  // const swappableTokens = useMemo(() => {
-  //   const tokens = tokenList.filter((token: TokenInfo) => {
-  //     const isUsdxQuoted =
-  //       token.extensions?.serumV3Usdt || token.extensions?.serumV3Usdc;
-  //     // token.symbol === 'FRKT' //? Force add FRKT token
-  //     return isUsdxQuoted;
-  //   });
-  //   tokens.sort((tokenA: TokenInfo, tokenB: TokenInfo) =>
-  //     tokenA.symbol < tokenB.symbol
-  //       ? -1
-  //       : tokenA.symbol > tokenB.symbol
-  //       ? 1
-  //       : 0,
-  //   );
-  //   return tokens;
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [tokenList, tokenMap]);
+  //? Swappable token map for quick lookup.
+  const swappableTokensMap = useMemo(() => {
+    const swappableTokensMap = new Map();
+    swappableTokensList.forEach((token: TokenInfo) => {
+      swappableTokensMap.set(token.address, token);
+    });
+    return swappableTokensMap;
+  }, [swappableTokensList]);
 
   return (
     <TokenListContext.Provider
@@ -71,6 +67,8 @@ export const TokenListContextProvider = ({
         tokenMap,
         loading,
         tokenList,
+        swappableTokensList,
+        swappableTokensMap,
       }}
     >
       {children}

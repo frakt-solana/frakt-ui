@@ -1,5 +1,6 @@
 .container {
   max-width: 730px;
+  min-width: 600px;
   margin: 0 auto;
   padding: 64px 0;
   align-self: flex-end;
@@ -14,7 +15,8 @@
 
 .description {
   font-size: 24px;
-  margin-bottom: 24px;
+  // margin-bottom: 24px;
+  margin-bottom: 36px;
 }
 
 .settings {

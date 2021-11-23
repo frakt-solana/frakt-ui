@@ -7,14 +7,18 @@ import { SelectTokenModal } from '../SelectTokenModal';
 import { Token } from '../../utils';
 import NumericInput from '../NumericInput';
 
-interface TokenFieldProps {
+export interface TokenFieldProps {
   tokensList?: Token[];
   onTokenChange?: (nextToken: Token) => void;
-  currentToken: Token;
+  currentToken?: Token;
   value: string;
   onValueChange: (nextValue: string) => void;
   modalTitle?: string;
   label?: string;
+  balance?: string;
+  balances?: {
+    [key: string]: string;
+  };
   style?: React.CSSProperties;
   className?: string;
   onUseMaxButtonClick?: () => void;
@@ -30,6 +34,8 @@ const TokenField = ({
   onValueChange,
   modalTitle,
   label,
+  balance,
+  balances = {},
   style,
   className,
   onUseMaxButtonClick,
@@ -50,7 +56,11 @@ const TokenField = ({
       {!!label && (
         <div className={styles.label}>
           {label}
-          {/* <span>BALANCE: 0 {currentToken.symbol}</span> //TODO: display balance of selected token when wallet connected */}
+          {!!balance && (
+            <span>
+              BALANCE: {balance} {currentToken?.symbol}
+            </span>
+          )}
         </div>
       )}
       <div
@@ -79,12 +89,22 @@ const TokenField = ({
             })}
             onClick={() => tokensList && setIsModalOpen(true)}
           >
-            <img
-              className={styles.tokenLogo}
-              src={currentToken.img}
-              alt={currentToken.symbol}
-            />
-            <span>{currentToken.symbol}</span>
+            {currentToken ? (
+              <img
+                className={styles.tokenLogo}
+                src={currentToken.img}
+                alt={currentToken.symbol}
+              />
+            ) : (
+              <div className={styles.noTokenImg} />
+            )}
+            <span
+              className={classNames(styles.tokenName, {
+                [styles.tokenName_empty]: !currentToken,
+              })}
+            >
+              {currentToken?.symbol || '---'}
+            </span>
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>
@@ -93,6 +113,7 @@ const TokenField = ({
             title={modalTitle}
             visible={isModalOpen}
             tokensList={tokensList}
+            balances={balances}
             onChange={onTokenChange}
             onCancel={() => setIsModalOpen(false)}
           />

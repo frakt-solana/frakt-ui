@@ -29,8 +29,8 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
           <li>
             <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
           </li>
-          <li className={styles.navigation__exchangeSoon}>
-            <NavigationLink to={URLS.EXCHANGE}>Exchange</NavigationLink>
+          <li>
+            <NavigationLink to={URLS.EXCHANGE}>Swap</NavigationLink>
           </li>
         </ul>
         <ul className={styles.navigation}>

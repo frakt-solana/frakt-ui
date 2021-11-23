@@ -8,6 +8,9 @@ import { SearchInput } from '../SearchInput';
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (token: Token) => void;
   tokensList: Token[];
+  balances?: {
+    [key: string]: string;
+  };
 }
 
 export const SelectTokenModal = ({
@@ -17,6 +20,7 @@ export const SelectTokenModal = ({
   onChange,
   visible,
   onCancel,
+  balances = {},
   ...props
 }: SelectTokenModalProps): JSX.Element => {
   const [search, setSearch] = useState<string>('');
@@ -66,7 +70,7 @@ export const SelectTokenModal = ({
               />{' '}
               <span className={styles.title}>{token.symbol}</span>
             </div>
-            {/* 0.993020549647554908 //TODO: When wallet connected display balance */}
+            {balances[token?.mint] || ''}
           </div>
         ))}
       </div>
