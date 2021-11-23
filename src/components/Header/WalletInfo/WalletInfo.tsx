@@ -16,7 +16,7 @@ export const WalletInfo = (): JSX.Element => {
       <div>{getSolBalanceValue(account)} SOL</div>
       <div>{getFrktBalanceValue(balance)} FRKT</div>
 
-      <NavLink to={`${URLS.WALLET}/${publicKey}`}>My wallet</NavLink>
+      <NavLink to={`${URLS.WALLET}/${publicKey}`}>My Collection</NavLink>
       <Button type="secondary" className={styles.btn} onClick={disconnect}>
         Disconnect wallet
       </Button>

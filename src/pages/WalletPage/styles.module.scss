@@ -1,9 +1,15 @@
+.container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
 .token {
   margin: 4px;
   padding: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border: 1px solid var(--gray-color-6);
 
   .tokenData {
     display: flex;
@@ -25,13 +31,41 @@
   }
 }
 
+.tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tab {
+  background: transparent;
+  min-width: 130px;
+  transition: background-color var(--transition-1),
+    border-color var(--transition-1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid transparent;
+  padding: 32px 20px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--accent-color-3);
+  }
+}
+
+.activeTab {
+  background-color: var(--accent-color-1);
+}
+
 .tokensContainer {
   display: flex;
   flex-direction: column;
 }
 
 .pageTitle {
-  font: var(--font-h4);
+  text-align: center;
+  font: var(--font-subtitle);
   color: var(--white-color);
   margin-bottom: 6 px;
 }

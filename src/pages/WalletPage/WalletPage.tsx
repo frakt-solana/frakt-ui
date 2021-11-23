@@ -22,13 +22,13 @@ interface TokenViewWithTokenInfo {
 
 const WalletPage = (): JSX.Element => {
   const [userTokens, setUserTokens] = useState<TokenViewWithTokenInfo[]>([]);
+  const [tab, setTab] = useState<'tokens' | 'vaults'>('tokens');
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { loading: loadingVaults, vaults } = useFraktion();
   const { fraktionTokens, loading: loadingTokens } = useSolanaTokenRegistry();
   const connection = useConnection();
 
   const fetchUserTokens = async () => {
-    console.log('#fired');
     const userTokens = await getAllUserTokens(new PublicKey(walletPubkey), {
       connection,
     });
@@ -53,43 +53,99 @@ const WalletPage = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (!loadingTokens && fraktionTokens.length) {
+    if (!loadingTokens && fraktionTokens.length && tab === 'tokens') {
       fetchUserTokens();
     }
-  }, [loadingTokens]);
+  }, [loadingTokens, tab]);
+
+  const onSwitchTab = (e) => {
+    setTab(e.target.name);
+  };
 
   return (
     <AppLayout>
-      <Container component="main">
-        <h2 className={styles.pageTitle}>{`Wallet ${shortenAddress(
+      <Container component="main" className={styles.container}>
+        <h2 className={styles.pageTitle}>{`${shortenAddress(
           walletPubkey,
         )}`}</h2>
-        <div className={styles.tokensContainer}>
-          {userTokens.map((token) => (
-            <div className={styles.token} key={token.mint as string}>
-              <div className={styles.tokenData}>
-                <div className={styles.tokenLogoContainer}>
-                  <img
-                    className={styles.tokenLogo}
-                    src={token.tokenInfo.logoURI}
-                  />
-                </div>
-                <div>
-                  <div>{token.tokenInfo.name}</div>
-                  <div className={styles.tokenBalance}>
-                    {`${token.tokenView.amount} ${token.tokenInfo.symbol}`}
+        <div className={styles.tabs}>
+          <button
+            className={`${styles.tab} ${
+              tab === 'tokens' ? styles.activeTab : ''
+            }`}
+            name="tokens"
+            onClick={onSwitchTab}
+          >
+            Tokens
+          </button>
+          <button
+            className={`${styles.tab} ${
+              tab === 'vaults' ? styles.activeTab : ''
+            }`}
+            name="vaults"
+            onClick={onSwitchTab}
+          >
+            Vaults
+          </button>
+        </div>
+
+        {tab === 'tokens' && (
+          <div className={styles.tokensContainer}>
+            {userTokens.map((token) => (
+              <div className={styles.token} key={token.mint as string}>
+                <div className={styles.tokenData}>
+                  <div className={styles.tokenLogoContainer}>
+                    <img
+                      className={styles.tokenLogo}
+                      src={token.tokenInfo.logoURI}
+                    />
+                  </div>
+                  <div>
+                    <div>{token.tokenInfo.name}</div>
+                    <div className={styles.tokenBalance}>
+                      {/* TODO: better balance calc */}
+                      {`${(token.tokenView.amount as number) / 1000} ${
+                        token.tokenInfo.symbol
+                      }`}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <NavLink
-                to={`${URLS.VAULT}/${token.tokenInfo.extensions.vaultPubkey}`}
-              >
-                Vault
-              </NavLink>
-            </div>
-          ))}
-        </div>
+                <NavLink
+                  to={`${URLS.VAULT}/${token.tokenInfo.extensions.vaultPubkey}`}
+                >
+                  Vault
+                </NavLink>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === 'vaults' && (
+          <div className={styles.tokensContainer}>
+            {vaults
+              .filter((vault) => vault.authority === walletPubkey)
+              .map((vault) => (
+                <div className={styles.token} key={vault.publicKey as string}>
+                  <div className={styles.tokenData}>
+                    <div className={styles.tokenLogoContainer}>
+                      <img className={styles.tokenLogo} src={vault.imageSrc} />
+                    </div>
+                    <div>
+                      <div>{vault.name}</div>
+                      {/* <div className={styles.tokenBalance}>
+                    {`${token.tokenView.amount} ${token.tokenInfo.symbol}`}
+                  </div> */}
+                    </div>
+                  </div>
+
+                  <NavLink to={`${URLS.VAULT}/${vault.publicKey}`}>
+                    Vault
+                  </NavLink>
+                </div>
+              ))}
+          </div>
+        )}
       </Container>
     </AppLayout>
   );
