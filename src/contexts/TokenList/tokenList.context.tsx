@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry';
+
 import { TokenListContextInterface } from './tokenList.model';
 import {
   ADDITIONAL_SWAPPABLE_TOKENS_MINTS,
@@ -7,10 +8,11 @@ import {
 } from './tokenList.contants';
 
 export const TokenListContext = React.createContext<TokenListContextInterface>({
-  tokenMap: new Map<string, TokenInfo>(),
   tokenList: [],
+  tokenMap: new Map<string, TokenInfo>(),
   swappableTokensMap: new Map<string, TokenInfo>(),
-  swappableTokensList: [],
+  fraktionTokensList: [],
+  fraktionTokensMap: new Map<string, TokenInfo>(),
   loading: false,
 });
 
@@ -23,6 +25,7 @@ export const TokenListContextProvider = ({
   const [swappableTokensList, setSwappableTokensList] = useState<TokenInfo[]>(
     [],
   );
+  const [fraktionTokensList, setFraktionTokensList] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -35,6 +38,7 @@ export const TokenListContextProvider = ({
     ])
       .then(([fraktList, solanaList]) => {
         setTokenList([...fraktList, ...solanaList]);
+        setFraktionTokensList(fraktList);
         setSwappableTokensList(fraktList);
       })
       .catch((error) => {
@@ -68,14 +72,24 @@ export const TokenListContextProvider = ({
     return swappableTokensMap;
   }, [swappableTokensList, tokenMap]);
 
+  //? Fraktion map for quick lookup.
+  const fraktionTokensMap = useMemo(() => {
+    const fraktionTokensMap = new Map();
+    fraktionTokensList.forEach((token: TokenInfo) => {
+      fraktionTokensMap.set(token.address, token);
+    });
+    return fraktionTokensMap;
+  }, [fraktionTokensList]);
+
   return (
     <TokenListContext.Provider
       value={{
         tokenMap,
         loading,
         tokenList,
-        swappableTokensList,
         swappableTokensMap,
+        fraktionTokensList,
+        fraktionTokensMap,
       }}
     >
       {children}

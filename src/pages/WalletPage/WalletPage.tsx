@@ -19,6 +19,7 @@ import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { VaultData } from '../../contexts/fraktion';
 import { Loader } from '../../components/Loader';
+import Button from '../../components/Button';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -33,7 +34,7 @@ const WalletPage = (): JSX.Element => {
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
 
-  const { swappableTokensMap, loading: tokensLoading } = useTokenListContext();
+  const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
 
   const fetchUserTokens = async () => {
     try {
@@ -47,7 +48,7 @@ const WalletPage = (): JSX.Element => {
       setUserTokens(
         userTokens
           .reduce((acc, tokenView) => {
-            const tokenInfo: TokenInfo = swappableTokensMap.get(
+            const tokenInfo: TokenInfo = fraktionTokensMap.get(
               String(tokenView.mint),
             );
             return tokenInfo
@@ -180,34 +181,29 @@ const WalletPage = (): JSX.Element => {
 const TokenCard = ({ token }: { token: TokenInfoWithAmount }): JSX.Element => {
   const vaultPubkey = (token.extensions as any)?.vaultPubkey;
 
-  const info = (
-    <div className={styles.token__info}>
-      <img
-        className={styles.token__logo}
-        src={token?.logoURI}
-        alt={token.name}
-      />
-      <div>
-        <div className={styles.token__name}>{token.name}</div>
-        <div className={styles.token__balance}>
-          {`${decimalBNToString(
-            token?.amountBN || new BN(0),
-            3,
-            token?.decimals || 3,
-          )} ${token.symbol}`}
+  return (
+    <NavLink to={`${URLS.VAULT}/${vaultPubkey}`} className={styles.token}>
+      <div className={styles.token__info}>
+        <img
+          className={styles.token__logo}
+          src={token?.logoURI}
+          alt={token.name}
+        />
+        <div>
+          <div className={styles.token__name}>{token.name}</div>
+          <div className={styles.token__balance}>
+            {`${decimalBNToString(
+              token?.amountBN || new BN(0),
+              3,
+              token?.decimals || 3,
+            )} ${token.symbol}`}
+          </div>
         </div>
       </div>
-    </div>
-  );
-
-  return vaultPubkey ? (
-    <NavLink to={`${URLS.VAULT}/${vaultPubkey}`} className={styles.token}>
-      {info}
+      <Button type="alternative" className={styles.token__btn}>
+        Browse vault
+      </Button>
     </NavLink>
-  ) : (
-    <div className={classNames(styles.token, styles.token_disabled)}>
-      {info}
-    </div>
   );
 };
 

@@ -53,24 +53,15 @@
 }
 
 .tokens {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 24px;
-  align-items: stretch;
-}
-
-.vaults {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 24px;
-  align-items: stretch;
 }
 
 .token {
-  padding: 8px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
   border: 1px solid var(--gray-color-3);
   cursor: pointer;
   transition: border-color var(--transition-1);
@@ -80,7 +71,9 @@
   }
 
   &__info {
+    padding: 8px;
     display: flex;
+    justify-content: space-between;
     gap: 18px;
   }
 
@@ -101,10 +94,16 @@
     color: var(--gray-color-3);
   }
 
-  &_disabled {
-    pointer-events: none;
-    opacity: 0.75;
+  &__btn {
+    padding: 0 24px;
   }
+}
+
+.vaults {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  align-items: stretch;
 }
 
 .emptyMessage {
