@@ -1,5 +1,8 @@
+import { WSOL } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
 import { MARKETS } from '@project-serum/serum';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+
 import { listMarket } from '../../utils/serumUtils/send';
 import Button from '../Button';
 import { Loader } from '../Loader';
@@ -7,7 +10,6 @@ import { Modal } from '../Modal';
 import styles from './styles.module.scss';
 import { useState } from 'react';
 import { registerMarket } from '../../utils/registerMarket';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { notify } from '../../utils';
 
 interface FraktionalizeTransactionModalProps {
@@ -56,7 +58,7 @@ const FraktionalizeTransactionModal = ({
         walletPublicKey: publicKey,
         signAllTransactions,
         baseMint: new PublicKey(fractionsMintAddress),
-        quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
+        quoteMint: new PublicKey(WSOL.mint),
         baseLotSize,
         quoteLotSize,
         dexProgramId,
