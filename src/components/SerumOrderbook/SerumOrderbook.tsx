@@ -8,10 +8,10 @@ import {
   useMarket,
   useOrderbook,
   useMarkPrice,
-} from '../../utils/serum-utils/markets';
-import { isEqual, getDecimalCount } from '../../utils/serum-utils/utils';
-import { useInterval } from '../../utils/serum-utils/useInterval';
-import usePrevious from '../../utils/serum-utils/usePrevious';
+} from '../../utils/serumUtils/markets';
+import { isEqual, getDecimalCount } from '../../utils/serumUtils/utils';
+import { useInterval } from '../../utils/serumUtils/useInterval';
+import usePrevious from '../../utils/serumUtils/usePrevious';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
 const Wrapper = styled.div`

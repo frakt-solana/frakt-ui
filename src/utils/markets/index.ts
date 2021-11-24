@@ -1,4 +1,4 @@
-import { notify } from '../../external/utils/notifications';
+import { notify } from '../index';
 
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
 const MARKETS_URL =

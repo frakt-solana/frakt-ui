@@ -1,4 +1,4 @@
-import { RawUserTokensByMint, UserNFT } from './../userTokens/userTokens.model';
+import { RawUserTokensByMint, UserNFT } from '../userTokens';
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
 

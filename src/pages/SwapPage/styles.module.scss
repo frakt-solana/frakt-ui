@@ -1,0 +1,72 @@
+.container {
+  max-width: 730px;
+  min-width: 600px;
+  margin: 0 auto;
+  padding: 64px 0;
+  align-self: flex-end;
+  justify-self: flex-start;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 24px;
+  // margin-bottom: 24px;
+  margin-bottom: 36px;
+}
+
+.settings {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+  svg {
+    cursor: pointer;
+  }
+}
+
+.input {
+  margin-bottom: 24px;
+}
+
+.secondInput {
+  margin-bottom: 32px;
+}
+
+.fee {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  span {
+    flex-shrink: 0;
+    display: inline-block;
+    width: 150px;
+
+    &:last-child {
+      text-align: right;
+      width: 80px;
+    }
+  }
+  div {
+    position: relative;
+    top: 11px;
+    width: 100%;
+    display: block;
+    height: 1px;
+    background-color: var(--gray-color-3);
+  }
+}
+
+.btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.exchange {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import Orderbook from '../../../components/SerumOrderbook';
 import TradeForm from '../../../components/SerumTradeForm';
-import { MarketProvider } from '../../../utils/serum-utils/markets';
+import { MarketProvider } from '../../../utils/serumUtils/markets';
 
 export default function Market({ marketAddress }) {
   useEffect(() => {

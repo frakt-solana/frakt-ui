@@ -1,85 +1,105 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { WalletProvider } from './external/contexts/wallet';
-import { ConnectionProvider } from './external/contexts/connection';
-import { AccountsProvider } from './external/contexts/accounts';
-import { URLS } from './constants';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import {
+  getLedgerWallet,
+  getPhantomWallet,
+  getSolflareWallet,
+  getSolletExtensionWallet,
+  getSolletWallet,
+} from '@solana/wallet-adapter-wallets';
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from '@solana/wallet-adapter-react';
 
+import { URLS } from './constants';
 import Page404 from './pages/Page404';
 import HomePage from './pages/HomePage';
-// import ExchangePage from './pages/ExchangePage';
+import ExchangePage from './pages/SwapPage';
 import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import VaultPage from './pages/VaultPage';
+import WalletPage from './pages/WalletPage';
 import FraktionalizePage from './pages/FraktionalizePage';
-import { ConnectWalletModal } from './components/ConnectWallerModal';
 import { UserTokensProvider } from './contexts/userTokens';
 import { FraktionProvider } from './contexts/fraktion';
-import { SolanaTokenRegistryProvider } from './contexts/solanaTokenRegistry';
-import WalletPage from './pages/WalletPage';
+import { TokenListContextProvider } from './contexts/TokenList';
+import { ENDPOINT, NETWORK } from './config';
+import { WalletModalProvider } from './contexts/WalletModal';
+import { SwapContextProvider } from './contexts/Swap';
 
-export function Routes(): JSX.Element {
+const wallets = [
+  getPhantomWallet(),
+  getSolflareWallet(),
+  getLedgerWallet(),
+  getSolletWallet({ network: NETWORK as WalletAdapterNetwork }),
+  getSolletExtensionWallet({ network: NETWORK as WalletAdapterNetwork }),
+];
+
+export const Routes = (): JSX.Element => {
   return (
     <Router>
-      <ConnectionProvider>
-        <WalletProvider>
-          <AccountsProvider>
-            <SolanaTokenRegistryProvider>
+      <ConnectionProvider endpoint={ENDPOINT}>
+        <WalletProvider wallets={wallets} autoConnect>
+          <WalletModalProvider>
+            <TokenListContextProvider>
               <UserTokensProvider>
-                <FraktionProvider>
-                  <Switch>
-                    <Route
-                      exact
-                      path={URLS.ROOT}
-                      component={(): JSX.Element => <HomePage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.VAULTS}
-                      component={(): JSX.Element => <VaultsPage />}
-                    />
-                    <Route
-                      exact
-                      path={`${URLS.VAULT}/:vaultPubkey`}
-                      component={(): JSX.Element => <VaultPage />}
-                    />
-                    {/* <Route
-                      exact
-                      path={URLS.EXCHANGE}
-                      component={(): JSX.Element => <ExchangePage />}
-                    /> */}
-                    <Route
-                      exact
-                      path={URLS.STAKER_PAGE}
-                      component={(): JSX.Element => <StakerPage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.FRAKTIONALIZE}
-                      component={(): JSX.Element => <FraktionalizePage />}
-                    />
-                    <Route
-                      exact
-                      path={`${URLS.WALLET}/:walletPubkey`}
-                      component={(): JSX.Element => <WalletPage />}
-                    />
-                    <Route
-                      exact
-                      path={URLS.PAGE_404}
-                      component={(): JSX.Element => <Page404 />}
-                    />
-                    <Route
-                      exact
-                      path={'*'}
-                      component={(): JSX.Element => <Page404 />}
-                    />
-                  </Switch>
-                </FraktionProvider>
+                <SwapContextProvider>
+                  <FraktionProvider>
+                    <Switch>
+                      <Route
+                        exact
+                        path={URLS.ROOT}
+                        component={(): JSX.Element => <HomePage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.VAULTS}
+                        component={(): JSX.Element => <VaultsPage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.VAULT}/:vaultPubkey`}
+                        component={(): JSX.Element => <VaultPage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.EXCHANGE}
+                        component={(): JSX.Element => <ExchangePage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.STAKER_PAGE}
+                        component={(): JSX.Element => <StakerPage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.FRAKTIONALIZE}
+                        component={(): JSX.Element => <FraktionalizePage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.WALLET}/:walletPubkey`}
+                        component={(): JSX.Element => <WalletPage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.PAGE_404}
+                        component={(): JSX.Element => <Page404 />}
+                      />
+                      <Route
+                        exact
+                        path={'*'}
+                        component={(): JSX.Element => <Page404 />}
+                      />
+                    </Switch>
+                  </FraktionProvider>
+                </SwapContextProvider>
               </UserTokensProvider>
-            </SolanaTokenRegistryProvider>
-            <ConnectWalletModal />
-          </AccountsProvider>
+            </TokenListContextProvider>
+          </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
     </Router>
   );
-}
+};

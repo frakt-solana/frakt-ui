@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { keyBy } from 'lodash';
 import { PublicKey } from '@solana/web3.js';
 import { getAllVaults } from 'fraktionalizer-client-library';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
-import { useWallet } from '../../external/contexts/wallet';
-import { useConnection } from '../../external/contexts/connection';
 import {
   fetchVaultsFunction,
   FraktionContextType,
@@ -36,8 +35,8 @@ export const FraktionProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const { wallet } = useWallet();
-  const connection = useConnection();
+  const { publicKey: walletPublicKey, signTransaction } = useWallet();
+  const { connection } = useConnection();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
@@ -175,12 +174,20 @@ export const FraktionProvider = ({
             pricePerFraction,
             fractionsAmount,
             token,
-            wallet,
+            walletPublicKey,
+            signTransaction,
             connection,
           ),
         buyout: (vault, userTokensByMint) =>
-          buyout(vault, userTokensByMint, wallet, connection),
-        redeem: (vault) => redeem(vault, wallet, connection),
+          buyout(
+            vault,
+            userTokensByMint,
+            walletPublicKey,
+            signTransaction,
+            connection,
+          ),
+        redeem: (vault) =>
+          redeem(vault, walletPublicKey, signTransaction, connection),
         refetch: fetchVaults,
         patchVault,
       }}

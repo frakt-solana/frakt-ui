@@ -14,19 +14,18 @@ import {
   useSelectedOpenOrdersAccount,
   useSelectedQuoteCurrencyAccount,
   useSelectedQuoteCurrencyBalances,
-} from '../../utils/serum-utils/markets';
+} from '../../utils/serumUtils/markets';
 import {
   floorToDecimal,
   getDecimalCount,
   roundToDecimal,
-} from '../../utils/serum-utils/utils';
-import { getUnixTs, placeOrder } from '../../utils/serum-utils/send';
+} from '../../utils/serumUtils/utils';
+import { getUnixTs, placeOrder } from '../../utils/serumUtils/send';
 import { SwitchChangeEventHandler } from 'antd/es/switch';
-import { refreshCache } from '../../utils/serum-utils/fetch-loop';
+import { refreshCache } from '../../utils/serumUtils/fetch-loop';
 import tuple from 'immutable-tuple';
-import { notify } from '../../external/utils/notifications';
-import { useWallet } from '../../external/contexts/wallet';
-import { useConnection } from '../../external/contexts/connection';
+import { notify } from '../../utils';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 const Wrapper = styled.div`
   margin: 5px;
@@ -86,8 +85,13 @@ export default function TradeForm({
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount();
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount();
   const openOrdersAccount = useSelectedOpenOrdersAccount(true);
-  const { wallet, connected } = useWallet();
-  const sendConnection = useConnection();
+  const {
+    wallet,
+    connected,
+    publicKey: walletPublicKey,
+    signTransaction,
+  } = useWallet();
+  const { connection: sendConnection } = useConnection();
   const markPrice = useMarkPrice();
   useFeeDiscountKeys();
   const { storedFeeDiscountKey: feeDiscountKey } =
@@ -112,7 +116,7 @@ export default function TradeForm({
     market?.minOrderSize && getDecimalCount(market.minOrderSize);
   let priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize);
 
-  const publicKey = wallet?.publicKey;
+  const publicKey = walletPublicKey;
 
   useEffect(() => {
     setChangeOrderRef && setChangeOrderRef(doChangeOrder);
@@ -279,7 +283,8 @@ export default function TradeForm({
         orderType: ioc ? 'ioc' : postOnly ? 'postOnly' : 'limit',
         market,
         connection: sendConnection,
-        wallet,
+        walletPublicKey,
+        signTransaction,
         baseCurrencyAccount: baseCurrencyAccount?.pubkey,
         quoteCurrencyAccount: quoteCurrencyAccount?.pubkey,
         feeDiscountPubkey: feeDiscountKey,
