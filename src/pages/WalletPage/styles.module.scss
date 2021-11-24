@@ -3,32 +3,20 @@
   padding-bottom: 64px;
 }
 
-.token {
-  margin: 4px;
-  padding: 8px;
+.pageHeader {
+  margin-bottom: 36px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border: 1px solid var(--gray-color-6);
+}
 
-  .tokenData {
-    display: flex;
-    align-items: center;
-  }
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
 
-  .tokenLogoContainer {
-    margin-right: 10px;
-  }
-
-  .tokenLogo {
-    border-radius: 50%;
-    height: 44px;
-    width: 44px;
-  }
-
-  .tokenBalance {
-    opacity: 0.5;
-  }
+.description {
+  font-size: 24px;
 }
 
 .tabs {
@@ -38,24 +26,25 @@
 }
 
 .tab {
+  padding: 32px 24px;
+  min-width: 140px;
+  font: var(--font-btn-small);
+  color: var(--white-color);
   background: transparent;
-  min-width: 130px;
-  transition: background-color var(--transition-1),
-    border-color var(--transition-1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid transparent;
-  padding: 32px 20px;
+  border: none;
   cursor: pointer;
+  transition: background var(--transition-1), color var(--transition-1);
 
   &:hover {
-    border-color: var(--accent-color-3);
+    background: var(--gray-color-7);
   }
-}
 
-.activeTab {
-  background-color: var(--accent-color-1);
+  &Active,
+  &Active:hover {
+    background: var(--white-color);
+    color: var(--black-color);
+    pointer-events: none;
+  }
 }
 
 .tokensContainer {
@@ -63,9 +52,68 @@
   flex-direction: column;
 }
 
-.pageTitle {
-  text-align: center;
-  font: var(--font-subtitle);
-  color: var(--white-color);
-  margin-bottom: 6 px;
+.tokens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.vaults {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.token {
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--gray-color-3);
+  cursor: pointer;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border-color: var(--accent-color-1);
+  }
+
+  &__info {
+    display: flex;
+    gap: 18px;
+  }
+
+  &__logo {
+    border-radius: 50%;
+    height: 48px;
+    width: 48px;
+  }
+
+  &__name {
+    margin-bottom: 2px;
+    font: var(--font-btn-small);
+    color: var(--white-color);
+  }
+
+  &__balance {
+    font: var(--font-btn-small);
+    color: var(--gray-color-3);
+  }
+
+  &_disabled {
+    pointer-events: none;
+    opacity: 0.75;
+  }
+}
+
+.emptyMessage {
+  font: var(--font-btn-mid);
+}
+
+.loader {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

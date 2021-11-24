@@ -4,10 +4,7 @@ import BN from 'bn.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { useTokenListContext } from '../TokenList';
-import {
-  ADDITIONAL_SWAPPABLE_TOKENS_MINTS,
-  BLOCKED_POOLS_IDS,
-} from './swap.constants';
+import { BLOCKED_POOLS_IDS } from './swap.constants';
 import {
   PoolConfig,
   SwapContextInterface,
@@ -41,8 +38,7 @@ export const SwapContextProvider = ({
 
       const poolConfigs = pools.filter(({ id, baseMint, quoteMint }) => {
         return (
-          (swappableTokensMap.has(baseMint) ||
-            ADDITIONAL_SWAPPABLE_TOKENS_MINTS.includes(baseMint)) &&
+          swappableTokensMap.has(baseMint) &&
           quoteMint === WSOL.mint &&
           !BLOCKED_POOLS_IDS.includes(id)
         );

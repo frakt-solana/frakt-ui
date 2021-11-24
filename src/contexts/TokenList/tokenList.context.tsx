@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry';
 import { TokenListContextInterface } from './tokenList.model';
-import { VERIFIED_BY_FRAKT_TEAM_TOKENS_URL } from './tokenList.contants';
+import {
+  ADDITIONAL_SWAPPABLE_TOKENS_MINTS,
+  VERIFIED_BY_FRAKT_TEAM_TOKENS_URL,
+} from './tokenList.contants';
 
 export const TokenListContext = React.createContext<TokenListContextInterface>({
   tokenMap: new Map<string, TokenInfo>(),
@@ -58,8 +61,12 @@ export const TokenListContextProvider = ({
     swappableTokensList.forEach((token: TokenInfo) => {
       swappableTokensMap.set(token.address, token);
     });
+    //? Add additional tokens (such is FRKT and RAY for swap and etc.)
+    ADDITIONAL_SWAPPABLE_TOKENS_MINTS.forEach((mint) => {
+      swappableTokensMap.set(mint, tokenMap.get(mint));
+    });
     return swappableTokensMap;
-  }, [swappableTokensList]);
+  }, [swappableTokensList, tokenMap]);
 
   return (
     <TokenListContext.Provider

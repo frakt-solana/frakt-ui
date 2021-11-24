@@ -32,6 +32,18 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
           <li>
             <NavigationLink to={URLS.EXCHANGE}>Swap</NavigationLink>
           </li>
+          {connected && (
+            <li>
+              <NavigationLink
+                to={`${URLS.WALLET}/${publicKey.toString()}`}
+                isActive={(_, location) =>
+                  location?.pathname?.includes(publicKey.toString()) || false
+                }
+              >
+                My collection
+              </NavigationLink>
+            </li>
+          )}
         </ul>
         <ul className={styles.navigation}>
           {/* //TODO: Uncomment link when exteranl page ready */}
@@ -76,12 +88,23 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
   );
 };
 
-const NavigationLink = ({ to, children }): JSX.Element => {
+interface NavigationLinkProps {
+  to: string;
+  children?: null | JSX.Element | JSX.Element[] | string;
+  isActive?: (match?: any, location?: any) => boolean;
+}
+
+const NavigationLink = ({
+  to,
+  isActive,
+  children,
+}: NavigationLinkProps): JSX.Element => {
   return (
     <NavLink
       to={to}
       className={styles.link}
       activeClassName={styles.activeLink}
+      isActive={isActive}
     >
       {children}
     </NavLink>
