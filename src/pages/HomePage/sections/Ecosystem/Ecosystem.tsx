@@ -3,11 +3,11 @@ import styles from './styles.module.scss';
 import ecosystem from './ecosystem.svg';
 import Button from '../../../../components/Button';
 
-interface FAQSectionProps {
+interface EcosystemProps {
   className?: string;
 }
 
-const Ecosystem = ({ className }: FAQSectionProps): JSX.Element => {
+const Ecosystem = ({ className }: EcosystemProps): JSX.Element => {
   return (
     <div className={classNames([styles.ecosystem, className])}>
       <h2>FRKT - Entrance to Ecosystem</h2>
@@ -24,17 +24,30 @@ const Ecosystem = ({ className }: FAQSectionProps): JSX.Element => {
         <img src={ecosystem} />
       </div>
       <div className={styles.linkWrapper}>
-        <a className={styles.link} href="#">
+        <a
+          className={styles.link}
+          href="https://medium.com/@frakt_nft/frakt-litepaper-5c87236fb1d1"
+          target="_blank"
+          rel="nopener noreferrer"
+        >
           Read Litepaper
         </a>
       </div>
       <div className={styles.btnWrapper}>
-        <Button className={styles.btn} type="alternative">
-          Buy FRKT
-        </Button>
-        <Button className={styles.btn} type="alternative">
-          Stake FRKT
-        </Button>
+        <a
+          href="https://raydium.io/swap/"
+          target="_blank"
+          rel="nopener noreferrer"
+        >
+          <Button type="alternative">Buy FRKT</Button>
+        </a>
+        {/* <a
+          href="https://frakt.art/stake/"
+          target="_blank"
+          rel="nopener noreferrer"
+        >
+          <Button type="alternative">Stake FRKT</Button>
+        </a> */}
       </div>
     </div>
   );
