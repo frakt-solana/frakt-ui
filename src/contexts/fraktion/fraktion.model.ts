@@ -107,6 +107,7 @@ export interface FraktionContextType {
   loading: boolean;
   error: any;
   vaults: VaultData[];
+  vaultsMarkets: Array<any>;
   fraktionalize: fraktionalizeFunction;
   buyout: buyoutFunction;
   redeem: redeemFunction;

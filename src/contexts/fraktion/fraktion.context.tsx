@@ -16,11 +16,13 @@ import { buyout, fraktionalize, redeem } from './fraktion';
 import fraktionConfig from './config';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 import verifyMints from '../../utils/verifyMints';
+import { getMarkets } from '../../utils/markets';
 
 const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
   error: null,
   vaults: [],
+  vaultsMarkets: [],
   fraktionalize: () => Promise.resolve(null),
   buyout: () => Promise.resolve(null),
   redeem: () => Promise.resolve(null),
@@ -39,6 +41,16 @@ export const FraktionProvider = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [vaults, setVaults] = useState<VaultData[]>([]);
+  const [vaultsMarkets, setVaultsMarkets] = useState([]);
+
+  const fetchVaultsMarkets = async () => {
+    try {
+      const markets = await getMarkets();
+      setVaultsMarkets(markets);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchVaults: fetchVaultsFunction = async () => {
     try {
@@ -138,6 +150,7 @@ export const FraktionProvider = ({
 
   useEffect(() => {
     connection && fetchVaults();
+    fetchVaultsMarkets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection]);
 
@@ -147,6 +160,7 @@ export const FraktionProvider = ({
         loading,
         error,
         vaults,
+        vaultsMarkets,
         fraktionalize: (
           userNft,
           tickerName,
@@ -188,6 +202,7 @@ export const useFraktion = (): FraktionContextType => {
     loading,
     error,
     vaults,
+    vaultsMarkets,
     fraktionalize,
     buyout,
     redeem,
@@ -198,6 +213,7 @@ export const useFraktion = (): FraktionContextType => {
     loading,
     error,
     vaults,
+    vaultsMarkets,
     fraktionalize,
     buyout,
     redeem,

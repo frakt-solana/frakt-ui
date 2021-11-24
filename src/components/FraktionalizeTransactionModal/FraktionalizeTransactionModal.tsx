@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
 import { MARKETS } from '@project-serum/serum';
@@ -8,8 +9,7 @@ import Button from '../Button';
 import { Loader } from '../Loader';
 import { Modal } from '../Modal';
 import styles from './styles.module.scss';
-import { useState } from 'react';
-import { registerMarket } from '../../utils/registerMarket';
+import { registerMarket } from '../../utils/markets';
 import { notify } from '../../utils';
 
 interface FraktionalizeTransactionModalProps {

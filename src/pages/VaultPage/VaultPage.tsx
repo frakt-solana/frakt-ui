@@ -13,6 +13,7 @@ import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
+import Trade from './Trade';
 
 export const MOCK_TOKEN_LIST = [
   {
@@ -31,15 +32,21 @@ export const MOCK_TOKEN_LIST = [
 
 const VaultPage = (): JSX.Element => {
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
-  const { loading, vaults } = useFraktion();
+  const { loading, vaults, vaultsMarkets } = useFraktion();
 
   const vaultInfo = useMemo(() => {
     return vaults.find(({ publicKey }) => publicKey === vaultPubkey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
 
-  const tokenMap = useTokenMap();
+  const vaultMarket = useMemo(() => {
+    return vaultsMarkets.find(
+      ({ baseMint }) => baseMint === vaultInfo.fractionMint,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vaultInfo]);
 
+  const tokenMap = useTokenMap();
   const [tokerName, setTokerName] = useState<string>('');
 
   useEffect(() => {
@@ -93,6 +100,9 @@ const VaultPage = (): JSX.Element => {
               )}
               {vaultInfo.state === VaultState[3] && (
                 <div className={styles.detailsPlaceholder} />
+              )}
+              {vaultMarket?.address && (
+                <Trade marketAddress={vaultMarket.address} />
               )}
             </div>
           </div>
