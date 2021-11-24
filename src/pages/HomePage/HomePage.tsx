@@ -6,6 +6,7 @@ import HowItWorksSection from './sections/HowItWorksSection';
 import FAQSection from './sections/FAQSection';
 import styles from './styles.module.scss';
 import Ecosystem from './sections/Ecosystem';
+import Partners from './sections/Partners';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -28,6 +29,8 @@ const HomePage = (): JSX.Element => {
         <HowItWorksSection className={styles.howItWorks} />
         <div className={styles.separator} />
         <Ecosystem />
+        <div className={styles.separator} />
+        <Partners />
         <div className={styles.separator} />
         <FAQSection />
       </Container>
