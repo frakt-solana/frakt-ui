@@ -13,6 +13,7 @@ import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
 import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
+import Market from './Market';
 
 export const MOCK_TOKEN_LIST = [
   {
@@ -93,6 +94,9 @@ const VaultPage = (): JSX.Element => {
               {vaultInfo.state === VaultState[3] && (
                 <div className={styles.detailsPlaceholder} />
               )}
+              <Market
+                marketAddress={'9wFFyRfZBsuAha4YcuxcXLKwMxJR43S7fPfQLusDBzvT'}
+              />
             </div>
           </div>
         )}
