@@ -1,15 +1,14 @@
 import { PublicKey } from '@solana/web3.js';
 import { MARKETS } from '@project-serum/serum';
-import { useConnection } from '../../external/contexts/connection';
-import { useWallet } from '../../external/contexts/wallet';
-import { notify } from '../../external/utils/notifications';
-import { listMarket } from '../../utils/serum-utils/send';
+import { listMarket } from '../../utils/serumUtils/send';
 import Button from '../Button';
 import { Loader } from '../Loader';
 import { Modal } from '../Modal';
 import styles from './styles.module.scss';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { registerMarket } from '../../utils/registerMarket';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { notify } from '../../utils';
 
 interface FraktionalizeTransactionModalProps {
   state?: 'loading' | 'success' | 'fail';
@@ -28,8 +27,8 @@ const FraktionalizeTransactionModal = ({
   onCancel,
   onRetryClick = () => {},
 }: FraktionalizeTransactionModalProps): JSX.Element => {
-  const [creatingMarket, setCreatingMarket] = useState(false);
-  const [listedMarket, setListedMarket] = useState('');
+  const [, setCreatingMarket] = useState(false);
+  const [, setListedMarket] = useState('');
   const loadingContent = (
     <div className={styles.loadingContent}>
       <Loader size="large" />
@@ -37,12 +36,12 @@ const FraktionalizeTransactionModal = ({
     </div>
   );
 
-  const connection = useConnection();
-  const { wallet } = useWallet();
+  const { connection } = useConnection();
+  const { publicKey, signAllTransactions } = useWallet();
   const dexProgramId = MARKETS.find(({ deprecated }) => !deprecated).programId;
   const lotSize = 0.1;
   const tickSize = 0.00001;
-  const baseTokenDecimals = 3; // FRAKTION_DECIMALS
+  const baseTokenDecimals = 3; // FRAKTION DECIMALS
   const quoteTokenDecimals = 8; // SOL DECIMALS
   const baseLotSize = Math.round(10 ** baseTokenDecimals * lotSize);
   const quoteLotSize = Math.round(
@@ -54,7 +53,8 @@ const FraktionalizeTransactionModal = ({
     try {
       const marketAddress = await listMarket({
         connection,
-        wallet,
+        walletPublicKey: publicKey,
+        signAllTransactions,
         baseMint: new PublicKey(fractionsMintAddress),
         quoteMint: new PublicKey('So11111111111111111111111111111111111111112'),
         baseLotSize,
@@ -67,11 +67,12 @@ const FraktionalizeTransactionModal = ({
         marketAddress.toBase58(),
         fractionsMintAddress,
       );
-    } catch (e) {
-      console.warn(e);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
       notify({
         message: 'Error listing new market',
-        description: e.message,
+        description: err.message,
         type: 'error',
       });
     } finally {

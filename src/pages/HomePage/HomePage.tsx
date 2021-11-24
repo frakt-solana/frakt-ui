@@ -5,6 +5,7 @@ import WhyNeedsSection from './sections/WhyNeedsSection';
 import HowItWorksSection from './sections/HowItWorksSection';
 import FAQSection from './sections/FAQSection';
 import styles from './styles.module.scss';
+import Ecosystem from './sections/Ecosystem';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -25,6 +26,8 @@ const HomePage = (): JSX.Element => {
         <WhyNeedsSection className={styles.whyNeeds} />
         <div className={styles.separator} />
         <HowItWorksSection className={styles.howItWorks} />
+        <div className={styles.separator} />
+        <Ecosystem />
         <div className={styles.separator} />
         <FAQSection />
       </Container>

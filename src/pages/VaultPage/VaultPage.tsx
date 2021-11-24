@@ -6,13 +6,13 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
-import { VaultState } from '../../contexts/fraktion/fraktion.model';
-import { shortenAddress } from '../../external/utils/utils';
+import { VaultState } from '../../contexts/fraktion';
+import { shortenAddress } from '../../utils/solanaUtils';
 import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
-import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
+import { useTokenMap } from '../../contexts/TokenList';
 
 export const MOCK_TOKEN_LIST = [
   {
@@ -38,15 +38,16 @@ const VaultPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
 
-  const { getTokerByMint, loading: registryLoading } = useSolanaTokenRegistry();
+  const tokenMap = useTokenMap();
+
   const [tokerName, setTokerName] = useState<string>('');
 
   useEffect(() => {
     !loading &&
       vaultInfo &&
-      setTokerName(getTokerByMint(vaultInfo.fractionMint));
+      setTokerName(tokenMap.get(vaultInfo.fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [registryLoading, vaultInfo]);
+  }, [tokenMap, vaultInfo]);
 
   return (
     <AppLayout>
