@@ -13,7 +13,7 @@ import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
 import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
-import Market from './Market';
+import Trade from './Trade';
 
 export const MOCK_TOKEN_LIST = [
   {
@@ -32,12 +32,19 @@ export const MOCK_TOKEN_LIST = [
 
 const VaultPage = (): JSX.Element => {
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
-  const { loading, vaults } = useFraktion();
+  const { loading, vaults, vaultsMarkets } = useFraktion();
 
   const vaultInfo = useMemo(() => {
     return vaults.find(({ publicKey }) => publicKey === vaultPubkey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
+
+  const vaultMarket = useMemo(() => {
+    return vaultsMarkets.find(
+      ({ baseMint }) => baseMint === vaultInfo.fractionMint,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vaultInfo]);
 
   const { getTokerByMint, loading: registryLoading } = useSolanaTokenRegistry();
   const [tokerName, setTokerName] = useState<string>('');
@@ -94,9 +101,9 @@ const VaultPage = (): JSX.Element => {
               {vaultInfo.state === VaultState[3] && (
                 <div className={styles.detailsPlaceholder} />
               )}
-              <Market
-                marketAddress={'9wFFyRfZBsuAha4YcuxcXLKwMxJR43S7fPfQLusDBzvT'}
-              />
+              {vaultMarket.address && (
+                <Trade marketAddress={vaultMarket.address} />
+              )}
             </div>
           </div>
         )}

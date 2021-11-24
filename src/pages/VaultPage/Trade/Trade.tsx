@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { useCallback, useEffect, useRef } from 'react';
-import SerumOrderbook from '../../components/SerumOrderbook';
-import TradeForm from '../../components/SerumTradeForm';
-import { MarketProvider } from '../../utils/serum-utils/markets';
+import Orderbook from '../../../components/SerumOrderbook';
+import TradeForm from '../../../components/SerumTradeForm';
+import { MarketProvider } from '../../../utils/serum-utils/markets';
 
 export default function Market({ marketAddress }) {
   useEffect(() => {
@@ -31,9 +31,8 @@ export default function Market({ marketAddress }) {
       marketAddress={marketAddress}
       setMarketAddress={setMarketAddress}
     >
-      {' '}
       <TradeForm setChangeOrderRef={onChangeOrderRef} />
-      <SerumOrderbook depth={6} smallScreen onPrice={onPrice} onSize={onSize} />
+      <Orderbook depth={6} smallScreen onPrice={onPrice} onSize={onSize} />
     </MarketProvider>
   );
 }

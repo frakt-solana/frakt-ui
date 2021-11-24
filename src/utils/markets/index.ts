@@ -1,6 +1,25 @@
 import { notify } from '../../external/utils/notifications';
 
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
+const MARKETS_URL =
+  'https://raw.githubusercontent.com/frakt-solana/fraktion-tokens-list/main/markets.json';
+
+export const getMarkets = async (): Promise<
+  Array<{
+    name: string;
+    address: string;
+    baseMint: string;
+    programId: string;
+  }>
+> => {
+  try {
+    const res = await fetch(MARKETS_URL);
+    const list = await res.json();
+    return list;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const registerMarket = async (
   tickerName: string,

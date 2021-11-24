@@ -9,7 +9,7 @@ import { Loader } from '../Loader';
 import { Modal } from '../Modal';
 import styles from './styles.module.scss';
 import { useEffect, useState } from 'react';
-import { registerMarket } from '../../utils/registerMarket';
+import { registerMarket } from '../../utils/markets';
 
 interface FraktionalizeTransactionModalProps {
   state?: 'loading' | 'success' | 'fail';

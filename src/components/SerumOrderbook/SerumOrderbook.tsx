@@ -17,7 +17,6 @@ import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 const Wrapper = styled.div`
   margin: 5px;
   padding: 20px;
-  background-color: #1a2029;
 `;
 
 export function FloatingElement({

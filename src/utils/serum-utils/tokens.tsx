@@ -12,6 +12,7 @@ import tuple from 'immutable-tuple';
 import BN from 'bn.js';
 import { useMemo } from 'react';
 import { useConnection } from '../../external/contexts/connection';
+import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -122,9 +123,10 @@ export async function getTokenAccountInfo(
 // todo: use this to map custom mints to custom tickers. Add functionality once custom markets store mints
 export function useMintToTickers(): { [mint: string]: string } {
   const { customMarkets } = useCustomMarkets();
+  const { tokens } = useSolanaTokenRegistry();
   return useMemo(() => {
     return Object.fromEntries(
-      TOKEN_MINTS.map((mint) => [mint.address.toBase58(), mint.name]),
+      tokens.map((mint) => [mint.address, mint.symbol]),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customMarkets.length]);
