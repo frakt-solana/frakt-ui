@@ -19,6 +19,7 @@ import ExchangePage from './pages/SwapPage';
 import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import VaultPage from './pages/VaultPage';
+import WalletPage from './pages/WalletPage';
 import FraktionalizePage from './pages/FraktionalizePage';
 import { UserTokensProvider } from './contexts/userTokens';
 import { FraktionProvider } from './contexts/fraktion';
@@ -75,6 +76,11 @@ export const Routes = (): JSX.Element => {
                         exact
                         path={URLS.FRAKTIONALIZE}
                         component={(): JSX.Element => <FraktionalizePage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.WALLET}/:walletPubkey`}
+                        component={(): JSX.Element => <WalletPage />}
                       />
                       <Route
                         exact
