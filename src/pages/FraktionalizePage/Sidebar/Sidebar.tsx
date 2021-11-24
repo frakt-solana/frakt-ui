@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import BN from 'bn.js';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
@@ -7,7 +8,6 @@ import styles from './styles.module.scss';
 import { TickerInput } from './TickerInput';
 import { SupplyInput } from './SupplyInput';
 import { BuyoutField } from './BuyoutField';
-import BN from 'bn.js';
 import { shortBigNumber } from '../../../utils';
 
 interface SidebarProps {
@@ -84,9 +84,11 @@ const Sidebar = ({
     );
   };
 
-  const pricePerFRKT =
+  const pricePerFraktion =
     buyoutPrice && supply && Number(buyoutPrice) / Number(supply);
-  const pricePerFrktBN = pricePerFRKT ? new BN(pricePerFRKT * 10e5) : null;
+  const pricePerFrktBN = pricePerFraktion
+    ? new BN(pricePerFraktion * 10e5)
+    : null;
 
   return (
     <div
@@ -140,11 +142,7 @@ const Sidebar = ({
             />
           </div>
         </div>
-        <div
-          className={classNames(styles.frktPrice, {
-            [styles.frktPriceError]: smallFractionPriceError,
-          })}
-        >
+        <div className={styles.fraktionPrice}>
           Fraktion price
           <span className={styles.line} />
           {!smallFractionPriceError && (

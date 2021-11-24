@@ -3,7 +3,7 @@
   position: fixed;
   top: 89px;
   right: 10px;
-  width: 425px;
+  width: 400px;
   background-color: var(--black-color);
   z-index: 2;
   height: calc(100vh - 88px);
@@ -154,24 +154,24 @@ body .sidebar__stringInput {
   min-height: 32px;
   line-height: 32px;
   font-weight: bold;
+  &:last-child {
+    margin-bottom: 18px;
+  }
 }
 
-.frktPrice {
+.fraktionPrice {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 18px;
-}
-
-.frktPriceError {
-  color: var(--red-color);
 }
 
 .line {
   display: inline-block;
   height: 1px;
   flex-grow: 1;
-  margin: 10px 12px 0 12px;
+  margin: 0 12px 0 12px;
   background-color: var(--gray-color-3);
 }
