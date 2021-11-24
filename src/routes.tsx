@@ -10,12 +10,12 @@ import HomePage from './pages/HomePage';
 import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import VaultPage from './pages/VaultPage';
+import WalletPage from './pages/WalletPage';
 import FraktionalizePage from './pages/FraktionalizePage';
 import { ConnectWalletModal } from './components/ConnectWallerModal';
 import { UserTokensProvider } from './contexts/userTokens';
 import { FraktionProvider } from './contexts/fraktion';
 import { SolanaTokenRegistryProvider } from './contexts/solanaTokenRegistry';
-import WalletPage from './pages/WalletPage';
 
 export function Routes(): JSX.Element {
   return (

@@ -1,6 +1,6 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
@@ -21,10 +21,11 @@ interface TokenViewWithTokenInfo {
 }
 
 const WalletPage = (): JSX.Element => {
+  const { walletPubkey } = useParams<{ walletPubkey: string }>();
+
   const [userTokens, setUserTokens] = useState<TokenViewWithTokenInfo[]>([]);
   const [tab, setTab] = useState<'tokens' | 'vaults'>('tokens');
-  const { walletPubkey } = useParams<{ walletPubkey: string }>();
-  const { loading: loadingVaults, vaults } = useFraktion();
+  const { vaults } = useFraktion();
   const { fraktionTokens, loading: loadingTokens } = useSolanaTokenRegistry();
   const connection = useConnection();
 
@@ -48,14 +49,13 @@ const WalletPage = (): JSX.Element => {
             a.tokenView.amountBN.toNumber() - b.tokenView.amountBN.toNumber(),
         ),
     );
-
-    // setUserTokens(userTokens.filter(({ mint }) => fraktionTokens.find(({ address }) => address === mint)))
   };
 
   useEffect(() => {
     if (!loadingTokens && fraktionTokens.length && tab === 'tokens') {
       fetchUserTokens();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingTokens, tab]);
 
   const onSwitchTab = (e) => {
