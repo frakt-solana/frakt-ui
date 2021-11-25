@@ -15,7 +15,7 @@ import {
 import { URLS } from './constants';
 import Page404 from './pages/Page404';
 import HomePage from './pages/HomePage';
-import ExchangePage from './pages/SwapPage';
+import SwapPage from './pages/SwapPage';
 import VaultsPage from './pages/VaultsPage';
 import StakerPage from './pages/StakerPage';
 import VaultPage from './pages/VaultPage';
@@ -64,8 +64,8 @@ export const Routes = (): JSX.Element => {
                       />
                       <Route
                         exact
-                        path={URLS.EXCHANGE}
-                        component={(): JSX.Element => <ExchangePage />}
+                        path={URLS.SWAP}
+                        component={(): JSX.Element => <SwapPage />}
                       />
                       <Route
                         exact

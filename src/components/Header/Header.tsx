@@ -30,7 +30,7 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
             <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
           </li>
           <li>
-            <NavigationLink to={URLS.EXCHANGE}>Swap</NavigationLink>
+            <NavigationLink to={URLS.SWAP}>Swap</NavigationLink>
           </li>
           {connected && (
             <li>
