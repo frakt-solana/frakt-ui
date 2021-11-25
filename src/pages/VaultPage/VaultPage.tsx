@@ -101,6 +101,8 @@ const VaultPage = (): JSX.Element => {
               {vaultInfo.state === VaultState[3] && (
                 <div className={styles.detailsPlaceholder} />
               )}
+            </div>
+            <div className={styles.trade}>
               {vaultMarket?.address && (
                 <Trade marketAddress={vaultMarket.address} />
               )}

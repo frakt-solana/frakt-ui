@@ -1,9 +1,9 @@
 /* eslint-disable prefer-const */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, PublicKeyInitData } from '@solana/web3.js';
 import BN from 'bn.js';
 
-export function isValidPublicKey(key) {
+export function isValidPublicKey(key: PublicKeyInitData): boolean {
   if (!key) {
     return false;
   }
@@ -15,7 +15,7 @@ export function isValidPublicKey(key) {
   }
 }
 
-export function sleep(ms) {
+export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -28,7 +28,7 @@ export const percentFormat = new Intl.NumberFormat(undefined, {
 export function floorToDecimal(
   value: number,
   decimals: number | undefined | null,
-) {
+): number {
   return decimals
     ? Math.floor(value * 10 ** decimals) / 10 ** decimals
     : Math.floor(value);
@@ -37,11 +37,11 @@ export function floorToDecimal(
 export function roundToDecimal(
   value: number,
   decimals: number | undefined | null,
-) {
+): number {
   return decimals ? Math.round(value * 10 ** decimals) / 10 ** decimals : value;
 }
 
-export function getDecimalCount(value): number {
+export function getDecimalCount(value: number): number {
   if (
     !isNaN(value) &&
     Math.floor(value) !== value &&
@@ -129,27 +129,7 @@ export function useLocalStorageState<T = any>(
   ];
 }
 
-export function useEffectAfterTimeout(effect, timeout) {
-  useEffect(() => {
-    const handle = setTimeout(effect, timeout);
-    return () => clearTimeout(handle);
-  });
-}
-
-export function useListener(emitter, eventName) {
-  const [, forceUpdate] = useState(0);
-  useEffect(() => {
-    const listener = () => forceUpdate((i) => i + 1);
-    emitter.on(eventName, listener);
-    return () => emitter.removeListener(eventName, listener);
-  }, [emitter, eventName]);
-}
-
-export function abbreviateAddress(address: PublicKey, size = 4) {
-  const base58 = address.toBase58();
-  return base58.slice(0, size) + '…' + base58.slice(-size);
-}
-
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function isEqual(obj1, obj2, keys) {
   if (!keys && Object.keys(obj1).length !== Object.keys(obj2).length) {
     return false;
@@ -163,27 +143,4 @@ export function isEqual(obj1, obj2, keys) {
     }
   }
   return true;
-}
-
-export function flatten(obj, { prefix = '', restrictTo }) {
-  let restrict = restrictTo;
-  if (restrict) {
-    // eslint-disable-next-line no-prototype-builtins
-    restrict = restrict.filter((k) => obj.hasOwnProperty(k));
-  }
-  const result = {};
-  (function recurse(obj, current, keys) {
-    (keys || Object.keys(obj)).forEach((key) => {
-      const value = obj[key];
-      const newKey = current ? current + '.' + key : key; // joined key with dot
-      if (value && typeof value === 'object') {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        recurse(value, newKey); // nested object
-      } else {
-        result[newKey] = value;
-      }
-    });
-  })(obj, prefix, restrict);
-  return result;
 }

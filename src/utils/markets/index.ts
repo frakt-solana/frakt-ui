@@ -17,7 +17,8 @@ export const getMarkets = async (): Promise<
     const list = await res.json();
     return list;
   } catch (error) {
-    console.log(error);
+    // eslint-disable-next-line no-console
+    console.error(error);
   }
 };
 

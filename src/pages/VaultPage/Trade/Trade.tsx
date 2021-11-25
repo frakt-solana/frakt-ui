@@ -11,8 +11,6 @@ export default function Market({ marketAddress }) {
     }
   }, [marketAddress]);
 
-  function setMarketAddress(address) {}
-
   const changeOrderRef =
     useRef<({ size, price }: { size?: number; price?: number }) => void>();
 
@@ -29,7 +27,9 @@ export default function Market({ marketAddress }) {
   return (
     <MarketProvider
       marketAddress={marketAddress}
-      setMarketAddress={setMarketAddress}
+      setMarketAddress={(address: string) => {
+        address;
+      }}
     >
       <TradeForm setChangeOrderRef={onChangeOrderRef} />
       <Orderbook depth={6} smallScreen onPrice={onPrice} onSize={onSize} />
