@@ -32,7 +32,7 @@ export default function Market({ marketAddress }) {
       }}
     >
       <TradeForm setChangeOrderRef={onChangeOrderRef} />
-      <Orderbook depth={6} smallScreen onPrice={onPrice} onSize={onSize} />
+      <Orderbook depth={6} onPrice={onPrice} onSize={onSize} />
     </MarketProvider>
   );
 }

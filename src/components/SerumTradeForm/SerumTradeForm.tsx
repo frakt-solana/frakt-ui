@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable prefer-const */
 /* eslint-disable no-console */
-import { Button, Input, Radio, Slider, Switch } from 'antd';
+import { Input, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
 import {
   useFeeDiscountKeys,
   useLocallyStoredFeeDiscountKey,
@@ -26,40 +25,10 @@ import { refreshCache } from '../../utils/serumUtils/fetch-loop';
 import tuple from 'immutable-tuple';
 import { notify } from '../../utils';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-
-const Wrapper = styled.div`
-  margin: 5px;
-  padding: 20px;
-`;
-
-function FloatingElement({
-  style = undefined,
-  children,
-  stretchVertical = false,
-}) {
-  return (
-    <Wrapper
-      style={{
-        height: stretchVertical ? 'calc(100% - 10px)' : undefined,
-        ...style,
-      }}
-    >
-      {children}
-    </Wrapper>
-  );
-}
-
-const SellButton = styled(Button)`
-  margin: 20px 0px 0px 0px;
-  background: #f23b69;
-  border-color: #f23b69;
-`;
-
-const BuyButton = styled(Button)`
-  margin: 20px 0px 0px 0px;
-  background: #02bf76;
-  border-color: #02bf76;
-`;
+import styles from './styles.module.scss';
+import classNames from 'classnames/bind';
+import Toggle from '../Toggle';
+import Button from '../Button';
 
 const sliderMarks = {
   0: '0%',
@@ -70,7 +39,6 @@ const sliderMarks = {
 };
 
 export default function TradeForm({
-  style,
   setChangeOrderRef,
 }: {
   style?: any;
@@ -102,7 +70,6 @@ export default function TradeForm({
   const [baseSize, setBaseSize] = useState<number | undefined>(undefined);
   const [quoteSize, setQuoteSize] = useState<number | undefined>(undefined);
   const [price, setPrice] = useState<number | undefined>(undefined);
-  const [submitting, setSubmitting] = useState(false);
   const [sizeFraction, setSizeFraction] = useState(0);
 
   const availableQuote =
@@ -270,7 +237,6 @@ export default function TradeForm({
       return;
     }
 
-    setSubmitting(true);
     try {
       if (!wallet) {
         return null;
@@ -299,49 +265,36 @@ export default function TradeForm({
         description: e.message,
         type: 'error',
       });
-    } finally {
-      setSubmitting(false);
     }
   }
 
   return (
-    <FloatingElement
-      style={{ display: 'flex', flexDirection: 'column', ...style }}
-    >
+    <div className={styles.root}>
       <div style={{ flex: 1 }}>
-        <Radio.Group
-          onChange={(e) => setSide(e.target.value)}
-          value={side}
-          buttonStyle="solid"
-          style={{
-            marginBottom: 8,
-            width: '100%',
-          }}
-        >
-          <Radio.Button
-            value="buy"
-            style={{
-              width: '50%',
-              textAlign: 'center',
-              background: side === 'buy' ? '#02bf76' : '',
-              borderColor: side === 'buy' ? '#02bf76' : '',
-            }}
+        <div className={styles.tabs}>
+          <button
+            className={classNames([
+              styles.tab,
+              { [styles.tabActive]: side === 'buy' },
+            ])}
+            name="buy"
+            onClick={() => setSide('buy')}
           >
-            BUY
-          </Radio.Button>
-          <Radio.Button
-            value="sell"
-            style={{
-              width: '50%',
-              textAlign: 'center',
-              background: side === 'sell' ? '#F23B69' : '',
-              borderColor: side === 'sell' ? '#F23B69' : '',
-            }}
+            Buy
+          </button>
+          <button
+            className={classNames([
+              styles.tab,
+              { [styles.tabActive]: side === 'sell' },
+            ])}
+            name="sell"
+            onClick={() => setSide('sell')}
           >
-            SELL
-          </Radio.Button>
-        </Radio.Group>
+            Sell
+          </button>
+        </div>
         <Input
+          className={styles.valueInput}
           style={{ textAlign: 'right', paddingBottom: 8 }}
           addonBefore={<div style={{ width: '30px' }}>Price</div>}
           suffix={
@@ -382,41 +335,33 @@ export default function TradeForm({
           tipFormatter={(value) => `${value}%`}
           marks={sliderMarks}
           onChange={onSliderChange}
+          className={styles.slider}
         />
-        <div style={{ paddingTop: 18 }}>
-          {'POST '}
-          <Switch
-            checked={postOnly}
-            onChange={postOnChange}
-            style={{ marginRight: 40 }}
+        <div className={styles.toggles}>
+          <Toggle
+            label="POST"
+            value={postOnly}
+            onChange={() => postOnChange(!postOnly, null)}
           />
-          {'IOC '}
-          <Switch checked={ioc} onChange={iocOnChange} />
+          <Toggle
+            label="IOC"
+            value={ioc}
+            onChange={() => iocOnChange(!ioc, null)}
+          />
         </div>
       </div>
-      {side === 'buy' ? (
-        <BuyButton
-          disabled={!price || !baseSize}
-          onClick={onSubmit}
-          block
-          type="primary"
-          size="large"
-          loading={submitting}
-        >
-          Buy {baseCurrency}
-        </BuyButton>
-      ) : (
-        <SellButton
-          disabled={!price || !baseSize}
-          onClick={onSubmit}
-          block
-          type="primary"
-          size="large"
-          loading={submitting}
-        >
-          Sell {baseCurrency}
-        </SellButton>
-      )}
-    </FloatingElement>
+      <Button
+        type="alternative"
+        disabled={!price || !baseSize}
+        onClick={onSubmit}
+        className={classNames([
+          styles.submitBtn,
+          { [styles.submitBtn_buy]: side === 'buy' },
+          { [styles.submitBtn_sell]: side === 'sell' },
+        ])}
+      >
+        {side === 'buy' ? 'Buy' : 'Sell'} {baseCurrency}
+      </Button>
+    </div>
   );
 }

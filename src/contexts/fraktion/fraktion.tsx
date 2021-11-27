@@ -19,6 +19,10 @@ import { RawUserTokensByMint, UserNFT } from '../userTokens';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
 import { notify } from '../../utils';
+import { listMarket } from '../../utils/serumUtils/send';
+import { MARKETS } from '@project-serum/serum';
+import { WSOL } from '@raydium-io/raydium-sdk';
+import { registerMarket } from '../../utils/markets';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
@@ -213,5 +217,51 @@ export const redeem = async (
     // eslint-disable-next-line no-console
     console.error(error);
     return null;
+  }
+};
+
+export const createFraktionsMarket = async (
+  fractionsMintAddress: string,
+  tickerName: string,
+  walletPublicKey: PublicKey,
+  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>,
+  connection: Connection,
+): Promise<boolean> => {
+  const dexProgramId = MARKETS.find(({ deprecated }) => !deprecated).programId;
+  const LOT_SIZE = 0.1;
+  const TICK_SIZE = 0.00001;
+  const BASE_TOKE_DECIMALS = 3; // FRAKTION DECIMALS
+  const QUOTE_TOKEN_DECIMALS = WSOL.decimals; // SOL DECIMALS
+  const BASE_LOT_SIZE = Math.round(10 ** BASE_TOKE_DECIMALS * LOT_SIZE);
+  const QUOTE_LOT_SIZE = Math.round(
+    LOT_SIZE * 10 ** QUOTE_TOKEN_DECIMALS * TICK_SIZE,
+  );
+
+  try {
+    const marketAddress = await listMarket({
+      connection,
+      walletPublicKey,
+      signAllTransactions,
+      baseMint: new PublicKey(fractionsMintAddress),
+      quoteMint: new PublicKey(WSOL.mint),
+      baseLotSize: BASE_LOT_SIZE,
+      quoteLotSize: QUOTE_LOT_SIZE,
+      dexProgramId,
+    });
+    await registerMarket(
+      tickerName,
+      marketAddress.toBase58(),
+      fractionsMintAddress,
+    );
+    return true;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+    notify({
+      message: 'Error listing new market',
+      description: err.message,
+      type: 'error',
+    });
+    return false;
   }
 };

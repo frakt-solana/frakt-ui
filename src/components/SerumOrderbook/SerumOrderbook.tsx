@@ -13,37 +13,7 @@ import { isEqual, getDecimalCount } from '../../utils/serumUtils/utils';
 import { useInterval } from '../../utils/serumUtils/useInterval';
 import usePrevious from '../../utils/serumUtils/usePrevious';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-
-const Wrapper = styled.div`
-  margin: 5px;
-  padding: 20px;
-`;
-
-export function FloatingElement({
-  style = undefined,
-  children,
-  stretchVertical = false,
-}) {
-  return (
-    <Wrapper
-      style={{
-        height: stretchVertical ? 'calc(100% - 10px)' : undefined,
-        ...style,
-      }}
-    >
-      {children}
-    </Wrapper>
-  );
-}
-
-const Title = styled.div`
-  color: rgba(255, 255, 255, 1);
-`;
-
-const SizeTitle = styled(Row)`
-  padding: 20px 0 14px;
-  color: #434a59;
-`;
+import styles from './styles.module.scss';
 
 const MarkPriceTitle = styled(Row)`
   padding: 20px 0 14px;
@@ -72,7 +42,7 @@ const Price = styled.div`
   color: white;
 `;
 
-export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
+export default function Orderbook({ depth = 7, onPrice, onSize }) {
   const markPrice = useMarkPrice();
   const [orderbook] = useOrderbook();
   const { baseCurrency, quoteCurrency } = useMarket();
@@ -134,20 +104,16 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
   }
 
   return (
-    <FloatingElement
-      style={
-        smallScreen ? { flex: 1 } : { height: '500px', overflow: 'hidden' }
-      }
-    >
-      <Title>Orderbook</Title>
-      <SizeTitle>
+    <div className={styles.root}>
+      <h5 className={styles.title}>Orderbook</h5>
+      <Row className={styles.sizeTitle}>
         <Col span={12} style={{ textAlign: 'left' }}>
           Size ({baseCurrency})
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
           Price ({quoteCurrency})
         </Col>
-      </SizeTitle>
+      </Row>
       {orderbookData?.asks.map(({ price, size, sizePercent }) => (
         <OrderbookRow
           key={price + ''}
@@ -171,7 +137,7 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
           onSizeClick={() => onSize(size)}
         />
       ))}
-    </FloatingElement>
+    </div>
   );
 }
 
@@ -219,11 +185,7 @@ const OrderbookRow: React.FC<{
         <Col span={12} style={{ textAlign: 'right' }}>
           <Line
             data-width={sizePercent + '%'}
-            data-bgcolor={
-              side === 'buy'
-                ? 'rgba(65, 199, 122, 0.6)'
-                : 'rgba(242, 60, 105, 0.6)'
-            }
+            data-bgcolor={side === 'buy' ? '#b5d307' : '#f83e3e'}
           />
           <Price onClick={onPriceClick}>{formattedPrice}</Price>
         </Col>

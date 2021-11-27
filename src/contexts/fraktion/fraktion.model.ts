@@ -99,6 +99,11 @@ export type redeemFunction = (vault: VaultData) => Promise<{
   signers: Keypair[];
 } | null>;
 
+export type createFraktionsMarketFunction = (
+  fractionsMintAddress: string,
+  tickerName: string,
+) => Promise<boolean>;
+
 export type fetchVaultsFunction = () => Promise<VaultData[] | null>;
 
 export type patchVaultFunction = (vaultInfo: VaultData) => void;
@@ -111,6 +116,7 @@ export interface FraktionContextType {
   fraktionalize: fraktionalizeFunction;
   buyout: buyoutFunction;
   redeem: redeemFunction;
+  createFraktionsMarket: createFraktionsMarketFunction;
   refetch: fetchVaultsFunction;
   patchVault: patchVaultFunction;
 }

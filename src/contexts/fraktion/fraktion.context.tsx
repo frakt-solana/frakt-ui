@@ -12,7 +12,12 @@ import {
   VaultsMap,
   VaultState,
 } from './fraktion.model';
-import { buyout, fraktionalize, redeem } from './fraktion';
+import {
+  buyout,
+  createFraktionsMarket,
+  fraktionalize,
+  redeem,
+} from './fraktion';
 import fraktionConfig from './config';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 import verifyMints from '../../utils/verifyMints';
@@ -26,6 +31,7 @@ const FraktionContext = React.createContext<FraktionContextType>({
   fraktionalize: () => Promise.resolve(null),
   buyout: () => Promise.resolve(null),
   redeem: () => Promise.resolve(null),
+  createFraktionsMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
   patchVault: () => {},
 });
@@ -35,7 +41,11 @@ export const FraktionProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const { publicKey: walletPublicKey, signTransaction } = useWallet();
+  const {
+    publicKey: walletPublicKey,
+    signTransaction,
+    signAllTransactions,
+  } = useWallet();
   const { connection } = useConnection();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -189,6 +199,14 @@ export const FraktionProvider = ({
           ),
         redeem: (vault) =>
           redeem(vault, walletPublicKey, signTransaction, connection),
+        createFraktionsMarket: (fractionsMintAddress, tickerName) =>
+          createFraktionsMarket(
+            fractionsMintAddress,
+            tickerName,
+            walletPublicKey,
+            signAllTransactions,
+            connection,
+          ),
         refetch: fetchVaults,
         patchVault,
       }}
@@ -207,6 +225,7 @@ export const useFraktion = (): FraktionContextType => {
     fraktionalize,
     buyout,
     redeem,
+    createFraktionsMarket,
     refetch: fetchVaults,
     patchVault,
   } = useContext(FraktionContext);
@@ -218,6 +237,7 @@ export const useFraktion = (): FraktionContextType => {
     fraktionalize,
     buyout,
     redeem,
+    createFraktionsMarket,
     refetch: fetchVaults,
     patchVault,
   };
