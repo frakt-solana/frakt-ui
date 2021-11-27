@@ -1,33 +1,29 @@
-h2 {
+.title {
   font: var(--font-h3);
-  margin-bottom: 48px;
+  margin-bottom: 36px;
 }
 
 .brands {
-  margin: 0 auto 40px auto;
-  display: inline-block;
-}
-
-.brandsWrapper {
-  text-align: center;
+  margin: 0 auto 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 64px;
 }
 
 .img {
-  &:last-child {
-    margin-right: 0;
+  width: 260px;
+  height: 260px;
+  border: 2px solid var(--white-color);
+  transition: border-color var(--transition-1);
+  display: flex;
+
+  &:hover {
+    border-color: var(--accent-color-1);
   }
-  flex-basis: 33.333333%;
-  width: 246px;
-  height: 246px;
-  margin-right: 40px;
-  border: 1px solid var(--white-color);
-  display: inline-flex;
   img {
     margin: auto;
     width: 180px;
   }
-}
-
-.bottom {
-  margin-bottom: 64px;
 }

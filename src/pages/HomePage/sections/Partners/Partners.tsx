@@ -16,41 +16,77 @@ interface EcosystemProps {
 const Partners = ({ className }: EcosystemProps): JSX.Element => {
   return (
     <div className={classNames([styles.partners, className])}>
-      <h2>Technical Partners</h2>
-      <div className={styles.brandsWrapper}>
-        <div className={styles.brands}>
-          <div className={styles.img}>
-            <img src={exchange} />
-          </div>
-          <div className={styles.img}>
-            <img src={digitalEyes} />
-          </div>
-          <div className={styles.img}>
-            <img src={magicEden} />
-          </div>
-        </div>
-        <div className={styles.brands}>
-          <div className={styles.img}>
-            <img src={solsea} />
-          </div>
-          <div className={styles.img}>
-            <img src={radium} />
-          </div>
-          <div className={styles.img}>
-            <img src={serum} />
-          </div>
-        </div>
+      <h2 className={styles.title}>Technical Partners</h2>
+      <div className={styles.brands}>
+        <a
+          className={styles.img}
+          href="https://exchange.art/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={exchange} alt="Brand logo" />
+        </a>
+        <a
+          className={styles.img}
+          href="https://digitaleyes.market/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={digitalEyes} alt="Brand logo" />
+        </a>
+        <a
+          className={styles.img}
+          href="https://magiceden.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={magicEden} />
+        </a>
       </div>
-      <h2>Backers</h2>
-      <div className={styles.brandsWrapper}>
-        <div className={classNames(styles.brands, styles.bottom)}>
-          <div className={styles.img}>
-            <img src={metaplex} />
-          </div>
-          <div className={styles.img}>
-            <img src={solana} />
-          </div>
-        </div>
+      <div className={styles.brands}>
+        <a
+          className={styles.img}
+          href="https://solsea.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={solsea} alt="Brand logo" />
+        </a>
+        <a
+          className={styles.img}
+          href="https://raydium.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={radium} alt="Brand logo" />
+        </a>
+        <a
+          className={styles.img}
+          href="https://www.projectserum.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={serum} alt="Brand logo" />
+        </a>
+      </div>
+      <h2 className={styles.title}>Backers</h2>
+      <div className={classNames(styles.brands, styles.bottom)}>
+        <a
+          className={styles.img}
+          href="https://www.metaplex.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={metaplex} alt="Brand logo" />
+        </a>
+        <a
+          className={styles.img}
+          href="https://solana.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={solana} alt="Brand logo" />
+        </a>
       </div>
     </div>
   );
