@@ -42,16 +42,20 @@ const FraktionalizeTransactionModal = ({
             Fraktions mint address:
           </span>
           <b>{fractionsMintAddress}</b>
+          <p className={styles.successContent__subtitle}>
+            If you want fraktions to be tradable you need to create market
+          </p>
+          <Button
+            type="alternative"
+            className={styles.successContent__createMarketBtn}
+            onClick={() =>
+              createFraktionsMarket(fractionsMintAddress, tickerName)
+            }
+          >
+            Create Market
+          </Button>
         </div>
       )}
-      <p className={styles.successContent__subtitle}>
-        If you want fraktions to be tradable you need to create market
-      </p>
-      <button
-        onClick={() => createFraktionsMarket(fractionsMintAddress, tickerName)}
-      >
-        Create Market
-      </button>
     </div>
   );
 
