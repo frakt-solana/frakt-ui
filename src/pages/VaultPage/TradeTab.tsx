@@ -25,13 +25,12 @@ export const TradeTab = ({
     <div className={styles.tradeWrapper}>
       <Trade marketAddress={vaultMarketAddress} />
       <p className={styles.tradeLink}>
-        Trade on{' '}
         <a
           href={`${DEX_LINK}/${vaultMarketAddress}`}
           target="_blank"
           rel="noopener noreferrer"
         >
-          DEX
+          Trade on DEX
         </a>
       </p>
     </div>
