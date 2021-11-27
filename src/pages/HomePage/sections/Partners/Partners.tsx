@@ -1,10 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
-import solana from './images/solana.svg';
+// import solana from './images/solana.svg';
 import exchange from './images/exchange.svg';
 import digitalEyes from './images/digitalEyes.svg';
 import magicEden from './images/magicEden.svg';
-import metaplex from './images/metaplex.svg';
+// import metaplex from './images/metaplex.svg';
 import radium from './images/radium.svg';
 import serum from './images/serum.svg';
 import solsea from './images/solsea.svg';
@@ -69,7 +69,7 @@ const Partners = ({ className }: EcosystemProps): JSX.Element => {
           <img src={serum} alt="Brand logo" />
         </a>
       </div>
-      <h2 className={styles.title}>Backers</h2>
+      {/* <h2 className={styles.title}>Backers</h2>
       <div className={classNames(styles.brands, styles.bottom)}>
         <a
           className={styles.img}
@@ -87,7 +87,7 @@ const Partners = ({ className }: EcosystemProps): JSX.Element => {
         >
           <img src={solana} alt="Brand logo" />
         </a>
-      </div>
+      </div> */}
     </div>
   );
 };
