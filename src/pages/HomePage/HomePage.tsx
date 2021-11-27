@@ -7,6 +7,7 @@ import FAQSection from './sections/FAQSection';
 import styles from './styles.module.scss';
 import Ecosystem from './sections/Ecosystem';
 import Partners from './sections/Partners';
+import { DiscordIcon, TwitterIcon } from '../../icons';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -23,6 +24,14 @@ const HomePage = (): JSX.Element => {
           allows custodial partial ownership of NFTs and helps NFT owners free
           up liquidity from their asset
         </h2>
+        <a
+          href="https://docs.fraktion.art"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.launchingSoon}
+        >
+          Read docs
+        </a>
         <div className={styles.separatorDouble} />
         <WhyNeedsSection className={styles.whyNeeds} />
         <div className={styles.separator} />
@@ -34,7 +43,25 @@ const HomePage = (): JSX.Element => {
         <div className={styles.separator} />
         <FAQSection />
       </Container>
-      <footer className={styles.footer}>Fraktion</footer>
+      <footer className={styles.footer}>
+        <p>Fraktion</p>
+        <div className={styles.socialLinks}>
+          <a
+            href="https://twitter.com/fraktion_art"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <TwitterIcon width={32} />
+          </a>
+          <a
+            href="https://discord.gg/frakt"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <DiscordIcon width={32} />
+          </a>
+        </div>
+      </footer>
     </AppLayout>
   );
 };
