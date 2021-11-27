@@ -44,6 +44,16 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
               </NavigationLink>
             </li>
           )}
+          <li>
+            <a
+              className={styles.link}
+              href={URLS.DEX}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Trade
+            </a>
+          </li>
         </ul>
         <ul className={styles.navigation}>
           {/* //TODO: Uncomment link when exteranl page ready */}

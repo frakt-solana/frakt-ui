@@ -7,4 +7,5 @@ export const URLS = {
   FRAKTIONALIZE: '/fraktionalize',
   WALLET: '/wallet',
   PAGE_404: '/404',
+  DEX: 'https://dex.fraktion.art',
 };
