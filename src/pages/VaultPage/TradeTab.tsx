@@ -35,7 +35,7 @@ export const TradeTab = ({
     </div>
   ) : (
     <div className={styles.noMarket}>
-      <p>{"Looks like this this vault doen't have market yet"}</p>
+      <p>{"Looks like this this vault doesn't have market yet"}</p>
       {connected &&
         vaultInfo.authority === walletPublicKey.toBase58() &&
         !!tokerName && (
