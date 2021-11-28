@@ -8,6 +8,7 @@ import styles from './styles.module.scss';
 import Ecosystem from './sections/Ecosystem';
 import Partners from './sections/Partners';
 import { DiscordIcon, TwitterIcon } from '../../icons';
+import Roadmap from './sections/Roadmap';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -38,6 +39,8 @@ const HomePage = (): JSX.Element => {
         <HowItWorksSection className={styles.howItWorks} />
         <div className={styles.separator} />
         <Ecosystem />
+        <div className={styles.separator} />
+        <Roadmap />
         <div className={styles.separator} />
         <Partners />
         <div className={styles.separator} />
