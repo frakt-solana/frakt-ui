@@ -1,3 +1,4 @@
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import BN from 'bn.js';
 import { RawUserTokensByMint } from '../userTokens';
 
@@ -27,12 +28,12 @@ export interface PoolConfig {
 }
 
 export interface SwapContextInterface {
-  poolConfigs: PoolConfig[];
-  fetchPoolInfo: (poolConfig: PoolConfig) => Promise<PoolInfo>;
+  poolConfigs: LiquidityPoolKeysV4[];
+  fetchPoolInfo: (poolConfig: LiquidityPoolKeysV4) => Promise<PoolInfo>;
   swap: (
     userTokensMap: RawUserTokensByMint,
     amount: BN,
-    poolConfig: PoolConfig,
+    poolConfig: LiquidityPoolKeysV4,
     isBuy: boolean,
   ) => Promise<void>;
   loading: boolean;
@@ -47,7 +48,7 @@ export interface PoolInfo {
   baseDecimals: number;
   quoteDecimals: number;
   lpDecimals: number;
-  baseBalance: BN;
-  quoteBalance: BN;
+  baseReserve: BN;
+  quoteReserve: BN;
   lpSupply: BN;
 }

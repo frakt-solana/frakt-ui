@@ -39,7 +39,7 @@ const useTokenField = () => {
       ? []
       : poolConfigs.reduce(
           (acc, { baseMint }) => {
-            const token = tokensMap.get(baseMint);
+            const token = tokensMap.get(baseMint.toBase58());
             return token
               ? [
                   ...acc,
@@ -86,7 +86,7 @@ const SwapPage = (): JSX.Element => {
           payToken.mint === WSOL.mint ? receiveToken.mint : payToken.mint;
 
         const poolConfig = poolConfigs.find(
-          ({ baseMint }) => baseMint === tokenMint,
+          ({ baseMint }) => baseMint.toBase58() === tokenMint,
         );
 
         const info = await fetchPoolInfo(poolConfig);
@@ -116,7 +116,7 @@ const SwapPage = (): JSX.Element => {
     const splToken = isBuy ? receiveToken : payToken;
 
     const poolConfig = poolConfigs.find(
-      ({ baseMint }) => baseMint === splToken.mint,
+      ({ baseMint }) => baseMint.toBase58() === splToken.mint,
     );
 
     const payTokenData = payToken.data;

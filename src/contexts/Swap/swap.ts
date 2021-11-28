@@ -1,7 +1,6 @@
 import {
-  jsonInfo2PoolKeys,
   Liquidity,
-  LiquidityPoolKeys,
+  LiquidityPoolKeysV4,
   Spl,
   WSOL,
 } from '@raydium-io/raydium-sdk';
@@ -15,22 +14,19 @@ import BN from 'bn.js';
 
 import { notify } from '../../utils';
 import { RawUserTokensByMint } from '../userTokens';
-import { RAYDIUM_POOLS_LIST_URL } from './swap.constants';
-import { PoolConfig, PoolInfo } from './swap.model';
+import { PoolInfo } from './swap.model';
 
-export const fetchRaydiumPools = async (): Promise<PoolConfig[]> => {
-  const data = await (await fetch(RAYDIUM_POOLS_LIST_URL)).json();
-  const pools = [...data.official, ...data.unOfficial];
-  return pools as PoolConfig[];
+export const fetchRaydiumPools = async (
+  connection: Connection,
+): Promise<LiquidityPoolKeysV4[]> => {
+  return await Liquidity.getPools(connection);
 };
 
 export const fetchPoolInfo = async (
   connection: Connection,
-  poolConfig: PoolConfig,
+  poolConfig: LiquidityPoolKeysV4,
 ): Promise<PoolInfo> => {
-  const poolKeys = jsonInfo2PoolKeys(poolConfig) as LiquidityPoolKeys;
-
-  const info = await Liquidity.getInfo({ connection, poolKeys });
+  const info = await Liquidity.getInfo(connection, poolConfig);
 
   return info;
 };
@@ -41,12 +37,10 @@ export const swap = async (
   signTransaction: (transaction: Transaction) => Promise<Transaction>,
   userTokensMap: RawUserTokensByMint,
   amount: BN,
-  poolConfig: PoolConfig,
+  poolConfig: LiquidityPoolKeysV4,
   isBuy: boolean,
 ): Promise<void> => {
   try {
-    const poolKeys = jsonInfo2PoolKeys(poolConfig) as LiquidityPoolKeys;
-
     const transaction = new Transaction();
     // The close account instruction needs to be at the end
     // so the frontInstructions and endInstructions design is used
@@ -56,18 +50,18 @@ export const swap = async (
     const signers = [];
 
     const baseTokenAccount = await Spl.getAssociatedTokenAddress({
-      mint: poolKeys.baseMint,
+      mint: poolConfig.baseMint,
       owner: walletPublicKey,
     });
     let quoteTokenAccount = await Spl.getAssociatedTokenAddress({
-      mint: poolKeys.quoteMint,
+      mint: poolConfig.quoteMint,
       owner: walletPublicKey,
     });
 
     // In general only Quote Token is WSOL
     // but the special case Base Token may also be WSOL
     // I will not write Base here first
-    if (poolKeys.quoteMint.toBase58() === WSOL.mint) {
+    if (poolConfig.quoteMint.toBase58() === WSOL.mint) {
       // WSOL always create new, instead of using ATA!!
       const { newAccount, instructions } =
         await Spl.makeCreateWrappedNativeAccountInstructions({
@@ -102,7 +96,7 @@ export const swap = async (
       // you will need to create them first
       frontInstructions.push(
         Spl.makeCreateAssociatedTokenAccountInstruction({
-          mint: poolKeys.quoteMint,
+          mint: poolConfig.quoteMint,
           associatedAccount: quoteTokenAccount,
           owner: walletPublicKey,
           payer: walletPublicKey,
@@ -111,12 +105,12 @@ export const swap = async (
     }
 
     if (
-      poolKeys.baseMint.toBase58() !== WSOL.mint &&
-      !userTokensMap[poolKeys.baseMint.toBase58()]
+      poolConfig.baseMint.toBase58() !== WSOL.mint &&
+      !userTokensMap[poolConfig.baseMint.toBase58()]
     ) {
       frontInstructions.push(
         Spl.makeCreateAssociatedTokenAccountInstruction({
-          mint: poolKeys.baseMint,
+          mint: poolConfig.baseMint,
           associatedAccount: baseTokenAccount,
           owner: walletPublicKey,
           payer: walletPublicKey,
@@ -126,7 +120,7 @@ export const swap = async (
 
     frontInstructions.push(
       Liquidity.makeSwapInstruction({
-        poolKeys,
+        poolKeys: poolConfig,
         userKeys: {
           // No need to change according to side
           baseTokenAccount,
