@@ -1,7 +1,7 @@
 import { notify } from '../index';
 
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
-const MARKETS_URL = ' https://fraktion-markets-pools-endpoin.herokuapp.com';
+const MARKETS_URL = 'https://fraktion-markets-pools-endpoin.herokuapp.com/';
 
 export const getMarkets = async (): Promise<
   Array<{
