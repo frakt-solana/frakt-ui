@@ -92,7 +92,7 @@ export const FraktionProvider = ({
           const verification = verificationByMint[nftMint];
 
           if (vault && arweaveMetadata) {
-            const { name, image, attributes } = arweaveMetadata;
+            const { name, description, image, attributes } = arweaveMetadata;
             const {
               authority,
               fractionMint,
@@ -115,6 +115,7 @@ export const FraktionProvider = ({
               state: VaultState[state],
               nftMint,
               name,
+              description,
               imageSrc: image,
               nftAttributes: attributes,
               fractionTreasury,

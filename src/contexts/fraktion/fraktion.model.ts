@@ -57,6 +57,7 @@ export interface VaultData {
   state: string;
   nftMint: string; // mint address of fraktionalized NFT
   name: string; // name of fraktionalized NFT
+  description?: string; // description of fraktionalized NFT
   imageSrc: string; // image source of fraktionalized NFT
   nftAttributes: { trait_type: string; value: string | number }[]; // arweave metadata attributes
   safetyBoxPubkey: string;

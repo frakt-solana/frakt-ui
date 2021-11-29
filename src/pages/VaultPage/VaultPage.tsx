@@ -54,12 +54,31 @@ const VaultPage = (): JSX.Element => {
         )}
         {!loading && !!vaultInfo && (
           <div className={styles.content}>
-            <div
-              className={styles.image}
-              style={{
-                backgroundImage: `url(${vaultInfo.imageSrc})`,
-              }}
-            />
+            <div className={styles.col}>
+              <div
+                className={styles.image}
+                style={{
+                  backgroundImage: `url(${vaultInfo.imageSrc})`,
+                }}
+              />
+              {!!vaultInfo?.description && (
+                <div className={styles.description}>
+                  {vaultInfo.description}
+                </div>
+              )}
+              {!!vaultInfo?.nftAttributes?.length && (
+                <div className={styles.attributesTable}>
+                  {vaultInfo?.nftAttributes.map(
+                    ({ trait_type, value }, idx) => (
+                      <div key={idx} className={styles.attributesTable__row}>
+                        <p>{trait_type}</p>
+                        <p>{value}</p>
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
             <div className={styles.details}>
               <div className={styles.detailsHeader}>
                 <h2 className={styles.title}>
