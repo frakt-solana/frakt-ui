@@ -15,6 +15,7 @@ import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
+import { MetadataTable } from './MetadataTable ';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -59,6 +60,8 @@ const VaultPage = (): JSX.Element => {
                 backgroundImage: `url(${vaultInfo.imageSrc})`,
               }}
             />
+            <MetadataTable vaultInfo={vaultInfo} />
+
             <div className={styles.details}>
               <div className={styles.detailsHeader}>
                 <h2 className={styles.title}>

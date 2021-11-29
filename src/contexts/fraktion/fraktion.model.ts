@@ -59,6 +59,7 @@ export interface VaultData {
   name: string; // name of fraktionalized NFT
   imageSrc: string; // image source of fraktionalized NFT
   nftAttributes: { trait_type: string; value: string | number }[]; // arweave metadata attributes
+  description: string;
   safetyBoxPubkey: string;
   store: string;
   fractionTreasury: string;
