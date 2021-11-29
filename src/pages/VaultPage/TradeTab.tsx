@@ -17,7 +17,7 @@ export const TradeTab = ({
   vaultInfo,
   tokerName,
 }: TradeTabProps): JSX.Element => {
-  const { connected, publicKey: walletPublicKey } = useWallet();
+  const { connected } = useWallet();
   const { createFraktionsMarket } = useFraktion();
 
   return vaultMarketAddress ? (
