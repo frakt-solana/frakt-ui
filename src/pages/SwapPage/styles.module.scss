@@ -19,54 +19,8 @@
   margin-bottom: 36px;
 }
 
-.settings {
+.loading {
+  height: 100%;
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 24px;
-  svg {
-    cursor: pointer;
-  }
-}
-
-.input {
-  margin-bottom: 24px;
-}
-
-.secondInput {
-  margin-bottom: 32px;
-}
-
-.fee {
-  margin-bottom: 16px;
-  display: flex;
-  justify-content: space-between;
-  span {
-    flex-shrink: 0;
-    display: inline-block;
-    width: 150px;
-
-    &:last-child {
-      text-align: right;
-      width: 80px;
-    }
-  }
-  div {
-    position: relative;
-    top: 11px;
-    width: 100%;
-    display: block;
-    height: 1px;
-    background-color: var(--gray-color-3);
-  }
-}
-
-.btn {
-  width: 100%;
-  justify-content: center;
-}
-
-.exchange {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
 }

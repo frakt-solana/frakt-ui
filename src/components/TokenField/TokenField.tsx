@@ -25,6 +25,7 @@ export interface TokenFieldProps {
   error?: boolean;
   placeholder?: string;
   amountMaxLength?: number;
+  disabled?: boolean;
 }
 
 const TokenField = ({
@@ -43,6 +44,7 @@ const TokenField = ({
   error,
   amountMaxLength,
   placeholder = '0.0',
+  disabled = false,
 }: TokenFieldProps): JSX.Element => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -76,7 +78,10 @@ const TokenField = ({
           onChange={onValueChange}
           placeholder={placeholder}
           positiveOnly
-          className={styles.valueInput}
+          className={classNames([
+            styles.valueInput,
+            { [styles.valueInput_disabled]: disabled },
+          ])}
         />
         {!!onUseMaxButtonClick && (
           <div className={styles.useMaxBtnContainer}>

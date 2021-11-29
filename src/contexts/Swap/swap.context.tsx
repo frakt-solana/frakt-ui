@@ -52,7 +52,7 @@ export const SwapContextProvider = ({
   useEffect(() => {
     !tokenListLoading && initilaizePools();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenListLoading]);
+  }, [tokenListLoading, swappableTokensMap]);
 
   return (
     <SwapContext.Provider
@@ -64,6 +64,7 @@ export const SwapContextProvider = ({
         swap: (
           userTokensMap: RawUserTokensByMint,
           amount: BN,
+          minAmount: BN,
           poolConfig: LiquidityPoolKeysV4,
           isBuy: boolean,
         ) =>
@@ -73,6 +74,7 @@ export const SwapContextProvider = ({
             signTransaction,
             userTokensMap,
             amount,
+            minAmount,
             poolConfig,
             isBuy,
           ),

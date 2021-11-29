@@ -46,7 +46,7 @@ interface TokenFieldWithBalanceProps extends TokenFieldProps {
 }
 
 export const TokenFieldWithBalance = ({
-  tokensList,
+  tokensList = [],
   onTokenChange,
   currentToken,
   value,
@@ -58,12 +58,14 @@ export const TokenFieldWithBalance = ({
   error,
   placeholder = '0.0',
   showMaxButton = false,
+  disabled = false,
 }: TokenFieldWithBalanceProps): JSX.Element => {
   const { connected } = useWallet();
   const { rawUserTokensByMint } = useUserTokens();
   const { account } = useNativeAccount();
 
   const balances = getMintBalanceMap(tokensList, account, rawUserTokensByMint);
+
   const balance = balances[currentToken?.mint];
 
   const onUseMaxButtonClick = () => {
@@ -90,6 +92,7 @@ export const TokenFieldWithBalance = ({
       }
       error={error}
       placeholder={placeholder}
+      disabled={disabled}
     />
   );
 };
