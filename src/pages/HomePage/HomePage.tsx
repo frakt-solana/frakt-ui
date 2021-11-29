@@ -21,9 +21,9 @@ const HomePage = (): JSX.Element => {
           BUY, SELL AND <b>FRAKTIONALIZE</b> NFTs
         </h1>
         <h2 className={styles.subtitle}>
-          Fraktion is an open sourced protocol for NFT fractionalisation that
-          allows custodial partial ownership of NFTs and helps NFT owners free
-          up liquidity from their asset
+          A platform for creating liquid markets for illiquid NFTs. Trade, shop,
+          and earn yield on the most liquid decentralized NFT marketplace on
+          Solana
         </h2>
         <a
           href="https://docs.fraktion.art"

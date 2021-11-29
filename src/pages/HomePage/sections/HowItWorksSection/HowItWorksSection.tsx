@@ -62,8 +62,8 @@ const HowItWorksSection = ({
             in exchange.
           </p>
           <p>
-            The owner can airdrop the tokens, share them with friends, or even
-            create a liquidity pool on Serum (Raydium permissionless pool).
+            The owner can airdrop the tokens, share them with friends, or trade
+            on DEX.
           </p>
         </div>
         <div
@@ -74,8 +74,8 @@ const HowItWorksSection = ({
         >
           <p>
             If user wants to own a fraktion of a certain NFT they can buy it
-            from the issuer OTC, buy it from a liquidity pool on DEX, get it
-            airdropped, etc.
+            from the issuer OTC, buy it from a market on DEX, get it airdropped,
+            etc.
           </p>
           <p>
             The user then has custodial ownership of the tokens and can then

@@ -2,27 +2,32 @@ import styles from './styles.module.scss';
 
 const STEPS = [
   {
-    title: 'Staking',
+    title: 'Unlock liquidity',
     description:
-      "Here's your chance to get involved with the FRAKT ecosystem. Stake your frakts and you will be eligible to vote in the FRAKT DAO, receive exclusive airdrops, access Launchpad lottery tickets, and earn yields from collection royalties and fraktionalizer fees",
+      'To completely unlock NFTs liquidity, fractions and derivatives should be tradable. For this reason we are connecting our app to Serum and building swaps on top of Raydium to provide luquidity and tools for NFT owners',
     checked: true,
   },
   {
-    title: 'Sandbox',
+    title: 'Baskets and Pools',
     description:
-      'Sandbox is a platform to spotlight individual artists, incentivize staking and give utility to $FRKT. Every kurated collection launching on platform can be minted only with $FRKT. We provide guidance and curate every single project, help with exposure and technical execution of the launch.',
-    checked: true,
-  },
-  {
-    title: 'DAO',
-    description:
-      'You, our community, are our main focus. To be even more community-oriented, stakers will be able to vote for upcoming projects on the launchpad and will be able to take part in key future decisions',
+      'Users will be able to transform any NFT collection into a tradable asset with guaranteed liquidity. Make tradeable collections of any sizes, however many NFTs they want to combine. It allows to create on-chain NFT funds, DAO treasures, NFT indexes and NFT ETFs',
     checked: false,
   },
   {
-    title: 'Fraktionalizer',
+    title: 'Staking and farming',
     description:
-      'As one of the first builders in the Solana NFT space, we aim to grow its ecosystem even further with a platform to split NFTs and trade fractions on a DEX and AMM. Stakers earn a portion of fees generated',
+      'Eventually we bringing  even more utility to NFT collections tokens, by having liquidity pools and farming on the platform. You can provide liquidity to your favourite collection liquidity pool and earn rewards in $FRKT and collection tokens',
+    checked: false,
+  },
+  {
+    title: 'Secret Stage',
+    description:
+      'Open ___ ___ ___ to borrow ___ and use ___ __ ______ for ___ p2p',
+    checked: false,
+  },
+  {
+    title: 'Another Secret Stage',
+    description: `___ this infrastructure to ___, ___ and ___. All ___ by Solana's speed ___ ___ ___ DeFi product explode __ __ NFT and DeFi-oriented communities`,
     checked: false,
   },
 ];
