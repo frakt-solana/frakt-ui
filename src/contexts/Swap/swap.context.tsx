@@ -50,7 +50,7 @@ export const SwapContextProvider = ({
   };
 
   useEffect(() => {
-    !tokenListLoading && initilaizePools();
+    !tokenListLoading && swappableTokensMap.size && initilaizePools();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenListLoading, swappableTokensMap]);
 

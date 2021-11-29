@@ -37,7 +37,7 @@ export const swap = async (
   signTransaction: (transaction: Transaction) => Promise<Transaction>,
   userTokensMap: RawUserTokensByMint,
   amount: BN,
-  minAmountBN = new BN(0),
+  minAmount = new BN(0),
   poolConfig: LiquidityPoolKeysV4,
   isBuy: boolean,
 ): Promise<void> => {
@@ -130,7 +130,7 @@ export const swap = async (
           owner: walletPublicKey,
         },
         amountIn: amount,
-        minAmountOut: minAmountBN,
+        minAmountOut: minAmount,
         side: isBuy ? 'buy' : 'sell',
       }),
     );
