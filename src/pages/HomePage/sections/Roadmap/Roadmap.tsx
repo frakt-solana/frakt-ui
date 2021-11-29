@@ -4,7 +4,7 @@ const STEPS = [
   {
     title: 'Unlock liquidity',
     description:
-      'To completely unlock NFTs liquidity, fractions and derivatives should be tradable. For this reason we are connecting our app to Serum and building swaps on top of Raydium to provide luquidity and tools for NFT owners',
+      'To completely unlock NFTs liquidity, fractions and derivatives should be tradable. For this reason we connected our app to Serum and built swaps on top of Raydium to provide luquidity and tools for NFT owners',
     checked: true,
   },
   {
@@ -14,7 +14,7 @@ const STEPS = [
     checked: false,
   },
   {
-    title: 'Staking and farming',
+    title: 'Farming',
     description:
       'Eventually we bringing  even more utility to NFT collections tokens, by having liquidity pools and farming on the platform. You can provide liquidity to your favourite collection liquidity pool and earn rewards in $FRKT and collection tokens',
     checked: false,
