@@ -67,7 +67,10 @@ export const TokenListContextProvider = ({
     });
     //? Add additional tokens (such is FRKT and RAY for swap and etc.)
     ADDITIONAL_SWAPPABLE_TOKENS_MINTS.forEach((mint) => {
-      swappableTokensMap.set(mint, tokenMap.get(mint));
+      const token: TokenInfo = tokenMap.get(mint);
+      if (token) {
+        swappableTokensMap.set(mint, tokenMap.get(mint));
+      }
     });
     return swappableTokensMap;
   }, [swappableTokensList, tokenMap]);

@@ -33,6 +33,7 @@ export interface SwapContextInterface {
   swap: (
     userTokensMap: RawUserTokensByMint,
     amount: BN,
+    minAmount: BN,
     poolConfig: LiquidityPoolKeysV4,
     isBuy: boolean,
   ) => Promise<void>;
