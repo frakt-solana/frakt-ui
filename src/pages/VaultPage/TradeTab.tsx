@@ -35,20 +35,18 @@ export const TradeTab = ({
     </div>
   ) : (
     <div className={styles.noMarket}>
-      <p>{"Looks like this this vault doesn't have market yet"}</p>
-      {connected &&
-        vaultInfo.authority === walletPublicKey.toBase58() &&
-        !!tokerName && (
-          <Button
-            type="alternative"
-            className={styles.createMarketBtn}
-            onClick={() =>
-              createFraktionsMarket(vaultInfo.fractionMint, tokerName)
-            }
-          >
-            Create market
-          </Button>
-        )}
+      <p>{"Looks like this vault doesn't have market"}</p>
+      {connected && !!tokerName && (
+        <Button
+          type="alternative"
+          className={styles.createMarketBtn}
+          onClick={() =>
+            createFraktionsMarket(vaultInfo.fractionMint, tokerName)
+          }
+        >
+          Create market
+        </Button>
+      )}
     </div>
   );
 };
