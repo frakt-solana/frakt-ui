@@ -3,6 +3,7 @@ import styles from './styles.module.scss';
 import SwapForm from '../../components/SwapForm';
 import { Loader } from '../../components/Loader';
 import { useSwapContext } from '../../contexts/Swap';
+import { WSOL } from '@raydium-io/raydium-sdk';
 
 const SwapPage = (): JSX.Element => {
   const { loading } = useSwapContext();
@@ -19,7 +20,7 @@ const SwapPage = (): JSX.Element => {
             <Loader size={'large'} />
           </div>
         ) : (
-          <SwapForm />
+          <SwapForm defaultTokenMint={WSOL.mint} />
         )}
       </div>
     </AppLayout>

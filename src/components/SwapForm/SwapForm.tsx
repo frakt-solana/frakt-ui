@@ -16,10 +16,19 @@ import styles from './styles.module.scss';
 import { ChangeSidesButton } from './ChangeSidesButton';
 import { SettingsModal } from './SettingsModal';
 
-const SwapForm = (): JSX.Element => {
+interface SwapFormInterface {
+  defaultTokenMint?: string;
+}
+
+const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
+  const swappableTokenList = useSwappableTokenList();
+
+  const defaultReceiveToken = swappableTokenList.find(
+    ({ mint }) => mint === defaultTokenMint,
+  );
+
   const { connected } = useWallet();
   const { rawUserTokensByMint } = useUserTokens();
-  const swappableTokenList = useSwappableTokenList();
   const { poolConfigs, swap } = useSwapContext();
 
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
@@ -28,7 +37,9 @@ const SwapForm = (): JSX.Element => {
   const [payToken, setPayToken] = useState<Token | null>(SOL_TOKEN);
 
   const [receiveValue, setReceiveValue] = useState<string>('');
-  const [receiveToken, setReceiveToken] = useState<Token | null>(null);
+  const [receiveToken, setReceiveToken] = useState<Token | null>(
+    defaultReceiveToken || null,
+  );
 
   const [slippage, setSlippage] = useState<string>('0.5');
   const [slippageModalVisible, setSlippageModalVisible] =
@@ -65,11 +76,17 @@ const SwapForm = (): JSX.Element => {
       Number(payValue) * 10 ** payTokenData.decimals,
     );
 
-    const tokenMinAmountBN = new BN(
-      Number(payValue) *
-        10 ** payTokenData.decimals *
-        (1 - Number(slippage) / 100),
-    );
+    const tokenMinAmountBN = isBuy
+      ? new BN(
+          Number(payValue) *
+            10 ** payTokenData.decimals *
+            (1 + Number(slippage) / 100),
+        )
+      : new BN(
+          Number(payValue) *
+            10 ** payTokenData.decimals *
+            (1 - Number(slippage) / 100),
+        );
 
     await swap(
       rawUserTokensByMint,

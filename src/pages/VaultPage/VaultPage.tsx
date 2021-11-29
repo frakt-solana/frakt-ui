@@ -15,6 +15,7 @@ import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
+import { SwapTab } from './SwapTab';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -90,7 +91,9 @@ const VaultPage = (): JSX.Element => {
                         vaultMarketAddress={vaultMarket?.address}
                       />
                     )}
-                    {tab === 'swap' && <p>Comming soon</p>}
+                    {tab === 'swap' && (
+                      <SwapTab fractionMint={vaultInfo.fractionMint} />
+                    )}
                     {tab === 'buyout' && <Buyout vaultInfo={vaultInfo} />}
                   </div>
                 </>
