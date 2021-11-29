@@ -1,12 +1,10 @@
 import { notify } from '../index';
 
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
-const MARKETS_URL =
-  'https://raw.githubusercontent.com/frakt-solana/fraktion-tokens-list/main/markets.json';
+const MARKETS_URL = ' https://fraktion-markets-pools-endpoin.herokuapp.com';
 
 export const getMarkets = async (): Promise<
   Array<{
-    name: string;
     address: string;
     baseMint: string;
     programId: string;
@@ -14,8 +12,14 @@ export const getMarkets = async (): Promise<
 > => {
   try {
     const res = await fetch(MARKETS_URL);
-    const list = await res.json();
-    return list;
+    const { fraktionMarkets } = await res.json();
+    return fraktionMarkets.map((market) => {
+      return {
+        address: market.ownAddress,
+        baseMint: market.baseMint,
+        programId: '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin',
+      };
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
