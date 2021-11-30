@@ -17,7 +17,7 @@ const SwapPage = (): JSX.Element => {
       <div className={styles.container}>
         <h1 className={styles.title}>Swap</h1>
         <div className={styles.description}>
-          Swap other crypto assets with your crypto assets{' '}
+          Swap fraktions with your crypto assets{' '}
         </div>
         {loading ? (
           <div className={styles.loader}>
