@@ -16,7 +16,7 @@ const Ecosystem = ({ className }: EcosystemProps): JSX.Element => {
         had a fair launch on 10/10/2021
         <br />
         <br />
-        The main purpose of the FRAKT token ($FRKT) is to incentivize as <br />
+        The main purpose of the FRKT is to incentivize as <br />
         many holders inlolved as possible in the governance of the protocol.
       </div>
       <h3>FRAKT ECOSYSTEM</h3>
