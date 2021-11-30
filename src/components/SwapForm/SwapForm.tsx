@@ -73,22 +73,17 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     );
 
     const payTokenData = payToken.data;
+    const receiveTokenData = receiveToken.data;
 
     const tokenAmountBN = new BN(
       Number(payValue) * 10 ** payTokenData.decimals,
     );
 
-    const tokenMinAmountBN = isBuy
-      ? new BN(
-          Number(payValue) *
-            10 ** payTokenData.decimals *
-            (1 + Number(slippage) / 100),
-        )
-      : new BN(
-          Number(payValue) *
-            10 ** payTokenData.decimals *
-            (1 - Number(slippage) / 100),
-        );
+    const tokenMinAmountBN = new BN(
+      Number(receiveValue) *
+        10 ** receiveTokenData.decimals *
+        (1 - Number(slippage) / 100),
+    );
 
     await swap(
       rawUserTokensByMint,

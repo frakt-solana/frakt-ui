@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import BN from 'bn.js';
-import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
+import { getAllUserTokenAccounts, TokenView } from 'solana-nft-metadata';
 import { keyBy } from 'lodash';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
@@ -66,7 +66,7 @@ export const UserTokensProvider = ({
   const fetchTokens = async () => {
     setLoading(true);
     try {
-      const userTokens = await getAllUserTokens(publicKey, {
+      const userTokens = await getAllUserTokenAccounts(publicKey, {
         connection,
       });
 
