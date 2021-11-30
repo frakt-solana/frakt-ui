@@ -95,10 +95,10 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
   };
 
   const vaultInfo = useMemo(() => {
-    if (receiveToken && payToken && receiveToken?.mint !== WSOL.mint) {
-      return vaults.find(
-        ({ fractionMint }) => fractionMint === receiveToken.mint,
-      );
+    if (receiveToken && payToken) {
+      const token = payToken.mint === WSOL.mint ? receiveToken : payToken;
+
+      return vaults.find(({ fractionMint }) => fractionMint === token.mint);
     } else {
       return null;
     }
@@ -108,17 +108,34 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     if (!vaultInfo) {
       return '';
     }
-    // ? amount of token per inputed SOL amount (by market price)
-    const amountMarket = Number(receiveValue);
 
-    // ? amount of token per inputed SOL amount (by locked price per fraction price)
-    const amountLocked =
-      (vaultInfo.lockedPricePerFraction.toNumber() * Number(payValue)) /
-      10 ** 2;
+    const isBuy = payToken.mint === WSOL.mint;
 
-    const difference = (amountMarket / amountLocked) * 100 - 100;
+    if (isBuy) {
+      // ? amount of token per inputed SOL amount (by market price)
+      const amountMarket = Number(receiveValue);
 
-    return difference ? difference.toFixed(2) : '';
+      // ? amount of token per inputed SOL amount (by locked price per fraction price)
+      const amountLocked =
+        (vaultInfo.lockedPricePerFraction.toNumber() * Number(payValue)) /
+        10 ** 2;
+
+      const difference = (amountMarket / amountLocked) * 100 - 100;
+
+      return difference ? difference.toFixed(2) : '';
+    } else {
+      const amountMarketSOL = Number(receiveValue);
+
+      const amountLockedSOL =
+        (vaultInfo.lockedPricePerFraction.toNumber() * Number(receiveValue)) /
+        10 ** 2;
+
+      const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
+
+      return difference ? difference.toFixed(2) : '';
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultInfo, payValue, receiveValue]);
 
   const onPayTokenChange = (nextToken: Token) => {
