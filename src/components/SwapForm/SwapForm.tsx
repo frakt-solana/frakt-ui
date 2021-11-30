@@ -1,7 +1,7 @@
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import BN from 'bn.js';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useSwapContext } from '../../contexts/Swap';
 import SettingsIcon from '../../icons/SettingsIcon';
@@ -43,7 +43,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     defaultReceiveToken || null,
   );
 
-  const [slippage, setSlippage] = useState<string>('0.5');
+  const [slippage, setSlippage] = useState<string>('1');
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
 
@@ -51,6 +51,20 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     if (poolConfigs && payToken && receiveToken && payToken !== receiveToken) {
       fetchPoolInfo(payToken, receiveToken, poolConfigs);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payToken, receiveToken, poolConfigs]);
+
+  const intervalRef = useRef<any>();
+  useEffect(() => {
+    clearInterval(intervalRef.current);
+    if (poolConfigs && payToken && receiveToken && payToken !== receiveToken) {
+      intervalRef.current = setInterval(() => {
+        fetchPoolInfo(payToken, receiveToken, poolConfigs);
+      }, 5000);
+    }
+
+    return () => clearInterval(intervalRef.current);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payToken, receiveToken, poolConfigs]);
 
@@ -92,6 +106,8 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       poolConfig,
       isBuy,
     );
+
+    fetchPoolInfo(payToken, receiveToken, poolConfigs);
   };
 
   const vaultInfo = useMemo(() => {
