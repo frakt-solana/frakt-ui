@@ -20,12 +20,30 @@ const Partners = ({ className }: EcosystemProps): JSX.Element => {
       <div className={styles.brands}>
         <a
           className={styles.img}
+          href="https://raydium.io/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={radium} alt="Brand logo" />
+        </a>
+        <a
+          className={styles.img}
+          href="https://www.projectserum.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src={serum} alt="Brand logo" />
+        </a>
+        <a
+          className={styles.img}
           href="https://exchange.art/"
           target="_blank"
           rel="noopener noreferrer"
         >
           <img src={exchange} alt="Brand logo" />
         </a>
+      </div>
+      <div className={styles.brands}>
         <a
           className={styles.img}
           href="https://digitaleyes.market/"
@@ -42,8 +60,6 @@ const Partners = ({ className }: EcosystemProps): JSX.Element => {
         >
           <img src={magicEden} />
         </a>
-      </div>
-      <div className={styles.brands}>
         <a
           className={styles.img}
           href="https://solsea.io/"
@@ -51,22 +67,6 @@ const Partners = ({ className }: EcosystemProps): JSX.Element => {
           rel="noopener noreferrer"
         >
           <img src={solsea} alt="Brand logo" />
-        </a>
-        <a
-          className={styles.img}
-          href="https://raydium.io/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src={radium} alt="Brand logo" />
-        </a>
-        <a
-          className={styles.img}
-          href="https://www.projectserum.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src={serum} alt="Brand logo" />
         </a>
       </div>
       {/* <h2 className={styles.title}>Backers</h2>
