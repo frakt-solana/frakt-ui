@@ -105,10 +105,9 @@ export const swap = async (
       );
     }
 
-    if (
-      poolConfig.baseMint.toBase58() !== WSOL.mint &&
-      !userTokensMap[poolConfig.baseMint.toBase58()]
-    ) {
+    const tokenAccountInfo = await connection.getAccountInfo(baseTokenAccount);
+
+    if (poolConfig.baseMint.toBase58() !== WSOL.mint && !tokenAccountInfo) {
       frontInstructions.push(
         Spl.makeCreateAssociatedTokenAccountInstruction({
           mint: poolConfig.baseMint,
