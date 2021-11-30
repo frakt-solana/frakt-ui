@@ -15,7 +15,7 @@ import { Buyout } from './Buyout';
 import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
-import { MetadataTable } from './MetadataTable ';
+import { SwapTab } from './SwapTab';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -54,14 +54,31 @@ const VaultPage = (): JSX.Element => {
         )}
         {!loading && !!vaultInfo && (
           <div className={styles.content}>
-            <div
-              className={styles.image}
-              style={{
-                backgroundImage: `url(${vaultInfo.imageSrc})`,
-              }}
-            />
-            <MetadataTable vaultInfo={vaultInfo} />
-
+            <div className={styles.col}>
+              <div
+                className={styles.image}
+                style={{
+                  backgroundImage: `url(${vaultInfo.imageSrc})`,
+                }}
+              />
+              {!!vaultInfo?.description && (
+                <div className={styles.description}>
+                  {vaultInfo.description}
+                </div>
+              )}
+              {!!vaultInfo?.nftAttributes?.length && (
+                <div className={styles.attributesTable}>
+                  {vaultInfo?.nftAttributes.map(
+                    ({ trait_type, value }, idx) => (
+                      <div key={idx} className={styles.attributesTable__row}>
+                        <p>{trait_type}</p>
+                        <p>{value}</p>
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
             <div className={styles.details}>
               <div className={styles.detailsHeader}>
                 <h2 className={styles.title}>
@@ -93,7 +110,9 @@ const VaultPage = (): JSX.Element => {
                         vaultMarketAddress={vaultMarket?.address}
                       />
                     )}
-                    {tab === 'swap' && <p>Comming soon</p>}
+                    {tab === 'swap' && (
+                      <SwapTab fractionMint={vaultInfo.fractionMint} />
+                    )}
                     {tab === 'buyout' && <Buyout vaultInfo={vaultInfo} />}
                   </div>
                 </>

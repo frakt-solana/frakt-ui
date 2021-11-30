@@ -1,7 +1,7 @@
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import BN from 'bn.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useSwapContext } from '../../contexts/Swap';
 import SettingsIcon from '../../icons/SettingsIcon';
@@ -15,11 +15,22 @@ import { TokenFieldWithBalance } from '../TokenField';
 import styles from './styles.module.scss';
 import { ChangeSidesButton } from './ChangeSidesButton';
 import { SettingsModal } from './SettingsModal';
+import { useFraktion } from '../../contexts/fraktion';
 
-const SwapForm = (): JSX.Element => {
+interface SwapFormInterface {
+  defaultTokenMint?: string;
+}
+
+const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
+  const swappableTokenList = useSwappableTokenList();
+  const { vaults } = useFraktion();
+
+  const defaultReceiveToken = swappableTokenList.find(
+    ({ mint }) => mint === defaultTokenMint,
+  );
+
   const { connected } = useWallet();
   const { rawUserTokensByMint } = useUserTokens();
-  const swappableTokenList = useSwappableTokenList();
   const { poolConfigs, swap } = useSwapContext();
 
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
@@ -28,7 +39,9 @@ const SwapForm = (): JSX.Element => {
   const [payToken, setPayToken] = useState<Token | null>(SOL_TOKEN);
 
   const [receiveValue, setReceiveValue] = useState<string>('');
-  const [receiveToken, setReceiveToken] = useState<Token | null>(null);
+  const [receiveToken, setReceiveToken] = useState<Token | null>(
+    defaultReceiveToken || null,
+  );
 
   const [slippage, setSlippage] = useState<string>('0.5');
   const [slippageModalVisible, setSlippageModalVisible] =
@@ -65,11 +78,17 @@ const SwapForm = (): JSX.Element => {
       Number(payValue) * 10 ** payTokenData.decimals,
     );
 
-    const tokenMinAmountBN = new BN(
-      Number(payValue) *
-        10 ** payTokenData.decimals *
-        (1 - Number(slippage) / 100),
-    );
+    const tokenMinAmountBN = isBuy
+      ? new BN(
+          Number(payValue) *
+            10 ** payTokenData.decimals *
+            (1 + Number(slippage) / 100),
+        )
+      : new BN(
+          Number(payValue) *
+            10 ** payTokenData.decimals *
+            (1 - Number(slippage) / 100),
+        );
 
     await swap(
       rawUserTokensByMint,
@@ -79,6 +98,33 @@ const SwapForm = (): JSX.Element => {
       isBuy,
     );
   };
+
+  const vaultInfo = useMemo(() => {
+    if (receiveToken && payToken && receiveToken?.mint !== WSOL.mint) {
+      return vaults.find(
+        ({ fractionMint }) => fractionMint === receiveToken.mint,
+      );
+    } else {
+      return null;
+    }
+  }, [vaults, receiveToken, payToken]);
+
+  const valuationDifference: string = useMemo(() => {
+    if (!vaultInfo) {
+      return '';
+    }
+    // ? amount of token per inputed SOL amount (by market price)
+    const amountMarket = Number(receiveValue);
+
+    // ? amount of token per inputed SOL amount (by locked price per fraction price)
+    const amountLocked =
+      (vaultInfo.lockedPricePerFraction.toNumber() * Number(payValue)) /
+      10 ** 2;
+
+    const difference = (amountMarket / amountLocked) * 100 - 100;
+
+    return difference ? difference.toFixed(2) : '';
+  }, [vaultInfo, payValue, receiveValue]);
 
   const onPayTokenChange = (nextToken: Token) => {
     // if (nextToken.mint === WSOL.mint && receiveToken?.mint === WSOL.mint) {
@@ -167,6 +213,14 @@ const SwapForm = (): JSX.Element => {
           )} ${receiveToken?.symbol || ''}`}
         </span>
       </div>
+      {valuationDifference && (
+        <div className={styles.info}>
+          <span className={styles.info__title}>Valuation difference</span>
+          <span
+            className={styles.info__value}
+          >{`${valuationDifference}%`}</span>
+        </div>
+      )}
       <Button
         className={styles.btn}
         type="alternative"

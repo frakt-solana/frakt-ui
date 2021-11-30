@@ -3,9 +3,14 @@ import styles from './styles.module.scss';
 import SwapForm from '../../components/SwapForm';
 import { Loader } from '../../components/Loader';
 import { useSwapContext } from '../../contexts/Swap';
+import { WSOL } from '@raydium-io/raydium-sdk';
+import { useFraktion } from '../../contexts/fraktion';
 
 const SwapPage = (): JSX.Element => {
-  const { loading } = useSwapContext();
+  const { loading: swapLoading } = useSwapContext();
+  const { loading: vaultsLoading } = useFraktion();
+
+  const loading = swapLoading || vaultsLoading;
 
   return (
     <AppLayout contentClassName={styles.exchange}>
@@ -19,7 +24,7 @@ const SwapPage = (): JSX.Element => {
             <Loader size={'large'} />
           </div>
         ) : (
-          <SwapForm />
+          <SwapForm defaultTokenMint={WSOL.mint} />
         )}
       </div>
     </AppLayout>
