@@ -118,7 +118,6 @@ export const FraktionProvider = ({
               description,
               imageSrc: image,
               nftAttributes: attributes,
-              description,
               fractionTreasury,
               redeemTreasury,
               safetyBoxPubkey,
