@@ -14,18 +14,20 @@ const WhyNeedsSection = ({ className }: WhyNeedsSectionProps): JSX.Element => {
         <div className={styles.card}>
           <h5 className={styles.cardTitle}>Accessible</h5>
           <p className={styles.cardText}>
-            Lower the barrier to entry for the NFT ecosystem.
+            Lower the barrier to entry for the NFT ecosystem and blue chips.
           </p>
         </div>
         <div className={styles.card}>
           <h5 className={styles.cardTitle}>Flexible</h5>
           <p className={styles.cardText}>
-            Do as you please with your FRAKTIONS&nbsp;— share, sell, buy!
+            Do as you please with your fraktions&nbsp;— share, sell, buy!
           </p>
         </div>
         <div className={styles.card}>
-          <h5 className={styles.cardTitle}>Community-driven</h5>
-          <p className={styles.cardText}>Powered by FRAKT DAO.</p>
+          <h5 className={styles.cardTitle}>Decentralized</h5>
+          <p className={styles.cardText}>
+            Open and community-driven by FRAKT DAO.
+          </p>
         </div>
       </div>
     </div>

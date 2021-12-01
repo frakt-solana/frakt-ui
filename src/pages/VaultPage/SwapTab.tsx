@@ -22,7 +22,7 @@ export const SwapTab = ({ fractionMint }: SwapTabProps): JSX.Element => {
       ) ? (
         <SwapForm defaultTokenMint={fractionMint} />
       ) : (
-        <p>{"Looks like this vault doesn't have liquidity pool"}</p>
+        <p>{"Looks like this vault doesn't have a liquidity pool"}</p>
       )}
     </div>
   );
