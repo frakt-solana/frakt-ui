@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
-import ecosystem from './ecosystem.svg';
+// import ecosystem from './ecosystem.svg';
 import ecosystem_new from './FRAKT ECOSYSTEM TALL_compressed.png';
 import Button from '../../../../components/Button';
 

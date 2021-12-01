@@ -7,6 +7,7 @@ import {
 } from 'antd';
 import { CloseIcon } from '../../icons';
 import classNames from 'classnames';
+// import { ModalFunc } from 'antd/lib/modal/confirm';
 
 export interface ModalProps extends ModalAntProps {
   className?: string;
@@ -17,7 +18,9 @@ export interface ModalConfirmProps extends ModalFuncProps {
   className?: string;
 }
 
-export const ConfirmModal = (props: ModalConfirmProps) =>
+export const ConfirmModal = (
+  props: ModalConfirmProps,
+): { update: any; destroy: any } =>
   ModalAnt.confirm({
     className: classNames(styles.modal, props.className),
     closeIcon: (

@@ -16,7 +16,6 @@ import styles from './styles.module.scss';
 import { ChangeSidesButton } from './ChangeSidesButton';
 import { SettingsModal } from './SettingsModal';
 import { useFraktion } from '../../contexts/fraktion';
-import { Modal } from 'antd';
 import { ConfirmModal } from '../Modal/Modal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
