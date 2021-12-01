@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { keyBy } from 'lodash';
-import { PublicKey } from '@solana/web3.js';
-import { getAllVaults } from 'fraktionalizer-client-library';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import {
@@ -18,10 +16,10 @@ import {
   fraktionalize,
   redeem,
 } from './fraktion';
-import fraktionConfig from './config';
-import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 import verifyMints from '../../utils/verifyMints';
 import { getMarkets } from '../../utils/markets';
+import BN from 'bn.js';
+import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
 
 const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -66,17 +64,20 @@ export const FraktionProvider = ({
   const fetchVaults: fetchVaultsFunction = async () => {
     try {
       setLoading(true);
-      const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } =
-        await getAllVaults(
-          new PublicKey(fraktionConfig.FRAKTION_PUBKEY),
-          connection,
-        );
+
+      const { allVaults, metas } = await (
+        await fetch(VAULTS_AND_META_CACHE_URL)
+      ).json();
+
+      const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } = allVaults;
 
       const nftMints = (rawSafetyBoxes as SafetyBox[]).map(
         ({ tokenMint }) => tokenMint,
       );
 
-      const metadataByMint = await getArweaveMetadataByMint(nftMints);
+      const metadataByMint = metas.reduce((acc, meta) => {
+        return { ...acc, [meta.mintAddress]: meta };
+      }, {});
       const verificationByMint = await verifyMints(nftMints);
 
       const safetyBoxes = rawSafetyBoxes as SafetyBox[];
@@ -88,7 +89,7 @@ export const FraktionProvider = ({
           { vault: vaultPubkey, tokenMint: nftMint, safetyBoxPubkey, store },
         ) => {
           const vault = vaultsMap[vaultPubkey];
-          const arweaveMetadata = metadataByMint[nftMint];
+          const arweaveMetadata = metadataByMint[nftMint].fetchedMeta;
           const verification = verificationByMint[nftMint];
 
           if (vault && arweaveMetadata) {
@@ -108,8 +109,8 @@ export const FraktionProvider = ({
             const vaultData: VaultData = {
               fractionMint,
               authority,
-              supply: fractionsSupply,
-              lockedPricePerFraction: lockedPricePerShare,
+              supply: new BN(fractionsSupply, 16),
+              lockedPricePerFraction: new BN(lockedPricePerShare, 16),
               priceTokenMint: priceMint,
               publicKey: vaultPubkey,
               state: VaultState[state],
@@ -124,8 +125,10 @@ export const FraktionProvider = ({
               store,
               isNftVerified: verification?.success || false,
               nftCollectionName: verification?.collection,
-              createdAt: createdAt.toNumber(),
-              buyoutPrice: lockedPricePerShare.mul(fractionsSupply),
+              createdAt: new BN(createdAt, 16).toNumber(),
+              buyoutPrice: new BN(lockedPricePerShare, 16).mul(
+                new BN(fractionsSupply, 16),
+              ),
             };
 
             return [...acc, vaultData];
