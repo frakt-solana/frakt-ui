@@ -16,6 +16,10 @@ import styles from './styles.module.scss';
 import { ChangeSidesButton } from './ChangeSidesButton';
 import { SettingsModal } from './SettingsModal';
 import { useFraktion } from '../../contexts/fraktion';
+import { Modal } from 'antd';
+import { ConfirmModal } from '../Modal/Modal';
+import Tooltip from '../Tooltip';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 interface SwapFormInterface {
   defaultTokenMint?: string;
@@ -77,6 +81,66 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
   }, [payValue, payToken, receiveValue, receiveToken, poolInfo]);
 
   const swapTokens = async () => {
+    if (
+      parseFloat(valuationDifference) > 15 ||
+      parseFloat(valuationDifference) < -15
+    ) {
+      return ConfirmModal({
+        title: 'Continue with current price?',
+        content: (
+          <div>
+            <p>
+              Swap price is very different from the initial price per fraktion
+              set for buyout.
+            </p>
+            <br />
+            <p>
+              It usually happens due to low liquidity in the pool, or the asset
+              being overpriced/underpriced.
+            </p>
+            <br />
+            <p>Do you wish to perform the swap anyway?</p>
+          </div>
+        ),
+        okText: 'Swap anyway',
+        // * @sablevsky, sorry bro :)
+        okButtonProps: { style: { borderRadius: 0 } },
+        cancelButtonProps: { style: { borderRadius: 0 } },
+        onOk: async () => {
+          const isBuy = payToken.mint === WSOL.mint;
+
+          //? Need to get suitable pool
+          const splToken = isBuy ? receiveToken : payToken;
+
+          const poolConfig = poolConfigs.find(
+            ({ baseMint }) => baseMint.toBase58() === splToken.mint,
+          );
+
+          const payTokenData = payToken.data;
+          const receiveTokenData = receiveToken.data;
+
+          const tokenAmountBN = new BN(
+            Number(payValue) * 10 ** payTokenData.decimals,
+          );
+
+          const tokenMinAmountBN = new BN(
+            Number(receiveValue) *
+              10 ** receiveTokenData.decimals *
+              (1 - Number(slippage) / 100),
+          );
+
+          await swap(
+            rawUserTokensByMint,
+            tokenAmountBN,
+            tokenMinAmountBN,
+            poolConfig,
+            isBuy,
+          );
+
+          fetchPoolInfo(payToken, receiveToken, poolConfigs);
+        },
+      });
+    }
     const isBuy = payToken.mint === WSOL.mint;
 
     //? Need to get suitable pool
@@ -230,11 +294,33 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
         disabled
       />
       <div className={styles.info}>
-        <span className={styles.info__title}>Slippage Tolerance</span>
+        <span className={styles.info__title}>
+          <span>{`Slippage Tolerance     `}</span>
+          <span>
+            <Tooltip
+              placement="top"
+              trigger="hover"
+              overlay="The maximum difference between your estimated price and execution price."
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </span>
+        </span>
         <span className={styles.info__value}>{`${slippage}%`}</span>
       </div>
       <div className={styles.info}>
-        <span className={styles.info__title}>Minimum Received</span>
+        <span className={styles.info__title}>
+          <span>{`Minimum Received     `}</span>
+          <span>
+            <Tooltip
+              placement="top"
+              trigger="hover"
+              overlay="The least amount of tokens you will recieve on this trade"
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </span>
+        </span>
         <span className={styles.info__value}>
           {`${(Number(receiveValue) * (1 - Number(slippage) / 100)).toFixed(
             receiveToken?.data?.decimals || 0,
@@ -243,7 +329,16 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       </div>
       {valuationDifference && (
         <div className={styles.info}>
-          <span className={styles.info__title}>Valuation difference</span>
+          <span className={styles.info__title}>
+            <span>{`Valuation difference     `}</span>
+            <Tooltip
+              placement="top"
+              trigger="hover"
+              overlay="Swap price difference from the initial price per fraktion set for buyout"
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </span>
           <span
             className={styles.info__value}
           >{`${valuationDifference}%`}</span>

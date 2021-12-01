@@ -98,7 +98,10 @@ const VaultPage = (): JSX.Element => {
                   </div>
                 </div>
               </div>
-              <InfoTable vaultInfo={vaultInfo} />
+              <InfoTable
+                vaultInfo={vaultInfo}
+                marketId={vaultMarket?.address}
+              />
               {vaultInfo.state === VaultState[1] && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
