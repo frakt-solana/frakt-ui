@@ -10,6 +10,7 @@ import Ecosystem from './sections/Ecosystem';
 import Partners from './sections/Partners';
 import { DiscordIcon, TwitterIcon } from '../../icons';
 import Roadmap from './sections/Roadmap';
+import classNames from 'classnames/bind';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -18,7 +19,10 @@ const HomePage = (): JSX.Element => {
         <title>FRAKTION ART</title>
       </Helmet>
       <main>
-        <Container component="div" className={styles.container}>
+        <Container
+          component="div"
+          className={classNames(styles.container, styles.container_up)}
+        >
           <h1 className={styles.title}>
             Unlocking liquidity
             <br />
@@ -35,11 +39,12 @@ const HomePage = (): JSX.Element => {
           >
             Read docs
           </a>
-          <div className={styles.separatorDouble} />
-          <Statistics />
-          <WhyNeedsSection className={styles.whyNeeds} />
+          {/* <div className={styles.separatorDouble} /> */}
         </Container>
+        <Statistics />
         <Container component="div" className={styles.container}>
+          <WhyNeedsSection className={styles.whyNeeds} />
+          <div className={styles.separator} />
           <ProcessSection className={styles.howItWorks} />
           <div className={styles.separator} />
           <Ecosystem />

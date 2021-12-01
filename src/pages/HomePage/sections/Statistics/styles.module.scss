@@ -14,8 +14,8 @@
 .value {
   text-align: center;
   display: block;
+  font: var(--font-btn-large);
   font-weight: 600;
-  font-size: 48px;
   padding-top: 6px;
   color: var(--white-color);
 }
@@ -28,7 +28,9 @@
 }
 
 .stat {
-  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
   border-right: 1px solid var(--black-color);
   &:last-child {
