@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import WhyNeedsSection from './sections/WhyNeedsSection';
-import HowItWorksSection from './sections/HowItWorksSection';
+import ProcessSection from './sections/ProcessSection';
 import FAQSection from './sections/FAQSection';
 import styles from './styles.module.scss';
 import Ecosystem from './sections/Ecosystem';
@@ -36,7 +36,7 @@ const HomePage = (): JSX.Element => {
         <div className={styles.separatorDouble} />
         <WhyNeedsSection className={styles.whyNeeds} />
         <div className={styles.separator} />
-        <HowItWorksSection className={styles.howItWorks} />
+        <ProcessSection className={styles.howItWorks} />
         <div className={styles.separator} />
         <Ecosystem />
         <div className={styles.separator} />
