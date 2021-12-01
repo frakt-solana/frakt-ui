@@ -1,6 +1,10 @@
 .container {
   padding-top: 64px;
   padding-bottom: 64px;
+
+  &_up {
+    padding-bottom: 0;
+  }
 }
 
 .title {
