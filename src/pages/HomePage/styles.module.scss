@@ -6,6 +6,7 @@
 .title {
   font: 300 96px var(--font-family-oxanium);
   margin-bottom: 24px;
+  text-transform: uppercase;
 
   b {
     font-weight: 900;
@@ -13,10 +14,14 @@
 }
 
 .subtitle {
-  font: 400 24px var(--font-family-inter);
+  font: 300 28px var(--font-family-oxanium);
+  text-transform: uppercase;
   color: var(--white-color);
-  opacity: 0.5;
   margin-bottom: 24px;
+
+  b {
+    font-weight: 900;
+  }
 }
 
 .launchingSoon {

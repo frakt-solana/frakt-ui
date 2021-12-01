@@ -18,12 +18,12 @@ const HomePage = (): JSX.Element => {
       </Helmet>
       <Container component="main" className={styles.container}>
         <h1 className={styles.title}>
-          BUY, SELL AND <b>FRAKTIONALIZE</b> NFTs
+          Unlocking liquidity
+          <br />
+          one <b>fraktion</b> at time
         </h1>
         <h2 className={styles.subtitle}>
-          A platform for creating liquid markets for illiquid NFTs. Trade, shop,
-          and earn yield on the most liquid decentralized NFT marketplace on
-          Solana
+          Create, buy and sell <b>fraktions</b> of NFTs
         </h2>
         <a
           href="https://docs.fraktion.art"
