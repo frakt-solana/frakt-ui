@@ -2,10 +2,14 @@ import { Helmet } from 'react-helmet';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import WhyNeedsSection from './sections/WhyNeedsSection';
-import HowItWorksSection from './sections/HowItWorksSection';
+import ProcessSection from './sections/ProcessSection';
 import FAQSection from './sections/FAQSection';
 import styles from './styles.module.scss';
 import Statistics from './sections/Statistics/Statistics';
+import Ecosystem from './sections/Ecosystem';
+import Partners from './sections/Partners';
+import { DiscordIcon, TwitterIcon } from '../../icons';
+import Roadmap from './sections/Roadmap';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -16,24 +20,56 @@ const HomePage = (): JSX.Element => {
       <main>
         <Container component="div" className={styles.container}>
           <h1 className={styles.title}>
-            BUY, SELL AND <b>FRAKTIONALIZE</b> NFTs
+            Unlocking liquidity
+            <br />
+            one <b>fraktion</b> at time
           </h1>
           <h2 className={styles.subtitle}>
-            Fraktion is an open sourced protocol for NFT fractionalisation that
-            allows custodial partial ownership of NFTs and helps NFT owners free
-            up liquidity from their asset
+            Create, buy and sell <b>fraktions</b> of NFTs
           </h2>
+          <a
+            href="https://docs.fraktion.art"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.launchingSoon}
+          >
+            Read docs
+          </a>
           <div className={styles.separatorDouble} />
+          <Statistics />
           <WhyNeedsSection className={styles.whyNeeds} />
         </Container>
-        <Statistics rollback={<div className={styles.separator} />} />
         <Container component="div" className={styles.container}>
-          <HowItWorksSection className={styles.howItWorks} />
+          <ProcessSection className={styles.howItWorks} />
+          <div className={styles.separator} />
+          <Ecosystem />
+          <div className={styles.separator} />
+          <Roadmap />
+          <div className={styles.separator} />
+          <Partners />
           <div className={styles.separator} />
           <FAQSection />
         </Container>
       </main>
-      <footer className={styles.footer}>Fraktion</footer>
+      <footer className={styles.footer}>
+        <p>Fraktion</p>
+        <div className={styles.socialLinks}>
+          <a
+            href="https://twitter.com/fraktion_art"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <TwitterIcon width={32} />
+          </a>
+          <a
+            href="https://discord.gg/frakt"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <DiscordIcon width={32} />
+          </a>
+        </div>
+      </footer>
     </AppLayout>
   );
 };

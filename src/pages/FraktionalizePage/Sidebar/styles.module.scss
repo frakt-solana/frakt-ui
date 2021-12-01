@@ -1,8 +1,11 @@
 .sidebar {
+  overflow-y: auto;
   position: fixed;
   top: 89px;
   right: 10px;
-  width: 320px;
+  width: 400px;
+  background-color: var(--black-color);
+  z-index: 2;
   height: calc(100vh - 88px);
   border-left: 1px solid var(--gray-color-6);
   transform: translateX(330px);
@@ -144,4 +147,31 @@ body .sidebar__stringInput {
 
 .priceField {
   max-height: 61px;
+}
+
+.err {
+  font-size: 10px;
+  min-height: 32px;
+  line-height: 32px;
+  font-weight: bold;
+  &:last-child {
+    margin-bottom: 18px;
+  }
+}
+
+.fraktionPrice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.line {
+  display: inline-block;
+  height: 1px;
+  flex-grow: 1;
+  margin: 0 12px 0 12px;
+  background-color: var(--gray-color-3);
 }

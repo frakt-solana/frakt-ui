@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import BN from 'bn.js';
 import { getAllUserTokens, TokenView } from 'solana-nft-metadata';
 import { keyBy } from 'lodash';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
-import { useConnection } from '../../external/contexts/connection';
-import { useWallet } from '../../external/contexts/wallet';
 import {
   nftsByMint,
   RawUserTokensByMint,
@@ -13,7 +12,7 @@ import {
   UserTokensInterface,
   UseUserTokensInterface,
 } from './userTokens.model';
-import config from '../../config';
+import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
 const UserTokensContext = React.createContext<UserTokensInterface>({
@@ -31,8 +30,8 @@ export const UserTokensProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const { wallet, connected } = useWallet();
-  const connection = useConnection();
+  const { connected, publicKey } = useWallet();
+  const { connection } = useConnection();
   const [frktBalance, setFrktBalance] = useState<BN>(new BN(0));
   const [nfts, setNfts] = useState<UserNFT[]>([]);
   const [nftsByMint, setNftsByMint] = useState<nftsByMint>({});
@@ -52,7 +51,7 @@ export const UserTokensProvider = ({
   const updateFrktBalance = (userTokens: TokenView[]) => {
     if (connected && connection) {
       const token = (userTokens as any).find(
-        ({ mint }) => mint === config.FRKT_TOKEN_MINT_PUBLIC_KEY,
+        ({ mint }) => mint === FRKT_TOKEN_MINT_PUBLIC_KEY,
       );
       if (token?.amount) {
         setFrktBalance(
@@ -67,7 +66,7 @@ export const UserTokensProvider = ({
   const fetchTokens = async () => {
     setLoading(true);
     try {
-      const userTokens = await getAllUserTokens(wallet.publicKey, {
+      const userTokens = await getAllUserTokens(publicKey, {
         connection,
       });
 

@@ -6,6 +6,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  filter: grayscale(1);
+  transition: filter var(--transition-1);
+  &:hover {
+    filter: grayscale(0);
+  }
 
   .walletName {
     display: flex;
@@ -15,6 +20,10 @@
       color: white;
       line-height: 40px;
       margin-left: 15px;
+    }
+    img {
+      width: 32px;
+      height: 32px;
     }
   }
 }

@@ -1,50 +1,39 @@
+import { useWallet } from '@solana/wallet-adapter-react';
+
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
-import { useWallet, WALLET_PROVIDERS } from '../../external/contexts/wallet';
-import {
-  PhantomIcon,
-  SolletIcon,
-  SolfareIcon,
-  ArrowRightIcon,
-} from '../../icons';
-
-const CUSTOM_WALLET_IMAGES = {
-  Phantom: PhantomIcon,
-  Solflare: SolletIcon,
-  Sollet: SolfareIcon,
-};
+import { ArrowRightIcon } from '../../icons';
+import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
 
 export const ConnectWalletModal = ({
   title,
   ...props
 }: ModalProps): JSX.Element => {
-  const { setProviderUrl, setAutoConnect, closeModal, isModalVisible } =
-    useWallet();
+  const { wallets, select } = useWallet();
+  const { visible, setVisible } = useWalletModal();
 
   return (
     <Modal
-      visible={isModalVisible}
+      visible={visible}
       title={title || 'Connect wallet'}
-      onCancel={closeModal}
+      onCancel={() => setVisible(false)}
       {...props}
     >
       <p className={styles.text}>
         Connect with one of available wallet providers or create a new wallet.
       </p>
-      {WALLET_PROVIDERS.map(({ url, name }, idx) => {
-        const Img = CUSTOM_WALLET_IMAGES[name];
+      {wallets.map(({ name, icon }, idx) => {
         return (
           <div
             key={idx}
             className={styles.wallet}
             onClick={() => {
-              setProviderUrl(url);
-              setAutoConnect(true);
-              closeModal();
+              select(name);
+              setVisible(false);
             }}
           >
             <div className={styles.walletName}>
-              <Img />
+              <img src={icon} alt="Wallet icon" />
               <span>{name}</span>
             </div>
             <ArrowRightIcon fill="white" />

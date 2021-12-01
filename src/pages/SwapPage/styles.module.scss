@@ -1,0 +1,26 @@
+.container {
+  max-width: 730px;
+  min-width: 600px;
+  margin: 0 auto;
+  padding: 64px 0;
+  align-self: flex-end;
+  justify-self: flex-start;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 24px;
+  // margin-bottom: 24px;
+  margin-bottom: 36px;
+}
+
+.loading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
