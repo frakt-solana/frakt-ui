@@ -56,6 +56,7 @@ const Statistics = (): JSX.Element => {
         <div className={styles.stat}>
           <span className={styles.title}>Total Value Locked</span>
           <span className={styles.value}>
+            ${' '}
             {numeral(isLoading ? 514542.55 : statistic?.TVL * price).format(
               '0,0.00',
             )}
