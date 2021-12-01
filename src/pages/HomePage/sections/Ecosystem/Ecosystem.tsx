@@ -12,12 +12,14 @@ const Ecosystem = ({ className }: EcosystemProps): JSX.Element => {
     <div className={classNames([styles.ecosystem, className])}>
       <h2>FRKT - Entrance to Ecosystem</h2>
       <div className={styles.description}>
-        The $FRKT utility and governance token of the FRAKT ecosystem <br />
-        had a fair launch on 10/10/2021
+        The utility and governance token of the FRAKT ecosystem ($FRKT)
+        <br />
+        had a fair launch on 10/10/2021.
         <br />
         <br />
-        The main purpose of the FRKT is to incentivize as <br />
-        many holders inlolved as possible in the governance of the protocol.
+        The main purpose of $FRKT is to incentivize and
+        <br />
+        involve as many holders as possible in the governance of the protocol.
       </div>
       <h3>FRAKT ECOSYSTEM</h3>
       <div className={styles.imgWrapper}>
