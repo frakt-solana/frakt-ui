@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
 import ecosystem from './ecosystem.svg';
+import ecosystem_new from './FRAKT ECOSYSTEM TALL_compressed.png';
 import Button from '../../../../components/Button';
 
 interface EcosystemProps {
@@ -21,9 +22,9 @@ const Ecosystem = ({ className }: EcosystemProps): JSX.Element => {
         <br />
         involve as many holders as possible in the governance of the protocol.
       </div>
-      <h3>FRAKT ECOSYSTEM</h3>
+      {/* <h3>FRAKT ECOSYSTEM</h3> */}
       <div className={styles.imgWrapper}>
-        <img src={ecosystem} />
+        <img src={ecosystem_new} />
       </div>
       <div className={styles.linkWrapper}>
         <a
