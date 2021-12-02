@@ -1,0 +1,81 @@
+.howItWorks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.steps {
+  width: 950px;
+
+  &Hidden {
+    display: none;
+  }
+  p {
+    font: var(--font-body-large);
+    color: var(--white-color);
+
+    margin-bottom: 128px;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -96px;
+      height: 65px;
+      width: 8px;
+      background: url('./arrow.svg');
+    }
+
+    &:last-child {
+      margin-bottom: 64px;
+      &::after {
+        display: none;
+      }
+    }
+  }
+}
+
+.title {
+  font: var(--font-h3);
+  margin-bottom: 32px;
+}
+
+.radio {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.info {
+  font: 400 16px var(--font-family-inter);
+  color: var(--white-color);
+  opacity: 0.5;
+}
+
+.tabButtons {
+  margin-bottom: 64px;
+}
+
+.tabButton {
+  padding: 32px 24px;
+  width: 250px;
+  font: var(--font-btn-small);
+  color: var(--white-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-1), color var(--transition-1);
+
+  &:hover {
+    background: var(--gray-color-7);
+  }
+
+  &Active,
+  &Active:hover {
+    background: var(--white-color);
+    color: var(--black-color);
+    pointer-events: none;
+  }
+}

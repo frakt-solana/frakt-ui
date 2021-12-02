@@ -1,17 +1,19 @@
 import BN from 'bn.js';
-import { shortenAddress } from '../../external/utils/utils';
+import { shortenAddress } from '../../utils/solanaUtils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { copyToClipboard, decimalBNToString } from '../../utils';
-import { VaultData } from '../../contexts/fraktion/fraktion.model';
+import { VaultData } from '../../contexts/fraktion';
 import CopyClipboardIcon from '../../icons/CopyClipboardIcon';
 import classNames from 'classnames';
 import Tooltip from '../../components/Tooltip';
 
 export const InfoTable = ({
   vaultInfo,
+  marketId = null,
 }: {
   vaultInfo: VaultData;
+  marketId?: string;
 }): JSX.Element => {
   const currency =
     vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
@@ -96,6 +98,27 @@ export const InfoTable = ({
           </Tooltip>
         </p>
       </div>
+      {marketId && (
+        <div className={styles.infoTable__cell}>
+          <p className={styles.infoTable__cellName}>Serum Market ID</p>
+          <p
+            className={classNames(
+              styles.infoTable__cellValue,
+              styles.infoTable__cellValueCopy,
+            )}
+            onClick={() => copyToClipboard(marketId)}
+          >
+            {shortenAddress(marketId)}
+            <Tooltip
+              placement="bottom"
+              trigger="hover"
+              overlay="Click to copy to clipboard"
+            >
+              <CopyClipboardIcon className={styles.copyIcon} width={24} />
+            </Tooltip>
+          </p>
+        </div>
+      )}
     </div>
   );
 };

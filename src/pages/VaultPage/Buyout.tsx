@@ -1,9 +1,9 @@
 import { useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import Button from '../../components/Button';
 import TokenField from '../../components/TokenField';
-import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
-import { useWallet } from '../../external/contexts/wallet';
+import { VaultData, VaultState } from '../../contexts/fraktion';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../utils';
@@ -12,6 +12,7 @@ import TransactionModal from '../../components/TransactionModal';
 import { useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import BN from 'bn.js';
+import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -113,7 +114,8 @@ export const Buyout = ({
     9,
   );
 
-  const { connected, select } = useWallet();
+  const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
   const currency =
     vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
       ? 'SOL'
@@ -156,7 +158,10 @@ export const Buyout = ({
         )}
 
         {!connected && (
-          <Button className={styles.buyout__connectWalletBtn} onClick={select}>
+          <Button
+            className={styles.buyout__connectWalletBtn}
+            onClick={() => setVisible(true)}
+          >
             Connect wallet
           </Button>
         )}
