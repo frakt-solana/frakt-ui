@@ -1,4 +1,4 @@
-import config from '../../config';
+import { ENDPOINT } from '../../config';
 import { getMeta } from './lib';
 import { BinaryReader, BinaryWriter } from 'borsh';
 import { PublicKey } from '@solana/web3.js';
@@ -36,7 +36,7 @@ import { StringPublicKey, MetadataByMint } from './arweave.model';
 export const getArweaveMetadataByMint = async (
   tokenMints: string[],
 ): Promise<MetadataByMint> => {
-  const rawMeta = await getMeta(tokenMints, config.ENDPOINT.endpoint);
+  const rawMeta = await getMeta(tokenMints, ENDPOINT);
 
   const metadataByMint =
     rawMeta?.reduce((acc, { mint, metadata }) => {

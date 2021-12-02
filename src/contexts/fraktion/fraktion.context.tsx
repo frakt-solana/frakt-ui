@@ -1,10 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { keyBy } from 'lodash';
-import { PublicKey } from '@solana/web3.js';
-import { getAllVaults } from 'fraktionalizer-client-library';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
-import { useWallet } from '../../external/contexts/wallet';
-import { useConnection } from '../../external/contexts/connection';
 import {
   fetchVaultsFunction,
   FraktionContextType,
@@ -13,18 +10,26 @@ import {
   VaultsMap,
   VaultState,
 } from './fraktion.model';
-import { buyout, fraktionalize, redeem } from './fraktion';
-import fraktionConfig from './config';
-import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
+import {
+  buyout,
+  createFraktionsMarket,
+  fraktionalize,
+  redeem,
+} from './fraktion';
 import verifyMints from '../../utils/verifyMints';
+import { getMarkets } from '../../utils/markets';
+import BN from 'bn.js';
+import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
 
 const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
   error: null,
   vaults: [],
+  vaultsMarkets: [],
   fraktionalize: () => Promise.resolve(null),
   buyout: () => Promise.resolve(null),
   redeem: () => Promise.resolve(null),
+  createFraktionsMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
   patchVault: () => {},
 });
@@ -34,27 +39,45 @@ export const FraktionProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const { wallet } = useWallet();
-  const connection = useConnection();
+  const {
+    publicKey: walletPublicKey,
+    signTransaction,
+    signAllTransactions,
+  } = useWallet();
+  const { connection } = useConnection();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [vaults, setVaults] = useState<VaultData[]>([]);
+  const [vaultsMarkets, setVaultsMarkets] = useState([]);
+
+  const fetchVaultsMarkets = async () => {
+    try {
+      const markets = await getMarkets();
+      setVaultsMarkets(markets);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
 
   const fetchVaults: fetchVaultsFunction = async () => {
     try {
       setLoading(true);
-      const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } =
-        await getAllVaults(
-          new PublicKey(fraktionConfig.FRAKTION_PUBKEY),
-          connection,
-        );
+
+      const { allVaults, metas } = await (
+        await fetch(VAULTS_AND_META_CACHE_URL)
+      ).json();
+
+      const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } = allVaults;
 
       const nftMints = (rawSafetyBoxes as SafetyBox[]).map(
         ({ tokenMint }) => tokenMint,
       );
 
-      const metadataByMint = await getArweaveMetadataByMint(nftMints);
+      const metadataByMint = metas.reduce((acc, meta) => {
+        return { ...acc, [meta.mintAddress]: meta };
+      }, {});
       const verificationByMint = await verifyMints(nftMints);
 
       const safetyBoxes = rawSafetyBoxes as SafetyBox[];
@@ -66,11 +89,11 @@ export const FraktionProvider = ({
           { vault: vaultPubkey, tokenMint: nftMint, safetyBoxPubkey, store },
         ) => {
           const vault = vaultsMap[vaultPubkey];
-          const arweaveMetadata = metadataByMint[nftMint];
+          const arweaveMetadata = metadataByMint[nftMint].fetchedMeta;
           const verification = verificationByMint[nftMint];
 
           if (vault && arweaveMetadata) {
-            const { name, image, attributes } = arweaveMetadata;
+            const { name, description, image, attributes } = arweaveMetadata;
             const {
               authority,
               fractionMint,
@@ -86,13 +109,14 @@ export const FraktionProvider = ({
             const vaultData: VaultData = {
               fractionMint,
               authority,
-              supply: fractionsSupply,
-              lockedPricePerFraction: lockedPricePerShare,
+              supply: new BN(fractionsSupply, 16),
+              lockedPricePerFraction: new BN(lockedPricePerShare, 16),
               priceTokenMint: priceMint,
               publicKey: vaultPubkey,
               state: VaultState[state],
               nftMint,
               name,
+              description,
               imageSrc: image,
               nftAttributes: attributes,
               fractionTreasury,
@@ -101,8 +125,10 @@ export const FraktionProvider = ({
               store,
               isNftVerified: verification?.success || false,
               nftCollectionName: verification?.collection,
-              createdAt: createdAt.toNumber(),
-              buyoutPrice: lockedPricePerShare.mul(fractionsSupply),
+              createdAt: new BN(createdAt, 16).toNumber(),
+              buyoutPrice: new BN(lockedPricePerShare, 16).mul(
+                new BN(fractionsSupply, 16),
+              ),
             };
 
             return [...acc, vaultData];
@@ -139,6 +165,7 @@ export const FraktionProvider = ({
 
   useEffect(() => {
     connection && fetchVaults();
+    fetchVaultsMarkets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection]);
 
@@ -148,6 +175,7 @@ export const FraktionProvider = ({
         loading,
         error,
         vaults,
+        vaultsMarkets,
         fraktionalize: (
           userNft,
           tickerName,
@@ -161,12 +189,28 @@ export const FraktionProvider = ({
             pricePerFraction,
             fractionsAmount,
             token,
-            wallet,
+            walletPublicKey,
+            signTransaction,
             connection,
           ),
         buyout: (vault, userTokensByMint) =>
-          buyout(vault, userTokensByMint, wallet, connection),
-        redeem: (vault) => redeem(vault, wallet, connection),
+          buyout(
+            vault,
+            userTokensByMint,
+            walletPublicKey,
+            signTransaction,
+            connection,
+          ),
+        redeem: (vault) =>
+          redeem(vault, walletPublicKey, signTransaction, connection),
+        createFraktionsMarket: (fractionsMintAddress, tickerName) =>
+          createFraktionsMarket(
+            fractionsMintAddress,
+            tickerName,
+            walletPublicKey,
+            signAllTransactions,
+            connection,
+          ),
         refetch: fetchVaults,
         patchVault,
       }}
@@ -181,9 +225,11 @@ export const useFraktion = (): FraktionContextType => {
     loading,
     error,
     vaults,
+    vaultsMarkets,
     fraktionalize,
     buyout,
     redeem,
+    createFraktionsMarket,
     refetch: fetchVaults,
     patchVault,
   } = useContext(FraktionContext);
@@ -191,9 +237,11 @@ export const useFraktion = (): FraktionContextType => {
     loading,
     error,
     vaults,
+    vaultsMarkets,
     fraktionalize,
     buyout,
     redeem,
+    createFraktionsMarket,
     refetch: fetchVaults,
     patchVault,
   };

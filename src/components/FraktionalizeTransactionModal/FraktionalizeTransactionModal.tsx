@@ -2,10 +2,12 @@ import Button from '../Button';
 import { Loader } from '../Loader';
 import { Modal } from '../Modal';
 import styles from './styles.module.scss';
+import { useFraktion } from '../../contexts/fraktion';
 
 interface FraktionalizeTransactionModalProps {
   state?: 'loading' | 'success' | 'fail';
   visible: boolean;
+  tickerName: string;
   onCancel: () => void;
   fractionsMintAddress?: string;
   onRetryClick?: () => void;
@@ -15,9 +17,12 @@ const FraktionalizeTransactionModal = ({
   visible,
   state = 'loading',
   fractionsMintAddress = '',
+  tickerName,
   onCancel,
   onRetryClick = () => {},
 }: FraktionalizeTransactionModalProps): JSX.Element => {
+  const { createFraktionsMarket } = useFraktion();
+
   const loadingContent = (
     <div className={styles.loadingContent}>
       <Loader size="large" />
@@ -29,7 +34,7 @@ const FraktionalizeTransactionModal = ({
     <div className={styles.successContent}>
       <h2 className={styles.successContent__title}>Congratulations!</h2>
       <p className={styles.successContent__subtitle}>
-        Now feel free to do anything with your fraktions!
+        Tokens of your NFT should be in your wallet!
       </p>
       {!!fractionsMintAddress && (
         <div className={styles.successContent__fractionsMintWrapper}>
@@ -37,9 +42,20 @@ const FraktionalizeTransactionModal = ({
             Fraktions mint address:
           </span>
           <b>{fractionsMintAddress}</b>
+          <p className={styles.successContent__subtitle}>
+            If you want fraktions to be tradable you need to create market
+          </p>
+          <Button
+            type="alternative"
+            className={styles.successContent__createMarketBtn}
+            onClick={() =>
+              createFraktionsMarket(fractionsMintAddress, tickerName)
+            }
+          >
+            Create Market
+          </Button>
         </div>
       )}
-      {/* <button>Create liquidity pool on Raydium</button> //TODO: implement when ready */}
     </div>
   );
 

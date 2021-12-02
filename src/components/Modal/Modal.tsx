@@ -1,13 +1,33 @@
 import React from 'react';
 import styles from './styles.module.scss';
-import { Modal as ModalAnt, ModalProps as ModalAntProps } from 'antd';
+import {
+  Modal as ModalAnt,
+  ModalFuncProps,
+  ModalProps as ModalAntProps,
+} from 'antd';
 import { CloseIcon } from '../../icons';
 import classNames from 'classnames';
+// import { ModalFunc } from 'antd/lib/modal/confirm';
 
 export interface ModalProps extends ModalAntProps {
   className?: string;
   children?: any;
 }
+
+export interface ModalConfirmProps extends ModalFuncProps {
+  className?: string;
+}
+
+export const ConfirmModal = (
+  props: ModalConfirmProps,
+): { update: any; destroy: any } =>
+  ModalAnt.confirm({
+    className: classNames(styles.modal, props.className),
+    closeIcon: (
+      <CloseIcon width="24px" height="24px" className={styles.close} />
+    ),
+    ...props,
+  });
 
 export const Modal = ({
   children,

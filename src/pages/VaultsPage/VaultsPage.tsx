@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import VaultCard from '../../components/VaultCard';
 import { Container } from '../../components/Layout';
@@ -12,12 +13,11 @@ import { useDebounce } from '../../hooks';
 import { useFraktion } from '../../contexts/fraktion/fraktion.context';
 import { NavLink } from 'react-router-dom';
 import { URLS } from '../../constants';
-import { VaultState } from '../../contexts/fraktion/fraktion.model';
+import { VaultState } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
-import { useWallet } from '../../external/contexts/wallet';
 
 const SORT_VALUES = [
   {
@@ -105,7 +105,7 @@ const VaultsPage = (): JSX.Element => {
   const sort = watch('sort');
 
   const { loading, vaults: rawVaults } = useFraktion();
-  const { connected, wallet } = useWallet();
+  const { connected, publicKey } = useWallet();
   const [searchString, setSearchString] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(9);
 
@@ -118,11 +118,7 @@ const VaultsPage = (): JSX.Element => {
     //TODO optimise it 4n instead of n
     return rawVaults
       .filter(({ state, authority, name, isNftVerified }) => {
-        if (
-          connected &&
-          showMyVaults &&
-          authority !== wallet.publicKey.toString()
-        )
+        if (connected && showMyVaults && authority !== publicKey.toString())
           return false;
         if (!showActiveVaults && state === VaultState[1]) return false;
         if (!showBoughtVaults && state === VaultState[2]) return false;

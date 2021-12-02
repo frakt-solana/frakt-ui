@@ -24,11 +24,13 @@ interface BuyoutFieldProps {
   setBuyoutPrice: (supply: string) => void;
   error?: string;
   setError?: (error: string) => void;
+  maxLength: number;
 }
 
 export const BuyoutField = ({
   buyoutPrice,
   setBuyoutPrice,
+  maxLength,
   error,
   setError = () => {},
 }: BuyoutFieldProps): JSX.Element => {
@@ -54,6 +56,7 @@ export const BuyoutField = ({
       className={styles.priceField}
       value={buyoutPrice}
       onValueChange={setBuyoutPrice}
+      amountMaxLength={maxLength}
       // tokensList={MOCK_TOKEN_LIST}
       onTokenChange={setBuyoutToken}
       currentToken={buyoutToken}

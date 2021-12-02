@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import BN from 'bn.js';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
-import { UserNFT } from '../../../contexts/userTokens/userTokens.model';
+import { UserNFT } from '../../../contexts/userTokens';
 import styles from './styles.module.scss';
 import { TickerInput } from './TickerInput';
 import { SupplyInput } from './SupplyInput';
 import { BuyoutField } from './BuyoutField';
+import { shortBigNumber } from '../../../utils';
 
 interface SidebarProps {
   onRemoveClick?: () => void;
@@ -17,14 +19,12 @@ interface SidebarProps {
     fractionsAmount: number,
   ) => void;
   token: UserNFT;
-  isTickerAvailable: (tickerName: string) => boolean;
 }
 
 const Sidebar = ({
   onRemoveClick,
   token,
   onContinueClick,
-  isTickerAvailable,
 }: SidebarProps): JSX.Element => {
   const [buyoutPrice, setBuyoutPrice] = useState<string>('');
   const [supply, setSupply] = useState<string>('');
@@ -82,6 +82,12 @@ const Sidebar = ({
     );
   };
 
+  const pricePerFraktion =
+    buyoutPrice && supply && Number(buyoutPrice) / Number(supply);
+  const pricePerFrktBN = pricePerFraktion
+    ? new BN(pricePerFraktion * 10e5)
+    : null;
+
   return (
     <div
       className={classNames([
@@ -119,6 +125,7 @@ const Sidebar = ({
               supply={supply}
               setSupply={setSupply}
               error={supplyError}
+              maxLength={9}
               setError={setSupplyError}
             />
           </div>
@@ -127,17 +134,28 @@ const Sidebar = ({
             <TickerInput
               value={ticker}
               setTicker={setTicker}
-              isTickerAvailable={isTickerAvailable}
               tickerError={tickerError}
               setTickerError={setTickerError}
             />
           </div>
+        </div>
+        <div className={styles.fraktionPrice}>
+          Fraktion price
+          <span className={styles.line} />
+          {!smallFractionPriceError && (
+            <>
+              {pricePerFrktBN ? shortBigNumber(pricePerFrktBN, 2, 6) : '0.00'}{' '}
+              SOL
+            </>
+          )}
+          {smallFractionPriceError && 'Error'}
         </div>
         <div className={styles.sidebar__fieldWrapper}>
           <p className={styles.sidebar__fieldLabel}>Buyout price</p>
           <BuyoutField
             buyoutPrice={buyoutPrice}
             setBuyoutPrice={setBuyoutPrice}
+            maxLength={5}
             error={buyoutPriceError}
             setError={setBuyoutPriceError}
           />
@@ -151,7 +169,9 @@ const Sidebar = ({
           {[smallFractionPriceError, buyoutPriceError, tickerError, supplyError]
             .filter((error) => error)
             .map((error, idx) => (
-              <p key={idx}>{error}</p>
+              <p className={styles.err} key={idx}>
+                {error}
+              </p>
             ))}
         </div>
       </div>
