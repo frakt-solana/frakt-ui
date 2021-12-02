@@ -201,17 +201,17 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
 
       const difference = (amountMarket / amountLocked) * 100 - 100;
 
-      return difference ? difference.toFixed(2) : '';
+      return isNaN(difference) ? '' : difference.toFixed(2);
     } else {
       const amountMarketSOL = Number(receiveValue);
 
       const amountLockedSOL =
-        (vaultInfo.lockedPricePerFraction.toNumber() * Number(receiveValue)) /
-        10 ** 2;
+        (vaultInfo.lockedPricePerFraction.toNumber() * Number(payValue)) /
+        10 ** 6;
 
       const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
 
-      return difference ? difference.toFixed(2) : '';
+      return isNaN(difference) ? '' : difference.toFixed(2);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
