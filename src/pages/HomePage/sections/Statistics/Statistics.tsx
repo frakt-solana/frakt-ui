@@ -1,8 +1,9 @@
+import { useCountUp } from 'react-countup';
 import classNames from 'classnames/bind';
+
 import styles from './styles.module.scss';
 import { Container } from '../../../../components/Layout';
-import { useEffect, useState } from 'react';
-import numeral from 'numeral';
+import { useEffect, useRef, useState } from 'react';
 
 interface Statistic {
   lockedNFTs: number;
@@ -28,6 +29,44 @@ const Statistics = (): JSX.Element => {
   const [statistic, setStatistic] = useState<Statistic | null>(null);
   const [price, setPrice] = useState(1);
 
+  const lockedNFTRef = useRef(null);
+  const { update: updateLockedNFTCount } = useCountUp({
+    ref: lockedNFTRef,
+    start: 0,
+    end: 0,
+    startOnMount: false,
+    duration: 2,
+    separator: ',',
+  });
+  const issuedTokensRef = useRef(null);
+  const { update: updateIssuedTokensCount } = useCountUp({
+    ref: issuedTokensRef,
+    start: 0,
+    end: 0,
+    startOnMount: false,
+    duration: 2,
+    separator: ',',
+  });
+  const tvlRef = useRef(null);
+  const { update: updateTvlCount } = useCountUp({
+    ref: tvlRef,
+    start: 0,
+    end: 0,
+    startOnMount: false,
+    duration: 2,
+    decimals: 2,
+    separator: ',',
+  });
+
+  useEffect(() => {
+    if (!isLoading) {
+      updateLockedNFTCount(statistic?.lockedNFTs || 0);
+      updateIssuedTokensCount(statistic?.issuedTokens || 0);
+      updateTvlCount(statistic?.TVL * price || 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
   useEffect(() => {
     const promises = [
       getSolanaPrice().then(setPrice),
@@ -42,24 +81,19 @@ const Statistics = (): JSX.Element => {
         <div className={styles.stat}>
           <span className={styles.title}>Locked NFTs</span>
           <span className={styles.value}>
-            {isLoading ? 51 : numeral(statistic?.lockedNFTs).format('0,0')}
+            {isLoading ? '--' : <span ref={lockedNFTRef} />}
           </span>
         </div>
         <div className={styles.stat}>
           <span className={styles.title}>Issued Tokens</span>
           <span className={styles.value}>
-            {numeral(isLoading ? 11432532000 : statistic?.issuedTokens).format(
-              '0,0',
-            )}
+            {isLoading ? '--' : <span ref={issuedTokensRef} />}
           </span>
         </div>
         <div className={styles.stat}>
           <span className={styles.title}>Total Value Locked</span>
           <span className={styles.value}>
-            ${' '}
-            {numeral(isLoading ? 514542.55 : statistic?.TVL * price).format(
-              '0,0.00',
-            )}
+            {isLoading ? '--' : <span ref={tvlRef} />}
           </span>
         </div>
       </Container>

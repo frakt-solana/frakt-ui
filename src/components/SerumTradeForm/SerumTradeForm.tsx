@@ -29,6 +29,7 @@ import styles from './styles.module.scss';
 import classNames from 'classnames/bind';
 import Toggle from '../Toggle';
 import Button from '../Button';
+import SerumSettleAllFunds from '../SerumSettleAllFunds/SerumSettleAllFunds';
 
 const sliderMarks = {
   0: '0%',
@@ -362,6 +363,7 @@ export default function TradeForm({
       >
         {side === 'buy' ? 'Buy' : 'Sell'} {baseCurrency}
       </Button>
+      <SerumSettleAllFunds market={market} />
     </div>
   );
 }

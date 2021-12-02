@@ -201,17 +201,17 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
 
       const difference = (amountMarket / amountLocked) * 100 - 100;
 
-      return difference ? difference.toFixed(2) : '';
+      return isNaN(difference) ? '' : difference.toFixed(2);
     } else {
       const amountMarketSOL = Number(receiveValue);
 
       const amountLockedSOL =
-        (vaultInfo.lockedPricePerFraction.toNumber() * Number(receiveValue)) /
-        10 ** 2;
+        (vaultInfo.lockedPricePerFraction.toNumber() * Number(payValue)) /
+        10 ** 6;
 
       const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
 
-      return difference ? difference.toFixed(2) : '';
+      return isNaN(difference) ? '' : difference.toFixed(2);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -294,7 +294,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       />
       <div className={styles.info}>
         <span className={styles.info__title}>
-          <span>{`Slippage Tolerance     `}</span>
+          <span className={styles.info__titleName}>Slippage Tolerance</span>
           <span>
             <Tooltip
               placement="top"
@@ -309,7 +309,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       </div>
       <div className={styles.info}>
         <span className={styles.info__title}>
-          <span>{`Minimum Received     `}</span>
+          <span className={styles.info__titleName}>Minimum Received</span>
           <span>
             <Tooltip
               placement="top"
@@ -329,7 +329,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       {valuationDifference && (
         <div className={styles.info}>
           <span className={styles.info__title}>
-            <span>{`Valuation difference     `}</span>
+            <span className={styles.info__titleName}>Valuation difference</span>
             <Tooltip
               placement="top"
               trigger="hover"

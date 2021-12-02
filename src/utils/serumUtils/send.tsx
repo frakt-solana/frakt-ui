@@ -276,7 +276,14 @@ export async function settleAllFunds({
       payer: PublicKey;
     } => !!x,
   );
-  if (!settleTransactions || settleTransactions.length === 0) return;
+  if (!settleTransactions || settleTransactions.length === 0) {
+    notify({
+      message: 'Error settling funds',
+      description: 'No funds found to settle',
+      type: 'error',
+    });
+    return;
+  }
 
   const transactions = settleTransactions.slice(0, 4).map((t) => t.transaction);
   const signers: Array<Account> = [];

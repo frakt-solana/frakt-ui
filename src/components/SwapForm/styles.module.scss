@@ -58,6 +58,9 @@
 
   &__title {
     order: 1;
+    &Name {
+      margin-right: 12px;
+    }
   }
 
   &__value {

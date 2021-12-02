@@ -29,6 +29,7 @@
     "numeral": "^2.0.6",
     "rc-tooltip": "^5.1.1",
     "react": "^16.13.1",
+    "react-countup": "^6.1.0",
     "react-dom": "^16.13.1",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.19.5",
