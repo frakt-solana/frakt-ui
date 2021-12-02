@@ -1,15 +1,14 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React, { useState } from 'react';
-import { Button, Row } from 'antd';
+import { Button } from 'antd';
 import { settleAllFunds } from '../../utils/serumUtils/send';
 
 import {
-  useAllMarkets,
   useSelectedTokenAccounts,
   useTokenAccounts,
 } from '../../utils/serumUtils/markets';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { notify } from '../../utils';
-import { useFraktion } from '../../contexts/fraktion';
 import { Market } from '@project-serum/serum';
 
 export default function SerumSettleAllFunds({ market }: { market: Market }) {
