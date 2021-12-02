@@ -294,7 +294,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       />
       <div className={styles.info}>
         <span className={styles.info__title}>
-          <span>{`Slippage Tolerance     `}</span>
+          <span className={styles.info__titleName}>Slippage Tolerance</span>
           <span>
             <Tooltip
               placement="top"
@@ -309,7 +309,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       </div>
       <div className={styles.info}>
         <span className={styles.info__title}>
-          <span>{`Minimum Received     `}</span>
+          <span className={styles.info__titleName}>Minimum Received</span>
           <span>
             <Tooltip
               placement="top"
@@ -329,7 +329,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       {valuationDifference && (
         <div className={styles.info}>
           <span className={styles.info__title}>
-            <span>{`Valuation difference     `}</span>
+            <span className={styles.info__titleName}>Valuation difference</span>
             <Tooltip
               placement="top"
               trigger="hover"
