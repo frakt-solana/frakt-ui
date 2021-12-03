@@ -16,7 +16,6 @@ import {
   fraktionalize,
   redeem,
 } from './fraktion';
-import verifyMints from '../../utils/verifyMints';
 import { getMarkets } from '../../utils/markets';
 import BN from 'bn.js';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
@@ -71,14 +70,9 @@ export const FraktionProvider = ({
 
       const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } = allVaults;
 
-      const nftMints = (rawSafetyBoxes as SafetyBox[]).map(
-        ({ tokenMint }) => tokenMint,
-      );
-
       const metadataByMint = metas.reduce((acc, meta) => {
         return { ...acc, [meta.mintAddress]: meta };
       }, {});
-      const verificationByMint = await verifyMints(nftMints);
 
       const safetyBoxes = rawSafetyBoxes as SafetyBox[];
       const vaultsMap = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
@@ -90,7 +84,7 @@ export const FraktionProvider = ({
         ) => {
           const vault = vaultsMap[vaultPubkey];
           const arweaveMetadata = metadataByMint[nftMint].fetchedMeta;
-          const verification = verificationByMint[nftMint];
+          const verification = metadataByMint[nftMint].isVerifiedStatus;
 
           if (vault && arweaveMetadata) {
             const { name, description, image, attributes } = arweaveMetadata;
