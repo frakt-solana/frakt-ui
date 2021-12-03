@@ -44,7 +44,7 @@ import { Order } from '@project-serum/serum/lib/market';
 import BonfidaApi from './bonfidaConnector';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { notify } from '../index';
-import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { useFraktion } from '../../contexts/fraktion';
 import { useTokenListContext } from '../../contexts/TokenList';
 
 // Used in debugging, should be false in production
@@ -61,12 +61,13 @@ import { useTokenListContext } from '../../contexts/TokenList';
 export function useMarketsList() {
   const { vaultsMarkets } = useFraktion();
 
-  const _MARKETS = vaultsMarkets.map(({ address, name, programId }) => ({
-    name,
+  const _MARKETS = vaultsMarkets.map(({ address, programId }) => ({
+    name: undefined,
     address: new PublicKey(address),
     programId: new PublicKey(programId),
     deprecated: false,
   }));
+
   return _MARKETS.filter(
     ({ name, deprecated }) =>
       !deprecated && !process.env.REACT_APP_EXCLUDE_MARKETS?.includes(name),

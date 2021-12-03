@@ -10,10 +10,9 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
-import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { VaultState, useFraktion } from '../../contexts/fraktion';
 import { NavLink } from 'react-router-dom';
 import { URLS } from '../../constants';
-import { VaultState } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
@@ -94,6 +93,7 @@ const VaultsPage = (): JSX.Element => {
       showClosedVaults: false,
       showVerifiedVaults: true,
       showMyVaults: false,
+      showTradableVaults: false,
       sort: SORT_VALUES[7],
     },
   });
@@ -102,6 +102,7 @@ const VaultsPage = (): JSX.Element => {
   const showVerifiedVaults = watch('showVerifiedVaults');
   const showClosedVaults = watch('showClosedVaults');
   const showMyVaults = watch('showMyVaults');
+  const showTradableVaults = watch('showTradableVaults');
   const sort = watch('sort');
 
   const { loading, vaults: rawVaults } = useFraktion();
@@ -117,12 +118,13 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     //TODO optimise it 4n instead of n
     return rawVaults
-      .filter(({ state, authority, name, isNftVerified }) => {
+      .filter(({ state, authority, name, isNftVerified, hasMarket }) => {
         if (connected && showMyVaults && authority !== publicKey.toString())
           return false;
         if (!showActiveVaults && state === VaultState[1]) return false;
         if (!showBoughtVaults && state === VaultState[2]) return false;
         if (!showClosedVaults && state === VaultState[3]) return false;
+        if (showTradableVaults && !hasMarket) return false;
         if (showVerifiedVaults && !isNftVerified) return false;
 
         return name.toUpperCase().includes(searchString);
@@ -144,6 +146,7 @@ const VaultsPage = (): JSX.Element => {
     showClosedVaults,
     showVerifiedVaults,
     showMyVaults,
+    showTradableVaults,
     sort,
   ]);
 
@@ -180,6 +183,12 @@ const VaultsPage = (): JSX.Element => {
               control={control}
               name="showVerifiedVaults"
               label="Verified"
+              className={styles.filter}
+            />
+            <ControlledToggle
+              control={control}
+              name="showTradableVaults"
+              label="Tradable"
               className={styles.filter}
             />
             {connected && (
@@ -223,6 +232,7 @@ const VaultsPage = (): JSX.Element => {
               lockedPricePerFraction,
               priceTokenMint,
               buyoutPrice,
+              hasMarket,
             }) => (
               <NavLink key={publicKey} to={`${URLS.VAULT}/${publicKey}`}>
                 <VaultCard
@@ -236,6 +246,7 @@ const VaultsPage = (): JSX.Element => {
                   pricePerFraction={lockedPricePerFraction}
                   priceTokenMint={priceTokenMint}
                   buyoutPrice={buyoutPrice}
+                  hasMarket={hasMarket}
                 />
               </NavLink>
             ),

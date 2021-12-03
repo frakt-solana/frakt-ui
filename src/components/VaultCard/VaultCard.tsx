@@ -19,6 +19,7 @@ export interface VaultCardProps {
   pricePerFraction?: BN;
   priceTokenMint: string;
   buyoutPrice?: BN;
+  hasMarket?: boolean;
 }
 
 const VaultCard = ({
@@ -32,6 +33,7 @@ const VaultCard = ({
   pricePerFraction = new BN(0),
   priceTokenMint,
   buyoutPrice = new BN(0),
+  hasMarket = false,
 }: VaultCardProps): JSX.Element => {
   const tokenMap = useTokenMap();
 
@@ -54,6 +56,7 @@ const VaultCard = ({
           <div className={styles.actions}>
             {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
             <Badge label={vaultState} className={styles.badge} />
+            {hasMarket && <Badge label="Tradable" className={styles.badge} />}
           </div>
         </div>
         <div className={styles.nameContainer}>

@@ -6,18 +6,17 @@ import { NavLink } from 'react-router-dom';
 import { getAllUserTokens } from 'solana-nft-metadata';
 import { useConnection } from '@solana/wallet-adapter-react';
 import classNames from 'classnames/bind';
+import BN from 'bn.js';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { URLS } from '../../constants';
-import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { useFraktion, VaultData } from '../../contexts/fraktion';
 import { shortenAddress } from '../../utils/solanaUtils';
 import styles from './styles.module.scss';
 import { useTokenListContext } from '../../contexts/TokenList';
-import BN from 'bn.js';
 import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
-import { VaultData } from '../../contexts/fraktion';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
 

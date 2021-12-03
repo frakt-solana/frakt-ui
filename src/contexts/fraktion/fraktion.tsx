@@ -11,8 +11,16 @@ import {
   redeemRewardsFromShares,
 } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
+import { keyBy } from 'lodash';
 
-import { CreateFraktionalizerResult, VaultData } from './fraktion.model';
+import {
+  CreateFraktionalizerResult,
+  Market,
+  SafetyBox,
+  VaultData,
+  VaultsMap,
+  VaultState,
+} from './fraktion.model';
 import fraktionConfig from './config';
 import { IS_DEVNET, FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
 import { RawUserTokensByMint, UserNFT } from '../userTokens';
@@ -23,9 +31,88 @@ import { listMarket } from '../../utils/serumUtils/send';
 import { MARKETS } from '@project-serum/serum';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { registerMarket } from '../../utils/markets';
+import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
 
 const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
+
+export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
+  const { allVaults, metas } = await (
+    await fetch(VAULTS_AND_META_CACHE_URL)
+  ).json();
+
+  const hasMarketByMint = markets.reduce((acc, { baseMint }) => {
+    return { ...acc, [baseMint]: true };
+  }, {});
+
+  const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } = allVaults;
+
+  const metadataByMint = metas.reduce((acc, meta) => {
+    return { ...acc, [meta.mintAddress]: meta };
+  }, {});
+
+  const safetyBoxes = rawSafetyBoxes as SafetyBox[];
+  const vaultsMap = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
+
+  const vaultsData: VaultData[] = safetyBoxes.reduce(
+    (
+      acc,
+      { vault: vaultPubkey, tokenMint: nftMint, safetyBoxPubkey, store },
+    ) => {
+      const vault = vaultsMap[vaultPubkey];
+      const arweaveMetadata = metadataByMint[nftMint].fetchedMeta;
+      const verification = metadataByMint[nftMint].isVerifiedStatus;
+
+      if (vault && arweaveMetadata) {
+        const { name, description, image, attributes } = arweaveMetadata;
+        const {
+          authority,
+          fractionMint,
+          fractionsSupply,
+          lockedPricePerShare,
+          priceMint,
+          state,
+          fractionTreasury,
+          redeemTreasury,
+          createdAt,
+        } = vault;
+
+        const vaultData: VaultData = {
+          fractionMint,
+          authority,
+          supply: new BN(fractionsSupply, 16),
+          lockedPricePerFraction: new BN(lockedPricePerShare, 16),
+          priceTokenMint: priceMint,
+          publicKey: vaultPubkey,
+          state: VaultState[state],
+          nftMint,
+          name,
+          description,
+          imageSrc: image,
+          nftAttributes: attributes,
+          fractionTreasury,
+          redeemTreasury,
+          safetyBoxPubkey,
+          store,
+          isNftVerified: verification?.success || false,
+          nftCollectionName: verification?.collection,
+          createdAt: new BN(createdAt, 16).toNumber(),
+          buyoutPrice: new BN(lockedPricePerShare, 16).mul(
+            new BN(fractionsSupply, 16),
+          ),
+          hasMarket: hasMarketByMint[fractionMint] || false,
+        };
+
+        return [...acc, vaultData];
+      }
+
+      return acc;
+    },
+    [],
+  );
+
+  return vaultsData;
+};
 
 export const fraktionalize = async (
   userNft: UserNFT,

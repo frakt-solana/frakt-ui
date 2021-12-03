@@ -68,6 +68,13 @@ export interface VaultData {
   nftCollectionName?: string;
   createdAt: number;
   buyoutPrice: BN;
+  hasMarket: boolean;
+}
+
+export interface Market {
+  address: string;
+  baseMint: string;
+  programId: string;
 }
 
 export interface CreateFraktionalizerResult {
@@ -105,7 +112,7 @@ export type createFraktionsMarketFunction = (
   tickerName: string,
 ) => Promise<boolean>;
 
-export type fetchVaultsFunction = () => Promise<VaultData[] | null>;
+export type fetchDataFunction = () => Promise<void>;
 
 export type patchVaultFunction = (vaultInfo: VaultData) => void;
 
@@ -113,11 +120,11 @@ export interface FraktionContextType {
   loading: boolean;
   error: any;
   vaults: VaultData[];
-  vaultsMarkets: Array<any>;
+  vaultsMarkets: Market[];
   fraktionalize: fraktionalizeFunction;
   buyout: buyoutFunction;
   redeem: redeemFunction;
   createFraktionsMarket: createFraktionsMarketFunction;
-  refetch: fetchVaultsFunction;
+  refetch: fetchDataFunction;
   patchVault: patchVaultFunction;
 }
