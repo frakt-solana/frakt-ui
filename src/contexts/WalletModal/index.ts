@@ -1,1 +1,1 @@
-export { WalletModalProvider } from './walletModal.context';
+export { WalletModalProvider, useWalletModal } from './walletModal.context';

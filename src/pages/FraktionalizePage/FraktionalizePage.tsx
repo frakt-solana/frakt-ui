@@ -9,13 +9,13 @@ import { SearchInput } from '../../components/SearchInput';
 import { useUserTokens, UserNFT } from '../../contexts/userTokens';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
-import { useFraktion } from '../../contexts/fraktion/fraktion.context';
+import { useFraktion } from '../../contexts/fraktion';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
-import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
+import { useWalletModal } from '../../contexts/WalletModal';
 
 const useFraktionalizeTransactionModal = () => {
   const { removeTokenOptimistic } = useUserTokens();
