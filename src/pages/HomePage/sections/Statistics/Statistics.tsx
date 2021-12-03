@@ -56,6 +56,7 @@ const Statistics = (): JSX.Element => {
     duration: 2,
     decimals: 2,
     separator: ',',
+    prefix: '$',
   });
 
   useEffect(() => {
@@ -93,13 +94,7 @@ const Statistics = (): JSX.Element => {
         <div className={styles.stat}>
           <span className={styles.title}>Total Value Locked</span>
           <span className={styles.value}>
-            {isLoading ? (
-              '--'
-            ) : (
-              <span>
-                $<span ref={tvlRef} />
-              </span>
-            )}
+            {isLoading ? '--' : <span ref={tvlRef} />}
           </span>
         </div>
       </Container>
