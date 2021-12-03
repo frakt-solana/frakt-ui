@@ -79,7 +79,7 @@ const Statistics = (): JSX.Element => {
     <div className={classNames([styles.statistics])}>
       <Container component="div" className={styles.statisticsContainer}>
         <div className={styles.stat}>
-          <span className={styles.title}>Locked NFTs</span>
+          <span className={styles.title}>NFTs Locked in Vaults</span>
           <span className={styles.value}>
             {isLoading ? '--' : <span ref={lockedNFTRef} />}
           </span>
@@ -93,7 +93,13 @@ const Statistics = (): JSX.Element => {
         <div className={styles.stat}>
           <span className={styles.title}>Total Value Locked</span>
           <span className={styles.value}>
-            {isLoading ? '--' : <span ref={tvlRef} />}
+            {isLoading ? (
+              '--'
+            ) : (
+              <span>
+                $<span ref={tvlRef} />
+              </span>
+            )}
           </span>
         </div>
       </Container>
