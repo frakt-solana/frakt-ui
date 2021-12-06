@@ -4,7 +4,7 @@ const STEPS = [
   {
     title: 'Unlock liquidity',
     description:
-      'To completely unlock NFTs liquidity, fractions and derivatives should be tradable. For this reason we connected our app to Serum and built swaps on top of Raydium to provide luquidity and tools for NFT owners',
+      'To completely unlock NFTs liquidity, fractions and derivatives should be tradable. For this reason we connected our app to Serum and built swaps on top of Raydium to provide liquidity and tools for NFT owners',
     checked: true,
   },
   {
