@@ -20,6 +20,12 @@
     left: 50%;
     margin-left: -1px;
   }
+
+  @media screen and (max-width: 1023px) {
+    &::after {
+      left: 14px;
+    }
+  }
 }
 
 .item {
@@ -107,5 +113,39 @@
     font: var(--font-btn-large);
     margin-bottom: 0;
     text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 1023px) {
+    width: calc(100% - 14px) !important;
+    left: 14px !important;
+    padding-bottom: 30px;
+
+    &::after {
+      left: -14px;
+    }
+
+    &:nth-child(odd) {
+
+      // Circle
+      &::after {
+        right: unset;
+        left: -14px;
+      }
+
+      // Dash
+      &::before {
+        right: unset;
+        left: 10px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-right: 0;
+    padding-left: 30px;
+
+    &::before {
+      width: 20px;
+    }
   }
 }

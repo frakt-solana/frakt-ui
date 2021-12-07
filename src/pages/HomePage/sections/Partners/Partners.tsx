@@ -42,8 +42,6 @@ const Partners = ({ className }: EcosystemProps): JSX.Element => {
         >
           <img src={exchange} alt="Brand logo" />
         </a>
-      </div>
-      <div className={styles.brands}>
         <a
           className={styles.img}
           href="https://digitaleyes.market/"
