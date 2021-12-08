@@ -10,6 +10,7 @@ import { ChevronDownIcon } from '../../icons';
 import { Tooltip } from 'antd';
 import { WalletInfo } from './WalletInfo';
 import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
+import { useState } from 'react';
 
 interface HeaderProps {
   className?: string;
@@ -18,6 +19,7 @@ interface HeaderProps {
 const Header = ({ className }: HeaderProps): JSX.Element => {
   const { connected, publicKey } = useWallet();
   const { setVisible } = useWalletModal();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header className={classNames([styles.root, className])}>
@@ -93,6 +95,88 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
             )}
           </li>
         </ul>
+        <div
+          className={`${styles.burgerIcon} ${isOpen ? styles.opened : ''}`}
+          onClick={() => setIsOpen(!isOpen)}
+        />
+        <div
+          className={`${styles.menuOverlay} ${
+            !isOpen ? styles.menuOverlayHidden : ''
+          }`}
+        >
+          <div className={styles.logoWrapper}>
+            <NavLink
+              className={`${styles.logo} ${styles.logoMobile}`}
+              to={URLS.ROOT}
+            >
+              Fraktion
+            </NavLink>
+          </div>
+          <div className={styles.mobileMenuWrapper}>
+            <ul className={`${styles.navMobile}`}>
+              {/* //TODO: Uncomment link when external page ready */}
+              {/* <li>
+            <NavigationLink to={URLS.STAKER_PAGE}>Frakt Staker?</NavigationLink>
+          </li> */}
+              <li
+                className={`${styles.bgAccent} ${
+                  connected && styles.connectedBtn
+                }`}
+              >
+                <NavigationLink to={URLS.FRAKTIONALIZE}>
+                  Fraktionalize
+                </NavigationLink>
+              </li>
+              <li
+                className={`${styles.mobileHeaderButton} ${
+                  connected && styles.connectedCardInfo
+                }`}
+              >
+                {connected ? (
+                  <WalletInfo />
+                ) : (
+                  <button
+                    className={styles.walletBtn}
+                    onClick={() => setVisible(true)}
+                  >
+                    Connect wallet
+                  </button>
+                )}
+              </li>
+            </ul>
+            <ul className={`${styles.navMobile} ${styles.mobileMenu}`}>
+              <li>
+                <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
+              </li>
+              <li>
+                <NavigationLink to={URLS.SWAP}>Swap</NavigationLink>
+              </li>
+              <li>
+                <a
+                  className={styles.link}
+                  href={URLS.DEX}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Trade
+                </a>
+              </li>
+              {connected && (
+                <li>
+                  <NavigationLink
+                    to={`${URLS.WALLET}/${publicKey.toString()}`}
+                    isActive={(_, location) =>
+                      location?.pathname?.includes(publicKey.toString()) ||
+                      false
+                    }
+                  >
+                    My collection
+                  </NavigationLink>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
       </Container>
     </header>
   );

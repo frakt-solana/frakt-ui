@@ -28,6 +28,14 @@
   top: 0;
   width: 100%;
   z-index: 2;
+  transition: top .3s ease-in-out;
+}
+
+.headerHide {
+  top: -88px;
+  opacity: 0;
+  z-index: -1;
+  transition: top .3s .3s ease-in-out, opacity .9s ease-in-out, z-index .1s .8s;
 }
 
 .content {
@@ -37,4 +45,10 @@
   height: calc(100vh - 89px);
   overflow-y: auto;
   scrollbar-gutter: stable;
+
+  @media screen and (max-width: 1023px) {
+    height: 100vh;
+    padding-top: 89px;
+    top: 0;
+  }
 }
