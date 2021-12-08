@@ -175,8 +175,9 @@ body .walletInfo {
   top: 24px;
   z-index: 11;
 
-  &::after, &::before {
-    content: "";
+  &::after,
+  &::before {
+    content: '';
     display: block;
     width: 40px;
     height: 2px;
@@ -184,7 +185,7 @@ body .walletInfo {
     position: absolute;
     top: 50%;
     left: 0;
-    transition: transform .2s ease-in, margin-top .2s ease-in;
+    transition: transform 0.2s ease-in, margin-top 0.2s ease-in;
   }
 
   &::before {
@@ -256,31 +257,29 @@ body .walletInfo {
 }
 
 .navMobile {
-
   &:first-of-type {
     display: flex;
     flex-wrap: wrap;
     //margin-top: 40px;
-     li {
-       height: 88px;
-       width: 50%;
-       display: flex;
-       align-items: center;
-       justify-content: center;
+    li {
+      height: 88px;
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-       &.mobileHeaderButton {
-         background: var(--gray-color-7);
-       }
+      &.mobileHeaderButton {
+        background: var(--gray-color-7);
+      }
 
-       &.connectedCardInfo {
-         height: auto;
-         width: 100%;
-         padding: 30px 15px;
-         background: var(--white-color);
-         margin-top: 10px;
-         margin-bottom: 10px;
-       }
-     }
+      &.connectedCardInfo {
+        height: auto;
+        width: 100%;
+        padding: 30px 15px;
+        background: var(--white-color);
+        margin-bottom: 10px;
+      }
+    }
 
     .connectedBtn {
       width: 100%;
@@ -293,7 +292,6 @@ body .walletInfo {
   padding: 15px;
 
   li {
-
     a {
       font-size: 32px;
       padding: 15px 0;
