@@ -110,10 +110,6 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
           </div>
           <div className={styles.mobileMenuWrapper}>
             <ul className={`${styles.navMobile}`}>
-              {/* //TODO: Uncomment link when external page ready */}
-              {/* <li>
-            <NavigationLink to={URLS.STAKER_PAGE}>Frakt Staker?</NavigationLink>
-          </li> */}
               <li
                 className={`${styles.bgAccent} ${
                   connected && styles.connectedBtn
