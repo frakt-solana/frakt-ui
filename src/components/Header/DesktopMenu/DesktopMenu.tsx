@@ -51,10 +51,6 @@ export const DesktopMenu = (): JSX.Element => {
         )}
       </ul>
       <ul className={styles.navigation}>
-        {/* //TODO: Uncomment link when exteranl page ready */}
-        {/* <li>
-            <NavigationLink to={URLS.STAKER_PAGE}>Frakt Staker?</NavigationLink>
-          </li> */}
         <li className={styles.bgAccent}>
           <NavigationLink to={URLS.FRAKTIONALIZE}>Fraktionalize</NavigationLink>
         </li>
