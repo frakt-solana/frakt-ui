@@ -31,7 +31,9 @@ export const AppLayout = ({
   return (
     <div className={className}>
       <Header
-        className={`${styles.header} ${isHeaderHidden && styles.headerHide}`}
+        className={classNames(styles.header, {
+          [styles.headerHide]: isHeaderHidden,
+        })}
       />
       <div
         onScroll={onContentScroll}

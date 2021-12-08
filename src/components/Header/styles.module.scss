@@ -217,7 +217,7 @@ body .walletInfo {
   height: 100%;
   background: #000;
   z-index: 10;
-  min-height: 480px;
+  min-height: 300px;
   overflow: auto;
 
   &.menuOverlayHidden {
@@ -237,13 +237,14 @@ body .walletInfo {
 }
 
 .mobileMenuWrapper {
-  min-height: calc(100vh - 88px);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   max-width: 960px;
   margin-left: auto;
   margin-right: auto;
+  padding-top: 88px;
 }
 
 .logoWrapper {
@@ -253,6 +254,11 @@ body .walletInfo {
   max-width: 960px;
   margin-left: auto;
   margin-right: auto;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  background-color: #000000;
 }
 
 .navMobile {
@@ -261,26 +267,26 @@ body .walletInfo {
     display: flex;
     flex-wrap: wrap;
     //margin-top: 40px;
-     li {
-       height: 88px;
-       width: 50%;
-       display: flex;
-       align-items: center;
-       justify-content: center;
+    li {
+      height: 88px;
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-       &.mobileHeaderButton {
-         background: var(--gray-color-7);
-       }
+      &.mobileHeaderButton {
+        background: var(--gray-color-7);
+      }
 
-       &.connectedCardInfo {
-         height: auto;
-         width: 100%;
-         padding: 30px 15px;
-         background: var(--white-color);
-         margin-top: 10px;
-         margin-bottom: 10px;
-       }
-     }
+      &.connectedCardInfo {
+        height: auto;
+        width: 100%;
+        padding: 30px 15px;
+        background: var(--white-color);
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+    }
 
     .connectedBtn {
       width: 100%;
