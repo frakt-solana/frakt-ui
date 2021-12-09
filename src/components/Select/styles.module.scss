@@ -11,6 +11,10 @@
       min-height: 24px;
       height: 24px;
       justify-content: flex-end;
+
+      @media screen and (max-width: 550px) {
+        justify-content: flex-start;
+      }
     }
     .custom-select__control--is-focused {
       box-shadow: none;
@@ -28,7 +32,7 @@
       transform: rotate(180deg);
     }
     .custom-select__menu-list {
-      padding: 6px 0; 
+      padding: 6px 0;
     }
     .custom-select__option {
       background-color: transparent;

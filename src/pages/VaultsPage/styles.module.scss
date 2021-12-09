@@ -57,4 +57,15 @@
   justify-content: space-between;
   margin-bottom: 35px;
   gap: 120px;
+
+  @media screen and (max-width: 550px) {
+    flex-wrap: wrap;
+    gap: 50px;
+    grid-gap: 50px;
+    margin-top: 20px;
+
+    .filters {
+      order: 1;
+    }
+  }
 }
