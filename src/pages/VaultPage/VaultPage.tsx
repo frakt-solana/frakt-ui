@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
-
-import Badge, { UnverifiedBadge, VerifiedBadge } from '../../components/Badge';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
-import { VaultState, useFraktion } from '../../contexts/fraktion';
-import { shortenAddress } from '../../utils/solanaUtils';
+import { useFraktion, VaultState } from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
@@ -15,6 +12,7 @@ import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
+import { DetailsHeader } from './DetailsHeader';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -60,11 +58,18 @@ const VaultPage = (): JSX.Element => {
                   backgroundImage: `url(${vaultInfo.imageSrc})`,
                 }}
               />
-              {!!vaultInfo?.description && (
-                <div className={styles.description}>
-                  {vaultInfo.description}
-                </div>
-              )}
+              <div className={styles.mainInfoWrapper}>
+                <DetailsHeader
+                  className={styles.detailsHeaderMobile}
+                  vaultInfo={vaultInfo}
+                  tokerName={tokerName}
+                />
+                {!!vaultInfo?.description && (
+                  <div className={styles.description}>
+                    {vaultInfo.description}
+                  </div>
+                )}
+              </div>
               {!!vaultInfo?.nftAttributes?.length && (
                 <div className={styles.attributesTable}>
                   {vaultInfo?.nftAttributes.map(
@@ -79,24 +84,11 @@ const VaultPage = (): JSX.Element => {
               )}
             </div>
             <div className={styles.details}>
-              <div className={styles.detailsHeader}>
-                <h2 className={styles.title}>
-                  {vaultInfo.name} {tokerName ? `($${tokerName})` : ''}
-                </h2>
-                <div className={styles.statusAndOwner}>
-                  <div className={styles.status}>
-                    {vaultInfo.isNftVerified ? (
-                      <VerifiedBadge />
-                    ) : (
-                      <UnverifiedBadge />
-                    )}
-                    <Badge label={vaultInfo.state} className={styles.badge} />
-                  </div>
-                  <div className={styles.owner}>
-                    {shortenAddress(vaultInfo.authority)}
-                  </div>
-                </div>
-              </div>
+              <DetailsHeader
+                className={styles.detailsHeaderDesc}
+                vaultInfo={vaultInfo}
+                tokerName={tokerName}
+              />
               <InfoTable
                 vaultInfo={vaultInfo}
                 marketId={vaultMarket?.address}
