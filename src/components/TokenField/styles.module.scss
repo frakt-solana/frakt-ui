@@ -155,6 +155,10 @@ body input.valueInput {
     width: 1px;
     height: 55%;
   }
+
+  @media screen and (max-width: 440px) {
+    padding-left: 2px;
+  }
 }
 
 .arrowDownIcon {
