@@ -7,6 +7,10 @@
   margin-bottom: 36px;
   display: flex;
   justify-content: space-between;
+
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+  }
 }
 
 .title {
@@ -23,6 +27,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media screen and (max-width: 767px){
+    margin-top: 20px;
+    flex-grow: 1;
+  }
 }
 
 .tab {
@@ -34,6 +43,11 @@
   border: none;
   cursor: pointer;
   transition: background var(--transition-1), color var(--transition-1);
+
+  @media screen and (max-width: 767px){
+    background: var(--gray-color-7);
+    width: 50%;
+  }
 
   &:hover {
     background: var(--gray-color-7);
@@ -81,6 +95,7 @@
     border-radius: 50%;
     height: 48px;
     width: 48px;
+    flex-shrink: 0;
   }
 
   &__name {
@@ -96,6 +111,10 @@
 
   &__btn {
     padding: 0 24px;
+
+    @media screen and (max-width: 400px){
+      display: none;
+    }
   }
 }
 
@@ -104,6 +123,10 @@
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 24px;
   align-items: stretch;
+
+  @media screen and (max-width: 440px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
 }
 
 .emptyMessage {
