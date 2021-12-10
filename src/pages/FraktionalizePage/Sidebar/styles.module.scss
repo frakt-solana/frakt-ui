@@ -29,12 +29,25 @@
     margin-bottom: 12px;
   }
 
+  &__images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+
+    .sidebar__image {
+      margin-bottom: 0;
+    }
+
+    margin-bottom: 32px;
+  }
+
   &__image {
     width: 80px;
     height: 80px;
     background-color: var(--gray-color-7);
     background-size: cover;
     background-repeat: no-repeat;
+    border: 1px solid var(--gray-color-1);
     margin-bottom: 32px;
     position: relative;
   }

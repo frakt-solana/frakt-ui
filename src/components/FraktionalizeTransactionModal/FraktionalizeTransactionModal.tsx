@@ -3,6 +3,9 @@ import { Loader } from '../Loader';
 import { Modal } from '../Modal';
 import styles from './styles.module.scss';
 import { useFraktion } from '../../contexts/fraktion';
+import Tooltip from '../Tooltip';
+import { CopyClipboardIcon } from '../../icons';
+import { copyToClipboard } from '../../utils';
 
 interface FraktionalizeTransactionModalProps {
   state?: 'loading' | 'success' | 'fail';
@@ -19,18 +22,54 @@ const FraktionalizeTransactionModal = ({
   fractionsMintAddress = '',
   tickerName,
   onCancel,
-  onRetryClick = () => {},
 }: FraktionalizeTransactionModalProps): JSX.Element => {
-  const { createFraktionsMarket } = useFraktion();
+  const contentMap = {
+    loading: () => <LoadingContent />,
+    success: () => (
+      <SuccessContent
+        fractionsMintAddress={fractionsMintAddress}
+        tickerName={tickerName}
+      />
+    ),
+    fail: () => <FailContent />,
+  };
 
-  const loadingContent = (
+  return (
+    <Modal
+      visible={visible}
+      centered
+      closable={state !== 'loading'}
+      onCancel={onCancel}
+      width={640}
+    >
+      {contentMap[state]()}
+    </Modal>
+  );
+};
+
+export default FraktionalizeTransactionModal;
+
+const LoadingContent = (): JSX.Element => {
+  return (
     <div className={styles.loadingContent}>
       <Loader size="large" />
       Please approve all transactions
     </div>
   );
+};
 
-  const successContent = (
+const SuccessContent = ({
+  fractionsMintAddress,
+  tickerName,
+}: {
+  fractionsMintAddress?: string;
+  tickerName: string;
+}): JSX.Element => {
+  const { createFraktionsMarket } = useFraktion();
+
+  const onClipboardIconClick = () => copyToClipboard(fractionsMintAddress);
+
+  return (
     <div className={styles.successContent}>
       <h2 className={styles.successContent__title}>Congratulations!</h2>
       <p className={styles.successContent__subtitle}>
@@ -41,7 +80,16 @@ const FraktionalizeTransactionModal = ({
           <span className={styles.successContent__fractionsMintTitle}>
             Fraktions mint address:
           </span>
-          <b>{fractionsMintAddress}</b>
+          <b onClick={onClipboardIconClick} className={styles.fractionsMint}>
+            {fractionsMintAddress}
+            <Tooltip
+              placement="bottom"
+              trigger="hover"
+              overlay="Click to copy to clipboard"
+            >
+              <CopyClipboardIcon className={styles.copyIcon} width={24} />
+            </Tooltip>
+          </b>
           <p className={styles.successContent__subtitle}>
             If you want fraktions to be tradable you need to create market
           </p>
@@ -58,38 +106,13 @@ const FraktionalizeTransactionModal = ({
       )}
     </div>
   );
+};
 
-  const failContent = (
+const FailContent = (): JSX.Element => {
+  return (
     <div className={styles.failContent}>
       <h2 className={styles.failContent__title}>Ooops! Something went wrong</h2>
       <p className={styles.failContent__subtitle}>Please try again</p>
-      <Button
-        type="alternative"
-        className={styles.failContent__retryBtn}
-        onClick={onRetryClick}
-      >
-        Retry
-      </Button>
     </div>
   );
-
-  const contentMap = {
-    loading: loadingContent,
-    success: successContent,
-    fail: failContent,
-  };
-
-  return (
-    <Modal
-      visible={visible}
-      centered
-      closable={state !== 'loading'}
-      onCancel={onCancel}
-      width={640}
-    >
-      {contentMap[state]}
-    </Modal>
-  );
 };
-
-export default FraktionalizeTransactionModal;
