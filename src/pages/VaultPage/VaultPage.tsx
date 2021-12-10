@@ -52,6 +52,11 @@ const VaultPage = (): JSX.Element => {
         {!loading && !!vaultInfo && (
           <div className={styles.content}>
             <div className={styles.col}>
+              <DetailsHeader
+                className={styles.detailsHeaderMobile}
+                vaultInfo={vaultInfo}
+                tokerName={tokerName}
+              />
               <div
                 className={styles.image}
                 style={{
@@ -59,29 +64,24 @@ const VaultPage = (): JSX.Element => {
                 }}
               />
               <div className={styles.mainInfoWrapper}>
-                <DetailsHeader
-                  className={styles.detailsHeaderMobile}
-                  vaultInfo={vaultInfo}
-                  tokerName={tokerName}
-                />
                 {!!vaultInfo?.description && (
                   <div className={styles.description}>
                     {vaultInfo.description}
                   </div>
                 )}
+                {!!vaultInfo?.nftAttributes?.length && (
+                  <div className={styles.attributesTable}>
+                    {vaultInfo?.nftAttributes.map(
+                      ({ trait_type, value }, idx) => (
+                        <div key={idx} className={styles.attributesTable__row}>
+                          <p>{trait_type}</p>
+                          <p>{value}</p>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                )}
               </div>
-              {!!vaultInfo?.nftAttributes?.length && (
-                <div className={styles.attributesTable}>
-                  {vaultInfo?.nftAttributes.map(
-                    ({ trait_type, value }, idx) => (
-                      <div key={idx} className={styles.attributesTable__row}>
-                        <p>{trait_type}</p>
-                        <p>{value}</p>
-                      </div>
-                    ),
-                  )}
-                </div>
-              )}
             </div>
             <div className={styles.details}>
               <DetailsHeader

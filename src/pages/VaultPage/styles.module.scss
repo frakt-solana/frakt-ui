@@ -22,7 +22,7 @@
     .col {
       overflow: hidden;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
     }
 
     .details {
@@ -42,7 +42,7 @@
 
   @media screen and (max-width: 1023px) {
     padding-left: 50px;
-    max-width: 600px;
+    width: 100%;
   }
 
   @media screen and (max-width: 767px) {
@@ -58,7 +58,7 @@
 
 
 .detailsHeaderDesc {
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 767px) {
     display: none;
   }
 }
@@ -66,7 +66,7 @@
 .detailsHeaderMobile {
   display: none;
 
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 767px) {
     display: block;
   }
 }
@@ -107,6 +107,10 @@
       background: var(--gray-color-3);
       order: 2;
     }
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding-bottom: 0;
   }
 }
 
