@@ -7,6 +7,8 @@ import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { useEffect, useState } from 'react';
+import { getNameServiceData } from '../../utils/nameService';
+import { useConnection } from '@solana/wallet-adapter-react';
 
 export interface VaultCardProps {
   fractionMint: string;
@@ -36,8 +38,9 @@ const VaultCard = ({
   hasMarket = false,
 }: VaultCardProps): JSX.Element => {
   const tokenMap = useTokenMap();
-
+  const { connection } = useConnection();
   const [tokerName, setTokerName] = useState<string>('');
+  const [domainName, setDomainName] = useState<undefined | string>(undefined);
   const currency =
     priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
@@ -45,6 +48,19 @@ const VaultCard = ({
     setTokerName(tokenMap.get(fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap]);
+
+  useEffect(() => {
+    const getDomainOrHandle = async (wallet: string) => {
+      const result = await getNameServiceData(wallet, connection);
+      if (result?.domain) {
+        setDomainName(result.domain);
+      }
+    };
+
+    if (owner) {
+      getDomainOrHandle(owner);
+    }
+  }, [owner]);
 
   return (
     <div className={styles.cardContainer}>
@@ -63,7 +79,9 @@ const VaultCard = ({
           <div className={styles.name}>
             {name} {tokerName ? `($${tokerName})` : ''}
           </div>
-          <div className={styles.owner}>{shortenAddress(owner)}</div>
+          <div className={styles.owner}>
+            {domainName || shortenAddress(owner)}
+          </div>
         </div>
         <div className={styles.stats}>
           <div className={styles.item}>

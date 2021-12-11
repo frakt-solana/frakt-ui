@@ -15,12 +15,16 @@ import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
+import { getNameServiceData } from '../../utils/nameService';
+import { useConnection } from '@solana/wallet-adapter-react';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
+  const [domainName, setDomainName] = useState<undefined | string>(undefined);
   const tokenMap = useTokenMap();
+  const { connection } = useConnection();
 
   const vaultInfo = useMemo(() => {
     return vaults.find(({ publicKey }) => publicKey === vaultPubkey);
@@ -42,6 +46,19 @@ const VaultPage = (): JSX.Element => {
       setTokerName(tokenMap.get(vaultInfo.fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultInfo]);
+
+  useEffect(() => {
+    const getDomainOrHandle = async (wallet: string) => {
+      const result = await getNameServiceData(wallet, connection);
+      if (result?.domain) {
+        setDomainName(result.domain);
+      }
+    };
+
+    if (vaultInfo.authority) {
+      getDomainOrHandle(vaultInfo.authority);
+    }
+  }, [vaultInfo.authority]);
 
   return (
     <AppLayout>
@@ -93,7 +110,7 @@ const VaultPage = (): JSX.Element => {
                     <Badge label={vaultInfo.state} className={styles.badge} />
                   </div>
                   <div className={styles.owner}>
-                    {shortenAddress(vaultInfo.authority)}
+                    {domainName || shortenAddress(vaultInfo.authority)}
                   </div>
                 </div>
               </div>

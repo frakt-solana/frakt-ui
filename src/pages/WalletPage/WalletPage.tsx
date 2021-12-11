@@ -19,6 +19,7 @@ import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
+import { getNameServiceData } from '../../utils/nameService';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -27,6 +28,7 @@ interface TokenInfoWithAmount extends TokenInfo {
 const WalletPage = (): JSX.Element => {
   const history = useHistory();
   const [tab, setTab] = useState<'tokens' | 'vaults'>('tokens');
+  const [domainName, setDomainName] = useState<undefined | string>(undefined);
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
@@ -72,6 +74,19 @@ const WalletPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensLoading]);
 
+  useEffect(() => {
+    const getDomainOrHandle = async (wallet: string) => {
+      const result = await getNameServiceData(wallet, connection);
+      if (result.domain) {
+        setDomainName(result.domain);
+      }
+    };
+
+    if (walletPubkey) {
+      getDomainOrHandle(walletPubkey);
+    }
+  }, [walletPubkey]);
+
   const userVaults = useMemo(() => {
     return vaults
       .filter((vault) => vault.authority === walletPubkey)
@@ -91,9 +106,11 @@ const WalletPage = (): JSX.Element => {
         <div className={styles.pageHeader}>
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Wallet collection</h2>
-            <h3 className={styles.description}>{`${shortenAddress(
-              walletPubkey,
-            )}`}</h3>
+            <h3 className={styles.description}>
+              {domainName
+                ? `${domainName} (${shortenAddress(walletPubkey)})`
+                : `${shortenAddress(walletPubkey)}`}
+            </h3>
           </div>
           <div className={styles.tabs}>
             <button
