@@ -43,6 +43,40 @@ export async function findOwnedNameAccountsForUser(
   return accounts.map((a) => a.pubkey);
 }
 
+const lookupForDomainName = async (
+  domainKeys: PublicKey[],
+  connection: Connection,
+) => {
+  for (const domainKey of domainKeys) {
+    try {
+      const domain = await performReverseLookup(connection, domainKey);
+      if (domain) {
+        return domain;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+const lookupForTwitterHandle = async (
+  pubkey: PublicKey,
+  connection: Connection,
+) => {
+  try {
+    const [handle, registryKey] = await getHandleAndRegistryKey(
+      connection,
+      pubkey,
+    );
+
+    if (handle) {
+      return handle;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getNameServiceData = async (
   publicKey: string,
   connection: Connection,
@@ -51,12 +85,16 @@ export const getNameServiceData = async (
   const domainKeys = await findOwnedNameAccountsForUser(connection, pubkey);
 
   //   * тут нужен цикл который проходит по ключам и отдаёт первый не упавший
-  if (domainKeys[0]) {
-    const domain = await performReverseLookup(connection, domainKeys[0]);
 
-    return {
-      domain: domain ? `${domain}.sol` : undefined,
-      twitterHandle: '',
-    };
+  const domain = await lookupForDomainName(domainKeys, connection);
+  const twitterHandle = await lookupForTwitterHandle(pubkey, connection);
+
+  if (twitterHandle) {
+    console.log({ twitterHandle });
   }
+
+  return {
+    domain: domain ? `${domain}.sol` : undefined,
+    twitterHandle: twitterHandle || undefined,
+  };
 };

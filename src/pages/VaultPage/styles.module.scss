@@ -108,14 +108,18 @@
   font: var(--font-secondary);
   display: flex;
   align-items: center;
-  &::before {
-    content: '';
+
+  .ownerAvatar {
     margin-right: 10px;
     margin-bottom: 2px;
     width: 20px;
     height: 20px;
     background: var(--gray-color-3);
     border-radius: 50%;
+  }
+
+  .ownerTwitter {
+    margin-left: 10px;
   }
 }
 

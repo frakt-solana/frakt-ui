@@ -15,14 +15,18 @@ import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
-import { getNameServiceData } from '../../utils/nameService';
+import {
+  getNameServiceData,
+  NameServiceResponse,
+} from '../../utils/nameService';
 import { useConnection } from '@solana/wallet-adapter-react';
+import { TwitterIcon, TwitterIcon2 } from '../../icons';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
-  const [domainName, setDomainName] = useState<undefined | string>(undefined);
+  const [ownerInfo, setOwnerInfo] = useState<NameServiceResponse>({});
   const tokenMap = useTokenMap();
   const { connection } = useConnection();
 
@@ -51,14 +55,14 @@ const VaultPage = (): JSX.Element => {
     const getDomainOrHandle = async (wallet: string) => {
       const result = await getNameServiceData(wallet, connection);
       if (result?.domain) {
-        setDomainName(result.domain);
+        setOwnerInfo(result);
       }
     };
 
-    if (vaultInfo.authority) {
+    if (vaultInfo?.authority) {
       getDomainOrHandle(vaultInfo.authority);
     }
-  }, [vaultInfo.authority]);
+  }, [vaultInfo?.authority]);
 
   return (
     <AppLayout>
@@ -110,7 +114,23 @@ const VaultPage = (): JSX.Element => {
                     <Badge label={vaultInfo.state} className={styles.badge} />
                   </div>
                   <div className={styles.owner}>
-                    {domainName || shortenAddress(vaultInfo.authority)}
+                    {ownerInfo?.twitterHandle && (
+                      <img
+                        className={styles.ownerAvatar}
+                        src={`https://unavatar.io/twitter/${ownerInfo.twitterHandle}?fallback=https://source.boringavatars.com/marble/120/1337_user?colors=00ffa3,03E1FF,DC1FFF,5d5fef`}
+                      />
+                    )}
+                    {ownerInfo?.domain || shortenAddress(vaultInfo.authority)}
+                    {ownerInfo?.twitterHandle && (
+                      <a
+                        className={styles.ownerTwitter}
+                        href={`https://twitter.com/${ownerInfo.twitterHandle}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <TwitterIcon2 width={16} />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
