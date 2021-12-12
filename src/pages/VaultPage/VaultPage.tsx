@@ -121,7 +121,10 @@ const VaultPage = (): JSX.Element => {
                         src={`https://unavatar.io/twitter/${ownerInfo.twitterHandle}?fallback=https://source.boringavatars.com/marble/120/1337_user?colors=00ffa3,03E1FF,DC1FFF,5d5fef`}
                       />
                     )}
-                    <NavLink to={`/wallet/${vaultInfo.authority}`}>
+                    <NavLink
+                      to={`/wallet/${vaultInfo.authority}`}
+                      className={styles.ownerLink}
+                    >
                       {ownerInfo?.domain || shortenAddress(vaultInfo.authority)}
                     </NavLink>
                     {ownerInfo?.twitterHandle && (

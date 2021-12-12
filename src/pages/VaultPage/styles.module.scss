@@ -109,6 +109,10 @@
   display: flex;
   align-items: center;
 
+  .ownerLink {
+    color: var(--accent-color-1);
+  }
+
   .ownerAvatar {
     margin-right: 10px;
     margin-bottom: 2px;
