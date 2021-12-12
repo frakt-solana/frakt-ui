@@ -19,7 +19,11 @@ import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
-import { getNameServiceData } from '../../utils/nameService';
+import {
+  getNameServiceData,
+  NameServiceResponse,
+} from '../../utils/nameService';
+import { TwitterIcon, TwitterIcon2 } from '../../icons';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -28,7 +32,7 @@ interface TokenInfoWithAmount extends TokenInfo {
 const WalletPage = (): JSX.Element => {
   const history = useHistory();
   const [tab, setTab] = useState<'tokens' | 'vaults'>('tokens');
-  const [domainName, setDomainName] = useState<undefined | string>(undefined);
+  const [ownerInfo, setOwnerInfo] = useState<NameServiceResponse>({});
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
@@ -78,7 +82,7 @@ const WalletPage = (): JSX.Element => {
     const getDomainOrHandle = async (wallet: string) => {
       const result = await getNameServiceData(wallet, connection);
       if (result.domain) {
-        setDomainName(result.domain);
+        setOwnerInfo(result);
       }
     };
 
@@ -107,9 +111,19 @@ const WalletPage = (): JSX.Element => {
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Wallet collection</h2>
             <h3 className={styles.description}>
-              {domainName
-                ? `${domainName} (${shortenAddress(walletPubkey)})`
+              {ownerInfo?.domain
+                ? `${ownerInfo?.domain} (${shortenAddress(walletPubkey)})`
                 : `${shortenAddress(walletPubkey)}`}
+              {ownerInfo?.twitterHandle && (
+                <a
+                  className={styles.ownerTwitter}
+                  href={`https://twitter.com/${ownerInfo.twitterHandle}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <TwitterIcon2 width={16} />
+                </a>
+              )}
             </h3>
           </div>
           <div className={styles.tabs}>

@@ -21,6 +21,10 @@
 
 .description {
   font-size: 24px;
+
+  .ownerTwitter {
+    margin-left: 10px;
+  }
 }
 
 .tabs {
@@ -28,7 +32,7 @@
   justify-content: center;
   align-items: center;
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     margin-top: 20px;
     flex-grow: 1;
   }
@@ -44,7 +48,7 @@
   cursor: pointer;
   transition: background var(--transition-1), color var(--transition-1);
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     background: var(--gray-color-7);
     width: 50%;
   }
@@ -112,7 +116,7 @@
   &__btn {
     padding: 0 24px;
 
-    @media screen and (max-width: 400px){
+    @media screen and (max-width: 400px) {
       display: none;
     }
   }

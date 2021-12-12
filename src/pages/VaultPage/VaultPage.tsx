@@ -21,6 +21,7 @@ import {
 } from '../../utils/nameService';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { TwitterIcon, TwitterIcon2 } from '../../icons';
+import { NavLink } from 'react-router-dom';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -120,7 +121,9 @@ const VaultPage = (): JSX.Element => {
                         src={`https://unavatar.io/twitter/${ownerInfo.twitterHandle}?fallback=https://source.boringavatars.com/marble/120/1337_user?colors=00ffa3,03E1FF,DC1FFF,5d5fef`}
                       />
                     )}
-                    {ownerInfo?.domain || shortenAddress(vaultInfo.authority)}
+                    <NavLink to={`/wallet/${vaultInfo.authority}`}>
+                      {ownerInfo?.domain || shortenAddress(vaultInfo.authority)}
+                    </NavLink>
                     {ownerInfo?.twitterHandle && (
                       <a
                         className={styles.ownerTwitter}
