@@ -1,180 +1,99 @@
-import { useEffect, useState } from 'react';
-import BN from 'bn.js';
+import { useEffect, useReducer } from 'react';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
 import { UserNFT } from '../../../contexts/userTokens';
 import styles from './styles.module.scss';
-import { TickerInput } from './TickerInput';
-import { SupplyInput } from './SupplyInput';
-import { BuyoutField } from './BuyoutField';
-import { shortBigNumber } from '../../../utils';
+import { Header } from './Header';
+import { Details } from './Details';
+import {
+  sidebarReducer,
+  initialSidebarState,
+  ActionKind,
+} from './sidebarState';
 
 interface SidebarProps {
-  onRemoveClick?: () => void;
+  onDeselect?: (nft: UserNFT) => void;
   onContinueClick: (
-    userNft: UserNFT,
+    userNfts: UserNFT[],
     tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
+    basketName?: string,
   ) => void;
-  token: UserNFT;
+  nfts: UserNFT[];
 }
 
 const Sidebar = ({
-  onRemoveClick,
-  token,
+  onDeselect,
+  nfts,
   onContinueClick,
 }: SidebarProps): JSX.Element => {
-  const [buyoutPrice, setBuyoutPrice] = useState<string>('');
-  const [supply, setSupply] = useState<string>('');
-  const [ticker, setTicker] = useState<string>('');
-
-  const [tickerError, setTickerError] = useState<string>('');
-  const [supplyError, setSupplyError] = useState<string>('');
-  const [buyoutPriceError, setBuyoutPriceError] = useState<string>('');
-  const [smallFractionPriceError, setSmallFractionPriceError] =
-    useState<string>('');
+  const [state, dispatch] = useReducer(sidebarReducer, initialSidebarState);
 
   const validateFractionPrice = () => {
     if (
-      supply.length &&
-      buyoutPrice.length &&
-      Number(buyoutPrice) / Number(supply) < 1e-6
+      state.supply.length &&
+      state.buyoutPrice.length &&
+      Number(state.buyoutPrice) / Number(state.supply) < 1e-6
     ) {
-      return setSmallFractionPriceError(
-        'Price per fraktion must be greater than 1e-6',
-      );
+      return dispatch({
+        type: ActionKind.SetSmallFractionPriceError,
+        payload: 'Price per fraktion must be greater than 1e-6',
+      });
     }
-    setSmallFractionPriceError('');
+    dispatch({
+      type: ActionKind.SetSmallFractionPriceError,
+      payload: '',
+    });
   };
 
   useEffect(() => {
     validateFractionPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [supply, buyoutPrice]);
+  }, [state.supply, state.buyoutPrice]);
 
   useEffect(() => {
-    setBuyoutPrice('');
-    setSupply('');
-    setTicker('');
-  }, [token]);
+    !nfts.length && dispatch({ type: ActionKind.ResetState });
+  }, [nfts.length]);
 
   const continueClickHanlder = () => {
     onContinueClick(
-      token,
-      ticker,
-      Number(buyoutPrice) / Number(supply),
-      Number(supply),
+      nfts,
+      state.ticker,
+      Number(state.buyoutPrice) / Number(state.supply),
+      Number(state.supply),
+      state.basketName,
     );
   };
 
   const isBtnDisabled = () => {
-    return (
-      !!smallFractionPriceError ||
-      !buyoutPrice ||
-      !!buyoutPriceError ||
-      !supply ||
-      !!supplyError ||
-      !token ||
-      ticker?.length < 3 ||
-      !!tickerError
-    );
-  };
+    const error =
+      !!state.smallFractionPriceError ||
+      !!state.buyoutPriceError ||
+      !!state.supplyError ||
+      !!state.tickerError;
 
-  const pricePerFraktion =
-    buyoutPrice && supply && Number(buyoutPrice) / Number(supply);
-  const pricePerFrktBN = pricePerFraktion
-    ? new BN(pricePerFraktion * 10e5)
-    : null;
+    const emptyFields = !state.buyoutPrice || !state.supply;
+
+    const noNfts = !nfts.length;
+
+    const shortTicker = state.ticker?.length < 3;
+
+    const noBasketName = nfts.length > 1 && state.basketName.length < 3;
+
+    return error || emptyFields || noNfts || shortTicker || noBasketName;
+  };
 
   return (
     <div
       className={classNames([
         styles.sidebar,
-        { [styles.sidebar_visible]: !!token },
+        { [styles.sidebar_visible]: !!nfts.length },
       ])}
     >
-      <div className={styles.sidebar__header}>
-        <p className={styles.sidebar__title}>Your NFT</p>
-        <div
-          className={styles.sidebar__image}
-          style={{ backgroundImage: `url(${token?.metadata?.image})` }}
-        >
-          <button
-            className={styles.sidebar__removeBtn}
-            onClick={onRemoveClick}
-          />
-        </div>
-        <div className={styles.sidebar__separator} />
-      </div>
-
-      <div className={styles.sidebar__details}>
-        <p className={styles.sidebar__detailsTitle}>Vault details</p>
-
-        <div className={styles.sidebar__fieldWrapper}>
-          <p className={styles.sidebar__fieldLabel}>Name</p>
-          <p className={styles.sidebar__tokenName}>
-            {token?.metadata?.name || 'Unknown'}
-          </p>
-        </div>
-        <div className={styles.sidebar__fieldWrapperDouble}>
-          <div className={styles.sidebar__fieldWrapper}>
-            <p className={styles.sidebar__fieldLabel}>Supply</p>
-            <SupplyInput
-              supply={supply}
-              setSupply={setSupply}
-              error={supplyError}
-              maxLength={9}
-              setError={setSupplyError}
-            />
-          </div>
-          <div className={styles.sidebar__fieldWrapper}>
-            <p className={styles.sidebar__fieldLabel}>Ticker</p>
-            <TickerInput
-              value={ticker}
-              setTicker={setTicker}
-              tickerError={tickerError}
-              setTickerError={setTickerError}
-            />
-          </div>
-        </div>
-        <div className={styles.fraktionPrice}>
-          Fraktion price
-          <span className={styles.line} />
-          {!smallFractionPriceError && (
-            <>
-              {pricePerFrktBN ? shortBigNumber(pricePerFrktBN, 2, 6) : '0.00'}{' '}
-              SOL
-            </>
-          )}
-          {smallFractionPriceError && 'Error'}
-        </div>
-        <div className={styles.sidebar__fieldWrapper}>
-          <p className={styles.sidebar__fieldLabel}>Buyout price</p>
-          <BuyoutField
-            buyoutPrice={buyoutPrice}
-            setBuyoutPrice={setBuyoutPrice}
-            maxLength={5}
-            error={buyoutPriceError}
-            setError={setBuyoutPriceError}
-          />
-        </div>
-        <div
-          className={classNames(
-            styles.sidebar__fieldWrapper,
-            styles.sidebar__fieldWrapper_error,
-          )}
-        >
-          {[smallFractionPriceError, buyoutPriceError, tickerError, supplyError]
-            .filter((error) => error)
-            .map((error, idx) => (
-              <p className={styles.err} key={idx}>
-                {error}
-              </p>
-            ))}
-        </div>
-      </div>
+      <Header nfts={nfts} onDeselect={onDeselect} />
+      <Details nfts={nfts} sidebarState={state} sidebarDispatch={dispatch} />
 
       <div className={styles.sidebar__continueBtnContainer}>
         <p className={styles.sidebar__feeMessage}>
