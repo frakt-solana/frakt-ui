@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
@@ -29,7 +29,12 @@ const Sidebar = ({
   nfts,
   onContinueClick,
 }: SidebarProps): JSX.Element => {
+  const [isMobileSidebar, setIsMobileSidebar] = useState(false);
   const [state, dispatch] = useReducer(sidebarReducer, initialSidebarState);
+
+  const changeSidebarVisibility = () => {
+    setIsMobileSidebar(!isMobileSidebar);
+  };
 
   const validateFractionPrice = () => {
     if (
@@ -55,6 +60,7 @@ const Sidebar = ({
 
   useEffect(() => {
     !nfts.length && dispatch({ type: ActionKind.ResetState });
+    !nfts.length && setIsMobileSidebar(false);
   }, [nfts.length]);
 
   const continueClickHanlder = () => {
@@ -88,27 +94,42 @@ const Sidebar = ({
   return (
     <div
       className={classNames([
-        styles.sidebar,
-        { [styles.sidebar_visible]: !!nfts.length },
+        styles.sidebarWrapper,
+        { [styles.sidebarWrapper_visible]: !!nfts.length },
+        { [styles.sidebarWrapper_isMobileSidebar]: isMobileSidebar },
       ])}
     >
-      <Header nfts={nfts} onDeselect={onDeselect} />
-      <Details nfts={nfts} sidebarState={state} sidebarDispatch={dispatch} />
-
-      <div className={styles.sidebar__continueBtnContainer}>
-        <p className={styles.sidebar__feeMessage}>
-          * Fraktionalization fees:
-          <br />
-          0.5% of buyout price [min. 0.5 SOL]
-        </p>
-        <Button
-          type="alternative"
-          className={styles.sidebar__continueBtn}
-          disabled={isBtnDisabled()}
-          onClick={continueClickHanlder}
+      {!!nfts.length && (
+        <div
+          className={styles.selectedVaults}
+          onClick={changeSidebarVisibility}
         >
-          Continue
-        </Button>
+          <p>
+            <span>&#8636;</span>
+            <span>{nfts.length}</span>
+            <span>&#8637;</span>
+          </p>
+        </div>
+      )}
+      <div className={styles.sidebar}>
+        <Header nfts={nfts} onDeselect={onDeselect} />
+        <Details nfts={nfts} sidebarState={state} sidebarDispatch={dispatch} />
+
+        <div className={styles.sidebar__continueBtnContainer}>
+          <p className={styles.sidebar__feeMessage}>
+            * Fraktionalization fees:
+            <br />
+            0.5% of buyout price [min. 0.5 SOL]
+          </p>
+          <Button
+            type="alternative"
+            className={styles.sidebar__continueBtn}
+            disabled={isBtnDisabled()}
+            onClick={continueClickHanlder}
+          >
+            Continue
+          </Button>
+        </div>
       </div>
     </div>
   );
