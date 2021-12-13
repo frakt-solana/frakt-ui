@@ -9,7 +9,7 @@ interface BackToSearchButtonProps {
   className?: string;
 }
 
-export const BackToSearchButton = ({
+export const BackToVaultsListButton = ({
   className,
 }: BackToSearchButtonProps): JSX.Element => {
   return (

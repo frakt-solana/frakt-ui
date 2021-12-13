@@ -1,1 +1,0 @@
-export { BackToSearchButton } from './BackToSearchButton';
