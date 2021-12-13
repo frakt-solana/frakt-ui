@@ -68,6 +68,10 @@
   &__value {
     order: 3;
   }
+
+  @media screen and (max-width: 560px) {
+    gap: 20px;
+  }
 }
 
 .btn {

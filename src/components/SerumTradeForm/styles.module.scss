@@ -107,9 +107,12 @@
       }
     }
   }
+}
 
-  @media screen and (max-width: 560px) {
-    margin-top: 30px !important;
-    margin-bottom: 70px !important;
+@media screen and (max-width: 560px) {
+  div.slider {
+    margin-top: 30px;
+    margin-bottom: 70px;
   }
 }
+

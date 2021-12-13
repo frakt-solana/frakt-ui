@@ -5,12 +5,12 @@ import Badge, { UnverifiedBadge, VerifiedBadge } from '../../components/Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
 
 interface DetailsHeaderProps {
-  vaultInfo: IVaultInfo;
+  vaultInfo: VaultInfo;
   tokerName?: string;
   className?: string;
 }
 
-interface IVaultInfo {
+interface VaultInfo {
   name: string;
   isNftVerified: boolean;
   state: string;

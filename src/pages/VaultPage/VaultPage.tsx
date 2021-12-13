@@ -51,12 +51,12 @@ const VaultPage = (): JSX.Element => {
         )}
         {!loading && !!vaultInfo && (
           <div className={styles.content}>
+            <DetailsHeader
+              className={styles.detailsHeaderMobile}
+              vaultInfo={vaultInfo}
+              tokerName={tokerName}
+            />
             <div className={styles.col}>
-              <DetailsHeader
-                className={styles.detailsHeaderMobile}
-                vaultInfo={vaultInfo}
-                tokerName={tokerName}
-              />
               <div
                 className={styles.image}
                 style={{
