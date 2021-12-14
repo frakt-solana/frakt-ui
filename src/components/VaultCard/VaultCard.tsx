@@ -7,7 +7,7 @@ import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { useEffect, useState } from 'react';
-import { getNameServiceData } from '../../utils/nameService';
+import { useNameServiceInfo } from '../../utils/nameService';
 import { useConnection } from '@solana/wallet-adapter-react';
 
 export interface VaultCardProps {
@@ -40,7 +40,8 @@ const VaultCard = ({
   const tokenMap = useTokenMap();
   const { connection } = useConnection();
   const [tokerName, setTokerName] = useState<string>('');
-  const [domainName, setDomainName] = useState<undefined | string>(undefined);
+  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
+    useNameServiceInfo();
   const currency =
     priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
@@ -50,16 +51,8 @@ const VaultCard = ({
   }, [tokenMap]);
 
   useEffect(() => {
-    const getDomainOrHandle = async (wallet: string) => {
-      const result = await getNameServiceData(wallet, connection);
-      if (result?.domain) {
-        setDomainName(result.domain);
-      }
-    };
-
-    if (owner) {
-      getDomainOrHandle(owner);
-    }
+    owner && getNameServiceInfo(owner, connection);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [owner]);
 
   return (
@@ -80,7 +73,7 @@ const VaultCard = ({
             {name} {tokerName ? `($${tokerName})` : ''}
           </div>
           <div className={styles.owner}>
-            {domainName || shortenAddress(owner)}
+            {nameServiceInfo.domain || shortenAddress(owner)}
           </div>
         </div>
         <div className={styles.stats}>

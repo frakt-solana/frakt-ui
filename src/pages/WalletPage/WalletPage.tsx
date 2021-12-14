@@ -19,11 +19,8 @@ import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
-import {
-  getNameServiceData,
-  NameServiceResponse,
-} from '../../utils/nameService';
-import { TwitterIcon, TwitterIcon2 } from '../../icons';
+import { useNameServiceInfo } from '../../utils/nameService';
+import { TwitterIcon2 } from '../../icons';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -32,7 +29,8 @@ interface TokenInfoWithAmount extends TokenInfo {
 const WalletPage = (): JSX.Element => {
   const history = useHistory();
   const [tab, setTab] = useState<'tokens' | 'vaults'>('tokens');
-  const [ownerInfo, setOwnerInfo] = useState<NameServiceResponse>({});
+  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
+    useNameServiceInfo();
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
@@ -79,16 +77,8 @@ const WalletPage = (): JSX.Element => {
   }, [tokensLoading]);
 
   useEffect(() => {
-    const getDomainOrHandle = async (wallet: string) => {
-      const result = await getNameServiceData(wallet, connection);
-      if (result.domain) {
-        setOwnerInfo(result);
-      }
-    };
-
-    if (walletPubkey) {
-      getDomainOrHandle(walletPubkey);
-    }
+    walletPubkey && getNameServiceInfo(walletPubkey, connection);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletPubkey]);
 
   const userVaults = useMemo(() => {
@@ -111,13 +101,13 @@ const WalletPage = (): JSX.Element => {
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Wallet collection</h2>
             <h3 className={styles.description}>
-              {ownerInfo?.domain
-                ? `${ownerInfo?.domain} (${shortenAddress(walletPubkey)})`
+              {nameServiceInfo?.domain
+                ? `${nameServiceInfo?.domain} (${shortenAddress(walletPubkey)})`
                 : `${shortenAddress(walletPubkey)}`}
-              {ownerInfo?.twitterHandle && (
+              {nameServiceInfo?.twitterHandle && (
                 <a
                   className={styles.ownerTwitter}
-                  href={`https://twitter.com/${ownerInfo.twitterHandle}`}
+                  href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

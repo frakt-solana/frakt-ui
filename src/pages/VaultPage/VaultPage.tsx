@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
+import { NavLink } from 'react-router-dom';
+import { useConnection } from '@solana/wallet-adapter-react';
 
 import Badge, { UnverifiedBadge, VerifiedBadge } from '../../components/Badge';
 import { Container } from '../../components/Layout';
@@ -15,19 +17,15 @@ import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
-import {
-  getNameServiceData,
-  NameServiceResponse,
-} from '../../utils/nameService';
-import { useConnection } from '@solana/wallet-adapter-react';
-import { TwitterIcon, TwitterIcon2 } from '../../icons';
-import { NavLink } from 'react-router-dom';
+import { useNameServiceInfo } from '../../utils/nameService';
+import { TwitterIcon2 } from '../../icons';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
-  const [ownerInfo, setOwnerInfo] = useState<NameServiceResponse>({});
+  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
+    useNameServiceInfo();
   const tokenMap = useTokenMap();
   const { connection } = useConnection();
 
@@ -53,16 +51,9 @@ const VaultPage = (): JSX.Element => {
   }, [tokenMap, vaultInfo]);
 
   useEffect(() => {
-    const getDomainOrHandle = async (wallet: string) => {
-      const result = await getNameServiceData(wallet, connection);
-      if (result?.domain) {
-        setOwnerInfo(result);
-      }
-    };
-
-    if (vaultInfo?.authority) {
-      getDomainOrHandle(vaultInfo.authority);
-    }
+    vaultInfo?.authority &&
+      getNameServiceInfo(vaultInfo?.authority, connection);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultInfo?.authority]);
 
   return (
@@ -115,22 +106,23 @@ const VaultPage = (): JSX.Element => {
                     <Badge label={vaultInfo.state} className={styles.badge} />
                   </div>
                   <div className={styles.owner}>
-                    {ownerInfo?.twitterHandle && (
+                    {nameServiceInfo?.twitterHandle && (
                       <img
                         className={styles.ownerAvatar}
-                        src={`https://unavatar.io/twitter/${ownerInfo.twitterHandle}?fallback=https://source.boringavatars.com/marble/120/1337_user?colors=00ffa3,03E1FF,DC1FFF,5d5fef`}
+                        src={`https://unavatar.io/twitter/${nameServiceInfo.twitterHandle}?fallback=https://source.boringavatars.com/marble/120/1337_user?colors=00ffa3,03E1FF,DC1FFF,5d5fef`}
                       />
                     )}
                     <NavLink
                       to={`/wallet/${vaultInfo.authority}`}
                       className={styles.ownerLink}
                     >
-                      {ownerInfo?.domain || shortenAddress(vaultInfo.authority)}
+                      {nameServiceInfo?.domain ||
+                        shortenAddress(vaultInfo.authority)}
                     </NavLink>
-                    {ownerInfo?.twitterHandle && (
+                    {nameServiceInfo?.twitterHandle && (
                       <a
                         className={styles.ownerTwitter}
-                        href={`https://twitter.com/${ownerInfo.twitterHandle}`}
+                        href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
