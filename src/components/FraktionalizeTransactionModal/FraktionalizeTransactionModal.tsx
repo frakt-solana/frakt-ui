@@ -16,6 +16,20 @@ interface FraktionalizeTransactionModalProps {
   onRetryClick?: () => void;
 }
 
+const modalPosition = {
+  top: '100%',
+  right: 0,
+  paddingTop: 16,
+  paddingBottom: 16,
+  paddingRight: 16,
+  paddingLeft: 16,
+  margin: 0,
+  marginLeft: 'auto',
+  maxWidth: '100%',
+  maxHeight: '100%',
+  transform: 'translateY(-100%)',
+};
+
 const FraktionalizeTransactionModal = ({
   visible,
   state = 'loading',
@@ -37,10 +51,11 @@ const FraktionalizeTransactionModal = ({
   return (
     <Modal
       visible={visible}
-      centered
+      style={modalPosition}
       closable={state !== 'loading'}
+      maskClosable={state !== 'loading'}
       onCancel={onCancel}
-      width={640}
+      width={560}
     >
       {contentMap[state]()}
     </Modal>
@@ -53,7 +68,10 @@ const LoadingContent = (): JSX.Element => {
   return (
     <div className={styles.loadingContent}>
       <Loader size="large" />
-      Please approve all transactions
+      <span className={styles.infoTitle}>Please approve all transactions</span>
+      <span className={styles.infoSubtitle}>
+        In order to transfer the NFT/s approval is needed.
+      </span>
     </div>
   );
 };
