@@ -108,9 +108,17 @@
   font: var(--font-secondary);
   display: flex;
   align-items: center;
+  gap: 12px;
 
   .ownerLink {
     color: var(--accent-color-1);
+    display: flex;
+    align-items: center;
+    transition: color var(--transition-1);
+
+    &:hover {
+      color: var(--accent-color-3);
+    }
   }
 
   .ownerAvatar {
@@ -124,6 +132,11 @@
 
   .ownerTwitter {
     margin-left: 10px;
+    opacity: 1;
+    transition: opacity var(--transition-1);
+    &:hover {
+      opacity: 0.75;
+    }
   }
 }
 

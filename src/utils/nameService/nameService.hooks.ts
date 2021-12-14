@@ -19,8 +19,7 @@ export const useNameServiceInfo: useNameServiceInfoType = () => {
     connection: Connection,
   ): Promise<void> => {
     try {
-      !loading && setLoading(true);
-      error && setError(null);
+      setLoading(true);
       const info = await getNameServiceData(walletPublicKey, connection);
       setInfo(info);
     } catch (error) {

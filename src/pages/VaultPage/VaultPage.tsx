@@ -106,28 +106,26 @@ const VaultPage = (): JSX.Element => {
                     <Badge label={vaultInfo.state} className={styles.badge} />
                   </div>
                   <div className={styles.owner}>
-                    {nameServiceInfo?.twitterHandle && (
+                    <NavLink
+                      to={`/wallet/${vaultInfo.authority}`}
+                      className={styles.ownerLink}
+                    >
                       <img
                         className={styles.ownerAvatar}
                         src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
                         alt="Owner avatar"
                       />
-                    )}
-                    <NavLink
-                      to={`/wallet/${vaultInfo.authority}`}
-                      className={styles.ownerLink}
-                    >
-                      {nameServiceInfo?.domain ||
+                      {nameServiceInfo.domain ||
                         shortenAddress(vaultInfo.authority)}
                     </NavLink>
-                    {nameServiceInfo?.twitterHandle && (
+                    {nameServiceInfo.twitterHandle && (
                       <a
                         className={styles.ownerTwitter}
                         href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <TwitterIcon2 width={16} />
+                        <TwitterIcon2 width={18} />
                       </a>
                     )}
                   </div>
