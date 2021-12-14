@@ -13,7 +13,7 @@ import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
 import { DetailsHeader } from './DetailsHeader';
-import { BackToVaultsListButton } from '../../components/BackToVaultsListButton';
+import { BackToVaultsListButton } from './BackToVaultsListButton';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -45,7 +45,7 @@ const VaultPage = (): JSX.Element => {
   return (
     <AppLayout>
       <Container component="main" className={styles.wrapper}>
-        <BackToVaultsListButton />
+        <BackToVaultsListButton className={styles.goBackBtn} />
         {loading && (
           <div className={styles.loading}>
             <Loader size="large" />
