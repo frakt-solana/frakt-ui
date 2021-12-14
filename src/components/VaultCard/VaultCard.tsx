@@ -7,7 +7,7 @@ import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { useEffect, useState } from 'react';
-import { useNameServiceInfo } from '../../utils/nameService';
+import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { useConnection } from '@solana/wallet-adapter-react';
 
 export interface VaultCardProps {
@@ -73,6 +73,11 @@ const VaultCard = ({
             {name} {tokerName ? `($${tokerName})` : ''}
           </div>
           <div className={styles.owner}>
+            <img
+              className={styles.owner__avatar}
+              src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
+              alt="Owner avatar"
+            />
             {nameServiceInfo.domain || shortenAddress(owner)}
           </div>
         </div>

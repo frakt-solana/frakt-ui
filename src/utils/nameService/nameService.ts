@@ -7,6 +7,9 @@ import {
 import { NameServiceResponse } from './nameService.model';
 import { nameServiceCache } from './nameService.cache';
 
+export const getOwnerAvatar = (twitterHandle: string): string =>
+  `https://unavatar.io/twitter/${twitterHandle}?fallback=https://source.boringavatars.com/marble/120/1337_user?colors=00ffa3,03E1FF,DC1FFF,5d5fef'`;
+
 const findOwnedNameAccountsForUser = async (
   connection: Connection,
   userAccount: PublicKey,

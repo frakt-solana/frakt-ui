@@ -17,7 +17,7 @@ import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
-import { useNameServiceInfo } from '../../utils/nameService';
+import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { TwitterIcon2 } from '../../icons';
 
 const VaultPage = (): JSX.Element => {
@@ -109,7 +109,8 @@ const VaultPage = (): JSX.Element => {
                     {nameServiceInfo?.twitterHandle && (
                       <img
                         className={styles.ownerAvatar}
-                        src={`https://unavatar.io/twitter/${nameServiceInfo.twitterHandle}?fallback=https://source.boringavatars.com/marble/120/1337_user?colors=00ffa3,03E1FF,DC1FFF,5d5fef`}
+                        src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
+                        alt="Owner avatar"
                       />
                     )}
                     <NavLink
