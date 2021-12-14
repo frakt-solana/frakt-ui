@@ -19,7 +19,7 @@ import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
-import { useNameServiceInfo } from '../../utils/nameService';
+import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { TwitterIcon2 } from '../../icons';
 
 interface TokenInfoWithAmount extends TokenInfo {
@@ -101,6 +101,11 @@ const WalletPage = (): JSX.Element => {
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Wallet collection</h2>
             <h3 className={styles.description}>
+              <img
+                className={styles.ownerAvatar}
+                src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
+                alt="Owner avatar"
+              />
               {nameServiceInfo?.domain
                 ? `${nameServiceInfo?.domain} (${shortenAddress(walletPubkey)})`
                 : `${shortenAddress(walletPubkey)}`}
@@ -111,7 +116,7 @@ const WalletPage = (): JSX.Element => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <TwitterIcon2 width={16} />
+                  <TwitterIcon2 width={24} className={styles.twitterIcon} />
                 </a>
               )}
             </h3>
