@@ -25,101 +25,48 @@
   }
 
   @media screen and (max-width: 1300px) {
-    transform: translateX(360px);
+    transform: translateY(100%);
 
     &_isMobileSidebar {
-      transform: translateX(0);
-    }
-  }
-
-  @media screen and (max-width: 1023px) {
-    right: 0;
-    top: 0;
-    transform: translateX(350px);
-
-    &_isMobileSidebar {
-      transform: translateX(0);
+      transform: translateY(0);
     }
   }
 
   @media screen and (max-width: 550px) {
+    right: 0;
     width: 100%;
     max-width: 100%;
-    transform: translateX(100%);
-
-    &_isMobileSidebar {
-      transform: translateX(0);
-    }
   }
 }
 
-@media screen and (max-width: 550px) {
-  .sidebarWrapper_isMobileSidebar .selectedVaults {
-    left: unset;
-    z-index: 9;
-    top: 100px;
-    right: 0;
-  }
+.sidebarWrapper_isMobileSidebar .selectedVaults {
+  top: 0;
 }
+
 
 .selectedVaults {
   position: absolute;
-  left: -69px;
-  top: 20px;
-  width: 70px;
+  width: 100%;
+  z-index: 9;
+  left: 0;
+  right: 0;
+  top: -90px;
   display: none;
-  background-color: #000000;
-  padding-bottom: 5px;
-  border-left: 1px solid var(--gray-color-6);
-  border-top: 1px solid var(--gray-color-6);
-  border-bottom: 1px solid var(--gray-color-6);
+  border: 1px solid var(--gray-color-6);
+  background-color: var(--accent-color-1);
 
   p {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 65px;
+    height: 80px;
+    font-size: 25px;
   }
 
-  span {
-    line-height: 1;
-    font-size: 30px;
 
-    &:last-of-type,
-    &:first-of-type {
-      font-size: 40px;
-      color: var(--gray-color-6);
-      line-height: 0.3;
-      animation: slide-arrow 1s ease-in-out infinite;
-
-          & :local {
-            animation: slide-arrow 3s ease-in-out infinite;
-          }
-    }
-  }
-
-  @media screen and (max-width: 1300px){
+  @media screen and (max-width: 1300px) {
     display: block;
-  }
-
-  @media screen and (max-width: 1023px) {
-    top: 110px;
-  }
-}
-
-@keyframes slide-arrow {
-  from  {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(5px);
-  }
-  75% {
-    transform: translateX(5px);
-  }
-  to {
-    transform: translateX(0);
   }
 }
 
@@ -143,7 +90,7 @@
     font: var(--font-subtitle-2);
     margin-bottom: 12px;
 
-    @media screen and (max-width: 550px){
+    @media screen and (max-width: 1300px) {
       margin-bottom: 50px;
     }
   }
@@ -184,6 +131,7 @@
     justify-content: center;
     cursor: pointer;
     padding: 0;
+
     &::before {
       content: '-';
     }
@@ -255,6 +203,7 @@
     &Container {
       width: 100%;
     }
+
     width: 100%;
     justify-content: center;
     font: var(--font-btn-small);
@@ -265,11 +214,6 @@
     font-size: 12px;
     color: var(--gray-color-8);
     padding: 0 24px 12px;
-  }
-
-  @media screen and (max-width: 1023px) {
-    height: 100vh;
-    padding-top: 88px;
   }
 }
 
@@ -291,6 +235,7 @@ body .sidebar__stringInput {
   min-height: 32px;
   line-height: 32px;
   font-weight: bold;
+
   &:last-child {
     margin-bottom: 18px;
   }

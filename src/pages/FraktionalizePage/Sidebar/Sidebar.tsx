@@ -105,9 +105,9 @@ const Sidebar = ({
           onClick={changeSidebarVisibility}
         >
           <p>
-            <span>&#8636;</span>
-            <span>{nfts.length}</span>
-            <span>&#8637;</span>
+            {nfts.length > 1
+              ? `Your NFTs (${nfts.length})`
+              : `Your NFT (${nfts.length})`}
           </p>
         </div>
       )}
