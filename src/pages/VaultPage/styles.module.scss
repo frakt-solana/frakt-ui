@@ -4,6 +4,10 @@
   height: 100%;
 }
 
+.goBackBtn {
+  margin-bottom: 35px;
+}
+
 .loading {
   height: 100%;
   display: flex;
@@ -15,11 +19,68 @@
   grid-template-columns: 5fr 6fr;
   align-items: start;
   gap: 64px 124px;
+
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: 100%;
+
+    .col {
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .col {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
+
+.mainInfoWrapper {
+  @media screen and (max-width: 1023px) {
+    padding-left: 50px;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-left: 0;
+    max-width: 500px;
+    margin-top: 50px;
+
+    .statusAndOwner {
+      margin-bottom: 30px;
+    }
+  }
+}
+
+.detailsHeaderDesc {
+  @media screen and (max-width: 1023px) {
+    display: none;
+  }
+}
+
+.detailsHeaderMobile {
+  display: none;
+
+  .statusAndOwner {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 1023px) {
+    display: block;
+  }
 }
 
 .description {
   padding: 64px 0 32px;
   font: var(--font-body-small);
+
+  @media screen and (max-width: 1023px) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 
 .attributesTable {
@@ -35,6 +96,7 @@
     p:first-child {
       order: 1;
     }
+
     p:last-child {
       order: 3;
     }
@@ -47,6 +109,10 @@
       background: var(--gray-color-3);
       order: 2;
     }
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding-bottom: 0;
   }
 }
 
@@ -69,11 +135,13 @@
   background-repeat: no-repeat;
   position: relative;
   border: 1px solid var(--gray-color-6);
+
   &::after {
     content: '';
     display: block;
     padding-bottom: 100%;
   }
+
   &::before {
     content: '';
     width: 100%;
@@ -84,6 +152,15 @@
     left: 10px;
     z-index: -1;
   }
+
+  @media screen and (max-width: 1023px) {
+    flex-basis: 300px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: 500px;
+  }
 }
 
 .statusAndOwner {
@@ -91,12 +168,14 @@
   align-items: center;
   gap: 32px;
   margin-bottom: 64px;
+  flex-wrap: wrap;
 }
 
 .status {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .badge {
@@ -146,6 +225,26 @@
   gap: 18px 30px;
   margin-bottom: 64px;
 
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media screen and (max-width: 850px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media screen and (max-width: 767px) {
+    gap: 20px;
+  }
+
+  @media screen and (max-width: 550px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media screen and (max-width: 400px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
   &__cellName {
     font: var(--font-smallest);
     text-transform: uppercase;
@@ -168,11 +267,12 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+
   &Controls {
     display: flex;
     align-items: center;
     gap: 10px;
-    height: 61px;
+    flex-wrap: wrap;
   }
 
   &__title {
@@ -186,6 +286,10 @@
     pointer-events: none;
     max-height: 61px;
     width: 280px;
+
+    @media screen and (max-width: 450px) {
+      width: 100%;
+    }
   }
 
   &__connectWalletBtn {
@@ -198,6 +302,12 @@
     min-height: 100%;
     padding-top: unset;
     padding-bottom: unset;
+    height: 61px;
+
+    @media screen and (max-width: 450px) {
+      width: 100%;
+      display: block;
+    }
   }
 
   &__fee {
@@ -213,6 +323,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+
   &Controls {
     display: flex;
     align-items: center;
@@ -280,18 +391,28 @@
 
 .tabContent {
   padding-top: 24px;
+  margin-bottom: 128px;
+
+  @media screen and (max-width: 1023px) {
+    margin-bottom: 90px;
+  }
 }
 
 .tradeWrapper {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  margin-bottom: 128px;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 100%;
+    grid-row-start: 2;
+  }
 }
 
 .tradeLink {
   padding-top: 16px;
   font: var(--font-btn-mid);
+
   a,
   a:hover {
     color: var(--accent-color-1);

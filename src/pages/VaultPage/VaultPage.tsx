@@ -1,15 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
-import { NavLink } from 'react-router-dom';
-import { useConnection } from '@solana/wallet-adapter-react';
 
-import Badge, { UnverifiedBadge, VerifiedBadge } from '../../components/Badge';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
-import { VaultState, useFraktion } from '../../contexts/fraktion';
-import { shortenAddress } from '../../utils/solanaUtils';
+import { useFraktion, VaultState } from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
@@ -17,17 +13,14 @@ import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
-import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import { TwitterIcon2 } from '../../icons';
+import { DetailsHeader } from './DetailsHeader';
+import { BackToVaultsListButton } from './BackToVaultsListButton';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
-  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
-    useNameServiceInfo();
   const tokenMap = useTokenMap();
-  const { connection } = useConnection();
 
   const vaultInfo = useMemo(() => {
     return vaults.find(({ publicKey }) => publicKey === vaultPubkey);
@@ -50,15 +43,10 @@ const VaultPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultInfo]);
 
-  useEffect(() => {
-    vaultInfo?.authority &&
-      getNameServiceInfo(vaultInfo?.authority, connection);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo?.authority]);
-
   return (
     <AppLayout>
       <Container component="main" className={styles.wrapper}>
+        <BackToVaultsListButton className={styles.goBackBtn} />
         {loading && (
           <div className={styles.loading}>
             <Loader size="large" />
@@ -66,6 +54,11 @@ const VaultPage = (): JSX.Element => {
         )}
         {!loading && !!vaultInfo && (
           <div className={styles.content}>
+            <DetailsHeader
+              className={styles.detailsHeaderMobile}
+              vaultInfo={vaultInfo}
+              tokerName={tokerName}
+            />
             <div className={styles.col}>
               <div
                 className={styles.image}
@@ -73,11 +66,13 @@ const VaultPage = (): JSX.Element => {
                   backgroundImage: `url(${vaultInfo.imageSrc})`,
                 }}
               />
-              {!!vaultInfo?.description && (
-                <div className={styles.description}>
-                  {vaultInfo.description}
-                </div>
-              )}
+              <div className={styles.mainInfoWrapper}>
+                {!!vaultInfo?.description && (
+                  <div className={styles.description}>
+                    {vaultInfo.description}
+                  </div>
+                )}
+              </div>
               {!!vaultInfo?.nftAttributes?.length && (
                 <div className={styles.attributesTable}>
                   {vaultInfo?.nftAttributes.map(
@@ -92,45 +87,11 @@ const VaultPage = (): JSX.Element => {
               )}
             </div>
             <div className={styles.details}>
-              <div className={styles.detailsHeader}>
-                <h2 className={styles.title}>
-                  {vaultInfo.name} {tokerName ? `($${tokerName})` : ''}
-                </h2>
-                <div className={styles.statusAndOwner}>
-                  <div className={styles.status}>
-                    {vaultInfo.isNftVerified ? (
-                      <VerifiedBadge />
-                    ) : (
-                      <UnverifiedBadge />
-                    )}
-                    <Badge label={vaultInfo.state} className={styles.badge} />
-                  </div>
-                  <div className={styles.owner}>
-                    <NavLink
-                      to={`/wallet/${vaultInfo.authority}`}
-                      className={styles.ownerLink}
-                    >
-                      <img
-                        className={styles.ownerAvatar}
-                        src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
-                        alt="Owner avatar"
-                      />
-                      {nameServiceInfo.domain ||
-                        shortenAddress(vaultInfo.authority)}
-                    </NavLink>
-                    {nameServiceInfo.twitterHandle && (
-                      <a
-                        className={styles.ownerTwitter}
-                        href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <TwitterIcon2 width={18} />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
+              <DetailsHeader
+                className={styles.detailsHeaderDesc}
+                vaultInfo={vaultInfo}
+                tokerName={tokerName}
+              />
               <InfoTable
                 vaultInfo={vaultInfo}
                 marketId={vaultMarket?.address}

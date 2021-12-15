@@ -6,8 +6,8 @@ export const NETWORK = IS_DEVNET ? 'devnet' : 'mainnet-beta';
 
 export const ENDPOINT = IS_DEVNET
   ? clusterApiUrl('devnet')
-  : // : 'https://ssc-dao.genesysgo.net/';
-    'https://frakt.genesysgo.net/';
+  : 'https://frakt.genesysgo.net/';
+// : 'https://ssc-dao.genesysgo.net/';
 
 export const FRKT_TOKEN_MINT_PUBLIC_KEY = IS_DEVNET
   ? '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH'

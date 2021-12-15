@@ -5,6 +5,12 @@
   padding: 64px 0;
   align-self: flex-end;
   justify-self: flex-start;
+
+  @media screen and (max-width: 767px) {
+    min-width: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
 }
 
 .title {
