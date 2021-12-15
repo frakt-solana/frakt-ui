@@ -26,11 +26,28 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: var(--white-color);
 
     b {
       font-weight: 700;
+      color: var(--white-color);
+      margin-bottom: 18px;
     }
+  }
+
+  &__fractionsMintTitle {
+    color: var(--white-color);
+  }
+
+  &__createMarketBtn {
+    padding: 18px;
+    margin-top: 8px;
+  }
+
+  .fractionsMint {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding-top: 6px;
   }
 }
 

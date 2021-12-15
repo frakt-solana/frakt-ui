@@ -1,0 +1,19 @@
+.wrapper {
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: var(--font-family-oxanium);
+}
+
+.text404 {
+  font-size: 30vmin;
+}
+
+.reason {
+  font-size: 7vmin;
+  margin-bottom: 25vmin;
+}

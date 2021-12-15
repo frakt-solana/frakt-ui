@@ -1,240 +1,99 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import classNames from 'classnames/bind';
 
 import Button from '../../../components/Button';
-import { UserNFT } from '../../../contexts/userTokens/userTokens.model';
+import { UserNFT } from '../../../contexts/userTokens';
 import styles from './styles.module.scss';
-import NumericInput from '../../../components/NumericInput';
-import TokenField from '../../../components/TokenField';
-import { Input } from '../../../components/Input';
+import { Header } from './Header';
+import { Details } from './Details';
+import {
+  sidebarReducer,
+  initialSidebarState,
+  ActionKind,
+} from './sidebarState';
 
 interface SidebarProps {
-  onRemoveClick?: () => void;
+  onDeselect?: (nft: UserNFT) => void;
   onContinueClick: (
-    userNft: UserNFT,
+    userNfts: UserNFT[],
     tickerName: string,
     pricePerFraction: number,
     fractionsAmount: number,
+    basketName?: string,
   ) => void;
-  token: UserNFT;
-  isTickerAvailable: (tickerName: string) => boolean;
+  nfts: UserNFT[];
 }
-
-interface Form {
-  supply?: boolean;
-  buyoutPrice?: boolean;
-  ticker?: boolean;
-}
-
-type Validators = {
-  [n in keyof Form]: (value: string) => boolean;
-};
 
 const Sidebar = ({
-  onRemoveClick,
-  token,
+  onDeselect,
+  nfts,
   onContinueClick,
-  isTickerAvailable,
 }: SidebarProps): JSX.Element => {
-  const [buyoutPrice, setBuyoutPrice] = useState<string>('');
-  const [supply, setSupply] = useState<string>('');
-  const [ticker, setTicker] = useState<string>('');
-  const [touched, setTouched] = useState<Form>({});
+  const [state, dispatch] = useReducer(sidebarReducer, initialSidebarState);
 
-  const [tickerError, setTickerError] = useState<string>('');
-  const [supplyError, setSupplyError] = useState<string>('');
-  const [buyoutPriceError, setBuyoutPriceError] = useState<string>('');
-  const [smallFractionPriceError, setSmallFractionPriceError] =
-    useState<string>('');
-
-  const touchField = (field: keyof Form) => () => {
-    return !touched[field] && setTouched((val) => ({ ...val, [field]: true }));
-  };
-
-  const validators: Validators = {
-    ticker: (ticker: string) => {
-      if (!ticker.length || ticker.length < 3 || !isTickerAvailable(ticker)) {
-        setTickerError("Invalid ticker name or it's already in use");
-        return false;
-      }
-      setTickerError('');
-      return true;
-    },
-    supply: (supply: string) => {
-      if (!supply.length || Number(supply) < 1000 || Number(supply) > 1e8) {
-        setSupplyError('Supply must be in the range: 1k - 100kk');
-        return false;
-      }
-      setSupplyError('');
-      return true;
-    },
-    buyoutPrice: (buyoutPrice: string) => {
-      if (
-        !buyoutPrice.length ||
-        Number(buyoutPrice) < 1 ||
-        Number(buyoutPrice) > 50000
-      ) {
-        setBuyoutPriceError('Buyout price must be in the range: 1 - 50k');
-        return false;
-      }
-      setBuyoutPriceError('');
-      return true;
-    },
-  };
-
-  const validateFractionPrice = (): boolean => {
+  const validateFractionPrice = () => {
     if (
-      supply.length &&
-      buyoutPrice.length &&
-      Number(buyoutPrice) / Number(supply) < 1e-6
+      state.supply.length &&
+      state.buyoutPrice.length &&
+      Number(state.buyoutPrice) / Number(state.supply) < 1e-6
     ) {
-      setSmallFractionPriceError(
-        'Price per fraktion must be greater than 1e-6',
-      );
-      return false;
+      return dispatch({
+        type: ActionKind.SetSmallFractionPriceError,
+        payload: 'Price per fraktion must be greater than 1e-6',
+      });
     }
-    setSmallFractionPriceError('');
-    return true;
+    dispatch({
+      type: ActionKind.SetSmallFractionPriceError,
+      payload: '',
+    });
   };
-
-  useEffect(() => {
-    validateFractionPrice();
-  }, [supply, buyoutPrice]);
 
   useEffect(() => {
     validateFractionPrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [supply, buyoutPrice]);
+  }, [state.supply, state.buyoutPrice]);
 
   useEffect(() => {
-    setBuyoutPrice('');
-    setSupply('');
-    setTicker('');
-    setTouched({});
-  }, [token]);
+    !nfts.length && dispatch({ type: ActionKind.ResetState });
+  }, [nfts.length]);
 
   const continueClickHanlder = () => {
-    if (!isFormValid()) {
-      setTouched({
-        buyoutPrice: true,
-        supply: true,
-        ticker: true,
-      });
-      return;
-    }
     onContinueClick(
-      token,
-      ticker,
-      Number(buyoutPrice) / Number(supply),
-      Number(supply),
+      nfts,
+      state.ticker,
+      Number(state.buyoutPrice) / Number(state.supply),
+      Number(state.supply),
+      state.basketName,
     );
   };
 
-  const isFormValid = () => {
-    const validated = [
-      validators.supply(supply),
-      validators.ticker(ticker),
-      validators.buyoutPrice(buyoutPrice),
-      validateFractionPrice(),
-    ];
+  const isBtnDisabled = () => {
+    const error =
+      !!state.smallFractionPriceError ||
+      !!state.buyoutPriceError ||
+      !!state.supplyError ||
+      !!state.tickerError;
 
-    for (let i = 0; i < validated.length; i++) if (!validated[i]) return false;
+    const emptyFields = !state.buyoutPrice || !state.supply;
 
-    return true;
+    const noNfts = !nfts.length;
+
+    const shortTicker = state.ticker?.length < 3;
+
+    const noBasketName = nfts.length > 1 && state.basketName.length < 3;
+
+    return error || emptyFields || noNfts || shortTicker || noBasketName;
   };
 
   return (
     <div
       className={classNames([
         styles.sidebar,
-        { [styles.sidebar_visible]: !!token },
+        { [styles.sidebar_visible]: !!nfts.length },
       ])}
     >
-      <div className={styles.sidebar__header}>
-        <p className={styles.sidebar__title}>Your NFT</p>
-        <div
-          className={styles.sidebar__image}
-          style={{ backgroundImage: `url(${token?.metadata?.image})` }}
-        >
-          <button
-            className={styles.sidebar__removeBtn}
-            onClick={onRemoveClick}
-          />
-        </div>
-        <div className={styles.sidebar__separator} />
-      </div>
-
-      <div className={styles.sidebar__details}>
-        <p className={styles.sidebar__detailsTitle}>Vault details</p>
-
-        <div className={styles.sidebar__fieldWrapper}>
-          <p className={styles.sidebar__fieldLabel}>Name</p>
-          <p className={styles.sidebar__tokenName}>
-            {token?.metadata?.name || 'Unknown'}
-          </p>
-        </div>
-        <div className={styles.sidebar__fieldWrapperDouble}>
-          <div className={styles.sidebar__fieldWrapper}>
-            <p className={styles.sidebar__fieldLabel}>Supply</p>
-            <NumericInput
-              value={supply}
-              onChange={(value) => {
-                setSupply(value);
-                validators.supply(value);
-              }}
-              error={touched.supply && !!supplyError}
-              onBlur={touchField('supply')}
-            />
-          </div>
-          <div className={styles.sidebar__fieldWrapper}>
-            <p className={styles.sidebar__fieldLabel}>Ticker</p>
-            <Input
-              value={ticker}
-              onChange={(e) => {
-                setTicker(e.target.value);
-                validators.ticker(e.target.value);
-              }}
-              error={touched.ticker && !!tickerError}
-              onBlur={touchField('ticker')}
-            />
-          </div>
-        </div>
-        <div className={styles.sidebar__fieldWrapper}>
-          <p className={styles.sidebar__fieldLabel}>Buyout price</p>
-          <TokenField
-            currentToken={{
-              mint: 'So11111111111111111111111111111111111111112',
-              symbol: 'SOL',
-              img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
-              data: 'Some value 1',
-            }}
-            value={buyoutPrice}
-            onValueChange={(value) => {
-              setBuyoutPrice(value);
-              validators.buyoutPrice(value);
-            }}
-            error={touched.buyoutPrice && !!buyoutPriceError}
-            onInputBlur={touchField('buyoutPrice')}
-          />
-        </div>
-        <div
-          className={classNames(
-            styles.sidebar__fieldWrapper,
-            styles.sidebar__fieldWrapper_error,
-          )}
-        >
-          {[
-            smallFractionPriceError,
-            touched.buyoutPrice && buyoutPriceError,
-            touched.ticker && tickerError,
-            touched.supply && supplyError,
-          ]
-            .filter((error) => error)
-            .map((error, idx) => (
-              <p key={idx}>{error}</p>
-            ))}
-        </div>
-      </div>
+      <Header nfts={nfts} onDeselect={onDeselect} />
+      <Details nfts={nfts} sidebarState={state} sidebarDispatch={dispatch} />
 
       <div className={styles.sidebar__continueBtnContainer}>
         <p className={styles.sidebar__feeMessage}>
@@ -245,6 +104,7 @@ const Sidebar = ({
         <Button
           type="alternative"
           className={styles.sidebar__continueBtn}
+          disabled={isBtnDisabled()}
           onClick={continueClickHanlder}
         >
           Continue

@@ -1,0 +1,75 @@
+.select {
+  width: 100%;
+  cursor: pointer;
+  font-family: var(--font-family-oxanium);
+  :global {
+    .custom-select__control {
+      background-color: transparent;
+      border: transparent;
+      cursor: pointer;
+      flex-wrap: nowrap;
+      min-height: 24px;
+      height: 24px;
+      justify-content: flex-end;
+
+      @media screen and (max-width: 550px) {
+        justify-content: flex-start;
+      }
+    }
+    .custom-select__control--is-focused {
+      box-shadow: none;
+    }
+    .custom-select__menu {
+      background-color: var(--black-color);
+      border: 1px solid var(--gray-color-3);
+      border-radius: 0;
+      z-index: 5;
+    }
+    .custom-select__indicator-separator {
+      display: none;
+    }
+    .custom-select__control--menu-is-open .custom-select__dropdown-indicator{
+      transform: rotate(180deg);
+    }
+    .custom-select__menu-list {
+      padding: 6px 0;
+    }
+    .custom-select__option {
+      background-color: transparent;
+      padding: 18px 24px;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: opacity var(--transition-1);
+      &:active {
+        background-color: transparent;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &--is-selected {
+        opacity: 1;
+        pointer-events: none;
+        cursor: default;
+      }
+    }
+  }
+}
+
+.value {
+  cursor: pointer;
+  color: var(--accent-color-1);
+}
+
+.label {
+  margin-right: 8px;
+}
+
+.valueContainer {
+  color: var(--white-color);
+  .input {
+    position: absolute;
+    top: 6px;
+  }
+}

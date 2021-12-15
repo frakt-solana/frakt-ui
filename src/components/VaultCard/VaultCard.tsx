@@ -2,10 +2,10 @@ import BN from 'bn.js';
 
 import styles from './styles.module.scss';
 import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
-import { shortenAddress } from '../../external/utils/utils';
-import { decimalBNToString } from '../../utils';
+import { shortenAddress } from '../../utils/solanaUtils';
+import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
-import { useSolanaTokenRegistry } from '../../contexts/solanaTokenRegistry/solanaTokenRegistry.context';
+import { useTokenMap } from '../../contexts/TokenList';
 import { useEffect, useState } from 'react';
 
 export interface VaultCardProps {
@@ -18,6 +18,8 @@ export interface VaultCardProps {
   isNftVerified?: boolean;
   pricePerFraction?: BN;
   priceTokenMint: string;
+  buyoutPrice?: BN;
+  hasMarket?: boolean;
 }
 
 const VaultCard = ({
@@ -30,16 +32,19 @@ const VaultCard = ({
   isNftVerified,
   pricePerFraction = new BN(0),
   priceTokenMint,
+  buyoutPrice = new BN(0),
+  hasMarket = false,
 }: VaultCardProps): JSX.Element => {
-  const { getTokerByMint, loading } = useSolanaTokenRegistry();
+  const tokenMap = useTokenMap();
+
   const [tokerName, setTokerName] = useState<string>('');
   const currency =
     priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   useEffect(() => {
-    !loading && setTokerName(getTokerByMint(fractionMint));
+    setTokerName(tokenMap.get(fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [tokenMap]);
 
   return (
     <div className={styles.cardContainer}>
@@ -51,6 +56,7 @@ const VaultCard = ({
           <div className={styles.actions}>
             {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
             <Badge label={vaultState} className={styles.badge} />
+            {hasMarket && <Badge label="Tradable" className={styles.badge} />}
           </div>
         </div>
         <div className={styles.nameContainer}>
@@ -62,19 +68,17 @@ const VaultCard = ({
         <div className={styles.stats}>
           <div className={styles.item}>
             <div className={styles.title}>Total supply</div>
-            <div className={styles.value}>{supply.toString().slice(0, -3)}</div>
+            <div className={styles.value}>{shortBigNumber(supply, 1, 3)}</div>
           </div>
           <div className={styles.item}>
             <div className={styles.title}>Fraktion price ({currency})</div>
             <div className={styles.value}>
-              {decimalBNToString(pricePerFraction.mul(new BN(1e3)), 6, 9)}
+              {shortBigNumber(pricePerFraction, 6, 6)}
             </div>
           </div>
           <div className={styles.item}>
             <div className={styles.title}>Buyout price ({currency})</div>
-            <div className={styles.value}>
-              {decimalBNToString(pricePerFraction.mul(supply), 2, 9)}
-            </div>
+            <div className={styles.value}>{shortBigNumber(buyoutPrice)}</div>
           </div>
         </div>
       </div>

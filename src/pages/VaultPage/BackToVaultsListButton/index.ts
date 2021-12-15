@@ -1,0 +1,1 @@
+export { BackToVaultsListButton } from './BackToVaultsListButton';

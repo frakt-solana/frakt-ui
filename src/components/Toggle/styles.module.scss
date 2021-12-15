@@ -12,20 +12,20 @@ body {
       }
 
       .ant-switch-handle {
-        width: 32px;
-        height: 32px;
+        width: 39px;
+        height: 8px;
         top: -9px;
         left: -1px;
       }
       .ant-switch-handle::before {
-        width: 32px;
-        height: 32px;
+        width: 24px;
+        height: 24px;
         background: var(--gray-color-1);
         border-radius: 32px;
       }
 
-      width: 51px;
-      height: 16px;
+      width: 39px;
+      height: 8px;
       border: 1px solid var(--gray-color-9);
       box-sizing: border-box;
       background-color: transparent;
@@ -50,6 +50,23 @@ body {
     .ant-switch-handle::before {
       background: var(--gray-color-1);
       box-shadow: none;
+    }
+  }
+}
+
+.filterToggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  &__text {
+    font: var(--font-btn-mid);
+    transition: opacity var(--transition-1);
+    font-size: 18px;
+
+    &_muted {
+      opacity: 0.3;
     }
   }
 }

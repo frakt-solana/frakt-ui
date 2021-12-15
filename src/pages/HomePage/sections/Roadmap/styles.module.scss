@@ -1,0 +1,151 @@
+.root {
+  margin-bottom: 48px;
+}
+
+.title {
+  font: var(--font-h3);
+}
+
+.roadmap {
+  padding: 40px 0;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background-color: var(--gray-color-6);
+    top: 32px;
+    bottom: 32px;
+    left: 50%;
+    margin-left: -1px;
+  }
+
+  @media screen and (max-width: 1023px) {
+    &::after {
+      left: 14px;
+    }
+  }
+}
+
+.item {
+  padding: 10px 40px;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+  left: calc(50% + 2px);
+
+  // Circle
+  &::after {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background-color: var(--gray-color-6);
+    border: 2px solid var(--gray-color-6);
+    top: 14px;
+    border-radius: 50%;
+    z-index: 1;
+    left: -16px;
+  }
+
+  // Dash
+  &::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    z-index: 1;
+    left: 10px;
+    background: var(--gray-color-6);
+    width: 32px;
+    height: 2px;
+  }
+
+  &:nth-child(odd) {
+    left: 0;
+
+    // Circle
+    &::after {
+      left: unset;
+      right: -14px;
+    }
+
+    // Dash
+    &::before {
+      left: unset;
+      right: 10px;
+    }
+  }
+
+  &_checked {
+    &::after {
+      background-color: var(--white-color);
+      border: 2px solid var(--white-color);
+    }
+    &::before {
+      background: var(--white-color);
+    }
+
+    .item__content {
+      border: 2px solid var(--white-color);
+    }
+
+    .item__title {
+      color: var(--white-color);
+    }
+
+    .item__content {
+      color: var(--white-color);
+    }
+  }
+
+  &__content {
+    padding: 20px 30px;
+    background-color: var(--black-color);
+    border: 2px solid var(--gray-color-4);
+    position: relative;
+    font: var(--font-body-small);
+    color: var(--gray-color-4);
+  }
+
+  &__title {
+    color: var(--gray-color-4);
+    font: var(--font-btn-large);
+    margin-bottom: 0;
+    text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 1023px) {
+    width: calc(100% - 14px) !important;
+    left: 14px !important;
+    padding-bottom: 30px;
+
+    &::after {
+      left: -14px;
+    }
+
+    &:nth-child(odd) {
+
+      // Circle
+      &::after {
+        right: unset;
+        left: -14px;
+      }
+
+      // Dash
+      &::before {
+        right: unset;
+        left: 10px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-right: 0;
+    padding-left: 30px;
+
+    &::before {
+      width: 20px;
+    }
+  }
+}

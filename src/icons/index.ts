@@ -12,3 +12,5 @@ export { CloseIcon } from './CloseIcon';
 export { DoneIcon } from './DoneIcon';
 export { WarningIcon } from './WarningIcon';
 export { SolfareIcon, SolletIcon, PhantomIcon } from './WalletIcons';
+export { ArrowDownSmallIcon } from './arrowDownSmall';
+export { ArrowLeftIcon } from './ArrowLeftIcon';

@@ -1,0 +1,141 @@
+.container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.pageHeader {
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: space-between;
+
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+  }
+}
+
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.description {
+  font-size: 24px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media screen and (max-width: 767px){
+    margin-top: 20px;
+    flex-grow: 1;
+  }
+}
+
+.tab {
+  padding: 32px 24px;
+  min-width: 140px;
+  font: var(--font-btn-small);
+  color: var(--white-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-1), color var(--transition-1);
+
+  @media screen and (max-width: 767px){
+    background: var(--gray-color-7);
+    width: 50%;
+  }
+
+  &:hover {
+    background: var(--gray-color-7);
+  }
+
+  &Active,
+  &Active:hover {
+    background: var(--white-color);
+    color: var(--black-color);
+    pointer-events: none;
+  }
+}
+
+.tokensContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.tokens {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.token {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  border: 1px solid var(--gray-color-3);
+  cursor: pointer;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border-color: var(--accent-color-1);
+  }
+
+  &__info {
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  &__logo {
+    border-radius: 50%;
+    height: 48px;
+    width: 48px;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    margin-bottom: 2px;
+    font: var(--font-btn-small);
+    color: var(--white-color);
+  }
+
+  &__balance {
+    font: var(--font-btn-small);
+    color: var(--gray-color-3);
+  }
+
+  &__btn {
+    padding: 0 24px;
+
+    @media screen and (max-width: 400px){
+      display: none;
+    }
+  }
+}
+
+.vaults {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+
+  @media screen and (max-width: 440px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
+}
+
+.emptyMessage {
+  font: var(--font-btn-mid);
+}
+
+.loader {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

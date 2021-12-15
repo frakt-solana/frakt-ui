@@ -1,0 +1,118 @@
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 12px;
+}
+
+.tab {
+  padding: 12px 24px;
+  font: var(--font-btn-small);
+  color: var(--white-color);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-1), color var(--transition-1);
+
+  &:hover {
+    background: var(--gray-color-7);
+  }
+
+  &Active,
+  &Active:hover {
+    background: var(--white-color);
+    color: var(--black-color);
+    pointer-events: none;
+
+    &[name='buy'] {
+      background: var(--yellow-color);
+      color: var(--white-color);
+    }
+
+    &[name='sell'] {
+      background: var(--red-color);
+      color: var(--white-color);
+    }
+  }
+}
+
+.toggles {
+  display: flex;
+  gap: 24px;
+  margin: 0 -12px 18px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  transition: opacity var(--transition-1);
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &_buy {
+    &,
+    &:hover {
+      background: var(--yellow-color);
+      border-color: var(--yellow-color);
+    }
+
+    &:active {
+      background-color: var(--gray-color-5);
+      border-color: var(--gray-color-5);
+    }
+  }
+
+  &_sell {
+    &,
+    &:hover {
+      background: var(--red-color);
+      border-color: var(--red-color);
+    }
+
+    &:active {
+      background-color: var(--gray-color-5);
+      border-color: var(--gray-color-5);
+    }
+  }
+}
+
+.slider {
+  :global {
+    .ant-slider-dot {
+      border-color: var(--gray-color-8);
+      background-color: var(--gray-color-8);
+    }
+
+    .ant-slider-dot-active {
+      border-color: var(--gray-color-8);
+      background-color: var(--gray-color-8);
+    }
+
+    .ant-slider-step {
+      background-color: var(--gray-color-2);
+    }
+
+    .ant-slider-track {
+      background-color: var(--accent-color-3);
+    }
+
+    .ant-slider-handle {
+      &,
+      &:hover {
+        background-color: var(--accent-color-1);
+        border-color: var(--accent-color-1);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 560px) {
+  div.slider {
+    margin-top: 30px;
+    margin-bottom: 70px;
+  }
+}
+

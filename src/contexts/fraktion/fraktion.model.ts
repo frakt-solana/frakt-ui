@@ -1,4 +1,4 @@
-import { RawUserTokensByMint, UserNFT } from './../userTokens/userTokens.model';
+import { RawUserTokensByMint, UserNFT } from '../userTokens';
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
 
@@ -57,6 +57,7 @@ export interface VaultData {
   state: string;
   nftMint: string; // mint address of fraktionalized NFT
   name: string; // name of fraktionalized NFT
+  description?: string; // description of fraktionalized NFT
   imageSrc: string; // image source of fraktionalized NFT
   nftAttributes: { trait_type: string; value: string | number }[]; // arweave metadata attributes
   safetyBoxPubkey: string;
@@ -66,6 +67,14 @@ export interface VaultData {
   isNftVerified: boolean;
   nftCollectionName?: string;
   createdAt: number;
+  buyoutPrice: BN;
+  hasMarket: boolean;
+}
+
+export interface Market {
+  address: string;
+  baseMint: string;
+  programId: string;
 }
 
 export interface CreateFraktionalizerResult {
@@ -98,7 +107,12 @@ export type redeemFunction = (vault: VaultData) => Promise<{
   signers: Keypair[];
 } | null>;
 
-export type fetchVaultsFunction = () => Promise<VaultData[] | null>;
+export type createFraktionsMarketFunction = (
+  fractionsMintAddress: string,
+  tickerName: string,
+) => Promise<boolean>;
+
+export type fetchDataFunction = () => Promise<void>;
 
 export type patchVaultFunction = (vaultInfo: VaultData) => void;
 
@@ -106,9 +120,11 @@ export interface FraktionContextType {
   loading: boolean;
   error: any;
   vaults: VaultData[];
+  vaultsMarkets: Market[];
   fraktionalize: fraktionalizeFunction;
   buyout: buyoutFunction;
   redeem: redeemFunction;
-  refetch: fetchVaultsFunction;
+  createFraktionsMarket: createFraktionsMarketFunction;
+  refetch: fetchDataFunction;
   patchVault: patchVaultFunction;
 }

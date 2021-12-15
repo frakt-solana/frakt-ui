@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 
-import { Input, InputProps } from '../../components/Input';
+import { Input, InputProps } from '../Input';
 import styles from './styles.module.scss';
 
 export interface NumericInputProps extends Omit<InputProps, 'onChange'> {
@@ -11,6 +11,7 @@ export interface NumericInputProps extends Omit<InputProps, 'onChange'> {
   positiveOnly?: boolean;
   integerOnly?: boolean;
   className?: string;
+  maxLength?: number;
   error?: boolean;
 }
 
@@ -28,6 +29,7 @@ const NumericInput = React.forwardRef(
       integerOnly = false,
       className,
       error,
+      maxLength,
       ...props
     }: NumericInputProps,
     ref,
@@ -37,6 +39,8 @@ const NumericInput = React.forwardRef(
 
       if (positiveOnly && value?.[0] === '-') return;
       if (integerOnly && value?.split('').includes('.')) return;
+      if (maxLength && value.length > maxLength) return;
+
       if (value === '-' || value === '') onChange(value);
       if (isNumeric(value)) onChange(value);
     };
