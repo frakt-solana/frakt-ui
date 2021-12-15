@@ -16,6 +16,20 @@ interface FraktionalizeTransactionModalProps {
   onRetryClick?: () => void;
 }
 
+const modalPosition = {
+  top: '100%',
+  right: 0,
+  paddingTop: 16,
+  paddingBottom: 16,
+  paddingRight: 16,
+  paddingLeft: 16,
+  margin: 0,
+  marginLeft: 'auto',
+  maxWidth: '100%',
+  maxHeight: '100%',
+  transform: 'translateY(-100%)',
+};
+
 const FraktionalizeTransactionModal = ({
   visible,
   state = 'loading',
@@ -29,6 +43,7 @@ const FraktionalizeTransactionModal = ({
       <SuccessContent
         fractionsMintAddress={fractionsMintAddress}
         tickerName={tickerName}
+        onCancel={onCancel}
       />
     ),
     fail: () => <FailContent />,
@@ -37,10 +52,11 @@ const FraktionalizeTransactionModal = ({
   return (
     <Modal
       visible={visible}
-      centered
+      style={modalPosition}
       closable={state !== 'loading'}
+      maskClosable={state !== 'loading'}
       onCancel={onCancel}
-      width={640}
+      width={560}
     >
       {contentMap[state]()}
     </Modal>
@@ -53,7 +69,10 @@ const LoadingContent = (): JSX.Element => {
   return (
     <div className={styles.loadingContent}>
       <Loader size="large" />
-      Please approve all transactions
+      <span className={styles.infoTitle}>Please approve all transactions</span>
+      <span className={styles.infoSubtitle}>
+        In order to transfer the NFT/s approval is needed.
+      </span>
     </div>
   );
 };
@@ -61,13 +80,19 @@ const LoadingContent = (): JSX.Element => {
 const SuccessContent = ({
   fractionsMintAddress,
   tickerName,
+  onCancel,
 }: {
   fractionsMintAddress?: string;
   tickerName: string;
+  onCancel: () => void;
 }): JSX.Element => {
   const { createFraktionsMarket } = useFraktion();
 
   const onClipboardIconClick = () => copyToClipboard(fractionsMintAddress);
+  const onCreateMarketButtonClick = () => {
+    createFraktionsMarket(fractionsMintAddress, tickerName);
+    onCancel();
+  };
 
   return (
     <div className={styles.successContent}>
@@ -96,9 +121,7 @@ const SuccessContent = ({
           <Button
             type="alternative"
             className={styles.successContent__createMarketBtn}
-            onClick={() =>
-              createFraktionsMarket(fractionsMintAddress, tickerName)
-            }
+            onClick={onCreateMarketButtonClick}
           >
             Create Market
           </Button>
