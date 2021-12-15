@@ -6,7 +6,6 @@ import { useFraktion } from '../../contexts/fraktion';
 import Tooltip from '../Tooltip';
 import { CopyClipboardIcon } from '../../icons';
 import { copyToClipboard } from '../../utils';
-import * as React from 'react';
 
 interface FraktionalizeTransactionModalProps {
   state?: 'loading' | 'success' | 'fail';
