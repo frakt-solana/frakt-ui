@@ -61,7 +61,7 @@ const Sidebar = ({
   useEffect(() => {
     if (!nfts.length) {
       dispatch({ type: ActionKind.ResetState });
-      !nfts.length && setIsMobileSidebar(false);
+      setIsMobileSidebar(false);
     }
   }, [nfts.length]);
 
