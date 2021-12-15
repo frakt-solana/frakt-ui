@@ -5,9 +5,9 @@ import { Input, InputProps } from '../Input';
 import styles from './styles.module.scss';
 
 export interface NumericInputProps extends Omit<InputProps, 'onChange'> {
-  value: string;
+  value?: string;
   placeholder?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   positiveOnly?: boolean;
   integerOnly?: boolean;
   className?: string;
