@@ -6,6 +6,7 @@ import { useFraktion } from '../../contexts/fraktion';
 import Tooltip from '../Tooltip';
 import { CopyClipboardIcon } from '../../icons';
 import { copyToClipboard } from '../../utils';
+import * as React from 'react';
 
 interface FraktionalizeTransactionModalProps {
   state?: 'loading' | 'success' | 'fail';
@@ -43,6 +44,7 @@ const FraktionalizeTransactionModal = ({
       <SuccessContent
         fractionsMintAddress={fractionsMintAddress}
         tickerName={tickerName}
+        onCancel={onCancel}
       />
     ),
     fail: () => <FailContent />,
@@ -79,13 +81,19 @@ const LoadingContent = (): JSX.Element => {
 const SuccessContent = ({
   fractionsMintAddress,
   tickerName,
+  onCancel,
 }: {
   fractionsMintAddress?: string;
   tickerName: string;
+  onCancel: () => void;
 }): JSX.Element => {
   const { createFraktionsMarket } = useFraktion();
 
   const onClipboardIconClick = () => copyToClipboard(fractionsMintAddress);
+  const onCreateMarketButtonClick = () => {
+    createFraktionsMarket(fractionsMintAddress, tickerName);
+    onCancel();
+  };
 
   return (
     <div className={styles.successContent}>
@@ -114,9 +122,7 @@ const SuccessContent = ({
           <Button
             type="alternative"
             className={styles.successContent__createMarketBtn}
-            onClick={() =>
-              createFraktionsMarket(fractionsMintAddress, tickerName)
-            }
+            onClick={onCreateMarketButtonClick}
           >
             Create Market
           </Button>
