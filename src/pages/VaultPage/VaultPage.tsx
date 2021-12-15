@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
+
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
@@ -71,19 +72,19 @@ const VaultPage = (): JSX.Element => {
                     {vaultInfo.description}
                   </div>
                 )}
-                {!!vaultInfo?.nftAttributes?.length && (
-                  <div className={styles.attributesTable}>
-                    {vaultInfo?.nftAttributes.map(
-                      ({ trait_type, value }, idx) => (
-                        <div key={idx} className={styles.attributesTable__row}>
-                          <p>{trait_type}</p>
-                          <p>{value}</p>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                )}
               </div>
+              {!!vaultInfo?.nftAttributes?.length && (
+                <div className={styles.attributesTable}>
+                  {vaultInfo?.nftAttributes.map(
+                    ({ trait_type, value }, idx) => (
+                      <div key={idx} className={styles.attributesTable__row}>
+                        <p>{trait_type}</p>
+                        <p>{value}</p>
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
             </div>
             <div className={styles.details}>
               <DetailsHeader

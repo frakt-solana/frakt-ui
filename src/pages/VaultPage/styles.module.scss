@@ -39,7 +39,6 @@
 }
 
 .mainInfoWrapper {
-
   @media screen and (max-width: 1023px) {
     padding-left: 50px;
     width: 100%;
@@ -55,7 +54,6 @@
     }
   }
 }
-
 
 .detailsHeaderDesc {
   @media screen and (max-width: 1023px) {
@@ -189,15 +187,35 @@
   font: var(--font-secondary);
   display: flex;
   align-items: center;
+  gap: 12px;
 
-  &::before {
-    content: '';
+  .ownerLink {
+    color: var(--accent-color-1);
+    display: flex;
+    align-items: center;
+    transition: color var(--transition-1);
+
+    &:hover {
+      color: var(--accent-color-3);
+    }
+  }
+
+  .ownerAvatar {
     margin-right: 10px;
     margin-bottom: 2px;
     width: 20px;
     height: 20px;
     background: var(--gray-color-3);
     border-radius: 50%;
+  }
+
+  .ownerTwitter {
+    margin-left: 10px;
+    opacity: 1;
+    transition: opacity var(--transition-1);
+    &:hover {
+      opacity: 0.75;
+    }
   }
 }
 
