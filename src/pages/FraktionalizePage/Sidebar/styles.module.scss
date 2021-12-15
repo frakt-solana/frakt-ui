@@ -1,23 +1,85 @@
-.sidebar {
-  overflow-y: auto;
+.sidebarWrapper {
   position: fixed;
-  top: 89px;
+  top: 88px;
   right: 10px;
   width: 400px;
   background-color: var(--black-color);
   z-index: 2;
-  height: calc(100vh - 88px);
-  border-left: 1px solid var(--gray-color-6);
-  transform: translateX(330px);
+  transform: translateX(400px);
   transition: transform var(--transition-1), opacity var(--transition-1);
-  opacity: 0;
   display: flex;
   flex-direction: column;
 
   &_visible {
     transform: translateX(0);
     opacity: 1;
+
+    .sidebar {
+      opacity: 1;
+    }
   }
+
+  @media screen and (max-width: 1450px) {
+    max-width: 350px;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 1300px) {
+    transform: translateY(100%);
+
+    &_isMobileSidebar {
+      transform: translateY(0);
+    }
+  }
+
+  @media screen and (max-width: 550px) {
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.sidebarWrapper_isMobileSidebar .selectedVaults {
+  top: 0;
+}
+
+
+.selectedVaults {
+  position: absolute;
+  width: 100%;
+  z-index: 9;
+  left: 0;
+  right: 0;
+  top: -90px;
+  display: none;
+  border: 1px solid var(--gray-color-6);
+  background-color: var(--accent-color-1);
+
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80px;
+    font-size: 25px;
+  }
+
+
+  @media screen and (max-width: 1300px) {
+    display: block;
+  }
+}
+
+.sidebar {
+  overflow-y: auto;
+  background-color: var(--black-color);
+  transition: transform var(--transition-1), opacity var(--transition-1);
+  height: calc(100vh - 88px);
+  border-top: 1px solid var(--gray-color-6);
+  border-left: 1px solid var(--gray-color-6);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
 
   &__header {
     padding: 24px 24px 0;
@@ -27,6 +89,10 @@
   &__title {
     font: var(--font-subtitle-2);
     margin-bottom: 12px;
+
+    @media screen and (max-width: 1300px) {
+      margin-bottom: 50px;
+    }
   }
 
   &__images {
@@ -65,6 +131,7 @@
     justify-content: center;
     cursor: pointer;
     padding: 0;
+
     &::before {
       content: '-';
     }
@@ -136,6 +203,7 @@
     &Container {
       width: 100%;
     }
+
     width: 100%;
     justify-content: center;
     font: var(--font-btn-small);
@@ -167,6 +235,7 @@ body .sidebar__stringInput {
   min-height: 32px;
   line-height: 32px;
   font-weight: bold;
+
   &:last-child {
     margin-bottom: 18px;
   }
