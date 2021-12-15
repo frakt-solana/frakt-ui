@@ -59,8 +59,10 @@ const Sidebar = ({
   }, [state.supply, state.buyoutPrice]);
 
   useEffect(() => {
-    !nfts.length && dispatch({ type: ActionKind.ResetState });
-    !nfts.length && setIsMobileSidebar(false);
+    if (!nfts.length) {
+      dispatch({ type: ActionKind.ResetState });
+      !nfts.length && setIsMobileSidebar(false);
+    }
   }, [nfts.length]);
 
   const continueClickHanlder = () => {
