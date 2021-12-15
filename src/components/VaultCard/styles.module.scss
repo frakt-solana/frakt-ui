@@ -77,8 +77,8 @@
         font: var(--font-secondary);
         display: flex;
         align-items: center;
-        &::before {
-          content: '';
+
+        &__avatar {
           margin-right: 8px;
           margin-bottom: 2px;
           width: 16px;

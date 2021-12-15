@@ -1,8 +1,13 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import classNames from 'classnames/bind';
+import { useConnection } from '@solana/wallet-adapter-react';
+
 import styles from './styles.module.scss';
 import Badge, { UnverifiedBadge, VerifiedBadge } from '../../components/Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
+import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
+import { TwitterIcon2 } from '../../icons';
 
 interface DetailsHeaderProps {
   vaultInfo: VaultInfo;
@@ -22,6 +27,16 @@ export const DetailsHeader = ({
   vaultInfo,
   tokerName,
 }: DetailsHeaderProps): JSX.Element => {
+  const { connection } = useConnection();
+  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
+    useNameServiceInfo();
+
+  useEffect(() => {
+    vaultInfo?.authority &&
+      getNameServiceInfo(vaultInfo?.authority, connection);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vaultInfo?.authority]);
+
   return (
     <div className={classNames(styles.detailsHeader, className)}>
       <h2 className={styles.title}>
@@ -33,7 +48,27 @@ export const DetailsHeader = ({
           <Badge label={vaultInfo.state} className={styles.badge} />
         </div>
         <div className={styles.owner}>
-          {shortenAddress(vaultInfo.authority)}
+          <NavLink
+            to={`/wallet/${vaultInfo.authority}`}
+            className={styles.ownerLink}
+          >
+            <img
+              className={styles.ownerAvatar}
+              src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
+              alt="Owner avatar"
+            />
+            {nameServiceInfo.domain || shortenAddress(vaultInfo.authority)}
+          </NavLink>
+          {nameServiceInfo.twitterHandle && (
+            <a
+              className={styles.ownerTwitter}
+              href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TwitterIcon2 width={18} />
+            </a>
+          )}
         </div>
       </div>
     </div>
