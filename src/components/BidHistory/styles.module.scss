@@ -13,12 +13,8 @@
   &:first-of-type {
     color: var(--white-color);
 
-    .solanaIcon {
-      border-color: var(--white-color);
-
-      &::before {
-        border-color: var(--white-color);
-      }
+    .solanaCurrency {
+      color: var(--white-color);
     }
   }
 
@@ -44,26 +40,8 @@
   font-size: 22px;
 }
 
-.solanaIcon {
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 2px solid var(--gray-color-8);
-  position: relative;
-  margin-right: 8px;
-
-  &::before {
-    display: block;
-    position: absolute;
-    content: '';
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 2px solid var(--gray-color-8);
-    top: 2px;
-    left: 2px;
-  }
+.solanaCurrency {
+  margin-right: 5px;
 }
 
 .refund {
