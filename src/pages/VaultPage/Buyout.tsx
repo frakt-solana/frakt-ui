@@ -12,6 +12,7 @@ import { useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import BN from 'bn.js';
 import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
+import { BidHistory } from '../../components/BidHistory';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -127,6 +128,7 @@ export const Buyout = ({
 
   return (
     <div className={styles.buyout}>
+      <BidHistory />
       <h5 className={styles.buyout__title}>{!userTokensLoading && 'Buyout'}</h5>
       <div className={styles.buyoutControls}>
         {userTokensLoading && (
