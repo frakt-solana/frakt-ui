@@ -1,5 +1,24 @@
 .countdown {
-  font-size: 20px;
-  font-weight: bold;
-  color: var(--gray-color-8);
+  display: flex;
+}
+
+.timeItem {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-right: 24px;
+  min-width: 80px;
+  color: var(--white-color);
+  font: var(--font-h2);
+  line-height: 1em;
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  span {
+    font-size: 14px;
+    line-height: 1em;
+    color: var(--gray-color-8);
+  }
 }

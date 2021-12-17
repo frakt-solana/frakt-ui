@@ -4,23 +4,27 @@ import styles from './styles.module.scss';
 import classNames from 'classnames';
 
 interface AuctionCountdownProps {
-  endAuctionTime: number;
+  endTimeMoment: number;
   className?: string;
 }
 
 export const AuctionCountdown = ({
-  endAuctionTime,
+  endTimeMoment,
   className,
 }: AuctionCountdownProps): JSX.Element => {
-  const unixToCalendarTime = moment.unix(endAuctionTime);
+  const unixToCalendarTime = moment.unix(endTimeMoment);
 
-  const intervalIdRef = useRef(0);
+  const intervalIdRef = useRef<ReturnType<typeof setInterval>>(null);
 
-  const [currentTime, setCurrentTime] = useState(moment());
-  const timeBetween = moment.duration(unixToCalendarTime.diff(currentTime));
+  const [currentTime, setCurrentTime] = useState<moment.Moment>(moment());
+  const timeDifference = moment.duration(unixToCalendarTime.diff(currentTime));
+
+  const formatDateUnit = (value) => {
+    return value < 10 ? '0' + value : value;
+  };
 
   useEffect(() => {
-    intervalIdRef.current = window.setInterval(() => {
+    intervalIdRef.current = setInterval(() => {
       setCurrentTime(moment());
     }, 1000);
 
@@ -28,22 +32,23 @@ export const AuctionCountdown = ({
   }, []);
 
   useEffect(() => {
-    timeBetween.asSeconds() < 0 && clearInterval(intervalIdRef.current);
-  }, [timeBetween]);
+    timeDifference.asSeconds() < 0 && clearInterval(intervalIdRef.current);
+  }, [timeDifference]);
 
   return (
-    <p className={classNames(className, styles.countdown)}>
-      {timeBetween.hours() < 10
-        ? '0' + timeBetween.hours()
-        : timeBetween.hours()}
-      .
-      {timeBetween.minutes() < 10
-        ? '0' + timeBetween.minutes()
-        : timeBetween.minutes()}
-      .
-      {timeBetween.seconds() < 10
-        ? '0' + timeBetween.seconds()
-        : timeBetween.seconds()}
-    </p>
+    <ul className={classNames(className, styles.countdown)}>
+      <li className={styles.timeItem}>
+        {formatDateUnit(timeDifference.hours() + timeDifference.days() * 24)}
+        <span>Hours</span>
+      </li>
+      <li className={styles.timeItem}>
+        {formatDateUnit(timeDifference.minutes())}
+        <span>Minutes</span>
+      </li>
+      <li className={styles.timeItem}>
+        {formatDateUnit(timeDifference.seconds())}
+        <span>Seconds</span>
+      </li>
+    </ul>
   );
 };
