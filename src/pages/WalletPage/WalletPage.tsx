@@ -21,6 +21,8 @@ import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { TwitterIcon2 } from '../../icons';
+import Toggle, { ControlledToggle } from '../../components/Toggle/Toggle';
+import { useForm } from 'react-hook-form';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -37,7 +39,14 @@ const WalletPage = (): JSX.Element => {
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
 
+  const [shouldUnfinishedShow, setShouldUnfinishedShow] =
+    useState<boolean>(false);
+
   const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
+
+  const onToggleUnfinishedClick = () => {
+    setShouldUnfinishedShow(!shouldUnfinishedShow);
+  };
 
   const fetchUserTokens = async () => {
     try {
@@ -171,30 +180,44 @@ const WalletPage = (): JSX.Element => {
                 <Loader size={'large'} />
               </div>
             ) : (
-              <div className={styles.vaults}>
-                {!userVaults.length && (
-                  <p className={styles.emptyMessage}>No vaults found</p>
+              <>
+                <div className={styles.filters}>
+                  <Toggle
+                    value={shouldUnfinishedShow}
+                    label="Show unfinished"
+                    className={styles.filter}
+                    onChange={onToggleUnfinishedClick}
+                  />
+                </div>
+                {shouldUnfinishedShow ? (
+                  <p>Unfinished Vaults</p>
+                ) : (
+                  <div className={styles.vaults}>
+                    {!userVaults.length && (
+                      <p className={styles.emptyMessage}>No vaults found</p>
+                    )}
+                    {userVaults.map((vault) => (
+                      <NavLink
+                        key={vault.publicKey}
+                        to={`${URLS.VAULT}/${vault.publicKey}`}
+                      >
+                        <VaultCard
+                          fractionMint={vault.fractionMint}
+                          name={vault.name}
+                          owner={vault.authority}
+                          vaultState={vault.state}
+                          imageSrc={vault.imageSrc}
+                          supply={vault.supply}
+                          isNftVerified={vault.isNftVerified}
+                          pricePerFraction={vault.lockedPricePerFraction}
+                          priceTokenMint={vault.priceTokenMint}
+                          buyoutPrice={vault.buyoutPrice}
+                        />
+                      </NavLink>
+                    ))}
+                  </div>
                 )}
-                {userVaults.map((vault) => (
-                  <NavLink
-                    key={vault.publicKey}
-                    to={`${URLS.VAULT}/${vault.publicKey}`}
-                  >
-                    <VaultCard
-                      fractionMint={vault.fractionMint}
-                      name={vault.name}
-                      owner={vault.authority}
-                      vaultState={vault.state}
-                      imageSrc={vault.imageSrc}
-                      supply={vault.supply}
-                      isNftVerified={vault.isNftVerified}
-                      pricePerFraction={vault.lockedPricePerFraction}
-                      priceTokenMint={vault.priceTokenMint}
-                      buyoutPrice={vault.buyoutPrice}
-                    />
-                  </NavLink>
-                ))}
-              </div>
+              </>
             )}
           </>
         )}
