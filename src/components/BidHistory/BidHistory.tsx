@@ -25,7 +25,7 @@ const initialBidsForTests = [
   },
   {
     key: 'bidKeyForMapID12',
-    bidder: 'EQ5XjC1neq4FbqLUaeHLx48CTougsPYdsFTyiGgti4KqEFUR',
+    bidder: 'GAHb7LbGXx41HEMHY46qDM65VmrXWYJjs5fPJU2iXzo5',
     bid_amount_per_share: new BN(9e9),
   },
   {
@@ -66,14 +66,12 @@ export const BidHistory = ({
         <li className={styles.item} key={bid.key}>
           <span className={styles.number}>{index + 1}</span>
           <span className={styles.bidder}>{shortenAddress(bid.bidder)}</span>
-          {index !== 0 &&
-            wallet.publicKey &&
-            wallet.publicKey.toString() === bid.bidder && (
-              <button className={styles.refund}>Refund bid</button>
-            )}
+          {index !== 0 && wallet?.publicKey?.toString() === bid.bidder && (
+            <button className={styles.refund}>Refund bid</button>
+          )}
           <p className={styles.price}>
-            <span className={styles.solanaCurrency}>SOL</span>
             {decimalBNToString(bid.bid_amount_per_share)}
+            <span className={styles.solanaCurrency}>SOL</span>
           </p>
         </li>
       ))}
