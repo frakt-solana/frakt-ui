@@ -4,23 +4,23 @@ import styles from './styles.module.scss';
 import classNames from 'classnames';
 
 interface AuctionCountdownProps {
-  endTimeMoment: number;
+  endTime: number;
   className?: string;
 }
 
 export const AuctionCountdown = ({
-  endTimeMoment,
+  endTime,
   className,
 }: AuctionCountdownProps): JSX.Element => {
-  const unixToCalendarTime = moment.unix(endTimeMoment);
+  const endTimeMoment = moment.unix(endTime);
 
   const intervalIdRef = useRef<ReturnType<typeof setInterval>>(null);
 
   const [currentTime, setCurrentTime] = useState<moment.Moment>(moment());
-  const timeDifference = moment.duration(unixToCalendarTime.diff(currentTime));
+  const timeDifference = moment.duration(endTimeMoment.diff(currentTime));
 
-  const formatDateUnit = (value) => {
-    return value < 10 ? '0' + value : value;
+  const formatDateUnit = (value: number): string => {
+    return value < 10 ? `0${value}` : `${value}`;
   };
 
   useEffect(() => {
