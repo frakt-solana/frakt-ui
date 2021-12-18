@@ -13,12 +13,21 @@ interface SidebarProps {
     pricePerFraction: number,
     fractionsAmount: number,
     basketName?: string,
+    tickSize?: number,
+    startBid?: number,
+    isAuction?: boolean,
   ) => void;
   nfts: UserNFT[];
 }
 
-const Sidebar = ({ onDeselect, nfts }: SidebarProps): JSX.Element => {
+const Sidebar = ({
+  onDeselect,
+  nfts,
+  onContinueClick,
+}: SidebarProps): JSX.Element => {
   const [isMobileSidebar, setIsMobileSidebar] = useState(false);
+  const isBasket = nfts.length > 1;
+  const [isAuction] = useState<boolean>(false);
 
   const changeSidebarVisibility = () => {
     setIsMobileSidebar(!isMobileSidebar);
@@ -38,26 +47,55 @@ const Sidebar = ({ onDeselect, nfts }: SidebarProps): JSX.Element => {
         { [styles.mobileSidebar]: isMobileSidebar },
       ])}
     >
-      {/* TODO create separate component */}
       {!!nfts.length && (
         <div
           className={styles.selectedVaults}
           onClick={changeSidebarVisibility}
         >
           <p>
-            {nfts.length > 1
-              ? `Your NFTs (${nfts.length})`
-              : `Your NFT (${nfts.length})`}
+            Your NFT{isBasket && 's'} ({nfts.length})
           </p>
         </div>
       )}
       <div className={styles.sidebar}>
-        <Header nfts={nfts} onDeselect={onDeselect} />
+        <Header isBasket={isBasket} nfts={nfts} onDeselect={onDeselect} />
+        {/*
+            <div className={styles.toggle_wrapper}>
+              <div className={styles.separator} />
+              <div className={styles.toggle}>
+                Instant buyout
+                <Toggle value={!isAuction} onChange={() => setIsAuction(val => !val)} />
+              </div>
+              <div className={styles.separator} />
+            </div>
+           */}
+        <div className={styles.toggle_wrapper}>
+          <div className={styles.separator} />
+        </div>
         <DetailsForm
-          nfts={nfts}
-          onSubmit={(data) => {
-            console.log(data);
-          }}
+          vaultName={nfts[0]?.metadata?.name}
+          isBasket={isBasket}
+          isAuction={isAuction}
+          onSubmit={({
+            ticker,
+            pricePerFraktion,
+            buyoutPrice,
+            supply,
+            basketName,
+            tickSize,
+            startBid,
+          }) =>
+            onContinueClick(
+              nfts,
+              ticker,
+              pricePerFraktion,
+              Number(buyoutPrice) / Number(supply),
+              basketName,
+              Number(tickSize),
+              Number(startBid),
+              isAuction, // TODO BN ?
+            )
+          }
         />
       </div>
     </div>

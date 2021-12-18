@@ -38,11 +38,19 @@
   .details {
     padding: 0 24px;
     flex-grow: 1;
-  }
-
-  .detailsTitle {
-    font: var(--font-btn-small);
-    margin-bottom: 24px;
+    :global
+    {
+     .ant-form-item {
+       margin-bottom: 0;
+     }
+      .ant-form-item-label {
+        margin-bottom: 4px;
+        font: var(--font-secondary);
+        opacity: 0.25;
+        text-transform: uppercase;
+        padding: 0!important;
+      }
+    }
   }
 
   .fieldLabel {
@@ -50,6 +58,14 @@
     font: var(--font-secondary);
     opacity: 0.25;
     text-transform: uppercase;
+  }
+
+  .detailsTitle {
+    font: var(--font-btn-small);
+    margin-bottom: 24px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
   }
 
   .tokenName {

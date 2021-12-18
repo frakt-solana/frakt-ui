@@ -27,12 +27,11 @@ interface BuyoutFieldProps {
   maxLength?: number;
 }
 
-// TODO This is just a wrapper with one one Change, it makes sense to move it to TokenField.
+// TODO This is just a wrapper with one onChange, it makes sense to move it to TokenField.
 // Perfect way is: change API of TokenField
 export const BuyoutField: React.FC<BuyoutFieldProps> = ({
   onChange,
   value,
-  ...props
 }) => {
   const onAmountChange = (amount: string) => onChange?.({ ...value, amount });
 
@@ -41,9 +40,9 @@ export const BuyoutField: React.FC<BuyoutFieldProps> = ({
   return (
     <TokenField
       value={value.amount}
+      currentToken={MOCK_TOKEN_LIST[0]}
       onValueChange={onAmountChange}
       onTokenChange={onTokenChange}
-      //tokensList={MOCK_TOKEN_LIST}
       className={styles.priceField}
       modalTitle="Select token"
       placeholder="1.0"

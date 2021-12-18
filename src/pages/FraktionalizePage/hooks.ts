@@ -9,6 +9,9 @@ interface FraktionalizeTxnData {
   pricePerFraction: number;
   fractionsAmount: number;
   basketName?: string;
+  isAuction: boolean;
+  tickSize: number;
+  startBid: number;
 }
 
 type ModalState = 'loading' | 'success' | 'fail';
@@ -38,14 +41,40 @@ export const useFraktionalizeTransactionModal = (): {
 
     const { userNfts } = txnData;
 
-    if (userNfts.length === 1) {
-      createSingleVault(txnData);
+    if (txnData.isAuction) {
+      if (userNfts.length === 1) {
+        createSingleVaultAuction(txnData);
+      } else {
+        //TODO: create auction basket here
+      }
     } else {
-      //TODO: create basket here
+      if (userNfts.length === 1) {
+        createSingleVault(txnData);
+      } else {
+        //TODO: create basket here
+      }
     }
   };
 
   const createSingleVault = async (txnData: FraktionalizeTxnData) => {
+    const result = await fraktionalize(
+      txnData.userNfts[0],
+      txnData.tickerName,
+      txnData.pricePerFraction,
+      txnData.fractionsAmount,
+      'SOL',
+    );
+
+    if (!result) {
+      setState('fail');
+    } else {
+      setState('success');
+      setFractionTokenMint(result.fractionalMint);
+      removeTokenOptimistic(txnData.userNfts[0].mint);
+    }
+  };
+
+  const createSingleVaultAuction = async (txnData: FraktionalizeTxnData) => {
     const result = await fraktionalize(
       txnData.userNfts[0],
       txnData.tickerName,
