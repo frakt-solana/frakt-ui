@@ -38,7 +38,6 @@ const Sidebar = ({
       setIsMobileSidebar(false);
     }
   }, [nfts.length]);
-
   return (
     <div
       className={classNames([

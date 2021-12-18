@@ -43,6 +43,9 @@
      .ant-form-item {
        margin-bottom: 0;
      }
+      .ant-form-vertical .ant-form-item {
+        flex-direction: row;
+      }
       .ant-form-item-label {
         margin-bottom: 4px;
         font: var(--font-secondary);

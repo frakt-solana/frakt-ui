@@ -36,11 +36,11 @@
 }
 
 @media screen and (max-width: 1300px) {
-  .mobileSidebar {
-    transform: translateY(0);
-  }
   .sidebarWrapper {
     transform: translateY(100%);
+  }
+  .mobileSidebar {
+    transform: translateY(0);
   }
 }
 
