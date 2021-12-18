@@ -152,8 +152,9 @@ export const DetailsForm: React.FC<DetailsProps> = ({
               error={pricePerFraktionError}
             />
           }
+          {/* changed buy out price to start bid for auctions  */}
           <Form.Item
-            label="Buyout price"
+            label="Start bid"
             name="buyoutPrice"
             getValueFromEvent={({ amount }) => amount}
             rules={[{ validator: validators.buyoutPrice }]}

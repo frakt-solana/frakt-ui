@@ -27,6 +27,7 @@ const Sidebar = ({
 }: SidebarProps): JSX.Element => {
   const [isMobileSidebar, setIsMobileSidebar] = useState(false);
   const isBasket = nfts.length > 1;
+  const isSidebarClosed = !nfts.length;
   const [isAuction] = useState<boolean>(false);
 
   const changeSidebarVisibility = () => {
@@ -38,11 +39,12 @@ const Sidebar = ({
       setIsMobileSidebar(false);
     }
   }, [nfts.length]);
+
   return (
     <div
       className={classNames([
         styles.sidebarWrapper,
-        { [styles.visible]: !!nfts.length },
+        { [styles.visible]: !isSidebarClosed },
         { [styles.mobileSidebar]: isMobileSidebar },
       ])}
     >
@@ -71,31 +73,33 @@ const Sidebar = ({
         <div className={styles.toggle_wrapper}>
           <div className={styles.separator} />
         </div>
-        <DetailsForm
-          vaultName={nfts[0]?.metadata?.name}
-          isBasket={isBasket}
-          isAuction={isAuction}
-          onSubmit={({
-            ticker,
-            pricePerFraktion,
-            buyoutPrice,
-            supply,
-            basketName,
-            tickSize,
-            startBid,
-          }) =>
-            onContinueClick(
-              nfts,
+        {!isSidebarClosed && (
+          <DetailsForm
+            vaultName={nfts[0]?.metadata?.name}
+            isBasket={isBasket}
+            isAuction={isAuction}
+            onSubmit={({
               ticker,
               pricePerFraktion,
-              Number(buyoutPrice) / Number(supply),
+              buyoutPrice, // eslint-disable-line
+              supply,
               basketName,
-              Number(tickSize),
-              Number(startBid),
-              isAuction, // TODO BN ?
-            )
-          }
-        />
+              tickSize,
+              startBid,
+            }) =>
+              onContinueClick(
+                nfts,
+                ticker,
+                pricePerFraktion,
+                Number(supply),
+                basketName,
+                Number(tickSize),
+                Number(startBid),
+                isAuction,
+              )
+            }
+          />
+        )}
       </div>
     </div>
   );
