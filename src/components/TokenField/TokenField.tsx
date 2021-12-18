@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
-
 import styles from './styles.module.scss';
 import { ChevronDownIcon } from '../../icons';
 import { SelectTokenModal } from '../SelectTokenModal';
@@ -24,7 +23,6 @@ export interface TokenFieldProps {
   onUseMaxButtonClick?: () => void;
   error?: boolean;
   placeholder?: string;
-  onInputBlur?: () => void;
   amountMaxLength?: number;
   disabled?: boolean;
 }
@@ -44,7 +42,6 @@ const TokenField = ({
   onUseMaxButtonClick,
   error,
   amountMaxLength,
-  onInputBlur,
   placeholder = '0.0',
   disabled = false,
 }: TokenFieldProps): JSX.Element => {
@@ -84,7 +81,6 @@ const TokenField = ({
             styles.valueInput,
             { [styles.valueInput_disabled]: disabled },
           ])}
-          onBlur={onInputBlur}
         />
         {!!onUseMaxButtonClick && (
           <div className={styles.useMaxBtnContainer}>
