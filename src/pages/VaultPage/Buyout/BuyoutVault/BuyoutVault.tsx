@@ -1,18 +1,21 @@
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import Button from '../../components/Button';
-import TokenField from '../../components/TokenField';
-import { VaultData, VaultState, useFraktion } from '../../contexts/fraktion';
-import fraktionConfig from '../../contexts/fraktion/config';
+import Button from '../../../../components/Button';
+import TokenField from '../../../../components/TokenField';
+import {
+  VaultData,
+  VaultState,
+  useFraktion,
+} from '../../../../contexts/fraktion';
+import fraktionConfig from '../../../../contexts/fraktion/config';
 import styles from './styles.module.scss';
-import { decimalBNToString } from '../../utils';
-import TransactionModal from '../../components/TransactionModal';
-import { useUserTokens } from '../../contexts/userTokens';
-import { Loader } from '../../components/Loader';
+import { decimalBNToString } from '../../../../utils';
+import TransactionModal from '../../../../components/TransactionModal';
+import { useUserTokens } from '../../../../contexts/userTokens';
+import { Loader } from '../../../../components/Loader';
 import BN from 'bn.js';
-import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
-import { BidHistory } from '../../components/BidHistory';
+import { useWalletModal } from '../../../../contexts/WalletModal';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -80,7 +83,7 @@ const useBuyoutTransactionModal = () => {
   };
 };
 
-export const Buyout = ({
+export const BuyoutVault = ({
   vaultInfo,
 }: {
   vaultInfo: VaultData;
@@ -94,6 +97,8 @@ export const Buyout = ({
     retry: retryTxn,
   } = useBuyoutTransactionModal();
   const { loading: userTokensLoading, rawUserTokensByMint } = useUserTokens();
+  const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount: BN = usetFractions?.amountBN || new BN(0);
@@ -114,8 +119,6 @@ export const Buyout = ({
     9,
   );
 
-  const { connected } = useWallet();
-  const { setVisible } = useWalletModal();
   const currency =
     vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
       ? 'SOL'
@@ -128,7 +131,6 @@ export const Buyout = ({
 
   return (
     <div className={styles.buyout}>
-      <BidHistory />
       <h5 className={styles.buyout__title}>{!userTokensLoading && 'Buyout'}</h5>
       <div className={styles.buyoutControls}>
         {userTokensLoading && (
