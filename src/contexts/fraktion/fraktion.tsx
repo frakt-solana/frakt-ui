@@ -9,6 +9,7 @@ import {
   createFraktionalizer,
   closeFraktionalizer,
   redeemRewardsFromShares,
+  startFraktionalizerAuction,
 } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
 import { keyBy } from 'lodash';
@@ -33,7 +34,7 @@ import { WSOL } from '@raydium-io/raydium-sdk';
 import { registerMarket } from '../../utils/markets';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
 
-const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
+const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
 
 export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
@@ -134,17 +135,18 @@ export const fraktionalize = async (
       fractionsAmountBn,
     );
 
-    const result = await createFraktionalizer(
+    const result = await createFraktionalizer({
       connection,
-      pricePerFractionBn, //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
-      fractionsAmountBn,
-      FRACTION_DECIMALS,
-      mint,
-      ADMIN_PUBKEY,
-      token === 'SOL' ? SOL_TOKEN_PUBKEY : FRKT_TOKEN_MINT_PUBLIC_KEY,
-      walletPublicKey.toString(),
-      FRAKTION_PUBKEY,
-      async (txn, signers): Promise<void> => {
+      pricePerShare: pricePerFractionBn, //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
+      numberOfShares: fractionsAmountBn,
+      fractionDecimals: FRACTION_DECIMALS,
+      nftMint: mint,
+      adminPubkey: ADMIN_PUBKEY,
+      priceMint:
+        token === 'SOL' ? SOL_TOKEN_PUBKEY : FRKT_TOKEN_MINT_PUBLIC_KEY,
+      userPubkey: walletPublicKey.toString(),
+      vaultProgramId: PROGRAM_PUBKEY,
+      sendTxn: async (txn, signers): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();
         txn.recentBlockhash = blockhash;
         txn.feePayer = walletPublicKey;
@@ -153,7 +155,7 @@ export const fraktionalize = async (
         const txid = await connection.sendRawTransaction(signed.serialize());
         return void connection.confirmTransaction(txid);
       },
-    );
+    });
 
     if (result && !IS_DEVNET) {
       const { fractionalMint, vault: vaultPubkey } = result;
@@ -231,7 +233,7 @@ export const buyout = async (
       fractionTreasury,
       redeemTreasury,
       priceTokenMint,
-      FRAKTION_PUBKEY,
+      PROGRAM_PUBKEY,
       async (txn, signers): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();
         txn.recentBlockhash = blockhash;
@@ -279,7 +281,7 @@ export const redeem = async (
       priceTokenMint,
       fractionMint,
       redeemTreasury,
-      FRAKTION_PUBKEY,
+      PROGRAM_PUBKEY,
       async (txn): Promise<void> => {
         const { blockhash } = await connection.getRecentBlockhash();
         txn.recentBlockhash = blockhash;
