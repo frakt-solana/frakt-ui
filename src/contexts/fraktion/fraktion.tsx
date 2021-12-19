@@ -9,7 +9,6 @@ import {
   createFraktionalizer,
   closeFraktionalizer,
   redeemRewardsFromShares,
-  startFraktionalizerAuction,
 } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
 import { keyBy } from 'lodash';
