@@ -16,16 +16,18 @@ export const InfoTable = ({
   marketId?: string;
 }): JSX.Element => {
   const currency =
-    vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
-      ? 'SOL'
-      : 'FRKT';
+    vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
+
+  //TODO: Finish for baskets
+  const nftMint =
+    vaultInfo.safetyBoxes.length === 1 ? vaultInfo.safetyBoxes[0].nftMint : '';
 
   return (
     <div className={styles.infoTable}>
       <div className={styles.infoTable__cell}>
         <p className={styles.infoTable__cellName}>Total supply</p>
         <p className={styles.infoTable__cellValue}>
-          {vaultInfo.supply.toString().slice(0, -3)}
+          {vaultInfo.fractionsSupply.toString().slice(0, -3)}
         </p>
       </div>
       <div className={styles.infoTable__cell}>
@@ -34,7 +36,7 @@ export const InfoTable = ({
         </p>
         <p className={styles.infoTable__cellValue}>
           {decimalBNToString(
-            vaultInfo.lockedPricePerFraction.mul(new BN(1e3)),
+            vaultInfo.lockedPricePerShare.mul(new BN(1e3)),
             6,
             9,
           )}
@@ -44,7 +46,7 @@ export const InfoTable = ({
         <p className={styles.infoTable__cellName}>Buyout price ({currency})</p>
         <p className={styles.infoTable__cellValue}>
           {decimalBNToString(
-            vaultInfo.lockedPricePerFraction.mul(vaultInfo.supply),
+            vaultInfo.lockedPricePerShare.mul(vaultInfo.fractionsSupply),
             2,
             9,
           )}
@@ -54,7 +56,7 @@ export const InfoTable = ({
         <p className={styles.infoTable__cellName}>Market cap</p>
         <p className={styles.infoTable__cellValue}>
           {decimalBNToString(
-            vaultInfo.lockedPricePerFraction.mul(vaultInfo.supply),
+            vaultInfo.lockedPricePerShare.mul(vaultInfo.fractionsSupply),
             2,
             9,
           )}
@@ -67,9 +69,9 @@ export const InfoTable = ({
             styles.infoTable__cellValue,
             styles.infoTable__cellValueCopy,
           )}
-          onClick={() => copyToClipboard(vaultInfo.nftMint)}
+          onClick={() => copyToClipboard(nftMint)}
         >
-          {shortenAddress(vaultInfo.nftMint)}
+          {shortenAddress(nftMint)}
           <Tooltip
             placement="bottom"
             trigger="hover"

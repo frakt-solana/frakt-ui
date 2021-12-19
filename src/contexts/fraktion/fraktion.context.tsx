@@ -65,7 +65,7 @@ export const FraktionProvider = ({
   const patchVault = (vaultInfo: VaultData): void => {
     setVaults((vaults) =>
       vaults.reduce((vaults, vault) => {
-        if (vault.publicKey === vaultInfo.publicKey) {
+        if (vault.vaultPubkey === vaultInfo.vaultPubkey) {
           return [...vaults, vaultInfo];
         }
         return [...vaults, vault];

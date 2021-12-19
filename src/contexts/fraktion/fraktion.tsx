@@ -10,16 +10,15 @@ import {
   closeFraktionalizer,
   redeemRewardsFromShares,
 } from 'fraktionalizer-client-library';
+import { MARKETS } from '@project-serum/serum';
+import { WSOL } from '@raydium-io/raydium-sdk';
 import BN from 'bn.js';
-import { keyBy } from 'lodash';
 
 import {
   CreateFraktionalizerResult,
   Market,
-  SafetyBox,
+  Vault,
   VaultData,
-  VaultsMap,
-  VaultState,
 } from './fraktion.model';
 import fraktionConfig from './config';
 import { IS_DEVNET, FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
@@ -28,10 +27,17 @@ import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
 import { notify } from '../../utils';
 import { listMarket } from '../../utils/serumUtils/send';
-import { MARKETS } from '@project-serum/serum';
-import { WSOL } from '@raydium-io/raydium-sdk';
 import { registerMarket } from '../../utils/markets';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
+import {
+  mapAuctionsByVaultPubkey,
+  mapBidsByAuctionPubkey,
+  mapMarketExistenceByFractionMint,
+  mapMetadataByNftMint,
+  mapSafetyBoxesByVaultPubkey,
+  parseVaults,
+  transformToSafetyBoxesWithMetadata,
+} from './fraktion.helpers';
 
 const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
@@ -41,75 +47,39 @@ export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
     await fetch(VAULTS_AND_META_CACHE_URL)
   ).json();
 
-  const hasMarketByMint = markets.reduce((acc, { baseMint }) => {
-    return { ...acc, [baseMint]: true };
-  }, {});
+  const marketExistenceByFractionMint =
+    mapMarketExistenceByFractionMint(markets);
 
-  const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } = allVaults;
-
-  const metadataByMint = metas.reduce((acc, meta) => {
-    return { ...acc, [meta.mintAddress]: meta };
-  }, {});
-
-  const safetyBoxes = rawSafetyBoxes as SafetyBox[];
-  const vaultsMap = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
-
-  const vaultsData: VaultData[] = safetyBoxes.reduce(
-    (
-      acc,
-      { vault: vaultPubkey, tokenMint: nftMint, safetyBoxPubkey, store },
-    ) => {
-      const vault = vaultsMap[vaultPubkey];
-      const arweaveMetadata = metadataByMint[nftMint].fetchedMeta;
-      const verification = metadataByMint[nftMint].isVerifiedStatus;
-
-      if (vault && arweaveMetadata) {
-        const { name, description, image, attributes } = arweaveMetadata;
-        const {
-          authority,
-          fractionMint,
-          fractionsSupply,
-          lockedPricePerShare,
-          priceMint,
-          state,
-          fractionTreasury,
-          redeemTreasury,
-          createdAt,
-        } = vault;
-
-        const vaultData: VaultData = {
-          fractionMint,
-          authority,
-          supply: new BN(fractionsSupply, 16),
-          lockedPricePerFraction: new BN(lockedPricePerShare, 16),
-          priceTokenMint: priceMint,
-          publicKey: vaultPubkey,
-          state: VaultState[state],
-          nftMint,
-          name,
-          description,
-          imageSrc: image,
-          nftAttributes: attributes,
-          fractionTreasury,
-          redeemTreasury,
-          safetyBoxPubkey,
-          store,
-          isNftVerified: verification?.success || false,
-          nftCollectionName: verification?.collection,
-          createdAt: new BN(createdAt, 16).toNumber(),
-          buyoutPrice: new BN(lockedPricePerShare, 16).mul(
-            new BN(fractionsSupply, 16),
-          ),
-          hasMarket: hasMarketByMint[fractionMint] || false,
-        };
-
-        return [...acc, vaultData];
-      }
-
-      return acc;
-    },
-    [],
+  const vaults = parseVaults(allVaults?.vaults);
+  const safetyBoxesByVaultPubkey = mapSafetyBoxesByVaultPubkey(
+    allVaults?.safetyBoxes,
   );
+  const auctionByVaultPubkey = mapAuctionsByVaultPubkey(allVaults?.auctions);
+  const bidsByAuctionPubkey = mapBidsByAuctionPubkey(allVaults?.bids);
+  const metadataByNftMint = mapMetadataByNftMint(metas);
+
+  const vaultsData = vaults.map((vault: Vault): VaultData => {
+    const { vaultPubkey, fractionMint } = vault;
+    const relatedSafetyBoxes = safetyBoxesByVaultPubkey[vaultPubkey] || [];
+    const relatedAuction = auctionByVaultPubkey[vaultPubkey] || null;
+    const relatedBids =
+      bidsByAuctionPubkey[relatedAuction?.auctionPubkey] || [];
+
+    const relatedSafetyBoxesWithMetadata = transformToSafetyBoxesWithMetadata(
+      relatedSafetyBoxes,
+      metadataByNftMint,
+    );
+
+    return {
+      ...vault,
+      hasMarket: marketExistenceByFractionMint[fractionMint] || false,
+      safetyBoxes: relatedSafetyBoxesWithMetadata,
+      auction: {
+        auction: relatedAuction,
+        bids: relatedBids,
+      },
+    };
+  });
 
   return vaultsData;
 };
@@ -196,60 +166,64 @@ export const buyout = async (
   signers: Keypair[];
 } | null> => {
   const {
-    supply,
-    lockedPricePerFraction,
-    publicKey,
+    fractionsSupply,
+    lockedPricePerShare,
+    vaultPubkey,
     authority,
-    nftMint,
+    safetyBoxes,
     fractionMint,
-    priceTokenMint,
+    priceMint,
     fractionTreasury,
     redeemTreasury,
-    safetyBoxPubkey,
-    store,
   } = vault;
-
   try {
-    const userFractionTokenView = userTokensByMint[fractionMint];
+    //? If vault with single locked NFT
+    if (safetyBoxes.length === 1) {
+      const { safetyBoxPubkey, nftMint, store } = safetyBoxes[0];
 
-    const userFractionTokenAmount =
-      userFractionTokenView?.amountBN || new BN(0);
+      const userFractionTokenView = userTokensByMint[fractionMint];
 
-    const result = await closeFraktionalizer(
-      connection,
-      supply.toNumber(),
-      lockedPricePerFraction
-        .mul(supply.sub(userFractionTokenAmount))
-        .toNumber(),
-      walletPublicKey,
-      ADMIN_PUBKEY,
-      new PublicKey(authority),
-      publicKey,
-      safetyBoxPubkey,
-      nftMint,
-      store,
-      fractionMint,
-      fractionTreasury,
-      redeemTreasury,
-      priceTokenMint,
-      PROGRAM_PUBKEY,
-      async (txn, signers): Promise<void> => {
-        const { blockhash } = await connection.getRecentBlockhash();
-        txn.recentBlockhash = blockhash;
-        txn.feePayer = walletPublicKey;
-        txn.sign(...signers);
-        const signed = await signTransaction(txn);
-        const txid = await connection.sendRawTransaction(signed.serialize());
-        return void connection.confirmTransaction(txid);
-      },
-    );
+      const userFractionTokenAmount =
+        userFractionTokenView?.amountBN || new BN(0);
 
-    notify({
-      message: 'Buyout passed successfully',
-      type: 'success',
-    });
+      const result = await closeFraktionalizer(
+        connection,
+        fractionsSupply.toNumber(),
+        lockedPricePerShare
+          .mul(fractionsSupply.sub(userFractionTokenAmount))
+          .toNumber(),
+        walletPublicKey,
+        ADMIN_PUBKEY,
+        new PublicKey(authority),
+        vaultPubkey,
+        safetyBoxPubkey,
+        nftMint,
+        store,
+        fractionMint,
+        fractionTreasury,
+        redeemTreasury,
+        priceMint,
+        PROGRAM_PUBKEY,
+        async (txn, signers): Promise<void> => {
+          const { blockhash } = await connection.getRecentBlockhash();
+          txn.recentBlockhash = blockhash;
+          txn.feePayer = walletPublicKey;
+          txn.sign(...signers);
+          const signed = await signTransaction(txn);
+          const txid = await connection.sendRawTransaction(signed.serialize());
+          return void connection.confirmTransaction(txid);
+        },
+      );
 
-    return result;
+      notify({
+        message: 'Buyout passed successfully',
+        type: 'success',
+      });
+
+      return result;
+    } else {
+      throw new Error("Empty SafetyBox or it's a basket");
+    }
   } catch (error) {
     notify({
       message: 'Transaction failed',
@@ -270,14 +244,14 @@ export const redeem = async (
   instructions: TransactionInstruction[];
   signers: Keypair[];
 } | null> => {
-  const { publicKey, fractionMint, priceTokenMint, redeemTreasury } = vault;
+  const { vaultPubkey, fractionMint, priceMint, redeemTreasury } = vault;
 
   try {
     const result = await redeemRewardsFromShares(
       connection,
       walletPublicKey.toString(),
-      publicKey,
-      priceTokenMint,
+      vaultPubkey,
+      priceMint,
       fractionMint,
       redeemTreasury,
       PROGRAM_PUBKEY,
