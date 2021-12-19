@@ -189,3 +189,11 @@ body input.valueInput {
 .disabledTokens .arrowDownIcon {
   display: none;
 }
+
+:global .ant-form-item-has-error {
+  :local {
+    .root {
+      border-color: var(--red-color);
+    }
+  }
+}

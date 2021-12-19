@@ -10,26 +10,9 @@
   display: flex;
   flex-direction: column;
 
-  &_visible {
-    transform: translateX(0);
-    opacity: 1;
-
-    .sidebar {
-      opacity: 1;
-    }
-  }
-
   @media screen and (max-width: 1450px) {
     max-width: 350px;
     width: 100%;
-  }
-
-  @media screen and (max-width: 1300px) {
-    transform: translateY(100%);
-
-    &_isMobileSidebar {
-      transform: translateY(0);
-    }
   }
 
   @media screen and (max-width: 550px) {
@@ -37,37 +20,33 @@
     width: 100%;
     max-width: 100%;
   }
-}
-
-.sidebarWrapper_isMobileSidebar .selectedVaults {
-  top: 0;
-}
-
-
-.selectedVaults {
-  position: absolute;
-  width: 100%;
-  z-index: 9;
-  left: 0;
-  right: 0;
-  top: -90px;
-  display: none;
-  border: 1px solid var(--gray-color-6);
-  background-color: var(--accent-color-1);
-
-  p {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 80px;
-    font-size: 25px;
-  }
-
 
   @media screen and (max-width: 1300px) {
-    display: block;
+      transform: translateY(100%);
   }
+}
+
+.visible {
+  transform: translateX(0);
+  opacity: 1;
+
+  .sidebar {
+    opacity: 1;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .sidebarWrapper {
+    transform: translateY(100%);
+  }
+  .mobileSidebar {
+    transform: translateY(0);
+  }
+}
+
+
+.mobileSidebar .selectedVaults {
+  top: 0;
 }
 
 .sidebar {
@@ -80,180 +59,44 @@
   opacity: 0;
   display: flex;
   flex-direction: column;
+ }
 
-  &__header {
-    padding: 24px 24px 0;
-    margin-bottom: 32px;
-  }
-
-  &__title {
-    font: var(--font-subtitle-2);
-    margin-bottom: 12px;
-
-    @media screen and (max-width: 1300px) {
-      margin-bottom: 50px;
-    }
-  }
-
-  &__images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-
-    .sidebar__image {
-      margin-bottom: 0;
-    }
-
-    margin-bottom: 32px;
-  }
-
-  &__image {
-    width: 80px;
-    height: 80px;
-    background-color: var(--gray-color-7);
-    background-size: cover;
-    background-repeat: no-repeat;
-    border: 1px solid var(--gray-color-1);
-    margin-bottom: 32px;
-    position: relative;
-  }
-
-  &__removeBtn {
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--gray-color-3);
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: var(--black-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
-
-    &::before {
-      content: '-';
-    }
-  }
-
-  &__separator {
-    width: 100%;
-    height: 1px;
-    background-color: var(--gray-color-3);
-  }
-
-  &__details {
-    padding: 0 24px;
-    flex-grow: 1;
-  }
-
-  &__detailsTitle {
-    font: var(--font-btn-small);
-    margin-bottom: 24px;
-  }
-
-  &__fieldLabel {
-    margin-bottom: 4px;
-    font: var(--font-secondary);
-    opacity: 0.25;
-    text-transform: uppercase;
-  }
-
-  &__tokenName {
-    font: var(--font-btn-small);
-  }
-
-  &__fieldWrapper {
-    margin-bottom: 18px;
-
-    &:last-child {
-      margin-bottom: unset;
-    }
-
-    &Double {
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 16px;
-    }
-
-    &_error {
-      color: var(--red-color);
-      font: var(--font-smallest);
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-  }
-
-  &__stringInput {
-    &,
-    &:hover,
-    &:active,
-    &:focus,
-    &:focus-visible {
-      border: 1px solid var(--gray-color-3);
-      border-color: var(--gray-color-3);
-      padding: 10px 16px;
-    }
-  }
-
-  &__continueBtn {
-    &Container {
-      width: 100%;
-    }
-
-    width: 100%;
-    justify-content: center;
-    font: var(--font-btn-small);
-  }
-
-  &__feeMessage {
-    font: var(--font-smallest);
-    font-size: 12px;
-    color: var(--gray-color-8);
-    padding: 0 24px 12px;
-  }
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--gray-color-3);
 }
 
-body .sidebar__stringInput {
-  &,
-  &:active {
-    border: 1px solid var(--gray-color-3);
-    border-color: var(--gray-color-3);
-    padding: 10px 16px;
-  }
-}
-
-.priceField {
-  max-height: 61px;
-}
-
-.err {
-  font-size: 10px;
-  min-height: 32px;
-  line-height: 32px;
-  font-weight: bold;
-
-  &:last-child {
-    margin-bottom: 18px;
-  }
-}
-
-.fraktionPrice {
+.toggle {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 18px;
+  padding: 16px 0;
 }
 
-.line {
-  display: inline-block;
-  height: 1px;
-  flex-grow: 1;
-  margin: 0 12px 0 12px;
-  background-color: var(--gray-color-3);
+.toggle_wrapper {
+  padding: 0 24px;
+  margin-bottom: 32px;
+}
+
+.selectedVaults {
+  position: absolute;
+  width: 100%;
+  z-index: 9;
+  left: 0;
+  right: 0;
+  top: -90px;
+  display: none;
+  border: 1px solid var(--gray-color-6);
+  background-color: var(--accent-color-1);
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80px;
+    font-size: 25px;
+  }
+  @media screen and (max-width: 1300px) {
+    display: block;
+  }
 }
