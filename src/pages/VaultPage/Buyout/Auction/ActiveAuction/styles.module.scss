@@ -1,0 +1,30 @@
+.timer {
+  margin: 0 auto;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.buyoutControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.label {
+  margin-top: 20px;
+  font-size: 20px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  min-height: 30px;
+}

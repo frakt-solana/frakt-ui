@@ -7,7 +7,7 @@ import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import { VaultData, VaultState } from '../../contexts/fraktion/fraktion.model';
+import { VaultData, VaultState } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
 
 export interface VaultCardProps {
