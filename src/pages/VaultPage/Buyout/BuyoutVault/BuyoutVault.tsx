@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import Button from '../../components/Button';
-import TokenField from '../../components/TokenField';
-import { VaultData, VaultState, useFraktion } from '../../contexts/fraktion';
-import fraktionConfig from '../../contexts/fraktion/config';
+import Button from '../../../../components/Button';
+import TokenField from '../../../../components/TokenField';
+import { VaultData, useFraktion } from '../../../../contexts/fraktion';
+import fraktionConfig from '../../../../contexts/fraktion/config';
 import styles from './styles.module.scss';
-import { decimalBNToString } from '../../utils';
-import TransactionModal from '../../components/TransactionModal';
-import { useUserTokens } from '../../contexts/userTokens';
-import { Loader } from '../../components/Loader';
+import { decimalBNToString } from '../../../../utils';
+import TransactionModal from '../../../../components/TransactionModal';
+import { useUserTokens } from '../../../../contexts/userTokens';
+import { Loader } from '../../../../components/Loader';
 import BN from 'bn.js';
-import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
+import { useWalletModal } from '../../../../contexts/WalletModal';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -48,7 +48,7 @@ const useBuyoutTransactionModal = () => {
       if (res) {
         setState('success');
         refetchUserTokens();
-        patchVault({ ...vaultData, state: VaultState[2] });
+        patchVault({ ...vaultData, state: 2 });
       } else {
         setState('fail');
       }
@@ -79,7 +79,7 @@ const useBuyoutTransactionModal = () => {
   };
 };
 
-export const Buyout = ({
+export const BuyoutVault = ({
   vaultInfo,
 }: {
   vaultInfo: VaultData;
@@ -93,32 +93,30 @@ export const Buyout = ({
     retry: retryTxn,
   } = useBuyoutTransactionModal();
   const { loading: userTokensLoading, rawUserTokensByMint } = useUserTokens();
+  const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount: BN = usetFractions?.amountBN || new BN(0);
 
-  const fee: BN = vaultInfo.lockedPricePerFraction
-    .mul(vaultInfo.supply)
+  const fee: BN = vaultInfo.lockedPricePerShare
+    .mul(vaultInfo.fractionsSupply)
     .div(new BN(50));
 
   const buyoutPrice = decimalBNToString(
-    vaultInfo.lockedPricePerFraction
+    vaultInfo.lockedPricePerShare
       .mul(
         userFractionsAmount.toNumber()
-          ? vaultInfo.supply.sub(userFractionsAmount)
-          : vaultInfo.supply,
+          ? vaultInfo.fractionsSupply.sub(userFractionsAmount)
+          : vaultInfo.fractionsSupply,
       )
       .add(fee),
     2,
     9,
   );
 
-  const { connected } = useWallet();
-  const { setVisible } = useWalletModal();
   const currency =
-    vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
-      ? 'SOL'
-      : 'FRKT';
+    vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   const onTransactionModalCancel = () => {
     closeTxnModal();

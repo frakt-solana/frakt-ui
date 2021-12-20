@@ -196,8 +196,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
 
       // ? amount of token per inputed SOL amount (by locked price per fraction price)
       const amountLocked =
-        (vaultInfo.lockedPricePerFraction.toNumber() * Number(payValue)) /
-        10 ** 2;
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
 
       const difference = (amountMarket / amountLocked) * 100 - 100;
 
@@ -206,8 +205,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       const amountMarketSOL = Number(receiveValue);
 
       const amountLockedSOL =
-        (vaultInfo.lockedPricePerFraction.toNumber() * Number(payValue)) /
-        10 ** 6;
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
 
       const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
 

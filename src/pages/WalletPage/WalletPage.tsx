@@ -202,21 +202,10 @@ const WalletPage = (): JSX.Element => {
                     )}
                     {userVaults.map((vault) => (
                       <NavLink
-                        key={vault.publicKey}
-                        to={`${URLS.VAULT}/${vault.publicKey}`}
+                        key={vault.vaultPubkey}
+                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
                       >
-                        <VaultCard
-                          fractionMint={vault.fractionMint}
-                          name={vault.name}
-                          owner={vault.authority}
-                          vaultState={vault.state}
-                          imageSrc={vault.imageSrc}
-                          supply={vault.supply}
-                          isNftVerified={vault.isNftVerified}
-                          pricePerFraction={vault.lockedPricePerFraction}
-                          priceTokenMint={vault.priceTokenMint}
-                          buyoutPrice={vault.buyoutPrice}
-                        />
+                        <VaultCard vaultData={vault} />
                       </NavLink>
                     ))}
                   </div>
