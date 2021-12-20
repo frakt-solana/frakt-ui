@@ -9,6 +9,9 @@ interface FraktionalizeTxnData {
   pricePerFraction: number;
   fractionsAmount: number;
   basketName?: string;
+  isAuction: boolean;
+  tickSize: number;
+  startBid: number;
 }
 
 type ModalState = 'loading' | 'success' | 'fail';

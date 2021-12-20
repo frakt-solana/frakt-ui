@@ -118,16 +118,25 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     //TODO optimise it 4n instead of n
     return rawVaults
-      .filter(({ state, authority, name, isNftVerified, hasMarket }) => {
+      .filter(({ state, authority, hasMarket, safetyBoxes }) => {
+        //TODO: finish for baskets
+        const { nftName, isNftVerified } =
+          safetyBoxes.length === 1
+            ? safetyBoxes[0]
+            : {
+                nftName: '',
+                isNftVerified: false,
+              };
+
         if (connected && showMyVaults && authority !== publicKey.toString())
           return false;
-        if (!showActiveVaults && state === VaultState[1]) return false;
-        if (!showBoughtVaults && state === VaultState[2]) return false;
-        if (!showClosedVaults && state === VaultState[3]) return false;
+        if (!showActiveVaults && state === VaultState.Active) return false;
+        if (!showBoughtVaults && state === VaultState.Bought) return false;
+        if (!showClosedVaults && state === VaultState.Closed) return false;
         if (showTradableVaults && !hasMarket) return false;
         if (showVerifiedVaults && !isNftVerified) return false;
 
-        return name.toUpperCase().includes(searchString);
+        return nftName.toUpperCase().includes(searchString);
       })
       .sort((a, b) => {
         if (sortField === 'createdAt') {
@@ -219,38 +228,14 @@ const VaultsPage = (): JSX.Element => {
           wrapperClassName={styles.cards}
           emptyMessage={'No vaults found'}
         >
-          {vaults.map(
-            ({
-              fractionMint,
-              publicKey,
-              name,
-              authority,
-              state,
-              imageSrc,
-              supply,
-              isNftVerified,
-              lockedPricePerFraction,
-              priceTokenMint,
-              buyoutPrice,
-              hasMarket,
-            }) => (
-              <NavLink key={publicKey} to={`${URLS.VAULT}/${publicKey}`}>
-                <VaultCard
-                  fractionMint={fractionMint}
-                  name={name}
-                  owner={authority}
-                  vaultState={state}
-                  imageSrc={imageSrc}
-                  supply={supply}
-                  isNftVerified={isNftVerified}
-                  pricePerFraction={lockedPricePerFraction}
-                  priceTokenMint={priceTokenMint}
-                  buyoutPrice={buyoutPrice}
-                  hasMarket={hasMarket}
-                />
-              </NavLink>
-            ),
-          )}
+          {vaults.map((vault) => (
+            <NavLink
+              key={vault.vaultPubkey}
+              to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+            >
+              <VaultCard vaultData={vault} />
+            </NavLink>
+          ))}
         </FakeInfinityScroll>
       </Container>
     </AppLayout>

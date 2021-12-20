@@ -3,11 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 import Button from '../../../../components/Button';
 import TokenField from '../../../../components/TokenField';
-import {
-  VaultData,
-  VaultState,
-  useFraktion,
-} from '../../../../contexts/fraktion';
+import { VaultData, useFraktion } from '../../../../contexts/fraktion';
 import fraktionConfig from '../../../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { decimalBNToString } from '../../../../utils';
@@ -52,7 +48,7 @@ const useBuyoutTransactionModal = () => {
       if (res) {
         setState('success');
         refetchUserTokens();
-        patchVault({ ...vaultData, state: VaultState[2] });
+        patchVault({ ...vaultData, state: 2 });
       } else {
         setState('fail');
       }
@@ -103,16 +99,16 @@ export const BuyoutVault = ({
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount: BN = usetFractions?.amountBN || new BN(0);
 
-  const fee: BN = vaultInfo.lockedPricePerFraction
-    .mul(vaultInfo.supply)
+  const fee: BN = vaultInfo.lockedPricePerShare
+    .mul(vaultInfo.fractionsSupply)
     .div(new BN(50));
 
   const buyoutPrice = decimalBNToString(
-    vaultInfo.lockedPricePerFraction
+    vaultInfo.lockedPricePerShare
       .mul(
         userFractionsAmount.toNumber()
-          ? vaultInfo.supply.sub(userFractionsAmount)
-          : vaultInfo.supply,
+          ? vaultInfo.fractionsSupply.sub(userFractionsAmount)
+          : vaultInfo.fractionsSupply,
       )
       .add(fee),
     2,
@@ -120,9 +116,7 @@ export const BuyoutVault = ({
   );
 
   const currency =
-    vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
-      ? 'SOL'
-      : 'FRKT';
+    vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   const onTransactionModalCancel = () => {
     closeTxnModal();

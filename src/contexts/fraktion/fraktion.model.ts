@@ -2,13 +2,6 @@ import { RawUserTokensByMint, UserNFT } from '../userTokens';
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
 
-export enum VaultKey {
-  Uninitialized = 0,
-  VaultV1 = 3,
-  SafetyDepositBoxV1 = 1,
-  ExternalPriceAccountV1 = 2,
-}
-
 export enum VaultState {
   Damaged = 0,
   Active = 1,
@@ -16,9 +9,27 @@ export enum VaultState {
   Closed = 3,
 }
 
+export interface RawVault {
+  vaultPubkey: string;
+  key: number;
+  tokenProgram: string;
+  fractionMint: string;
+  authority: string;
+  fractionTreasury: string;
+  redeemTreasury: string;
+  priceMint: string;
+  allowFurtherShareCreation: number;
+  pricingLookupAddress: string;
+  tokenTypeCount: string;
+  state: number;
+  fractionsSupply: string;
+  lockedPricePerShare: string;
+  createdAt: string;
+}
+
 export interface Vault {
   vaultPubkey: string;
-  key: VaultKey;
+  key: number;
   tokenProgram: string;
   fractionMint: string;
   authority: string;
@@ -27,48 +38,118 @@ export interface Vault {
   priceMint: string;
   allowFurtherShareCreation: boolean;
   pricingLookupAddress: string;
-  tokenTypeCount: number;
+  tokenTypeCount: string;
   state: VaultState;
   fractionsSupply: BN;
   lockedPricePerShare: BN;
-  createdAt: BN;
+  createdAt: number;
+}
+
+export interface RawAuction {
+  auctionPubkey: string;
+  current_winning_bid: string;
+  end_auction_gap: string;
+  ending_at: string;
+  gap_tick_size_percentage: number;
+  instant_sale_price: string;
+  is_enabled: number;
+  is_started: number;
+  key: number;
+  min_tick_size: string;
+  started_at: string;
+  total_uncancelled_bids: string;
+  vault: string;
+  version: string;
+}
+
+export interface Auction {
+  auctionPubkey: string;
+  vaultPubKey: string;
+  currentWinningBidPubkey: string;
+  startedAt: number | null;
+  endingAt: number | null;
+  isEnabled: boolean;
+  isStarted: boolean;
+  tickSize: BN; // bidPerShare * amountOfShares
+}
+
+export interface RawBid {
+  auction: string;
+  bidPubkey: string;
+  bid_amount_per_share: string;
+  bidder: string;
+  is_canceled: number;
+  key: number;
+  placed_at: string;
+  version: string;
+}
+
+export interface Bid {
+  bidPubkey: string;
+  auctionPubkey: string;
+  bidAmountPerShare: BN;
+  bidder: string;
+  isCanceled: boolean;
+  placedAt: number;
 }
 
 export interface VaultsMap {
   [key: string]: Vault;
 }
 
+export interface RawSafetyBox {
+  key: number;
+  order: string;
+  safetyBoxPubkey: string;
+  store: string;
+  tokenMint: string;
+  vault: string;
+}
+
 export interface SafetyBox {
   safetyBoxPubkey: string;
-  key: VaultKey;
-  vault: string;
-  tokenMint: string;
+  vaultPubkey: string;
+  key: number;
+  nftMint: string;
   store: string;
   order: number;
 }
 
-export interface VaultData {
-  fractionMint: string; // mint address of fractions
-  authority: string; // who did the fraktionalization
-  supply: BN; // amount of fractions
-  lockedPricePerFraction: BN; // price per share that was initialized on fraktionalization
-  priceTokenMint: string; // mint address of SOL or FRKT token
-  publicKey: string; // vault public key
-  state: string;
-  nftMint: string; // mint address of fraktionalized NFT
-  name: string; // name of fraktionalized NFT
-  description?: string; // description of fraktionalized NFT
-  imageSrc: string; // image source of fraktionalized NFT
-  nftAttributes: { trait_type: string; value: string | number }[]; // arweave metadata attributes
-  safetyBoxPubkey: string;
-  store: string;
-  fractionTreasury: string;
-  redeemTreasury: string;
+export interface SafetyBoxWithMetadata extends SafetyBox, NftMetadata {}
+
+export type NftAttributes = { trait_type: string; value: string | number }[];
+
+export interface RawNftMetadata {
+  mintAddress: string;
+  fetchedMeta: {
+    name: string;
+    image: string;
+    description: string;
+    attributes: NftAttributes;
+  };
+  isVerifiedStatus: {
+    collection?: string;
+    success?: true;
+    error?: true;
+  };
+}
+
+export interface NftMetadata {
+  nftName: string;
+  nftDescription: string;
+  nftImage: string;
+  nftAttributes: NftAttributes;
   isNftVerified: boolean;
-  nftCollectionName?: string;
-  createdAt: number;
-  buyoutPrice: BN;
+  nftCollectionName: string;
+}
+
+export interface VaultData extends Vault {
   hasMarket: boolean;
+  safetyBoxes: SafetyBoxWithMetadata[];
+  auction: {
+    auction: Auction | null;
+    bids: Bid[] | [];
+  };
 }
 
 export interface Market {

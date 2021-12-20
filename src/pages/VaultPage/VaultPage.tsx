@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
-import { useFraktion, VaultState } from '../../contexts/fraktion';
+import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
@@ -22,26 +22,38 @@ const VaultPage = (): JSX.Element => {
   const { loading, vaults, vaultsMarkets } = useFraktion();
   const tokenMap = useTokenMap();
 
-  const vaultInfo = useMemo(() => {
-    return vaults.find(({ publicKey }) => publicKey === vaultPubkey);
+  const vaultData: VaultData = useMemo(() => {
+    return vaults.find(
+      ({ vaultPubkey: publicKey }) => publicKey === vaultPubkey,
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
 
   const vaultMarket = useMemo(() => {
     return vaultsMarkets.find(
-      ({ baseMint }) => baseMint === vaultInfo.fractionMint,
+      ({ baseMint }) => baseMint === vaultData.fractionMint,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo]);
+  }, [vaultData]);
 
   const [tokerName, setTokerName] = useState<string>('');
 
   useEffect(() => {
     !loading &&
-      vaultInfo &&
-      setTokerName(tokenMap.get(vaultInfo.fractionMint)?.symbol || '');
+      vaultData &&
+      setTokerName(tokenMap.get(vaultData.fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenMap, vaultInfo]);
+  }, [tokenMap, vaultData]);
+
+  //TODO: Finish for baskets
+  const { nftAttributes, nftDescription, nftImage } =
+    vaultData?.safetyBoxes.length === 1
+      ? vaultData.safetyBoxes[0]
+      : {
+          nftAttributes: null,
+          nftDescription: null,
+          nftImage: null,
+        };
 
   return (
     <AppLayout>
@@ -52,72 +64,68 @@ const VaultPage = (): JSX.Element => {
             <Loader size="large" />
           </div>
         )}
-        {!loading && !!vaultInfo && (
+        {!loading && !!vaultData && (
           <div className={styles.content}>
             <DetailsHeader
               className={styles.detailsHeaderMobile}
-              vaultInfo={vaultInfo}
+              vaultData={vaultData}
               tokerName={tokerName}
             />
             <div className={styles.col}>
               <div
                 className={styles.image}
                 style={{
-                  backgroundImage: `url(${vaultInfo.imageSrc})`,
+                  backgroundImage: `url(${nftImage})`,
                 }}
               />
               <div className={styles.mainInfoWrapper}>
-                {!!vaultInfo?.description && (
-                  <div className={styles.description}>
-                    {vaultInfo.description}
-                  </div>
+                {!!nftDescription && (
+                  <div className={styles.description}>{nftDescription}</div>
                 )}
               </div>
-              {!!vaultInfo?.nftAttributes?.length && (
+              {!!nftAttributes?.length && (
                 <div className={styles.attributesTable}>
-                  {vaultInfo?.nftAttributes.map(
-                    ({ trait_type, value }, idx) => (
-                      <div key={idx} className={styles.attributesTable__row}>
-                        <p>{trait_type}</p>
-                        <p>{value}</p>
-                      </div>
-                    ),
-                  )}
+                  {nftAttributes.map(({ trait_type, value }, idx) => (
+                    <div key={idx} className={styles.attributesTable__row}>
+                      <p>{trait_type}</p>
+                      <p>{value}</p>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
             <div className={styles.details}>
               <DetailsHeader
                 className={styles.detailsHeaderDesc}
-                vaultInfo={vaultInfo}
+                vaultData={vaultData}
                 tokerName={tokerName}
               />
               <InfoTable
-                vaultInfo={vaultInfo}
+                vaultInfo={vaultData}
                 marketId={vaultMarket?.address}
               />
-              {vaultInfo.state === VaultState[1] && (
+              {vaultData.state === VaultState.Active && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
                   <div className={styles.tabContent}>
                     {tab === 'trade' && (
                       <TradeTab
-                        vaultInfo={vaultInfo}
+                        vaultInfo={vaultData}
                         tokerName={tokerName}
                         vaultMarketAddress={vaultMarket?.address}
                       />
                     )}
                     {tab === 'swap' && (
-                      <SwapTab fractionMint={vaultInfo.fractionMint} />
+                      <SwapTab fractionMint={vaultData.fractionMint} />
                     )}
-                    {tab === 'buyout' && <Buyout vaultInfo={vaultInfo} />}
+                    {tab === 'buyout' && <Buyout vaultInfo={vaultData} />}
                   </div>
                 </>
               )}
-              {vaultInfo.state === VaultState[2] && (
-                <Redeem vaultInfo={vaultInfo} />
+              {vaultData.state === VaultState.Bought && (
+                <Redeem vaultInfo={vaultData} />
               )}
-              {vaultInfo.state === VaultState[3] && (
+              {vaultData.state === VaultState.Closed && (
                 <div className={styles.detailsPlaceholder} />
               )}
             </div>
