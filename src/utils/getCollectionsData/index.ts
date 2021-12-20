@@ -1,5 +1,3 @@
-// import { CollectionsResult, CollectionDataResult } from './collection.model';
-
 const COLLECTION_URL = 'https://api.exchange.art/v1/public/collections';
 
 export const queryCollections = async (): Promise<any> => {

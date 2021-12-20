@@ -3,7 +3,7 @@ import styles from './styles.module.scss';
 import { Input as InputAnt, InputProps as InputPropsAnt } from 'antd';
 import classNames from 'classnames';
 
-interface InputProps extends InputPropsAnt {
+export interface InputProps extends InputPropsAnt {
   disableSymbols?: boolean;
   disableNumbers?: boolean;
   customRegexp?: string;

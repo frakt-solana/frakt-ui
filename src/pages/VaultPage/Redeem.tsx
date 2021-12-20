@@ -95,13 +95,12 @@ export const Redeem = ({
   const { loading, rawUserTokensByMint } = useUserTokens();
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const currency =
-    vaultInfo?.priceTokenMint === SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
+  const currency = vaultInfo?.priceMint === SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount = usetFractions?.amountBN || new BN(0);
   const userRedeemValue =
-    userFractionsAmount.mul(vaultInfo.lockedPricePerFraction).toNumber() / 1e9;
+    userFractionsAmount.mul(vaultInfo.lockedPricePerShare).toNumber() / 1e9;
 
   const onTransactionModalCancel = () => {
     closeTxnModal();

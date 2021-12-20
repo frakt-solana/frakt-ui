@@ -19,6 +19,8 @@ import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
+import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
+import { TwitterIcon2 } from '../../icons';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -27,6 +29,8 @@ interface TokenInfoWithAmount extends TokenInfo {
 const WalletPage = (): JSX.Element => {
   const history = useHistory();
   const [tab, setTab] = useState<'tokens' | 'vaults'>('tokens');
+  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
+    useNameServiceInfo();
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
@@ -72,6 +76,11 @@ const WalletPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensLoading]);
 
+  useEffect(() => {
+    walletPubkey && getNameServiceInfo(walletPubkey, connection);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletPubkey]);
+
   const userVaults = useMemo(() => {
     return vaults
       .filter((vault) => vault.authority === walletPubkey)
@@ -91,9 +100,26 @@ const WalletPage = (): JSX.Element => {
         <div className={styles.pageHeader}>
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Wallet collection</h2>
-            <h3 className={styles.description}>{`${shortenAddress(
-              walletPubkey,
-            )}`}</h3>
+            <h3 className={styles.description}>
+              <img
+                className={styles.ownerAvatar}
+                src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
+                alt="Owner avatar"
+              />
+              {nameServiceInfo?.domain
+                ? `${nameServiceInfo?.domain} (${shortenAddress(walletPubkey)})`
+                : `${shortenAddress(walletPubkey)}`}
+              {nameServiceInfo?.twitterHandle && (
+                <a
+                  className={styles.ownerTwitter}
+                  href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <TwitterIcon2 width={24} className={styles.twitterIcon} />
+                </a>
+              )}
+            </h3>
           </div>
           <div className={styles.tabs}>
             <button
@@ -151,21 +177,10 @@ const WalletPage = (): JSX.Element => {
                 )}
                 {userVaults.map((vault) => (
                   <NavLink
-                    key={vault.publicKey}
-                    to={`${URLS.VAULT}/${vault.publicKey}`}
+                    key={vault.vaultPubkey}
+                    to={`${URLS.VAULT}/${vault.vaultPubkey}`}
                   >
-                    <VaultCard
-                      fractionMint={vault.fractionMint}
-                      name={vault.name}
-                      owner={vault.authority}
-                      vaultState={vault.state}
-                      imageSrc={vault.imageSrc}
-                      supply={vault.supply}
-                      isNftVerified={vault.isNftVerified}
-                      pricePerFraction={vault.lockedPricePerFraction}
-                      priceTokenMint={vault.priceTokenMint}
-                      buyoutPrice={vault.buyoutPrice}
-                    />
+                    <VaultCard vaultData={vault} />
                   </NavLink>
                 ))}
               </div>

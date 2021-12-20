@@ -61,6 +61,9 @@ const FraktionalizePage = (): JSX.Element => {
     pricePerFraction: number,
     fractionsAmount: number,
     basketName = '',
+    tickSize?: number,
+    startBid?: number,
+    isAuction?: boolean,
   ) => {
     openTxnModal({
       userNfts,
@@ -68,6 +71,9 @@ const FraktionalizePage = (): JSX.Element => {
       pricePerFraction,
       fractionsAmount,
       basketName,
+      isAuction,
+      tickSize,
+      startBid,
     });
     setSelectedNfts([]);
   };

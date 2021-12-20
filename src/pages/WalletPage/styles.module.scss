@@ -21,6 +21,29 @@
 
 .description {
   font-size: 24px;
+  display: flex;
+  align-items: center;
+
+  .ownerTwitter {
+    margin-left: 16px;
+    opacity: 1;
+    transition: opacity var(--transition-1);
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+
+  .twitterIcon {
+    margin-top: 4px;
+  }
+
+  .ownerAvatar {
+    margin-right: 10px;
+    width: 32px;
+    height: 32px;
+    background: var(--gray-color-3);
+    border-radius: 50%;
+  }
 }
 
 .tabs {
@@ -28,7 +51,7 @@
   justify-content: center;
   align-items: center;
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     margin-top: 20px;
     flex-grow: 1;
   }
@@ -44,7 +67,7 @@
   cursor: pointer;
   transition: background var(--transition-1), color var(--transition-1);
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     background: var(--gray-color-7);
     width: 50%;
   }
@@ -112,7 +135,7 @@
   &__btn {
     padding: 0 24px;
 
-    @media screen and (max-width: 400px){
+    @media screen and (max-width: 400px) {
       display: none;
     }
   }
