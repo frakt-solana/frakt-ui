@@ -190,7 +190,11 @@ const WalletPage = (): JSX.Element => {
                   />
                 </div>
                 {shouldUnfinishedShow ? (
-                  <p>Unfinished Vaults</p>
+                  <div className={styles.vaults}>
+                    <p className={styles.emptyMessage}>
+                      No unfinished vaults found
+                    </p>
+                  </div>
                 ) : (
                   <div className={styles.vaults}>
                     {!userVaults.length && (

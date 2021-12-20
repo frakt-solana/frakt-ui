@@ -1,0 +1,45 @@
+.container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 88px;
+}
+
+.btnItem {
+  display: flex;
+
+  a {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-color: var(--gray-color-7);
+    transition: background-color var(--transition-1);
+
+    &:hover {
+      background-color: var(--gray-color-3);
+    }
+  }
+}
+
+.launchVault {
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: var(--accent-color-1);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-1);
+
+  &:hover {
+    background-color: var(--accent-color-3);
+  }
+}

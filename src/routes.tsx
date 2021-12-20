@@ -27,6 +27,7 @@ import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { SwapContextProvider } from './contexts/Swap';
+import { UnfinishedVaultPage } from './pages/UnfinishedVaultPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -76,6 +77,11 @@ export const Routes = (): JSX.Element => {
                         exact
                         path={URLS.FRAKTIONALIZE}
                         component={(): JSX.Element => <FraktionalizePage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.CONTINUE_FRAKTIONALIZE}/:vaultPubkey`}
+                        component={(): JSX.Element => <UnfinishedVaultPage />}
                       />
                       <Route
                         exact
