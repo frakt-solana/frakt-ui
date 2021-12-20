@@ -6,6 +6,7 @@ export const URLS = {
   STAKER_PAGE: '/staker',
   FRAKTIONALIZE: '/fraktionalize',
   CONTINUE_FRAKTIONALIZE: '/continue-fraktionalize',
+  UNFINISHED_VAULT: '/unfinished-vault',
   WALLET: '/wallet',
   PAGE_404: '/404',
   DEX: 'https://dex.fraktion.art',

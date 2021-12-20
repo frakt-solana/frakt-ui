@@ -81,6 +81,11 @@ export const Routes = (): JSX.Element => {
                       <Route
                         exact
                         path={`${URLS.CONTINUE_FRAKTIONALIZE}/:vaultPubkey`}
+                        component={(): JSX.Element => <FraktionalizePage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.UNFINISHED_VAULT}`}
                         component={(): JSX.Element => <UnfinishedVaultPage />}
                       />
                       <Route
