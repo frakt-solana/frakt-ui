@@ -1,70 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import InfiniteScroll from 'react-infinite-scroller';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import {
-  queryCollections,
-  queryCollectionsItem,
-} from '../../utils/getCollectionsData';
-import useCollectionsItem from './hooks/useCollectionsItem';
-import useCollections from './hooks/useCollections';
-
-import styles from './styles.module.scss';
 import CollectionCard from '../../components/CollectionCard';
-
-interface CollectionsProps {
-  brandId: string;
-  collectionId: string;
-  collectionName: string;
-}
+import useCollections from '../../utils/getCollectionsData/useCollections';
+import styles from './styles.module.scss';
+import { URLS } from '../../constants/urls';
+import { queryCollectionsItem } from '../../utils/getCollectionsData';
 
 const CollectionsPage = (): JSX.Element => {
   const history = useHistory();
-
-  const { collections, initCollections } = useCollections(queryCollections);
-  const { collectionsItem, initCollectionItem } = useCollectionsItem(
-    queryCollectionsItem,
-    '',
-  );
-  const [filteredCollection, setFilteredCollection] = useState<string[]>([]);
-
-  const [collectionBrand, setCollectionBrand] = useState<string>('');
+  const { collections } = useCollections();
+  const [currentCollection, setCurrentCollection] = useState<string>('');
+  const [collectionWithBanner, setCollectionWithBanner] =
+    useState<any>(collections);
 
   useEffect(() => {
-    initCollections();
-  }, []);
+    onChangeCollection(currentCollection);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentCollection]);
 
-  useEffect(() => {
-    const filterCollection = collections.filter(
-      (item) => item.brandId === collectionBrand,
-    );
-    setFilteredCollection(filterCollection);
-  }, [collectionBrand]);
-
-  const onChangeCollection = (id: string) => {
-    if (!id) {
-      history.push('/collections');
+  const onChangeCollection = (collectionName: string) => {
+    if (!collectionName) {
+      history.push(URLS.COLLECTIONS);
     } else {
-      history.push(`/collection/${id}`);
+      history.push(`${URLS.COLLECTION}/${collectionName}`);
     }
+  };
+
+  useEffect(() => {
+    getBannerCollection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collections]);
+
+  const getBannerCollection = async () => {
+    const bannerCollection = await Promise.allSettled(
+      collections.map(async (item) => {
+        const result = await queryCollectionsItem(item.collectionName);
+        if (result) {
+          return { ...item, thumbnailPath: result.states.live.thumbnailPath };
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('error');
+        }
+      }),
+    );
+    setCollectionWithBanner(bannerCollection);
   };
 
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        {collections.map(
-          ({ collectionName, collectionId, brandId }: CollectionsProps) => (
+        <div className={styles.content}>
+          {collectionWithBanner.map(({ value }) => (
             <CollectionCard
-              key={collectionId}
-              brandId={brandId}
-              collectionName={collectionName}
-              collectionId={collectionId}
-              onClick={() => setCollectionBrand(brandId)}
+              key={value?.collectionId}
+              collectionName={value?.collectionName}
+              thumbnailPath={value?.thumbnailPath}
+              onClick={() => setCurrentCollection(value?.collectionName)}
             />
-          ),
-        )}
+          ))}
+        </div>
       </Container>
     </AppLayout>
   );
