@@ -9,7 +9,6 @@ import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { Buyout } from './Buyout';
-import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
@@ -104,7 +103,8 @@ const VaultPage = (): JSX.Element => {
                 marketId={vaultMarket?.address}
               />
               {(vaultData.state === VaultState.Active ||
-                vaultData.state === VaultState.Auction) && (
+                vaultData.state === VaultState.Auction ||
+                vaultData.state === VaultState.Bought) && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
                   <div className={styles.tabContent}>
@@ -121,9 +121,6 @@ const VaultPage = (): JSX.Element => {
                     {tab === 'buyout' && <Buyout vaultInfo={vaultData} />}
                   </div>
                 </>
-              )}
-              {vaultData.state === VaultState.Bought && (
-                <Redeem vaultInfo={vaultData} />
               )}
               {vaultData.state === VaultState.Closed && (
                 <div className={styles.detailsPlaceholder} />

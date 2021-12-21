@@ -8,6 +8,7 @@ import { VaultData } from '../../../../../contexts/fraktion';
 import { decimalBNToString } from '../../../../../utils';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useAuction } from '../../../../../contexts/auction';
+import { isEmpty } from 'lodash';
 
 const MOCK_TOKEN_LIST = [
   {
@@ -25,7 +26,6 @@ const MOCK_TOKEN_LIST = [
 ];
 
 interface PendingAuctionProps {
-  startAuction: () => void;
   vaultInfo: VaultData;
 }
 
@@ -33,7 +33,7 @@ export const PendingAuction: FC<PendingAuctionProps> = ({ vaultInfo }) => {
   const { setVisible: setWalletModalVisibility } = useWalletModal();
   const { connected } = useWallet();
   const { startFraktionalizerAuction } = useAuction();
-
+  const isAuctionInitialized = !isEmpty(vaultInfo.auction?.auction);
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
@@ -42,8 +42,7 @@ export const PendingAuction: FC<PendingAuctionProps> = ({ vaultInfo }) => {
     .toNumber();
 
   const onStartAuctionClick = () => {
-    startFraktionalizerAuction(vaultInfo, startBid);
-    // TODO refetch data
+    startFraktionalizerAuction(vaultInfo, startBid, isAuctionInitialized);
   };
 
   return (

@@ -33,6 +33,8 @@ export const AuctionCountdown = ({
     timeDifference.asSeconds() < 0 && clearInterval(intervalIdRef.current);
   }, [timeDifference]);
 
+  if (timeDifference.asSeconds() < 0) return null;
+
   return (
     <ul className={classNames(className, styles.countdown)}>
       <li className={styles.timeItem}>
