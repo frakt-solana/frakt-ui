@@ -86,7 +86,7 @@ const WalletPage = (): JSX.Element => {
       .filter(
         (vault) =>
           vault.authority === walletPubkey &&
-          vault.state !== VaultState.Unfinished, //? Hide unfinished vaults until baskets not ready
+          vault.state !== VaultState.Inactive, //? Hide unfinished vaults until baskets not ready
       )
       .sort(
         (vaultA: VaultData, vaultB: VaultData) =>

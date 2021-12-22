@@ -111,9 +111,9 @@ const VaultPage: FC = () => {
                 marketId={vaultMarket?.address}
               />
               {/* //? Show tabs if vault active or bought */}
-              {(vaultData.state === VaultState.Auction ||
-                vaultData.state === VaultState.AuctionLive ||
-                vaultData.state === VaultState.Bought) && (
+              {(vaultData.state === VaultState.Active ||
+                vaultData.state === VaultState.AuctionFinished ||
+                vaultData.state === VaultState.AuctionStarted) && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
                   <div className={styles.tabContent}>

@@ -52,9 +52,10 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
         >
           <div className={styles.actions}>
             {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
-            {vaultData.state === VaultState.AuctionLive ? (
+            {/* //TODO: Fix bages */}
+            {vaultData.state === VaultState.AuctionStarted ? (
               <>
-                <Badge label={VaultState[1]} className={styles.badge} />
+                <Badge label="Auction" className={styles.badge} />
                 <Badge label="Live" className={styles.badge} />
               </>
             ) : (

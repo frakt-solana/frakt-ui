@@ -37,7 +37,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
   );
   const isWinner =
     winningBid.bidder === walletPublicKey?.toString() &&
-    vaultInfo.state === VaultState.AuctionLive;
+    vaultInfo.state === VaultState.AuctionStarted;
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount = usetFractions?.amountBN || new BN(0);
@@ -73,31 +73,27 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
           Redeem NFT
         </Button>
       )}
-      {!isNFTRedeemAvailable &&
-        isRedeemAvailable &&
-        connected &&
-        !loading &&
-        !!userRedeemValue && (
-          <div className={styles.buyoutControls}>
-            <TokenField
-              disabled
-              currentToken={TOKEN_FIELD_CURRENCY[currency]}
-              className={styles.buyout__tokenField}
-              value={userRedeemValue.toFixed(2)}
-              onValueChange={() => {}}
-            />
+      {isRedeemAvailable && connected && !loading && !!userRedeemValue && (
+        <div className={styles.buyoutControls}>
+          <TokenField
+            disabled
+            currentToken={TOKEN_FIELD_CURRENCY[currency]}
+            className={styles.buyout__tokenField}
+            value={userRedeemValue.toFixed(2)}
+            onValueChange={() => {}}
+          />
 
-            {connected && (
-              <Button
-                className={styles.buyout__buyoutBtn}
-                type="alternative"
-                onClick={redeemValueHandler}
-              >
-                Redeem
-              </Button>
-            )}
-          </div>
-        )}
+          {connected && (
+            <Button
+              className={styles.buyout__buyoutBtn}
+              type="alternative"
+              onClick={redeemValueHandler}
+            >
+              Redeem
+            </Button>
+          )}
+        </div>
+      )}
       {!connected && (
         <Button
           onClick={() => setWalletModalVisibility(true)}

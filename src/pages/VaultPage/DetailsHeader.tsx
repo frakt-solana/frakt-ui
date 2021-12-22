@@ -48,7 +48,7 @@ export const DetailsHeader = ({
       <div className={styles.statusAndOwner}>
         <div className={styles.status}>
           {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
-          {vaultData.state === VaultState.AuctionLive ? (
+          {vaultData.state === VaultState.AuctionStarted ? (
             <>
               <Badge label={VaultState[1]} className={styles.badge} />
               <Badge label="Live" className={styles.badge} />

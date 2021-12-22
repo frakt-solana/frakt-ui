@@ -24,12 +24,12 @@ export const Auction: FC<AuctionProps> = ({ vaultInfo }) => {
   //vaultInfo.auction = (null as any)
   useEffect(() => {
     if (
-      vaultInfo.state === VaultState.Auction &&
+      vaultInfo.state === VaultState.Active &&
       !vaultInfo?.auction?.auction?.isStarted
     ) {
       setAuctionState(AuctionState.pending);
     } else if (
-      vaultInfo.state === VaultState.AuctionLive &&
+      vaultInfo.state === VaultState.AuctionStarted &&
       vaultInfo?.auction?.auction?.isStarted &&
       timeDifference.asSeconds() > 0
     ) {
