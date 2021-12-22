@@ -10,7 +10,7 @@ import { InfoTable } from './InfoTable/InfoTable';
 import styles from './styles.module.scss';
 import { BuyoutTab } from './BuyoutTab';
 import { useTokenMap } from '../../contexts/TokenList';
-import { TradeTab } from './TradeTab';
+import { TradeTab } from './TradeTab/TradeTab';
 import { SwapTab } from './SwapTab/SwapTab';
 import { DetailsHeader } from './DetailsHeader/DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
