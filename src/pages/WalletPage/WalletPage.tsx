@@ -1,6 +1,6 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { getAllUserTokens } from 'solana-nft-metadata';
@@ -11,7 +11,7 @@ import BN from 'bn.js';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { URLS } from '../../constants';
-import { useFraktion, VaultData } from '../../contexts/fraktion';
+import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { shortenAddress } from '../../utils/solanaUtils';
 import styles from './styles.module.scss';
 import { useTokenListContext } from '../../contexts/TokenList';
@@ -21,8 +21,7 @@ import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { TwitterIcon2 } from '../../icons';
-import Toggle, { ControlledToggle } from '../../components/Toggle/Toggle';
-import { useForm } from 'react-hook-form';
+import Toggle from '../../components/Toggle/Toggle';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -92,7 +91,23 @@ const WalletPage = (): JSX.Element => {
 
   const userVaults = useMemo(() => {
     return vaults
-      .filter((vault) => vault.authority === walletPubkey)
+      .filter(
+        (vault) =>
+          vault.authority === walletPubkey && vault.state === VaultState.Active,
+      )
+      .sort(
+        (vaultA: VaultData, vaultB: VaultData) =>
+          vaultB?.createdAt - vaultA?.createdAt,
+      );
+  }, [vaults, walletPubkey]);
+
+  const userUnfinishedVaults = useMemo(() => {
+    return vaults
+      .filter(
+        (vault) =>
+          vault.authority === walletPubkey &&
+          vault.state === VaultState.Damaged,
+      )
       .sort(
         (vaultA: VaultData, vaultB: VaultData) =>
           vaultB?.createdAt - vaultA?.createdAt,
@@ -182,18 +197,30 @@ const WalletPage = (): JSX.Element => {
             ) : (
               <>
                 <div className={styles.filters}>
+                  {/*{connected && publicKey.toString() === walletPubkey && (*/}
                   <Toggle
                     value={shouldUnfinishedShow}
                     label="Show unfinished"
                     className={styles.filter}
                     onChange={onToggleUnfinishedClick}
                   />
+                  {/*)}*/}
                 </div>
                 {shouldUnfinishedShow ? (
                   <div className={styles.vaults}>
-                    <p className={styles.emptyMessage}>
-                      No unfinished vaults found
-                    </p>
+                    {!userUnfinishedVaults.length && (
+                      <p className={styles.emptyMessage}>
+                        No unfinished vaults found
+                      </p>
+                    )}
+                    {userUnfinishedVaults.map((vault) => (
+                      <NavLink
+                        key={vault.vaultPubkey}
+                        to={`${URLS.UNFINISHED_VAULT}/${vault.vaultPubkey}`}
+                      >
+                        <VaultCard vaultData={vault} />
+                      </NavLink>
+                    ))}
                   </div>
                 ) : (
                   <div className={styles.vaults}>
