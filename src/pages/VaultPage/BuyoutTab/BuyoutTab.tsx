@@ -1,10 +1,12 @@
+import { FC } from 'react';
+
 import { VaultData } from '../../../contexts/fraktion';
 import { Auction } from './Auction';
 
-export const Buyout = ({
-  vaultInfo,
-}: {
+interface BuyoutTabPros {
   vaultInfo: VaultData;
-}): JSX.Element => {
+}
+
+export const BuyoutTab: FC<BuyoutTabPros> = ({ vaultInfo }) => {
   return <Auction vaultInfo={vaultInfo} />;
 };

@@ -29,7 +29,7 @@ export const Auction: FC<AuctionProps> = ({ vaultInfo }) => {
     ) {
       setAuctionState(AuctionState.pending);
     } else if (
-      vaultInfo.state === VaultState.Auction &&
+      vaultInfo.state === VaultState.AuctionLive &&
       vaultInfo?.auction?.auction?.isStarted &&
       timeDifference.asSeconds() > 0
     ) {
