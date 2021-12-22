@@ -12,6 +12,7 @@ import { VaultData, VaultState } from '../../../../../contexts/fraktion';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useUserTokens } from '../../../../../contexts/userTokens';
 import BN from 'bn.js';
+import { Loader } from '../../../../../components/Loader';
 
 interface FinishedAuctionProps {
   vaultInfo: VaultData;
@@ -74,6 +75,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
           Redeem NFT
         </Button>
       )}
+      {loading && <Loader className={styles.loader} />}
       {isRedeemAvailable && connected && !loading && !!userRedeemValue && (
         <div className={styles.buyoutControls}>
           <TokenField

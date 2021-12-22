@@ -14,6 +14,7 @@ import {
   redeem,
 } from './fraktion';
 import { getMarkets } from '../../utils/markets';
+import { usePolling } from '../../hooks';
 
 export const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -62,6 +63,20 @@ export const FraktionProvider = ({
     }
   };
 
+  const silentFetchData: fetchDataFunction = async () => {
+    try {
+      const markets = await getMarkets();
+      const vaultsData = await getVaults(markets);
+      setVaultsMarkets(markets);
+      setVaults(vaultsData);
+    } catch {} //eslint-disable-line
+  };
+
+  const { isPolling, startPolling, stopPolling } = usePolling(
+    silentFetchData,
+    10000,
+  );
+
   const patchVault = (vaultInfo: VaultData): void => {
     setVaults((vaults) =>
       vaults.reduce((vaults, vault) => {
@@ -79,6 +94,12 @@ export const FraktionProvider = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection]);
+
+  useEffect(() => {
+    startPolling();
+    return () => isPolling && stopPolling();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <FraktionContext.Provider

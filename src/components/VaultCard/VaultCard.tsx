@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 
 import Badge, {
-  VerifiedBadge,
   UnverifiedBadge,
   VAULT_BADGES_BY_STATE,
+  VerifiedBadge,
 } from '../Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import { VaultData } from '../../contexts/fraktion';
+import { VaultData, VaultState } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
 
 export interface VaultCardProps {
@@ -36,6 +36,20 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
     vaultData.authority && getNameServiceInfo(vaultData.authority, connection);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultData.authority]);
+
+  const startBid = shortBigNumber(
+    vaultData.lockedPricePerShare.mul(vaultData.fractionsSupply),
+  );
+  const winningBidInformation = vaultData.auction?.bids.find(
+    (bid) =>
+      bid?.bidPubkey === vaultData.auction.auction.currentWinningBidPubkey,
+  );
+
+  const winBid = winningBidInformation
+    ? shortBigNumber(
+        winningBidInformation.bidAmountPerShare.mul(vaultData.fractionsSupply),
+      )
+    : null;
 
   //TODO: finish for baskets
   const { nftName, nftImage, isNftVerified } =
@@ -92,11 +106,17 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             </div>
           </div>
           <div className={styles.item}>
-            <div className={styles.title}>Start bid ({currency})</div>
+            <div className={styles.title}>
+              {vaultData.state === VaultState.Active &&
+                `Start bid (${currency})`}
+              {vaultData.state === VaultState.AuctionLive &&
+                `Current bid (${currency})`}
+              {(vaultData.state === VaultState.AuctionFinished ||
+                vaultData.state === VaultState.Archived) &&
+                `Winning bid (${currency})`}
+            </div>
             <div className={styles.value}>
-              {shortBigNumber(
-                vaultData.lockedPricePerShare.mul(vaultData.fractionsSupply),
-              )}
+              {vaultData.state === VaultState.Active ? startBid : winBid}
             </div>
           </div>
         </div>
