@@ -2,15 +2,17 @@ import BN from 'bn.js';
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import Button from '../../components/Button';
-import TokenField, { TOKEN_FIELD_CURRENCY } from '../../components/TokenField';
-import { VaultData, useFraktion } from '../../contexts/fraktion';
-import fraktionConfig from '../../contexts/fraktion/config';
-import styles from './styles.module.scss';
-import { useUserTokens } from '../../contexts/userTokens';
-import { Loader } from '../../components/Loader';
-import TransactionModal from '../../components/TransactionModal';
-import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
+import Button from '../../../components/Button';
+import TokenField, {
+  TOKEN_FIELD_CURRENCY,
+} from '../../../components/TokenField';
+import { VaultData, useFraktion } from '../../../contexts/fraktion';
+import fraktionConfig from '../../../contexts/fraktion/config';
+import styles from '../styles.module.scss';
+import { useUserTokens } from '../../../contexts/userTokens';
+import { Loader } from '../../../components/Loader';
+import TransactionModal from '../../../components/TransactionModal';
+import { useWalletModal } from '../../../contexts/WalletModal/walletModal.context';
 
 const { SOL_TOKEN_PUBKEY } = fraktionConfig;
 

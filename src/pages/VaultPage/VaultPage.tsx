@@ -6,13 +6,13 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
 import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
-import { InfoTable } from './InfoTable/InfoTable';
+import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
 import { BuyoutTab } from './BuyoutTab';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
-import { DetailsHeader } from './DetailsHeader/DetailsHeader';
+import { DetailsHeader } from './DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
 
 const VaultPage: FC = () => {
