@@ -22,12 +22,15 @@ const startFraktionalizerAuction =
     price: number,
     isAuctionInitialized: boolean,
   ) => {
-    const perShare = price / vaultInfo.fractionsSupply.toNumber();
+    const supply = vaultInfo.fractionsSupply.toNumber();
+    const perShare = Math.round(price / supply);
+    const startingAuctionBidCap = perShare * supply;
+
     try {
       await startFraktionalizerAuctionTransaction({
         connection,
         startingAuctionBidPerShare: perShare,
-        startingAuctionBidCap: price,
+        startingAuctionBidCap: startingAuctionBidCap,
         userPubkey: wallet.publicKey.toString(),
         adminPubkey: fraktionConfig.ADMIN_PUBKEY,
         vaultAuthority: new PublicKey(vaultInfo.authority),
@@ -68,15 +71,15 @@ const bidOnAuction =
   (wallet: WalletContextState, connection: Connection) =>
   async (vaultInfo: VaultData, price: number, winningBidPubKey: string) => {
     try {
-      const priceAtom = price * 1e9;
       const supply = vaultInfo.fractionsSupply.toNumber();
-      const perShare = Math.round(priceAtom / supply);
+      const perShare = Math.round((price * 1e9) / supply);
+      const bidCap = perShare * supply;
 
       await bidOnAuctionTransaction({
         connection,
         winning_bid: winningBidPubKey,
         bidPerShare: perShare,
-        bidCap: priceAtom,
+        bidCap,
         adminPubkey: fraktionConfig.ADMIN_PUBKEY,
         userPubkey: wallet.publicKey,
         vault: vaultInfo.vaultPubkey,

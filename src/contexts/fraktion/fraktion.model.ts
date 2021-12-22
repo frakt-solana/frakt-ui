@@ -3,10 +3,10 @@ import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
 
 export enum VaultState {
-  Unfinished = 0,
-  Auction = 1,
-  Bought = 2,
-  Closed = 3,
+  Inactive = 0,
+  Active = 1,
+  AuctionFinished = 2,
+  Archived = 3,
   AuctionLive = 4,
 }
 

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import Button from '../../components/Button';
-import TokenField from '../../components/TokenField';
+import TokenField, { TOKEN_FIELD_CURRENCY } from '../../components/TokenField';
 import { VaultData, useFraktion } from '../../contexts/fraktion';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
@@ -13,21 +13,6 @@ import TransactionModal from '../../components/TransactionModal';
 import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
 
 const { SOL_TOKEN_PUBKEY } = fraktionConfig;
-
-const MOCK_TOKEN_LIST = [
-  {
-    mint: 'So11111111111111111111111111111111111111112',
-    symbol: 'SOL',
-    img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
-    data: 'Some value 1',
-  },
-  {
-    mint: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
-    symbol: 'FRKT',
-    img: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
-    data: 'Some value 1',
-  },
-];
 
 const useRedeemTransactionModal = () => {
   const { refetch: refetchTokens } = useUserTokens();
@@ -124,9 +109,7 @@ export const Redeem = ({
               className={styles.redeem__tokenField}
               value={userRedeemValue.toFixed(2)}
               onValueChange={() => {}}
-              currentToken={
-                currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
-              }
+              currentToken={TOKEN_FIELD_CURRENCY[currency]}
             />
             <Button
               className={styles.redeem__redeemBtn}

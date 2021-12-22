@@ -11,7 +11,10 @@ import {
 import { useTokenListContext } from '../../../../contexts/TokenList';
 import BN from 'bn.js';
 import { FraktionPrice } from './FraktionPrice';
-import { TokenFieldForm } from '../../../../components/TokenField';
+import {
+  TOKEN_FIELD_CURRENCY,
+  TokenFieldForm,
+} from '../../../../components/TokenField';
 
 interface DetailsProps {
   vaultName?: string;
@@ -29,21 +32,6 @@ interface FormValues {
   startBid: string;
   basketName: string;
 }
-
-const MOCK_TOKEN_LIST = [
-  {
-    mint: 'So11111111111111111111111111111111111111112',
-    symbol: 'SOL',
-    img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
-    data: 'Some value 1',
-  },
-  {
-    mint: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
-    symbol: 'FRKT',
-    img: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
-    data: 'Some value 1',
-  },
-];
 
 const DEFAULT_VALUES: Omit<FormValues, 'pricePerFraktion'> = {
   ticker: '',
@@ -175,7 +163,10 @@ export const DetailsForm: React.FC<DetailsProps> = ({
             rules={[{ validator: validators.buyoutPrice }]}
             help=""
           >
-            <TokenFieldForm currentToken={MOCK_TOKEN_LIST[0]} maxLength={5} />
+            <TokenFieldForm
+              currentToken={TOKEN_FIELD_CURRENCY.SOL}
+              maxLength={5}
+            />
           </Form.Item>
           <Form.Item
             getValueFromEvent={({ amount }) => amount}
@@ -187,7 +178,10 @@ export const DetailsForm: React.FC<DetailsProps> = ({
             help=""
             hidden={!isAuction}
           >
-            <TokenFieldForm currentToken={MOCK_TOKEN_LIST[0]} maxLength={5} />
+            <TokenFieldForm
+              currentToken={TOKEN_FIELD_CURRENCY.SOL}
+              maxLength={5}
+            />
           </Form.Item>
           <Form.Item
             getValueFromEvent={({ amount }) => amount}
@@ -199,7 +193,7 @@ export const DetailsForm: React.FC<DetailsProps> = ({
             help=""
             hidden={!isAuction}
           >
-            <TokenFieldForm currentToken={MOCK_TOKEN_LIST[0]} />
+            <TokenFieldForm currentToken={TOKEN_FIELD_CURRENCY.SOL} />
           </Form.Item>
           {form.getFieldsError().map((el, idx) =>
             el?.errors?.[0] ? (

@@ -30,6 +30,7 @@ import { listMarket } from '../../utils/serumUtils/send';
 import { registerMarket } from '../../utils/markets';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
 import {
+  getVaultRealState,
   mapAuctionsByVaultPubkey,
   mapBidsByAuctionPubkey,
   mapMarketExistenceByFractionMint,
@@ -72,6 +73,8 @@ export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
 
     return {
       ...vault,
+      //? set real state of auction (more info in getVaultRealState description)
+      state: getVaultRealState(vault.state, relatedAuction),
       hasMarket: marketExistenceByFractionMint[fractionMint] || false,
       safetyBoxes: relatedSafetyBoxesWithMetadata,
       auction: {

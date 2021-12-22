@@ -1,30 +1,18 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styles from './styles.module.scss';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '../../../../../contexts/WalletModal';
 import { BidHistory } from '../../../../../components/BidHistory';
 import { AuctionCountdown } from '../../../../../components/AuctionCountdown';
-import { TokenFieldForm } from '../../../../../components/TokenField';
+import {
+  TokenFieldForm,
+  TOKEN_FIELD_CURRENCY,
+} from '../../../../../components/TokenField';
 import Button from '../../../../../components/Button';
 import { VaultData } from '../../../../../contexts/fraktion';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useAuction } from '../../../../../contexts/auction';
 import { Form } from 'antd';
-
-const MOCK_TOKEN_LIST = [
-  {
-    mint: 'So11111111111111111111111111111111111111112',
-    symbol: 'SOL',
-    img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
-    data: 'Some value 1',
-  },
-  {
-    mint: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
-    symbol: 'FRKT',
-    img: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
-    data: 'Some value 1',
-  },
-];
 
 interface ActiveAuctionProps {
   vaultInfo: VaultData;
@@ -41,7 +29,6 @@ export const ActiveAuction: FC<ActiveAuctionProps> = ({ vaultInfo }) => {
     (el) => (el as any).bidPubkey === winningBidPubKey,
   );
 
-  // TODO rounding problem
   const nextBidAmount =
     (winningBid.bidAmountPerShare.toNumber() *
       vaultInfo.fractionsSupply.toNumber()) /
@@ -95,9 +82,7 @@ export const ActiveAuction: FC<ActiveAuctionProps> = ({ vaultInfo }) => {
           >
             <TokenFieldForm
               className={styles.buyout__tokenField}
-              currentToken={
-                currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
-              }
+              currentToken={TOKEN_FIELD_CURRENCY[currency]}
             />
           </Form.Item>
 

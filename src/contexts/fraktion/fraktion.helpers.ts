@@ -15,6 +15,8 @@ import {
   RawNftMetadata,
   NftMetadata,
 } from './fraktion.model';
+import { VaultState } from '.';
+import moment from 'moment';
 
 export const mapAuctionsByVaultPubkey = (
   rawAuctions: RawAuction[] = [],
@@ -182,3 +184,16 @@ export const transformToSafetyBoxesWithMetadata = (
       nftCollectionName,
     };
   });
+
+//? Needs because if auction's time finished but any redeem doesn't happened than Vault state will be VaultState.AuctionLive
+export const getVaultRealState = (
+  vaultState: VaultState,
+  auction: Auction,
+): VaultState => {
+  if (vaultState === VaultState.AuctionLive) {
+    const isAuctionEnded = auction?.endingAt < moment().unix();
+    return isAuctionEnded ? VaultState.AuctionFinished : VaultState.AuctionLive;
+  }
+
+  return vaultState;
+};
