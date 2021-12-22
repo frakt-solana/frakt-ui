@@ -11,7 +11,7 @@ import BN from 'bn.js';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { URLS } from '../../constants';
-import { useFraktion, VaultData } from '../../contexts/fraktion';
+import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { shortenAddress } from '../../utils/solanaUtils';
 import styles from './styles.module.scss';
 import { useTokenListContext } from '../../contexts/TokenList';
@@ -41,7 +41,7 @@ const WalletPage = (): JSX.Element => {
 
   const fetchUserTokens = async () => {
     try {
-      //? Check if wallet valid
+      //? Checking if wallet valid
       new PublicKey(walletPubkey);
 
       const userTokens = await getAllUserTokens(new PublicKey(walletPubkey), {
@@ -83,7 +83,11 @@ const WalletPage = (): JSX.Element => {
 
   const userVaults = useMemo(() => {
     return vaults
-      .filter((vault) => vault.authority === walletPubkey)
+      .filter(
+        (vault) =>
+          vault.authority === walletPubkey &&
+          vault.state !== VaultState.Unfinished, //? Hide unfinished vaults until baskets not ready
+      )
       .sort(
         (vaultA: VaultData, vaultB: VaultData) =>
           vaultB?.createdAt - vaultA?.createdAt,
