@@ -72,7 +72,7 @@ const bidOnAuction =
   async (vaultInfo: VaultData, price: number, winningBidPubKey: string) => {
     try {
       const supply = vaultInfo.fractionsSupply.toNumber();
-      const perShare = Math.round((price * 1e9) / supply);
+      const perShare = Math.ceil((price * 1e9) / supply);
       const bidCap = perShare * supply;
 
       await bidOnAuctionTransaction({

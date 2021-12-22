@@ -64,6 +64,10 @@
   }
 }
 
+.disabled {
+  pointer-events: none;
+}
+
 body input.valueInput {
   &,
   &:hover,
