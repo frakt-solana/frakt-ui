@@ -89,8 +89,9 @@ const VaultsPage = (): JSX.Element => {
   const { control, watch } = useForm({
     defaultValues: {
       showActiveVaults: true,
-      showBoughtVaults: false,
-      showClosedVaults: false,
+      showAuctionLiveVaults: false,
+      showAuctionFinishedVaults: false,
+      showArchivedVaults: false,
       showVerifiedVaults: true,
       showMyVaults: false,
       showTradableVaults: false,
@@ -98,9 +99,10 @@ const VaultsPage = (): JSX.Element => {
     },
   });
   const showActiveVaults = watch('showActiveVaults');
-  const showBoughtVaults = watch('showBoughtVaults');
+  const showAuctionLiveVaults = watch('showAuctionLiveVaults');
+  const showAuctionFinishedVaults = watch('showAuctionFinishedVaults');
   const showVerifiedVaults = watch('showVerifiedVaults');
-  const showClosedVaults = watch('showClosedVaults');
+  const showArchivedVaults = watch('showArchivedVaults');
   const showMyVaults = watch('showMyVaults');
   const showTradableVaults = watch('showTradableVaults');
   const sort = watch('sort');
@@ -132,15 +134,26 @@ const VaultsPage = (): JSX.Element => {
 
         if (connected && showMyVaults && authority !== publicKey.toString())
           return false;
-        if (
-          !showActiveVaults &&
-          (state === VaultState.Active || state === VaultState.AuctionStarted)
-        )
-          return false;
-        if (!showBoughtVaults && state === VaultState.AuctionFinished)
-          return false;
-        if (!showClosedVaults && state === VaultState.Closed) return false;
+
+        const removeActiveVaults =
+          !showActiveVaults && state === VaultState.Active;
+        const removeLiveVaults =
+          !showAuctionLiveVaults && state === VaultState.AuctionLive;
+        const removeFinishedVaults =
+          !showAuctionFinishedVaults && state === VaultState.AuctionFinished;
+        const removeArchivedVaults =
+          !showArchivedVaults && state === VaultState.Archived;
+
+        if (removeActiveVaults) return false;
+
+        if (removeLiveVaults) return false;
+
+        if (removeFinishedVaults) return false;
+
+        if (removeArchivedVaults) return false;
+
         if (showTradableVaults && !hasMarket) return false;
+
         if (showVerifiedVaults && !isNftVerified) return false;
 
         return nftName.toUpperCase().includes(searchString);
@@ -158,8 +171,9 @@ const VaultsPage = (): JSX.Element => {
     searchString,
     rawVaults,
     showActiveVaults,
-    showBoughtVaults,
-    showClosedVaults,
+    showAuctionLiveVaults,
+    showAuctionFinishedVaults,
+    showArchivedVaults,
     showVerifiedVaults,
     showMyVaults,
     showTradableVaults,
@@ -185,14 +199,20 @@ const VaultsPage = (): JSX.Element => {
             />
             <ControlledToggle
               control={control}
-              name="showBoughtVaults"
-              label="Bought"
+              name="showAuctionLiveVaults"
+              label="Auction live"
               className={styles.filter}
             />
             <ControlledToggle
               control={control}
-              name="showClosedVaults"
-              label="Closed"
+              name="showAuctionFinishedVaults"
+              label="Auction finished"
+              className={styles.filter}
+            />
+            <ControlledToggle
+              control={control}
+              name="showArchivedVaults"
+              label="Archived"
               className={styles.filter}
             />
             <ControlledToggle

@@ -32,17 +32,18 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
   const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
-  const winningBid = vaultInfo.auction.bids.find(
-    (el) => (el as any).bidPubkey === winningBidPubKey,
+  const winningBid = vaultInfo.auction?.bids.find(
+    (bid) => bid?.bidPubkey === winningBidPubKey,
   );
   const isWinner =
     winningBid.bidder === walletPublicKey?.toString() &&
-    vaultInfo.state === VaultState.AuctionStarted;
+    vaultInfo.state === VaultState.AuctionLive;
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount = usetFractions?.amountBN || new BN(0);
+
   const userRedeemValue =
-    userFractionsAmount.mul(vaultInfo.lockedPricePerShare).toNumber() / 1e9;
+    userFractionsAmount.mul(winningBid.bidAmountPerShare).toNumber() / 1e9;
 
   const redeemValueHandler = () => {
     redeemRewardsFromAuctionShares(vaultInfo).then(() =>

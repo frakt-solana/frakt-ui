@@ -113,7 +113,7 @@ const VaultPage: FC = () => {
               {/* //? Show tabs if vault active or bought */}
               {(vaultData.state === VaultState.Active ||
                 vaultData.state === VaultState.AuctionFinished ||
-                vaultData.state === VaultState.AuctionStarted) && (
+                vaultData.state === VaultState.AuctionLive) && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
                   <div className={styles.tabContent}>
@@ -131,7 +131,7 @@ const VaultPage: FC = () => {
                   </div>
                 </>
               )}
-              {vaultData.state === VaultState.Closed && (
+              {vaultData.state === VaultState.Archived && (
                 <div className={styles.detailsPlaceholder} />
               )}
             </div>
