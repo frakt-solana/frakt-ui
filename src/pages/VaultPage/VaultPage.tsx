@@ -12,7 +12,7 @@ import { BuyoutTab } from './BuyoutTab';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
-import { DetailsHeader } from './DetailsHeader';
+import { DetailsHeader } from './DetailsHeader/DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
 
 const VaultPage: FC = () => {
