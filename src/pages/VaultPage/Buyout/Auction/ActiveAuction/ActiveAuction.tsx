@@ -6,29 +6,62 @@ import { BidHistory } from '../../../../../components/BidHistory';
 import { AuctionCountdown } from '../../../../../components/AuctionCountdown';
 import TokenField from '../../../../../components/TokenField';
 import Button from '../../../../../components/Button';
+import { VaultData } from '../../../../../contexts/fraktion';
+import fraktionConfig from '../../../../../contexts/fraktion/config';
+import { useAuction } from '../../../../../contexts/auction';
+
+const MOCK_TOKEN_LIST = [
+  {
+    mint: 'So11111111111111111111111111111111111111112',
+    symbol: 'SOL',
+    img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
+    data: 'Some value 1',
+  },
+  {
+    mint: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
+    symbol: 'FRKT',
+    img: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
+    data: 'Some value 1',
+  },
+];
 
 interface ActiveAuctionProps {
-  finishAuction: () => void;
+  vaultInfo: VaultData;
 }
 
-export const ActiveAuction: FC<ActiveAuctionProps> = ({ finishAuction }) => {
+export const ActiveAuction: FC<ActiveAuctionProps> = ({ vaultInfo }) => {
   const { setVisible: setWalletModalVisibility } = useWalletModal();
+  const { bidOnAuction } = useAuction();
   const { connected } = useWallet();
+
+  const winningBid = vaultInfo.auction.bids.find(
+    (el) => el.bidPubkey === vaultInfo.auction.auction.currentWinningBidPubkey,
+  );
+  const nextBidAmount =
+    (winningBid.bidAmountPerShare.toNumber() *
+      vaultInfo.fractionsSupply.toNumber()) /
+      1e9 +
+    vaultInfo.auction.auction.tickSize.toNumber() / 1e9;
+  const currency =
+    vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
+
   return (
     <div>
       <div className={styles.title}>To the end of auction</div>
       <div className={styles.container}>
         <AuctionCountdown
           className={styles.timer}
-          endTime={new Date().getTime() + 1000 * 18}
+          endTime={vaultInfo.auction.auction.endingAt}
         />
       </div>
-      <BidHistory />
-      <h5 className={styles.label}>Make a bid</h5>
+      <BidHistory bids={vaultInfo.auction.bids} />
       <div className={styles.buyoutControls}>
         <TokenField
           className={styles.buyout__tokenField}
-          value="2"
+          value={nextBidAmount.toString()}
+          currentToken={
+            currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
+          }
           onValueChange={() => {}}
         />
 
@@ -36,9 +69,11 @@ export const ActiveAuction: FC<ActiveAuctionProps> = ({ finishAuction }) => {
           <Button
             className={styles.buyout__buyoutBtn}
             type="alternative"
-            onClick={finishAuction}
+            onClick={() => {
+              bidOnAuction(vaultInfo, nextBidAmount, winningBid.bidPubkey);
+            }}
           >
-            Buyout
+            Place bid
           </Button>
         )}
 

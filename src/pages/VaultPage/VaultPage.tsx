@@ -21,7 +21,6 @@ const VaultPage = (): JSX.Element => {
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
   const tokenMap = useTokenMap();
-
   const vaultData: VaultData = useMemo(() => {
     return vaults.find(
       ({ vaultPubkey: publicKey }) => publicKey === vaultPubkey,
@@ -104,7 +103,8 @@ const VaultPage = (): JSX.Element => {
                 vaultInfo={vaultData}
                 marketId={vaultMarket?.address}
               />
-              {vaultData.state === VaultState.Active && (
+              {(vaultData.state === VaultState.Active ||
+                vaultData.state === VaultState.Auction) && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
                   <div className={styles.tabContent}>

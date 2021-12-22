@@ -1,25 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
+import _ from 'lodash';
 
+import { useFraktion } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
-import useCollections from '../../utils/getCollectionsData/useCollections';
-import styles from './styles.module.scss';
 import { URLS } from '../../constants/urls';
 import { queryCollectionsItem } from '../../utils/getCollectionsData';
+import styles from './styles.module.scss';
 
 const CollectionsPage = (): JSX.Element => {
   const history = useHistory();
-  const { collections } = useCollections();
-  const [currentCollection, setCurrentCollection] = useState<string>('');
-  const [collectionWithBanner, setCollectionWithBanner] =
-    useState<any>(collections);
+  const { vaults } = useFraktion();
+  const [collectionItems, setCollectionItems] = useState<any>([]);
+
+  const mapVaultByCollectionName = () => {
+    return _.reduce(
+      vaults,
+      (result, value, key) => {
+        const { safetyBoxes } = value;
+        if (safetyBoxes.length) {
+          (
+            result[safetyBoxes[0].nftCollectionName] ||
+            (result[safetyBoxes[0].nftCollectionName] = [])
+          ).push(vaults[key]);
+        }
+        return result;
+      },
+      [],
+    );
+  };
 
   useEffect(() => {
-    onChangeCollection(currentCollection);
+    getCollectionItems();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCollection]);
+  }, [collectionItems]);
 
   const onChangeCollection = (collectionName: string) => {
     if (!collectionName) {
@@ -29,36 +46,31 @@ const CollectionsPage = (): JSX.Element => {
     }
   };
 
-  useEffect(() => {
-    getBannerCollection();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collections]);
+  const getCollectionItems = async (): Promise<void> => {
+    const vaultCollectionArray = await mapVaultByCollectionName();
+    const collectionNameKeys = Object.keys(vaultCollectionArray);
 
-  const getBannerCollection = async () => {
-    const bannerCollection = await Promise.allSettled(
-      collections.map(async (item) => {
-        const result = await queryCollectionsItem(item.collectionName);
-        if (result) {
-          return { ...item, thumbnailPath: result.states.live.thumbnailPath };
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('error');
-        }
+    const items = await Promise.allSettled(
+      collectionNameKeys.map(async (item) => {
+        const result = await queryCollectionsItem(item);
+        return result;
       }),
     );
-    setCollectionWithBanner(bannerCollection);
+    setCollectionItems(items);
   };
 
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
         <div className={styles.content}>
-          {collectionWithBanner.map(({ value }) => (
+          {collectionItems.map(({ value }) => (
             <CollectionCard
-              key={value?.collectionId}
-              collectionName={value?.collectionName}
-              thumbnailPath={value?.thumbnailPath}
-              onClick={() => setCurrentCollection(value?.collectionName)}
+              key={value?.states.live.collectionId}
+              collectionName={value?.states.live.collectionName}
+              thumbnailPath={value?.states.live.thumbnailPath}
+              onClick={() =>
+                onChangeCollection(value?.states.live.collectionName)
+              }
             />
           ))}
         </div>

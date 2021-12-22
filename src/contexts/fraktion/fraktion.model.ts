@@ -7,6 +7,7 @@ export enum VaultState {
   Active = 1,
   Bought = 2,
   Closed = 3,
+  Auction = 4,
 }
 
 export interface RawVault {

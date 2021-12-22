@@ -116,7 +116,6 @@ const VaultsPage = (): JSX.Element => {
 
   const vaults = useMemo(() => {
     const [sortField, sortOrder] = sort.value.split('_');
-    //TODO optimise it 4n instead of n
     return rawVaults
       .filter(({ state, authority, hasMarket, safetyBoxes }) => {
         //TODO: finish for baskets

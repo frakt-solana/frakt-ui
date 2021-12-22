@@ -7,7 +7,12 @@ export const queryCollections = async (): Promise<any> => {
 export const queryCollectionsItem = async (
   collectionName: string,
 ): Promise<any> => {
-  return await (
-    await fetch(`${COLLECTION_URL}/metadata?collectionName=${collectionName}`)
-  ).json();
+  try {
+    return await (
+      await fetch(`${COLLECTION_URL}/metadata?collectionName=${collectionName}`)
+    ).json();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+  }
 };
