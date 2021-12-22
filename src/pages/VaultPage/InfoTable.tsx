@@ -32,7 +32,7 @@ export const InfoTable = ({
       </div>
       <div className={styles.infoTable__cell}>
         <p className={styles.infoTable__cellName}>
-          Fraktion price ({currency})
+          Locked fraktion price ({currency})
         </p>
         <p className={styles.infoTable__cellValue}>
           {decimalBNToString(
@@ -43,7 +43,9 @@ export const InfoTable = ({
         </p>
       </div>
       <div className={styles.infoTable__cell}>
-        <p className={styles.infoTable__cellName}>Buyout price ({currency})</p>
+        <p className={styles.infoTable__cellName}>
+          Locked start bid ({currency})
+        </p>
         <p className={styles.infoTable__cellValue}>
           {decimalBNToString(
             vaultInfo.lockedPricePerShare.mul(vaultInfo.fractionsSupply),

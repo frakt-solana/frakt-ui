@@ -92,7 +92,7 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             </div>
           </div>
           <div className={styles.item}>
-            <div className={styles.title}>Buyout price ({currency})</div>
+            <div className={styles.title}>Start bid ({currency})</div>
             <div className={styles.value}>
               {shortBigNumber(
                 vaultData.lockedPricePerShare.mul(vaultData.fractionsSupply),
