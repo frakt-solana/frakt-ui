@@ -37,7 +37,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
   );
   const isWinner =
     winningBid.bidder === walletPublicKey?.toString() &&
-    vaultInfo.state === VaultState.AuctionLive;
+    vaultInfo.state === VaultState.AuctionFinished;
 
   const usetFractions = rawUserTokensByMint[vaultInfo.fractionMint];
   const userFractionsAmount = usetFractions?.amountBN || new BN(0);

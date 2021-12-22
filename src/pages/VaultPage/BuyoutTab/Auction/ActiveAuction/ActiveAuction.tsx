@@ -29,7 +29,6 @@ export const ActiveAuction: FC<ActiveAuctionProps> = ({ vaultInfo }) => {
     (el) => (el as any).bidPubkey === winningBidPubKey,
   );
 
-  // TODO rounding problem
   const nextBidAmount =
     (winningBid.bidAmountPerShare.toNumber() *
       vaultInfo.fractionsSupply.toNumber()) /
