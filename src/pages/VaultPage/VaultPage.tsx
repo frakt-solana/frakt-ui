@@ -111,7 +111,7 @@ const VaultPage: FC = () => {
                 marketId={vaultMarket?.address}
               />
               {/* //? Show tabs if vault active or bought */}
-              {(vaultData.state === VaultState.Active ||
+              {(vaultData.state === VaultState.Auction ||
                 vaultData.state === VaultState.AuctionLive ||
                 vaultData.state === VaultState.Bought) && (
                 <>

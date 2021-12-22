@@ -127,9 +127,16 @@ const VaultsPage = (): JSX.Element => {
                 isNftVerified: false,
               };
 
+        //? Filter out unfinished vaults
+        if (state === VaultState.Unfinished) return false;
+
         if (connected && showMyVaults && authority !== publicKey.toString())
           return false;
-        if (!showActiveVaults && state === VaultState.Active) return false;
+        if (
+          !showActiveVaults &&
+          (state === VaultState.Auction || state === VaultState.AuctionLive)
+        )
+          return false;
         if (!showBoughtVaults && state === VaultState.Bought) return false;
         if (!showClosedVaults && state === VaultState.Closed) return false;
         if (showTradableVaults && !hasMarket) return false;

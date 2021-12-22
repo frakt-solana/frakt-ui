@@ -4,7 +4,7 @@ import BN from 'bn.js';
 
 export enum VaultState {
   Unfinished = 0,
-  Active = 1,
+  Auction = 1,
   Bought = 2,
   Closed = 3,
   AuctionLive = 4,
