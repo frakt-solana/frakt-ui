@@ -3,27 +3,13 @@
   padding-bottom: 64px;
 }
 
-.content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: start;
-  justify-content: space-evenly;
-  gap: 64px 124px;
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  align-items: stretch;
 
-  @media screen and (max-width: 1023px) {
-    grid-template-columns: 100%;
-
-    .col {
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  @media screen and (max-width: 767px) {
-    .col {
-      flex-direction: column;
-      align-items: center;
-    }
+  @media screen and (max-width: 440px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   }
 }

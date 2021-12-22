@@ -130,4 +130,33 @@ const TokenField = ({
   );
 };
 
+interface TokenFieldFormProps
+  extends Omit<Omit<TokenFieldProps, 'value'>, 'onValueChange'> {
+  value?: {
+    amount: string;
+    token: Token | any;
+  };
+  onChange?: any;
+  maxLength?: number;
+}
+
+export const TokenFieldForm: React.FC<TokenFieldFormProps> = ({
+  onChange,
+  value,
+  ...props
+}) => {
+  const onAmountChange = (amount: string) => onChange?.({ ...value, amount });
+
+  const onTokenChange = (token: Token) => onChange?.({ ...value, token });
+
+  return (
+    <TokenField
+      {...props}
+      value={value.amount}
+      onValueChange={onAmountChange}
+      onTokenChange={onTokenChange}
+    />
+  );
+};
+
 export default TokenField;

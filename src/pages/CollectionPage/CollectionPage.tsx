@@ -1,18 +1,24 @@
-import React from 'react';
+import { useMemo } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { CollectionData } from '../../utils/getCollectionsData/collection.model';
-import useCollectionsItem from '../../utils/getCollectionsData/useCollectionsItem';
-import styles from './styles.module.scss';
-import { useHistory } from 'react-router';
 import { DiscordIcon, TwitterIcon } from '../../icons';
-import { transResource } from '../../helpers/data-to-props';
+import { CollectionData } from '../../utils/getCollectionsData/collection.model';
+import VaultCard from '../../components/VaultCard';
+import { useFraktion } from '../../contexts/fraktion';
+import useCollectionsItem from '../../utils/getCollectionsData/useCollectionsItem';
+import { mapVaultByCollectionName } from '../CollectionsPage/helpers';
+import { URLS } from '../../constants';
+import styles from './styles.module.scss';
+import { transResource } from '../../utils';
 
 const CollectionPage = (): JSX.Element => {
   const history = useHistory();
   const queryId = history.location.pathname.replace('/collection/', '');
   const { collectionsItem } = useCollectionsItem(queryId);
+  const { vaults, loading } = useFraktion();
 
   const {
     bannerPath,
@@ -22,6 +28,14 @@ const CollectionPage = (): JSX.Element => {
     twitter,
     thumbnailPath,
   } = collectionsItem as CollectionData;
+
+  const vaultsByCollectionName = useMemo(() => {
+    return loading ? {} : mapVaultByCollectionName(vaults);
+  }, [loading, vaults]);
+
+  const userVaults = useMemo(() => {
+    return vaultsByCollectionName[queryId];
+  }, [queryId, vaultsByCollectionName]);
 
   return (
     <AppLayout>
@@ -46,6 +60,18 @@ const CollectionPage = (): JSX.Element => {
             </a>
           </div>
         </div>
+        {userVaults && (
+          <div className={styles.cards}>
+            {userVaults.map((vault) => (
+              <NavLink
+                key={vault.vaultPubkey}
+                to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+              >
+                <VaultCard vaultData={vault} />
+              </NavLink>
+            ))}
+          </div>
+        )}
       </Container>
     </AppLayout>
   );

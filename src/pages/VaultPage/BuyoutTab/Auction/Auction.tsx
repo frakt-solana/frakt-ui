@@ -3,6 +3,7 @@ import { PendingAuction } from './PendingAuction';
 import { ActiveAuction } from './ActiveAuction';
 import { FinishedAuction } from './FinishedAuction';
 import { VaultData, VaultState } from '../../../../contexts/fraktion';
+import moment from 'moment';
 
 enum AuctionState {
   pending,
@@ -16,18 +17,27 @@ interface AuctionProps {
 
 export const Auction: FC<AuctionProps> = ({ vaultInfo }) => {
   const [auctionState, setAuctionState] = useState<AuctionState>(null);
+  const endTimeMoment = moment.unix(vaultInfo?.auction?.auction?.endingAt);
+  const timeDifference = moment.duration(endTimeMoment?.diff(moment()));
 
+  // TODO check null
+  //vaultInfo.auction = (null as any)
   useEffect(() => {
     if (
       vaultInfo.state === VaultState.Active &&
-      !vaultInfo.auction.auction.isStarted
-    )
+      !vaultInfo?.auction?.auction?.isStarted
+    ) {
       setAuctionState(AuctionState.pending);
-    if (
-      vaultInfo.state === VaultState.Auction &&
-      vaultInfo.auction.auction.isStarted
-    )
+    } else if (
+      vaultInfo.state === VaultState.AuctionLive &&
+      vaultInfo?.auction?.auction?.isStarted &&
+      timeDifference.asSeconds() > 0
+    ) {
       setAuctionState(AuctionState.active);
+    } else {
+      setAuctionState(AuctionState.finished);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultInfo]);
 
   if (auctionState === null) return null;
@@ -35,15 +45,14 @@ export const Auction: FC<AuctionProps> = ({ vaultInfo }) => {
   return (
     <div>
       {auctionState === AuctionState.pending && (
-        <PendingAuction
-          vaultInfo={vaultInfo}
-          startAuction={() => setAuctionState(AuctionState.active)}
-        />
+        <PendingAuction vaultInfo={vaultInfo} />
       )}
       {auctionState === AuctionState.active && (
         <ActiveAuction vaultInfo={vaultInfo} />
       )}
-      {auctionState === AuctionState.finished && <FinishedAuction />}
+      {auctionState === AuctionState.finished && (
+        <FinishedAuction vaultInfo={vaultInfo} />
+      )}
     </div>
   );
 };

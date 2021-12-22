@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 
-import Badge, { VerifiedBadge, UnverifiedBadge } from '../Badge';
+import Badge, {
+  VerifiedBadge,
+  UnverifiedBadge,
+  VAULT_BADGES_BY_STATE,
+} from '../Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import { VaultData, VaultState } from '../../contexts/fraktion';
+import { VaultData } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
 
 export interface VaultCardProps {
@@ -42,7 +46,6 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
           nftImage: '',
           isNftVerified: false,
         };
-
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
@@ -53,7 +56,7 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
           <div className={styles.actions}>
             {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
             <Badge
-              label={VaultState[vaultData.state]}
+              label={VAULT_BADGES_BY_STATE[vaultData.state]}
               className={styles.badge}
             />
             {vaultData.hasMarket && (
@@ -88,7 +91,7 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             </div>
           </div>
           <div className={styles.item}>
-            <div className={styles.title}>Buyout price ({currency})</div>
+            <div className={styles.title}>Start bid ({currency})</div>
             <div className={styles.value}>
               {shortBigNumber(
                 vaultData.lockedPricePerShare.mul(vaultData.fractionsSupply),

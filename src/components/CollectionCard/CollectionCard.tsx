@@ -1,19 +1,20 @@
-import React from 'react';
-import { transResource } from '../../helpers/data-to-props';
+import { FC } from 'react';
+import { transResource } from '../../utils';
+
 import styles from './styles.module.scss';
 
-interface CollectionCardProps {
+interface CardProps {
   collectionId?: string;
   collectionName: string;
   onClick?: () => void;
   thumbnailPath: string;
 }
 
-const CollectionCard = ({
+const CollectionCard: FC<CardProps> = ({
   collectionName,
   onClick,
   thumbnailPath,
-}: CollectionCardProps): JSX.Element => {
+}) => {
   return (
     <div className={styles.cardContainer} onClick={onClick}>
       <div className={styles.card}>
