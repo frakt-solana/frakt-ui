@@ -44,7 +44,7 @@
   "scripts": {
     "start": "npm run devnet",
     "devnet": "cross-env REACT_APP_NETWORK=devnet craco start",
-    "mainnet": "craco start",
+    "mainnet": "cross-env REACT_APP_NETWORK=mainnet craco start",
     "build": "craco build",
     "build:devnet": "REACT_APP_NETWORK=devnet craco build",
     "lint": "eslint . --ext .ts,.tsx",

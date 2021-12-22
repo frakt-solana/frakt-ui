@@ -69,7 +69,7 @@ const startFraktionalizerAuction =
 
 const bidOnAuction =
   (wallet: WalletContextState, connection: Connection) =>
-  async (vaultInfo: VaultData, price: number, winningBidPubKey: string) => {
+  async (vaultInfo: VaultData, price: number) => {
     try {
       const supply = vaultInfo.fractionsSupply.toNumber();
       const perShare = Math.ceil((price * 1e9) / supply);
@@ -77,7 +77,7 @@ const bidOnAuction =
 
       await bidOnAuctionTransaction({
         connection,
-        winning_bid: winningBidPubKey,
+        winning_bid: vaultInfo.auction.auction.currentWinningBidPubkey,
         bidPerShare: perShare,
         bidCap,
         adminPubkey: fraktionConfig.ADMIN_PUBKEY,
