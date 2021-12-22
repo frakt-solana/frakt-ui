@@ -1,8 +1,21 @@
+.detailsHeader {
+  @media screen and (max-width: 767px) {
+    margin-top: 30px;
+  }
+  @media screen and (max-width: 650px) {
+    margin-top: 25px;
+  }
+}
+
 .title {
   font: var(--font-h4);
   color: var(--white-color);
   margin-bottom: 16px;
   line-height: 1.25em;
+
+  @media screen and (max-width: 767px) {
+    font-size: 32px;
+  }
 }
 
 .statusAndOwner {
@@ -12,12 +25,8 @@
   margin-bottom: 32px;
   flex-wrap: wrap;
 
-  @media screen and (max-width: 1023px) {
-    margin-bottom: 0;
-  }
-
   @media screen and (max-width: 767px) {
-    margin-bottom: 30px;
+    margin-bottom: 0;
   }
 }
 

@@ -7,6 +7,18 @@
   display: inline-block;
   cursor: pointer;
   color: var(--white-color);
+
+  svg {
+    max-width: 22px;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 12px;
+
+    svg {
+      max-width: 14px;
+    }
+  }
 }
 
 .labelStrict {

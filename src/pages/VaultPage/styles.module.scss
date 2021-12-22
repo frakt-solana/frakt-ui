@@ -1,5 +1,5 @@
 .wrapper {
-  padding-top: 64px;
+  padding-top: 35px;
   padding-bottom: 64px;
   height: 100%;
 }
@@ -19,22 +19,25 @@
   grid-template-columns: 5fr 6fr;
   align-items: start;
   gap: 64px 124px;
+  padding-bottom: 60px;
 
-  @media screen and (max-width: 1023px) {
-    grid-template-columns: 100%;
-
-    .col {
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
+  @media screen and (max-width: 1200px) {
+    gap: 50px;
   }
 
   @media screen and (max-width: 767px) {
+    grid-template-columns: 100%;
+    gap: 30px;
+
     .col {
+      display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
     }
+  }
+
+  @media screen and (max-width: 650px) {
+    gap: 25px;
   }
 }
 
@@ -47,12 +50,12 @@
   @media screen and (max-width: 767px) {
     padding-left: 0;
     max-width: 500px;
-    margin-top: 50px;
+    margin-top: 25px;
   }
 }
 
 .detailsHeaderDesc {
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 767px) {
     display: none;
   }
 }
@@ -60,7 +63,7 @@
 .detailsHeaderMobile {
   display: none;
 
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 767px) {
     display: block;
   }
 }
@@ -150,49 +153,6 @@
 
   @media screen and (max-width: 767px) {
     max-width: 500px;
-  }
-}
-
-.infoTable {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px 30px;
-  margin-bottom: 64px;
-
-  @media screen and (max-width: 1023px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media screen and (max-width: 850px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media screen and (max-width: 767px) {
-    gap: 20px;
-  }
-
-  @media screen and (max-width: 550px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media screen and (max-width: 400px) {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  &__cellName {
-    font: var(--font-smallest);
-    text-transform: uppercase;
-    color: var(--gray-color-3);
-  }
-
-  &__cellValue {
-    font: var(--font-btn-mid);
-    color: var(--white-color);
-  }
-
-  &__cellValueCopy {
-    cursor: pointer;
-    display: flex;
   }
 }
 
@@ -290,10 +250,6 @@
 
 .detailsPlaceholder {
   min-height: 97px;
-}
-
-.copyIcon {
-  margin-left: 4px;
 }
 
 .tabs {
