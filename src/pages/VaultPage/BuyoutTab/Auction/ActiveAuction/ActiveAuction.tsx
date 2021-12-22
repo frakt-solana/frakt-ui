@@ -26,7 +26,7 @@ export const ActiveAuction: FC<ActiveAuctionProps> = ({ vaultInfo }) => {
 
   const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
   const winningBid = vaultInfo.auction.bids.find(
-    (el) => (el as any).bidPubkey === winningBidPubKey,
+    (bid) => bid.bidPubkey === winningBidPubKey,
   );
 
   const nextBidAmount =
