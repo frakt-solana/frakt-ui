@@ -53,6 +53,7 @@ const VaultPage: FC = () => {
           nftImage: null,
         };
 
+  //? Set active tab "Buyout" if auction started
   useEffect(() => {
     if (vaultData) {
       const isAuctionStarted = vaultData.auction.auction?.isStarted;
