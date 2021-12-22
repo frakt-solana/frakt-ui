@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react';
-import TokenField from '../../../../../components/TokenField';
+import TokenField, {
+  TOKEN_FIELD_CURRENCY,
+} from '../../../../../components/TokenField';
 import styles from './styles.module.scss';
 import Button from '../../../../../components/Button';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -10,21 +12,6 @@ import { VaultData, VaultState } from '../../../../../contexts/fraktion';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useUserTokens } from '../../../../../contexts/userTokens';
 import BN from 'bn.js';
-
-const MOCK_TOKEN_LIST = [
-  {
-    mint: 'So11111111111111111111111111111111111111112',
-    symbol: 'SOL',
-    img: 'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
-    data: 'Some value 1',
-  },
-  {
-    mint: '2kMr32vCwjehHizggK4Gdv7izk7NhTUyLrH7RYvQRFHH',
-    symbol: 'FRKT',
-    img: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
-    data: 'Some value 1',
-  },
-];
 
 interface FinishedAuctionProps {
   vaultInfo: VaultData;
@@ -94,9 +81,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
           <div className={styles.buyoutControls}>
             <TokenField
               disabled
-              currentToken={
-                currency === 'SOL' ? MOCK_TOKEN_LIST[0] : MOCK_TOKEN_LIST[1]
-              }
+              currentToken={TOKEN_FIELD_CURRENCY[currency]}
               className={styles.buyout__tokenField}
               value={userRedeemValue.toFixed(2)}
               onValueChange={() => {}}
