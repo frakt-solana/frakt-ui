@@ -48,11 +48,13 @@ const FraktionalizePage = (): JSX.Element => {
   };
 
   const onCardClick = (nft: UserNFT): void => {
-    selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
-      ? setSelectedNfts(
-          selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
-        )
-      : setSelectedNfts([...selectedNfts, nft]);
+    //? Commented out to prevent multiselect until baskets not finished
+    // selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
+    //   ? setSelectedNfts(
+    //       selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
+    //     )
+    //   : setSelectedNfts([...selectedNfts, nft]);
+    setSelectedNfts([nft]);
   };
 
   const runFraktionalization = (
