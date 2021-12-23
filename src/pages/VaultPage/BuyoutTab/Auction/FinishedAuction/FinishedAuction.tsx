@@ -13,6 +13,7 @@ import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useUserTokens } from '../../../../../contexts/userTokens';
 import BN from 'bn.js';
 import { Loader } from '../../../../../components/Loader';
+import { FinishFlagsIcon } from '../../../../../icons';
 
 interface FinishedAuctionProps {
   vaultInfo: VaultData;
@@ -62,6 +63,10 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
 
   return (
     <div>
+      <p className={styles.finished}>
+        <FinishFlagsIcon className={styles.finishedIcon} />
+        Auction finished!
+      </p>
       <BidHistory
         refundBid={(bidPubKey) => refundBid(vaultInfo, bidPubKey)}
         winningBidPubKey={winningBidPubKey}

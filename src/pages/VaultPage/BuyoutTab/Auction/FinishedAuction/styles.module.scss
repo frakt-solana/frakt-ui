@@ -1,3 +1,15 @@
+.finished {
+  font: var(--font-btn-small);
+  display: flex;
+  align-items: center;
+  margin-top: 9px;
+  margin-bottom: 39px;
+}
+
+.finishedIcon {
+  margin-right: 8px;
+}
+
 .fullWidth {
   width: 100%;
   text-align: center;
