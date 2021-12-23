@@ -5,14 +5,15 @@ import { useHistory } from 'react-router';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { DiscordIcon, TwitterIcon } from '../../icons';
-import { CollectionData } from '../../utils/getCollectionsData/collection.model';
+import { CollectionData } from '../../utils/getCollectionsData/collections.model';
 import VaultCard from '../../components/VaultCard';
 import { useFraktion } from '../../contexts/fraktion';
-import useCollectionsItem from '../../utils/getCollectionsData/useCollectionsItem';
 import { mapVaultByCollectionName } from '../CollectionsPage/helpers';
 import { URLS } from '../../constants';
 import styles from './styles.module.scss';
-import { transResource } from '../../utils';
+import { getCollectionThumbnailUrl } from '../../utils';
+import { useCollectionsItem } from '../../utils/getCollectionsData/collections.hooks';
+import { WebsiteIcon } from '../../icons/WebsiteIcon';
 
 const CollectionPage = (): JSX.Element => {
   const history = useHistory();
@@ -40,23 +41,23 @@ const CollectionPage = (): JSX.Element => {
   return (
     <AppLayout>
       <div className={styles.fullPage}>
-        <img src={transResource(bannerPath)} />
+        <img src={getCollectionThumbnailUrl(bannerPath)} />
       </div>
       <Container component="main" className={styles.container}>
         <div className={styles.banner}>
           <div className={styles.thumbnail}>
-            <img src={transResource(thumbnailPath)} />
+            <img src={getCollectionThumbnailUrl(thumbnailPath)} />
           </div>
           <div className={styles.title}>{collectionName}</div>
           <div className={styles.socialLinks}>
-            <a href={website}>
-              <img src="" alt="website" />
+            <a href={website} target="_bank" rel="noopener noreferrer">
+              <WebsiteIcon width={46} alt="website" />
             </a>
-            <a href={discord}>
-              <DiscordIcon width={48} />
+            <a href={discord} target="_bank" rel="noopener noreferrer">
+              <DiscordIcon width={48} alt="discord" />
             </a>
-            <a href={twitter}>
-              <TwitterIcon width={48} />
+            <a href={twitter} target="_bank" rel="noopener noreferrer">
+              <TwitterIcon width={48} alt="twitter" />
             </a>
           </div>
         </div>

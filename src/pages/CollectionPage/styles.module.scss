@@ -32,6 +32,7 @@
   max-width: 600px;
   margin: 0 auto;
   padding-bottom: 60px;
+  width: 100%;
 }
 
 .thumbnail {
@@ -53,4 +54,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: 200px;
+  width: 100%;
 }
