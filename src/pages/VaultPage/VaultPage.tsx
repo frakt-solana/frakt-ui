@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
 
@@ -8,15 +8,14 @@ import { Loader } from '../../components/Loader';
 import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable';
 import styles from './styles.module.scss';
-import { Buyout } from './Buyout';
-import { Redeem } from './Redeem';
+import { BuyoutTab } from './BuyoutTab';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
 import { DetailsHeader } from './DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
 
-const VaultPage = (): JSX.Element => {
+const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
@@ -53,6 +52,14 @@ const VaultPage = (): JSX.Element => {
           nftDescription: null,
           nftImage: null,
         };
+
+  //? Set active tab "Buyout" if auction started
+  useEffect(() => {
+    if (vaultData) {
+      const isAuctionStarted = vaultData.auction.auction?.isStarted;
+      isAuctionStarted && setTab('buyout');
+    }
+  }, [vaultData]);
 
   return (
     <AppLayout>
@@ -103,8 +110,10 @@ const VaultPage = (): JSX.Element => {
                 vaultInfo={vaultData}
                 marketId={vaultMarket?.address}
               />
+              {/* //? Show tabs if vault active or bought */}
               {(vaultData.state === VaultState.Active ||
-                vaultData.state === VaultState.Auction) && (
+                vaultData.state === VaultState.AuctionFinished ||
+                vaultData.state === VaultState.AuctionLive) && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
                   <div className={styles.tabContent}>
@@ -118,14 +127,11 @@ const VaultPage = (): JSX.Element => {
                     {tab === 'swap' && (
                       <SwapTab fractionMint={vaultData.fractionMint} />
                     )}
-                    {tab === 'buyout' && <Buyout vaultInfo={vaultData} />}
+                    {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}
                   </div>
                 </>
               )}
-              {vaultData.state === VaultState.Bought && (
-                <Redeem vaultInfo={vaultData} />
-              )}
-              {vaultData.state === VaultState.Closed && (
+              {vaultData.state === VaultState.Archived && (
                 <div className={styles.detailsPlaceholder} />
               )}
             </div>
@@ -143,7 +149,7 @@ interface TabsProps {
   setTab: (tab: tabType) => void;
 }
 
-const Tabs = ({ tab, setTab }: TabsProps): JSX.Element => {
+const Tabs: FC<TabsProps> = ({ tab, setTab }) => {
   return (
     <div className={styles.tabs}>
       <button

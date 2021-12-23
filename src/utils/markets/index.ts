@@ -3,6 +3,11 @@ import { notify } from '../index';
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
 const MARKETS_URL = 'https://fraktion-markets-pools-endpoin.herokuapp.com/';
 
+const DEPRECATED_MARKETS = [
+  'EQ5XjC1neq4FbqLUaeHLx48CTougsPYdsGgti4KqEFUT',
+  'dvQF6YNQvQ2dQkMyt3rW7ibypCkHJDgVAJvZz6A6gZx',
+];
+
 export const getMarkets = async (): Promise<
   Array<{
     address: string;
@@ -13,13 +18,15 @@ export const getMarkets = async (): Promise<
   try {
     const res = await fetch(MARKETS_URL);
     const { fraktionMarkets } = await res.json();
-    return fraktionMarkets.map((market) => {
-      return {
-        address: market.ownAddress,
-        baseMint: market.baseMint,
-        programId: '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin',
-      };
-    });
+    return fraktionMarkets
+      .map((market) => {
+        return {
+          address: market.ownAddress,
+          baseMint: market.baseMint,
+          programId: '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin',
+        };
+      })
+      .filter((market) => !DEPRECATED_MARKETS.includes(market.address));
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

@@ -26,6 +26,16 @@
   margin-top: 16px;
   display: flex;
   align-items: center;
+  :global
+  {
+    .ant-form-item-label {
+      margin-bottom: 4px;
+      font: var(--font-secondary);
+      opacity: 0.25;
+      text-transform: uppercase;
+      padding: 0!important;
+    }
+  }
 }
 
 .buyout__connectWalletBtn {
@@ -39,6 +49,7 @@
   padding-top: unset;
   padding-bottom: unset;
   height: 88px;
+  margin-top: 2px;
 
   @media screen and (max-width: 450px) {
     width: 100%;

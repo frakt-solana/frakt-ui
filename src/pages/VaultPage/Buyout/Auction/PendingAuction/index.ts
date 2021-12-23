@@ -1,1 +1,0 @@
-export { PendingAuction } from './PendingAuction';

@@ -3,13 +3,18 @@ import styles from './styles.module.scss';
 
 interface LoaderProps {
   size?: 'large' | 'default' | 'small';
+  className?: string;
 }
 
-export const Loader = ({ size = 'default' }: LoaderProps): JSX.Element => {
+export const Loader = ({
+  size = 'default',
+  className,
+}: LoaderProps): JSX.Element => {
   return (
     <svg
       style={{}}
       className={classNames([
+        className,
         styles.loader,
         { [styles.small]: size === 'small' },
         { [styles.large]: size === 'large' },
