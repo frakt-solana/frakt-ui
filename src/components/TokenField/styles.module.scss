@@ -1,7 +1,6 @@
 @mixin resetBtnStyle {
   &,
-  &:focus,
-  &:focus-visible {
+  &:focus {
     background: none;
     border: none;
     cursor: pointer;
@@ -73,7 +72,6 @@ body input.valueInput {
   &:hover,
   &:active,
   &:focus,
-  &:focus-visible,
   &:not(.styles_ant-input):hover {
     background: none;
     border: none;
@@ -184,8 +182,7 @@ body input.valueInput {
 
 .disabledTokens {
   &,
-  &:focus,
-  &:focus-visible {
+  &:focus {
     cursor: unset;
   }
 }
