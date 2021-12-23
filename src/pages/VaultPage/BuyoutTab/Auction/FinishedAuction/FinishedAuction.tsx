@@ -30,6 +30,8 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
   const [isRedeemAvailable, setIsRedeemAvailable] = useState(true);
   const [isNFTRedeemAvailable, setIsNFTRedeemAvailable] = useState(true);
 
+  if (!vaultInfo.auction.auction) return null;
+
   const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';

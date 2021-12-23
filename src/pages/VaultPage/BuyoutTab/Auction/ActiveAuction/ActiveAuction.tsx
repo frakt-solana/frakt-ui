@@ -1,111 +1,70 @@
 import { FC } from 'react';
-import styles from './styles.module.scss';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal } from '../../../../../contexts/WalletModal';
-import { BidHistory } from '../../../../../components/BidHistory';
-import { AuctionCountdown } from '../../../../../components/AuctionCountdown';
-import {
-  TokenFieldForm,
+import TokenField, {
   TOKEN_FIELD_CURRENCY,
 } from '../../../../../components/TokenField';
+import styles from './styles.module.scss';
 import Button from '../../../../../components/Button';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '../../../../../contexts/WalletModal';
 import { VaultData } from '../../../../../contexts/fraktion';
+import { decimalBNToString } from '../../../../../utils';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useAuction } from '../../../../../contexts/auction';
-import { Form } from 'antd';
+import { isEmpty } from 'lodash';
 
-interface ActiveAuctionProps {
+interface PendingAuctionProps {
   vaultInfo: VaultData;
 }
 
-export const ActiveAuction: FC<ActiveAuctionProps> = ({ vaultInfo }) => {
+export const ActiveAuction: FC<PendingAuctionProps> = ({ vaultInfo }) => {
   const { setVisible: setWalletModalVisibility } = useWalletModal();
-  const { bidOnAuction, refundBid } = useAuction();
   const { connected } = useWallet();
-  const [form] = Form.useForm();
-
-  const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
-  const winningBid = vaultInfo.auction.bids.find(
-    (bid) => bid.bidPubkey === winningBidPubKey,
-  );
-
-  const nextBidAmount =
-    (winningBid.bidAmountPerShare.toNumber() *
-      vaultInfo.fractionsSupply.toNumber()) /
-      1e9 +
-    vaultInfo.auction.auction.tickSize.toNumber() / 1e9;
-
+  const { startFraktionalizerAuction } = useAuction();
+  const isAuctionInitialized = !isEmpty(vaultInfo.auction?.auction);
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
-  const placeBidHandler = (values) => {
-    bidOnAuction(vaultInfo, +values.startBid.amount, winningBid.bidPubkey);
+  const startBid = vaultInfo.lockedPricePerShare
+    .mul(vaultInfo.fractionsSupply)
+    .toNumber();
+
+  const onStartAuctionClick = () => {
+    startFraktionalizerAuction(vaultInfo, startBid, isAuctionInitialized);
   };
 
   return (
     <div>
-      <div className={styles.container}>
-        <AuctionCountdown
-          className={styles.timer}
-          endTime={vaultInfo.auction.auction.endingAt}
+      <div className={styles.buyoutControls}>
+        <TokenField
+          disabled
+          currentToken={TOKEN_FIELD_CURRENCY[currency]}
+          className={styles.buyout__tokenField}
+          value={decimalBNToString(
+            vaultInfo.lockedPricePerShare.mul(vaultInfo.fractionsSupply),
+            2,
+            9,
+          )}
+          onValueChange={() => {}}
         />
-      </div>
-      <BidHistory
-        refundBid={(bidPubKey) => refundBid(vaultInfo, bidPubKey)}
-        winningBidPubKey={winningBidPubKey}
-        supply={vaultInfo.fractionsSupply}
-        bids={vaultInfo.auction.bids}
-      />
-      <Form
-        form={form}
-        autoComplete="off"
-        layout="vertical"
-        onFinish={placeBidHandler}
-        initialValues={{
-          startBid: {
-            amount: nextBidAmount,
-          },
-        }}
-      >
-        <div className={styles.buyoutControls}>
-          <Form.Item
-            rules={[
-              {
-                type: 'number',
-                min: nextBidAmount,
-                transform: (value) => +value.amount,
-                message: `Min bid = ${nextBidAmount} SOL`,
-              },
-            ]}
-            label="New bid"
-            name="startBid"
+
+        {connected && (
+          <Button
+            className={styles.buyout__buyoutBtn}
+            type="alternative"
+            onClick={onStartAuctionClick}
           >
-            <TokenFieldForm
-              className={styles.buyout__tokenField}
-              currentToken={TOKEN_FIELD_CURRENCY[currency]}
-            />
-          </Form.Item>
-
-          {connected && (
-            <Button
-              className={styles.buyout__buyoutBtn}
-              type="alternative"
-              onClick={form.submit}
-            >
-              Place bid
-            </Button>
-          )}
-
-          {!connected && (
-            <Button
-              onClick={() => setWalletModalVisibility(true)}
-              className={styles.buyout__connectWalletBtn}
-            >
-              Connect wallet
-            </Button>
-          )}
-        </div>
-      </Form>
+            Place bid
+          </Button>
+        )}
+        {!connected && (
+          <Button
+            onClick={() => setWalletModalVisibility(true)}
+            className={styles.buyout__connectWalletBtn}
+          >
+            Connect wallet
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
