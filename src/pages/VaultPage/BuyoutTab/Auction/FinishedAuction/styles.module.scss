@@ -4,17 +4,43 @@
   align-items: center;
   margin-top: 9px;
   margin-bottom: 39px;
+
+  @media screen and (max-width: 767px){
+    margin-bottom: 30px;
+  }
 }
 
 .finishedIcon {
   margin-right: 8px;
 }
 
-.fullWidth {
-  width: 100%;
-  text-align: center;
-  margin-top: 24px;
-  display: block;
+.redeemBlock {
+  margin-top: 32px;
+  max-width: 350px;
+  height: 80px;
+  border: 1px solid var(--gray-color-3);
+  display: flex;
+  align-items: center;
+}
+
+.redeemImg {
+  height: 80px;
+  width: 80px;
+  margin-left: -1px;
+  background-color: var(--gray-color-1);
+  background-position: center;
+  background-size: cover;
+}
+
+.redeemBtn {
+  margin: 16px;
+  background-color: var(--yellow-color);
+  border: none;
+  height: auto;
+  padding: 0;
+  flex-grow: 1;
+  align-self: stretch;
+  justify-content: center;
 }
 
 .buyoutControls {

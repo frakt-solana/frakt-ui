@@ -61,6 +61,8 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
     );
   };
 
+  const vaultImg = vaultInfo?.safetyBoxes[0]?.nftImage;
+
   return (
     <div>
       <p className={styles.finished}>
@@ -74,13 +76,19 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
         bids={vaultInfo.auction.bids}
       />
       {isWinner && isNFTRedeemAvailable && (
-        <Button
-          onClick={redeemNFTValueHandler}
-          className={styles.fullWidth}
-          type="alternative"
-        >
-          Redeem NFT
-        </Button>
+        <div className={styles.redeemBlock}>
+          <div
+            className={styles.redeemImg}
+            style={{ backgroundImage: `url(${vaultImg})` }}
+          />
+          <Button
+            className={styles.redeemBtn}
+            onClick={redeemNFTValueHandler}
+            type="alternative"
+          >
+            Redeem NFT
+          </Button>
+        </div>
       )}
       {loading && <Loader className={styles.loader} />}
       {isRedeemAvailable && connected && !loading && !!userRedeemValue && (
