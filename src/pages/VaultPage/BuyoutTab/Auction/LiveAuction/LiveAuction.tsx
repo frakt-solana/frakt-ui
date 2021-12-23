@@ -14,7 +14,7 @@ import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useAuction } from '../../../../../contexts/auction';
 import { Form } from 'antd';
 
-interface ActiveAuctionProps {
+interface LiveAuctionProps {
   vaultInfo: VaultData;
 }
 
@@ -32,7 +32,7 @@ const calculateMinBid = (vaultInfo: VaultData) => {
   return (minPerShare * supply) / 1e9;
 };
 
-export const AuctionLive: FC<ActiveAuctionProps> = ({ vaultInfo }) => {
+export const LiveAuction: FC<LiveAuctionProps> = ({ vaultInfo }) => {
   const { setVisible: setWalletModalVisibility } = useWalletModal();
   const { bidOnAuction, refundBid } = useAuction();
   const { connected } = useWallet();
