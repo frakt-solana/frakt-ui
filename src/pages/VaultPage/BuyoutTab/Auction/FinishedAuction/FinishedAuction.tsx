@@ -115,7 +115,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
       {!connected && (
         <Button
           onClick={() => setWalletModalVisibility(true)}
-          className={styles.fullWidth}
+          className={styles.connectWalletBtn}
         >
           Connect wallet
         </Button>
