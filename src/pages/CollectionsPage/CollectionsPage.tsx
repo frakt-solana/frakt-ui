@@ -9,11 +9,15 @@ import { URLS } from '../../constants/urls';
 import { queryCollectionsItem } from '../../utils/getCollectionsData';
 import styles from './styles.module.scss';
 import { mapVaultByCollectionName } from './helpers';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../components/FakeInfinityScroll';
 
 const CollectionsPage = (): JSX.Element => {
   const history = useHistory();
   const { vaults, loading } = useFraktion();
   const [collectionItems, setCollectionItems] = useState<any>([]);
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
 
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultByCollectionName(vaults);
@@ -47,7 +51,13 @@ const CollectionsPage = (): JSX.Element => {
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <div className={styles.cards}>
+        <FakeInfinityScroll
+          itemsToShow={itemsToShow}
+          next={next}
+          isLoading={loading}
+          wrapperClassName={styles.cards}
+          emptyMessage={'No collections found'}
+        >
           {collectionItems.map(({ value }) => (
             <CollectionCard
               key={value?.states?.live.collectionId}
@@ -58,7 +68,7 @@ const CollectionsPage = (): JSX.Element => {
               }
             />
           ))}
-        </div>
+        </FakeInfinityScroll>
       </Container>
     </AppLayout>
   );
