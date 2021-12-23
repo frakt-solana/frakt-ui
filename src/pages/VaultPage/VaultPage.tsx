@@ -44,13 +44,14 @@ const VaultPage: FC = () => {
   }, [tokenMap, vaultData]);
 
   //TODO: Finish for baskets
-  const { nftAttributes, nftDescription, nftImage } =
+  const { nftAttributes, nftDescription, nftImage, nftCollectionName } =
     vaultData?.safetyBoxes.length === 1
       ? vaultData.safetyBoxes[0]
       : {
           nftAttributes: null,
           nftDescription: null,
           nftImage: null,
+          nftCollectionName: null,
         };
 
   //? Set active tab "Buyout" if auction started
@@ -84,6 +85,11 @@ const VaultPage: FC = () => {
                   backgroundImage: `url(${nftImage})`,
                 }}
               />
+              {!!nftCollectionName && (
+                <div className={styles.collectionName}>
+                  Collection: {nftCollectionName}
+                </div>
+              )}
               <div className={styles.mainInfoWrapper}>
                 {!!nftDescription && (
                   <div className={styles.description}>{nftDescription}</div>

@@ -8,10 +8,20 @@
   }
 }
 
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+
+  @media screen and (max-width: 440px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
+}
 .container {
   position: relative;
-  height: 100%;
-  width: 100%;
+  padding-top: 30px;
+  padding-bottom: 64px;
 }
 
 .banner {
@@ -21,7 +31,7 @@
   flex-direction: column;
   max-width: 600px;
   margin: 0 auto;
-  padding-top: 30px;
+  padding-bottom: 60px;
 }
 
 .thumbnail {

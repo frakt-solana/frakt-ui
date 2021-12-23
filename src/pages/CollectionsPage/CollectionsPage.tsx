@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router';
-import _ from 'lodash';
 
 import { useFraktion } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
@@ -9,34 +8,21 @@ import CollectionCard from '../../components/CollectionCard';
 import { URLS } from '../../constants/urls';
 import { queryCollectionsItem } from '../../utils/getCollectionsData';
 import styles from './styles.module.scss';
+import { mapVaultByCollectionName } from './helpers';
 
 const CollectionsPage = (): JSX.Element => {
   const history = useHistory();
-  const { vaults } = useFraktion();
+  const { vaults, loading } = useFraktion();
   const [collectionItems, setCollectionItems] = useState<any>([]);
 
-  const mapVaultByCollectionName = () => {
-    return _.reduce(
-      vaults,
-      (result, value, key) => {
-        const { safetyBoxes } = value;
-        if (safetyBoxes.length) {
-          (
-            result[safetyBoxes[0].nftCollectionName] ||
-            (result[safetyBoxes[0].nftCollectionName] = [])
-          ).push(vaults[key]);
-        }
-        return result;
-      },
-      [],
-    );
-  };
+  const vaultsByCollectionName = useMemo(() => {
+    return loading ? {} : mapVaultByCollectionName(vaults);
+  }, [loading, vaults]);
 
   useEffect(() => {
     getCollectionItems();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [collectionItems]);
+  }, [loading]);
 
   const onChangeCollection = (collectionName: string) => {
     if (!collectionName) {
@@ -47,8 +33,7 @@ const CollectionsPage = (): JSX.Element => {
   };
 
   const getCollectionItems = async (): Promise<void> => {
-    const vaultCollectionArray = await mapVaultByCollectionName();
-    const collectionNameKeys = Object.keys(vaultCollectionArray);
+    const collectionNameKeys = Object.keys(vaultsByCollectionName);
 
     const items = await Promise.allSettled(
       collectionNameKeys.map(async (item) => {
@@ -62,14 +47,14 @@ const CollectionsPage = (): JSX.Element => {
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <div className={styles.content}>
+        <div className={styles.cards}>
           {collectionItems.map(({ value }) => (
             <CollectionCard
-              key={value?.states.live.collectionId}
-              collectionName={value?.states.live.collectionName}
-              thumbnailPath={value?.states.live.thumbnailPath}
+              key={value?.states?.live.collectionId}
+              collectionName={value?.states?.live.collectionName}
+              thumbnailPath={value?.states?.live.thumbnailPath}
               onClick={() =>
-                onChangeCollection(value?.states.live.collectionName)
+                onChangeCollection(value?.states?.live.collectionName)
               }
             />
           ))}

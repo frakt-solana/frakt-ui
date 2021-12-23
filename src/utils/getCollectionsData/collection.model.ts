@@ -20,7 +20,3 @@ export interface CollectionData {
   isNsfw?: boolean;
   artists?: Array<string>;
 }
-
-export interface unknownCollectionDataResult {
-  collectionInfo: CollectionData;
-}

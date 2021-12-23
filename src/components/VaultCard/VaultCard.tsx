@@ -60,7 +60,6 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
           nftImage: '',
           isNftVerified: false,
         };
-
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
