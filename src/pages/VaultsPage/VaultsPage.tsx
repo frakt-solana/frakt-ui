@@ -19,28 +19,12 @@ import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 
 const SORT_VALUES = [
   {
-    label: (
-      <span>
-        Date created <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'createdAt_asc',
-  },
-  {
-    label: (
-      <span>
-        Date created <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
+    label: <span>Newest</span>,
     value: 'createdAt_desc',
   },
   {
-    label: (
-      <span>
-        Supply <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'fractionsSupply_asc',
+    label: <span>Oldest</span>,
+    value: 'createdAt_asc',
   },
   {
     label: (
@@ -49,6 +33,14 @@ const SORT_VALUES = [
       </span>
     ),
     value: 'fractionsSupply_desc',
+  },
+  {
+    label: (
+      <span>
+        Supply <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'fractionsSupply_asc',
   },
   // {
   //   label: (
