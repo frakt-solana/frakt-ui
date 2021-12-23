@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { ActiveAuction } from './ActiveAuction';
-import { AuctionLive } from './AuctionLive';
+import { LiveAuction } from './LiveAuction';
 import { FinishedAuction } from './FinishedAuction';
 import { VaultData, VaultState } from '../../../../contexts/fraktion';
 import moment from 'moment';
@@ -48,7 +48,7 @@ export const Auction: FC<AuctionProps> = ({ vaultInfo }) => {
         <ActiveAuction vaultInfo={vaultInfo} />
       )}
       {auctionState === AuctionState.active && (
-        <AuctionLive vaultInfo={vaultInfo} />
+        <LiveAuction vaultInfo={vaultInfo} />
       )}
       {auctionState === AuctionState.finished && (
         <FinishedAuction vaultInfo={vaultInfo} />

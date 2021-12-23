@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 import VaultCard from '../../components/VaultCard';
 import { Container } from '../../components/Layout';
@@ -20,12 +19,12 @@ import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 
 const SORT_VALUES = [
   {
-    label: (
-      <span>
-        Supply <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'supply_asc',
+    label: <span>Newest</span>,
+    value: 'createdAt_desc',
+  },
+  {
+    label: <span>Oldest</span>,
+    value: 'createdAt_asc',
   },
   {
     label: (
@@ -33,56 +32,48 @@ const SORT_VALUES = [
         Supply <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'supply_desc',
+    value: 'fractionsSupply_desc',
   },
   {
     label: (
       <span>
-        Buyout price <ArrowDownSmallIcon className={styles.arrowUp} />
+        Supply <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'buyoutPrice_asc',
+    value: 'fractionsSupply_asc',
   },
-  {
-    label: (
-      <span>
-        Buyout price <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'buyoutPrice_desc',
-  },
-  {
-    label: (
-      <span>
-        Fraction price <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'lockedPricePerFraction_asc',
-  },
-  {
-    label: (
-      <span>
-        Fraction price <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'lockedPricePerFraction_desc',
-  },
-  {
-    label: (
-      <span>
-        Date created <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'createdAt_asc',
-  },
-  {
-    label: (
-      <span>
-        Date created <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'createdAt_desc',
-  },
+  // {
+  //   label: (
+  //     <span>
+  //       Buyout price <ArrowDownSmallIcon className={styles.arrowUp} />
+  //     </span>
+  //   ),
+  //   value: 'buyoutPrice_asc',
+  // },
+  // {
+  //   label: (
+  //     <span>
+  //       Buyout price <ArrowDownSmallIcon className={styles.arrowDown} />
+  //     </span>
+  //   ),
+  //   value: 'buyoutPrice_desc',
+  // },
+  // {
+  //   label: (
+  //     <span>
+  //       Fraction price <ArrowDownSmallIcon className={styles.arrowUp} />
+  //     </span>
+  //   ),
+  //   value: 'lockedPricePerFraction_asc',
+  // },
+  // {
+  //   label: (
+  //     <span>
+  //       Fraction price <ArrowDownSmallIcon className={styles.arrowDown} />
+  //     </span>
+  //   ),
+  //   value: 'lockedPricePerFraction_desc',
+  // },
 ];
 
 const VaultsPage = (): JSX.Element => {
@@ -93,9 +84,8 @@ const VaultsPage = (): JSX.Element => {
       showAuctionFinishedVaults: false,
       showArchivedVaults: false,
       showVerifiedVaults: true,
-      showMyVaults: false,
       showTradableVaults: false,
-      sort: SORT_VALUES[7],
+      sort: SORT_VALUES[0],
     },
   });
   const showActiveVaults = watch('showActiveVaults');
@@ -103,12 +93,10 @@ const VaultsPage = (): JSX.Element => {
   const showAuctionFinishedVaults = watch('showAuctionFinishedVaults');
   const showVerifiedVaults = watch('showVerifiedVaults');
   const showArchivedVaults = watch('showArchivedVaults');
-  const showMyVaults = watch('showMyVaults');
   const showTradableVaults = watch('showTradableVaults');
   const sort = watch('sort');
 
   const { loading, vaults: rawVaults } = useFraktion();
-  const { connected, publicKey } = useWallet();
   const [searchString, setSearchString] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(9);
 
@@ -119,7 +107,7 @@ const VaultsPage = (): JSX.Element => {
   const vaults = useMemo(() => {
     const [sortField, sortOrder] = sort.value.split('_');
     return rawVaults
-      .filter(({ state, authority, hasMarket, safetyBoxes }) => {
+      .filter(({ state, hasMarket, safetyBoxes }) => {
         //TODO: finish for baskets
         const { nftName, isNftVerified } =
           safetyBoxes.length === 1
@@ -131,9 +119,6 @@ const VaultsPage = (): JSX.Element => {
 
         //? Filter out unfinished vaults
         if (state === VaultState.Inactive) return false;
-
-        if (connected && showMyVaults && authority !== publicKey.toString())
-          return false;
 
         const removeActiveVaults =
           !showActiveVaults && state === VaultState.Active;
@@ -175,7 +160,6 @@ const VaultsPage = (): JSX.Element => {
     showAuctionFinishedVaults,
     showArchivedVaults,
     showVerifiedVaults,
-    showMyVaults,
     showTradableVaults,
     sort,
   ]);
@@ -227,14 +211,6 @@ const VaultsPage = (): JSX.Element => {
               label="Tradable"
               className={styles.filter}
             />
-            {connected && (
-              <ControlledToggle
-                control={control}
-                name="showMyVaults"
-                label="My Vaults"
-                className={styles.filter}
-              />
-            )}
           </div>
           <div>
             <ControlledSelect
