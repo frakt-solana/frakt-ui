@@ -8,12 +8,14 @@ interface CollectionCardProps {
   onClick?: () => void;
   thumbnailPath: string;
   className?: string;
+  vaultCount: number;
 }
 
 const CollectionCard: FC<CollectionCardProps> = ({
   collectionName,
   onClick,
   thumbnailPath,
+  vaultCount,
 }) => {
   return (
     <div className={styles.card} onClick={onClick}>
@@ -26,11 +28,11 @@ const CollectionCard: FC<CollectionCardProps> = ({
       <div className={styles.stats}>
         <div className={styles.item}>
           <div className={styles.title}># of Vaults</div>
-          <div className={styles.value}>25</div>
+          <div className={styles.value}>{vaultCount}</div>
         </div>
         <div className={styles.item}>
           <div className={styles.title}># of NFTS</div>
-          <div className={styles.value}>44</div>
+          <div className={styles.value}>{vaultCount}</div>
         </div>
       </div>
     </div>

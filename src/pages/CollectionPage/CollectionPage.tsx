@@ -1,10 +1,11 @@
-import { useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { DiscordIcon, TwitterIcon } from '../../icons';
+import { ArrowDownSmallIcon, DiscordIcon, TwitterIcon } from '../../icons';
 import { CollectionData } from '../../utils/getCollectionsData/collections.model';
 import VaultCard from '../../components/VaultCard';
 import { useFraktion } from '../../contexts/fraktion';
@@ -14,9 +15,38 @@ import styles from './styles.module.scss';
 import { getCollectionThumbnailUrl } from '../../utils';
 import { useCollectionsItem } from '../../utils/getCollectionsData/collections.hooks';
 import { WebsiteIcon } from '../../icons/WebsiteIcon';
+import { useDebounce } from '../../hooks';
+import { SearchInput } from '../../components/SearchInput';
+import { ControlledSelect } from '../../components/Select/Select';
 
-const CollectionPage = (): JSX.Element => {
+const SORT_VALUES = [
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+];
+
+const CollectionPage: FC = () => {
+  const { control } = useForm({
+    defaultValues: {
+      sort: SORT_VALUES[0],
+    },
+  });
+
   const history = useHistory();
+  const [searchString, setSearchString] = useState<string>('');
   const queryId = history.location.pathname.replace('/collection/', '');
   const { collectionsItem } = useCollectionsItem(queryId);
   const { vaults, loading } = useFraktion();
@@ -34,15 +64,27 @@ const CollectionPage = (): JSX.Element => {
     return loading ? {} : mapVaultByCollectionName(vaults);
   }, [loading, vaults]);
 
+  const searchItems = useDebounce((search: string) => {
+    setSearchString(search.toUpperCase());
+  }, 300);
+
   const userVaults = useMemo(() => {
-    return vaultsByCollectionName[queryId];
-  }, [queryId, vaultsByCollectionName]);
+    const filteredVaults = vaultsByCollectionName[queryId];
+
+    if (filteredVaults) {
+      return filteredVaults.filter(({ safetyBoxes }) => {
+        const { nftCollectionName } = safetyBoxes[0];
+        return nftCollectionName.toUpperCase().includes(searchString);
+      });
+    }
+  }, [queryId, vaultsByCollectionName, searchString]);
 
   return (
     <AppLayout>
       <div className={styles.fullPage}>
         <img src={getCollectionThumbnailUrl(bannerPath)} />
       </div>
+
       <Container component="main" className={styles.container}>
         <div className={styles.banner}>
           <div className={styles.thumbnail}>
@@ -61,6 +103,25 @@ const CollectionPage = (): JSX.Element => {
             </a>
           </div>
         </div>
+        <SearchInput
+          size="large"
+          onChange={(e) => searchItems(e.target.value || '')}
+          className={styles.search}
+          placeholder="Search by vault name"
+        />
+        <div className={styles.filtersWrapper}>
+          <div>
+            <ControlledSelect
+              className={styles.sortingSelect}
+              valueContainerClassName={styles.sortingSelectValueContainer}
+              label="Sort by"
+              control={control}
+              name="sort"
+              options={SORT_VALUES}
+            />
+          </div>
+        </div>
+
         {userVaults && (
           <div className={styles.cards}>
             {userVaults.map((vault) => (
