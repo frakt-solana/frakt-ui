@@ -35,7 +35,7 @@ const startFraktionalizerAuction =
         adminPubkey: fraktionConfig.ADMIN_PUBKEY,
         vaultAuthority: new PublicKey(vaultInfo.authority),
         vault: vaultInfo.vaultPubkey,
-        auction: vaultInfo.auction.auction.auctionPubkey,
+        auction: vaultInfo.auction?.auction?.auctionPubkey || null,
         fractionMint: vaultInfo.fractionMint,
         fractionTreasury: vaultInfo.fractionTreasury,
         redeemTreasury: vaultInfo.redeemTreasury,
