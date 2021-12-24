@@ -64,7 +64,29 @@
   transition: all var(--transition-1);
 
   &:hover {
-    background-color: var(--accent-color-1);
+    background-color: var(--border-btn-color-1);
     border-color: var(--accent-color-3);
   }
+}
+
+.refundPossibleBtn {
+  color: var(--white-color);
+  font: var(--font-btn-small);
+  background: var(--bg-btn-color-1);
+  border: 1px solid var(--border-btn-color-1);
+  cursor: pointer;
+  height: 48px;
+  line-height: 21px;
+  margin-top: 24px;
+  padding-left: 24px;
+  padding-right: 24px;
+  min-width: 100px;
+  width: 100%;
+  transition: all var(--transition-1);
+
+  &:hover {
+    background-color: var(--border-btn-color-1);
+    border-color: var(--accent-color-3);
+  }
+
 }

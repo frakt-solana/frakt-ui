@@ -62,23 +62,56 @@ export const BidHistory = ({
       });
   };
 
+  const ownBids = bids.filter((bid) => isRefundAvailable(bid));
+
+  const refundOneBid = (bid: Bid) => {
+    refundBid(bid.bidPubkey);
+  };
+
+  const onRefundAllBidsClick = async () => {
+    setIsRefunding(true);
+    const series = async () => {
+      for (let i = 0; i < ownBids.length; i++) {
+        setRefundedBids([...refundedBids, ownBids[i].bidPubkey]);
+        const res = await refundBid(ownBids[i].bidPubkey);
+        if (!res) {
+          setRefundedBids(
+            refundedBids.filter((bidKey) => bidKey !== ownBids[i].bidPubkey),
+          );
+        }
+      }
+    };
+    await series();
+    setIsRefunding(false);
+  };
+
   return (
-    <ul className={classNames(className, styles.bid)}>
-      {sortedBids.map((bid, index) => (
-        <li className={styles.item} key={bid.bidPubkey}>
-          <span className={styles.number}>{index + 1}</span>
-          <span className={styles.bidder}>{shortenAddress(bid.bidder)}</span>
-          {isRefundAvailable(bid) && (
-            <button onClick={refundBidClick(bid)} className={styles.refund}>
-              Refund bid
-            </button>
-          )}
-          <p className={styles.price}>
-            {decimalBNToString(bid.bidAmountPerShare.mul(supply))}
-            <span className={styles.solanaCurrency}>SOL</span>
-          </p>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className={classNames(className, styles.bid)}>
+        {sortedBids.map((bid, index) => (
+          <li className={styles.item} key={bid.bidPubkey}>
+            <span className={styles.number}>{index + 1}</span>
+            <span className={styles.bidder}>{shortenAddress(bid.bidder)}</span>
+            {isRefundAvailable(bid) && (
+              <button onClick={refundBidClick(bid)} className={styles.refund}>
+                Refund bid
+              </button>
+            )}
+            <p className={styles.price}>
+              {decimalBNToString(bid.bidAmountPerShare.mul(supply))}
+              <span className={styles.solanaCurrency}>SOL</span>
+            </p>
+          </li>
+        ))}
+      </ul>
+      {!!ownBids.length && (
+        <button
+          className={styles.refundPossibleBtn}
+          onClick={onRefundAllBidsClick}
+        >
+          Refund possible bids
+        </button>
+      )}
+    </>
   );
 };
