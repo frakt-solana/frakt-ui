@@ -64,10 +64,6 @@ export const BidHistory = ({
 
   const ownBids = bids.filter((bid) => isRefundAvailable(bid));
 
-  const refundOneBid = (bid: Bid) => {
-    refundBid(bid.bidPubkey);
-  };
-
   const onRefundAllBidsClick = async () => {
     setIsRefunding(true);
     const series = async () => {
