@@ -107,3 +107,10 @@
     }
   }
 }
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 12px 36px;
+  flex-wrap: wrap;
+}

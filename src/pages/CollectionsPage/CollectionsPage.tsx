@@ -86,25 +86,27 @@ const CollectionsPage: FC = () => {
         return collectionName.toUpperCase().includes(searchString);
       })
       .sort((a, b) => {
-        if (sortField === 'collectionName') {
-          if (sortOrder === 'desc') {
-            return a.collectionName.localeCompare(b.collectionName);
-          }
-          return b.collectionName.localeCompare(a.collectionName);
-        }
-        if (sortField === 'vault') {
-          if (sortOrder === 'desc') {
+        switch (sortField) {
+          case 'collectionName':
+            if (sortOrder === 'desc') {
+              return a.collectionName.localeCompare(b.collectionName);
+            }
+            return b.collectionName.localeCompare(a.collectionName);
+          case 'vault':
+            if (sortOrder === 'desc') {
+              return String(
+                vaultsByCollectionName[a.collectionName].length,
+              ).localeCompare(
+                String(vaultsByCollectionName[b.collectionName].length),
+              );
+            }
             return String(
-              vaultsByCollectionName[a.collectionName].length,
+              vaultsByCollectionName[b.collectionName].length,
             ).localeCompare(
-              String(vaultsByCollectionName[b.collectionName].length),
+              String(vaultsByCollectionName[a.collectionName].length),
             );
-          }
-          return String(
-            vaultsByCollectionName[b.collectionName].length,
-          ).localeCompare(
-            String(vaultsByCollectionName[a.collectionName].length),
-          );
+          default:
+            break;
         }
       });
   }, [collectionItems, searchString, vaultsByCollectionName, sort]);
@@ -126,7 +128,7 @@ const CollectionsPage: FC = () => {
         ({ value, status }: PromiseFulfilledResult) =>
           status === 'fulfilled' && value !== undefined,
       )
-      .map((res: PromiseFulfilledResult) => res.value);
+      .map((response: PromiseFulfilledResult) => response.value);
 
     setCollectionItems(fulfilled as CollectionData[]);
   };
