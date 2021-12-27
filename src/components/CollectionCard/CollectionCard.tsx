@@ -19,9 +19,14 @@ const CollectionCard: FC<CollectionCardProps> = ({
 }) => {
   return (
     <div className={styles.card} onClick={onClick}>
-      <div className={styles.image}>
-        <img src={getCollectionThumbnailUrl(thumbnailPath)} />
-      </div>
+      <div
+        className={styles.image}
+        style={{
+          backgroundImage: `url(${getCollectionThumbnailUrl(
+            thumbnailPath?.replace(/ /g, '%20'),
+          )})`,
+        }}
+      ></div>
       <div className={styles.nameContainer}>
         <div className={styles.name}>{collectionName}</div>
       </div>

@@ -150,11 +150,17 @@ const CollectionPage: FC = () => {
     connected,
     publicKey,
   ]);
-
   return (
     <AppLayout>
       <div className={styles.fullPage}>
-        <img src={getCollectionThumbnailUrl(bannerPath)} />
+        <div
+          className={styles.image}
+          style={{
+            backgroundImage: `url(${getCollectionThumbnailUrl(
+              bannerPath?.replace(/ /g, '%20'),
+            )})`,
+          }}
+        ></div>
       </div>
       <Container component="main" className={styles.container}>
         <div className={styles.banner}>

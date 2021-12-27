@@ -33,11 +33,9 @@
     height: 200px;
     border-bottom: 1px solid var(--gray-color-6);
     position: relative;
-
-    img {
-      width: 100%;
-      height: 100%;
-    }
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   .nameContainer {
