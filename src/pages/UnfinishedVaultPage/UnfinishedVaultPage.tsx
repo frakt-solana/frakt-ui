@@ -86,10 +86,10 @@ export const UnfinishedVaultPage: FC = () => {
                   vaultInfo={vaultData}
                   marketId={vaultMarket?.address}
                 />
-                {vaultData.state === VaultState.Bought && (
+                {vaultData.state === VaultState.AuctionFinished && (
                   <Redeem vaultInfo={vaultData} />
                 )}
-                {vaultData.state === VaultState.Closed && (
+                {vaultData.state === VaultState.Archived && (
                   <div className={stylesVaultPage.detailsPlaceholder} />
                 )}
                 <ul className={styles.buttons}>

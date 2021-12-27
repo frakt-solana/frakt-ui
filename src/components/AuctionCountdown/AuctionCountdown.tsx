@@ -12,13 +12,11 @@ export const AuctionCountdown = ({
   endTime,
   className,
 }: AuctionCountdownProps): JSX.Element => {
-  const endTimeMoment = moment.unix(endTime);
-
   const intervalIdRef = useRef<ReturnType<typeof setInterval>>(null);
-
   const [currentTime, setCurrentTime] = useState<moment.Moment>(moment());
-  const timeDifference = moment.duration(endTimeMoment.diff(currentTime));
 
+  const endTimeMoment = moment.unix(endTime);
+  const timeDifference = moment.duration(endTimeMoment.diff(currentTime));
   const formatDateUnit = (value: number): string => {
     return value < 10 ? `0${value}` : `${value}`;
   };
@@ -34,6 +32,8 @@ export const AuctionCountdown = ({
   useEffect(() => {
     timeDifference.asSeconds() < 0 && clearInterval(intervalIdRef.current);
   }, [timeDifference]);
+
+  if (timeDifference.asSeconds() < 0) return null;
 
   return (
     <ul className={classNames(className, styles.countdown)}>

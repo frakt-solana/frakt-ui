@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styles from './styles.module.scss';
-import { BuyoutField } from './BuyoutField';
 import { Form } from 'antd';
 import { Input } from '../../../../components/Input';
 import NumericInput from '../../../../components/NumericInput';
@@ -12,6 +11,10 @@ import {
 import { useTokenListContext } from '../../../../contexts/TokenList';
 import BN from 'bn.js';
 import { FraktionPrice } from './FraktionPrice';
+import {
+  TOKEN_FIELD_CURRENCY,
+  TokenFieldForm,
+} from '../../../../components/TokenField';
 
 interface DetailsProps {
   vaultName?: string;
@@ -160,7 +163,10 @@ export const DetailsForm: React.FC<DetailsProps> = ({
             rules={[{ validator: validators.buyoutPrice }]}
             help=""
           >
-            <BuyoutField maxLength={5} />
+            <TokenFieldForm
+              currentToken={TOKEN_FIELD_CURRENCY.SOL}
+              maxLength={5}
+            />
           </Form.Item>
           <Form.Item
             getValueFromEvent={({ amount }) => amount}
@@ -172,7 +178,10 @@ export const DetailsForm: React.FC<DetailsProps> = ({
             help=""
             hidden={!isAuction}
           >
-            <BuyoutField maxLength={5} />
+            <TokenFieldForm
+              currentToken={TOKEN_FIELD_CURRENCY.SOL}
+              maxLength={5}
+            />
           </Form.Item>
           <Form.Item
             getValueFromEvent={({ amount }) => amount}
@@ -184,7 +193,7 @@ export const DetailsForm: React.FC<DetailsProps> = ({
             help=""
             hidden={!isAuction}
           >
-            <BuyoutField />
+            <TokenFieldForm currentToken={TOKEN_FIELD_CURRENCY.SOL} />
           </Form.Item>
           {form.getFieldsError().map((el, idx) =>
             el?.errors?.[0] ? (

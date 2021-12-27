@@ -9,6 +9,8 @@ import {
   createFraktionalizer,
   closeFraktionalizer,
   redeemRewardsFromShares,
+  initBacket,
+  addNFTsToBacket,
 } from 'fraktionalizer-client-library';
 import { MARKETS } from '@project-serum/serum';
 import { WSOL } from '@raydium-io/raydium-sdk';
@@ -29,7 +31,9 @@ import { notify } from '../../utils';
 import { listMarket } from '../../utils/serumUtils/send';
 import { registerMarket } from '../../utils/markets';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
+import config from '../../contexts/fraktion/config';
 import {
+  getVaultRealState,
   mapAuctionsByVaultPubkey,
   mapBidsByAuctionPubkey,
   mapMarketExistenceByFractionMint,
@@ -72,6 +76,8 @@ export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
 
     return {
       ...vault,
+      //? set real state of auction (more info in getVaultRealState description)
+      state: getVaultRealState(vault.state, relatedAuction),
       hasMarket: marketExistenceByFractionMint[fractionMint] || false,
       safetyBoxes: relatedSafetyBoxesWithMetadata,
       auction: {
@@ -326,4 +332,44 @@ export const createFraktionsMarket = async (
     });
     return false;
   }
+};
+
+export const createBasket = async (
+  walletPublicKey: PublicKey,
+  signTransaction: (transaction: Transaction) => Promise<Transaction>,
+  connection: Connection,
+) => {
+  const initializedBasket = await initBacket({
+    connection,
+    fractionDecimals: config.FRACTION_DECIMALS, // 3 => 5.323
+    priceMint: config.SOL_TOKEN_PUBKEY,
+    userPubkey: walletPublicKey.toBase58(),
+    vaultProgramId: config.PROGRAM_PUBKEY,
+    sendTxn: async (txn, signers): Promise<void> => {
+      const { blockhash } = await connection?.getRecentBlockhash();
+      txn.recentBlockhash = blockhash;
+      txn.feePayer = walletPublicKey;
+      txn.sign(...signers);
+      const signed = await signTransaction(txn);
+      const txid = await connection.sendRawTransaction(signed.serialize());
+      return void connection.confirmTransaction(txid);
+    },
+  });
+
+  // const result = await addNFTsToBacket({
+  //   connection,
+  //   nftMints: selectedNfts.map(nft => nft.mint),
+  //   vaultProgramId: config.PROGRAM_PUBKEY,
+  //   userPubkey: walletPublicKey.toBase58(),
+  //   vaultStrPubkey: vaultPubKey,
+  //   sendTxn: async (txn, signers): Promise<void> => {
+  //     const { blockhash } = await connection?.getRecentBlockhash();
+  //     txn.recentBlockhash = blockhash;
+  //     txn.feePayer = walletPublicKey;
+  //     txn.sign(...signers);
+  //     const signed = await signTransaction(txn);
+  //     const txid = await connection.sendRawTransaction(signed.serialize());
+  //     return void connection.confirmTransaction(txid);
+  //   },
+  // });
 };

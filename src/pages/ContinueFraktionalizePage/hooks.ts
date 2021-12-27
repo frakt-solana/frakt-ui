@@ -26,7 +26,7 @@ export const useFraktionalizeTransactionModal = (): {
   tickerName: string;
 } => {
   const { removeTokenOptimistic } = useUserTokens();
-  const { fraktionalize } = useFraktion();
+  const { fraktionalize, createBasket } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<ModalState>('loading');
   const [fractionTokenMint, setFractionTokenMint] = useState<string>('');
@@ -45,6 +45,19 @@ export const useFraktionalizeTransactionModal = (): {
       createSingleVault(txnData);
     } else {
       //TODO: create basket here
+      createBasketVault(txnData);
+    }
+  };
+
+  const createBasketVault = async (txnData: FraktionalizeTxnData) => {
+    const result = await createBasket();
+
+    if (!result) {
+      setState('fail');
+    } else {
+      setState('success');
+      setFractionTokenMint(result.fractionalMint);
+      removeTokenOptimistic(txnData.userNfts[0].mint);
     }
   };
 

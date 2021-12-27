@@ -12,8 +12,10 @@ import {
   fraktionalize,
   getVaults,
   redeem,
+  createBasket,
 } from './fraktion';
 import { getMarkets } from '../../utils/markets';
+import { usePolling } from '../../hooks';
 
 export const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -25,6 +27,7 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   redeem: () => Promise.resolve(null),
   createFraktionsMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
+  createBasket: () => Promise.resolve(null),
   patchVault: () => {},
 });
 
@@ -62,6 +65,20 @@ export const FraktionProvider = ({
     }
   };
 
+  const silentFetchData: fetchDataFunction = async () => {
+    try {
+      const markets = await getMarkets();
+      const vaultsData = await getVaults(markets);
+      setVaultsMarkets(markets);
+      setVaults(vaultsData);
+    } catch {} //eslint-disable-line
+  };
+
+  const { isPolling, startPolling, stopPolling } = usePolling(
+    silentFetchData,
+    10000,
+  );
+
   const patchVault = (vaultInfo: VaultData): void => {
     setVaults((vaults) =>
       vaults.reduce((vaults, vault) => {
@@ -79,6 +96,12 @@ export const FraktionProvider = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection]);
+
+  useEffect(() => {
+    startPolling();
+    return () => isPolling && stopPolling();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <FraktionContext.Provider
@@ -104,6 +127,8 @@ export const FraktionProvider = ({
             signTransaction,
             connection,
           ),
+        createBasket: () =>
+          createBasket(walletPublicKey, signTransaction, connection),
         buyout: (vault, userTokensByMint) =>
           buyout(
             vault,

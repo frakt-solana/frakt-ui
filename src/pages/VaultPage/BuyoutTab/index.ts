@@ -1,0 +1,1 @@
+export { BuyoutTab } from './BuyoutTab';

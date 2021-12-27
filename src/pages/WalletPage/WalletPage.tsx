@@ -49,7 +49,7 @@ const WalletPage = (): JSX.Element => {
 
   const fetchUserTokens = async () => {
     try {
-      //? Check if wallet valid
+      //? Checking if wallet valid
       new PublicKey(walletPubkey);
 
       const userTokens = await getAllUserTokens(new PublicKey(walletPubkey), {
@@ -93,6 +93,11 @@ const WalletPage = (): JSX.Element => {
     return vaults
       .filter(
         (vault) =>
+          vault.authority === walletPubkey &&
+          vault.state !== VaultState.Inactive, //? Hide unfinished vaults until baskets not ready
+      )
+      .filter(
+        (vault) =>
           vault.authority === walletPubkey && vault.state === VaultState.Active,
       )
       .sort(
@@ -106,7 +111,7 @@ const WalletPage = (): JSX.Element => {
       .filter(
         (vault) =>
           vault.authority === walletPubkey &&
-          vault.state === VaultState.Damaged,
+          vault.state === VaultState.Inactive,
       )
       .sort(
         (vaultA: VaultData, vaultB: VaultData) =>

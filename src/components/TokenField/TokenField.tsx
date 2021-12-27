@@ -84,13 +84,18 @@ const TokenField = ({
         />
         {!!onUseMaxButtonClick && (
           <div className={styles.useMaxBtnContainer}>
-            <button className={styles.useMaxBtn} onClick={onUseMaxButtonClick}>
+            <button
+              type="button"
+              className={styles.useMaxBtn}
+              onClick={onUseMaxButtonClick}
+            >
               Use max
             </button>
           </div>
         )}
         <div>
           <button
+            type="button"
             className={classNames(styles.selectTokenBtn, {
               [styles.disabledTokens]: !tokensList || !onTokenChange,
             })}
@@ -127,6 +132,35 @@ const TokenField = ({
         )}
       </div>
     </div>
+  );
+};
+
+interface TokenFieldFormProps
+  extends Omit<Omit<TokenFieldProps, 'value'>, 'onValueChange'> {
+  value?: {
+    amount: string;
+    token: Token | any;
+  };
+  onChange?: any;
+  maxLength?: number;
+}
+
+export const TokenFieldForm: React.FC<TokenFieldFormProps> = ({
+  onChange,
+  value,
+  ...props
+}) => {
+  const onAmountChange = (amount: string) => onChange?.({ ...value, amount });
+
+  const onTokenChange = (token: Token) => onChange?.({ ...value, token });
+
+  return (
+    <TokenField
+      {...props}
+      value={value.amount}
+      onValueChange={onAmountChange}
+      onTokenChange={onTokenChange}
+    />
   );
 };
 

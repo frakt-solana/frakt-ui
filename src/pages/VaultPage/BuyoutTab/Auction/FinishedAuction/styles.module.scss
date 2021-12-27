@@ -1,0 +1,34 @@
+.fullWidth {
+  width: 100%;
+  text-align: center;
+  margin-top: 24px;
+  display: block;
+}
+
+.buyoutControls {
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.buyout__connectWalletBtn {
+  font: var(--font-btn-small);
+  max-width: 180px;
+  min-height: 100%;
+}
+
+.buyout__buyoutBtn {
+  min-height: 100%;
+  padding-top: unset;
+  padding-bottom: unset;
+  height: 88px;
+
+  @media screen and (max-width: 450px) {
+    width: 100%;
+    display: block;
+  }
+}
+
+.loader {
+  margin-top: 16px;
+}
