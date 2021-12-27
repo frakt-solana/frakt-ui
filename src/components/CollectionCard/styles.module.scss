@@ -54,8 +54,8 @@
   .stats {
     @include container();
     display: flex;
-    justify-content: space-between;
-    gap: 16px;
+    justify-content: flex-start;
+    gap: 50px;
     .item {
       .title {
         font: var(--font-smallest);

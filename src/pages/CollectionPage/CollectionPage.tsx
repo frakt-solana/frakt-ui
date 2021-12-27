@@ -156,9 +156,7 @@ const CollectionPage: FC = () => {
         <div
           className={styles.image}
           style={{
-            backgroundImage: `url(${getCollectionThumbnailUrl(
-              bannerPath?.replace(/ /g, '%20'),
-            )})`,
+            backgroundImage: `url(${getCollectionThumbnailUrl(bannerPath)})`,
           }}
         ></div>
       </div>

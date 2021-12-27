@@ -22,9 +22,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
       <div
         className={styles.image}
         style={{
-          backgroundImage: `url(${getCollectionThumbnailUrl(
-            thumbnailPath?.replace(/ /g, '%20'),
-          )})`,
+          backgroundImage: `url(${getCollectionThumbnailUrl(thumbnailPath)})`,
         }}
       ></div>
       <div className={styles.nameContainer}>

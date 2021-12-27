@@ -84,8 +84,23 @@
 }
 
 .collectionName {
-  padding-top: 40px;
+  color: var(--white-color);
   font: var(--font-body-small);
+}
+
+.collectionIcon {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-right: 10px;
+}
+
+.flex {
+  display: flex;
+  padding-top: 40px;
 }
 
 .attributesTable {
