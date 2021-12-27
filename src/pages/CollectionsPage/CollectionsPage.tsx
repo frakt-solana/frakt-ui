@@ -42,7 +42,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Vault <ArrowDownSmallIcon className={styles.arrowUp} />
+        Vaults <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'vault_desc',
@@ -50,10 +50,26 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Vault <ArrowDownSmallIcon className={styles.arrowDown} />
+        Vaults <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'vault_asc',
+  },
+  {
+    label: (
+      <span>
+        NTFs <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'ntfs_desc',
+  },
+  {
+    label: (
+      <span>
+        NTFs <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'ntfs_asc',
   },
 ];
 
@@ -92,7 +108,8 @@ const CollectionsPage: FC = () => {
               return a.collectionName.localeCompare(b.collectionName);
             }
             return b.collectionName.localeCompare(a.collectionName);
-          case 'vault':
+
+          default:
             if (sortOrder === 'desc') {
               return String(
                 vaultsByCollectionName[a.collectionName].length,
@@ -105,8 +122,6 @@ const CollectionsPage: FC = () => {
             ).localeCompare(
               String(vaultsByCollectionName[a.collectionName].length),
             );
-          default:
-            break;
         }
       });
   }, [collectionItems, searchString, vaultsByCollectionName, sort]);
