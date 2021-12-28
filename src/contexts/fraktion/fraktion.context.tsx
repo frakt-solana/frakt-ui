@@ -127,8 +127,14 @@ export const FraktionProvider = ({
             signTransaction,
             connection,
           ),
-        createBasket: () =>
-          createBasket(walletPublicKey, signTransaction, connection),
+        createBasket: (userNfts, existsVaultPubkey) =>
+          createBasket(
+            userNfts,
+            existsVaultPubkey,
+            walletPublicKey,
+            signTransaction,
+            connection,
+          ),
         buyout: (vault, userTokensByMint) =>
           buyout(
             vault,
