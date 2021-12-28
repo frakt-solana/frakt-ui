@@ -16,6 +16,7 @@ import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { useFraktionalizeTransactionModal } from './hooks';
+import { VaultData } from '../../contexts/fraktion';
 
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
@@ -48,13 +49,11 @@ const FraktionalizePage = (): JSX.Element => {
   };
 
   const onCardClick = (nft: UserNFT): void => {
-    //? Commented out to prevent multiselect until baskets not finished
-    // selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
-    //   ? setSelectedNfts(
-    //       selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
-    //     )
-    //   : setSelectedNfts([...selectedNfts, nft]);
-    setSelectedNfts([nft]);
+    selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
+      ? setSelectedNfts(
+          selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
+        )
+      : setSelectedNfts([...selectedNfts, nft]);
   };
 
   const runFraktionalization = (
@@ -66,6 +65,7 @@ const FraktionalizePage = (): JSX.Element => {
     tickSize?: number,
     startBid?: number,
     isAuction?: boolean,
+    currentVault?: VaultData,
   ) => {
     openTxnModal({
       userNfts,
@@ -76,6 +76,7 @@ const FraktionalizePage = (): JSX.Element => {
       isAuction,
       tickSize,
       startBid,
+      currentVault,
     });
     setSelectedNfts([]);
   };

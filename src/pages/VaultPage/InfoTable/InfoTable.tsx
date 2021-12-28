@@ -18,9 +18,8 @@ export const InfoTable = ({
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
-  //TODO: Finish for baskets
   const nftMint =
-    vaultInfo.safetyBoxes.length === 1 ? vaultInfo.safetyBoxes[0].nftMint : '';
+    vaultInfo.safetyBoxes.length >= 1 ? vaultInfo.safetyBoxes[0].nftMint : '';
 
   return (
     <div className={styles.infoTable}>

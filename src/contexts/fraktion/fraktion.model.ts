@@ -1,7 +1,6 @@
 import { RawUserTokensByMint, UserNFT } from '../userTokens';
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
-import { createBasket } from './fraktion';
 
 export enum VaultState {
   Inactive = 0,
@@ -93,10 +92,6 @@ export interface Bid {
   bidder: string;
   isCanceled: boolean;
   placedAt: number;
-}
-
-export interface VaultsMap {
-  [key: string]: Vault;
 }
 
 export interface RawSafetyBox {
@@ -205,8 +200,12 @@ export interface FraktionContextType {
   vaults: VaultData[];
   vaultsMarkets: Market[];
   fraktionalize: fraktionalizeFunction;
-  createBasket: any;
-  completeBasketCreation: any;
+  createVault: (
+    userNfts: any,
+    pricePerFraction: number,
+    fractionsAmount: number,
+    currentVault?: VaultData,
+  ) => void;
   buyout: buyoutFunction;
   redeem: redeemFunction;
   createFraktionsMarket: createFraktionsMarketFunction;

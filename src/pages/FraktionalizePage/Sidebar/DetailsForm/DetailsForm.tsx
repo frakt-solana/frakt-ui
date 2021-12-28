@@ -19,7 +19,6 @@ import {
 interface DetailsProps {
   vaultName?: string;
   onSubmit?: (values: FormValues) => void;
-  isBasket: boolean;
   isAuction: boolean;
 }
 
@@ -51,7 +50,6 @@ const calculatePricePerFraktion = (
 
 export const DetailsForm: React.FC<DetailsProps> = ({
   vaultName,
-  isBasket,
   isAuction,
   onSubmit,
 }) => {
@@ -79,14 +77,6 @@ export const DetailsForm: React.FC<DetailsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuction]);
 
-  useEffect(() => {
-    if (!isBasket) {
-      form.resetFields(['basketName']);
-      forceUpdate();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isBasket]);
-
   return (
     <>
       <div className={styles.details}>
@@ -101,22 +91,15 @@ export const DetailsForm: React.FC<DetailsProps> = ({
           <p className={styles.detailsTitle}>Vault details</p>
           <div className={styles.fieldWrapper}>
             <Form.Item
-              rules={getConditionalValidator(isBasket, [
-                { validator: validators.backetName(tokenList) },
-              ])}
+              rules={[{ validator: validators.backetName(tokenList) }]}
               label="Basket name"
               name="basketName"
-              hidden={!isBasket}
               help=""
             >
               <Input placeholder="Coolest basket" />
             </Form.Item>
-            {!isBasket && (
-              <>
-                <p className={styles.fieldLabel}>Name</p>
-                <p className={styles.tokenName}>{vaultName}</p>
-              </>
-            )}
+            <p className={styles.fieldLabel}>Name</p>
+            <p className={styles.tokenName}>{vaultName}</p>
           </div>
           <div className={styles.fieldWrapperDouble}>
             <Form.Item

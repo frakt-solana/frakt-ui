@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { useUserTokens, UserNFT } from '../../contexts/userTokens';
-import { useFraktion } from '../../contexts/fraktion';
+import { UserNFT } from '../../contexts/userTokens';
+import { useFraktion, VaultData } from '../../contexts/fraktion';
 
 interface FraktionalizeTxnData {
   userNfts: UserNFT[];
@@ -12,6 +12,7 @@ interface FraktionalizeTxnData {
   isAuction: boolean;
   tickSize: number;
   startBid: number;
+  currentVault?: VaultData;
 }
 
 type ModalState = 'loading' | 'success' | 'fail';
@@ -25,8 +26,7 @@ export const useFraktionalizeTransactionModal = (): {
   fractionTokenMint: string;
   tickerName: string;
 } => {
-  const { removeTokenOptimistic } = useUserTokens();
-  const { fraktionalize } = useFraktion();
+  const { createVault } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<ModalState>('loading');
   const [fractionTokenMint, setFractionTokenMint] = useState<string>('');
@@ -36,33 +36,23 @@ export const useFraktionalizeTransactionModal = (): {
 
   const open = (txnData: FraktionalizeTxnData) => {
     setVisible(true);
-
     setTransactionData(txnData);
-
-    const { userNfts } = txnData;
-
-    if (userNfts.length === 1) {
-      createSingleVault(txnData);
-    } else {
-      //TODO: create basket here
-    }
+    createSingleVault(txnData);
   };
 
   const createSingleVault = async (txnData: FraktionalizeTxnData) => {
-    const result = await fraktionalize(
-      txnData.userNfts[0],
-      txnData.tickerName,
-      txnData.pricePerFraction,
-      txnData.fractionsAmount,
-      'SOL',
-    );
-
-    if (!result) {
-      setState('fail');
-    } else {
+    try {
+      await createVault(
+        txnData.userNfts,
+        txnData.pricePerFraction,
+        txnData.fractionsAmount,
+        txnData.currentVault,
+      );
       setState('success');
-      setFractionTokenMint(result.fractionalMint);
-      removeTokenOptimistic(txnData.userNfts[0].mint);
+      //setFractionTokenMint(result.fractionalMint); rewrite it
+      //removeTokenOptimistic(txnData.userNfts[0].mint);
+    } catch (err) {
+      setState('fail');
     }
   };
 

@@ -10,8 +10,8 @@ import {
   closeFraktionalizer,
   redeemRewardsFromShares,
   initBacket,
-  addNFTsToBacket,
-  finishBacket,
+  addNFTsToBacket as addNFTsToBasketTransaction,
+  finishBacket as finishBasketTransaction,
 } from 'fraktionalizer-client-library';
 import { MARKETS } from '@project-serum/serum';
 import { WSOL } from '@raydium-io/raydium-sdk';
@@ -32,7 +32,6 @@ import { notify } from '../../utils';
 import { listMarket } from '../../utils/serumUtils/send';
 import { registerMarket } from '../../utils/markets';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
-import config from '../../contexts/fraktion/config';
 import {
   getVaultRealState,
   mapAuctionsByVaultPubkey,
@@ -184,8 +183,7 @@ export const buyout = async (
     redeemTreasury,
   } = vault;
   try {
-    //? If vault with single locked NFT
-    if (safetyBoxes.length === 1) {
+    if (safetyBoxes.length >= 1) {
       const { safetyBoxPubkey, nftMint, store } = safetyBoxes[0];
 
       const userFractionTokenView = userTokensByMint[fractionMint];
@@ -335,16 +333,14 @@ export const createFraktionsMarket = async (
   }
 };
 
-export const createBasket = async (
+export const initBasket = async (
   userNfts: UserNFT[],
-  existsVaultPubkey: string,
   walletPublicKey: PublicKey,
   signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,
 ) => {
-  const initializedBasket =
-    !existsVaultPubkey &&
-    (await initBacket({
+  try {
+    return await initBacket({
       connection,
       fractionDecimals: FRACTION_DECIMALS, // 3 => 5.323
       priceMint: SOL_TOKEN_PUBKEY,
@@ -359,41 +355,103 @@ export const createBasket = async (
         const txid = await connection.sendRawTransaction(signed.serialize());
         return void connection.confirmTransaction(txid);
       },
-    }));
-
-  if (existsVaultPubkey || (initializedBasket && !IS_DEVNET)) {
-    const { vault: newVaultPubkey } = initializedBasket;
-
-    const result = await addNFTsToBacket({
-      connection,
-      nftMints: userNfts.map((nft) => nft.mint),
-      vaultProgramId: PROGRAM_PUBKEY,
-      userPubkey: walletPublicKey.toBase58(),
-      vaultStrPubkey: existsVaultPubkey || newVaultPubkey,
-      sendTxn: async (txn, signers): Promise<void> => {
-        const { blockhash } = await connection?.getRecentBlockhash();
-        txn.recentBlockhash = blockhash;
-        txn.feePayer = walletPublicKey;
-        txn.sign(...signers);
-        const signed = await signTransaction(txn);
-        const txid = await connection.sendRawTransaction(signed.serialize());
-        return void connection.confirmTransaction(txid);
-      },
     });
+  } catch (error) {
+    notify({
+      message: 'Transaction failed',
+      type: 'error',
+    });
+    throw error;
   }
 };
 
-export const completeBasketCreation = async (
-  vault: VaultData,
-  userNft: UserNFT,
-  vaultPabkey: string,
+export const addNFTsToBasket = async (
+  vaultPubKey: string,
+  userNfts: UserNFT[],
+  walletPublicKey: PublicKey,
+  signTransaction: (transaction: Transaction) => Promise<Transaction>,
+  connection: Connection,
+) => {
+  return await addNFTsToBasketTransaction({
+    connection,
+    nftMints: userNfts.map((nft) => nft.mint),
+    vaultProgramId: PROGRAM_PUBKEY,
+    userPubkey: walletPublicKey.toString(),
+    vaultStrPubkey: vaultPubKey,
+    sendTxn: async (txn, signers): Promise<void> => {
+      const { blockhash } = await connection?.getRecentBlockhash();
+      txn.recentBlockhash = blockhash;
+      txn.feePayer = walletPublicKey;
+      txn.sign(...signers);
+      const signed = await signTransaction(txn);
+      const txid = await connection.sendRawTransaction(signed.serialize());
+      return void connection.confirmTransaction(txid);
+    },
+  });
+};
+
+export const createVault = async (
+  userNfts: UserNFT[],
+  pricePerFraction: number,
+  fractionsAmount: number,
+  walletPublicKey: PublicKey,
+  signTransaction: (transaction: Transaction) => Promise<Transaction>,
+  connection: Connection,
+  currentVault: VaultData,
+) => {
+  let finishData = {
+    vault: currentVault?.vaultPubkey,
+    fractionalMint: currentVault?.fractionMint,
+    fractionTreasury: currentVault?.fractionTreasury,
+    redeemTreasury: currentVault?.redeemTreasury,
+  };
+  if (!currentVault) {
+    try {
+      const result = await initBasket(
+        userNfts,
+        walletPublicKey,
+        signTransaction,
+        connection,
+      );
+      finishData = {
+        vault: result.vault,
+        fractionalMint: result.fractionalMint,
+        fractionTreasury: result.fractionTreasury,
+        redeemTreasury: result.redeemTreasury,
+      };
+    } catch {
+      return;
+    }
+  }
+
+  if (userNfts?.length) {
+    await addNFTsToBasket(
+      finishData.vault,
+      userNfts,
+      walletPublicKey,
+      signTransaction,
+      connection,
+    );
+  }
+  await finishBasket(
+    finishData,
+    pricePerFraction,
+    fractionsAmount,
+    walletPublicKey,
+    signTransaction,
+    connection,
+  );
+};
+
+export const finishBasket = async (
+  vault: any,
   pricePerFraction: number,
   fractionsAmount: number,
   walletPublicKey: PublicKey,
   signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,
 ) => {
-  const { fractionMint, fractionTreasury, redeemTreasury } = vault;
+  const { fractionalMint, fractionTreasury, redeemTreasury } = vault;
 
   const fractionsAmountBn = new BN(fractionsAmount * 1e3);
 
@@ -401,22 +459,22 @@ export const completeBasketCreation = async (
     new BN(pricePerFraction * 1e6),
     fractionsAmountBn,
   );
-  const result = await finishBacket({
+
+  await finishBasketTransaction({
     connection,
     pricePerShare: pricePerFractionBn,
     numberOfShares: fractionsAmountBn,
     adminPubkey: ADMIN_PUBKEY,
     userPubkey: walletPublicKey.toString(),
-    vault: vaultPabkey,
-    fractionalMint: fractionMint,
+    vault: vault.vault,
+    fractionalMint: fractionalMint,
     fractionTreasury: fractionTreasury,
     redeemTreasury: redeemTreasury,
     vaultProgramId: PROGRAM_PUBKEY,
-    sendTxn: async (txn, signers): Promise<void> => {
+    sendTxn: async (txn): Promise<void> => {
       const { blockhash } = await connection.getRecentBlockhash();
       txn.recentBlockhash = blockhash;
       txn.feePayer = walletPublicKey;
-      txn.sign(...signers);
       const signed = await signTransaction(txn);
       const txid = await connection.sendRawTransaction(signed.serialize());
       return void connection.confirmTransaction(txid);

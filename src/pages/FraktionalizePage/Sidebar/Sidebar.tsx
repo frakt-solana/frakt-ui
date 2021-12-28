@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import { UserNFT } from '../../../contexts/userTokens';
 import styles from './styles.module.scss';
 import { Header } from './Header';
 import { DetailsForm } from './DetailsForm/DetailsForm';
+import { useFraktion, VaultData } from '../../../contexts/fraktion';
+import { useParams } from 'react-router';
 
 interface SidebarProps {
   onDeselect?: (nft: UserNFT) => void;
@@ -16,6 +18,7 @@ interface SidebarProps {
     tickSize?: number,
     startBid?: number,
     isAuction?: boolean,
+    currentVault?: VaultData,
   ) => void;
   nfts: UserNFT[];
 }
@@ -27,12 +30,23 @@ const Sidebar = ({
 }: SidebarProps): JSX.Element => {
   const [isMobileSidebar, setIsMobileSidebar] = useState(false);
   const isBasket = nfts.length > 1;
-  const isSidebarClosed = !nfts.length;
   const [isAuction] = useState<boolean>(false);
+
+  const { vaults } = useFraktion();
+  const { vaultPubkey: currentVaultPubkey } =
+    useParams<{ vaultPubkey: string }>();
+
+  const currentVault = useMemo(
+    () => vaults.find((el) => el.vaultPubkey === currentVaultPubkey),
+    [currentVaultPubkey, vaults],
+  );
+  const lockedNFT = currentVault?.safetyBoxes || [];
 
   const changeSidebarVisibility = () => {
     setIsMobileSidebar(!isMobileSidebar);
   };
+
+  const isSidebarClosed = !nfts.length && !lockedNFT?.length;
 
   useEffect(() => {
     if (!nfts.length) {
@@ -59,7 +73,12 @@ const Sidebar = ({
         </div>
       )}
       <div className={styles.sidebar}>
-        <Header isBasket={isBasket} nfts={nfts} onDeselect={onDeselect} />
+        <Header
+          lockedNFT={lockedNFT}
+          isBasket={isBasket}
+          nfts={nfts}
+          onDeselect={onDeselect}
+        />
         {/*
             <div className={styles.toggle_wrapper}>
               <div className={styles.separator} />
@@ -76,7 +95,6 @@ const Sidebar = ({
         {!isSidebarClosed && (
           <DetailsForm
             vaultName={nfts[0]?.metadata?.name}
-            isBasket={isBasket}
             isAuction={isAuction}
             onSubmit={({
               ticker,
@@ -96,6 +114,7 @@ const Sidebar = ({
                 Number(tickSize),
                 Number(startBid),
                 isAuction,
+                currentVault,
               )
             }
           />

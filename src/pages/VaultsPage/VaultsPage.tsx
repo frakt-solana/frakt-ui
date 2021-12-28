@@ -110,7 +110,7 @@ const VaultsPage = (): JSX.Element => {
       .filter(({ state, hasMarket, safetyBoxes }) => {
         //TODO: finish for baskets
         const { nftName, isNftVerified } =
-          safetyBoxes.length === 1
+          safetyBoxes.length >= 1
             ? safetyBoxes[0]
             : {
                 nftName: '',

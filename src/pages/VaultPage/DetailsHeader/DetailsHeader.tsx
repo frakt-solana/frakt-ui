@@ -35,15 +35,13 @@ export const DetailsHeader = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultData?.authority]);
 
-  //TODO: Finish for baskets
   const { nftName, isNftVerified } =
-    vaultData.safetyBoxes.length === 1
+    vaultData.safetyBoxes.length >= 1
       ? vaultData.safetyBoxes[0]
       : {
           nftName: '',
           isNftVerified: false,
         };
-
   return (
     <div className={classNames(styles.detailsHeader, className)}>
       <h2 className={styles.title}>

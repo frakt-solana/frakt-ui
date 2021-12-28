@@ -12,8 +12,7 @@ import {
   fraktionalize,
   getVaults,
   redeem,
-  createBasket,
-  completeBasketCreation,
+  createVault,
 } from './fraktion';
 import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
@@ -28,8 +27,7 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   redeem: () => Promise.resolve(null),
   createFraktionsMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
-  createBasket: () => Promise.resolve(null),
-  completeBasketCreation: () => Promise.resolve(null),
+  createVault: () => Promise.resolve(null),
   patchVault: () => {},
 });
 
@@ -129,30 +127,20 @@ export const FraktionProvider = ({
             signTransaction,
             connection,
           ),
-        createBasket: (userNfts, existsVaultPubkey = null) =>
-          createBasket(
-            userNfts,
-            existsVaultPubkey,
-            walletPublicKey,
-            signTransaction,
-            connection,
-          ),
-        completeBasketCreation: (
-          vault,
-          userNft,
-          vaultPabkey,
+        createVault: (
+          userNfts,
           pricePerFraction,
           fractionsAmount,
+          currentVault,
         ) =>
-          completeBasketCreation(
-            vault,
-            userNft,
-            vaultPabkey,
+          createVault(
+            userNfts,
             pricePerFraction,
             fractionsAmount,
             walletPublicKey,
             signTransaction,
             connection,
+            currentVault,
           ),
         buyout: (vault, userTokensByMint) =>
           buyout(

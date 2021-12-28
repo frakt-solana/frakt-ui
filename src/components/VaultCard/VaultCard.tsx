@@ -51,9 +51,8 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
       )
     : null;
 
-  //TODO: finish for baskets
   const { nftName, nftImage, isNftVerified } =
-    vaultData.safetyBoxes.length === 1
+    vaultData.safetyBoxes.length >= 1
       ? vaultData.safetyBoxes[0]
       : {
           nftName: '',

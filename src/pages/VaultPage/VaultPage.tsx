@@ -43,9 +43,8 @@ const VaultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultData]);
 
-  //TODO: Finish for baskets
   const { nftAttributes, nftDescription, nftImage } =
-    vaultData?.safetyBoxes.length === 1
+    vaultData?.safetyBoxes.length >= 1
       ? vaultData.safetyBoxes[0]
       : {
           nftAttributes: null,

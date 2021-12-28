@@ -13,7 +13,6 @@ import { DetailsHeader } from '../VaultPage/DetailsHeader';
 import { InfoTable } from '../VaultPage/InfoTable';
 import { Redeem } from '../VaultPage/Redeem';
 import classNames from 'classnames';
-import { usePrivatePage } from '../../hooks';
 
 export const UnfinishedVaultPage: FC = () => {
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
@@ -45,8 +44,6 @@ export const UnfinishedVaultPage: FC = () => {
   }, [tokenMap, vaultData]);
 
   const vaultImages = vaultData?.safetyBoxes.map((box) => box.nftImage);
-
-  usePrivatePage();
 
   return (
     <AppLayout>
@@ -94,17 +91,10 @@ export const UnfinishedVaultPage: FC = () => {
                 )}
                 <ul className={styles.buttons}>
                   <li className={styles.btnItem}>
-                    <NavigationLink
-                      to={`${URLS.CONTINUE_FRAKTIONALIZE}/${vaultPubkey}`}
-                    >
+                    <NavigationLink to={`${URLS.FRAKTIONALIZE}/${vaultPubkey}`}>
                       Add NFTs and launch vault
                     </NavigationLink>
                   </li>
-                  {/*{!!vaultData?.safetyBoxes.length && (*/}
-                  <li className={styles.btnItem}>
-                    <button className={styles.launchVault}>Launch vault</button>
-                  </li>
-                  {/*)}*/}
                 </ul>
               </div>
             </div>
