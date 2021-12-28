@@ -15,6 +15,7 @@ import { Redeem } from './Redeem';
 import { useTokenMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
+import { fetchOwnersToken, OwnersToken } from '../../utils/registerToken';
 
 const VaultPage = (): JSX.Element => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -34,6 +35,8 @@ const VaultPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultInfo]);
 
+  const [owners, setOwners] = useState<OwnersToken>();
+
   const [tokerName, setTokerName] = useState<string>('');
 
   useEffect(() => {
@@ -42,6 +45,12 @@ const VaultPage = (): JSX.Element => {
       setTokerName(tokenMap.get(vaultInfo.fractionMint)?.symbol || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultInfo]);
+
+  useEffect(() => {
+    (async () => {
+      vaultInfo && setOwners(await fetchOwnersToken(vaultInfo.fractionMint));
+    })();
+  }, [vaultInfo]);
 
   return (
     <AppLayout>
@@ -100,6 +109,7 @@ const VaultPage = (): JSX.Element => {
               <InfoTable
                 vaultInfo={vaultInfo}
                 marketId={vaultMarket?.address}
+                owners={owners}
               />
               {vaultInfo.state === VaultState[1] && (
                 <>
