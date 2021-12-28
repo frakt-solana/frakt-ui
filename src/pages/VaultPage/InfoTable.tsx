@@ -7,13 +7,16 @@ import { VaultData } from '../../contexts/fraktion';
 import CopyClipboardIcon from '../../icons/CopyClipboardIcon';
 import classNames from 'classnames';
 import Tooltip from '../../components/Tooltip';
+import { OwnersToken } from '../../utils/registerToken';
 
 export const InfoTable = ({
   vaultInfo,
   marketId = null,
+  owners,
 }: {
   vaultInfo: VaultData;
   marketId?: string;
+  owners: OwnersToken;
 }): JSX.Element => {
   const currency =
     vaultInfo?.priceTokenMint === fraktionConfig.SOL_TOKEN_PUBKEY
@@ -116,6 +119,19 @@ export const InfoTable = ({
             >
               <CopyClipboardIcon className={styles.copyIcon} width={24} />
             </Tooltip>
+          </p>
+        </div>
+      )}
+      {owners && (
+        <div className={styles.infoTable__cell}>
+          <p className={styles.infoTable__cellName}>Owners</p>
+          <p
+            className={classNames(
+              styles.infoTable__cellValue,
+              styles.infoTable__cellValueCopy,
+            )}
+          >
+            {owners.total}
           </p>
         </div>
       )}

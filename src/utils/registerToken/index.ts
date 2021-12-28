@@ -52,3 +52,27 @@ export const registerToken = async (
     return false;
   }
 };
+
+export interface OwnersToken {
+  total: number;
+  data: [{ address: string; owner: string }];
+}
+
+export const fetchOwnersToken = async (
+  fractionTokenMint: string,
+): Promise<OwnersToken> => {
+  try {
+    const res = await fetch(
+      `https://public-api.solscan.io/token/holders?tokenAddress=${fractionTokenMint}&offset=0&limit=10`,
+    );
+
+    const data = await res.json();
+
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+  }
+};
