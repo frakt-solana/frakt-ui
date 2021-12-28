@@ -18,7 +18,7 @@ interface BidHistoryProps {
   className?: string;
   supply: BN;
   winningBidPubKey?: string;
-  refundBid: (string) => Promise<boolean>;
+  refundBid: (bidPubKey: string) => Promise<boolean>;
 }
 
 export const BidHistory = ({
@@ -65,8 +65,8 @@ export const BidHistory = ({
   const ownBids = bids.filter((bid) => isRefundAvailable(bid));
 
   const onRefundAllBidsClick = async () => {
-    setIsRefunding(true);
-    const series = async () => {
+    try {
+      setIsRefunding(true);
       for (let i = 0; i < ownBids.length; i++) {
         setRefundedBids([...refundedBids, ownBids[i].bidPubkey]);
         const res = await refundBid(ownBids[i].bidPubkey);
@@ -76,9 +76,12 @@ export const BidHistory = ({
           );
         }
       }
-    };
-    await series();
-    setIsRefunding(false);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setIsRefunding(false);
+    }
   };
 
   return (
