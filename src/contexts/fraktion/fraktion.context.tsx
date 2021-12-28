@@ -129,7 +129,7 @@ export const FraktionProvider = ({
             signTransaction,
             connection,
           ),
-        createBasket: (userNfts, existsVaultPubkey) =>
+        createBasket: (userNfts, existsVaultPubkey = null) =>
           createBasket(
             userNfts,
             existsVaultPubkey,

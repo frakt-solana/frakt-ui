@@ -16,12 +16,14 @@ import { useDebounce, usePrivatePage } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { useFraktionalizeTransactionModal } from './hooks';
+import { useParams } from 'react-router';
 
 const ContinueFraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
   const { nfts: rawNfts, loading } = useUserTokens();
+  const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
 
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
@@ -66,6 +68,7 @@ const ContinueFraktionalizePage = (): JSX.Element => {
     isAuction?: boolean,
   ) => {
     openTxnModal({
+      vaultPubkey,
       userNfts,
       tickerName,
       pricePerFraction,

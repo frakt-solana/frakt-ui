@@ -337,7 +337,7 @@ export const createFraktionsMarket = async (
 
 export const createBasket = async (
   userNfts: UserNFT[],
-  existsVaultPubkey: string = null,
+  existsVaultPubkey: string,
   walletPublicKey: PublicKey,
   signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,

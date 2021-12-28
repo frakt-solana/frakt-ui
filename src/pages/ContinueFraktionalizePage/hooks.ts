@@ -4,6 +4,7 @@ import { useUserTokens, UserNFT } from '../../contexts/userTokens';
 import { useFraktion } from '../../contexts/fraktion';
 
 interface FraktionalizeTxnData {
+  vaultPubkey: string;
   userNfts: UserNFT[];
   tickerName: string;
   pricePerFraction: number;
@@ -50,14 +51,14 @@ export const useFraktionalizeTransactionModal = (): {
   };
 
   const createBasketVault = async (txnData: FraktionalizeTxnData) => {
-    const result = await createBasket();
+    const result = await createBasket(txnData.userNfts, txnData.vaultPubkey);
 
     if (!result) {
       setState('fail');
     } else {
       setState('success');
-      setFractionTokenMint(result.fractionalMint);
-      removeTokenOptimistic(txnData.userNfts[0].mint);
+      // setFractionTokenMint(result.fractionalMint);
+      // removeTokenOptimistic(txnData.userNfts[0].mint);
     }
   };
 
