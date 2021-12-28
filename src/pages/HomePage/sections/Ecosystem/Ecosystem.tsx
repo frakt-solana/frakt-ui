@@ -44,13 +44,13 @@ const Ecosystem = ({ className }: EcosystemProps): JSX.Element => {
         >
           <Button type="alternative">Buy FRKT</Button>
         </a>
-        {/* <a
-          href="https://frakt.art/stake/"
+        <a
+          href="https://frakt.art/stake-frkt/"
           target="_blank"
           rel="nopener noreferrer"
         >
           <Button type="alternative">Stake FRKT</Button>
-        </a> */}
+        </a>
       </div>
     </div>
   );
