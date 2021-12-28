@@ -8,11 +8,11 @@ import Badge, {
   UnverifiedBadge,
   VAULT_BADGES_BY_STATE,
   VerifiedBadge,
-} from '../../components/Badge';
-import { shortenAddress } from '../../utils/solanaUtils';
-import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import { TwitterIcon2 } from '../../icons';
-import { VaultData } from '../../contexts/fraktion';
+} from '../../../components/Badge';
+import { shortenAddress } from '../../../utils/solanaUtils';
+import { getOwnerAvatar, useNameServiceInfo } from '../../../utils/nameService';
+import { TwitterIcon2 } from '../../../icons';
+import { VaultData } from '../../../contexts/fraktion';
 
 interface DetailsHeaderProps {
   vaultData: VaultData;

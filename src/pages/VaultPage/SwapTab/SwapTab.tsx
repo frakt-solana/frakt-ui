@@ -1,7 +1,7 @@
-import { Loader } from '../../components/Loader';
-import SwapForm from '../../components/SwapForm';
+import { Loader } from '../../../components/Loader';
+import SwapForm from '../../../components/SwapForm';
 
-import { useSwapContext } from '../../contexts/Swap';
+import { useSwapContext } from '../../../contexts/Swap';
 import styles from './styles.module.scss';
 
 interface SwapTabProps {

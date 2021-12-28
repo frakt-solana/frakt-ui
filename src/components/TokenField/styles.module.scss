@@ -63,6 +63,17 @@
   }
 }
 
+.disabled {
+  pointer-events: none;
+  flex-grow: 2;
+  flex-shrink: 1;
+  max-width: 60%;
+
+  @media screen and (max-width: 380px) {
+    max-width: 55%;
+  }
+}
+
 body input.valueInput {
   &,
   &:hover,
@@ -156,6 +167,7 @@ body input.valueInput {
 
   @media screen and (max-width: 440px) {
     padding-left: 2px;
+    padding-right: 10px;
   }
 }
 

@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
+import { CountdownIcon } from '../../icons';
 
 interface AuctionCountdownProps {
   endTime: number;
@@ -37,6 +38,9 @@ export const AuctionCountdown = ({
 
   return (
     <ul className={classNames(className, styles.countdown)}>
+      <li className={styles.countdownIcon}>
+        <CountdownIcon />
+      </li>
       <li className={styles.timeItem}>
         {formatDateUnit(timeDifference.hours() + timeDifference.days() * 24)}
         <span>Hours</span>

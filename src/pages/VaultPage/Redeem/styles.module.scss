@@ -1,0 +1,35 @@
+.redeem {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  &Controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__title {
+    font: var(--font-btn-mid);
+    margin-bottom: 6px;
+    font-weight: 700;
+    min-height: 30px;
+  }
+
+  &__tokenField {
+    pointer-events: none;
+    max-height: 61px;
+    width: 280px;
+  }
+
+  &__connectWalletBtn {
+    min-height: 61px;
+  }
+
+  &__redeemBtn {
+    min-height: 61px;
+    padding-top: unset;
+    padding-bottom: unset;
+  }
+}

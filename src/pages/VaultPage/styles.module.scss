@@ -1,5 +1,5 @@
 .wrapper {
-  padding-top: 64px;
+  padding-top: 35px;
   padding-bottom: 64px;
   height: 100%;
 }
@@ -19,22 +19,25 @@
   grid-template-columns: 5fr 6fr;
   align-items: start;
   gap: 64px 124px;
+  padding-bottom: 60px;
 
-  @media screen and (max-width: 1023px) {
-    grid-template-columns: 100%;
-
-    .col {
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
+  @media screen and (max-width: 1200px) {
+    gap: 50px;
   }
 
   @media screen and (max-width: 767px) {
+    grid-template-columns: 100%;
+    gap: 30px;
+
     .col {
+      display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
     }
+  }
+
+  @media screen and (max-width: 650px) {
+    gap: 25px;
   }
 }
 
@@ -47,16 +50,12 @@
   @media screen and (max-width: 767px) {
     padding-left: 0;
     max-width: 500px;
-    margin-top: 50px;
-
-    .statusAndOwner {
-      margin-bottom: 30px;
-    }
+    margin-top: 25px;
   }
 }
 
 .detailsHeaderDesc {
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 767px) {
     display: none;
   }
 }
@@ -64,11 +63,7 @@
 .detailsHeaderMobile {
   display: none;
 
-  .statusAndOwner {
-    margin-bottom: 0;
-  }
-
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 767px) {
     display: block;
   }
 }
@@ -90,7 +85,7 @@
   &__row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
 
     p:first-child {
@@ -99,6 +94,8 @@
 
     p:last-child {
       order: 3;
+      word-break: break-word;
+      text-align: right;
     }
 
     &::before {
@@ -108,6 +105,8 @@
       flex-grow: 1;
       background: var(--gray-color-3);
       order: 2;
+      min-width: 25px;
+      margin-top: 11px;
     }
   }
 
@@ -119,12 +118,6 @@
 .details {
   display: flex;
   flex-direction: column;
-}
-
-.title {
-  font: var(--font-h4);
-  color: var(--white-color);
-  margin-bottom: 6px;
 }
 
 .image {
@@ -160,105 +153,6 @@
 
   @media screen and (max-width: 767px) {
     max-width: 500px;
-  }
-}
-
-.statusAndOwner {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  margin-bottom: 64px;
-  flex-wrap: wrap;
-}
-
-.status {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.badge {
-  text-transform: uppercase;
-  cursor: default;
-}
-
-.owner {
-  font: var(--font-secondary);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .ownerLink {
-    color: var(--accent-color-1);
-    display: flex;
-    align-items: center;
-    transition: color var(--transition-1);
-
-    &:hover {
-      color: var(--accent-color-3);
-    }
-  }
-
-  .ownerAvatar {
-    margin-right: 10px;
-    margin-bottom: 2px;
-    width: 20px;
-    height: 20px;
-    background: var(--gray-color-3);
-    border-radius: 50%;
-  }
-
-  .ownerTwitter {
-    margin-left: 10px;
-    opacity: 1;
-    transition: opacity var(--transition-1);
-    &:hover {
-      opacity: 0.75;
-    }
-  }
-}
-
-.infoTable {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px 30px;
-  margin-bottom: 64px;
-
-  @media screen and (max-width: 1023px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media screen and (max-width: 850px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media screen and (max-width: 767px) {
-    gap: 20px;
-  }
-
-  @media screen and (max-width: 550px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media screen and (max-width: 400px) {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  &__cellName {
-    font: var(--font-smallest);
-    text-transform: uppercase;
-    color: var(--gray-color-3);
-  }
-
-  &__cellValue {
-    font: var(--font-btn-mid);
-    color: var(--white-color);
-  }
-
-  &__cellValueCopy {
-    cursor: pointer;
-    display: flex;
   }
 }
 
@@ -318,48 +212,8 @@
   }
 }
 
-.redeem {
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-
-  &Controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  &__title {
-    font: var(--font-btn-mid);
-    margin-bottom: 6px;
-    font-weight: 700;
-    min-height: 30px;
-  }
-
-  &__tokenField {
-    pointer-events: none;
-    max-height: 61px;
-    width: 280px;
-  }
-
-  &__connectWalletBtn {
-    min-height: 61px;
-  }
-
-  &__redeemBtn {
-    min-height: 61px;
-    padding-top: unset;
-    padding-bottom: unset;
-  }
-}
-
 .detailsPlaceholder {
   min-height: 97px;
-}
-
-.copyIcon {
-  margin-left: 4px;
 }
 
 .tabs {
@@ -396,37 +250,4 @@
   @media screen and (max-width: 1023px) {
     margin-bottom: 90px;
   }
-}
-
-.tradeWrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-
-  @media screen and (max-width: 767px) {
-    grid-template-columns: 100%;
-    grid-row-start: 2;
-  }
-}
-
-.tradeLink {
-  padding-top: 16px;
-  font: var(--font-btn-mid);
-
-  a,
-  a:hover {
-    color: var(--accent-color-1);
-    border-bottom: 2px solid;
-  }
-}
-
-.noMarket {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 18px;
-}
-
-.createMarketBtn {
-  padding: 18px;
 }
