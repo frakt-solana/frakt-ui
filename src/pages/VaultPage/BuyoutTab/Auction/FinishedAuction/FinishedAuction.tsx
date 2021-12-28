@@ -8,11 +8,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '../../../../../contexts/WalletModal';
 import { BidHistory } from '../../../../../components/BidHistory';
 import { useAuction } from '../../../../../contexts/auction';
-import { VaultData, VaultState } from '../../../../../contexts/fraktion';
+import { Bid, VaultData, VaultState } from '../../../../../contexts/fraktion';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useUserTokens } from '../../../../../contexts/userTokens';
 import BN from 'bn.js';
 import { Loader } from '../../../../../components/Loader';
+import { FinishFlagsIcon } from '../../../../../icons';
 
 interface FinishedAuctionProps {
   vaultInfo: VaultData;
@@ -35,8 +36,8 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
   const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
-  const winningBid = vaultInfo.auction?.bids.find(
-    (bid) => bid?.bidPubkey === winningBidPubKey,
+  const winningBid = vaultInfo?.auction.bids?.find(
+    (bid: Bid) => bid.bidPubkey === winningBidPubKey,
   );
   const isWinner =
     winningBid.bidder === walletPublicKey?.toString() &&
@@ -60,8 +61,14 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
     );
   };
 
+  const vaultImg = vaultInfo?.safetyBoxes[0]?.nftImage;
+
   return (
     <div>
+      <p className={styles.finished}>
+        <FinishFlagsIcon className={styles.finishedIcon} />
+        Auction finished!
+      </p>
       <BidHistory
         refundBid={(bidPubKey) => refundBid(vaultInfo, bidPubKey)}
         winningBidPubKey={winningBidPubKey}
@@ -69,13 +76,19 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
         bids={vaultInfo.auction.bids}
       />
       {isWinner && isNFTRedeemAvailable && (
-        <Button
-          onClick={redeemNFTValueHandler}
-          className={styles.fullWidth}
-          type="alternative"
-        >
-          Redeem NFT
-        </Button>
+        <div className={styles.redeemBlock}>
+          <div
+            className={styles.redeemImg}
+            style={{ backgroundImage: `url(${vaultImg})` }}
+          />
+          <Button
+            className={styles.redeemBtn}
+            onClick={redeemNFTValueHandler}
+            type="alternative"
+          >
+            Redeem NFT
+          </Button>
+        </div>
       )}
       {loading && <Loader className={styles.loader} />}
       {isRedeemAvailable && connected && !loading && !!userRedeemValue && (
@@ -102,7 +115,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
       {!connected && (
         <Button
           onClick={() => setWalletModalVisibility(true)}
-          className={styles.fullWidth}
+          className={styles.connectWalletBtn}
         >
           Connect wallet
         </Button>

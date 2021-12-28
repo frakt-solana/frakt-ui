@@ -6,13 +6,13 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
 import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
-import { InfoTable } from './InfoTable';
+import { InfoTable } from './InfoTable/InfoTable';
 import styles from './styles.module.scss';
 import { BuyoutTab } from './BuyoutTab';
 import { useTokenMap } from '../../contexts/TokenList';
-import { TradeTab } from './TradeTab';
-import { SwapTab } from './SwapTab';
-import { DetailsHeader } from './DetailsHeader';
+import { TradeTab } from './TradeTab/TradeTab';
+import { SwapTab } from './SwapTab/SwapTab';
+import { DetailsHeader } from './DetailsHeader/DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
 
 const VaultPage: FC = () => {
@@ -72,11 +72,6 @@ const VaultPage: FC = () => {
         )}
         {!loading && !!vaultData && (
           <div className={styles.content}>
-            <DetailsHeader
-              className={styles.detailsHeaderMobile}
-              vaultData={vaultData}
-              tokerName={tokerName}
-            />
             <div className={styles.col}>
               <div
                 className={styles.image}
@@ -84,11 +79,16 @@ const VaultPage: FC = () => {
                   backgroundImage: `url(${nftImage})`,
                 }}
               />
-              <div className={styles.mainInfoWrapper}>
-                {!!nftDescription && (
+              <DetailsHeader
+                className={styles.detailsHeaderMobile}
+                vaultData={vaultData}
+                tokerName={tokerName}
+              />
+              {!!nftDescription && (
+                <div className={styles.mainInfoWrapper}>
                   <div className={styles.description}>{nftDescription}</div>
-                )}
-              </div>
+                </div>
+              )}
               {!!nftAttributes?.length && (
                 <div className={styles.attributesTable}>
                   {nftAttributes.map(({ trait_type, value }, idx) => (

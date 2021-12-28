@@ -14,3 +14,5 @@ export { WarningIcon } from './WarningIcon';
 export { SolfareIcon, SolletIcon, PhantomIcon } from './WalletIcons';
 export { ArrowDownSmallIcon } from './arrowDownSmall';
 export { ArrowLeftIcon } from './ArrowLeftIcon';
+export { CountdownIcon } from './CountdownIcon';
+export { FinishFlagsIcon } from './FinishFlagsIcon';
