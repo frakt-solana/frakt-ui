@@ -8,7 +8,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '../../../../../contexts/WalletModal';
 import { BidHistory } from '../../../../../components/BidHistory';
 import { useAuction } from '../../../../../contexts/auction';
-import { VaultData, VaultState } from '../../../../../contexts/fraktion';
+import { Bid, VaultData, VaultState } from '../../../../../contexts/fraktion';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useUserTokens } from '../../../../../contexts/userTokens';
 import BN from 'bn.js';
@@ -36,8 +36,8 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
   const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
-  const winningBid = vaultInfo.auction?.bids.find(
-    (bid) => bid?.bidPubkey === winningBidPubKey,
+  const winningBid = vaultInfo?.auction.bids?.find(
+    (bid: Bid) => bid.bidPubkey === winningBidPubKey,
   );
   const isWinner =
     winningBid.bidder === walletPublicKey?.toString() &&
