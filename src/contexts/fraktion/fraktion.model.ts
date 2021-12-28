@@ -206,6 +206,7 @@ export interface FraktionContextType {
   vaultsMarkets: Market[];
   fraktionalize: fraktionalizeFunction;
   createBasket: any;
+  completeBasketCreation: any;
   buyout: buyoutFunction;
   redeem: redeemFunction;
   createFraktionsMarket: createFraktionsMarketFunction;
