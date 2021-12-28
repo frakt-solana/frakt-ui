@@ -46,20 +46,20 @@ export const BidHistory = ({
     );
   };
 
-  const refundBidClick = (bid: Bid) => () => {
-    setIsRefunding(true);
-    setRefundedBids([...refundedBids, bid.bidPubkey]);
-    refundBid(bid.bidPubkey)
-      .then((result) => {
-        if (!result) {
-          setRefundedBids(
-            refundedBids.filter((bidKey) => bidKey !== bid.bidPubkey),
-          );
-        }
-      })
-      .finally(() => {
-        setIsRefunding(false);
-      });
+  const refundBidClick = (bid: Bid) => async () => {
+    try {
+      setIsRefunding(true);
+      const responce = await refundBid(bid.bidPubkey);
+      if (responce) {
+        setRefundedBids((refundedBids) => [...refundedBids, bid.bidPubkey]);
+      }
+      setIsRefunding(false);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setIsRefunding(false);
+    }
   };
 
   const ownBids = bids.filter((bid) => isRefundAvailable(bid));
@@ -68,12 +68,10 @@ export const BidHistory = ({
     try {
       setIsRefunding(true);
       for (let i = 0; i < ownBids.length; i++) {
-        setRefundedBids([...refundedBids, ownBids[i].bidPubkey]);
-        const res = await refundBid(ownBids[i].bidPubkey);
-        if (!res) {
-          setRefundedBids(
-            refundedBids.filter((bidKey) => bidKey !== ownBids[i].bidPubkey),
-          );
+        const bidPubkey = ownBids[i].bidPubkey;
+        const responce = await refundBid(bidPubkey);
+        if (responce) {
+          setRefundedBids((refundedBids) => [...refundedBids, bidPubkey]);
         }
       }
     } catch (error) {
