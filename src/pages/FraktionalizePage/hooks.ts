@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { UserNFT } from '../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useFraktion, VaultData } from '../../contexts/fraktion';
 
 interface FraktionalizeTxnData {
@@ -19,13 +19,14 @@ type ModalState = 'loading' | 'success' | 'fail';
 
 export const useFraktionalizeTransactionModal = (): {
   visible: boolean;
-  open: (txnData: FraktionalizeTxnData) => void;
+  open: (txnData: FraktionalizeTxnData) => Promise<void>;
   close: () => void;
   state: ModalState;
   setState: (nextState: ModalState) => void;
   fractionTokenMint: string;
   tickerName: string;
 } => {
+  const { removeTokenOptimistic } = useUserTokens();
   const { createVault } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<ModalState>('loading');
@@ -37,20 +38,20 @@ export const useFraktionalizeTransactionModal = (): {
   const open = (txnData: FraktionalizeTxnData) => {
     setVisible(true);
     setTransactionData(txnData);
-    createSingleVault(txnData);
+    return createSingleVault(txnData);
   };
 
   const createSingleVault = async (txnData: FraktionalizeTxnData) => {
     try {
-      await createVault(
+      const fractionalMint = await createVault(
         txnData.userNfts,
         txnData.pricePerFraction,
         txnData.fractionsAmount,
         txnData.currentVault,
       );
       setState('success');
-      //setFractionTokenMint(result.fractionalMint); rewrite it
-      //removeTokenOptimistic(txnData.userNfts[0].mint);
+      setFractionTokenMint(fractionalMint);
+      removeTokenOptimistic(txnData.userNfts.map((el) => el.mint));
     } catch (err) {
       setState('fail');
     }

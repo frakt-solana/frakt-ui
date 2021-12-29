@@ -27,7 +27,7 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   redeem: () => Promise.resolve(null),
   createFraktionsMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
-  createVault: () => Promise.resolve(null),
+  createVault: () => Promise.resolve(''),
   patchVault: () => {},
 });
 

@@ -205,7 +205,7 @@ export interface FraktionContextType {
     pricePerFraction: number,
     fractionsAmount: number,
     currentVault?: VaultData,
-  ) => void;
+  ) => Promise<string>;
   buyout: buyoutFunction;
   redeem: redeemFunction;
   createFraktionsMarket: createFraktionsMarketFunction;

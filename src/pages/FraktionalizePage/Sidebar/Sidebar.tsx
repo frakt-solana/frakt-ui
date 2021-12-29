@@ -5,7 +5,8 @@ import styles from './styles.module.scss';
 import { Header } from './Header';
 import { DetailsForm } from './DetailsForm/DetailsForm';
 import { useFraktion, VaultData } from '../../../contexts/fraktion';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
+import { URLS } from '../../../constants';
 
 interface SidebarProps {
   onDeselect?: (nft: UserNFT) => void;
@@ -19,7 +20,7 @@ interface SidebarProps {
     startBid?: number,
     isAuction?: boolean,
     currentVault?: VaultData,
-  ) => void;
+  ) => Promise<void>;
   nfts: UserNFT[];
 }
 
@@ -35,6 +36,7 @@ const Sidebar = ({
   const { vaults } = useFraktion();
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
+  const history = useHistory();
 
   const currentVault = useMemo(
     () => vaults.find((el) => el.vaultPubkey === currentVaultPubkey),
@@ -115,7 +117,9 @@ const Sidebar = ({
                 Number(startBid),
                 isAuction,
                 currentVault,
-              )
+              ).then(() => {
+                history.push(URLS.FRAKTIONALIZE);
+              })
             }
           />
         )}

@@ -67,7 +67,7 @@ const FraktionalizePage = (): JSX.Element => {
     isAuction?: boolean,
     currentVault?: VaultData,
   ) => {
-    openTxnModal({
+    return openTxnModal({
       userNfts,
       tickerName,
       pricePerFraction,
@@ -77,8 +77,9 @@ const FraktionalizePage = (): JSX.Element => {
       tickSize,
       startBid,
       currentVault,
+    }).then(() => {
+      setSelectedNfts([]);
     });
-    setSelectedNfts([]);
   };
 
   const nfts = useMemo(() => {
@@ -91,7 +92,6 @@ const FraktionalizePage = (): JSX.Element => {
     closeTxnModal();
     setTxnModalState('loading');
   };
-
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar

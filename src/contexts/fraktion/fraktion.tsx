@@ -441,6 +441,8 @@ export const createVault = async (
     signTransaction,
     connection,
   );
+
+  return finishData.fractionalMint;
 };
 
 export const finishBasket = async (
