@@ -7,12 +7,13 @@ import Badge, {
   VerifiedBadge,
 } from '../Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
-import { shortBigNumber } from '../../utils';
+import { decimalBNToString, shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { Bid, VaultData, VaultState } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
+import classNames from 'classnames';
 
 export interface VaultCardProps {
   vaultData: VaultData;
@@ -60,11 +61,16 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
           isNftVerified: false,
         };
 
+  const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
+  const lockedPricePerShareNum = +decimalBNToString(
+    vaultData.lockedPricePerShare,
+  );
+
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
         <div
-          className={styles.image}
+          className={classNames(styles.image, { [styles.noImg]: !nftImage })}
           style={{ backgroundImage: `url(${nftImage})` }}
         >
           <div className={styles.actions}>
@@ -95,13 +101,17 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
           <div className={styles.item}>
             <div className={styles.title}>Total supply</div>
             <div className={styles.value}>
-              {shortBigNumber(vaultData.fractionsSupply, 1, 3)}
+              {fractionsSupplyNum
+                ? shortBigNumber(vaultData.fractionsSupply, 1, 3)
+                : 'No value'}
             </div>
           </div>
           <div className={styles.item}>
             <div className={styles.title}>Fraktion price ({currency})</div>
             <div className={styles.value}>
-              {shortBigNumber(vaultData.lockedPricePerShare, 6, 6)}
+              {lockedPricePerShareNum
+                ? shortBigNumber(vaultData.lockedPricePerShare, 6, 6)
+                : 'No value'}
             </div>
           </div>
           <div className={styles.item}>
