@@ -13,11 +13,24 @@ import { DetailsHeader } from '../VaultPage/DetailsHeader';
 import { InfoTable } from '../VaultPage/InfoTable';
 import { Redeem } from '../VaultPage/Redeem';
 import classNames from 'classnames';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import 'swiper/swiper.min.css';
+// import "swiper/modules/scrollbar/scrollbar.scss"
+import 'swiper/modules/navigation/navigation.scss';
+import 'swiper/modules/pagination/pagination.scss';
+import 'swiper/modules/thumbs/thumbs';
+
+// import Swiper core and required modules
+import SwiperCore, { FreeMode, Navigation, Thumbs, Scrollbar } from 'swiper';
+
+// install Swiper modules
+SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
 export const UnfinishedVaultPage: FC = () => {
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
   const tokenMap = useTokenMap();
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const vaultData: VaultData = useMemo(() => {
     return vaults.find(
@@ -55,23 +68,43 @@ export const UnfinishedVaultPage: FC = () => {
         )}
         <div className={styles.container}>
           {!loading && !!vaultData && (
-            <div className={stylesVaultPage.content}>
+            <div className={styles.content}>
               <DetailsHeader
                 className={stylesVaultPage.detailsHeaderMobile}
                 vaultData={vaultData}
                 tokerName={tokerName ? tokerName : noNameText}
               />
-              <div
-                className={classNames(stylesVaultPage.col, {
-                  [styles.noImage]: !vaultImages.length,
-                })}
-              >
-                <div
-                  className={stylesVaultPage.image}
-                  style={{
-                    backgroundImage: `url(${vaultImages[0]})`,
-                  }}
-                />
+              <div className={styles.sliders}>
+                <Swiper
+                  slidesPerView={1}
+                  className={styles.sliderBig}
+                  thumbs={{ swiper: thumbsSwiper }}
+                >
+                  {vaultData?.safetyBoxes.map((box) => (
+                    <SwiperSlide key={box.vaultPubkey}>
+                      <div
+                        className={styles.slideBig}
+                        style={{ backgroundImage: `url(${box.nftImage})` }}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+                <Swiper
+                  slidesPerView={4.7}
+                  className={styles.sliderSmall}
+                  navigation={true}
+                  scrollbar={true}
+                  onSwiper={setThumbsSwiper}
+                >
+                  {vaultData?.safetyBoxes.map((box) => (
+                    <SwiperSlide key={box.vaultPubkey}>
+                      <div
+                        className={styles.slideSmall}
+                        style={{ backgroundImage: `url(${box.nftImage})` }}
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
               <div className={stylesVaultPage.details}>
                 <DetailsHeader
