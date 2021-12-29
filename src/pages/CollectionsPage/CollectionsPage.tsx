@@ -7,9 +7,14 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
 import { URLS } from '../../constants/urls';
-import { fetchCollectionData } from '../../utils/getCollectionsData';
+import {
+  CollectionData,
+  mapVaultsByCollectionName,
+  compareVaultsArraysBySize,
+  compareVaultsArraysByNFTsAmount,
+  fetchCollectionsData,
+} from '../../utils/collections';
 import styles from './styles.module.scss';
-import { mapVaultByCollectionName } from './helpers';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
@@ -17,32 +22,12 @@ import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
-import {
-  CollectionData,
-  PromiseFulfilledResult,
-} from '../../utils/getCollectionsData/collections.model';
 
 const SORT_VALUES = [
   {
     label: (
       <span>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'collectionName_desc',
-  },
-  {
-    label: (
-      <span>
-        Name <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'collectionName_asc',
-  },
-  {
-    label: (
-      <span>
-        Vaults <ArrowDownSmallIcon className={styles.arrowUp} />
+        Vaults amount <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'vault_desc',
@@ -50,7 +35,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Vaults <ArrowDownSmallIcon className={styles.arrowDown} />
+        Vaults amount <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'vault_asc',
@@ -58,18 +43,18 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        NTFs <ArrowDownSmallIcon className={styles.arrowUp} />
+        NTFs amount <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'ntfs_desc',
+    value: 'nfts_desc',
   },
   {
     label: (
       <span>
-        NTFs <ArrowDownSmallIcon className={styles.arrowDown} />
+        NTFs amount <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'ntfs_asc',
+    value: 'nfts_asc',
   },
 ];
 
@@ -79,74 +64,62 @@ const CollectionsPage: FC = () => {
       sort: SORT_VALUES[0],
     },
   });
-
-  const [searchString, setSearchString] = useState<string>('');
-  const [collectionItems, setCollectionItems] = useState<CollectionData[]>([]);
-  const { itemsToShow, next } = useFakeInfinityScroll(9);
-  const { vaults, loading } = useFraktion();
   const sort = watch('sort');
 
+  const [searchString, setSearchString] = useState<string>('');
+  const [сollectionsData, setCollectionsData] = useState<CollectionData[]>([]);
+
+  const { vaults, loading } = useFraktion();
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
 
   const vaultsByCollectionName = useMemo(() => {
-    return loading ? {} : mapVaultByCollectionName(vaults);
+    return loading ? {} : mapVaultsByCollectionName(vaults);
   }, [loading, vaults]);
 
   const filteredCollection = useMemo(() => {
     const [sortField, sortOrder] = sort.value.split('_');
 
-    return collectionItems
-      .filter(({ collectionName }) => {
-        return collectionName.toUpperCase().includes(searchString);
-      })
-      .sort((a, b) => {
-        switch (sortField) {
-          case 'collectionName':
-            if (sortOrder === 'desc') {
-              return a.collectionName.localeCompare(b.collectionName);
-            }
-            return b.collectionName.localeCompare(a.collectionName);
-
-          default:
-            if (sortOrder === 'desc') {
-              return String(
-                vaultsByCollectionName[a.collectionName].length,
-              ).localeCompare(
-                String(vaultsByCollectionName[b.collectionName].length),
-              );
-            }
-            return String(
-              vaultsByCollectionName[b.collectionName].length,
-            ).localeCompare(
-              String(vaultsByCollectionName[a.collectionName].length),
+    return сollectionsData
+      .filter(({ collectionName }) =>
+        collectionName.toUpperCase().includes(searchString),
+      )
+      .sort(
+        (
+          { collectionName: collectionNameA },
+          { collectionName: collectionNameB },
+        ) => {
+          if (sortField === 'vault') {
+            return compareVaultsArraysBySize(
+              vaultsByCollectionName[collectionNameA],
+              vaultsByCollectionName[collectionNameB],
+              sortOrder === 'desc',
             );
-        }
-      });
-  }, [collectionItems, searchString, vaultsByCollectionName, sort]);
-
-  useEffect(() => {
-    getCollectionItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+          }
+          if (sortField === 'nfts') {
+            return compareVaultsArraysByNFTsAmount(
+              vaultsByCollectionName[collectionNameA],
+              vaultsByCollectionName[collectionNameB],
+              sortOrder === 'desc',
+            );
+          }
+          return 0;
+        },
+      );
+  }, [сollectionsData, searchString, vaultsByCollectionName, sort]);
 
   const getCollectionItems = async (): Promise<void> => {
-    const collectionNameKeys = Object.keys(vaultsByCollectionName);
-
-    const responses = await Promise.allSettled(
-      collectionNameKeys.map((response) => fetchCollectionData(response)),
-    );
-
-    const fulfilled = responses
-      .filter(
-        ({ value, status }: PromiseFulfilledResult) =>
-          status === 'fulfilled' && value !== undefined,
-      )
-      .map((response: PromiseFulfilledResult) => response.value);
-
-    setCollectionItems(fulfilled as CollectionData[]);
+    const collectionsNames = Object.keys(vaultsByCollectionName);
+    const collectionsData = await fetchCollectionsData(collectionsNames);
+    setCollectionsData(collectionsData);
   };
+
+  useEffect(() => {
+    !loading && getCollectionItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   return (
     <AppLayout>
@@ -172,14 +145,14 @@ const CollectionsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={!collectionItems.length}
+          isLoading={!сollectionsData.length}
           wrapperClassName={styles.cards}
           emptyMessage={'No collections found'}
         >
-          {filteredCollection.map(({ collectionName, bannerPath }, id) => (
-            <NavLink key={id} to={`${URLS.COLLECTION}/${collectionName}`}>
+          {filteredCollection.map(({ collectionName, bannerPath }, idx) => (
+            <NavLink key={idx} to={`${URLS.COLLECTION}/${collectionName}`}>
               <CollectionCard
-                key={id}
+                key={idx}
                 collectionName={collectionName}
                 thumbnailPath={bannerPath}
                 vaultCount={vaultsByCollectionName[collectionName].length}

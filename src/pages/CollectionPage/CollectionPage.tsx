@@ -7,14 +7,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { ArrowDownSmallIcon, DiscordIcon, TwitterIcon } from '../../icons';
-import { CollectionData } from '../../utils/getCollectionsData/collections.model';
+import { CollectionData } from '../../utils/collections/collections.model';
 import VaultCard from '../../components/VaultCard';
 import { useFraktion, VaultState } from '../../contexts/fraktion';
-import { mapVaultByCollectionName } from '../CollectionsPage/helpers';
 import { URLS } from '../../constants';
 import styles from './styles.module.scss';
 import { getCollectionThumbnailUrl } from '../../utils';
-import { useCollectionsItem } from '../../utils/getCollectionsData/collections.hooks';
+import { useCollectionsItem } from '../../utils/collections/collections.hooks';
 import { WebsiteIcon } from '../../icons/WebsiteIcon';
 import { useDebounce } from '../../hooks';
 import { SearchInput } from '../../components/SearchInput';
@@ -23,6 +22,7 @@ import { ControlledToggle } from '../../components/Toggle/Toggle';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
+import { mapVaultsByCollectionName } from '../../utils/collections';
 
 const SORT_VALUES = [
   {
@@ -82,7 +82,7 @@ const CollectionPage: FC = () => {
   } = collectionsItem as CollectionData;
 
   const vaultsByCollectionName = useMemo(() => {
-    return loading ? {} : mapVaultByCollectionName(vaults);
+    return loading ? {} : mapVaultsByCollectionName(vaults);
   }, [loading, vaults]);
 
   const searchItems = useDebounce((search: string) => {

@@ -15,7 +15,7 @@ import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
 import { DetailsHeader } from './DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
-import { fetchCollectionData } from '../../utils/getCollectionsData';
+import { fetchCollectionData } from '../../utils/collections';
 import { URLS } from '../../constants';
 import { getCollectionThumbnailUrl } from '../../utils';
 
