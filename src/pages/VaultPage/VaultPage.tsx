@@ -100,11 +100,30 @@ const VaultPage: FC = () => {
                 vaultData={vaultData}
                 tokerName={tokerName}
               />
-              {!!nftDescription && (
-                <div className={styles.mainInfoWrapper}>
+              <div className={styles.mainInfoWrapper}>
+                {currentCollectionInfo && (
+                  <NavLink
+                    to={`${URLS.COLLECTION}/${currentCollectionInfo?.collectionName}`}
+                    className={styles.collectionLink}
+                  >
+                    <div
+                      className={styles.collectionIcon}
+                      style={{
+                        backgroundImage: `url(${getCollectionThumbnailUrl(
+                          currentCollectionInfo?.thumbnailPath,
+                        )})`,
+                      }}
+                    />
+                    <p className={styles.collectionName}>
+                      {currentCollectionInfo?.collectionName}
+                    </p>
+                  </NavLink>
+                )}
+                {!!nftDescription && (
                   <div className={styles.description}>{nftDescription}</div>
-                </div>
-              )}
+                )}
+              </div>
+
               {!!nftAttributes?.length && (
                 <div className={styles.attributesTable}>
                   {nftAttributes.map(({ trait_type, value }, idx) => (
