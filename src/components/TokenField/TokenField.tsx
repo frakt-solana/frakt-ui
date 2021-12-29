@@ -25,7 +25,6 @@ export interface TokenFieldProps {
   placeholder?: string;
   amountMaxLength?: number;
   disabled?: boolean;
-  notInteractive?: boolean;
 }
 
 const TokenField = ({
@@ -53,7 +52,6 @@ const TokenField = ({
     <div
       style={style}
       className={classNames([
-        { [styles.disabled]: disabled },
         { [styles.focused]: isFocused },
         { [styles.error]: error },
       ])}

@@ -11,7 +11,7 @@ import { shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokenMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import { VaultData, VaultState } from '../../contexts/fraktion';
+import { Bid, VaultData, VaultState } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
 
 export interface VaultCardProps {
@@ -41,7 +41,7 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
     vaultData.lockedPricePerShare.mul(vaultData.fractionsSupply),
   );
   const winningBidInformation = vaultData.auction?.bids.find(
-    (bid) =>
+    (bid: Bid) =>
       bid?.bidPubkey === vaultData.auction.auction.currentWinningBidPubkey,
   );
 

@@ -1,7 +1,6 @@
 @mixin resetBtnStyle {
   &,
-  &:focus,
-  &:focus-visible {
+  &:focus {
     background: none;
     border: none;
     cursor: pointer;
@@ -66,6 +65,13 @@
 
 .disabled {
   pointer-events: none;
+  flex-grow: 2;
+  flex-shrink: 1;
+  max-width: 60%;
+
+  @media screen and (max-width: 380px) {
+    max-width: 55%;
+  }
 }
 
 body input.valueInput {
@@ -73,7 +79,6 @@ body input.valueInput {
   &:hover,
   &:active,
   &:focus,
-  &:focus-visible,
   &:not(.styles_ant-input):hover {
     background: none;
     border: none;
@@ -162,6 +167,7 @@ body input.valueInput {
 
   @media screen and (max-width: 440px) {
     padding-left: 2px;
+    padding-right: 10px;
   }
 }
 
@@ -184,8 +190,7 @@ body input.valueInput {
 
 .disabledTokens {
   &,
-  &:focus,
-  &:focus-visible {
+  &:focus {
     cursor: unset;
   }
 }

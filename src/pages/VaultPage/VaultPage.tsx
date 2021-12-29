@@ -7,13 +7,13 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
 import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
-import { InfoTable } from './InfoTable';
+import { InfoTable } from './InfoTable/InfoTable';
 import styles from './styles.module.scss';
 import { BuyoutTab } from './BuyoutTab';
 import { useTokenMap } from '../../contexts/TokenList';
-import { TradeTab } from './TradeTab';
-import { SwapTab } from './SwapTab';
-import { DetailsHeader } from './DetailsHeader';
+import { TradeTab } from './TradeTab/TradeTab';
+import { SwapTab } from './SwapTab/SwapTab';
+import { DetailsHeader } from './DetailsHeader/DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
 import { fetchCollectionData } from '../../utils/collections';
 import { URLS } from '../../constants';
@@ -88,11 +88,6 @@ const VaultPage: FC = () => {
         )}
         {!loading && !!vaultData && (
           <div className={styles.content}>
-            <DetailsHeader
-              className={styles.detailsHeaderMobile}
-              vaultData={vaultData}
-              tokerName={tokerName}
-            />
             <div className={styles.col}>
               <div
                 className={styles.image}
@@ -100,30 +95,16 @@ const VaultPage: FC = () => {
                   backgroundImage: `url(${nftImage})`,
                 }}
               />
-              {currentCollectionInfo && (
-                <NavLink
-                  to={`${URLS.COLLECTION}/${currentCollectionInfo?.collectionName}`}
-                >
-                  <div className={styles.flex}>
-                    <div
-                      className={styles.collectionIcon}
-                      style={{
-                        backgroundImage: `url(${getCollectionThumbnailUrl(
-                          currentCollectionInfo?.bannerPath,
-                        )})`,
-                      }}
-                    />
-                    <div className={styles.collectionName}>
-                      {currentCollectionInfo?.collectionName}
-                    </div>
-                  </div>
-                </NavLink>
-              )}
-              <div className={styles.mainInfoWrapper}>
-                {!!nftDescription && (
+              <DetailsHeader
+                className={styles.detailsHeaderMobile}
+                vaultData={vaultData}
+                tokerName={tokerName}
+              />
+              {!!nftDescription && (
+                <div className={styles.mainInfoWrapper}>
                   <div className={styles.description}>{nftDescription}</div>
-                )}
-              </div>
+                </div>
+              )}
               {!!nftAttributes?.length && (
                 <div className={styles.attributesTable}>
                   {nftAttributes.map(({ trait_type, value }, idx) => (

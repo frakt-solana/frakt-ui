@@ -18,7 +18,7 @@ interface BidHistoryProps {
   className?: string;
   supply: BN;
   winningBidPubKey?: string;
-  refundBid: (string) => Promise<boolean>;
+  refundBid: (bidPubKey: string) => Promise<boolean>;
 }
 
 export const BidHistory = ({
@@ -46,39 +46,69 @@ export const BidHistory = ({
     );
   };
 
-  const refundBidClick = (bid: Bid) => () => {
-    setIsRefunding(true);
-    setRefundedBids([...refundedBids, bid.bidPubkey]);
-    refundBid(bid.bidPubkey)
-      .then((result) => {
-        if (!result) {
-          setRefundedBids(
-            refundedBids.filter((bidKey) => bidKey !== bid.bidPubkey),
-          );
+  const refundBidClick = (bid: Bid) => async () => {
+    try {
+      setIsRefunding(true);
+      const responce = await refundBid(bid.bidPubkey);
+      if (responce) {
+        setRefundedBids((refundedBids) => [...refundedBids, bid.bidPubkey]);
+      }
+      setIsRefunding(false);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setIsRefunding(false);
+    }
+  };
+
+  const ownBids = bids.filter((bid) => isRefundAvailable(bid));
+
+  const onRefundAllBidsClick = async () => {
+    try {
+      setIsRefunding(true);
+      for (let i = 0; i < ownBids.length; i++) {
+        const bidPubkey = ownBids[i].bidPubkey;
+        const responce = await refundBid(bidPubkey);
+        if (responce) {
+          setRefundedBids((refundedBids) => [...refundedBids, bidPubkey]);
         }
-      })
-      .finally(() => {
-        setIsRefunding(false);
-      });
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setIsRefunding(false);
+    }
   };
 
   return (
-    <ul className={classNames(className, styles.bid)}>
-      {sortedBids.map((bid, index) => (
-        <li className={styles.item} key={bid.bidPubkey}>
-          <span className={styles.number}>{index + 1}</span>
-          <span className={styles.bidder}>{shortenAddress(bid.bidder)}</span>
-          {isRefundAvailable(bid) && (
-            <button onClick={refundBidClick(bid)} className={styles.refund}>
-              Refund bid
-            </button>
-          )}
-          <p className={styles.price}>
-            {decimalBNToString(bid.bidAmountPerShare.mul(supply))}
-            <span className={styles.solanaCurrency}>SOL</span>
-          </p>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className={classNames(className, styles.bid)}>
+        {sortedBids.map((bid, index) => (
+          <li className={styles.item} key={bid.bidPubkey}>
+            <span className={styles.number}>{index + 1}</span>
+            <span className={styles.bidder}>{shortenAddress(bid.bidder)}</span>
+            {isRefundAvailable(bid) && (
+              <button onClick={refundBidClick(bid)} className={styles.refund}>
+                Refund bid
+              </button>
+            )}
+            <p className={styles.price}>
+              {decimalBNToString(bid.bidAmountPerShare.mul(supply))}
+              <span className={styles.solanaCurrency}>SOL</span>
+            </p>
+          </li>
+        ))}
+      </ul>
+      {!!ownBids.length && (
+        <button
+          className={styles.refundPossibleBtn}
+          onClick={onRefundAllBidsClick}
+        >
+          Refund possible bids
+        </button>
+      )}
+    </>
   );
 };

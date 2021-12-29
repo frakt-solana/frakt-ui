@@ -50,10 +50,7 @@ export const LiveAuction: FC<LiveAuctionProps> = ({ vaultInfo }) => {
   return (
     <div>
       <div className={styles.container}>
-        <AuctionCountdown
-          className={styles.timer}
-          endTime={vaultInfo.auction.auction.endingAt}
-        />
+        <AuctionCountdown endTime={vaultInfo.auction.auction.endingAt} />
       </div>
       <BidHistory
         refundBid={(bidPubKey) => refundBid(vaultInfo, bidPubKey)}

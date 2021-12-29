@@ -1,10 +1,10 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import Button from '../../components/Button';
-import { URLS } from '../../constants';
+import Button from '../../../components/Button';
+import { URLS } from '../../../constants';
 
-import { useFraktion, VaultData } from '../../contexts/fraktion';
+import { useFraktion, VaultData } from '../../../contexts/fraktion';
 import styles from './styles.module.scss';
-import Trade from './Trade';
+import Trade from '../Trade';
 
 interface TradeTabProps {
   vaultMarketAddress?: string;

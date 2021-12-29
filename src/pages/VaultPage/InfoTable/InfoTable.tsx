@@ -1,12 +1,12 @@
 import BN from 'bn.js';
-import { shortenAddress } from '../../utils/solanaUtils';
-import fraktionConfig from '../../contexts/fraktion/config';
+import { shortenAddress } from '../../../utils/solanaUtils';
+import fraktionConfig from '../../../contexts/fraktion/config';
 import styles from './styles.module.scss';
-import { copyToClipboard, decimalBNToString } from '../../utils';
-import { VaultData } from '../../contexts/fraktion';
-import CopyClipboardIcon from '../../icons/CopyClipboardIcon';
+import { copyToClipboard, decimalBNToString } from '../../../utils';
+import { VaultData } from '../../../contexts/fraktion';
+import CopyClipboardIcon from '../../../icons/CopyClipboardIcon';
 import classNames from 'classnames';
-import Tooltip from '../../components/Tooltip';
+import Tooltip from '../../../components/Tooltip';
 
 export const InfoTable = ({
   vaultInfo,
