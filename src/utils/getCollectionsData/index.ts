@@ -1,22 +1,19 @@
-import { CollectionsData } from './collection.model';
+import { COLLECTION_URL } from './collections.constant';
+import { CollectionData, CollectionsData } from './collections.model';
 
-const COLLECTION_URL = 'https://api.exchange.art/v1/public/collections';
-
-export const queryCollections = async (): Promise<CollectionsData[]> => {
+export const fetchAllCollections = async (): Promise<CollectionsData[]> => {
   return await (await fetch(COLLECTION_URL)).json();
 };
 
-export const queryCollectionsItem = async (
+export const fetchCollectionData = async (
   collectionName: string,
-): Promise<any> => {
+): Promise<CollectionData[]> => {
   try {
-    const res = await fetch(
-      `${COLLECTION_URL}/metadata?collectionName=${collectionName}`,
-    );
+    const responseData = await (
+      await fetch(`${COLLECTION_URL}/metadata?collectionName=${collectionName}`)
+    ).json();
 
-    const data = await res.json();
-
-    return data;
+    return responseData.states.live;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log('error');

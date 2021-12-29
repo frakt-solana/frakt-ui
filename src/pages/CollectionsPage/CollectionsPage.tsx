@@ -1,64 +1,192 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useHistory } from 'react-router';
+import { FC, useEffect, useMemo, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 import { useFraktion } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
 import { URLS } from '../../constants/urls';
-import { queryCollectionsItem } from '../../utils/getCollectionsData';
+import { fetchCollectionData } from '../../utils/getCollectionsData';
 import styles from './styles.module.scss';
 import { mapVaultByCollectionName } from './helpers';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../components/FakeInfinityScroll';
+import { SearchInput } from '../../components/SearchInput';
+import { useDebounce } from '../../hooks';
+import { ControlledSelect } from '../../components/Select/Select';
+import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
+import {
+  CollectionData,
+  PromiseFulfilledResult,
+} from '../../utils/getCollectionsData/collections.model';
 
-const CollectionsPage = (): JSX.Element => {
-  const history = useHistory();
+const SORT_VALUES = [
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Vaults <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'vault_desc',
+  },
+  {
+    label: (
+      <span>
+        Vaults <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'vault_asc',
+  },
+  {
+    label: (
+      <span>
+        NTFs <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'ntfs_desc',
+  },
+  {
+    label: (
+      <span>
+        NTFs <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'ntfs_asc',
+  },
+];
+
+const CollectionsPage: FC = () => {
+  const { control, watch } = useForm({
+    defaultValues: {
+      sort: SORT_VALUES[0],
+    },
+  });
+
+  const [searchString, setSearchString] = useState<string>('');
+  const [collectionItems, setCollectionItems] = useState<CollectionData[]>([]);
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
   const { vaults, loading } = useFraktion();
-  const [collectionItems, setCollectionItems] = useState<any>([]);
+  const sort = watch('sort');
+
+  const searchItems = useDebounce((search: string) => {
+    setSearchString(search.toUpperCase());
+  }, 300);
 
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultByCollectionName(vaults);
   }, [loading, vaults]);
+
+  const filteredCollection = useMemo(() => {
+    const [sortField, sortOrder] = sort.value.split('_');
+
+    return collectionItems
+      .filter(({ collectionName }) => {
+        return collectionName.toUpperCase().includes(searchString);
+      })
+      .sort((a, b) => {
+        switch (sortField) {
+          case 'collectionName':
+            if (sortOrder === 'desc') {
+              return a.collectionName.localeCompare(b.collectionName);
+            }
+            return b.collectionName.localeCompare(a.collectionName);
+
+          default:
+            if (sortOrder === 'desc') {
+              return String(
+                vaultsByCollectionName[a.collectionName].length,
+              ).localeCompare(
+                String(vaultsByCollectionName[b.collectionName].length),
+              );
+            }
+            return String(
+              vaultsByCollectionName[b.collectionName].length,
+            ).localeCompare(
+              String(vaultsByCollectionName[a.collectionName].length),
+            );
+        }
+      });
+  }, [collectionItems, searchString, vaultsByCollectionName, sort]);
 
   useEffect(() => {
     getCollectionItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
-  const onChangeCollection = (collectionName: string) => {
-    if (!collectionName) {
-      history.push(URLS.COLLECTIONS);
-    } else {
-      history.push(`${URLS.COLLECTION}/${collectionName}`);
-    }
-  };
-
   const getCollectionItems = async (): Promise<void> => {
     const collectionNameKeys = Object.keys(vaultsByCollectionName);
 
-    const items = await Promise.allSettled(
-      collectionNameKeys.map(async (item) => {
-        const result = await queryCollectionsItem(item);
-        return result;
-      }),
+    const responses = await Promise.allSettled(
+      collectionNameKeys.map((response) => fetchCollectionData(response)),
     );
-    setCollectionItems(items);
+
+    const fulfilled = responses
+      .filter(
+        ({ value, status }: PromiseFulfilledResult) =>
+          status === 'fulfilled' && value !== undefined,
+      )
+      .map((response: PromiseFulfilledResult) => response.value);
+
+    setCollectionItems(fulfilled as CollectionData[]);
   };
 
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <div className={styles.cards}>
-          {collectionItems.map(({ value }) => (
-            <CollectionCard
-              key={value?.states?.live.collectionId}
-              collectionName={value?.states?.live.collectionName}
-              thumbnailPath={value?.states?.live.thumbnailPath}
-              onClick={() =>
-                onChangeCollection(value?.states?.live.collectionName)
-              }
+        <SearchInput
+          size="large"
+          onChange={(e) => searchItems(e.target.value || '')}
+          className={styles.search}
+          placeholder="Search by collection name"
+        />
+        <div className={styles.filtersWrapper}>
+          <div>
+            <ControlledSelect
+              className={styles.sortingSelect}
+              valueContainerClassName={styles.sortingSelectValueContainer}
+              label="Sort by"
+              control={control}
+              name="sort"
+              options={SORT_VALUES}
             />
-          ))}
+          </div>
         </div>
+        <FakeInfinityScroll
+          itemsToShow={itemsToShow}
+          next={next}
+          isLoading={!collectionItems.length}
+          wrapperClassName={styles.cards}
+          emptyMessage={'No collections found'}
+        >
+          {filteredCollection.map(({ collectionName, bannerPath }, id) => (
+            <NavLink key={id} to={`${URLS.COLLECTION}/${collectionName}`}>
+              <CollectionCard
+                key={id}
+                collectionName={collectionName}
+                thumbnailPath={bannerPath}
+                vaultCount={vaultsByCollectionName[collectionName].length}
+              />
+            </NavLink>
+          ))}
+        </FakeInfinityScroll>
       </Container>
     </AppLayout>
   );

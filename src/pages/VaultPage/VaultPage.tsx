@@ -1,6 +1,7 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
+import { NavLink } from 'react-router-dom';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -14,11 +15,16 @@ import { TradeTab } from './TradeTab';
 import { SwapTab } from './SwapTab';
 import { DetailsHeader } from './DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
+import { fetchCollectionData } from '../../utils/getCollectionsData';
+import { URLS } from '../../constants';
+import { getCollectionThumbnailUrl } from '../../utils';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
+  const [currentCollectionInfo, setCurrentCollectionInfo] = useState<any>();
+
   const tokenMap = useTokenMap();
   const vaultData: VaultData = useMemo(() => {
     return vaults.find(
@@ -54,6 +60,15 @@ const VaultPage: FC = () => {
           nftCollectionName: null,
         };
 
+  useEffect(() => {
+    (async () => {
+      const result = await fetchCollectionData(nftCollectionName);
+      if (result) {
+        setCurrentCollectionInfo(result);
+      }
+    })();
+  }, [nftCollectionName]);
+
   //? Set active tab "Buyout" if auction started
   useEffect(() => {
     if (vaultData) {
@@ -85,10 +100,24 @@ const VaultPage: FC = () => {
                   backgroundImage: `url(${nftImage})`,
                 }}
               />
-              {!!nftCollectionName && (
-                <div className={styles.collectionName}>
-                  Collection: {nftCollectionName}
-                </div>
+              {currentCollectionInfo && (
+                <NavLink
+                  to={`${URLS.COLLECTION}/${currentCollectionInfo?.collectionName}`}
+                >
+                  <div className={styles.flex}>
+                    <div
+                      className={styles.collectionIcon}
+                      style={{
+                        backgroundImage: `url(${getCollectionThumbnailUrl(
+                          currentCollectionInfo?.bannerPath,
+                        )})`,
+                      }}
+                    />
+                    <div className={styles.collectionName}>
+                      {currentCollectionInfo?.collectionName}
+                    </div>
+                  </div>
+                </NavLink>
               )}
               <div className={styles.mainInfoWrapper}>
                 {!!nftDescription && (

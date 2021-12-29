@@ -1,12 +1,12 @@
 import { VaultData } from '../../contexts/fraktion';
 
-export type VaultByCollectionName = {
+export type VaultsByCollectionName = {
   [key: string]: VaultData[];
 };
 
 export const mapVaultByCollectionName = (
   vaults: VaultData[],
-): VaultByCollectionName => {
+): VaultsByCollectionName => {
   return vaults.reduce((vaultByCollectionName, vault) => {
     vault.safetyBoxes.forEach((safetyBox) => {
       if (safetyBox.isNftVerified) {

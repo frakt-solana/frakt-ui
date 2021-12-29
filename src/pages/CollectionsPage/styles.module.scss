@@ -8,8 +8,58 @@
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 24px;
   align-items: stretch;
+  overflow: hidden;
 
   @media screen and (max-width: 440px) {
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
+}
+
+.search {
+  margin-bottom: 18px;
+}
+
+.arrowUp,
+.arrowDown {
+  position: relative;
+  top: 2px;
+  path {
+    stroke: var(--white-color);
+  }
+}
+
+.arrowDown {
+  transform: rotate(180deg);
+}
+
+.sortingSelect {
+  min-width: 270px;
+}
+
+.sortingSelectValueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+    path {
+      stroke: var(--accent-color-1);
+    }
+  }
+}
+
+.filtersWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 35px;
+  gap: 120px;
+
+  @media screen and (max-width: 550px) {
+    flex-wrap: wrap;
+    gap: 30px;
+    grid-gap: 24px;
+    margin-top: 24px;
+
+    .filters {
+      order: 1;
+    }
   }
 }

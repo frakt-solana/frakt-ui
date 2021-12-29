@@ -5,76 +5,68 @@
   z-index: 1;
 }
 
-.cardContainer {
-  padding: 0 10px 10px 0;
+.card {
   height: 100%;
-  .card {
+  width: 100%;
+
+  &:before {
+    content: '';
+    width: 100%;
     height: 100%;
-    width: 360px;
-    &:before {
-      content: '';
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      border: 1px solid var(--gray-color-6);
-      top: 10px;
-      left: 10px;
-    }
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    position: absolute;
     border: 1px solid var(--gray-color-6);
-    color: var(--white-color);
-    transition: border-color var(--transition-1);
+    top: 10px;
+    left: 10px;
+  }
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid var(--gray-color-6);
+  color: var(--white-color);
+  transition: border-color var(--transition-1);
 
-    &:hover {
-      border-color: var(--accent-color-1);
+  &:hover {
+    border-color: var(--accent-color-1);
+  }
+
+  .image {
+    height: 200px;
+    border-bottom: 1px solid var(--gray-color-6);
+    position: relative;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .nameContainer {
+    @include container();
+    border-bottom: 1px solid var(--gray-color-6);
+    flex-grow: 1;
+    text-align: center;
+
+    .name {
+      font: var(--font-subtitle-2);
+      color: var(--white-color);
+      margin-bottom: 15px;
     }
+  }
 
-    .image {
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-color: var(--black-color);
-      height: 200px;
-      border-bottom: 1px solid var(--gray-color-6);
-      position: relative;
-      img {
-        width: 100%;
-        height: 100%;
+  .stats {
+    @include container();
+    display: flex;
+    justify-content: flex-start;
+    gap: 50px;
+    .item {
+      .title {
+        font: var(--font-smallest);
+        text-transform: uppercase;
+        color: var(--gray-color-3);
+        min-height: 28px;
       }
-    }
 
-    .nameContainer {
-      @include container();
-      border-bottom: 1px solid var(--gray-color-6);
-      flex-grow: 1;
-      text-align: center;
-
-      .name {
-        font: var(--font-subtitle-2);
+      .value {
+        font: var(--font-btn-mid);
         color: var(--white-color);
-        margin-bottom: 15px;
-      }
-    }
-
-    .stats {
-      @include container();
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      .item {
-        .title {
-          font: var(--font-smallest);
-          text-transform: uppercase;
-          color: var(--gray-color-3);
-          min-height: 28px;
-        }
-
-        .value {
-          font: var(--font-btn-mid);
-          color: var(--white-color);
-        }
       }
     }
   }
