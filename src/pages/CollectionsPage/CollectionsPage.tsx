@@ -18,10 +18,9 @@ import styles from './styles.module.scss';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
-import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
-import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
+import { CollectionsFilter } from './CollectionsFilter';
 
 const SORT_VALUES = [
   {
@@ -124,24 +123,11 @@ const CollectionsPage: FC = () => {
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <SearchInput
-          size="large"
-          onChange={(e) => searchItems(e.target.value || '')}
-          className={styles.search}
-          placeholder="Search by collection name"
+        <CollectionsFilter
+          searchItems={searchItems}
+          sortVaules={SORT_VALUES}
+          sortControl={control}
         />
-        <div className={styles.filtersWrapper}>
-          <div>
-            <ControlledSelect
-              className={styles.sortingSelect}
-              valueContainerClassName={styles.sortingSelectValueContainer}
-              label="Sort by"
-              control={control}
-              name="sort"
-              options={SORT_VALUES}
-            />
-          </div>
-        </div>
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}

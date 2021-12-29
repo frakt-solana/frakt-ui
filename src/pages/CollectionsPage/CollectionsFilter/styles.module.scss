@@ -1,0 +1,39 @@
+.wrapper {
+  width: 100%;
+}
+
+.search {
+  margin-bottom: 18px;
+}
+
+.sortingSelect {
+  min-width: 270px;
+}
+
+.sortingSelectValueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+    path {
+      stroke: var(--accent-color-1);
+    }
+  }
+}
+
+.filtersWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 35px;
+  gap: 120px;
+
+  @media screen and (max-width: 550px) {
+    flex-wrap: wrap;
+    gap: 30px;
+    grid-gap: 24px;
+    margin-top: 24px;
+
+    .filters {
+      order: 1;
+    }
+  }
+}
