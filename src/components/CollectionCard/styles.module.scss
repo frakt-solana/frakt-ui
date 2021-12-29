@@ -5,10 +5,13 @@
   z-index: 1;
 }
 
+.cardContainer {
+  padding: 0 10px 10px 0;
+  height: 100%;
+}
+
 .card {
   height: 100%;
-  width: 100%;
-
   &:before {
     content: '';
     width: 100%;
@@ -33,22 +36,16 @@
     height: 200px;
     border-bottom: 1px solid var(--gray-color-6);
     position: relative;
-    background-position: center center;
-    background-repeat: no-repeat;
+    background: var(--black-color) no-repeat center;
     background-size: cover;
+    object-fit: cover;
   }
 
-  .nameContainer {
-    @include container();
+  .name {
     border-bottom: 1px solid var(--gray-color-6);
-    flex-grow: 1;
-    text-align: center;
-
-    .name {
-      font: var(--font-subtitle-2);
-      color: var(--white-color);
-      margin-bottom: 15px;
-    }
+    @include container();
+    font: var(--font-subtitle-2);
+    color: var(--white-color);
   }
 
   .stats {
@@ -61,7 +58,6 @@
         font: var(--font-smallest);
         text-transform: uppercase;
         color: var(--gray-color-3);
-        min-height: 28px;
       }
 
       .value {

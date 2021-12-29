@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -8,9 +7,7 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { ArrowDownSmallIcon, DiscordIcon, TwitterIcon } from '../../icons';
 import { CollectionData } from '../../utils/collections/collections.model';
-import VaultCard from '../../components/VaultCard';
 import { useFraktion, VaultState } from '../../contexts/fraktion';
-import { URLS } from '../../constants';
 import styles from './styles.module.scss';
 import { getCollectionThumbnailUrl } from '../../utils';
 import { useCollectionsItem } from '../../utils/collections/collections.hooks';
@@ -19,10 +16,8 @@ import { useDebounce } from '../../hooks';
 import { SearchInput } from '../../components/SearchInput';
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
-import FakeInfinityScroll, {
-  useFakeInfinityScroll,
-} from '../../components/FakeInfinityScroll';
 import { mapVaultsByCollectionName } from '../../utils/collections';
+import { VaultsList } from '../../components/VaultsList';
 
 const SORT_VALUES = [
   {
@@ -70,7 +65,6 @@ const CollectionPage: FC = () => {
   const queryId = history.location.pathname.replace('/collection/', '');
   const { collectionsItem } = useCollectionsItem(queryId);
   const { vaults, loading } = useFraktion();
-  const { itemsToShow, next } = useFakeInfinityScroll(9);
 
   const {
     bannerPath,
@@ -158,7 +152,7 @@ const CollectionPage: FC = () => {
           style={{
             backgroundImage: `url(${getCollectionThumbnailUrl(bannerPath)})`,
           }}
-        ></div>
+        />
       </div>
       <Container component="main" className={styles.container}>
         <div className={styles.banner}>
@@ -236,24 +230,7 @@ const CollectionPage: FC = () => {
             />
           </div>
         </div>
-        {userVaults && (
-          <FakeInfinityScroll
-            itemsToShow={itemsToShow}
-            next={next}
-            isLoading={!userVaults}
-            wrapperClassName={styles.cards}
-            emptyMessage={'No vaults found'}
-          >
-            {userVaults.map((vault) => (
-              <NavLink
-                key={vault.vaultPubkey}
-                to={`${URLS.VAULT}/${vault.vaultPubkey}`}
-              >
-                <VaultCard vaultData={vault} />
-              </NavLink>
-            ))}
-          </FakeInfinityScroll>
-        )}
+        <VaultsList vaults={userVaults || []} isLoading={loading} />
       </Container>
     </AppLayout>
   );
