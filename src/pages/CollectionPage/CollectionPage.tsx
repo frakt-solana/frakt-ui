@@ -1,22 +1,20 @@
 import { FC, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { ArrowDownSmallIcon, DiscordIcon, TwitterIcon } from '../../icons';
+import { ArrowDownSmallIcon } from '../../icons';
 import { useFraktion, VaultState } from '../../contexts/fraktion';
-import styles from './styles.module.scss';
-import { getCollectionThumbnailUrl } from '../../utils';
-import { useCollectionsItem } from '../../utils/collections/collections.hooks';
-import { WebsiteIcon } from '../../icons/WebsiteIcon';
 import { useDebounce } from '../../hooks';
 import { SearchInput } from '../../components/SearchInput';
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { mapVaultsByCollectionName } from '../../utils/collections';
 import { VaultsList } from '../../components/VaultsList';
-import { useParams } from 'react-router-dom';
+import { CollectionBanner } from './CollectionBanner';
+import styles from './styles.module.scss';
 
 const SORT_VALUES = [
   {
@@ -43,7 +41,7 @@ const CollectionPage: FC = () => {
       showActiveVaults: true,
       showAuctionLiveVaults: false,
       showAuctionFinishedVaults: false,
-      showArchivedVaults: true,
+      showArchivedVaults: false,
       showMyVaults: false,
       showTradableVaults: false,
       sort: SORT_VALUES[0],
@@ -61,8 +59,6 @@ const CollectionPage: FC = () => {
   const { connected, publicKey } = useWallet();
   const [searchString, setSearchString] = useState<string>('');
   const { collectionName } = useParams<{ collectionName: string }>();
-  const { collectionsItem: collectionData } =
-    useCollectionsItem(collectionName);
   const { vaults, loading } = useFraktion();
 
   const vaultsByCollectionName = useMemo(() => {
@@ -137,48 +133,8 @@ const CollectionPage: FC = () => {
 
   return (
     <AppLayout>
-      <div className={styles.fullPage}>
-        <div
-          className={styles.image}
-          style={{
-            backgroundImage: `url(${getCollectionThumbnailUrl(
-              collectionData.bannerPath,
-            )})`,
-          }}
-        />
-      </div>
+      <CollectionBanner collectionName={collectionName} />
       <Container component="main" className={styles.container}>
-        <div className={styles.banner}>
-          <div className={styles.thumbnail}>
-            <img
-              src={getCollectionThumbnailUrl(collectionData.thumbnailPath)}
-            />
-          </div>
-          <div className={styles.title}>{collectionData.collectionName}</div>
-          <div className={styles.socialLinks}>
-            <a
-              href={collectionData.website}
-              target="_bank"
-              rel="noopener noreferrer"
-            >
-              <WebsiteIcon width={46} alt="website" />
-            </a>
-            <a
-              href={collectionData.discord}
-              target="_bank"
-              rel="noopener noreferrer"
-            >
-              <DiscordIcon width={48} alt="discord" />
-            </a>
-            <a
-              href={collectionData.twitter}
-              target="_bank"
-              rel="noopener noreferrer"
-            >
-              <TwitterIcon width={48} alt="twitter" />
-            </a>
-          </div>
-        </div>
         <SearchInput
           size="large"
           onChange={(e) => searchItems(e.target.value || '')}

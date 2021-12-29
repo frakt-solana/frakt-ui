@@ -2,29 +2,29 @@ import { useEffect, useState } from 'react';
 import { CollectionData } from './collections.model';
 import { fetchCollectionData } from './index';
 
-export const useCollectionsItem = (
+export const useCollectionData = (
   collectionName: string,
 ): {
   collectionsItem: CollectionData;
-  initCollectionItem: (collectionName: string) => Promise<void>;
+  refetch: (collectionName: string) => Promise<void>;
 } => {
-  const [collectionsItem, setCollectionsItem] = useState<CollectionData>({});
+  const [collectionData, setCollectionData] = useState<CollectionData>({});
 
   useEffect(() => {
-    initCollectionItem(collectionName);
+    fetchData(collectionName);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initCollectionItem = async (collectionName: string): Promise<void> => {
+  const fetchData = async (collectionName: string): Promise<void> => {
     try {
       const data = await fetchCollectionData(collectionName);
 
-      setCollectionsItem(data);
+      setCollectionData(data);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
     }
   };
 
-  return { collectionsItem, initCollectionItem };
+  return { collectionsItem: collectionData, refetch: fetchData };
 };
