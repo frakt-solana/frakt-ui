@@ -62,13 +62,13 @@ const Sidebar = ({
         { [styles.mobileSidebar]: isMobileSidebar },
       ])}
     >
-      {!!nfts.length && (
+      {!!(nfts.length + lockedNFT.length) && (
         <div
           className={styles.selectedVaults}
           onClick={changeSidebarVisibility}
         >
           <p>
-            Your NFT{isBasket && 's'} ({nfts.length})
+            Your NFT{isBasket && 's'} ({nfts.length + lockedNFT.length})
           </p>
         </div>
       )}
