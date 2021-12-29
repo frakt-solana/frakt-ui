@@ -86,7 +86,7 @@ export const Routes = (): JSX.Element => {
                       <Route
                         exact
                         path={`${URLS.UNFINISHED_VAULT}/:vaultPubkey`}
-                        component={(): JSX.Element => <UnfinishedVaultPage />}
+                        component={(): JSX.Element => <VaultPage />}
                       />
                       <Route
                         exact
