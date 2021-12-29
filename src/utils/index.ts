@@ -121,3 +121,7 @@ export const copyToClipboard = (value: string): void => {
     type: 'success',
   });
 };
+
+export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
+  return `https://cdn.exchange.art/${thumbaiUrl?.replace(/ /g, '%20')}`;
+};
