@@ -413,10 +413,33 @@ div.sliderSmall {
 
 .tabContent {
   padding-top: 24px;
-  margin-bottom: 128px;
 
   @media screen and (max-width: 1023px) {
-    margin-bottom: 90px;
     padding-top: 15px;
+  }
+}
+
+.allNfts {
+  margin-top: 60px;
+
+  @media screen and (max-width: 767px) {
+    margin-top: 90px;
+  }
+}
+
+.nftsTitle {
+  font: var(--font-h4);
+
+  @media screen and (max-width: 767px) {
+    font-size: 32px;
+  }
+
+  @media screen and (max-width: 450px) {
+    font-size: 28px;
+  }
+
+  span {
+    margin-right: 15px;
+    color: var(--accent-color-1)
   }
 }

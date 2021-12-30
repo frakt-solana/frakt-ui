@@ -22,6 +22,7 @@ import 'swiper/modules/thumbs/thumbs';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import NavigationLink from '../../components/Header/NavigationLink';
 import { URLS } from '../../constants';
+import { NFTList } from './NFTList';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -53,28 +54,13 @@ const VaultPage: FC = () => {
   const [tokerName, setTokerName] = useState<string>('');
 
   const thumbSliderBreakpoints = {
-    300: {
-      slidesPerView: 2.5,
-      spaceBetween: 10,
-    },
-    360: {
-      slidesPerView: 3,
-    },
-    400: {
-      slidesPerView: 3.5,
-    },
-    480: {
-      slidesPerView: 4,
-    },
-    600: {
-      slidesPerView: 4.5,
-    },
-    767: {
-      slidesPerView: 3.2,
-    },
-    1023: {
-      slidesPerView: 3.8,
-    },
+    300: { slidesPerView: 2.5 },
+    360: { slidesPerView: 3 },
+    400: { slidesPerView: 3.5 },
+    480: { slidesPerView: 4 },
+    600: { slidesPerView: 4.5 },
+    767: { slidesPerView: 3.2 },
+    1023: { slidesPerView: 3.8 },
   };
 
   useEffect(() => {
@@ -143,6 +129,7 @@ const VaultPage: FC = () => {
                   <>
                     <Swiper
                       breakpoints={thumbSliderBreakpoints}
+                      spaceBetween={10}
                       className={styles.sliderSmall}
                       navigation={true}
                       scrollbar={true}
@@ -236,6 +223,15 @@ const VaultPage: FC = () => {
               )}
             </div>
           </div>
+        )}
+        {vaultData?.safetyBoxes.length > 1 && (
+          <section className={styles.allNfts}>
+            <h4 className={styles.nftsTitle}>
+              <span>{vaultData?.safetyBoxes.length}</span>
+              NFTs inside the vault
+            </h4>
+            <NFTList safetyBoxes={vaultData.safetyBoxes} />
+          </section>
         )}
       </Container>
     </AppLayout>

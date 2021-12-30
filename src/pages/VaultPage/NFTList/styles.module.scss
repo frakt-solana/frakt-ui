@@ -1,0 +1,81 @@
+.nftList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  margin-top: 50px;
+}
+
+.nftListItem {
+  border: 1px solid var(--gray-color-3);
+  max-width: calc(33.33% - 18px);
+  width: 100%;
+  position: relative;
+  background-color: var(--black-color);
+  cursor: pointer;
+
+  &::after {
+    position: absolute;
+    display: block;
+    content: '';
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--gray-color-3);
+    top: 10px;
+    left: 10px;
+    z-index: -1;
+  }
+
+  &:hover {
+    border-color: var(--accent-color-1);
+
+    &::after {
+      border-color: var(--accent-color-3);
+      opacity: .5;
+    }
+  }
+}
+
+.nftImage {
+  width: 100%;
+  height: 350px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100px;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  }
+}
+
+.nftInfoBlock {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--gray-color-3);
+}
+
+.nftTitle {
+  font: var(--font-btn-mid);
+  line-height: 1.25em;
+  margin-bottom: 16px;
+}
+
+.nftInfoLabel {
+  font: var(--font-smallest);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--gray-color-3);
+  margin-bottom: 8px;
+}
+
+.nftInfoItem {
+  font: var(--font-btn-small);
+}
