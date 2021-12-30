@@ -79,3 +79,118 @@
 .nftInfoItem {
   font: var(--font-btn-small);
 }
+
+:global {
+  .ant-modal-wrap {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(16px);
+  }
+}
+
+.modal {
+  :global {
+    .ant-modal-content {
+      background-color: transparent;
+      box-shadow: none;
+    }
+
+    .ant-modal-body {
+      padding: 0;
+    }
+  }
+}
+
+.sliderWrapper {
+  padding: 24px;
+  background-color: var(--black-color);
+  border: 1px solid var(--gray-color-3);
+}
+
+.slide {
+  display: flex;
+  gap: 34px;
+}
+
+.slideImage {
+  flex-shrink: 0;
+  height: 388px;
+  width: 388px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid var(--gray-color-3);
+}
+
+.slideInfoBlock {
+  flex-grow: 1;
+}
+
+.collection {
+  display: flex;
+  align-items: center;
+  font: var(--font-secondary);
+  margin-bottom: 18px;
+
+  a {
+    color: var(--accent-color-1);
+    border-bottom: 1px solid var(--accent-color-1);
+  }
+
+  &::before {
+    content: '';
+    background: #3D3D3D;
+    border: 1px solid #FFFFFF;
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
+}
+
+.NftDescription {
+  margin-bottom: 16px;
+  font: var(--font-body-small);
+}
+
+.attributesTable {
+   padding-bottom: 32px;
+   font: var(--font-secondary);
+
+   &__row {
+     display: flex;
+     justify-content: space-between;
+     align-items: flex-start;
+     gap: 12px;
+
+     p:first-child {
+       order: 1;
+     }
+
+     p:last-child {
+       order: 3;
+       word-break: break-word;
+       text-align: right;
+     }
+
+     &::before {
+       content: '';
+       display: inline-block;
+       height: 1px;
+       flex-grow: 1;
+       background: var(--gray-color-3);
+       order: 2;
+       min-width: 25px;
+       margin-top: 11px;
+     }
+   }
+
+   @media screen and (max-width: 1023px) {
+     padding-bottom: 0;
+   }
+
+   @media screen and (max-width: 767px) {
+     padding-top: 0;
+   }
+ }
