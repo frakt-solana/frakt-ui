@@ -15,6 +15,8 @@ import { VaultData } from '../../../../../contexts/fraktion';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useAuction } from '../../../../../contexts/auction';
 import { calculateMinBid } from './helpers';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import Tooltip from '../../../../../components/Tooltip';
 
 interface LiveAuctionProps {
   vaultInfo: VaultData;
@@ -39,6 +41,16 @@ export const LiveAuction: FC<LiveAuctionProps> = ({ vaultInfo }) => {
     <div>
       <div className={styles.container}>
         <AuctionCountdown endTime={vaultInfo.auction.auction.endingAt} />
+        <Tooltip
+          placement="bottom"
+          trigger="hover"
+          overlay="Bids made during last day of auction extend auction by 12 hours"
+        >
+          <QuestionCircleOutlined
+            size={4}
+            className={styles.endingTooltipIcon}
+          />
+        </Tooltip>
       </div>
       <BidHistory
         refundBid={(bidPubKey) => refundBid(vaultInfo, bidPubKey)}
