@@ -52,6 +52,31 @@ const VaultPage: FC = () => {
 
   const [tokerName, setTokerName] = useState<string>('');
 
+  const thumbSliderBreakpoints = {
+    300: {
+      slidesPerView: 2.5,
+      spaceBetween: 10,
+    },
+    360: {
+      slidesPerView: 3,
+    },
+    400: {
+      slidesPerView: 3.5,
+    },
+    480: {
+      slidesPerView: 4,
+    },
+    600: {
+      slidesPerView: 4.5,
+    },
+    767: {
+      slidesPerView: 3.2,
+    },
+    1023: {
+      slidesPerView: 3.8,
+    },
+  };
+
   useEffect(() => {
     !loading &&
       vaultData &&
@@ -117,7 +142,7 @@ const VaultPage: FC = () => {
                 {vaultData?.safetyBoxes.length > 1 && (
                   <>
                     <Swiper
-                      slidesPerView={4.7}
+                      breakpoints={thumbSliderBreakpoints}
                       className={styles.sliderSmall}
                       navigation={true}
                       scrollbar={true}
