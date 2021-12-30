@@ -37,9 +37,11 @@ const VaultPage: FC = () => {
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
-  const [currentNftName, setCurrentNftName] = useState(
-    'Dont forget to init starting value',
-  );
+  const initSlideNftName = vaultData?.safetyBoxes[0]?.nftName || '';
+  const [currentSlideData, setCurrentSlideData] = useState({
+    nftName: '',
+    nftIndex: 1,
+  });
 
   const vaultMarket = useMemo(() => {
     return vaultsMarkets.find(
@@ -72,7 +74,18 @@ const VaultPage: FC = () => {
       const isAuctionStarted = vaultData.auction.auction?.isStarted;
       isAuctionStarted && setTab('buyout');
     }
+    setCurrentSlideData({
+      nftName: initSlideNftName,
+      nftIndex: 1,
+    });
   }, [vaultData]);
+
+  const onSlideThumbClick = (nftName, nftIndex) => () => {
+    setCurrentSlideData({
+      nftName,
+      nftIndex: nftIndex + 1,
+    });
+  };
 
   return (
     <AppLayout>
@@ -110,10 +123,10 @@ const VaultPage: FC = () => {
                       scrollbar={true}
                       onSwiper={setThumbsSwiper}
                     >
-                      {vaultData?.safetyBoxes.map((box) => (
+                      {vaultData?.safetyBoxes.map((box, index) => (
                         <SwiperSlide
                           key={box.vaultPubkey}
-                          onClick={() => setCurrentNftName(box.nftName)}
+                          onClick={onSlideThumbClick(box.nftName, index)}
                         >
                           <div
                             className={styles.slideSmall}
@@ -122,7 +135,13 @@ const VaultPage: FC = () => {
                         </SwiperSlide>
                       ))}
                     </Swiper>
-                    <p className={styles.nftName}>{currentNftName}</p>
+                    <p className={styles.nftName}>
+                      <span>
+                        {currentSlideData.nftIndex}/
+                        {vaultData.safetyBoxes.length}
+                      </span>
+                      {currentSlideData.nftName}
+                    </p>
                   </>
                 )}
               </div>
