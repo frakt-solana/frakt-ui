@@ -24,6 +24,7 @@ import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import NavigationLink from '../../components/Header/NavigationLink';
 import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
+import { HashLink as AnchorLink } from 'react-router-hash-link';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 import { fetchCollectionData } from '../../utils/collections';
@@ -169,9 +170,13 @@ const VaultPage: FC = () => {
                       </span>
                       {currentSlideData.nftName}
                     </p>
-                    <a href="#allNftList" className={styles.toNftList}>
+                    <AnchorLink
+                      smooth
+                      to="#allNftList"
+                      className={styles.toNftList}
+                    >
                       See all NFTs Inside the Vault
-                    </a>
+                    </AnchorLink>
                   </>
                 )}
               </div>
