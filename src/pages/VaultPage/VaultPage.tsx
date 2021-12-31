@@ -147,7 +147,7 @@ const VaultPage: FC = () => {
                       spaceBetween={10}
                       className={styles.sliderSmall}
                       navigation={true}
-                      scrollbar={true}
+                      scrollbar={{ draggable: true }}
                       onSwiper={setThumbsSwiper}
                     >
                       {vaultData?.safetyBoxes.map((box, index) => (
@@ -169,6 +169,9 @@ const VaultPage: FC = () => {
                       </span>
                       {currentSlideData.nftName}
                     </p>
+                    <a href="#allNftList" className={styles.toNftList}>
+                      See all NFTs Inside the Vault
+                    </a>
                   </>
                 )}
               </div>
@@ -260,7 +263,7 @@ const VaultPage: FC = () => {
           </div>
         )}
         {vaultData?.safetyBoxes.length > 1 && (
-          <section className={styles.allNfts}>
+          <section id="allNftList" className={styles.allNfts}>
             <h4 className={styles.nftsTitle}>
               <span>{vaultData?.safetyBoxes.length}</span>
               NFTs inside the vault
