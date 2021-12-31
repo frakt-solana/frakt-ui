@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styles from './styles.module.scss';
 import { SafetyBoxWithMetadata } from '../../../contexts/fraktion';
 import classNames from 'classnames';
@@ -10,6 +10,7 @@ import 'swiper/modules/navigation/navigation.scss';
 import 'swiper/modules/pagination/pagination.scss';
 import 'swiper/modules/thumbs/thumbs';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
+import { CloseModalIcon } from '../../../icons';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -20,19 +21,34 @@ interface NFTListProps {
 
 export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
   const [isModal, setIsModal] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const [swiper, setSwiper] = useState(null);
 
-  const onNftItemClick = () => () => {
+  const slideTo = (index) => {
+    if (swiper) swiper.slideTo(index);
+  };
+
+  const prevBtn = useRef<HTMLDivElement>(null);
+  const nextBtn = useRef<HTMLDivElement>(null);
+
+  const onNftItemClick = (index) => () => {
     setIsModal(true);
+    setCurrentSlide(index);
+    slideTo(index);
+  };
+
+  const onSliderNavClick = () => () => {
+    if (swiper) setCurrentSlide(swiper.activeIndex);
   };
 
   return (
     <>
       <ul className={classNames(styles.nftList, className)}>
-        {safetyBoxes.map((nft) => (
+        {safetyBoxes.map((nft, index) => (
           <li
             className={styles.nftListItem}
             key={nft.vaultPubkey}
-            onClick={onNftItemClick()}
+            onClick={onNftItemClick(index)}
           >
             <div
               style={{ backgroundImage: `url(${nft.nftImage})` }}
@@ -53,11 +69,31 @@ export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
         className={styles.modal}
         width={820}
         footer={false}
+        closable={false}
         centered
         onCancel={() => setIsModal(false)}
       >
+        <div className={styles.closeModalSection}>
+          <span className={styles.slideNumber}>
+            {currentSlide + 1}/{safetyBoxes.length}
+          </span>
+          <div
+            className={styles.closeModalIcon}
+            onClick={() => setIsModal(false)}
+          >
+            <CloseModalIcon width={23} />
+          </div>
+        </div>
         <div className={styles.sliderWrapper}>
-          <Swiper navigation={true} autoHeight={true}>
+          <Swiper
+            navigation={{
+              prevEl: prevBtn.current,
+              nextEl: nextBtn.current,
+            }}
+            initialSlide={currentSlide}
+            onSwiper={setSwiper}
+            autoHeight={true}
+          >
             {safetyBoxes.map((slide) => (
               <SwiperSlide key={slide.nftMint} className={styles.slide}>
                 <div
@@ -95,6 +131,16 @@ export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
               </SwiperSlide>
             ))}
           </Swiper>
+          <div
+            ref={prevBtn}
+            className={styles.sliderNavPrev}
+            onClick={onSliderNavClick()}
+          />
+          <div
+            ref={nextBtn}
+            className={styles.sliderNavNext}
+            onClick={onSliderNavClick()}
+          />
         </div>
       </Modal>
     </>

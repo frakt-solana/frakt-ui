@@ -104,7 +104,7 @@ const VaultPage: FC = () => {
       nftName: initSlideNftName,
       nftIndex: 1,
     });
-  }, [vaultData]);
+  }, [vaultData, initSlideNftName]);
 
   const onSlideThumbClick = (nftName, nftIndex) => () => {
     setCurrentSlideData({
