@@ -8,5 +8,7 @@ export const URLS = {
   UNFINISHED_VAULT: '/unfinished-vault',
   WALLET: '/wallet',
   PAGE_404: '/404',
+  COLLECTIONS: '/collections',
+  COLLECTION: '/collection',
   DEX: 'https://dex.fraktion.art',
 };

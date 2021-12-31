@@ -1,0 +1,29 @@
+.container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+  overflow: hidden;
+
+  @media screen and (max-width: 440px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
+}
+
+.arrowUp,
+.arrowDown {
+  position: relative;
+  top: 2px;
+  path {
+    stroke: var(--white-color);
+  }
+}
+
+.arrowDown {
+  transform: rotate(180deg);
+}

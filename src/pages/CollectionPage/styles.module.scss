@@ -1,21 +1,19 @@
-.content {
-  padding-top: 64px;
+.image {
+  height: 300px;
+  width: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.container {
+  position: relative;
+  padding-top: 30px;
   padding-bottom: 64px;
 }
 
 .search {
   margin-bottom: 18px;
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 12px 36px;
-  flex-wrap: wrap;
-}
-
-.filter {
-  width: unset;
 }
 
 .arrowUp,
@@ -61,4 +59,11 @@
       order: 1;
     }
   }
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 12px 36px;
+  flex-wrap: wrap;
 }

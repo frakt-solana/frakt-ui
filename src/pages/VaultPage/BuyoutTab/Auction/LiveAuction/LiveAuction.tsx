@@ -1,6 +1,8 @@
 import { FC } from 'react';
-import styles from './styles.module.scss';
+import { Form } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
+
+import styles from './styles.module.scss';
 import { useWalletModal } from '../../../../../contexts/WalletModal';
 import { BidHistory } from '../../../../../components/BidHistory';
 import { AuctionCountdown } from '../../../../../components/AuctionCountdown';
@@ -12,25 +14,13 @@ import Button from '../../../../../components/Button';
 import { VaultData } from '../../../../../contexts/fraktion';
 import fraktionConfig from '../../../../../contexts/fraktion/config';
 import { useAuction } from '../../../../../contexts/auction';
-import { Form } from 'antd';
+import { calculateMinBid } from './helpers';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import Tooltip from '../../../../../components/Tooltip';
 
 interface LiveAuctionProps {
   vaultInfo: VaultData;
 }
-
-const calculateMinBid = (vaultInfo: VaultData) => {
-  const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
-  const winningBid = vaultInfo.auction.bids.find(
-    (el) => (el as any).bidPubkey === winningBidPubKey,
-  );
-  const supply = vaultInfo.fractionsSupply.toNumber();
-
-  const nextBidAmount =
-    winningBid.bidAmountPerShare.toNumber() * supply +
-    vaultInfo.auction.auction.tickSize.toNumber();
-  const minPerShare = Math.ceil(nextBidAmount / supply);
-  return (minPerShare * supply) / 1e9;
-};
 
 export const LiveAuction: FC<LiveAuctionProps> = ({ vaultInfo }) => {
   const { setVisible: setWalletModalVisibility } = useWalletModal();
@@ -51,6 +41,16 @@ export const LiveAuction: FC<LiveAuctionProps> = ({ vaultInfo }) => {
     <div>
       <div className={styles.container}>
         <AuctionCountdown endTime={vaultInfo.auction.auction.endingAt} />
+        <Tooltip
+          placement="bottom"
+          trigger="hover"
+          overlay="Bids made during last day of auction extend auction by 12 hours"
+        >
+          <QuestionCircleOutlined
+            size={4}
+            className={styles.endingTooltipIcon}
+          />
+        </Tooltip>
       </div>
       <BidHistory
         refundBid={(bidPubKey) => refundBid(vaultInfo, bidPubKey)}

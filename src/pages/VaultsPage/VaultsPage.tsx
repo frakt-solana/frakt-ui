@@ -1,21 +1,16 @@
 import { useState, useMemo } from 'react';
 
-import VaultCard from '../../components/VaultCard';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
-import FakeInfinityScroll, {
-  useFakeInfinityScroll,
-} from '../../components/FakeInfinityScroll/FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import { VaultState, useFraktion } from '../../contexts/fraktion';
-import { NavLink } from 'react-router-dom';
-import { URLS } from '../../constants';
 import { useForm } from 'react-hook-form';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
+import { VaultsList } from '../../components/VaultsList';
 
 const SORT_VALUES = [
   {
@@ -42,38 +37,6 @@ const SORT_VALUES = [
     ),
     value: 'fractionsSupply_asc',
   },
-  // {
-  //   label: (
-  //     <span>
-  //       Buyout price <ArrowDownSmallIcon className={styles.arrowUp} />
-  //     </span>
-  //   ),
-  //   value: 'buyoutPrice_asc',
-  // },
-  // {
-  //   label: (
-  //     <span>
-  //       Buyout price <ArrowDownSmallIcon className={styles.arrowDown} />
-  //     </span>
-  //   ),
-  //   value: 'buyoutPrice_desc',
-  // },
-  // {
-  //   label: (
-  //     <span>
-  //       Fraction price <ArrowDownSmallIcon className={styles.arrowUp} />
-  //     </span>
-  //   ),
-  //   value: 'lockedPricePerFraction_asc',
-  // },
-  // {
-  //   label: (
-  //     <span>
-  //       Fraction price <ArrowDownSmallIcon className={styles.arrowDown} />
-  //     </span>
-  //   ),
-  //   value: 'lockedPricePerFraction_desc',
-  // },
 ];
 
 const VaultsPage = (): JSX.Element => {
@@ -98,7 +61,6 @@ const VaultsPage = (): JSX.Element => {
 
   const { loading, vaults: rawVaults } = useFraktion();
   const [searchString, setSearchString] = useState<string>('');
-  const { itemsToShow, next } = useFakeInfinityScroll(9);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
@@ -223,23 +185,7 @@ const VaultsPage = (): JSX.Element => {
             />
           </div>
         </div>
-
-        <FakeInfinityScroll
-          itemsToShow={itemsToShow}
-          next={next}
-          isLoading={loading}
-          wrapperClassName={styles.cards}
-          emptyMessage={'No vaults found'}
-        >
-          {vaults.map((vault) => (
-            <NavLink
-              key={vault.vaultPubkey}
-              to={`${URLS.VAULT}/${vault.vaultPubkey}`}
-            >
-              <VaultCard vaultData={vault} />
-            </NavLink>
-          ))}
-        </FakeInfinityScroll>
+        <VaultsList vaults={vaults} isLoading={loading} />
       </Container>
     </AppLayout>
   );

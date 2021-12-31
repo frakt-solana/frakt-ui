@@ -37,6 +37,9 @@ export const DesktopMenu = (): JSX.Element => {
             Trade
           </a>
         </li>
+        <li>
+          <NavigationLink to={URLS.COLLECTIONS}>Collections</NavigationLink>
+        </li>
         {connected && (
           <li>
             <NavigationLink

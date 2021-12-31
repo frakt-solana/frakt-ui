@@ -1,0 +1,69 @@
+@mixin container {
+  padding: 24px;
+  background-color: var(--black-color);
+  position: relative;
+  z-index: 1;
+}
+
+.cardContainer {
+  padding: 0 10px 10px 0;
+  height: 100%;
+}
+
+.card {
+  height: 100%;
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border: 1px solid var(--gray-color-6);
+    top: 10px;
+    left: 10px;
+  }
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid var(--gray-color-6);
+  color: var(--white-color);
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border-color: var(--accent-color-1);
+  }
+
+  .image {
+    height: 200px;
+    border-bottom: 1px solid var(--gray-color-6);
+    position: relative;
+    background: var(--black-color) no-repeat center;
+    background-size: cover;
+    object-fit: cover;
+  }
+
+  .name {
+    border-bottom: 1px solid var(--gray-color-6);
+    @include container();
+    font: var(--font-subtitle-2);
+    color: var(--white-color);
+  }
+
+  .stats {
+    @include container();
+    display: flex;
+    justify-content: flex-start;
+    gap: 50px;
+    .item {
+      .title {
+        font: var(--font-smallest);
+        text-transform: uppercase;
+        color: var(--gray-color-3);
+      }
+
+      .value {
+        font: var(--font-btn-mid);
+        color: var(--white-color);
+      }
+    }
+  }
+}

@@ -1,34 +1,9 @@
-.content {
-  padding-top: 64px;
-  padding-bottom: 64px;
+.wrapper {
+  width: 100%;
 }
 
 .search {
   margin-bottom: 18px;
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 12px 36px;
-  flex-wrap: wrap;
-}
-
-.filter {
-  width: unset;
-}
-
-.arrowUp,
-.arrowDown {
-  position: relative;
-  top: 2px;
-  path {
-    stroke: var(--white-color);
-  }
-}
-
-.arrowDown {
-  transform: rotate(180deg);
 }
 
 .sortingSelect {
@@ -47,7 +22,7 @@
 
 .filtersWrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 35px;
   gap: 120px;
 

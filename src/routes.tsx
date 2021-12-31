@@ -27,6 +27,8 @@ import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { SwapContextProvider } from './contexts/Swap';
+import CollectionsPage from './pages/CollectionsPage';
+import CollectionPage from './pages/CollectionPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -91,6 +93,16 @@ export const Routes = (): JSX.Element => {
                         exact
                         path={`${URLS.WALLET}/:walletPubkey`}
                         component={(): JSX.Element => <WalletPage />}
+                      />
+                      <Route
+                        exact
+                        path={URLS.COLLECTIONS}
+                        component={(): JSX.Element => <CollectionsPage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.COLLECTION}/:collectionName`}
+                        component={(): JSX.Element => <CollectionPage />}
                       />
                       <Route
                         exact

@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
+import { NavLink } from 'react-router-dom';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -25,11 +26,15 @@ import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
+import { fetchCollectionData } from '../../utils/collections';
+import { getCollectionThumbnailUrl } from '../../utils';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
+  const [currentCollectionInfo, setCurrentCollectionInfo] = useState<any>();
+
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const tokenMap = useTokenMap();
   const vaultData: VaultData = useMemo(() => {
@@ -70,14 +75,24 @@ const VaultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultData]);
 
-  const { nftAttributes, nftDescription, nftImage } =
+  const { nftAttributes, nftDescription, nftImage, nftCollectionName } =
     vaultData?.safetyBoxes.length >= 1
       ? vaultData.safetyBoxes[0]
       : {
           nftAttributes: null,
           nftDescription: null,
           nftImage: null,
+          nftCollectionName: null,
         };
+
+  useEffect(() => {
+    (async () => {
+      const result = await fetchCollectionData(nftCollectionName);
+      if (result) {
+        setCurrentCollectionInfo(result);
+      }
+    })();
+  }, [nftCollectionName]);
 
   //? Set active tab "Buyout" if auction started
   useEffect(() => {
@@ -162,11 +177,31 @@ const VaultPage: FC = () => {
                 vaultData={vaultData}
                 tokerName={tokerName}
               />
-              {!!nftDescription && (
-                <div className={styles.mainInfoWrapper}>
-                  <div className={styles.description}>{nftDescription}</div>
-                </div>
-              )}
+              <div className={styles.mainInfoWrapper}>
+                {currentCollectionInfo && (
+                  <NavLink
+                    to={`${URLS.COLLECTION}/${currentCollectionInfo?.collectionName}`}
+                    className={styles.collectionLink}
+                  >
+                    <div
+                      className={styles.collectionIcon}
+                      style={{
+                        backgroundImage: `url(${getCollectionThumbnailUrl(
+                          currentCollectionInfo?.thumbnailPath,
+                        )})`,
+                      }}
+                    />
+                    <p className={styles.collectionName}>
+                      {currentCollectionInfo?.collectionName}
+                    </p>
+                  </NavLink>
+                )}
+                {!!nftDescription && (
+                  <div className={styles.mainInfoWrapper}>
+                    <div className={styles.description}>{nftDescription}</div>
+                  </div>
+                )}
+              </div>
               {!!nftAttributes?.length && vaultData?.safetyBoxes.length === 1 && (
                 <div className={styles.attributesTable}>
                   {nftAttributes.map(({ trait_type, value }, idx) => (
