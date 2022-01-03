@@ -83,7 +83,8 @@
           margin-bottom: 2px;
           width: 16px;
           height: 16px;
-          background: var(--gray-color-3);
+          background: var(--gray-color-3) no-repeat center;
+          background-size: cover;
           border-radius: 50%;
         }
       }

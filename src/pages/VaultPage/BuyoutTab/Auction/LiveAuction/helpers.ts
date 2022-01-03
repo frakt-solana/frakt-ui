@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { VaultData } from '../../../../../contexts/fraktion';
-import { ENDING_PHASE_DURATION } from './constants';
+import { REGULAR_PHASE_DURATION } from './constants';
 
 const getTickSize = (vaultInfo: VaultData): number => {
   const winningBidPubKey = vaultInfo.auction.auction.currentWinningBidPubkey;
@@ -9,10 +9,13 @@ const getTickSize = (vaultInfo: VaultData): number => {
   );
   const supply = vaultInfo.fractionsSupply.toNumber();
 
-  const tickSize =
-    vaultInfo.auction.auction.endingAt - moment().unix() > ENDING_PHASE_DURATION
-      ? vaultInfo.auction.auction.tickSize.toNumber()
-      : (winningBid.bidAmountPerShare.toNumber() / 50) * supply;
+  const isEndingPhase =
+    vaultInfo.auction.auction.startedAt + REGULAR_PHASE_DURATION <
+    moment().unix();
+
+  const tickSize = isEndingPhase
+    ? (winningBid.bidAmountPerShare.toNumber() / 50) * supply
+    : vaultInfo.auction.auction.tickSize.toNumber();
 
   return tickSize;
 };

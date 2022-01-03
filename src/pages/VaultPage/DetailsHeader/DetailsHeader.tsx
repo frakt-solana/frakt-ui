@@ -67,7 +67,6 @@ export const DetailsHeader = ({
             <img
               className={styles.ownerAvatar}
               src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
-              alt="Owner avatar"
             />
             {nameServiceInfo.domain || shortenAddress(vaultData.authority)}
           </NavLink>

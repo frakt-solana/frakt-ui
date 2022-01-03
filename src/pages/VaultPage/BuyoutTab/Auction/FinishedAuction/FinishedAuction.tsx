@@ -81,13 +81,16 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
             className={styles.redeemImg}
             style={{ backgroundImage: `url(${vaultImg})` }}
           />
-          <Button
-            className={styles.redeemBtn}
-            onClick={redeemNFTValueHandler}
-            type="alternative"
-          >
-            Redeem NFT
-          </Button>
+          <div className={styles.redeemRight}>
+            <Button
+              className={styles.redeemBtn}
+              onClick={redeemNFTValueHandler}
+              type="alternative"
+            >
+              Redeem NFT
+            </Button>
+            <p className={styles.redeemNotice}>*Transaction includes 2% fee</p>
+          </div>
         </div>
       )}
       {loading && <Loader className={styles.loader} />}
