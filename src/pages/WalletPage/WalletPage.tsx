@@ -105,10 +105,13 @@ const WalletPage = (): JSX.Element => {
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Wallet collection</h2>
             <h3 className={styles.description}>
-              <img
+              <div
                 className={styles.ownerAvatar}
-                src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
-                alt="Owner avatar"
+                style={{
+                  backgroundImage: `url(${getOwnerAvatar(
+                    nameServiceInfo.twitterHandle,
+                  )})`,
+                }}
               />
               {nameServiceInfo?.domain
                 ? `${nameServiceInfo?.domain} (${shortenAddress(walletPubkey)})`

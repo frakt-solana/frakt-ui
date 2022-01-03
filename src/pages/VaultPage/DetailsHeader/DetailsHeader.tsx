@@ -62,9 +62,13 @@ export const DetailsHeader = ({
             to={`/wallet/${vaultData.authority}`}
             className={styles.ownerLink}
           >
-            <img
+            <div
               className={styles.ownerAvatar}
-              src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
+              style={{
+                backgroundImage: `url(${getOwnerAvatar(
+                  nameServiceInfo.twitterHandle,
+                )})`,
+              }}
             />
             {nameServiceInfo.domain || shortenAddress(vaultData.authority)}
           </NavLink>
