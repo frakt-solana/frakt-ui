@@ -42,7 +42,7 @@ export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
   };
 
   return (
-    <>
+    <div className={styles.wrapper}>
       <ul className={classNames(styles.nftList, className)}>
         {safetyBoxes.map((nft, index) => (
           <li
@@ -81,7 +81,7 @@ export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
             className={styles.closeModalIcon}
             onClick={() => setIsModal(false)}
           >
-            <CloseModalIcon width={23} />
+            <CloseModalIcon className={styles.closeIcon} />
           </div>
         </div>
         <div className={styles.sliderWrapper}>
@@ -143,6 +143,6 @@ export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
           />
         </div>
       </Modal>
-    </>
+    </div>
   );
 };

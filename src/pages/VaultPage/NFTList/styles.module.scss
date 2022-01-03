@@ -3,6 +3,14 @@
   flex-wrap: wrap;
   gap: 26px;
   margin-top: 50px;
+
+  @media screen and (max-width: 1023px) {
+    gap: 44px;
+  }
+
+  @media screen and (max-width: 767px) {
+    gap: 22px;
+  }
 }
 
 .nftListItem {
@@ -33,6 +41,18 @@
       opacity: .5;
     }
   }
+
+  @media screen and (max-width: 1023px) {
+    max-width: calc(50% - 22px);
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: calc(50% - 11px);
+  }
+
+  @media screen and (max-width: 370px) {
+    max-width: 100%;
+  }
 }
 
 .nftImage {
@@ -53,6 +73,18 @@
     left: 0;
     background: linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
   }
+
+  @media screen and (max-width: 767px) {
+    height: 242px;
+  }
+
+  @media screen and (max-width: 470px) {
+    height: 180px;
+  }
+
+  @media screen and (max-width: 370px) {
+    height: 300px;
+  }
 }
 
 .nftInfoBlock {
@@ -66,6 +98,19 @@
   font: var(--font-btn-mid);
   line-height: 1.25em;
   margin-bottom: 16px;
+  word-break: break-word;
+
+  @media screen and (max-width: 767px) {
+    font-size: 19px;
+  }
+
+  @media screen and (max-width: 470px) {
+    font-size: 15px;
+  }
+
+  @media screen and (max-width: 370px) {
+    font-size: 20px;
+  }
 }
 
 .nftInfoLabel {
@@ -78,6 +123,14 @@
 
 .nftInfoItem {
   font: var(--font-btn-small);
+
+  @media screen and (max-width: 470px) {
+    font-size: 15px;
+  }
+
+  @media screen and (max-width: 370px) {
+    font-size: 17px;
+  }
 }
 
 :global {
@@ -88,6 +141,7 @@
 }
 
 .modal {
+
   :global {
     .ant-modal-content {
       background-color: transparent;
@@ -97,6 +151,15 @@
     .ant-modal-body {
       padding: 0;
     }
+  }
+
+  @media screen and (max-width: 1023px) {
+    width: 343px !important; //there is no way to avoid !important
+    padding-top: 70px !important;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 270px !important; //there is no way to avoid !important
   }
 }
 
@@ -110,12 +173,26 @@
   position: absolute;
   top: -70px;
   right: 0;
+
+  @media screen and (max-width: 1023px) {
+    top: -60px;
+  }
+
+  @media screen and (max-width: 550px) {
+    top: -55px;
+    height: 35px;
+    padding-left: 10px;
+  }
 }
 
 .slideNumber {
   font: var(--font-btn-mid);
   margin-right: 16px;
   margin-top: 5px;
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+  }
 }
 
 .closeModalIcon {
@@ -133,12 +210,33 @@
   &:hover {
     border: 1px solid var(--white-color);
   }
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.closeIcon {
+  width: 23px;
+
+  @media screen and (max-width: 470px) {
+    width: 15px;
+  }
 }
 
 .sliderWrapper {
   padding: 24px;
   background-color: var(--black-color);
   border: 1px solid var(--gray-color-3);
+
+  @media screen and (max-width: 1023px) {
+    max-width: 343px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+  }
 
 
   :global {
@@ -157,6 +255,11 @@
 .slide {
   display: flex;
   gap: 34px;
+
+  @media screen and (max-width: 1023px) {
+    flex-direction: column;
+    gap: 0;
+  }
 }
 
 .slideImage {
@@ -167,10 +270,26 @@
   background-size: cover;
   background-repeat: no-repeat;
   border: 1px solid var(--gray-color-3);
+
+  @media screen and (max-width: 1023px) {
+    width: 343px;
+    height: 343px;
+    border: none;
+    border-bottom: 1px solid var(--gray-color-3);
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 270px;
+    height: 270px;
+  }
 }
 
 .slideInfoBlock {
   flex-grow: 1;
+
+  @media screen and (max-width: 1023px) {
+    padding: 24px;
+  }
 }
 
 .collection {
@@ -271,6 +390,23 @@
     font-variant: initial;
     line-height: 1;
   }
+
+  @media screen and (max-width: 1023px) {
+    position: fixed;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 30px;
+    height: 30px;
+
+    &::after {
+      font-size: 12px;
+    }
+  }
+
+  @media screen and (max-width: 370px) {
+    display: none;
+  }
 }
 
 .sliderNavPrev {
@@ -279,6 +415,14 @@
   &::after {
     content: 'prev';
   }
+
+  @media screen and (max-width: 1023px) {
+    left: calc(50% - 255px);
+  }
+
+  @media screen and (max-width: 550px) {
+    left: calc(50% - 175px);
+  }
 }
 
 .sliderNavNext {
@@ -286,5 +430,13 @@
 
   &::after {
     content: "next";
+  }
+
+  @media screen and (max-width: 1023px) {
+    right: calc(50% - 255px);
+  }
+
+  @media screen and (max-width: 550px) {
+    right: calc(50% - 175px);
   }
 }
