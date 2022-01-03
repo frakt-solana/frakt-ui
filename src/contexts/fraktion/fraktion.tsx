@@ -11,7 +11,7 @@ import {
   redeemRewardsFromShares,
 } from 'fraktionalizer-client-library';
 import BN from 'bn.js';
-import { keyBy } from 'lodash';
+import { includes, keyBy } from 'lodash';
 
 import {
   CreateFraktionalizerResult,
@@ -41,6 +41,12 @@ export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
     await fetch(VAULTS_AND_META_CACHE_URL)
   ).json();
 
+  const githubVerifiedMints = await (
+    await fetch(
+      `https://raw.githubusercontent.com/frakt-solana/verified-mints/main/mints.json`,
+    )
+  ).json();
+
   const hasMarketByMint = markets.reduce((acc, { baseMint }) => {
     return { ...acc, [baseMint]: true };
   }, {});
@@ -61,7 +67,9 @@ export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
     ) => {
       const vault = vaultsMap[vaultPubkey];
       const arweaveMetadata = metadataByMint[nftMint].fetchedMeta;
-      const verification = metadataByMint[nftMint].isVerifiedStatus;
+      const verification =
+        metadataByMint[nftMint].isVerifiedStatus ||
+        includes(githubVerifiedMints, ({ mint }) => mint === nftMint);
 
       if (vault && arweaveMetadata) {
         const { name, description, image, attributes } = arweaveMetadata;

@@ -86,7 +86,7 @@ const exchangeStrategy = async (
   }
 };
 
-const githubStrategy = async (mintPubkey: string) => {
+export const githubStrategy = async (mintPubkey: string) => {
   //raw.githubusercontent.com/frakt-solana/verified-mints/main/mints.json
 
   try {
