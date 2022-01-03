@@ -60,6 +60,7 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
           nftImage: '',
           isNftVerified: false,
         };
+
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
@@ -86,7 +87,6 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             <img
               className={styles.owner__avatar}
               src={getOwnerAvatar(nameServiceInfo.twitterHandle)}
-              alt="Owner avatar"
             />
             {nameServiceInfo.domain || shortenAddress(vaultData.authority)}
           </div>
