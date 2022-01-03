@@ -16,7 +16,10 @@ import { VaultData } from '../../../contexts/fraktion';
 
 interface DetailsHeaderProps {
   vaultData: VaultData;
-  tokerName?: string;
+  tokerName?: {
+    name: string;
+    symbol: string;
+  };
   className?: string;
 }
 
@@ -45,7 +48,8 @@ export const DetailsHeader = ({
   return (
     <div className={classNames(styles.detailsHeader, className)}>
       <h2 className={styles.title}>
-        {nftName} {tokerName ? `($${tokerName})` : ''}
+        {tokerName?.name || 'No Name'}{' '}
+        {tokerName.symbol && `($${tokerName.symbol})`}
       </h2>
       <div className={styles.statusAndOwner}>
         <div className={styles.status}>

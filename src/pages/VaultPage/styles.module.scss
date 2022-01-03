@@ -255,7 +255,7 @@ div.sliderSmall {
 }
 
 .description {
-  padding: 64px 0 32px;
+  padding-bottom: 32px;
   font: var(--font-body-small);
 
   @media screen and (max-width: 1023px) {
@@ -266,7 +266,7 @@ div.sliderSmall {
 
 .collectionLink {
   display: flex;
-  padding: 32px 0 0;
+  padding-bottom: 32px;
 
   &:hover {
     .collectionName {
@@ -276,8 +276,9 @@ div.sliderSmall {
 
   .collectionName {
     color: var(--accent-color-1);
-    font: var(--font-body-small);
     transition: color var(--transition-1);
+    font: var(--font-secondary);
+    border-bottom: 1px solid var(--accent-color-1);
   }
 }
 

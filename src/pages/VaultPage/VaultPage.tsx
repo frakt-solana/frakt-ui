@@ -57,7 +57,7 @@ const VaultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultData]);
 
-  const [tokerName, setTokerName] = useState<string>('');
+  const [tokerName, setTokerName] = useState({ name: '', symbol: '' });
 
   const thumbSliderBreakpoints = {
     300: { slidesPerView: 2.5 },
@@ -72,7 +72,10 @@ const VaultPage: FC = () => {
   useEffect(() => {
     !loading &&
       vaultData &&
-      setTokerName(tokenMap.get(vaultData.fractionMint)?.symbol || '');
+      setTokerName({
+        name: tokenMap.get(vaultData.fractionMint)?.name || '',
+        symbol: tokenMap.get(vaultData.fractionMint)?.symbol || '',
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultData]);
 
@@ -250,7 +253,7 @@ const VaultPage: FC = () => {
                     {tab === 'trade' && (
                       <TradeTab
                         vaultInfo={vaultData}
-                        tokerName={tokerName}
+                        tokerName={tokerName.symbol}
                         vaultMarketAddress={vaultMarket?.address}
                       />
                     )}
