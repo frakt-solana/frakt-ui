@@ -27,14 +27,18 @@ import { NFTList } from './NFTList';
 import { HashLink as AnchorLink } from 'react-router-hash-link';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
-import { fetchCollectionData } from '../../utils/collections';
+import { CollectionData, fetchCollectionData } from '../../utils/collections';
 import { getCollectionThumbnailUrl } from '../../utils';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
-  const [currentCollectionInfo, setCurrentCollectionInfo] = useState<any>();
+  const [currentNftCollectionInfo, setCurrentNftCollectionInfo] =
+    useState<CollectionData>(null);
+  const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
+    CollectionData[]
+  >([]);
 
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const tokenMap = useTokenMap();
@@ -91,12 +95,25 @@ const VaultPage: FC = () => {
 
   useEffect(() => {
     (async () => {
-      const result = await fetchCollectionData(nftCollectionName);
-      if (result) {
-        setCurrentCollectionInfo(result);
+      try {
+        for (let i = 0; i <= vaultData.safetyBoxes.length; i++) {
+          const result = await fetchCollectionData(
+            vaultData.safetyBoxes[i].nftCollectionName,
+          );
+          if (result) {
+            setAllNftsCollectionInfo([...allNftsCollectionInfo, result]);
+          }
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
       }
     })();
-  }, [nftCollectionName]);
+  }, []);
+
+  useEffect(() => {
+    setCurrentNftCollectionInfo(allNftsCollectionInfo[0]);
+  }, [allNftsCollectionInfo]);
 
   //? Set active tab "Buyout" if auction started
   useEffect(() => {
@@ -110,7 +127,11 @@ const VaultPage: FC = () => {
     });
   }, [vaultData, initSlideNftName]);
 
-  const onSlideThumbClick = (nftName, nftIndex) => () => {
+  const onSlideThumbClick = (nftName, nftCollectionName, nftIndex) => () => {
+    const currentSlideCollection = allNftsCollectionInfo.find(
+      (coll) => coll.collectionName === nftCollectionName,
+    );
+    setCurrentNftCollectionInfo(currentSlideCollection);
     setCurrentSlideData({
       nftName,
       nftIndex: nftIndex + 1,
@@ -157,7 +178,11 @@ const VaultPage: FC = () => {
                       {vaultData?.safetyBoxes.map((box, index) => (
                         <SwiperSlide
                           key={box.vaultPubkey}
-                          onClick={onSlideThumbClick(box.nftName, index)}
+                          onClick={onSlideThumbClick(
+                            box.nftName,
+                            box.nftCollectionName,
+                            index,
+                          )}
                         >
                           <div
                             className={styles.slideSmall}
@@ -189,21 +214,21 @@ const VaultPage: FC = () => {
                 tokerName={tokerName}
               />
               <div className={styles.mainInfoWrapper}>
-                {currentCollectionInfo && (
+                {currentNftCollectionInfo && (
                   <NavLink
-                    to={`${URLS.COLLECTION}/${currentCollectionInfo?.collectionName}`}
+                    to={`${URLS.COLLECTION}/${currentNftCollectionInfo?.collectionName}`}
                     className={styles.collectionLink}
                   >
                     <div
                       className={styles.collectionIcon}
                       style={{
                         backgroundImage: `url(${getCollectionThumbnailUrl(
-                          currentCollectionInfo?.thumbnailPath,
+                          currentNftCollectionInfo?.thumbnailPath,
                         )})`,
                       }}
                     />
                     <p className={styles.collectionName}>
-                      {currentCollectionInfo?.collectionName}
+                      {currentNftCollectionInfo?.collectionName}
                     </p>
                   </NavLink>
                 )}
@@ -276,7 +301,10 @@ const VaultPage: FC = () => {
               <span>{vaultData?.safetyBoxes.length}</span>
               NFTs inside the vault
             </h4>
-            <NFTList safetyBoxes={vaultData.safetyBoxes} />
+            <NFTList
+              safetyBoxes={vaultData.safetyBoxes}
+              nftCollections={allNftsCollectionInfo}
+            />
           </section>
         )}
       </Container>

@@ -11,18 +11,36 @@ import 'swiper/modules/pagination/pagination.scss';
 import 'swiper/modules/thumbs/thumbs';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import { CloseModalIcon } from '../../../icons';
+import { CollectionData } from '../../../utils/collections';
+import { NavLink } from 'react-router-dom';
+import { URLS } from '../../../constants';
+import { getCollectionThumbnailUrl } from '../../../utils';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
 interface NFTListProps {
   safetyBoxes: SafetyBoxWithMetadata[];
+  nftCollections: CollectionData[];
   className?: string;
 }
 
-export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
+export const NFTList: FC<NFTListProps> = ({
+  safetyBoxes,
+  nftCollections,
+  className,
+}) => {
   const [isModal, setIsModal] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [swiper, setSwiper] = useState(null);
+
+  const safetyBoxesWithCollectionData: Array<
+    SafetyBoxWithMetadata & { collectionInfo: CollectionData }
+  > = safetyBoxes.map((box) => ({
+    ...box,
+    collectionInfo: nftCollections.find(
+      (coll) => coll.collectionName === box.nftCollectionName,
+    ),
+  }));
 
   const slideTo = (index) => {
     if (swiper) swiper.slideTo(index);
@@ -94,18 +112,30 @@ export const NFTList: FC<NFTListProps> = ({ safetyBoxes, className }) => {
             onSwiper={setSwiper}
             autoHeight={true}
           >
-            {safetyBoxes.map((slide) => (
+            {safetyBoxesWithCollectionData.map((slide) => (
               <SwiperSlide key={slide.nftMint} className={styles.slide}>
                 <div
                   style={{ backgroundImage: `url(${slide.nftImage})` }}
                   className={styles.slideImage}
                 />
                 <div className={styles.slideInfoBlock}>
-                  {/*//TODO need to insert correct link and delete text 'Collection Name'*/}
-                  {!slide.nftCollectionName && (
-                    <p className={styles.collection}>
-                      <a href={'#'}>{slide.nftCollectionName}Collection Name</a>
-                    </p>
+                  {slide.collectionInfo?.collectionName && (
+                    <NavLink
+                      to={`${URLS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
+                      className={styles.collectionLink}
+                    >
+                      <div
+                        className={styles.collectionIcon}
+                        style={{
+                          backgroundImage: `url(${getCollectionThumbnailUrl(
+                            slide.collectionInfo?.thumbnailPath,
+                          )})`,
+                        }}
+                      />
+                      <p className={styles.collectionName}>
+                        {slide.collectionInfo?.collectionName}
+                      </p>
+                    </NavLink>
                   )}
                   <h5 className={styles.nftTitle}>{slide.nftName}</h5>
                   {slide.nftDescription && (
