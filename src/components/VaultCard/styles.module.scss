@@ -3,6 +3,14 @@
   background-color: var(--black-color);
   position: relative;
   z-index: 1;
+
+  @media screen and (max-width: 700px){
+    padding: 18px;
+  }
+
+  @media screen and (max-width: 550px){
+    padding: 11px;
+  }
 }
 
 .cardContainer {
@@ -42,6 +50,17 @@
         font: var(--font-subtitle-2);
         color: var(--white-color);
         margin-bottom: 15px;
+        word-break: break-word;
+        line-height: 1.25em;
+
+        @media screen and (max-width: 700px){
+          font-size: 19px;
+          margin-bottom: 10px;
+        }
+
+        @media screen and (max-width: 550px){
+          font-size: 15px;
+        }
       }
 
       .owner {
@@ -58,6 +77,14 @@
           background-size: cover;
           border-radius: 50%;
         }
+
+        @media screen and (max-width: 700px){
+          font-size: 11px;
+        }
+
+        @media screen and (max-width: 550px){
+          font-size: 9px;
+        }
       }
     }
 
@@ -66,6 +93,14 @@
       display: flex;
       justify-content: space-between;
       gap: 16px;
+
+      @media screen and (max-width: 767px){
+        gap: 10px;
+      }
+
+      @media screen and (max-width: 550px){
+        flex-wrap: wrap;
+      }
 
       .item {
         .title {
@@ -79,6 +114,25 @@
         .value {
           font: var(--font-btn-mid);
           color: var(--white-color);
+        }
+
+        @media screen and (max-width: 767px){
+          .value {
+            font-size: 19px;
+          }
+        }
+
+        @media screen and (max-width: 550px){
+          min-width: 40%;
+
+          .title {
+            max-width: 55px;
+            font-size: 9px;
+          }
+
+          .value {
+            font-size: 15px;
+          }
         }
       }
     }
@@ -94,6 +148,22 @@
   border-bottom: 1px solid var(--gray-color-6);
   position: relative;
   overflow: hidden;
+
+  @media screen and (max-width: 767px){
+    height: 270px;
+  }
+
+  @media screen and (max-width: 550px){
+    height: 200px;
+  }
+
+  @media screen and (max-width: 450px){
+    height: 160px;
+  }
+
+  @media screen and (max-width: 370px){
+    height: 250px;
+  }
 }
 
 .noImg {
@@ -210,20 +280,26 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 15px;
+    height: 100px;
+    padding: 24px;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    background-image: linear-gradient(
-                    0deg,
-                    var(--black-color),
-                    transparent
-    );
+    align-items: flex-end;
+    gap: 8px;
+    background: linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
 
     .badge {
       text-transform: uppercase;
       cursor: default;
+    }
+
+    @media screen and (max-width: 700px){
+      padding: 18px;
+    }
+
+    @media screen and (max-width: 550px){
+      padding: 11px;
+      gap: 5px;
     }
   }
 }

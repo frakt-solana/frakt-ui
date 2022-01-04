@@ -19,7 +19,7 @@ export interface VaultCardProps {
   vaultData: VaultData;
 }
 
-const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
+export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
   const tokenMap = useTokenMap();
   const { connection } = useConnection();
   const [tokerName, setTokerName] = useState({ name: '', symbol: '' });

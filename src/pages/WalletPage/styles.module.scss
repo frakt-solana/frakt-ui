@@ -1,6 +1,10 @@
 .container {
   padding-top: 64px;
   padding-bottom: 64px;
+
+  @media screen and (max-width: 767px) {
+    max-width: 100%;
+  }
 }
 
 .pageHeader {
@@ -50,10 +54,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 30px;
 
   @media screen and (max-width: 767px) {
     margin-top: 20px;
     flex-grow: 1;
+    margin-left: 0;
+    width: 100%;
   }
 }
 
@@ -67,7 +74,7 @@
   cursor: pointer;
   transition: background var(--transition-1), color var(--transition-1);
 
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1023px) {
     background: var(--gray-color-7);
     width: 50%;
   }
@@ -143,11 +150,15 @@
 
 .vaults {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
   gap: 24px;
   align-items: stretch;
 
-  @media screen and (max-width: 440px) {
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(2, minmax(158px, 1fr));
+  }
+
+  @media screen and (max-width: 370px) {
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   }
 }
