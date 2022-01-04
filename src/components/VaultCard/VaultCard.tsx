@@ -28,6 +28,11 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
     useNameServiceInfo();
   const currency =
     vaultData.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
+  const sortedSafetyBoxes = vaultData?.safetyBoxes.sort((a, b) => {
+    if (a.nftName > b.nftName) return 1;
+    if (a.nftName < b.nftName) return -1;
+    return 0;
+  });
 
   useEffect(() => {
     setTokerName({
@@ -56,10 +61,10 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
       )
     : null;
 
-  const noImg = !vaultData.safetyBoxes.length;
-  const image1 = vaultData.safetyBoxes[0]?.nftImage;
-  const image2 = vaultData.safetyBoxes[1]?.nftImage;
-  const image3 = vaultData.safetyBoxes[2]?.nftImage;
+  const noImg = !sortedSafetyBoxes.length;
+  const image1 = sortedSafetyBoxes[0]?.nftImage;
+  const image2 = sortedSafetyBoxes[1]?.nftImage;
+  const image3 = sortedSafetyBoxes[2]?.nftImage;
 
   const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
   const lockedPricePerShareNum = +decimalBNToString(
@@ -107,7 +112,7 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             />
           </div>
           <div className={styles.actions}>
-            {vaultData.safetyBoxes[imageHoverIndex]?.isNftVerified ? (
+            {sortedSafetyBoxes[imageHoverIndex]?.isNftVerified ? (
               <VerifiedBadge />
             ) : (
               <UnverifiedBadge />

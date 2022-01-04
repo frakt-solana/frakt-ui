@@ -53,6 +53,11 @@ const VaultPage: FC = () => {
     nftName: '',
     nftIndex: 1,
   });
+  const sortedSafetyBoxes = vaultData?.safetyBoxes.sort((a, b) => {
+    if (a.nftName > b.nftName) return 1;
+    if (a.nftName < b.nftName) return -1;
+    return 0;
+  });
 
   const vaultMarket = useMemo(() => {
     return vaultsMarkets?.find(
@@ -83,22 +88,20 @@ const VaultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultData]);
 
-  const { nftAttributes, nftDescription, nftImage, nftCollectionName } =
+  const { nftAttributes, nftDescription } =
     vaultData?.safetyBoxes.length >= 1
       ? vaultData.safetyBoxes[0]
       : {
           nftAttributes: null,
           nftDescription: null,
-          nftImage: null,
-          nftCollectionName: null,
         };
 
   useEffect(() => {
     (async () => {
       try {
-        for (let i = 0; i <= vaultData.safetyBoxes.length; i++) {
+        for (let i = 0; i <= sortedSafetyBoxes.length; i++) {
           const result = await fetchCollectionData(
-            vaultData.safetyBoxes[i].nftCollectionName,
+            sortedSafetyBoxes[i].nftCollectionName,
           );
           if (result) {
             setAllNftsCollectionInfo([...allNftsCollectionInfo, result]);
@@ -121,11 +124,14 @@ const VaultPage: FC = () => {
       const isAuctionStarted = vaultData.auction.auction?.isStarted;
       isAuctionStarted && setTab('buyout');
     }
+  }, [vaultData]);
+
+  useEffect(() => {
     setCurrentSlideData({
       nftName: initSlideNftName,
       nftIndex: 1,
     });
-  }, [vaultData, initSlideNftName]);
+  }, [vaultData?.safetyBoxes.length]);
 
   const onSlideThumbClick = (nftName, nftCollectionName, nftIndex) => () => {
     const currentSlideCollection = allNftsCollectionInfo.find(
@@ -156,7 +162,7 @@ const VaultPage: FC = () => {
                   className={styles.sliderBig}
                   thumbs={{ swiper: thumbsSwiper }}
                 >
-                  {vaultData?.safetyBoxes.map((box) => (
+                  {sortedSafetyBoxes.map((box) => (
                     <SwiperSlide key={box.vaultPubkey}>
                       <div
                         className={styles.slideBig}
@@ -175,7 +181,7 @@ const VaultPage: FC = () => {
                       scrollbar={{ draggable: true }}
                       onSwiper={setThumbsSwiper}
                     >
-                      {vaultData?.safetyBoxes.map((box, index) => (
+                      {sortedSafetyBoxes.map((box, index) => (
                         <SwiperSlide
                           key={box.vaultPubkey}
                           onClick={onSlideThumbClick(
@@ -194,7 +200,7 @@ const VaultPage: FC = () => {
                     <p className={styles.nftName}>
                       <span>
                         {currentSlideData.nftIndex}/
-                        {vaultData.safetyBoxes.length}
+                        {vaultData?.safetyBoxes.length}
                       </span>
                       {currentSlideData.nftName}
                     </p>
@@ -302,7 +308,7 @@ const VaultPage: FC = () => {
               NFTs inside the vault
             </h4>
             <NFTList
-              safetyBoxes={vaultData.safetyBoxes}
+              safetyBoxes={sortedSafetyBoxes}
               nftCollections={allNftsCollectionInfo}
             />
           </section>
