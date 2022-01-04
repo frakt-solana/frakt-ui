@@ -55,7 +55,7 @@ const VaultPage: FC = () => {
   });
 
   const vaultMarket = useMemo(() => {
-    return vaultsMarkets.find(
+    return vaultsMarkets?.find(
       ({ baseMint }) => baseMint === vaultData.fractionMint,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -48,7 +48,7 @@ export const DetailsHeader = ({
   return (
     <div className={classNames(styles.detailsHeader, className)}>
       <h2 className={styles.title}>
-        {tokerName?.name || 'No Name'}{' '}
+        {tokerName?.name || `Vault #${vaultData.createdAt}`}{' '}
         {tokerName.symbol && `($${tokerName.symbol})`}
       </h2>
       <div className={styles.statusAndOwner}>

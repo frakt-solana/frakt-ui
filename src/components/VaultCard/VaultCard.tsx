@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 
 import Badge, {
@@ -22,14 +22,18 @@ export interface VaultCardProps {
 const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
   const tokenMap = useTokenMap();
   const { connection } = useConnection();
-  const [tokerName, setTokerName] = useState<string>('');
+  const [tokerName, setTokerName] = useState({ name: '', symbol: '' });
+  const [imageHoverIndex, setImageHoverIndex] = useState<number>(0);
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
   const currency =
     vaultData.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   useEffect(() => {
-    setTokerName(tokenMap.get(vaultData.fractionMint)?.symbol || '');
+    setTokerName({
+      name: tokenMap.get(vaultData.fractionMint)?.name || '',
+      symbol: tokenMap.get(vaultData.fractionMint)?.symbol || '',
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap]);
 
@@ -52,29 +56,62 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
       )
     : null;
 
-  const { nftName, nftImage, isNftVerified } =
-    vaultData.safetyBoxes.length >= 1
-      ? vaultData.safetyBoxes[0]
-      : {
-          nftName: '',
-          nftImage: '',
-          isNftVerified: false,
-        };
+  const noImg = !vaultData.safetyBoxes.length;
+  const image1 = vaultData.safetyBoxes[0]?.nftImage;
+  const image2 = vaultData.safetyBoxes[1]?.nftImage;
+  const image3 = vaultData.safetyBoxes[2]?.nftImage;
 
   const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
   const lockedPricePerShareNum = +decimalBNToString(
     vaultData.lockedPricePerShare,
   );
 
+  const onImageMouseEnter = (imageNumberIndex) => () => {
+    setImageHoverIndex(imageNumberIndex);
+  };
+  const onImageMouseLeave = () => () => {
+    setImageHoverIndex(0);
+  };
+
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
-        <div
-          className={classNames(styles.image, { [styles.noImg]: !nftImage })}
-          style={{ backgroundImage: `url(${nftImage})` }}
-        >
+        <div className={styles.mainAppearance}>
+          <div
+            className={classNames(
+              styles.imageWrapper,
+              styles[`imageHovered${imageHoverIndex}`],
+              {
+                [styles.noImg]: noImg,
+                [styles.has1Img]: !!image1,
+                [styles.has2Img]: !!image2,
+                [styles.has3Img]: !!image3,
+              },
+            )}
+          >
+            <div
+              style={{ backgroundImage: `url(${image1})` }}
+              className={styles.vaultImage}
+            />
+            <div
+              style={{ backgroundImage: `url(${image2})` }}
+              className={styles.vaultImage}
+              onMouseEnter={onImageMouseEnter(1)}
+              onMouseLeave={onImageMouseLeave()}
+            />
+            <div
+              style={{ backgroundImage: `url(${image3})` }}
+              className={styles.vaultImage}
+              onMouseEnter={onImageMouseEnter(2)}
+              onMouseLeave={onImageMouseLeave()}
+            />
+          </div>
           <div className={styles.actions}>
-            {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
+            {vaultData.safetyBoxes[imageHoverIndex]?.isNftVerified ? (
+              <VerifiedBadge />
+            ) : (
+              <UnverifiedBadge />
+            )}
             <Badge
               label={VAULT_BADGES_BY_STATE[vaultData.state]}
               className={styles.badge}
@@ -86,7 +123,8 @@ const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
         </div>
         <div className={styles.nameContainer}>
           <div className={styles.name}>
-            {nftName} {tokerName ? `($${tokerName})` : ''}
+            {tokerName?.name || `Vault #${vaultData.createdAt}`}{' '}
+            {tokerName.symbol && `($${tokerName.symbol})`}
           </div>
           <div className={styles.owner}>
             <img
