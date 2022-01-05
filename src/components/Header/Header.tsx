@@ -43,16 +43,21 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
             </a>
           </li>
           {connected && (
-            <li>
-              <NavigationLink
-                to={`${URLS.WALLET}/${publicKey.toString()}`}
-                isActive={(_, location) =>
-                  location?.pathname?.includes(publicKey.toString()) || false
-                }
-              >
-                My collection
-              </NavigationLink>
-            </li>
+            <>
+              <li>
+                <NavigationLink
+                  to={`${URLS.WALLET}/${publicKey.toString()}`}
+                  isActive={(_, location) =>
+                    location?.pathname?.includes(publicKey.toString()) || false
+                  }
+                >
+                  My collection
+                </NavigationLink>
+              </li>
+              <li>
+                <NavigationLink to={URLS.LIQUIDITY}>Liquidity</NavigationLink>
+              </li>
+            </>
           )}
         </ul>
         <ul className={styles.navigation}>

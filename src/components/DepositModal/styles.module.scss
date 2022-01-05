@@ -1,0 +1,156 @@
+.depositModal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.subtitle {
+  color: var(--white-color);
+  font: var(--font-btn-small);
+}
+
+.input {
+  font-family: Inter;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  &::placeholder {
+    color: var(--white-color) !important;
+  }
+}
+
+.questionIcon {
+  margin-left: 5px;
+  svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--accent-color-1);
+  }
+}
+
+.refreshIcon {
+  background: var(--accent-color-1);
+  border-radius: 2px;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+}
+
+.depositContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #191919;
+  border-radius: 10px;
+  max-width: 327px;
+  margin: 30px 0;
+  padding: 20px;
+
+  .depositInfo {
+    color: var(--white-color);
+    display: flex;
+    gap: 30px;
+  }
+
+  .value {
+    font: var(--font-subtitle-2);
+
+    span {
+      font: var(--font-secondary);
+      text-transform: uppercase;
+    }
+  }
+}
+
+.link {
+  cursor: pointer;
+  color: var(--accent-color-1);
+  margin-top: 10px;
+  font: var(--font-btn-small);
+}
+
+.swap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.swapInputWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
+
+  .input {
+    width: 293px;
+  }
+
+  .token {
+    display: flex;
+    gap: 10px;
+  }
+
+  .tokenName {
+    color: var(--white-color);
+    font: var(--font-subtitle);
+  }
+
+  .tokenIcon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.totalInputWrapper {
+  width: 100%;
+}
+
+.verify {
+  display: flex;
+  gap: 10px;
+
+  .text {
+    color: var(--white-color);
+    font: var(--font-smallest);
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.depositBtn {
+  justify-content: center;
+  padding: 12px 0;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.refresh {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0;
+}
+
+.totalLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  width: 100%;
+
+  .title {
+    color: #4d4d4d;
+    font: var(--font-secondary);
+    text-transform: uppercase;
+  }
+
+  .line {
+    background: #4d4d4d;
+    height: 1px;
+    width: 100%;
+  }
+}
