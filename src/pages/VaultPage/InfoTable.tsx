@@ -2,7 +2,11 @@ import BN from 'bn.js';
 import { shortenAddress } from '../../utils/solanaUtils';
 import fraktionConfig from '../../contexts/fraktion/config';
 import styles from './styles.module.scss';
-import { copyToClipboard, decimalBNToString } from '../../utils';
+import {
+  copyToClipboard,
+  decimalBNToString,
+  getOwnersByLimit,
+} from '../../utils';
 import { VaultData } from '../../contexts/fraktion';
 import CopyClipboardIcon from '../../icons/CopyClipboardIcon';
 import classNames from 'classnames';
@@ -131,7 +135,7 @@ export const InfoTable = ({
               styles.infoTable__cellValueCopy,
             )}
           >
-            {owners.data.length < 20 ? owners.data.length : owners.total}
+            {getOwnersByLimit(owners)}
           </p>
         </div>
       )}

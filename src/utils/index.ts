@@ -3,6 +3,7 @@ import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
 
 import { formatNumber, Notify } from './solanaUtils';
+import { OwnersToken } from './registerToken';
 
 export const notify: Notify = ({
   message = '',
@@ -120,4 +121,8 @@ export const copyToClipboard = (value: string): void => {
     message: 'Copied to clipboard',
     type: 'success',
   });
+};
+
+export const getOwnersByLimit = ({ data, total }: OwnersToken): number => {
+  return data.length < 20 ? data.length : total;
 };
