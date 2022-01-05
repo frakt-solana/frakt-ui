@@ -17,6 +17,7 @@ import {
 } from '../../../../components/TokenField';
 
 interface DetailsProps {
+  isBasket: boolean;
   vaultName?: string;
   onSubmit?: (values: FormValues) => void;
   isAuction: boolean;
@@ -49,6 +50,7 @@ const calculatePricePerFraktion = (
 };
 
 export const DetailsForm: React.FC<DetailsProps> = ({
+  isBasket,
   vaultName,
   isAuction,
   onSubmit,
@@ -90,16 +92,22 @@ export const DetailsForm: React.FC<DetailsProps> = ({
         >
           <p className={styles.detailsTitle}>Vault details</p>
           <div className={styles.fieldWrapper}>
-            <Form.Item
-              rules={[{ validator: validators.backetName(tokenList) }]}
-              label="Basket name"
-              name="basketName"
-              help=""
-            >
-              <Input placeholder="Coolest basket" />
-            </Form.Item>
-            <p className={styles.fieldLabel}>Name</p>
-            <p className={styles.tokenName}>{vaultName}</p>
+            {isBasket && (
+              <Form.Item
+                rules={[{ validator: validators.backetName(tokenList) }]}
+                label="Basket name"
+                name="basketName"
+                help=""
+              >
+                <Input placeholder="Coolest basket" />
+              </Form.Item>
+            )}
+            {!isBasket && (
+              <div className={styles.nftNameTitle}>
+                <p className={styles.fieldLabel}>Name</p>
+                <p className={styles.tokenName}>{vaultName}</p>
+              </div>
+            )}
           </div>
           <div className={styles.fieldWrapperDouble}>
             <Form.Item

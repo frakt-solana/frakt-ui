@@ -64,6 +64,7 @@ const Sidebar = ({
         { [styles.mobileSidebar]: isMobileSidebar },
       ])}
     >
+      <div className={styles.overflow} onClick={changeSidebarVisibility} />
       {!!(nfts.length + lockedNFT.length) && (
         <div
           className={styles.selectedVaults}
@@ -96,6 +97,7 @@ const Sidebar = ({
         </div>
         {!isSidebarClosed && (
           <DetailsForm
+            isBasket={isBasket}
             vaultName={nfts[0]?.metadata?.name}
             isAuction={isAuction}
             onSubmit={({

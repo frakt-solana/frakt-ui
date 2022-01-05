@@ -21,8 +21,8 @@ interface HeaderProps {
 }
 
 const sliderBreakpoints = {
-  300: { slidesPerView: 3 },
-  450: { slidesPerView: 3.6 },
+  250: { slidesPerView: 3 },
+  320: { slidesPerView: 3.6 },
   1450: { slidesPerView: 4 },
 };
 
