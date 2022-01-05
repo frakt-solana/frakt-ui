@@ -63,7 +63,7 @@ export const fetchOwnersToken = async (
 ): Promise<OwnersToken> => {
   try {
     const res = await fetch(
-      `https://public-api.solscan.io/token/holders?tokenAddress=${fractionTokenMint}&offset=0&limit=10`,
+      `https://public-api.solscan.io/token/holders?tokenAddress=${fractionTokenMint}&offset=0&limit=20`,
     );
 
     const data = await res.json();

@@ -131,7 +131,7 @@ export const InfoTable = ({
               styles.infoTable__cellValueCopy,
             )}
           >
-            {owners.total}
+            {owners.data.length < 20 ? owners.data.length : owners.total}
           </p>
         </div>
       )}
