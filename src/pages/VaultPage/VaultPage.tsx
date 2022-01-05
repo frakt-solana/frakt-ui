@@ -24,11 +24,11 @@ import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import NavigationLink from '../../components/Header/NavigationLink';
 import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
+import { CollectionData, fetchCollectionData } from '../../utils/collections';
+import { getCollectionThumbnailUrl } from '../../utils';
 import { HashLink as AnchorLink } from 'react-router-hash-link';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
-import { CollectionData, fetchCollectionData } from '../../utils/collections';
-import { getCollectionThumbnailUrl } from '../../utils';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
