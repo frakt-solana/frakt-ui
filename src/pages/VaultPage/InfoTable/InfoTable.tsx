@@ -7,6 +7,7 @@ import { VaultData } from '../../../contexts/fraktion';
 import CopyClipboardIcon from '../../../icons/CopyClipboardIcon';
 import classNames from 'classnames';
 import Tooltip from '../../../components/Tooltip';
+import { useVaultTokenHoldersAmount } from '../../../utils/fraktionOwners';
 
 export const InfoTable = ({
   vaultInfo,
@@ -21,6 +22,10 @@ export const InfoTable = ({
   //TODO: Finish for baskets
   const nftMint =
     vaultInfo.safetyBoxes.length === 1 ? vaultInfo.safetyBoxes[0].nftMint : '';
+
+  const { amount: holdersAmount } = useVaultTokenHoldersAmount(
+    vaultInfo?.fractionMint,
+  );
 
   return (
     <div className={styles.infoTable}>
@@ -121,6 +126,12 @@ export const InfoTable = ({
               <CopyClipboardIcon className={styles.copyIcon} width={24} />
             </Tooltip>
           </p>
+        </div>
+      )}
+      {holdersAmount && (
+        <div className={styles.infoTable__cell}>
+          <p className={styles.infoTable__cellName}>Owners</p>
+          <p className={styles.infoTable__cellValue}>{holdersAmount}</p>
         </div>
       )}
     </div>
