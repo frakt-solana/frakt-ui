@@ -163,27 +163,34 @@ export const transformToSafetyBoxesWithMetadata = (
   safetyBoxes: SafetyBox[] = [],
   metadataByNftMint: Dictionary<NftMetadata> = {},
 ): SafetyBoxWithMetadata[] =>
-  safetyBoxes.map((safetyBox: SafetyBox): SafetyBoxWithMetadata => {
-    const { nftMint } = safetyBox;
-    const {
-      nftName,
-      nftDescription,
-      nftImage,
-      nftAttributes,
-      isNftVerified,
-      nftCollectionName,
-    } = metadataByNftMint[nftMint];
+  safetyBoxes
+    .map((safetyBox: SafetyBox): SafetyBoxWithMetadata => {
+      const { nftMint } = safetyBox;
 
-    return {
-      ...safetyBox,
-      nftName,
-      nftDescription,
-      nftImage,
-      nftAttributes,
-      isNftVerified,
-      nftCollectionName,
-    };
-  });
+      if (!metadataByNftMint[nftMint]) {
+        return null;
+      }
+
+      const {
+        nftName,
+        nftDescription,
+        nftImage,
+        nftAttributes,
+        isNftVerified,
+        nftCollectionName,
+      } = metadataByNftMint[nftMint];
+
+      return {
+        ...safetyBox,
+        nftName,
+        nftDescription,
+        nftImage,
+        nftAttributes,
+        isNftVerified,
+        nftCollectionName,
+      };
+    })
+    .filter((safetyBoxWithMetadata) => !!safetyBoxWithMetadata);
 
 //? Needs because if auction's time finished but any redeem doesn't happened than Vault state will be VaultState.AuctionLive
 export const getVaultRealState = (

@@ -3,7 +3,7 @@ import { TokenHoldersInfo } from './fraktionOwners.model';
 export const fetchVaultTokenHolders = async (
   fractionMint: string,
   offset = 0,
-  limit = 10,
+  limit = 20,
 ): Promise<TokenHoldersInfo | null> => {
   try {
     const data = await (
@@ -23,10 +23,23 @@ export const fetchVaultTokenHolders = async (
 export const fetchVaultTokenHoldersAmount = async (
   fractionMint: string,
 ): Promise<number> => {
-  try {
-    const vaultTokenHolders = await fetchVaultTokenHolders(fractionMint);
+  const LIMIT = 20;
 
-    return vaultTokenHolders ? vaultTokenHolders.total : 0;
+  try {
+    const vaultTokenHolders = await fetchVaultTokenHolders(
+      fractionMint,
+      0,
+      LIMIT,
+    );
+
+    //? SHIT because an error in solscan api
+    if (vaultTokenHolders) {
+      return vaultTokenHolders.data.length < LIMIT
+        ? vaultTokenHolders.data.length
+        : vaultTokenHolders.total;
+    }
+
+    return 0;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);
