@@ -68,7 +68,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
   const numberOfNft =
     vaultData.safetyBoxes.length > 1
       ? `${vaultData.safetyBoxes.length} NFTs`
-      : `1 NFT`;
+      : `${vaultData.safetyBoxes.length} NFT`;
 
   const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
   const lockedPricePerShareNum = +decimalBNToString(
