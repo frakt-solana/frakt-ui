@@ -127,7 +127,7 @@ export const InfoTable = ({
           </p>
         </div>
       )}
-      {holdersAmount && (
+      {!!holdersAmount && (
         <div className={styles.infoTable__cell}>
           <p className={styles.infoTable__cellName}>Owners</p>
           <p className={styles.infoTable__cellValue}>{holdersAmount}</p>
