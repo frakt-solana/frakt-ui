@@ -65,6 +65,10 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
   const image1 = sortedSafetyBoxes[0]?.nftImage;
   const image2 = sortedSafetyBoxes[1]?.nftImage;
   const image3 = sortedSafetyBoxes[2]?.nftImage;
+  const numberOfNft =
+    vaultData.safetyBoxes.length > 1
+      ? `${vaultData.safetyBoxes.length} NFTs`
+      : `1 NFT`;
 
   const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
   const lockedPricePerShareNum = +decimalBNToString(
@@ -124,6 +128,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             {vaultData.hasMarket && (
               <Badge label="Tradable" className={styles.badge} />
             )}
+            <Badge label={numberOfNft} className={styles.badge} />
           </div>
         </div>
         <div className={styles.nameContainer}>

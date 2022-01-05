@@ -291,6 +291,10 @@
     .badge {
       text-transform: uppercase;
       cursor: default;
+
+      &:last-of-type {
+        text-transform: none;
+      }
     }
 
     @media screen and (max-width: 700px){
