@@ -16,7 +16,7 @@ import { VaultData } from '../../../contexts/fraktion';
 
 interface DetailsHeaderProps {
   vaultData: VaultData;
-  tokerName?: {
+  vaultTitleData?: {
     name: string;
     symbol: string;
   };
@@ -26,7 +26,7 @@ interface DetailsHeaderProps {
 export const DetailsHeader = ({
   className = '',
   vaultData,
-  tokerName,
+  vaultTitleData,
 }: DetailsHeaderProps): JSX.Element => {
   const { connection } = useConnection();
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
@@ -38,22 +38,19 @@ export const DetailsHeader = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultData?.authority]);
 
-  const { nftName, isNftVerified } =
-    vaultData.safetyBoxes.length >= 1
-      ? vaultData.safetyBoxes[0]
-      : {
-          nftName: '',
-          isNftVerified: false,
-        };
   return (
     <div className={classNames(styles.detailsHeader, className)}>
       <h2 className={styles.title}>
-        {tokerName?.name || `Vault #${vaultData.createdAt}`}{' '}
-        {tokerName.symbol && `($${tokerName.symbol})`}
+        {vaultTitleData?.name || `Vault #${vaultData.createdAt}`}{' '}
+        {vaultTitleData.symbol && `($${vaultTitleData.symbol})`}
       </h2>
       <div className={styles.statusAndOwner}>
         <div className={styles.status}>
-          {isNftVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
+          {vaultData.safetyBoxes[0]?.isNftVerified ? (
+            <VerifiedBadge />
+          ) : (
+            <UnverifiedBadge />
+          )}
           <Badge
             label={VAULT_BADGES_BY_STATE[vaultData.state]}
             className={styles.badge}

@@ -66,7 +66,10 @@ const VaultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultData]);
 
-  const [tokerName, setTokerName] = useState({ name: '', symbol: '' });
+  const [vaultTitleData, setVaultTitleData] = useState<{
+    name: string;
+    symbol: string;
+  }>({ name: '', symbol: '' });
 
   const thumbSliderBreakpoints = {
     300: { slidesPerView: 2.5 },
@@ -81,7 +84,7 @@ const VaultPage: FC = () => {
   useEffect(() => {
     !loading &&
       vaultData &&
-      setTokerName({
+      setVaultTitleData({
         name: tokenMap.get(vaultData.fractionMint)?.name || '',
         symbol: tokenMap.get(vaultData.fractionMint)?.symbol || '',
       });
@@ -217,7 +220,7 @@ const VaultPage: FC = () => {
               <DetailsHeader
                 className={styles.detailsHeaderMobile}
                 vaultData={vaultData}
-                tokerName={tokerName}
+                vaultTitleData={vaultTitleData}
               />
               <div className={styles.mainInfoWrapper}>
                 {currentNftCollectionInfo && (
@@ -259,7 +262,7 @@ const VaultPage: FC = () => {
               <DetailsHeader
                 className={styles.detailsHeaderDesc}
                 vaultData={vaultData}
-                tokerName={tokerName}
+                vaultTitleData={vaultTitleData}
               />
               {vaultData.state === VaultState.Inactive && (
                 <div className={styles.btnItem}>
@@ -284,7 +287,7 @@ const VaultPage: FC = () => {
                     {tab === 'trade' && (
                       <TradeTab
                         vaultInfo={vaultData}
-                        tokerName={tokerName.symbol}
+                        tokerName={vaultTitleData.symbol}
                         vaultMarketAddress={vaultMarket?.address}
                       />
                     )}
