@@ -22,20 +22,21 @@ export interface VaultCardProps {
 export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
   const tokenMap = useTokenMap();
   const { connection } = useConnection();
-  const [tokerName, setTokerName] = useState({ name: '', symbol: '' });
+  const [vaultTitleData, setVaultTitleData] = useState<{
+    name: string;
+    symbol: string;
+  }>({ name: '', symbol: '' });
   const [imageHoverIndex, setImageHoverIndex] = useState<number>(0);
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
   const currency =
     vaultData.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
   const sortedSafetyBoxes = vaultData?.safetyBoxes.sort((a, b) => {
-    if (a.nftName > b.nftName) return 1;
-    if (a.nftName < b.nftName) return -1;
-    return 0;
+    return a.nftName.localeCompare(b.nftName);
   });
 
   useEffect(() => {
-    setTokerName({
+    setVaultTitleData({
       name: tokenMap.get(vaultData.fractionMint)?.name || '',
       symbol: tokenMap.get(vaultData.fractionMint)?.symbol || '',
     });
@@ -116,7 +117,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             />
           </div>
           <div className={styles.actions}>
-            {sortedSafetyBoxes[imageHoverIndex]?.isNftVerified ? (
+            {sortedSafetyBoxes[0]?.isNftVerified ? (
               <VerifiedBadge />
             ) : (
               <UnverifiedBadge />
@@ -133,8 +134,10 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
         </div>
         <div className={styles.nameContainer}>
           <div className={styles.name}>
-            {tokerName?.name || `Vault #${vaultData.createdAt}`}{' '}
-            {tokerName.symbol && `($${tokerName.symbol})`}
+            {vaultData.safetyBoxes.length === 1
+              ? vaultData.safetyBoxes[0]?.nftName
+              : vaultTitleData?.name || `Vault #${vaultData.createdAt}`}{' '}
+            {vaultTitleData.symbol && `($${vaultTitleData.symbol})`}
           </div>
           <div className={styles.owner}>
             <img
