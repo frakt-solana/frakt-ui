@@ -42,7 +42,11 @@ export const AuctionCountdown = ({
         <CountdownIcon />
       </li>
       <li className={styles.timeItem}>
-        {formatDateUnit(timeDifference.hours() + timeDifference.days() * 24)}
+        {formatDateUnit(timeDifference.days())}
+        <span>Days</span>
+      </li>
+      <li className={styles.timeItem}>
+        {formatDateUnit(timeDifference.hours())}
         <span>Hours</span>
       </li>
       <li className={styles.timeItem}>
