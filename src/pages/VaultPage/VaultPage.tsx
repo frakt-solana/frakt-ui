@@ -104,7 +104,7 @@ const VaultPage: FC = () => {
       try {
         for (let i = 0; i <= sortedSafetyBoxes.length; i++) {
           const result = await fetchCollectionData(
-            sortedSafetyBoxes[i].nftCollectionName,
+            sortedSafetyBoxes[i]?.nftCollectionName,
           );
           if (result) {
             setAllNftsCollectionInfo([...allNftsCollectionInfo, result]);

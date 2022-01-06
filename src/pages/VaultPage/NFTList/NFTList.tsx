@@ -29,7 +29,7 @@ export const NFTList: FC<NFTListProps> = ({
   nftCollections,
   className,
 }) => {
-  const [isModal, setIsModal] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [swiper, setSwiper] = useState(null);
 
@@ -50,7 +50,7 @@ export const NFTList: FC<NFTListProps> = ({
   const nextBtn = useRef<HTMLDivElement>(null);
 
   const onNftItemClick = (index) => () => {
-    setIsModal(true);
+    setIsModalVisible(true);
     setCurrentSlide(index);
     slideTo(index);
   };
@@ -83,13 +83,13 @@ export const NFTList: FC<NFTListProps> = ({
         ))}
       </ul>
       <Modal
-        visible={isModal}
+        visible={isModalVisible}
         className={styles.modal}
         width={820}
         footer={false}
         closable={false}
         centered
-        onCancel={() => setIsModal(false)}
+        onCancel={() => setIsModalVisible(false)}
       >
         <div className={styles.closeModalSection}>
           <span className={styles.slideNumber}>
@@ -97,7 +97,7 @@ export const NFTList: FC<NFTListProps> = ({
           </span>
           <div
             className={styles.closeModalIcon}
-            onClick={() => setIsModal(false)}
+            onClick={() => setIsModalVisible(false)}
           >
             <CloseModalIcon className={styles.closeIcon} />
           </div>

@@ -68,25 +68,27 @@ export const InfoTable = ({
           )}
         </p>
       </div>
-      <div className={styles.infoTable__cell}>
-        <p className={styles.infoTable__cellName}>NFT mint</p>
-        <p
-          className={classNames(
-            styles.infoTable__cellValue,
-            styles.infoTable__cellValueCopy,
-          )}
-          onClick={() => copyToClipboard(nftMint)}
-        >
-          {shortenAddress(nftMint)}
-          <Tooltip
-            placement="bottom"
-            trigger="hover"
-            overlay="Click to copy to clipboard"
+      {vaultInfo.safetyBoxes.length === 1 && (
+        <div className={styles.infoTable__cell}>
+          <p className={styles.infoTable__cellName}>NFT mint</p>
+          <p
+            className={classNames(
+              styles.infoTable__cellValue,
+              styles.infoTable__cellValueCopy,
+            )}
+            onClick={() => copyToClipboard(nftMint)}
           >
-            <CopyClipboardIcon className={styles.copyIcon} width={24} />
-          </Tooltip>
-        </p>
-      </div>
+            {shortenAddress(nftMint)}
+            <Tooltip
+              placement="bottom"
+              trigger="hover"
+              overlay="Click to copy to clipboard"
+            >
+              <CopyClipboardIcon className={styles.copyIcon} width={24} />
+            </Tooltip>
+          </p>
+        </div>
+      )}
       <div className={styles.infoTable__cell}>
         <p className={styles.infoTable__cellName}>Fractions mint</p>
         <p
