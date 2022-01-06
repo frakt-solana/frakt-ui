@@ -92,22 +92,14 @@ export const DetailsForm: React.FC<DetailsProps> = ({
         >
           <p className={styles.detailsTitle}>Vault details</p>
           <div className={styles.fieldWrapper}>
-            {isBasket && (
-              <Form.Item
-                rules={[{ validator: validators.backetName(tokenList) }]}
-                label="Basket name"
-                name="basketName"
-                help=""
-              >
-                <Input placeholder="Coolest basket" />
-              </Form.Item>
-            )}
-            {!isBasket && (
-              <div className={styles.nftNameTitle}>
-                <p className={styles.fieldLabel}>Name</p>
-                <p className={styles.tokenName}>{vaultName}</p>
-              </div>
-            )}
+            <Form.Item
+              rules={[{ validator: validators.backetName(tokenList) }]}
+              label="Basket name"
+              name="basketName"
+              help=""
+            >
+              <Input placeholder="Coolest basket" />
+            </Form.Item>
           </div>
           <div className={styles.fieldWrapperDouble}>
             <Form.Item
