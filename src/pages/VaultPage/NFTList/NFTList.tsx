@@ -65,7 +65,7 @@ export const NFTList: FC<NFTListProps> = ({
         {safetyBoxes.map((nft, index) => (
           <li
             className={styles.nftListItem}
-            key={nft.vaultPubkey}
+            key={nft.nftMint}
             onClick={onNftItemClick(index)}
           >
             <div

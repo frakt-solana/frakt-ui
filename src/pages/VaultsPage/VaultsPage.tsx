@@ -70,7 +70,6 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     return rawVaults
       .filter(({ state, hasMarket, safetyBoxes }) => {
-        //TODO: finish for baskets
         const { nftName, isNftVerified } =
           safetyBoxes.length >= 1
             ? safetyBoxes[0]

@@ -47,9 +47,13 @@ const VaultPage: FC = () => {
     nftName: '',
     nftIndex: 1,
   });
-  const sortedSafetyBoxes = vaultData?.safetyBoxes.sort((a, b) => {
-    return a.nftName.localeCompare(b.nftName);
-  });
+  const sortedSafetyBoxes = useMemo(() => {
+    return vaultData?.safetyBoxes
+      ? [...vaultData.safetyBoxes].sort((a, b) => {
+          return a.nftName.localeCompare(b.nftName);
+        })
+      : [];
+  }, [vaultData]);
 
   const vaultMarket = useMemo(() => {
     return vaultsMarkets?.find(

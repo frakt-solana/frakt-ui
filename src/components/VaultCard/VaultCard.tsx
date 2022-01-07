@@ -63,13 +63,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
     : null;
 
   const noImg = !sortedSafetyBoxes.length;
-  const image1 = sortedSafetyBoxes[0]?.nftImage;
-  const image2 = sortedSafetyBoxes[1]?.nftImage;
-  const image3 = sortedSafetyBoxes[2]?.nftImage;
-  const numberOfNft =
-    vaultData.safetyBoxes.length > 1
-      ? `${vaultData.safetyBoxes.length} NFTs`
-      : `${vaultData.safetyBoxes.length} NFT`;
+  const numberOfNftText = vaultData.safetyBoxes.length > 1 ? 'NFTs' : 'NFT';
 
   const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
   const lockedPricePerShareNum = +decimalBNToString(
@@ -93,24 +87,30 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
               styles[`imageHovered${imageHoverIndex}`],
               {
                 [styles.noImg]: noImg,
-                [styles.has1Img]: !!image1,
-                [styles.has2Img]: !!image2,
-                [styles.has3Img]: !!image3,
+                [styles.has1Img]: !!sortedSafetyBoxes[0]?.nftImage,
+                [styles.has2Img]: !!sortedSafetyBoxes[1]?.nftImage,
+                [styles.has3Img]: !!sortedSafetyBoxes[2]?.nftImage,
               },
             )}
           >
             <div
-              style={{ backgroundImage: `url(${image1})` }}
+              style={{
+                backgroundImage: `url(${sortedSafetyBoxes[0]?.nftImage})`,
+              }}
               className={styles.vaultImage}
             />
             <div
-              style={{ backgroundImage: `url(${image2})` }}
+              style={{
+                backgroundImage: `url(${sortedSafetyBoxes[1]?.nftImage})`,
+              }}
               className={styles.vaultImage}
               onMouseEnter={onImageMouseEnter(1)}
               onMouseLeave={onImageMouseLeave()}
             />
             <div
-              style={{ backgroundImage: `url(${image3})` }}
+              style={{
+                backgroundImage: `url(${sortedSafetyBoxes[2]?.nftImage})`,
+              }}
               className={styles.vaultImage}
               onMouseEnter={onImageMouseEnter(2)}
               onMouseLeave={onImageMouseLeave()}
@@ -129,7 +129,10 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             {vaultData.hasMarket && (
               <Badge label="Tradable" className={styles.badge} />
             )}
-            <Badge label={numberOfNft} className={styles.badge} />
+            <Badge
+              label={`${vaultData.safetyBoxes.length} ${numberOfNftText}`}
+              className={styles.badge}
+            />
           </div>
         </div>
         <div className={styles.nameContainer}>

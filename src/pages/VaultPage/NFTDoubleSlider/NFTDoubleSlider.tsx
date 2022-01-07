@@ -51,7 +51,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
         thumbs={{ swiper: thumbsSwiper }}
       >
         {sortedSafetyBoxes.map((box) => (
-          <SwiperSlide key={box.vaultPubkey}>
+          <SwiperSlide key={box.nftMint}>
             <div
               className={styles.slideBig}
               style={{ backgroundImage: `url(${box.nftImage})` }}
@@ -71,7 +71,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
           >
             {sortedSafetyBoxes.map((box, index) => (
               <SwiperSlide
-                key={box.vaultPubkey}
+                key={box.nftMint}
                 onClick={onSlideThumbClick(
                   box.nftName,
                   box.nftCollectionName,
