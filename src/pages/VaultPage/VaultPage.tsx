@@ -18,7 +18,11 @@ import { BackToVaultsListButton } from './BackToVaultsListButton';
 import NavigationLink from '../../components/Header/NavigationLink';
 import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
-import { CollectionData, fetchCollectionData } from '../../utils/collections';
+import {
+  CollectionData,
+  fetchCollectionData,
+  fetchCollectionsData,
+} from '../../utils/collections';
 import { getCollectionThumbnailUrl } from '../../utils';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
 
@@ -55,6 +59,8 @@ const VaultPage: FC = () => {
       : [];
   }, [vaultData]);
 
+  const collections = sortedSafetyBoxes.map((nft) => nft.nftCollectionName);
+
   const vaultMarket = useMemo(() => {
     return vaultsMarkets?.find(
       ({ baseMint }) => baseMint === vaultData.fractionMint,
@@ -88,13 +94,9 @@ const VaultPage: FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        for (let i = 0; i <= sortedSafetyBoxes.length; i++) {
-          const result = await fetchCollectionData(
-            sortedSafetyBoxes[i]?.nftCollectionName,
-          );
-          if (result) {
-            setAllNftsCollectionInfo([...allNftsCollectionInfo, result]);
-          }
+        const result = await fetchCollectionsData(collections);
+        if (result) {
+          setAllNftsCollectionInfo(result);
         }
       } catch (err) {
         // eslint-disable-next-line no-console

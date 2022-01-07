@@ -17,12 +17,15 @@ import FraktionalizeTransactionModal from '../../components/FraktionalizeTransac
 import { useWalletModal } from '../../contexts/WalletModal';
 import { useFraktionalizeTransactionModal } from './hooks';
 import { VaultData } from '../../contexts/fraktion';
+import { useParams } from 'react-router';
 
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
   const { nfts: rawNfts, loading } = useUserTokens();
+  const { vaultPubkey: currentVaultPubkey } =
+    useParams<{ vaultPubkey: string }>();
 
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
@@ -95,6 +98,7 @@ const FraktionalizePage = (): JSX.Element => {
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar
+        currentVaultPubkey={currentVaultPubkey}
         nfts={selectedNfts}
         onDeselect={onDeselect}
         onContinueClick={runFraktionalization}

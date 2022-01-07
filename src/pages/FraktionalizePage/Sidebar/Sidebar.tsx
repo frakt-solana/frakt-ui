@@ -10,6 +10,7 @@ import { URLS } from '../../../constants';
 
 interface SidebarProps {
   onDeselect?: (nft: UserNFT) => void;
+  currentVaultPubkey: string;
   onContinueClick: (
     userNfts: UserNFT[],
     tickerName: string,
@@ -26,6 +27,7 @@ interface SidebarProps {
 
 const Sidebar = ({
   onDeselect,
+  currentVaultPubkey,
   nfts,
   onContinueClick,
 }: SidebarProps): JSX.Element => {
@@ -34,8 +36,6 @@ const Sidebar = ({
   const [isAuction] = useState<boolean>(false);
 
   const { vaults } = useFraktion();
-  const { vaultPubkey: currentVaultPubkey } =
-    useParams<{ vaultPubkey: string }>();
   const history = useHistory();
 
   const currentVault = useMemo(

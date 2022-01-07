@@ -27,10 +27,12 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
     symbol: string;
   }>({ name: '', symbol: '' });
   const [imageHoverIndex, setImageHoverIndex] = useState<number>(0);
+
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
   const currency =
     vaultData.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
+
   const sortedSafetyBoxes = vaultData?.safetyBoxes.sort((a, b) => {
     return a.nftName.localeCompare(b.nftName);
   });

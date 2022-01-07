@@ -224,7 +224,7 @@ const WalletPage = (): JSX.Element => {
                     {userUnfinishedVaults.map((vault) => (
                       <NavLink
                         key={vault.vaultPubkey}
-                        to={`${URLS.UNFINISHED_VAULT}/${vault.vaultPubkey}`}
+                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
                       >
                         <VaultCard vaultData={vault} />
                       </NavLink>
