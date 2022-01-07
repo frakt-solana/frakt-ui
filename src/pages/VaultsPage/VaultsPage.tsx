@@ -70,13 +70,11 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     return rawVaults
       .filter(({ state, hasMarket, safetyBoxes }) => {
-        const { nftName, isNftVerified } =
-          safetyBoxes.length >= 1
-            ? safetyBoxes[0]
-            : {
-                nftName: '',
-                isNftVerified: false,
-              };
+        const nftsName =
+          safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
+        const isNftVerified = safetyBoxes.some(
+          (nft) => nft.isNftVerified === false,
+        );
 
         //? Filter out unfinished vaults
         if (state === VaultState.Inactive) return false;
@@ -102,7 +100,7 @@ const VaultsPage = (): JSX.Element => {
 
         if (showVerifiedVaults && !isNftVerified) return false;
 
-        return nftName.toUpperCase().includes(searchString);
+        return nftsName.some((name) => name.includes(searchString));
       })
       .sort((a, b) => {
         if (sortField === 'createdAt') {
