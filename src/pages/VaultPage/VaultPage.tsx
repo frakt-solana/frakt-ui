@@ -15,20 +15,12 @@ import { TradeTab } from './TradeTab/TradeTab';
 import { SwapTab } from './SwapTab/SwapTab';
 import { DetailsHeader } from './DetailsHeader/DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/navigation/navigation.scss';
-import 'swiper/modules/pagination/pagination.scss';
-import 'swiper/modules/thumbs/thumbs';
-import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import NavigationLink from '../../components/Header/NavigationLink';
 import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
 import { CollectionData, fetchCollectionData } from '../../utils/collections';
 import { getCollectionThumbnailUrl } from '../../utils';
-import { HashLink as AnchorLink } from 'react-router-hash-link';
-
-SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
+import { NFTDoubleSlider } from './NFTDoubleSlider';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -40,7 +32,6 @@ const VaultPage: FC = () => {
     CollectionData[]
   >([]);
 
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const tokenMap = useTokenMap();
   const vaultData: VaultData = useMemo(() => {
     return vaults.find(
@@ -49,14 +40,15 @@ const VaultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaults]);
   const initSlideNftName = vaultData?.safetyBoxes[0]?.nftName || '';
-  const [currentSlideData, setCurrentSlideData] = useState({
+  const [currentSlideData, setCurrentSlideData] = useState<{
+    nftName: string;
+    nftIndex: number;
+  }>({
     nftName: '',
     nftIndex: 1,
   });
   const sortedSafetyBoxes = vaultData?.safetyBoxes.sort((a, b) => {
-    if (a.nftName > b.nftName) return 1;
-    if (a.nftName < b.nftName) return -1;
-    return 0;
+    return a.nftName.localeCompare(b.nftName);
   });
 
   const vaultMarket = useMemo(() => {
@@ -70,16 +62,6 @@ const VaultPage: FC = () => {
     name: string;
     symbol: string;
   }>({ name: '', symbol: '' });
-
-  const thumbSliderBreakpoints = {
-    300: { slidesPerView: 2.5 },
-    360: { slidesPerView: 3 },
-    400: { slidesPerView: 3.5 },
-    480: { slidesPerView: 4 },
-    600: { slidesPerView: 4.5 },
-    767: { slidesPerView: 3.2 },
-    1023: { slidesPerView: 3.8 },
-  };
 
   useEffect(() => {
     !loading &&
@@ -136,16 +118,17 @@ const VaultPage: FC = () => {
     });
   }, [vaultData?.safetyBoxes.length]);
 
-  const onSlideThumbClick = (nftName, nftCollectionName, nftIndex) => () => {
-    const currentSlideCollection = allNftsCollectionInfo.find(
-      (coll) => coll.collectionName === nftCollectionName,
-    );
-    setCurrentNftCollectionInfo(currentSlideCollection);
-    setCurrentSlideData({
-      nftName,
-      nftIndex: nftIndex + 1,
-    });
-  };
+  const onSlideThumbClick =
+    (nftName: string, nftCollectionName: string, nftIndex: number) => () => {
+      const currentSlideCollection = allNftsCollectionInfo.find(
+        (coll) => coll.collectionName === nftCollectionName,
+      );
+      setCurrentNftCollectionInfo(currentSlideCollection);
+      setCurrentSlideData({
+        nftName,
+        nftIndex: nftIndex + 1,
+      });
+    };
 
   return (
     <AppLayout>
@@ -159,64 +142,12 @@ const VaultPage: FC = () => {
         {!loading && !!vaultData && (
           <div className={styles.content}>
             <div className={styles.col}>
-              <div className={styles.sliders}>
-                <Swiper
-                  slidesPerView={1}
-                  className={styles.sliderBig}
-                  thumbs={{ swiper: thumbsSwiper }}
-                >
-                  {sortedSafetyBoxes.map((box) => (
-                    <SwiperSlide key={box.vaultPubkey}>
-                      <div
-                        className={styles.slideBig}
-                        style={{ backgroundImage: `url(${box.nftImage})` }}
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-                {vaultData?.safetyBoxes.length > 1 && (
-                  <>
-                    <Swiper
-                      breakpoints={thumbSliderBreakpoints}
-                      spaceBetween={10}
-                      className={styles.sliderSmall}
-                      navigation={true}
-                      scrollbar={{ draggable: true }}
-                      onSwiper={setThumbsSwiper}
-                    >
-                      {sortedSafetyBoxes.map((box, index) => (
-                        <SwiperSlide
-                          key={box.vaultPubkey}
-                          onClick={onSlideThumbClick(
-                            box.nftName,
-                            box.nftCollectionName,
-                            index,
-                          )}
-                        >
-                          <div
-                            className={styles.slideSmall}
-                            style={{ backgroundImage: `url(${box.nftImage})` }}
-                          />
-                        </SwiperSlide>
-                      ))}
-                    </Swiper>
-                    <p className={styles.nftName}>
-                      <span>
-                        {currentSlideData.nftIndex}/
-                        {vaultData?.safetyBoxes.length}
-                      </span>
-                      {currentSlideData.nftName}
-                    </p>
-                    <AnchorLink
-                      smooth
-                      to="#allNftList"
-                      className={styles.toNftList}
-                    >
-                      See all NFTs Inside the Vault
-                    </AnchorLink>
-                  </>
-                )}
-              </div>
+              <NFTDoubleSlider
+                vaultData={vaultData}
+                sortedSafetyBoxes={sortedSafetyBoxes}
+                onSlideThumbClick={onSlideThumbClick}
+                currentSlideData={currentSlideData}
+              />
               <DetailsHeader
                 className={styles.detailsHeaderMobile}
                 vaultData={vaultData}
