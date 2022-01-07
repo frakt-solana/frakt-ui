@@ -50,8 +50,6 @@ const calculatePricePerFraktion = (
 };
 
 export const DetailsForm: React.FC<DetailsProps> = ({
-  isBasket,
-  vaultName,
   isAuction,
   onSubmit,
 }) => {

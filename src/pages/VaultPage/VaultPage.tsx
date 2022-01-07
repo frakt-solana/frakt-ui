@@ -18,11 +18,7 @@ import { BackToVaultsListButton } from './BackToVaultsListButton';
 import NavigationLink from '../../components/Header/NavigationLink';
 import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
-import {
-  CollectionData,
-  fetchCollectionData,
-  fetchCollectionsData,
-} from '../../utils/collections';
+import { CollectionData, fetchCollectionsData } from '../../utils/collections';
 import { getCollectionThumbnailUrl } from '../../utils';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
 
@@ -103,7 +99,7 @@ const VaultPage: FC = () => {
         console.error(err);
       }
     })();
-  }, []);
+  }, [collections]);
 
   useEffect(() => {
     setCurrentNftCollectionInfo(allNftsCollectionInfo[0]);

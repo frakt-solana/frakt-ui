@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 import { Header } from './Header';
 import { DetailsForm } from './DetailsForm/DetailsForm';
 import { useFraktion, VaultData } from '../../../contexts/fraktion';
-import { useParams, useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 import { URLS } from '../../../constants';
 
 interface SidebarProps {
