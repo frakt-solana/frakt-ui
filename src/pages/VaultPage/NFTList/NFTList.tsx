@@ -10,11 +10,12 @@ import 'swiper/modules/navigation/navigation.scss';
 import 'swiper/modules/pagination/pagination.scss';
 import 'swiper/modules/thumbs/thumbs';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
-import { CloseModalIcon } from '../../../icons';
+import { CopyClipboardIcon, CloseModalIcon } from '../../../icons';
 import { CollectionData } from '../../../utils/collections';
 import { NavLink } from 'react-router-dom';
 import { URLS } from '../../../constants';
-import { getCollectionThumbnailUrl } from '../../../utils';
+import { copyToClipboard, getCollectionThumbnailUrl } from '../../../utils';
+import Tooltip from '../../../components/Tooltip';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -154,8 +155,21 @@ export const NFTList: FC<NFTListProps> = ({
                     </div>
                   )}
                   <p className={styles.nftInfoLabel}>NFT MINT</p>
-                  <p className={styles.nftInfoItem}>
+                  <p
+                    className={styles.nftInfoItem}
+                    onClick={() => copyToClipboard(slide.nftMint)}
+                  >
                     {shortenAddress(slide.nftMint)}
+                    <Tooltip
+                      placement="bottom"
+                      trigger="hover"
+                      overlay="Click to copy to clipboard"
+                    >
+                      <CopyClipboardIcon
+                        className={styles.copyIcon}
+                        width={24}
+                      />
+                    </Tooltip>
                   </p>
                 </div>
               </SwiperSlide>

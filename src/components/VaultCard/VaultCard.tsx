@@ -65,7 +65,10 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
     : null;
 
   const noImg = !sortedSafetyBoxes.length;
-  const numberOfNftText = vaultData.safetyBoxes.length > 1 ? 'NFTs' : 'NFT';
+  const numberOfNftText = vaultData?.safetyBoxes.length > 1 ? 'NFTs' : 'NFT';
+  const isVaultVerified = vaultData?.safetyBoxes.every(
+    (nft) => nft.isNftVerified,
+  );
 
   const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
   const lockedPricePerShareNum = +decimalBNToString(
@@ -119,11 +122,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             />
           </div>
           <div className={styles.actions}>
-            {sortedSafetyBoxes[0]?.isNftVerified ? (
-              <VerifiedBadge />
-            ) : (
-              <UnverifiedBadge />
-            )}
+            {isVaultVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
             <Badge
               label={VAULT_BADGES_BY_STATE[vaultData.state]}
               className={styles.badge}

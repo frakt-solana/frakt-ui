@@ -1,3 +1,7 @@
+.wrapper {
+  padding-bottom: 100px;
+}
+
 .nftList {
   display: flex;
   flex-wrap: wrap;
@@ -123,6 +127,12 @@
 
 .nftInfoItem {
   font: var(--font-btn-small);
+  cursor: pointer;
+
+  svg {
+    vertical-align: text-bottom;
+    margin-left: 10px;
+  }
 
   @media screen and (max-width: 470px) {
     font-size: 15px;

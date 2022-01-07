@@ -452,34 +452,41 @@ export const finishBasket = async (
   walletPublicKey: PublicKey,
   signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,
-) => {
-  const { fractionalMint, fractionTreasury, redeemTreasury } = vault;
+): Promise<boolean> => {
+  try {
+    const { fractionalMint, fractionTreasury, redeemTreasury } = vault;
 
-  const fractionsAmountBn = new BN(fractionsAmount * 1e3);
+    const fractionsAmountBn = new BN(fractionsAmount * 1e3);
 
-  const pricePerFractionBn = adjustPricePerFraction(
-    new BN(pricePerFraction * 1e6),
-    fractionsAmountBn,
-  );
+    const pricePerFractionBn = adjustPricePerFraction(
+      new BN(pricePerFraction * 1e6),
+      fractionsAmountBn,
+    );
 
-  await finishBasketTransaction({
-    connection,
-    pricePerShare: pricePerFractionBn,
-    numberOfShares: fractionsAmountBn,
-    adminPubkey: ADMIN_PUBKEY,
-    userPubkey: walletPublicKey.toString(),
-    vault: vault.vault,
-    fractionalMint: fractionalMint,
-    fractionTreasury: fractionTreasury,
-    redeemTreasury: redeemTreasury,
-    vaultProgramId: PROGRAM_PUBKEY,
-    sendTxn: async (txn): Promise<void> => {
-      const { blockhash } = await connection.getRecentBlockhash();
-      txn.recentBlockhash = blockhash;
-      txn.feePayer = walletPublicKey;
-      const signed = await signTransaction(txn);
-      const txid = await connection.sendRawTransaction(signed.serialize());
-      return void connection.confirmTransaction(txid);
-    },
-  });
+    await finishBasketTransaction({
+      connection,
+      pricePerShare: pricePerFractionBn,
+      numberOfShares: fractionsAmountBn,
+      adminPubkey: ADMIN_PUBKEY,
+      userPubkey: walletPublicKey.toString(),
+      vault: vault.vault,
+      fractionalMint: fractionalMint,
+      fractionTreasury: fractionTreasury,
+      redeemTreasury: redeemTreasury,
+      vaultProgramId: PROGRAM_PUBKEY,
+      sendTxn: async (txn): Promise<void> => {
+        const { blockhash } = await connection.getRecentBlockhash();
+        txn.recentBlockhash = blockhash;
+        txn.feePayer = walletPublicKey;
+        const signed = await signTransaction(txn);
+        const txid = await connection.sendRawTransaction(signed.serialize());
+        return void connection.confirmTransaction(txid);
+      },
+    });
+    return true;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    return false;
+  }
 };

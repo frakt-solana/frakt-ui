@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
-import { NavLink } from 'react-router-dom';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -19,15 +18,12 @@ import NavigationLink from '../../components/Header/NavigationLink';
 import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
 import { CollectionData, fetchCollectionsData } from '../../utils/collections';
-import { getCollectionThumbnailUrl } from '../../utils';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
-  const [currentNftCollectionInfo, setCurrentNftCollectionInfo] =
-    useState<CollectionData>(null);
   const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
     CollectionData[]
   >([]);
@@ -101,10 +97,6 @@ const VaultPage: FC = () => {
     })();
   }, [collections]);
 
-  useEffect(() => {
-    setCurrentNftCollectionInfo(allNftsCollectionInfo[0]);
-  }, [allNftsCollectionInfo]);
-
   //? Set active tab "Buyout" if auction started
   useEffect(() => {
     if (vaultData) {
@@ -118,14 +110,11 @@ const VaultPage: FC = () => {
       nftName: initSlideNftName,
       nftIndex: 1,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultData?.safetyBoxes.length]);
 
   const onSlideThumbClick =
     (nftName: string, nftCollectionName: string, nftIndex: number) => () => {
-      const currentSlideCollection = allNftsCollectionInfo.find(
-        (coll) => coll.collectionName === nftCollectionName,
-      );
-      setCurrentNftCollectionInfo(currentSlideCollection);
       setCurrentSlideData({
         nftName,
         nftIndex: nftIndex + 1,
@@ -156,24 +145,6 @@ const VaultPage: FC = () => {
                 vaultTitleData={vaultTitleData}
               />
               <div className={styles.mainInfoWrapper}>
-                {currentNftCollectionInfo && (
-                  <NavLink
-                    to={`${URLS.COLLECTION}/${currentNftCollectionInfo?.collectionName}`}
-                    className={styles.collectionLink}
-                  >
-                    <div
-                      className={styles.collectionIcon}
-                      style={{
-                        backgroundImage: `url(${getCollectionThumbnailUrl(
-                          currentNftCollectionInfo?.thumbnailPath,
-                        )})`,
-                      }}
-                    />
-                    <p className={styles.collectionName}>
-                      {currentNftCollectionInfo?.collectionName}
-                    </p>
-                  </NavLink>
-                )}
                 {!!nftDescription && (
                   <div className={styles.mainInfoWrapper}>
                     <div className={styles.description}>{nftDescription}</div>
@@ -237,18 +208,16 @@ const VaultPage: FC = () => {
             </div>
           </div>
         )}
-        {vaultData?.safetyBoxes.length > 1 && (
-          <section id="allNftList" className={styles.allNfts}>
-            <h4 className={styles.nftsTitle}>
-              <span>{vaultData?.safetyBoxes.length}</span>
-              NFTs inside the vault
-            </h4>
-            <NFTList
-              safetyBoxes={sortedSafetyBoxes}
-              nftCollections={allNftsCollectionInfo}
-            />
-          </section>
-        )}
+        <section id="allNftList" className={styles.allNfts}>
+          <h4 className={styles.nftsTitle}>
+            <span>{vaultData?.safetyBoxes.length}</span>
+            NFTs inside the vault
+          </h4>
+          <NFTList
+            safetyBoxes={sortedSafetyBoxes}
+            nftCollections={allNftsCollectionInfo}
+          />
+        </section>
       </Container>
     </AppLayout>
   );

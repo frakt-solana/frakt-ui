@@ -38,13 +38,12 @@ const WalletPage = (): JSX.Element => {
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
 
-  const [shouldUnfinishedShow, setShouldUnfinishedShow] =
-    useState<boolean>(false);
+  const [showUnfinished, setShowUnfinished] = useState<boolean>(false);
 
   const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
 
   const onToggleUnfinishedClick = () => {
-    setShouldUnfinishedShow(!shouldUnfinishedShow);
+    setShowUnfinished(!showUnfinished);
   };
 
   const fetchUserTokens = async () => {
@@ -207,14 +206,14 @@ const WalletPage = (): JSX.Element => {
                 <div className={styles.filters}>
                   {/*{connected && publicKey.toString() === walletPubkey && (*/}
                   <Toggle
-                    value={shouldUnfinishedShow}
+                    value={showUnfinished}
                     label="Show unfinished"
                     className={styles.filter}
                     onChange={onToggleUnfinishedClick}
                   />
                   {/*)}*/}
                 </div>
-                {shouldUnfinishedShow ? (
+                {showUnfinished ? (
                   <div className={styles.vaults}>
                     {!userUnfinishedVaults.length && (
                       <p className={styles.emptyMessage}>

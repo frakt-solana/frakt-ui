@@ -11,7 +11,7 @@ import { SafetyBoxWithMetadata, VaultData } from '../../../contexts/fraktion';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
-const thumbSliderBreakpoints = {
+const THUMBS_SLIDER_BREAKPOINTS = {
   240: { slidesPerView: 2.5 },
   360: { slidesPerView: 3 },
   400: { slidesPerView: 3.5 },
@@ -62,7 +62,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
       {vaultData?.safetyBoxes.length > 1 && (
         <>
           <Swiper
-            breakpoints={thumbSliderBreakpoints}
+            breakpoints={THUMBS_SLIDER_BREAKPOINTS}
             spaceBetween={10}
             className={styles.sliderSmall}
             navigation={true}
@@ -91,11 +91,11 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
             </span>
             {currentSlideData.nftName}
           </p>
-          <AnchorLink smooth to="#allNftList" className={styles.toNftList}>
-            See all NFTs Inside the Vault
-          </AnchorLink>
         </>
       )}
+      <AnchorLink smooth to="#allNftList" className={styles.toNftList}>
+        See all NFTs Inside the Vault
+      </AnchorLink>
     </div>
   );
 };

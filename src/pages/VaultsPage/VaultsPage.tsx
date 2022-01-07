@@ -72,9 +72,7 @@ const VaultsPage = (): JSX.Element => {
       .filter(({ state, hasMarket, safetyBoxes }) => {
         const nftsName =
           safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
-        const isNftVerified = safetyBoxes.some(
-          (nft) => nft.isNftVerified === false,
-        );
+        const isNftVerified = safetyBoxes.every((nft) => nft.isNftVerified);
 
         //? Filter out unfinished vaults
         if (state === VaultState.Inactive) return false;
