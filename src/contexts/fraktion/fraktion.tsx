@@ -1,4 +1,4 @@
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import {
   initBacket as initVaultTransaction,
   addNFTsToBacket as addNFTsToVaultTransaction,
@@ -10,6 +10,7 @@ import BN from 'bn.js';
 
 import {
   AddNFTsToVault,
+  CreateMarket,
   CreateVault,
   FinishVault,
   InitVault,
@@ -83,13 +84,13 @@ export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
   return vaultsData;
 };
 
-export const createFraktionsMarket = async (
-  fractionsMintAddress: string,
-  tickerName: string,
-  walletPublicKey: PublicKey,
-  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>,
-  connection: Connection,
-): Promise<boolean> => {
+export const createMarket: CreateMarket = async (
+  fractionsMint,
+  tickerName,
+  walletPublicKey,
+  signAllTransactions,
+  connection,
+) => {
   const dexProgramId = MARKETS.find(({ deprecated }) => !deprecated).programId;
   const LOT_SIZE = 0.1;
   const TICK_SIZE = 0.00001;
@@ -105,17 +106,13 @@ export const createFraktionsMarket = async (
       connection,
       walletPublicKey,
       signAllTransactions,
-      baseMint: new PublicKey(fractionsMintAddress),
+      baseMint: new PublicKey(fractionsMint),
       quoteMint: new PublicKey(WSOL.mint),
       baseLotSize: BASE_LOT_SIZE,
       quoteLotSize: QUOTE_LOT_SIZE,
       dexProgramId,
     });
-    await registerMarket(
-      tickerName,
-      marketAddress.toBase58(),
-      fractionsMintAddress,
-    );
+    await registerMarket(tickerName, marketAddress.toBase58(), fractionsMint);
     return true;
   } catch (err) {
     // eslint-disable-next-line no-console

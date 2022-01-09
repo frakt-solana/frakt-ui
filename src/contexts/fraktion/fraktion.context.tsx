@@ -6,7 +6,7 @@ import {
   FraktionContextType,
   VaultData,
 } from './fraktion.model';
-import { createFraktionsMarket, getVaults, createVault } from './fraktion';
+import { createMarket, getVaults, createVault } from './fraktion';
 import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
 
@@ -15,7 +15,7 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   error: null,
   vaults: [],
   vaultsMarkets: [],
-  createFraktionsMarket: () => Promise.resolve(null),
+  createMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
   createVault: () => Promise.resolve(''),
   patchVault: () => {},
@@ -117,8 +117,8 @@ export const FraktionProvider = ({
             unfinishedVaultData,
             tokenData,
           }),
-        createFraktionsMarket: (fractionsMintAddress, tickerName) =>
-          createFraktionsMarket(
+        createMarket: (fractionsMintAddress, tickerName) =>
+          createMarket(
             fractionsMintAddress,
             tickerName,
             walletPublicKey,

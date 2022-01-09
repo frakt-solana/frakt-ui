@@ -86,11 +86,11 @@ const SuccessContent = ({
   tickerName: string;
   onCancel: () => void;
 }): JSX.Element => {
-  const { createFraktionsMarket } = useFraktion();
+  const { createMarket } = useFraktion();
 
   const onClipboardIconClick = () => copyToClipboard(fractionsMintAddress);
   const onCreateMarketButtonClick = () => {
-    createFraktionsMarket(fractionsMintAddress, tickerName);
+    createMarket(fractionsMintAddress, tickerName);
     onCancel();
   };
 

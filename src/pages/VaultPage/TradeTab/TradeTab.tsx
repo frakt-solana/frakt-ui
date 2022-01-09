@@ -18,7 +18,7 @@ export const TradeTab = ({
   tokerName,
 }: TradeTabProps): JSX.Element => {
   const { connected } = useWallet();
-  const { createFraktionsMarket } = useFraktion();
+  const { createMarket } = useFraktion();
 
   return vaultMarketAddress ? (
     <div className={styles.tradeWrapper}>
@@ -40,9 +40,7 @@ export const TradeTab = ({
         <Button
           type="alternative"
           className={styles.createMarketBtn}
-          onClick={() =>
-            createFraktionsMarket(vaultInfo.fractionMint, tokerName)
-          }
+          onClick={() => createMarket(vaultInfo.fractionMint, tokerName)}
         >
           Create market
         </Button>

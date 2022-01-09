@@ -174,11 +174,6 @@ export type redeemFunction = (vault: VaultData) => Promise<{
   signers: Keypair[];
 } | null>;
 
-export type createFraktionsMarketFunction = (
-  fractionsMintAddress: string,
-  tickerName: string,
-) => Promise<boolean>;
-
 export type fetchDataFunction = () => Promise<void>;
 
 export type patchVaultFunction = (vaultInfo: VaultData) => void;
@@ -194,10 +189,21 @@ export interface FraktionContextType {
       'walletPublicKey' | 'signTransaction' | 'connection'
     >,
   ) => Promise<string | null>;
-  createFraktionsMarket: createFraktionsMarketFunction;
+  createMarket: (
+    fractionsMintAddress: string,
+    tickerName: string,
+  ) => Promise<boolean>;
   refetch: fetchDataFunction;
   patchVault: patchVaultFunction;
 }
+
+export type CreateMarket = (
+  fractionsMint: string,
+  tickerName: string,
+  walletPublicKey: PublicKey,
+  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>,
+  connection: Connection,
+) => Promise<boolean>;
 
 export type UnfinishedVaultData = {
   vaultPubkey: string;

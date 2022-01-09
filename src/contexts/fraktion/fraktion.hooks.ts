@@ -10,7 +10,7 @@ export const useFraktion = (): FraktionContextType => {
     vaults,
     vaultsMarkets,
     createVault,
-    createFraktionsMarket,
+    createMarket,
     refetch: fetchVaults,
     patchVault,
   } = useContext(FraktionContext);
@@ -20,7 +20,7 @@ export const useFraktion = (): FraktionContextType => {
     vaults,
     vaultsMarkets,
     createVault,
-    createFraktionsMarket,
+    createMarket,
     refetch: fetchVaults,
     patchVault,
   };
