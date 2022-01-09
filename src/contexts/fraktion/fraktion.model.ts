@@ -197,6 +197,8 @@ export interface FraktionContextType {
   patchVault: patchVaultFunction;
 }
 
+export type GetVaults = (markets: Market[]) => Promise<VaultData[]>;
+
 export type CreateMarket = (
   fractionsMint: string,
   tickerName: string,

@@ -13,8 +13,8 @@ import {
   CreateMarket,
   CreateVault,
   FinishVault,
+  GetVaults,
   InitVault,
-  Market,
   Vault,
   VaultData,
 } from './fraktion.model';
@@ -40,7 +40,7 @@ import {
 const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
 
-export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
+export const getVaults: GetVaults = async (markets) => {
   const { allVaults, metas } = await (
     await fetch(VAULTS_AND_META_CACHE_URL)
   ).json();
