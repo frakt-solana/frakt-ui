@@ -1,1 +1,0 @@
-export { Redeem } from './Redeem';

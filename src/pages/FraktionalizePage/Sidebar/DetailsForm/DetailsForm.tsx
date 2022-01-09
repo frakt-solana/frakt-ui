@@ -1,45 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import styles from './styles.module.scss';
+import React, { useState } from 'react';
+import BN from 'bn.js';
 import { Form } from 'antd';
+
+import styles from './styles.module.scss';
 import { Input } from '../../../../components/Input';
 import NumericInput from '../../../../components/NumericInput';
 import Button from '../../../../components/Button';
-import {
-  getConditionalValidator,
-  validators,
-} from '../../../../utils/validators';
+import { validators } from '../../../../utils/validators';
 import { useTokenListContext } from '../../../../contexts/TokenList';
-import BN from 'bn.js';
 import { FraktionPrice } from './FraktionPrice';
 import {
   TOKEN_FIELD_CURRENCY,
   TokenFieldForm,
 } from '../../../../components/TokenField';
 
-interface DetailsProps {
-  isBasket: boolean;
-  vaultName?: string;
+interface DetailsFormProps {
   onSubmit?: (values: FormValues) => void;
-  isAuction: boolean;
 }
 
 interface FormValues {
-  supply: string;
   ticker: string;
-  buyoutPrice: string;
   pricePerFraktion: number;
-  tickSize: string;
-  startBid: string;
-  basketName: string;
+  supply: string;
+  vaultName: string;
 }
 
 const DEFAULT_VALUES: Omit<FormValues, 'pricePerFraktion'> = {
   ticker: '',
   supply: '',
-  buyoutPrice: '',
-  tickSize: '',
-  startBid: '',
-  basketName: '',
+  vaultName: '',
 };
 
 const calculatePricePerFraktion = (
@@ -49,11 +38,8 @@ const calculatePricePerFraktion = (
   return buyoutPrice && supply && Number(buyoutPrice) / Number(supply);
 };
 
-export const DetailsForm: React.FC<DetailsProps> = ({
-  isAuction,
-  onSubmit,
-}) => {
-  const [_, setForceUpdate] = useState(1); //eslint-disable-line
+export const DetailsForm: React.FC<DetailsFormProps> = ({ onSubmit }) => {
+  const [, setForceUpdate] = useState(1);
   const { tokenList } = useTokenListContext();
   const [form] = Form.useForm<Omit<FormValues, 'pricePerFraktion'>>();
 
@@ -69,14 +55,6 @@ export const DetailsForm: React.FC<DetailsProps> = ({
     form.getFieldValue('supply'),
   );
 
-  useEffect(() => {
-    if (!isAuction) {
-      form.resetFields(['tickSize', 'startBid']);
-      forceUpdate();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuction]);
-
   return (
     <>
       <div className={styles.details}>
@@ -91,12 +69,12 @@ export const DetailsForm: React.FC<DetailsProps> = ({
           <p className={styles.detailsTitle}>Vault details</p>
           <div className={styles.fieldWrapper}>
             <Form.Item
-              rules={[{ validator: validators.backetName(tokenList) }]}
-              label="Basket name"
-              name="basketName"
+              rules={[{ validator: validators.vaultName(tokenList) }]}
+              label="Vault name"
+              name="vaultName"
               help=""
             >
-              <Input placeholder="Coolest basket" />
+              <Input placeholder="Coolest name" disableNumbers disableSymbols />
             </Form.Item>
           </div>
           <div className={styles.fieldWrapperDouble}>
@@ -136,7 +114,6 @@ export const DetailsForm: React.FC<DetailsProps> = ({
               error={pricePerFraktionError}
             />
           }
-          {/* changed buy out price to start bid for auctions  */}
           <Form.Item
             label="Start bid"
             name="buyoutPrice"
@@ -148,33 +125,6 @@ export const DetailsForm: React.FC<DetailsProps> = ({
               currentToken={TOKEN_FIELD_CURRENCY.SOL}
               maxLength={5}
             />
-          </Form.Item>
-          <Form.Item
-            getValueFromEvent={({ amount }) => amount}
-            rules={getConditionalValidator(isAuction, [
-              { validator: validators.buyoutPrice },
-            ])}
-            label="Start bid"
-            name="startBid"
-            help=""
-            hidden={!isAuction}
-          >
-            <TokenFieldForm
-              currentToken={TOKEN_FIELD_CURRENCY.SOL}
-              maxLength={5}
-            />
-          </Form.Item>
-          <Form.Item
-            getValueFromEvent={({ amount }) => amount}
-            rules={getConditionalValidator(isAuction, [
-              { validator: validators.tickSize },
-            ])}
-            label="Tick size"
-            name="tickSize"
-            help=""
-            hidden={!isAuction}
-          >
-            <TokenFieldForm currentToken={TOKEN_FIELD_CURRENCY.SOL} />
           </Form.Item>
           {form.getFieldsError().map((el, idx) =>
             el?.errors?.[0] ? (

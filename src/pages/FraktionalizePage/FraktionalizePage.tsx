@@ -15,8 +15,10 @@ import FakeInfinityScroll, {
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { useFraktionalizeTransactionModal } from './hooks';
-import { VaultData } from '../../contexts/fraktion';
+import {
+  FraktionalizeTxnData,
+  useFraktionalizeTransactionModal,
+} from './hooks';
 import { useParams } from 'react-router';
 
 const FraktionalizePage = (): JSX.Element => {
@@ -59,27 +61,23 @@ const FraktionalizePage = (): JSX.Element => {
       : setSelectedNfts([...selectedNfts, nft]);
   };
 
-  const runFraktionalization = (
-    userNfts: UserNFT[],
-    tickerName: string,
-    pricePerFraction: number,
-    fractionsAmount: number,
-    basketName = '',
-    tickSize?: number,
-    startBid?: number,
-    isAuction?: boolean,
-    currentVault?: VaultData,
-  ) => {
+  const runFraktionalization = ({
+    newNfts = [],
+    lockedNfts = [],
+    tickerName,
+    pricePerFraction,
+    fractionsAmount,
+    vaultName,
+    vault,
+  }: FraktionalizeTxnData) => {
     return openTxnModal({
-      userNfts,
+      newNfts,
+      lockedNfts,
       tickerName,
       pricePerFraction,
       fractionsAmount,
-      basketName,
-      isAuction,
-      tickSize,
-      startBid,
-      currentVault,
+      vaultName,
+      vault,
     }).then(() => {
       setSelectedNfts([]);
     });

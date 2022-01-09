@@ -95,7 +95,8 @@ const VaultPage: FC = () => {
         console.error(err);
       }
     })();
-  }, [collections]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   //? Set active tab "Buyout" if auction started
   useEffect(() => {

@@ -45,34 +45,34 @@ export const validators = {
     }
     return null;
   },
-  backetName:
+  vaultName:
     (tokenList: TokenInfo[]) =>
     (_: any, value: string): Promise<void | string> => {
-      if (!value?.length)
-        return Promise.reject("Invalid basket name or it's already in use");
+      if (value?.length < 3)
+        return Promise.reject("Invalid vault name or it's already in use");
 
       if (
         (value.length && value.length < 3) ||
         tokenList.find(({ name }) => name === value)
       ) {
-        return Promise.reject("Invalid basket name or it's already in use");
+        return Promise.reject("Invalid vault name or it's already in use");
       }
 
       return Promise.resolve();
     },
-  tickSize: (_: any, value: string): Promise<void | string> => {
-    if (
-      !isNumber(+value) ||
-      !isInteger(+value) ||
-      Number(value) < 1 ||
-      isNaN(Number(value))
-    )
-      return Promise.reject('Tick size must be great than 1 real number');
+  // tickSize: (_: any, value: string): Promise<void | string> => {
+  //   if (
+  //     !isNumber(+value) ||
+  //     !isInteger(+value) ||
+  //     Number(value) < 1 ||
+  //     isNaN(Number(value))
+  //   )
+  //     return Promise.reject('Tick size must be great than 1 real number');
 
-    return Promise.resolve();
-  },
+  //   return Promise.resolve();
+  // },
 };
 
-export const getConditionalValidator = (condition, rules: any[]) => {
-  return condition ? rules : [];
-};
+// export const getConditionalValidator = (condition, rules: any[]) => {
+//   return condition ? rules : [];
+// };

@@ -6,14 +6,7 @@ import {
   FraktionContextType,
   VaultData,
 } from './fraktion.model';
-import {
-  buyout,
-  createFraktionsMarket,
-  fraktionalize,
-  getVaults,
-  redeem,
-  createVault,
-} from './fraktion';
+import { createFraktionsMarket, getVaults, createVault } from './fraktion';
 import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
 
@@ -22,9 +15,6 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   error: null,
   vaults: [],
   vaultsMarkets: [],
-  fraktionalize: () => Promise.resolve(null),
-  buyout: () => Promise.resolve(null),
-  redeem: () => Promise.resolve(null),
   createFraktionsMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
   createVault: () => Promise.resolve(''),
@@ -110,48 +100,23 @@ export const FraktionProvider = ({
         error,
         vaults,
         vaultsMarkets,
-        fraktionalize: (
-          userNft,
-          tickerName,
-          pricePerFraction,
-          fractionsAmount,
-          token,
-        ) =>
-          fraktionalize(
-            userNft,
-            tickerName,
-            pricePerFraction,
-            fractionsAmount,
-            token,
-            walletPublicKey,
-            signTransaction,
-            connection,
-          ),
-        createVault: (
+        createVault: ({
           userNfts,
           pricePerFraction,
           fractionsAmount,
-          currentVault,
-        ) =>
-          createVault(
+          unfinishedVaultData,
+          tokenData,
+        }) =>
+          createVault({
             userNfts,
             pricePerFraction,
             fractionsAmount,
             walletPublicKey,
             signTransaction,
             connection,
-            currentVault,
-          ),
-        buyout: (vault, userTokensByMint) =>
-          buyout(
-            vault,
-            userTokensByMint,
-            walletPublicKey,
-            signTransaction,
-            connection,
-          ),
-        redeem: (vault) =>
-          redeem(vault, walletPublicKey, signTransaction, connection),
+            unfinishedVaultData,
+            tokenData,
+          }),
         createFraktionsMarket: (fractionsMintAddress, tickerName) =>
           createFraktionsMarket(
             fractionsMintAddress,
