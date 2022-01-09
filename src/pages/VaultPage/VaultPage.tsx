@@ -75,14 +75,6 @@ const VaultPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenMap, vaultData]);
 
-  const { nftAttributes, nftDescription } =
-    vaultData?.safetyBoxes.length >= 1
-      ? vaultData.safetyBoxes[0]
-      : {
-          nftAttributes: null,
-          nftDescription: null,
-        };
-
   useEffect(() => {
     (async () => {
       try {
@@ -145,23 +137,6 @@ const VaultPage: FC = () => {
                 vaultData={vaultData}
                 vaultTitleData={vaultTitleData}
               />
-              <div className={styles.mainInfoWrapper}>
-                {!!nftDescription && (
-                  <div className={styles.mainInfoWrapper}>
-                    <div className={styles.description}>{nftDescription}</div>
-                  </div>
-                )}
-              </div>
-              {!!nftAttributes?.length && vaultData?.safetyBoxes.length === 1 && (
-                <div className={styles.attributesTable}>
-                  {nftAttributes.map(({ trait_type, value }, idx) => (
-                    <div key={idx} className={styles.attributesTable__row}>
-                      <p>{trait_type}</p>
-                      <p>{value}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
             <div className={styles.details}>
               <DetailsHeader
