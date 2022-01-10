@@ -20,18 +20,18 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'collectionName_desc',
-  },
-  {
-    label: (
-      <span>
         Name <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
   },
 ];
 
@@ -44,7 +44,7 @@ const CollectionPage: FC = () => {
       showArchivedVaults: false,
       showMyVaults: false,
       showTradableVaults: false,
-      sort: SORT_VALUES[1],
+      sort: SORT_VALUES[0],
     },
   });
 

@@ -77,7 +77,6 @@ const CollectionsPage: FC = () => {
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultsByCollectionName(vaults);
   }, [loading, vaults]);
-  console.log(vaultsByCollectionName);
 
   const filteredCollection = useMemo(() => {
     const [sortField, sortOrder] = sort.value.split('_');
