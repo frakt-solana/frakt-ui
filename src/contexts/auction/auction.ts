@@ -1,13 +1,15 @@
+import { useFraktion } from './../fraktion/fraktion.hooks';
 import {
   bidOnAuction as bidOnAuctionTransaction,
   startFraktionalizerAuction as startFraktionalizerAuctionTransaction,
   refundBid as refundBidTransaction,
   redeemRewardsFromAuctionShares as redeemRewardsFromAuctionSharesTransaction,
-  closeAuctionFraktionalizer as closeAuctionFraktionalizerTransaction,
+  unlockBacketAfterBuyoutAuction as unlockVaultTransaction,
+  withdrawNFTFromCombinedBacket as redeemNftTransaction,
 } from 'fraktionalizer-client-library';
 import fraktionConfig from '../fraktion/config';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { VaultData } from '../fraktion';
+import { VaultData, VaultState } from '../fraktion';
 import {
   useConnection,
   useWallet,
@@ -194,36 +196,102 @@ const redeemRewardsFromAuctionShares =
     }
   };
 
-const closeAuctionFraktionalizer =
-  (wallet: WalletContextState, connection: Connection) =>
+const unlockVault = async (
+  vaultInfo: VaultData,
+  wallet: WalletContextState,
+  connection: Connection,
+) => {
+  await unlockVaultTransaction({
+    auction: vaultInfo.auction.auction.auctionPubkey,
+    winning_bid: vaultInfo.auction.auction.currentWinningBidPubkey,
+    userPubkey: wallet.publicKey.toBase58(),
+    adminPubkey: fraktionConfig.ADMIN_PUBKEY,
+    vault: vaultInfo.vaultPubkey,
+    fractionMint: vaultInfo.fractionMint,
+    vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
+    sendTxn: async (txn): Promise<void> => {
+      const { blockhash } = await connection.getRecentBlockhash();
+      txn.recentBlockhash = blockhash;
+      txn.feePayer = wallet.publicKey;
+      const signed = await wallet.signTransaction(txn);
+      const txid = await connection.sendRawTransaction(signed.serialize());
+      return void connection.confirmTransaction(txid);
+    },
+  });
+  notify({
+    message: 'Vault unlocked successfully',
+    type: 'success',
+  });
+};
+
+const redeemNft = async (
+  vaultInfo: VaultData,
+  safetyBoxOrder: number,
+  wallet: WalletContextState,
+  connection: Connection,
+) => {
+  const { vaultPubkey, tokenTypeCount, safetyBoxes, fractionMint } = vaultInfo;
+
+  if (tokenTypeCount < 1 || safetyBoxOrder < 0) {
+    throw new Error('No NFTs to redeem');
+  }
+
+  const safetyBoxToRedeem = safetyBoxes.find(
+    ({ order }) => order === safetyBoxOrder,
+  );
+
+  await redeemNftTransaction(
+    connection,
+    wallet.publicKey.toBase58(),
+    vaultPubkey,
+    [safetyBoxToRedeem.safetyBoxPubkey],
+    [safetyBoxToRedeem.nftMint],
+    [safetyBoxToRedeem.store],
+    fractionMint,
+    fraktionConfig.PROGRAM_PUBKEY,
+    async (txn): Promise<void> => {
+      const { blockhash } = await connection.getRecentBlockhash();
+      txn.recentBlockhash = blockhash;
+      txn.feePayer = wallet.publicKey;
+      const signed = await wallet.signTransaction(txn);
+      const txid = await connection.sendRawTransaction(signed.serialize());
+      return void connection.confirmTransaction(txid);
+    },
+  );
+  notify({
+    message: 'NFT redeemed successfully',
+    type: 'success',
+  });
+};
+
+const unlockVaultAndRedeemNfts =
+  (
+    patchVault: (vaultInfo: VaultData) => void,
+    wallet: WalletContextState,
+    connection: Connection,
+  ) =>
   async (vaultInfo: VaultData) => {
     try {
-      await closeAuctionFraktionalizerTransaction({
-        connection,
-        userPubkey: wallet.publicKey,
-        adminPubkey: fraktionConfig.ADMIN_PUBKEY,
-        vault: vaultInfo.vaultPubkey,
-        winning_bid: vaultInfo.auction.auction.currentWinningBidPubkey,
-        nftMintPubkey: vaultInfo.safetyBoxes[0].nftMint,
-        storePubkey: vaultInfo.safetyBoxes[0].store,
-        safetyDepositBoxPubkey: vaultInfo.safetyBoxes[0].safetyBoxPubkey,
-        auction: vaultInfo.auction.auction.auctionPubkey,
-        fractionMint: vaultInfo.fractionMint,
-        vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
-        sendTxn: async (txn): Promise<void> => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = wallet.publicKey;
-          const signed = await wallet.signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
-        },
-      });
-      notify({
-        message: 'NFT redeemed successfully',
-        type: 'success',
-      });
-      return true;
+      const isVaultLocked = vaultInfo.realState !== VaultState.AuctionFinished;
+
+      //? Unlock vault if it's locked
+      if (isVaultLocked) {
+        await unlockVault(vaultInfo, wallet, connection);
+        patchVault({
+          ...vaultInfo,
+          state: VaultState.AuctionFinished,
+          realState: VaultState.AuctionFinished,
+        });
+      }
+
+      for (
+        let safetyBoxOrder = vaultInfo.tokenTypeCount - 1;
+        safetyBoxOrder > -1;
+        --safetyBoxOrder
+      ) {
+        await redeemNft(vaultInfo, safetyBoxOrder, wallet, connection);
+        patchVault({ ...vaultInfo, tokenTypeCount: safetyBoxOrder });
+      }
     } catch (error) {
       notify({
         message: 'Transaction failed',
@@ -238,7 +306,7 @@ const closeAuctionFraktionalizer =
 export const useAuction = () => {
   const wallet = useWallet();
   const { connection } = useConnection();
-
+  const { patchVault } = useFraktion();
   return {
     startFraktionalizerAuction: startFraktionalizerAuction(wallet, connection),
     bidOnAuction: bidOnAuction(wallet, connection),
@@ -247,6 +315,10 @@ export const useAuction = () => {
       wallet,
       connection,
     ),
-    closeAuctionFraktionalizer: closeAuctionFraktionalizer(wallet, connection),
+    unlockVaultAndRedeemNfts: unlockVaultAndRedeemNfts(
+      patchVault,
+      wallet,
+      connection,
+    ),
   };
 };
