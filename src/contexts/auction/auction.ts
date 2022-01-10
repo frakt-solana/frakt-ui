@@ -279,8 +279,8 @@ const unlockVaultAndRedeemNfts =
         await unlockVault(vaultInfo, wallet, connection);
         patchVault({
           ...vaultInfo,
-          state: VaultState.AuctionFinished,
           realState: VaultState.AuctionFinished,
+          state: VaultState.AuctionFinished,
         });
       }
 
@@ -290,7 +290,13 @@ const unlockVaultAndRedeemNfts =
         --safetyBoxOrder
       ) {
         await redeemNft(vaultInfo, safetyBoxOrder, wallet, connection);
-        patchVault({ ...vaultInfo, tokenTypeCount: safetyBoxOrder });
+        //? Need to set state every time because function fired and vaultData is contant in it's closure
+        patchVault({
+          ...vaultInfo,
+          tokenTypeCount: safetyBoxOrder,
+          realState: VaultState.AuctionFinished,
+          state: VaultState.AuctionFinished,
+        });
       }
     } catch (error) {
       notify({
