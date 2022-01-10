@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-import { useFraktion } from '../../contexts/fraktion';
+import { useFraktion, VaultState } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
@@ -77,6 +77,7 @@ const CollectionsPage: FC = () => {
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultsByCollectionName(vaults);
   }, [loading, vaults]);
+  console.log(vaultsByCollectionName);
 
   const filteredCollection = useMemo(() => {
     const [sortField, sortOrder] = sort.value.split('_');
@@ -141,7 +142,11 @@ const CollectionsPage: FC = () => {
                 key={idx}
                 collectionName={collectionName}
                 thumbnailPath={bannerPath}
-                vaultCount={vaultsByCollectionName[collectionName].length}
+                vaultCount={
+                  vaultsByCollectionName[collectionName].filter(
+                    (vault) => vault.state !== VaultState.Archived,
+                  ).length
+                }
               />
             </NavLink>
           ))}
