@@ -148,6 +148,7 @@ export interface NftMetadata {
 
 export interface VaultData extends Vault {
   hasMarket: boolean;
+  realState: VaultState;
   safetyBoxes: SafetyBoxWithMetadata[];
   auction: {
     auction: Auction | null;
