@@ -39,12 +39,12 @@ const CollectionPage: FC = () => {
   const { control, watch } = useForm({
     defaultValues: {
       showActiveVaults: true,
-      showAuctionLiveVaults: false,
-      showAuctionFinishedVaults: false,
+      showAuctionLiveVaults: true,
+      showAuctionFinishedVaults: true,
       showArchivedVaults: false,
       showMyVaults: false,
       showTradableVaults: false,
-      sort: SORT_VALUES[0],
+      sort: SORT_VALUES[1],
     },
   });
 
