@@ -20,18 +20,18 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'collectionName_desc',
-  },
-  {
-    label: (
-      <span>
         Name <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
   },
 ];
 
@@ -39,8 +39,8 @@ const CollectionPage: FC = () => {
   const { control, watch } = useForm({
     defaultValues: {
       showActiveVaults: true,
-      showAuctionLiveVaults: false,
-      showAuctionFinishedVaults: false,
+      showAuctionLiveVaults: true,
+      showAuctionFinishedVaults: true,
       showArchivedVaults: false,
       showMyVaults: false,
       showTradableVaults: false,
