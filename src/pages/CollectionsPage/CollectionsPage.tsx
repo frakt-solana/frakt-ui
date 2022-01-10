@@ -75,7 +75,10 @@ const CollectionsPage: FC = () => {
   }, 300);
 
   const vaultsByCollectionName = useMemo(() => {
-    return loading ? {} : mapVaultsByCollectionName(vaults);
+    const vaultsWithoutArchivedNft = vaults.filter(
+      (vault) => vault.state !== VaultState.Archived,
+    );
+    return loading ? {} : mapVaultsByCollectionName(vaultsWithoutArchivedNft);
   }, [loading, vaults]);
 
   const filteredCollection = useMemo(() => {
@@ -141,11 +144,7 @@ const CollectionsPage: FC = () => {
                 key={idx}
                 collectionName={collectionName}
                 thumbnailPath={bannerPath}
-                vaultCount={
-                  vaultsByCollectionName[collectionName].filter(
-                    (vault) => vault.state !== VaultState.Archived,
-                  ).length
-                }
+                vaultCount={vaultsByCollectionName[collectionName].length}
               />
             </NavLink>
           ))}
