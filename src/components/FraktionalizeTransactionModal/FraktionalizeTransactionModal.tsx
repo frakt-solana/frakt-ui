@@ -98,7 +98,7 @@ const SuccessContent = ({
     <div className={styles.successContent}>
       <h2 className={styles.successContent__title}>Congratulations!</h2>
       <p className={styles.successContent__subtitle}>
-        Tokens of your NFT should be in your wallet!
+        The token of your NFT/NFTs should now be in your wallet!
       </p>
       {!!fractionsMintAddress && (
         <div className={styles.successContent__fractionsMintWrapper}>
@@ -116,7 +116,8 @@ const SuccessContent = ({
             </Tooltip>
           </b>
           <p className={styles.successContent__subtitle}>
-            If you want fraktions to be tradable you need to create market
+            Do you want to make your fraktions tradable? Create a market right
+            now!
           </p>
           <p className={styles.warnText}>
             *Serum market creation can cost up to 5 SOL.

@@ -35,7 +35,7 @@ export const TradeTab = ({
     </div>
   ) : (
     <div className={styles.noMarket}>
-      <p>{"Looks like this vault doesn't have a Serum market"}</p>
+      <p>{"Looks like this vault doesn't have a Serum market yet."}</p>
       {connected && !!tokerName && (
         <>
           <Button
