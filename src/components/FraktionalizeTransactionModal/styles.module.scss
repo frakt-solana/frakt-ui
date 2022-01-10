@@ -46,7 +46,7 @@
   &__subtitle {
     font: var(--font-body-small);
     margin-top: 16px;
-    margin-bottom: 85px;
+    margin-bottom: 65px;
   }
 
   &__fractionsMintWrapper {
@@ -119,5 +119,15 @@
     font: var(--font-body-small);
     margin-top: 16px;
     margin-bottom: 200px;
+  }
+}
+
+.warnText {
+  font: var(--font-secondary);
+  margin-bottom: 10px;
+  color: var(--white-color);
+
+  @media screen and (max-width: 500px){
+    font-size: 10px;
   }
 }

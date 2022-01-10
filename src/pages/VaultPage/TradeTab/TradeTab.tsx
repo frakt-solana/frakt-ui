@@ -37,13 +37,18 @@ export const TradeTab = ({
     <div className={styles.noMarket}>
       <p>{"Looks like this vault doesn't have a Serum market"}</p>
       {connected && !!tokerName && (
-        <Button
-          type="alternative"
-          className={styles.createMarketBtn}
-          onClick={() => createMarket(vaultInfo.fractionMint, tokerName)}
-        >
-          Create market
-        </Button>
+        <>
+          <Button
+            type="alternative"
+            className={styles.createMarketBtn}
+            onClick={() => createMarket(vaultInfo.fractionMint, tokerName)}
+          >
+            Create market
+          </Button>
+          <p className={styles.warnText}>
+            *Serum market creation can cost up to 5 SOL.
+          </p>
+        </>
       )}
     </div>
   );

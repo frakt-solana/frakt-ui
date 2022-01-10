@@ -118,6 +118,9 @@ const SuccessContent = ({
           <p className={styles.successContent__subtitle}>
             If you want fraktions to be tradable you need to create market
           </p>
+          <p className={styles.warnText}>
+            *Serum market creation can cost up to 5 SOL.
+          </p>
           <Button
             type="alternative"
             className={styles.successContent__createMarketBtn}
