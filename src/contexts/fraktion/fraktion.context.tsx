@@ -19,6 +19,9 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   refetch: () => Promise.resolve(null),
   createVault: () => Promise.resolve(''),
   patchVault: () => {},
+  isPolling: false,
+  startPolling: () => {},
+  stopPolling: () => {},
 });
 
 export const FraktionProvider = ({
@@ -127,6 +130,9 @@ export const FraktionProvider = ({
           ),
         refetch: fetchData,
         patchVault,
+        isPolling,
+        startPolling,
+        stopPolling,
       }}
     >
       {children}

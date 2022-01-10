@@ -1,0 +1,48 @@
+.redeemBlock {
+  margin-top: 32px;
+  height: 80px;
+  border: 1px solid var(--gray-color-3);
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  max-width: 360px;
+}
+
+.redeemImg {
+  height: 80px;
+  width: 80px;
+  margin-left: -1px;
+  background-color: var(--gray-color-1);
+  background-position: center;
+  background-size: cover;
+}
+
+.redeemRight {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 12px;
+}
+
+.redeemBtn {
+  background-color: var(--yellow-color);
+  border: none;
+  height: auto;
+  padding: 10px 0;
+  flex-grow: 1;
+  align-self: stretch;
+  justify-content: center;
+
+  &:hover {
+    background-color: var(--yellow-color-hover);
+  }
+}
+
+.redeemNotice {
+  font: var(--font-smallest);
+  font-size: 12px;
+  color: var(--gray-color-8);
+  padding: 8px 0 0;
+}

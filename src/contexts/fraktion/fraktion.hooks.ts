@@ -13,6 +13,9 @@ export const useFraktion = (): FraktionContextType => {
     createMarket,
     refetch: fetchVaults,
     patchVault,
+    isPolling,
+    startPolling,
+    stopPolling,
   } = useContext(FraktionContext);
   return {
     loading,
@@ -23,5 +26,8 @@ export const useFraktion = (): FraktionContextType => {
     createMarket,
     refetch: fetchVaults,
     patchVault,
+    isPolling,
+    startPolling,
+    stopPolling,
   };
 };

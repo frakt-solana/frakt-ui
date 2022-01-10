@@ -196,6 +196,9 @@ export interface FraktionContextType {
   ) => Promise<boolean>;
   refetch: fetchDataFunction;
   patchVault: patchVaultFunction;
+  isPolling: boolean;
+  startPolling: () => void;
+  stopPolling: () => void;
 }
 
 export type GetVaults = (markets: Market[]) => Promise<VaultData[]>;
