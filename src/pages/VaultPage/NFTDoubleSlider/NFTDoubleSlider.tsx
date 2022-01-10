@@ -94,7 +94,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
         </>
       )}
       <AnchorLink smooth to="#allNftList" className={styles.toNftList}>
-        See all NFTs Inside the Vault
+        See all NFTs inside the vault
       </AnchorLink>
     </div>
   );
