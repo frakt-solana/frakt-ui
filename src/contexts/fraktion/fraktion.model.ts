@@ -45,7 +45,7 @@ export interface Vault {
   priceMint: string;
   allowFurtherShareCreation: boolean;
   pricingLookupAddress: string;
-  tokenTypeCount: string;
+  tokenTypeCount: number;
   state: VaultState;
   fractionsSupply: BN;
   lockedPricePerShare: BN;

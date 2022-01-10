@@ -127,7 +127,7 @@ export const parseVaults = (rawVaults: RawVault[] = []): Vault[] =>
       priceMint,
       allowFurtherShareCreation: !!allowFurtherShareCreation,
       pricingLookupAddress,
-      tokenTypeCount,
+      tokenTypeCount: new BN(tokenTypeCount, 16).toNumber(),
       state,
       fractionsSupply: new BN(fractionsSupply, 16),
       lockedPricePerShare: new BN(lockedPricePerShare, 16),
