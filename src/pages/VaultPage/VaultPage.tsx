@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
 
@@ -43,15 +43,10 @@ const VaultPage: FC = () => {
     nftName: '',
     nftIndex: 1,
   });
-  const sortedSafetyBoxes = useMemo(() => {
-    return vaultData?.safetyBoxes
-      ? [...vaultData.safetyBoxes].sort((a, b) => {
-          return a.nftName.localeCompare(b.nftName);
-        })
-      : [];
-  }, [vaultData]);
 
-  const collections = sortedSafetyBoxes.map((nft) => nft.nftCollectionName);
+  const collections = (vaultData?.safetyBoxes || []).map(
+    (nft) => nft.nftCollectionName,
+  );
 
   const vaultMarket = useMemo(() => {
     return vaultsMarkets?.find(
@@ -128,7 +123,7 @@ const VaultPage: FC = () => {
             <div className={styles.col}>
               <NFTDoubleSlider
                 vaultData={vaultData}
-                sortedSafetyBoxes={sortedSafetyBoxes}
+                safetyBoxes={vaultData?.safetyBoxes}
                 onSlideThumbClick={onSlideThumbClick}
                 currentSlideData={currentSlideData}
               />
@@ -190,7 +185,7 @@ const VaultPage: FC = () => {
             NFTs inside the vault
           </h4>
           <NFTList
-            safetyBoxes={sortedSafetyBoxes}
+            safetyBoxes={vaultData?.safetyBoxes}
             nftCollections={allNftsCollectionInfo}
           />
         </section>

@@ -23,7 +23,7 @@ const THUMBS_SLIDER_BREAKPOINTS = {
 
 interface NFTDoubleSliderProps {
   vaultData: VaultData;
-  sortedSafetyBoxes: SafetyBoxWithMetadata[];
+  safetyBoxes?: SafetyBoxWithMetadata[];
   onSlideThumbClick: (
     nftName: string,
     nftCollectionName: string,
@@ -37,7 +37,7 @@ interface NFTDoubleSliderProps {
 
 export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
   vaultData,
-  sortedSafetyBoxes,
+  safetyBoxes = [],
   onSlideThumbClick,
   currentSlideData,
 }) => {
@@ -50,7 +50,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
         className={styles.sliderBig}
         thumbs={{ swiper: thumbsSwiper }}
       >
-        {sortedSafetyBoxes.map((box) => (
+        {safetyBoxes.map((box) => (
           <SwiperSlide key={box.nftMint}>
             <div
               className={styles.slideBig}
@@ -69,7 +69,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
             scrollbar={{ draggable: true }}
             onSwiper={setThumbsSwiper}
           >
-            {sortedSafetyBoxes.map((box, index) => (
+            {safetyBoxes.map((box, index) => (
               <SwiperSlide
                 key={box.nftMint}
                 onClick={onSlideThumbClick(

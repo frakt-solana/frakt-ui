@@ -20,13 +20,13 @@ import Tooltip from '../../../components/Tooltip';
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
 interface NFTListProps {
-  safetyBoxes: SafetyBoxWithMetadata[];
+  safetyBoxes?: SafetyBoxWithMetadata[];
   nftCollections: CollectionData[];
   className?: string;
 }
 
 export const NFTList: FC<NFTListProps> = ({
-  safetyBoxes,
+  safetyBoxes = [],
   nftCollections,
   className,
 }) => {

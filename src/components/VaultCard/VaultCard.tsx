@@ -33,9 +33,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
   const currency =
     vaultData.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
-  const sortedSafetyBoxes = vaultData?.safetyBoxes.sort((a, b) => {
-    return a.nftName.localeCompare(b.nftName);
-  });
+  const safetyBoxes = vaultData?.safetyBoxes || [];
 
   useEffect(() => {
     setVaultTitleData({
@@ -64,11 +62,9 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
       )
     : null;
 
-  const noImg = !sortedSafetyBoxes.length;
-  const numberOfNftText = vaultData?.safetyBoxes.length > 1 ? 'NFTs' : 'NFT';
-  const isVaultVerified = vaultData?.safetyBoxes.every(
-    (nft) => nft.isNftVerified,
-  );
+  const noImg = !safetyBoxes.length;
+  const numberOfNftText = safetyBoxes.length > 1 ? 'NFTs' : 'NFT';
+  const isVaultVerified = safetyBoxes.every((nft) => nft.isNftVerified);
 
   const fractionsSupplyNum = +decimalBNToString(vaultData.fractionsSupply);
   const lockedPricePerShareNum = +decimalBNToString(
@@ -92,21 +88,21 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
               styles[`imageHovered${imageHoverIndex}`],
               {
                 [styles.noImg]: noImg,
-                [styles.has1Img]: !!sortedSafetyBoxes[0]?.nftImage,
-                [styles.has2Img]: !!sortedSafetyBoxes[1]?.nftImage,
-                [styles.has3Img]: !!sortedSafetyBoxes[2]?.nftImage,
+                [styles.has1Img]: !!safetyBoxes[0]?.nftImage,
+                [styles.has2Img]: !!safetyBoxes[1]?.nftImage,
+                [styles.has3Img]: !!safetyBoxes[2]?.nftImage,
               },
             )}
           >
             <div
               style={{
-                backgroundImage: `url(${sortedSafetyBoxes[0]?.nftImage})`,
+                backgroundImage: `url(${safetyBoxes[0]?.nftImage})`,
               }}
               className={styles.vaultImage}
             />
             <div
               style={{
-                backgroundImage: `url(${sortedSafetyBoxes[1]?.nftImage})`,
+                backgroundImage: `url(${safetyBoxes[1]?.nftImage})`,
               }}
               className={styles.vaultImage}
               onMouseEnter={onImageMouseEnter(1)}
@@ -114,7 +110,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             />
             <div
               style={{
-                backgroundImage: `url(${sortedSafetyBoxes[2]?.nftImage})`,
+                backgroundImage: `url(${safetyBoxes[2]?.nftImage})`,
               }}
               className={styles.vaultImage}
               onMouseEnter={onImageMouseEnter(2)}
