@@ -1,327 +1,103 @@
+import { PublicKey } from '@solana/web3.js';
 import {
-  Connection,
-  Keypair,
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
-import {
-  createFraktionalizer,
-  closeFraktionalizer,
-  redeemRewardsFromShares,
+  initBacket as initVaultTransaction,
+  addNFTsToBacket as addNFTsToVaultTransaction,
+  finishBacket as finishVaultTransaction,
 } from 'fraktionalizer-client-library';
+import { MARKETS } from '@project-serum/serum';
+import { WSOL } from '@raydium-io/raydium-sdk';
 import BN from 'bn.js';
-import { includes, keyBy } from 'lodash';
 
 import {
-  CreateFraktionalizerResult,
-  Market,
-  SafetyBox,
+  AddNFTsToVault,
+  CreateMarket,
+  CreateVault,
+  FinishVault,
+  GetVaults,
+  InitVault,
+  Vault,
   VaultData,
-  VaultsMap,
-  VaultState,
 } from './fraktion.model';
 import fraktionConfig from './config';
-import { IS_DEVNET, FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
-import { RawUserTokensByMint, UserNFT } from '../userTokens';
+import { IS_DEVNET } from '../../config';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
 import { notify } from '../../utils';
 import { listMarket } from '../../utils/serumUtils/send';
-import { MARKETS } from '@project-serum/serum';
-import { WSOL } from '@raydium-io/raydium-sdk';
 import { registerMarket } from '../../utils/markets';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
+import {
+  getVaultState,
+  mapAuctionsByVaultPubkey,
+  mapBidsByAuctionPubkey,
+  mapMarketExistenceByFractionMint,
+  mapMetadataByNftMint,
+  mapSafetyBoxesByVaultPubkey,
+  parseVaults,
+  transformToSafetyBoxesWithMetadata,
+} from './fraktion.helpers';
 
-const { FRAKTION_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
+const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
 
-export const getVaults = async (markets: Market[]): Promise<VaultData[]> => {
+export const getVaults: GetVaults = async (markets) => {
   const { allVaults, metas } = await (
     await fetch(VAULTS_AND_META_CACHE_URL)
   ).json();
 
-  const githubVerifiedMints = await (
-    await fetch(
-      `https://raw.githubusercontent.com/frakt-solana/verified-mints/main/mints.json`,
-    )
-  ).json();
+  const marketExistenceByFractionMint =
+    mapMarketExistenceByFractionMint(markets);
 
-  const hasMarketByMint = markets.reduce((acc, { baseMint }) => {
-    return { ...acc, [baseMint]: true };
-  }, {});
-
-  const { safetyBoxes: rawSafetyBoxes, vaults: rawVaults } = allVaults;
-
-  const metadataByMint = metas.reduce((acc, meta) => {
-    return { ...acc, [meta.mintAddress]: meta };
-  }, {});
-
-  const safetyBoxes = rawSafetyBoxes as SafetyBox[];
-  const vaultsMap = keyBy(rawVaults, 'vaultPubkey') as VaultsMap;
-
-  const vaultsData: VaultData[] = safetyBoxes.reduce(
-    (
-      acc,
-      { vault: vaultPubkey, tokenMint: nftMint, safetyBoxPubkey, store },
-    ) => {
-      const vault = vaultsMap[vaultPubkey];
-      const arweaveMetadata = metadataByMint[nftMint].fetchedMeta;
-      const verification =
-        metadataByMint[nftMint].isVerifiedStatus ||
-        includes(githubVerifiedMints, ({ mint }) => mint === nftMint);
-
-      if (vault && arweaveMetadata) {
-        const { name, description, image, attributes } = arweaveMetadata;
-        const {
-          authority,
-          fractionMint,
-          fractionsSupply,
-          lockedPricePerShare,
-          priceMint,
-          state,
-          fractionTreasury,
-          redeemTreasury,
-          createdAt,
-        } = vault;
-
-        const vaultData: VaultData = {
-          fractionMint,
-          authority,
-          supply: new BN(fractionsSupply, 16),
-          lockedPricePerFraction: new BN(lockedPricePerShare, 16),
-          priceTokenMint: priceMint,
-          publicKey: vaultPubkey,
-          state: VaultState[state],
-          nftMint,
-          name,
-          description,
-          imageSrc: image,
-          nftAttributes: attributes,
-          fractionTreasury,
-          redeemTreasury,
-          safetyBoxPubkey,
-          store,
-          isNftVerified: verification?.success || false,
-          nftCollectionName: verification?.collection,
-          createdAt: new BN(createdAt, 16).toNumber(),
-          buyoutPrice: new BN(lockedPricePerShare, 16).mul(
-            new BN(fractionsSupply, 16),
-          ),
-          hasMarket: hasMarketByMint[fractionMint] || false,
-        };
-
-        return [...acc, vaultData];
-      }
-
-      return acc;
-    },
-    [],
+  const vaults = parseVaults(allVaults?.vaults);
+  const safetyBoxesByVaultPubkey = mapSafetyBoxesByVaultPubkey(
+    allVaults?.safetyBoxes,
   );
+  const auctionByVaultPubkey = mapAuctionsByVaultPubkey(allVaults?.auctions);
+  const bidsByAuctionPubkey = mapBidsByAuctionPubkey(allVaults?.bids);
+  const metadataByNftMint = mapMetadataByNftMint(metas);
+
+  const vaultsData = vaults.map((vault: Vault): VaultData => {
+    const { vaultPubkey, fractionMint } = vault;
+    const relatedSafetyBoxes = safetyBoxesByVaultPubkey[vaultPubkey] || [];
+    const relatedAuction = auctionByVaultPubkey[vaultPubkey] || null;
+    const relatedBids =
+      bidsByAuctionPubkey[relatedAuction?.auctionPubkey] || [];
+
+    const relatedSafetyBoxesWithMetadata = transformToSafetyBoxesWithMetadata(
+      relatedSafetyBoxes,
+      metadataByNftMint,
+    );
+
+    //? Vault verified only if all nfts are verified
+    const isVaultVerified = relatedSafetyBoxesWithMetadata.every(
+      ({ isNftVerified }) => isNftVerified,
+    );
+
+    return {
+      ...vault,
+      //? set state of auction for frontend requirements (more info in getVaultRealState description)
+      state: getVaultState(vault.state, relatedAuction),
+      realState: vault.state,
+      isVerified: isVaultVerified,
+      hasMarket: marketExistenceByFractionMint[fractionMint] || false,
+      safetyBoxes: relatedSafetyBoxesWithMetadata,
+      auction: {
+        auction: relatedAuction,
+        bids: relatedBids,
+      },
+    };
+  });
 
   return vaultsData;
 };
 
-export const fraktionalize = async (
-  userNft: UserNFT,
-  tickerName: string,
-  pricePerFraction: number,
-  fractionsAmount: number,
-  token: 'SOL' | 'FRKT',
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-): Promise<CreateFraktionalizerResult | null> => {
-  try {
-    const { mint, metadata } = userNft;
-
-    const fractionsAmountBn = new BN(fractionsAmount * 1e3);
-
-    const pricePerFractionBn = adjustPricePerFraction(
-      new BN(pricePerFraction * 1e6),
-      fractionsAmountBn,
-    );
-
-    const result = await createFraktionalizer(
-      connection,
-      pricePerFractionBn, //1e9 for SOL, 1e8 for FRKT and divide by 1e6 (fraction decimals)
-      fractionsAmountBn,
-      FRACTION_DECIMALS,
-      mint,
-      ADMIN_PUBKEY,
-      token === 'SOL' ? SOL_TOKEN_PUBKEY : FRKT_TOKEN_MINT_PUBLIC_KEY,
-      walletPublicKey.toString(),
-      FRAKTION_PUBKEY,
-      async (txn, signers): Promise<void> => {
-        const { blockhash } = await connection.getRecentBlockhash();
-        txn.recentBlockhash = blockhash;
-        txn.feePayer = walletPublicKey;
-        txn.sign(...signers);
-        const signed = await signTransaction(txn);
-        const txid = await connection.sendRawTransaction(signed.serialize());
-        return void connection.confirmTransaction(txid);
-      },
-    );
-
-    if (result && !IS_DEVNET) {
-      const { fractionalMint, vault: vaultPubkey } = result;
-
-      registerToken(
-        tickerName,
-        fractionalMint,
-        metadata.image,
-        metadata.name,
-        vaultPubkey,
-      );
-    }
-
-    notify({
-      message: 'Fraktionalized successfully',
-      type: 'success',
-    });
-
-    return result;
-  } catch (error) {
-    notify({
-      message: 'Transaction failed',
-      type: 'error',
-    });
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return null;
-  }
-};
-
-export const buyout = async (
-  vault: VaultData,
-  userTokensByMint: RawUserTokensByMint,
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-): Promise<{
-  instructions: TransactionInstruction[];
-  signers: Keypair[];
-} | null> => {
-  const {
-    supply,
-    lockedPricePerFraction,
-    publicKey,
-    authority,
-    nftMint,
-    fractionMint,
-    priceTokenMint,
-    fractionTreasury,
-    redeemTreasury,
-    safetyBoxPubkey,
-    store,
-  } = vault;
-
-  try {
-    const userFractionTokenView = userTokensByMint[fractionMint];
-
-    const userFractionTokenAmount =
-      userFractionTokenView?.amountBN || new BN(0);
-
-    const result = await closeFraktionalizer(
-      connection,
-      supply.toNumber(),
-      lockedPricePerFraction
-        .mul(supply.sub(userFractionTokenAmount))
-        .toNumber(),
-      walletPublicKey,
-      ADMIN_PUBKEY,
-      new PublicKey(authority),
-      publicKey,
-      safetyBoxPubkey,
-      nftMint,
-      store,
-      fractionMint,
-      fractionTreasury,
-      redeemTreasury,
-      priceTokenMint,
-      FRAKTION_PUBKEY,
-      async (txn, signers): Promise<void> => {
-        const { blockhash } = await connection.getRecentBlockhash();
-        txn.recentBlockhash = blockhash;
-        txn.feePayer = walletPublicKey;
-        txn.sign(...signers);
-        const signed = await signTransaction(txn);
-        const txid = await connection.sendRawTransaction(signed.serialize());
-        return void connection.confirmTransaction(txid);
-      },
-    );
-
-    notify({
-      message: 'Buyout passed successfully',
-      type: 'success',
-    });
-
-    return result;
-  } catch (error) {
-    notify({
-      message: 'Transaction failed',
-      type: 'error',
-    });
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return null;
-  }
-};
-
-export const redeem = async (
-  vault: VaultData,
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-): Promise<{
-  instructions: TransactionInstruction[];
-  signers: Keypair[];
-} | null> => {
-  const { publicKey, fractionMint, priceTokenMint, redeemTreasury } = vault;
-
-  try {
-    const result = await redeemRewardsFromShares(
-      connection,
-      walletPublicKey.toString(),
-      publicKey,
-      priceTokenMint,
-      fractionMint,
-      redeemTreasury,
-      FRAKTION_PUBKEY,
-      async (txn): Promise<void> => {
-        const { blockhash } = await connection.getRecentBlockhash();
-        txn.recentBlockhash = blockhash;
-        txn.feePayer = walletPublicKey;
-        const signed = await signTransaction(txn);
-        const txid = await connection.sendRawTransaction(signed.serialize());
-        return void connection.confirmTransaction(txid);
-      },
-    );
-
-    notify({
-      message: 'Redeemed successfully',
-      type: 'success',
-    });
-
-    return result;
-  } catch (error) {
-    notify({
-      message: 'Transaction failed',
-      type: 'error',
-    });
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return null;
-  }
-};
-
-export const createFraktionsMarket = async (
-  fractionsMintAddress: string,
-  tickerName: string,
-  walletPublicKey: PublicKey,
-  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>,
-  connection: Connection,
-): Promise<boolean> => {
+export const createMarket: CreateMarket = async (
+  fractionsMint,
+  tickerName,
+  walletPublicKey,
+  signAllTransactions,
+  connection,
+) => {
   const dexProgramId = MARKETS.find(({ deprecated }) => !deprecated).programId;
   const LOT_SIZE = 0.1;
   const TICK_SIZE = 0.00001;
@@ -337,17 +113,13 @@ export const createFraktionsMarket = async (
       connection,
       walletPublicKey,
       signAllTransactions,
-      baseMint: new PublicKey(fractionsMintAddress),
+      baseMint: new PublicKey(fractionsMint),
       quoteMint: new PublicKey(WSOL.mint),
       baseLotSize: BASE_LOT_SIZE,
       quoteLotSize: QUOTE_LOT_SIZE,
       dexProgramId,
     });
-    await registerMarket(
-      tickerName,
-      marketAddress.toBase58(),
-      fractionsMintAddress,
-    );
+    await registerMarket(tickerName, marketAddress.toBase58(), fractionsMint);
     return true;
   } catch (err) {
     // eslint-disable-next-line no-console
@@ -359,4 +131,158 @@ export const createFraktionsMarket = async (
     });
     return false;
   }
+};
+
+export const createVault: CreateVault = async ({
+  userNfts = [],
+  pricePerFraction,
+  fractionsAmount,
+  walletPublicKey,
+  signTransaction,
+  connection,
+  unfinishedVaultData,
+  tokenData,
+}) => {
+  try {
+    //? If vault doesn't exist then init vault
+    const { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury } =
+      !unfinishedVaultData
+        ? await initVault(walletPublicKey, signTransaction, connection)
+        : unfinishedVaultData;
+
+    if (userNfts.length) {
+      await addNFTsToVault(
+        vaultPubkey,
+        userNfts,
+        walletPublicKey,
+        signTransaction,
+        connection,
+      );
+    }
+
+    await finishVault(
+      { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury },
+      pricePerFraction,
+      fractionsAmount,
+      walletPublicKey,
+      signTransaction,
+      connection,
+    );
+
+    //? Register token in our registry if it's mainnet
+    if (!IS_DEVNET) {
+      const { name, tickerName, imageUrl } = tokenData;
+      registerToken(tickerName, fractionalMint, imageUrl, name, vaultPubkey);
+    }
+
+    notify({
+      message: 'Fraktionalized successfully',
+      type: 'success',
+    });
+
+    return fractionalMint;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    notify({
+      message: 'Transaction failed',
+      type: 'error',
+    });
+    return null;
+  }
+};
+
+const initVault: InitVault = async (
+  walletPublicKey,
+  signTransaction,
+  connection,
+) => {
+  const {
+    vault: vaultPubkey,
+    fractionalMint,
+    fractionTreasury,
+    redeemTreasury,
+  } = await initVaultTransaction({
+    connection,
+    fractionDecimals: FRACTION_DECIMALS,
+    priceMint: SOL_TOKEN_PUBKEY,
+    userPubkey: walletPublicKey.toBase58(),
+    vaultProgramId: PROGRAM_PUBKEY,
+    sendTxn: async (txn, signers) => {
+      const { blockhash } = await connection?.getRecentBlockhash();
+      txn.recentBlockhash = blockhash;
+      txn.feePayer = walletPublicKey;
+      txn.sign(...signers);
+      const signed = await signTransaction(txn);
+      const txid = await connection.sendRawTransaction(signed.serialize());
+      return void connection.confirmTransaction(txid);
+    },
+  });
+
+  return { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury };
+};
+
+const addNFTsToVault: AddNFTsToVault = async (
+  vaultPubkey,
+  userNfts,
+  walletPublicKey,
+  signTransaction,
+  connection,
+) => {
+  await addNFTsToVaultTransaction({
+    connection,
+    nftMints: userNfts.map((nft) => nft.mint),
+    vaultProgramId: PROGRAM_PUBKEY,
+    userPubkey: walletPublicKey.toString(),
+    vaultStrPubkey: vaultPubkey,
+    sendTxn: async (txn, signers) => {
+      const { blockhash } = await connection?.getRecentBlockhash();
+      txn.recentBlockhash = blockhash;
+      txn.feePayer = walletPublicKey;
+      txn.sign(...signers);
+      const signed = await signTransaction(txn);
+      const txid = await connection.sendRawTransaction(signed.serialize());
+      return void connection.confirmTransaction(txid);
+    },
+  });
+};
+
+const finishVault: FinishVault = async (
+  unfinishedVaultData,
+  pricePerFraction,
+  fractionsAmount,
+  walletPublicKey,
+  signTransaction,
+  connection,
+) => {
+  const { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury } =
+    unfinishedVaultData;
+
+  const fractionsAmountBn = new BN(fractionsAmount * 1e3);
+
+  const pricePerFractionBn = adjustPricePerFraction(
+    new BN(pricePerFraction * 1e6),
+    fractionsAmountBn,
+  );
+
+  await finishVaultTransaction({
+    connection,
+    pricePerShare: pricePerFractionBn,
+    numberOfShares: fractionsAmountBn,
+    adminPubkey: ADMIN_PUBKEY,
+    userPubkey: walletPublicKey.toString(),
+    vault: vaultPubkey,
+    fractionalMint: fractionalMint,
+    fractionTreasury: fractionTreasury,
+    redeemTreasury: redeemTreasury,
+    vaultProgramId: PROGRAM_PUBKEY,
+    sendTxn: async (txn) => {
+      const { blockhash } = await connection.getRecentBlockhash();
+      txn.recentBlockhash = blockhash;
+      txn.feePayer = walletPublicKey;
+      const signed = await signTransaction(txn);
+      const txid = await connection.sendRawTransaction(signed.serialize());
+      return void connection.confirmTransaction(txid);
+    },
+  });
 };

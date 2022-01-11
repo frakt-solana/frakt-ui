@@ -1,17 +1,17 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { getAllUserTokens } from 'solana-nft-metadata';
-import { useConnection } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames/bind';
 import BN from 'bn.js';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { URLS } from '../../constants';
-import { useFraktion, VaultData } from '../../contexts/fraktion';
+import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { shortenAddress } from '../../utils/solanaUtils';
 import styles from './styles.module.scss';
 import { useTokenListContext } from '../../contexts/TokenList';
@@ -19,6 +19,9 @@ import { decimalBNToString } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
+import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
+import { TwitterIcon2 } from '../../icons';
+import Toggle from '../../components/Toggle/Toggle';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -27,17 +30,26 @@ interface TokenInfoWithAmount extends TokenInfo {
 const WalletPage = (): JSX.Element => {
   const history = useHistory();
   const [tab, setTab] = useState<'tokens' | 'vaults'>('tokens');
+  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
+    useNameServiceInfo();
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
+  const { connected, publicKey: connectedWalletPubkey } = useWallet();
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
 
+  const [showUnfinished, setShowUnfinished] = useState<boolean>(false);
+
   const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
+
+  const onToggleUnfinishedClick = () => {
+    setShowUnfinished(!showUnfinished);
+  };
 
   const fetchUserTokens = async () => {
     try {
-      //? Check if wallet valid
+      //? Checking if wallet valid
       new PublicKey(walletPubkey);
 
       const userTokens = await getAllUserTokens(new PublicKey(walletPubkey), {
@@ -72,9 +84,31 @@ const WalletPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensLoading]);
 
+  useEffect(() => {
+    walletPubkey && getNameServiceInfo(walletPubkey, connection);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletPubkey]);
+
   const userVaults = useMemo(() => {
     return vaults
-      .filter((vault) => vault.authority === walletPubkey)
+      .filter(
+        (vault) =>
+          vault.authority === walletPubkey &&
+          vault.state !== VaultState.Inactive &&
+          vault.state !== VaultState.Archived,
+      )
+      .sort(
+        (vaultA: VaultData, vaultB: VaultData) => vaultB.state - vaultA.state,
+      );
+  }, [vaults, walletPubkey]);
+
+  const userUnfinishedVaults = useMemo(() => {
+    return vaults
+      .filter(
+        (vault) =>
+          vault.authority === walletPubkey &&
+          vault.state === VaultState.Inactive,
+      )
       .sort(
         (vaultA: VaultData, vaultB: VaultData) =>
           vaultB?.createdAt - vaultA?.createdAt,
@@ -91,9 +125,29 @@ const WalletPage = (): JSX.Element => {
         <div className={styles.pageHeader}>
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>Wallet collection</h2>
-            <h3 className={styles.description}>{`${shortenAddress(
-              walletPubkey,
-            )}`}</h3>
+            <h3 className={styles.description}>
+              <div
+                className={styles.ownerAvatar}
+                style={{
+                  backgroundImage: `url(${getOwnerAvatar(
+                    nameServiceInfo.twitterHandle,
+                  )})`,
+                }}
+              />
+              {nameServiceInfo?.domain
+                ? `${nameServiceInfo?.domain} (${shortenAddress(walletPubkey)})`
+                : `${shortenAddress(walletPubkey)}`}
+              {nameServiceInfo?.twitterHandle && (
+                <a
+                  className={styles.ownerTwitter}
+                  href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <TwitterIcon2 width={24} className={styles.twitterIcon} />
+                </a>
+              )}
+            </h3>
           </div>
           <div className={styles.tabs}>
             <button
@@ -145,30 +199,50 @@ const WalletPage = (): JSX.Element => {
                 <Loader size={'large'} />
               </div>
             ) : (
-              <div className={styles.vaults}>
-                {!userVaults.length && (
-                  <p className={styles.emptyMessage}>No vaults found</p>
+              <>
+                <div className={styles.filters}>
+                  {connected &&
+                    connectedWalletPubkey.toString() === walletPubkey && (
+                      <Toggle
+                        value={showUnfinished}
+                        label="Show unfinished"
+                        className={styles.filter}
+                        onChange={onToggleUnfinishedClick}
+                      />
+                    )}
+                </div>
+                {showUnfinished ? (
+                  <div className={styles.vaults}>
+                    {!userUnfinishedVaults.length && (
+                      <p className={styles.emptyMessage}>
+                        No unfinished vaults found
+                      </p>
+                    )}
+                    {userUnfinishedVaults.map((vault) => (
+                      <NavLink
+                        key={vault.vaultPubkey}
+                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+                      >
+                        <VaultCard vaultData={vault} />
+                      </NavLink>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.vaults}>
+                    {!userVaults.length && (
+                      <p className={styles.emptyMessage}>No vaults found</p>
+                    )}
+                    {userVaults.map((vault) => (
+                      <NavLink
+                        key={vault.vaultPubkey}
+                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+                      >
+                        <VaultCard vaultData={vault} />
+                      </NavLink>
+                    ))}
+                  </div>
                 )}
-                {userVaults.map((vault) => (
-                  <NavLink
-                    key={vault.publicKey}
-                    to={`${URLS.VAULT}/${vault.publicKey}`}
-                  >
-                    <VaultCard
-                      fractionMint={vault.fractionMint}
-                      name={vault.name}
-                      owner={vault.authority}
-                      vaultState={vault.state}
-                      imageSrc={vault.imageSrc}
-                      supply={vault.supply}
-                      isNftVerified={vault.isNftVerified}
-                      pricePerFraction={vault.lockedPricePerFraction}
-                      priceTokenMint={vault.priceTokenMint}
-                      buyoutPrice={vault.buyoutPrice}
-                    />
-                  </NavLink>
-                ))}
-              </div>
+              </>
             )}
           </>
         )}

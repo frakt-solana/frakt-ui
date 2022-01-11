@@ -1,195 +1,121 @@
-import { useEffect, useState } from 'react';
-import BN from 'bn.js';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
-
-import Button from '../../../components/Button';
 import { UserNFT } from '../../../contexts/userTokens';
 import styles from './styles.module.scss';
-import { TickerInput } from './TickerInput';
-import { SupplyInput } from './SupplyInput';
-import { BuyoutField } from './BuyoutField';
-import { shortBigNumber } from '../../../utils';
+import { Header } from './Header';
+import { DetailsForm } from './DetailsForm/DetailsForm';
+import { useFraktion } from '../../../contexts/fraktion';
+import { useHistory } from 'react-router';
+import { URLS } from '../../../constants';
+import { FraktionalizeTxnData } from '../hooks';
 
 interface SidebarProps {
-  onRemoveClick?: () => void;
-  onContinueClick: (
-    userNft: UserNFT,
-    tickerName: string,
-    pricePerFraction: number,
-    fractionsAmount: number,
-  ) => void;
-  token: UserNFT;
+  onDeselect?: (nft: UserNFT) => void;
+  currentVaultPubkey: string;
+  onContinueClick: (params: FraktionalizeTxnData) => Promise<void>;
+  nfts: UserNFT[];
 }
 
 const Sidebar = ({
-  onRemoveClick,
-  token,
+  onDeselect,
+  currentVaultPubkey,
+  nfts,
   onContinueClick,
 }: SidebarProps): JSX.Element => {
-  const [buyoutPrice, setBuyoutPrice] = useState<string>('');
-  const [supply, setSupply] = useState<string>('');
-  const [ticker, setTicker] = useState<string>('');
+  const [isMobileSidebar, setIsMobileSidebar] = useState(false);
+  const isBasket = nfts.length > 1;
 
-  const [tickerError, setTickerError] = useState<string>('');
-  const [supplyError, setSupplyError] = useState<string>('');
-  const [buyoutPriceError, setBuyoutPriceError] = useState<string>('');
-  const [smallFractionPriceError, setSmallFractionPriceError] =
-    useState<string>('');
+  const { vaults } = useFraktion();
+  const history = useHistory();
 
-  const validateFractionPrice = () => {
-    if (
-      supply.length &&
-      buyoutPrice.length &&
-      Number(buyoutPrice) / Number(supply) < 1e-6
-    ) {
-      return setSmallFractionPriceError(
-        'Price per fraktion must be greater than 1e-6',
-      );
+  const currentVault = useMemo(
+    () => vaults.find((el) => el.vaultPubkey === currentVaultPubkey),
+    [currentVaultPubkey, vaults],
+  );
+  const lockedNfts = currentVault?.safetyBoxes || [];
+
+  const changeSidebarVisibility = () => {
+    setIsMobileSidebar(!isMobileSidebar);
+  };
+
+  const isSidebarClosed = !nfts.length && !lockedNfts?.length;
+
+  useEffect(() => {
+    if (!nfts.length) {
+      setIsMobileSidebar(false);
     }
-    setSmallFractionPriceError('');
-  };
-
-  useEffect(() => {
-    validateFractionPrice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [supply, buyoutPrice]);
-
-  useEffect(() => {
-    setBuyoutPrice('');
-    setSupply('');
-    setTicker('');
-  }, [token]);
-
-  const continueClickHanlder = () => {
-    onContinueClick(
-      token,
-      ticker,
-      Number(buyoutPrice) / Number(supply),
-      Number(supply),
-    );
-  };
-
-  const isBtnDisabled = () => {
-    return (
-      !!smallFractionPriceError ||
-      !buyoutPrice ||
-      !!buyoutPriceError ||
-      !supply ||
-      !!supplyError ||
-      !token ||
-      ticker?.length < 3 ||
-      !!tickerError
-    );
-  };
-
-  const pricePerFraktion =
-    buyoutPrice && supply && Number(buyoutPrice) / Number(supply);
-  const pricePerFrktBN = pricePerFraktion
-    ? new BN(pricePerFraktion * 10e5)
-    : null;
+  }, [nfts.length]);
 
   return (
     <div
       className={classNames([
-        styles.sidebar,
-        { [styles.sidebar_visible]: !!token },
+        styles.sidebarWrapper,
+        { [styles.visible]: !isSidebarClosed },
+        { [styles.mobileSidebar]: isMobileSidebar },
       ])}
     >
-      <div className={styles.sidebar__header}>
-        <p className={styles.sidebar__title}>Your NFT</p>
+      <div className={styles.overflow} onClick={changeSidebarVisibility} />
+      {!!(nfts.length + lockedNfts.length) && (
         <div
-          className={styles.sidebar__image}
-          style={{ backgroundImage: `url(${token?.metadata?.image})` }}
+          className={styles.selectedVaults}
+          onClick={changeSidebarVisibility}
         >
-          <button
-            className={styles.sidebar__removeBtn}
-            onClick={onRemoveClick}
-          />
-        </div>
-        <div className={styles.sidebar__separator} />
-      </div>
-
-      <div className={styles.sidebar__details}>
-        <p className={styles.sidebar__detailsTitle}>Vault details</p>
-
-        <div className={styles.sidebar__fieldWrapper}>
-          <p className={styles.sidebar__fieldLabel}>Name</p>
-          <p className={styles.sidebar__tokenName}>
-            {token?.metadata?.name || 'Unknown'}
+          <p>
+            Your NFT{isBasket && 's'} ({nfts.length + lockedNfts.length})
           </p>
         </div>
-        <div className={styles.sidebar__fieldWrapperDouble}>
-          <div className={styles.sidebar__fieldWrapper}>
-            <p className={styles.sidebar__fieldLabel}>Supply</p>
-            <SupplyInput
-              supply={supply}
-              setSupply={setSupply}
-              error={supplyError}
-              maxLength={9}
-              setError={setSupplyError}
-            />
-          </div>
-          <div className={styles.sidebar__fieldWrapper}>
-            <p className={styles.sidebar__fieldLabel}>Ticker</p>
-            <TickerInput
-              value={ticker}
-              setTicker={setTicker}
-              tickerError={tickerError}
-              setTickerError={setTickerError}
-            />
-          </div>
+      )}
+      <div className={styles.sidebar}>
+        <Header
+          lockedNFT={lockedNfts}
+          isBasket={isBasket}
+          nfts={nfts}
+          onDeselect={onDeselect}
+        />
+        <div className={styles.toggle_wrapper}>
+          <div className={styles.separator} />
         </div>
-        <div className={styles.fraktionPrice}>
-          Fraktion price
-          <span className={styles.line} />
-          {!smallFractionPriceError && (
-            <>
-              {pricePerFrktBN ? shortBigNumber(pricePerFrktBN, 2, 6) : '0.00'}{' '}
-              SOL
-            </>
-          )}
-          {smallFractionPriceError && 'Error'}
-        </div>
-        <div className={styles.sidebar__fieldWrapper}>
-          <p className={styles.sidebar__fieldLabel}>Buyout price</p>
-          <BuyoutField
-            buyoutPrice={buyoutPrice}
-            setBuyoutPrice={setBuyoutPrice}
-            maxLength={5}
-            error={buyoutPriceError}
-            setError={setBuyoutPriceError}
-          />
-        </div>
-        <div
-          className={classNames(
-            styles.sidebar__fieldWrapper,
-            styles.sidebar__fieldWrapper_error,
-          )}
-        >
-          {[smallFractionPriceError, buyoutPriceError, tickerError, supplyError]
-            .filter((error) => error)
-            .map((error, idx) => (
-              <p className={styles.err} key={idx}>
-                {error}
-              </p>
-            ))}
-        </div>
-      </div>
+        {!isSidebarClosed && (
+          <DetailsForm
+            onSubmit={({ ticker, pricePerFraktion, supply, vaultName }) => {
+              const transformedLockedNfts: UserNFT[] = lockedNfts.map(
+                ({
+                  nftImage,
+                  nftAttributes,
+                  nftMint,
+                  nftDescription,
+                  nftName,
+                }) => {
+                  return {
+                    mint: nftMint,
+                    metadata: {
+                      name: nftName,
+                      symbol: '',
+                      description: nftDescription,
+                      image: nftImage,
+                      animation_url: '',
+                      external_url: '',
+                      attributes: nftAttributes,
+                      properties: null,
+                    },
+                  } as UserNFT;
+                },
+              );
 
-      <div className={styles.sidebar__continueBtnContainer}>
-        <p className={styles.sidebar__feeMessage}>
-          * Fraktionalization fees:
-          <br />
-          0.5% of buyout price [min. 0.5 SOL]
-        </p>
-        <Button
-          type="alternative"
-          className={styles.sidebar__continueBtn}
-          disabled={isBtnDisabled()}
-          onClick={continueClickHanlder}
-        >
-          Continue
-        </Button>
+              onContinueClick({
+                newNfts: nfts,
+                lockedNfts: transformedLockedNfts,
+                tickerName: ticker,
+                pricePerFraction: pricePerFraktion,
+                fractionsAmount: Number(supply),
+                vaultName,
+                vault: currentVault,
+              }).then(() => {
+                history.push(URLS.FRAKTIONALIZE);
+              });
+            }}
+          />
+        )}
       </div>
     </div>
   );

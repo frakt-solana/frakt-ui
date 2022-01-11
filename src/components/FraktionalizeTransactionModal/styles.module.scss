@@ -1,31 +1,58 @@
 .loadingContent {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 24px;
   font: var(--font-btn-mid);
   color: var(--white-color);
+}
+
+.infoTitle {
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 1.25em;
+
+  @media screen and (max-width: 450px) {
+    font-size: 35px;
+  }
+}
+
+.infoSubtitle {
+  font-size: 18px;
+  line-height: 24px;
+  opacity: .5;
+  text-align: left;
+  margin-bottom: 160px;
 }
 
 .successContent {
   padding-top: 70px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 
   &__title {
-    font: var(--font-subtitle);
+    font: var(--font-h4);
+    color: var(--yellow-color);
+
+    @media screen and (max-width: 450px) {
+      font-size: 35px;
+    }
+
+    @media screen and (max-width: 350px) {
+      font-size: 30px;
+    }
   }
 
   &__subtitle {
     font: var(--font-body-small);
+    margin-top: 16px;
+    margin-bottom: 65px;
   }
 
   &__fractionsMintWrapper {
-    padding-top: 44px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 
     b {
       font-weight: 700;
@@ -35,12 +62,41 @@
   }
 
   &__fractionsMintTitle {
-    color: var(--white-color);
+    font: var(--font-body-small);
+    margin-bottom: 16px;
   }
 
   &__createMarketBtn {
-    padding: 18px;
-    margin-top: 8px;
+    height: 88px;
+    width: calc(100% + 48px);
+    font: var(--font-btn-mid);
+    background-color: transparent;
+    border-color: var(--gray-color-3);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    margin-bottom: -24px;
+    margin-left: -24px;
+    display: inline-block;
+
+    &:hover {
+      background-color: var(--gray-color-9);
+      border-color: var(--gray-color-3);
+    }
+  }
+
+  .fractionsMint {
+    cursor: pointer;
+    padding-top: 6px;
+    word-break: break-word;
+    line-height: 1.33em;
+
+    svg {
+      vertical-align: text-bottom;
+      width: 44px;
+      padding-right: 10px;
+      padding-left: 10px;
+    }
   }
 }
 
@@ -48,18 +104,30 @@
   padding-top: 70px;
   display: flex;
   flex-direction: column;
-  align-items: center;
 
   &__title {
-    font: var(--font-subtitle);
+    font: var(--font-h4);
+    line-height: 1.25em;
+    color: var(--pink-color);
+
+    @media screen and (max-width: 450px) {
+      font-size: 35px;
+    }
   }
 
   &__subtitle {
     font: var(--font-body-small);
-    margin-bottom: 32px;
+    margin-top: 16px;
+    margin-bottom: 200px;
   }
+}
 
-  &__retryBtn {
-    padding: 16px 20px;
+.warnText {
+  font: var(--font-secondary);
+  margin-bottom: 10px;
+  color: var(--white-color);
+
+  @media screen and (max-width: 500px){
+    font-size: 10px;
   }
 }

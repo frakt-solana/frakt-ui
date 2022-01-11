@@ -1,0 +1,1 @@
+export { FinishedAuction } from './FinishedAuction';

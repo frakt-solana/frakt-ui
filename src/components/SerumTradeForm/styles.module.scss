@@ -85,13 +85,16 @@
       border-color: var(--gray-color-8);
       background-color: var(--gray-color-8);
     }
+
     .ant-slider-dot-active {
       border-color: var(--gray-color-8);
       background-color: var(--gray-color-8);
     }
+
     .ant-slider-step {
       background-color: var(--gray-color-2);
     }
+
     .ant-slider-track {
       background-color: var(--accent-color-3);
     }
@@ -105,3 +108,11 @@
     }
   }
 }
+
+@media screen and (max-width: 560px) {
+  div.slider {
+    margin-top: 30px;
+    margin-bottom: 70px;
+  }
+}
+

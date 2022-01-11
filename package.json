@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@bonfida/spl-name-service": "^0.1.24",
     "@craco/craco": "^5.7.0",
     "@project-serum/anchor": "^0.18.0",
     "@project-serum/serum": "^0.13.60",
@@ -21,11 +22,9 @@
     "bn.js": "^5.2.0",
     "borsh": "^0.6.0",
     "classnames": "^2.3.1",
-    "fraktionalizer-client-library": "^1.5.1",
-    "i": "^0.3.7",
+    "fraktionalizer-client-library": "^2.2.2",
     "immutable-tuple": "^0.4.10",
     "moment": "^2.29.1",
-    "npm": "^8.1.4",
     "numeral": "^2.0.6",
     "rc-tooltip": "^5.1.1",
     "react": "^16.13.1",
@@ -41,12 +40,13 @@
     "sass": "^1.43.4",
     "solana-nft-metadata": "^1.0.5",
     "styled-components": "^5.3.3",
-    "superstruct": "^0.8.3"
+    "superstruct": "^0.8.3",
+    "swiper": "^7.4.1"
   },
   "scripts": {
     "start": "npm run devnet",
     "devnet": "cross-env REACT_APP_NETWORK=devnet craco start",
-    "mainnet": "craco start",
+    "mainnet": "cross-env REACT_APP_NETWORK=mainnet craco start",
     "build": "craco build",
     "build:devnet": "REACT_APP_NETWORK=devnet craco build",
     "lint": "eslint . --ext .ts,.tsx",

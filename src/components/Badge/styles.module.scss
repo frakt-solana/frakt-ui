@@ -1,12 +1,20 @@
 .label {
   border: 1px solid var(--gray-color-3);
   padding: 6px 8px;
-  height: 30px;
+  height: 24px;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 10px;
   display: inline-block;
   cursor: pointer;
   color: var(--white-color);
+
+  svg {
+    max-width: 14px;
+  }
+
+  @media screen and (max-width: 550px) {
+    font-size: 9px;
+  }
 }
 
 .labelStrict {

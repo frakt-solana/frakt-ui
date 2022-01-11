@@ -82,19 +82,31 @@ const Statistics = (): JSX.Element => {
         <div className={styles.stat}>
           <span className={styles.title}>NFTs Locked in Vaults</span>
           <span className={styles.value}>
-            {isLoading ? '--' : <span ref={lockedNFTRef} />}
+            <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
+            <span
+              ref={lockedNFTRef}
+              style={{ display: isLoading ? 'none' : 'inline' }}
+            />
           </span>
         </div>
         <div className={styles.stat}>
           <span className={styles.title}>Issued Tokens</span>
           <span className={styles.value}>
-            {isLoading ? '--' : <span ref={issuedTokensRef} />}
+            <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
+            <span
+              ref={issuedTokensRef}
+              style={{ display: isLoading ? 'none' : 'inline' }}
+            />
           </span>
         </div>
         <div className={styles.stat}>
           <span className={styles.title}>Total Value Locked</span>
           <span className={styles.value}>
-            {isLoading ? '--' : <span ref={tvlRef} />}
+            <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
+            <span
+              ref={tvlRef}
+              style={{ display: isLoading ? 'none' : 'inline' }}
+            />
           </span>
         </div>
       </Container>

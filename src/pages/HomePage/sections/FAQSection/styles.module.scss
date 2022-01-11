@@ -40,6 +40,7 @@
       background-size: 100%;
       opacity: 0.3;
       transition: opacity var(--transition-1);
+      flex-shrink: 0;
     }
   }
 

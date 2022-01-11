@@ -15,6 +15,10 @@
   b {
     font-weight: 900;
   }
+
+  @media screen and (max-width: 560px) {
+    font-size: 16vw;
+  }
 }
 
 .subtitle {

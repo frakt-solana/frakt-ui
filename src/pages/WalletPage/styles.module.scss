@@ -1,51 +1,119 @@
 .container {
   padding-top: 64px;
   padding-bottom: 64px;
+
+  @media screen and (max-width: 767px) {
+    max-width: 100%;
+    padding-top: 50px;
+  }
 }
 
 .pageHeader {
   margin-bottom: 36px;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+  }
 }
 
 .title {
   font-size: 48px;
   font-weight: bold;
   margin-bottom: 2px;
+
+  @media screen and (max-width: 1023px) {
+    font-size: 40px;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 32px;
+  }
 }
 
 .description {
   font-size: 24px;
+  display: flex;
+  align-items: center;
+
+  .ownerTwitter {
+    margin-left: 16px;
+    opacity: 1;
+    transition: opacity var(--transition-1);
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+
+  .twitterIcon {
+    margin-top: 4px;
+  }
+
+  .ownerAvatar {
+    margin-right: 10px;
+    width: 32px;
+    height: 32px;
+    background: var(--gray-color-3) no-repeat center;
+    background-size: cover;
+    border-radius: 50%;
+  }
+
+  @media screen and (max-width: 1023px) {
+    font-size: 20px;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 18px;
+  }
 }
 
 .tabs {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 30px;
+
+  @media screen and (max-width: 767px) {
+    margin-top: 20px;
+    flex-grow: 1;
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .tab {
-  padding: 32px 24px;
-  min-width: 140px;
-  font: var(--font-btn-small);
-  color: var(--white-color);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background var(--transition-1), color var(--transition-1);
+   padding: 18px 24px;
+   width: 120px;
+   font: var(--font-btn-small);
+   color: var(--white-color);
+   background: transparent;
+   border: 1px solid var(--gray-color-3);
+   cursor: pointer;
+   transition: background var(--transition-1), color var(--transition-1);
 
-  &:hover {
-    background: var(--gray-color-7);
+   @media screen and (max-width: 1023px) {
+     font-size: 15px;
+     height: 38px;
+     padding-top: 10px;
+   }
+
+  @media screen and (max-width: 767px) {
+    width: 50%;
   }
 
-  &Active,
-  &Active:hover {
-    background: var(--white-color);
-    color: var(--black-color);
-    pointer-events: none;
-  }
-}
+   &:hover {
+     background: var(--gray-color-7);
+   }
+
+   &Active,
+   &Active:hover {
+     background: var(--white-color);
+     color: var(--black-color);
+     pointer-events: none;
+   }
+ }
 
 .tokensContainer {
   display: flex;
@@ -81,6 +149,7 @@
     border-radius: 50%;
     height: 48px;
     width: 48px;
+    flex-shrink: 0;
   }
 
   &__name {
@@ -96,14 +165,26 @@
 
   &__btn {
     padding: 0 24px;
+
+    @media screen and (max-width: 400px) {
+      display: none;
+    }
   }
 }
 
 .vaults {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
   gap: 24px;
   align-items: stretch;
+
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(2, minmax(158px, 1fr));
+  }
+
+  @media screen and (max-width: 370px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
 }
 
 .emptyMessage {
@@ -115,4 +196,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.filters {
+  margin-bottom: 35px;
 }

@@ -1,0 +1,56 @@
+.infoTable {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px 30px;
+  margin-bottom: 50px;
+
+  @media screen and (max-width: 850px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media screen and (max-width: 767px) {
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+
+  @media screen and (max-width: 350px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &__cellName {
+    font: var(--font-smallest);
+    text-transform: uppercase;
+    color: var(--gray-color-3);
+    letter-spacing: 0.03em;
+    line-height: 12px;
+    margin-bottom: 8px;
+
+    @media screen and (max-width: 767px) {
+      font-size: 9px;
+      margin-bottom: 10px;
+    }
+  }
+
+  &__cellValue {
+    font: var(--font-btn-mid);
+    color: var(--white-color);
+    line-height: 1.25em;
+
+    @media screen and (max-width: 1032px) {
+      font-size: 18px;
+    }
+
+    @media screen and (max-width: 900px) {
+      font-size: 15px;
+    }
+  }
+
+  &__cellValueCopy {
+    cursor: pointer;
+    display: flex;
+  }
+}
+
+.copyIcon {
+  margin-left: 4px;
+}

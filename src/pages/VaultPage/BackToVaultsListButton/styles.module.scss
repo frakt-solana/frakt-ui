@@ -1,0 +1,25 @@
+.backLink {
+  display: flex;
+  align-items: center;
+  color: var(--gray-color-3);
+  max-width: 200px;
+  transition: color var(--transition-1);
+
+  &:hover {
+    color: white;
+
+    .arrowIcon path {
+      fill: white;
+    }
+  }
+}
+
+.arrowIcon {
+  transition: transform var(--transition-1);
+  margin-right: 12px;
+
+  path {
+    fill: var(--gray-color-3);
+    transition: fill var(--transition-1);
+  }
+}

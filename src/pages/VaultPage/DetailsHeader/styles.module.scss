@@ -1,0 +1,76 @@
+.detailsHeader {
+  @media screen and (max-width: 767px) {
+    margin-top: 30px;
+  }
+  @media screen and (max-width: 650px) {
+    margin-top: 25px;
+  }
+}
+
+.title {
+  font: var(--font-h4);
+  color: var(--white-color);
+  margin-bottom: 16px;
+  line-height: 1.25em;
+
+  @media screen and (max-width: 767px) {
+    font-size: 32px;
+  }
+}
+
+.statusAndOwner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  text-transform: uppercase;
+  cursor: default;
+}
+
+.owner {
+  font: var(--font-secondary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .ownerLink {
+    color: var(--accent-color-1);
+    display: flex;
+    align-items: center;
+    transition: color var(--transition-1);
+
+    &:hover {
+      color: var(--accent-color-3);
+    }
+  }
+
+  .ownerAvatar {
+    margin-right: 10px;
+    margin-bottom: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gray-color-3) no-repeat center;
+    background-size: cover;
+  }
+
+  .ownerTwitter {
+    margin-left: 10px;
+    opacity: 1;
+    transition: opacity var(--transition-1);
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+}

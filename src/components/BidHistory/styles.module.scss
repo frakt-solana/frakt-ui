@@ -1,0 +1,92 @@
+.bid {
+  max-height: 175px;
+  overflow-y: auto;
+  padding-right: 8px;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-color-3);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--gray-color-3);
+  font: var(--font-secondary);
+  color: var(--white-color);
+
+  &:first-child .bidder::after {
+    content: 'winner';
+    margin-left: 14px;
+    color: var(--yellow-color)
+  }
+}
+
+.number {
+  font-weight: bold;
+  margin-right:8px;
+}
+
+.bidder {
+  padding-right: 15px;
+  margin-right: auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.price {
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.solanaCurrency {
+  margin-left: 5px;
+}
+
+.refund {
+  margin-left: auto;
+  color: var(--white-color);
+  font: var(--font-btn-smallest);
+  background: var(--bg-btn-color-1);
+  border: 1px solid var(--border-btn-color-1);
+  cursor: pointer;
+  height: 22px;
+  line-height: 21px;
+  padding-left: 24px;
+  padding-right: 24px;
+  min-width: 100px;
+  transition: all var(--transition-1);
+
+  &:hover {
+    background-color: var(--border-btn-color-1);
+    border-color: var(--accent-color-3);
+  }
+}
+
+.refundPossibleBtn {
+  color: var(--white-color);
+  font: var(--font-btn-small);
+  background: var(--bg-btn-color-1);
+  border: 1px solid var(--border-btn-color-1);
+  cursor: pointer;
+  height: 48px;
+  line-height: 21px;
+  margin-top: 24px;
+  padding-left: 24px;
+  padding-right: 24px;
+  min-width: 100px;
+  width: 100%;
+  transition: all var(--transition-1);
+
+  &:hover {
+    background-color: var(--border-btn-color-1);
+    border-color: var(--accent-color-3);
+  }
+
+}

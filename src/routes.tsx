@@ -27,7 +27,9 @@ import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { SwapContextProvider } from './contexts/Swap';
-import LiquidityPage from './pages/PoolsPage';
+import CollectionsPage from './pages/CollectionsPage';
+import CollectionPage from './pages/CollectionPage';
+import PoolsPage from './pages/PoolsPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -75,7 +77,7 @@ export const Routes = (): JSX.Element => {
                       />
                       <Route
                         exact
-                        path={URLS.FRAKTIONALIZE}
+                        path={`${URLS.FRAKTIONALIZE}/:vaultPubkey?`}
                         component={(): JSX.Element => <FraktionalizePage />}
                       />
                       <Route
@@ -85,8 +87,18 @@ export const Routes = (): JSX.Element => {
                       />
                       <Route
                         exact
+                        path={URLS.COLLECTIONS}
+                        component={(): JSX.Element => <CollectionsPage />}
+                      />
+                      <Route
+                        exact
+                        path={`${URLS.COLLECTION}/:collectionName`}
+                        component={(): JSX.Element => <CollectionPage />}
+                      />
+                      <Route
+                        exact
                         path={URLS.LIQUIDITY}
-                        component={(): JSX.Element => <LiquidityPage />}
+                        component={(): JSX.Element => <PoolsPage />}
                       />
                       <Route
                         exact

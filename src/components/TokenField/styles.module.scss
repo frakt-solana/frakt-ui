@@ -1,7 +1,6 @@
 @mixin resetBtnStyle {
   &,
-  &:focus,
-  &:focus-visible {
+  &:focus {
     background: none;
     border: none;
     cursor: pointer;
@@ -13,12 +12,12 @@
   border: 1px solid var(--gray-color-3);
   display: flex;
   justify-content: flex-end;
-  height: 88px;
 
   //? Remove arrows from number input
   input[type='number'] {
     -moz-appearance: textfield;
   }
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -63,12 +62,22 @@
   }
 }
 
+.disabled {
+  pointer-events: none;
+  flex-grow: 2;
+  flex-shrink: 1;
+  max-width: 60%;
+
+  @media screen and (max-width: 380px) {
+    max-width: 55%;
+  }
+}
+
 body input.valueInput {
   &,
   &:hover,
   &:active,
   &:focus,
-  &:focus-visible,
   &:not(.styles_ant-input):hover {
     background: none;
     border: none;
@@ -80,13 +89,20 @@ body input.valueInput {
   padding: 0 25px;
   display: flex;
   align-items: center;
+
+  @media screen and (max-width: 440px) {
+    padding-left: 0;
+    padding-right: 5px;
+  }
 }
 
 .useMaxBtn {
   @include resetBtnStyle;
+
   & {
     border: 1px solid var(--gray-color-2);
   }
+
   font: var(--font-btn-small);
   text-transform: uppercase;
   transition: background var(--transition-1), border-color var(--transition-1);
@@ -98,6 +114,10 @@ body input.valueInput {
 
   &:hover {
     background: var(--gray-color-2);
+  }
+
+  @media screen and (max-width: 440px) {
+    min-width: 90px;
   }
 }
 
@@ -143,6 +163,11 @@ body input.valueInput {
     width: 1px;
     height: 55%;
   }
+
+  @media screen and (max-width: 440px) {
+    padding-left: 2px;
+    padding-right: 10px;
+  }
 }
 
 .arrowDownIcon {
@@ -164,12 +189,19 @@ body input.valueInput {
 
 .disabledTokens {
   &,
-  &:focus,
-  &:focus-visible {
+  &:focus {
     cursor: unset;
   }
 }
 
 .disabledTokens .arrowDownIcon {
   display: none;
+}
+
+:global .ant-form-item-has-error {
+  :local {
+    .root {
+      border-color: var(--red-color);
+    }
+  }
 }

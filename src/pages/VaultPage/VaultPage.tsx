@@ -1,143 +1,200 @@
-import { useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
 
-import Badge, { UnverifiedBadge, VerifiedBadge } from '../../components/Badge';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
-import { VaultState, useFraktion } from '../../contexts/fraktion';
-import { shortenAddress } from '../../utils/solanaUtils';
-import { InfoTable } from './InfoTable';
+import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
+import { InfoTable } from './InfoTable/InfoTable';
 import styles from './styles.module.scss';
-import { Buyout } from './Buyout';
-import { Redeem } from './Redeem';
+import { BuyoutTab } from './BuyoutTab';
 import { useTokenMap } from '../../contexts/TokenList';
-import { TradeTab } from './TradeTab';
-import { SwapTab } from './SwapTab';
-import { fetchOwnersToken, OwnersToken } from '../../utils/registerToken';
+import { TradeTab } from './TradeTab/TradeTab';
+import { SwapTab } from './SwapTab/SwapTab';
+import { DetailsHeader } from './DetailsHeader/DetailsHeader';
+import { BackToVaultsListButton } from './BackToVaultsListButton';
+import NavigationLink from '../../components/Header/NavigationLink';
+import { URLS } from '../../constants';
+import { NFTList } from './NFTList';
+import { CollectionData, fetchCollectionsData } from '../../utils/collections';
+import { NFTDoubleSlider } from './NFTDoubleSlider';
 
-const VaultPage = (): JSX.Element => {
+const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
+  const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
+    CollectionData[]
+  >([]);
+
   const tokenMap = useTokenMap();
-
-  const vaultInfo = useMemo(() => {
-    return vaults.find(({ publicKey }) => publicKey === vaultPubkey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaults]);
-
-  const vaultMarket = useMemo(() => {
-    return vaultsMarkets.find(
-      ({ baseMint }) => baseMint === vaultInfo.fractionMint,
+  const vaultData: VaultData = useMemo(() => {
+    return vaults.find(
+      ({ vaultPubkey: publicKey }) => publicKey === vaultPubkey,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo]);
+  }, [vaults]);
+  const initSlideNftName = vaultData?.safetyBoxes[0]?.nftName || '';
+  const [currentSlideData, setCurrentSlideData] = useState<{
+    nftName: string;
+    nftIndex: number;
+  }>({
+    nftName: '',
+    nftIndex: 1,
+  });
 
-  const [owners, setOwners] = useState<OwnersToken>();
+  const collections = (vaultData?.safetyBoxes || []).map(
+    (nft) => nft.nftCollectionName,
+  );
 
-  const [tokerName, setTokerName] = useState<string>('');
+  const vaultMarket = useMemo(() => {
+    return vaultsMarkets?.find(
+      ({ baseMint }) => baseMint === vaultData.fractionMint,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vaultData]);
+
+  const [vaultTitleData, setVaultTitleData] = useState<{
+    name: string;
+    symbol: string;
+  }>({ name: '', symbol: '' });
 
   useEffect(() => {
     !loading &&
-      vaultInfo &&
-      setTokerName(tokenMap.get(vaultInfo.fractionMint)?.symbol || '');
+      vaultData &&
+      setVaultTitleData({
+        name: tokenMap.get(vaultData.fractionMint)?.name || '',
+        symbol: tokenMap.get(vaultData.fractionMint)?.symbol || '',
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenMap, vaultInfo]);
+  }, [tokenMap, vaultData]);
 
   useEffect(() => {
     (async () => {
-      vaultInfo && setOwners(await fetchOwnersToken(vaultInfo.fractionMint));
+      try {
+        const result = await fetchCollectionsData(collections);
+        if (result) {
+          setAllNftsCollectionInfo(result);
+        }
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+      }
     })();
-  }, [vaultInfo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  //? Set active tab "Buyout" if auction started
+  useEffect(() => {
+    if (vaultData) {
+      const isAuctionStarted = vaultData.auction.auction?.isStarted;
+      isAuctionStarted && setTab('buyout');
+    }
+  }, [vaultData]);
+
+  useEffect(() => {
+    setCurrentSlideData({
+      nftName: initSlideNftName,
+      nftIndex: 1,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vaultData?.safetyBoxes.length]);
+
+  const onSlideThumbClick =
+    (nftName: string, nftCollectionName: string, nftIndex: number) => () => {
+      setCurrentSlideData({
+        nftName,
+        nftIndex: nftIndex + 1,
+      });
+    };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     vaultInfo && setOwners(await fetchOwnersToken(vaultInfo.fractionMint));
+  //   })();
+  // }, [vaultInfo]);
 
   return (
     <AppLayout>
       <Container component="main" className={styles.wrapper}>
+        <BackToVaultsListButton className={styles.goBackBtn} />
         {loading && (
           <div className={styles.loading}>
             <Loader size="large" />
           </div>
         )}
-        {!loading && !!vaultInfo && (
+        {!loading && !!vaultData && (
           <div className={styles.content}>
             <div className={styles.col}>
-              <div
-                className={styles.image}
-                style={{
-                  backgroundImage: `url(${vaultInfo.imageSrc})`,
-                }}
+              <NFTDoubleSlider
+                vaultData={vaultData}
+                safetyBoxes={vaultData?.safetyBoxes}
+                onSlideThumbClick={onSlideThumbClick}
+                currentSlideData={currentSlideData}
               />
-              {!!vaultInfo?.description && (
-                <div className={styles.description}>
-                  {vaultInfo.description}
-                </div>
-              )}
-              {!!vaultInfo?.nftAttributes?.length && (
-                <div className={styles.attributesTable}>
-                  {vaultInfo?.nftAttributes.map(
-                    ({ trait_type, value }, idx) => (
-                      <div key={idx} className={styles.attributesTable__row}>
-                        <p>{trait_type}</p>
-                        <p>{value}</p>
-                      </div>
-                    ),
-                  )}
-                </div>
-              )}
+              <DetailsHeader
+                className={styles.detailsHeaderMobile}
+                vaultData={vaultData}
+                vaultTitleData={vaultTitleData}
+              />
             </div>
             <div className={styles.details}>
-              <div className={styles.detailsHeader}>
-                <h2 className={styles.title}>
-                  {vaultInfo.name} {tokerName ? `($${tokerName})` : ''}
-                </h2>
-                <div className={styles.statusAndOwner}>
-                  <div className={styles.status}>
-                    {vaultInfo.isNftVerified ? (
-                      <VerifiedBadge />
-                    ) : (
-                      <UnverifiedBadge />
-                    )}
-                    <Badge label={vaultInfo.state} className={styles.badge} />
-                  </div>
-                  <div className={styles.owner}>
-                    {shortenAddress(vaultInfo.authority)}
-                  </div>
-                </div>
-              </div>
-              <InfoTable
-                vaultInfo={vaultInfo}
-                marketId={vaultMarket?.address}
-                owners={owners}
+              <DetailsHeader
+                className={styles.detailsHeaderDesc}
+                vaultData={vaultData}
+                vaultTitleData={vaultTitleData}
               />
-              {vaultInfo.state === VaultState[1] && (
+              {vaultData.state === VaultState.Inactive && (
+                <div className={styles.btnItem}>
+                  <NavigationLink to={`${URLS.FRAKTIONALIZE}/${vaultPubkey}`}>
+                    Add NFTs and launch vault
+                  </NavigationLink>
+                </div>
+              )}
+              {vaultData.state === VaultState.Active && (
+                <InfoTable
+                  vaultInfo={vaultData}
+                  marketId={vaultMarket?.address}
+                />
+              )}
+              {/* //? Show tabs if vault active or bought */}
+              {(vaultData.state === VaultState.Active ||
+                vaultData.state === VaultState.AuctionFinished ||
+                vaultData.state === VaultState.AuctionLive) && (
                 <>
                   <Tabs tab={tab} setTab={setTab} />
                   <div className={styles.tabContent}>
                     {tab === 'trade' && (
                       <TradeTab
-                        vaultInfo={vaultInfo}
-                        tokerName={tokerName}
+                        vaultInfo={vaultData}
+                        tokerName={vaultTitleData.symbol}
                         vaultMarketAddress={vaultMarket?.address}
                       />
                     )}
                     {tab === 'swap' && (
-                      <SwapTab fractionMint={vaultInfo.fractionMint} />
+                      <SwapTab fractionMint={vaultData.fractionMint} />
                     )}
-                    {tab === 'buyout' && <Buyout vaultInfo={vaultInfo} />}
+                    {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}
                   </div>
                 </>
               )}
-              {vaultInfo.state === VaultState[2] && (
-                <Redeem vaultInfo={vaultInfo} />
-              )}
-              {vaultInfo.state === VaultState[3] && (
+              {vaultData.state === VaultState.Archived && (
                 <div className={styles.detailsPlaceholder} />
               )}
             </div>
           </div>
         )}
+        <section id="allNftList" className={styles.allNfts}>
+          <h4 className={styles.nftsTitle}>
+            <span>{vaultData?.safetyBoxes.length}</span>
+            NFTs inside the vault
+          </h4>
+          <NFTList
+            safetyBoxes={vaultData?.safetyBoxes}
+            nftCollections={allNftsCollectionInfo}
+          />
+        </section>
       </Container>
     </AppLayout>
   );
@@ -150,7 +207,7 @@ interface TabsProps {
   setTab: (tab: tabType) => void;
 }
 
-const Tabs = ({ tab, setTab }: TabsProps): JSX.Element => {
+const Tabs: FC<TabsProps> = ({ tab, setTab }) => {
   return (
     <div className={styles.tabs}>
       <button
