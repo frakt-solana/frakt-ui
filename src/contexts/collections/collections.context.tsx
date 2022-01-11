@@ -14,12 +14,14 @@ export const CollectionsContext =
   React.createContext<CollectionsContextInterface>({
     collectionsData: [],
     vaultsByCollectionName: {},
+    isCollectionsLoading: true,
   });
 
 export const CollectionsProvider: FC<CollectionsProviderProps> = ({
   children,
 }) => {
   const [collectionsData, setCollectionsData] = useState<CollectionData[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { vaults, loading } = useFraktion();
 
   const vaultsByCollectionName = useMemo(() => {
@@ -30,9 +32,11 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
     const collectionsNames = Object.keys(vaultsByCollectionName);
     const collectionsData = await fetchCollectionsData(collectionsNames);
     setCollectionsData(collectionsData);
+    setIsLoading(false);
   };
 
   useEffect(() => {
+    setIsLoading(true);
     !loading && getCollectionItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
@@ -42,6 +46,7 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
       value={{
         collectionsData,
         vaultsByCollectionName,
+        isCollectionsLoading: loading || isLoading,
       }}
     >
       {children}
@@ -50,8 +55,8 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
 };
 
 export const useCollections = (): CollectionsContextInterface => {
-  const { collectionsData, vaultsByCollectionName } =
+  const { collectionsData, vaultsByCollectionName, isCollectionsLoading } =
     useContext(CollectionsContext);
 
-  return { collectionsData, vaultsByCollectionName };
+  return { collectionsData, vaultsByCollectionName, isCollectionsLoading };
 };

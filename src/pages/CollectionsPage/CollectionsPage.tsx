@@ -64,7 +64,8 @@ const CollectionsPage: FC = () => {
   const sort = watch('sort');
 
   const [searchString, setSearchString] = useState<string>('');
-  const { collectionsData, vaultsByCollectionName } = useCollections();
+  const { collectionsData, vaultsByCollectionName, isCollectionsLoading } =
+    useCollections();
 
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const searchItems = useDebounce((search: string) => {
@@ -113,7 +114,7 @@ const CollectionsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={!collectionsData.length}
+          isLoading={isCollectionsLoading}
           wrapperClassName={styles.cards}
           emptyMessage={'No collections found'}
         >
@@ -124,7 +125,7 @@ const CollectionsPage: FC = () => {
                 collectionName={collectionName}
                 thumbnailPath={bannerPath}
                 vaultCount={
-                  vaultsByCollectionName[collectionName].filter(
+                  vaultsByCollectionName[collectionName]?.filter(
                     (vault) => vault.state !== VaultState.Archived,
                   ).length
                 }
