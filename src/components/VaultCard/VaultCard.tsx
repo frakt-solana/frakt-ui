@@ -118,7 +118,11 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             />
           </div>
           <div className={styles.actions}>
-            {isVaultVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
+            {isVaultVerified && !!vaultData.safetyBoxes.length ? (
+              <VerifiedBadge />
+            ) : (
+              <UnverifiedBadge />
+            )}
             <Badge
               label={VAULT_BADGES_BY_STATE[vaultData.state]}
               className={styles.badge}
