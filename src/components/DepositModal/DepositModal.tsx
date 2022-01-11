@@ -10,16 +10,26 @@ import Tooltip from '../Tooltip';
 import Button from '../Button';
 import styles from './styles.module.scss';
 import RefreshIcon from '../../icons/refreshIcon';
+import { Token } from '../../utils';
 
 interface DepositModalProps {
   visible: boolean;
   onCancel: () => void;
+  baseToken: Token;
+  quoteToken: Token;
 }
 
-const DepositModal: FC<DepositModalProps> = ({ visible, onCancel }) => {
-  const [toValue, setToValue] = useState<string>('');
-
+const DepositModal: FC<DepositModalProps> = ({
+  visible,
+  onCancel,
+  quoteToken,
+  baseToken,
+}) => {
   const { control } = useForm({ defaultValues: { autoSwap: false } });
+
+  const [totalValue, setTotalValue] = useState<string>('');
+  const [baseValue, setBaseValue] = useState<string>('');
+  const [quoteValue, setQuoteValue] = useState<string>('');
 
   return (
     <Modal
@@ -28,8 +38,9 @@ const DepositModal: FC<DepositModalProps> = ({ visible, onCancel }) => {
       onCancel={onCancel}
       title="Deposit Liquidity"
       width={500}
+      className={styles.modal}
     >
-      <div className={styles.depositModal}>
+      <div className={styles.container}>
         <div className={styles.swap}>
           <ControlledToggle
             control={control}
@@ -50,37 +61,37 @@ const DepositModal: FC<DepositModalProps> = ({ visible, onCancel }) => {
             <QuestionCircleOutlined className={styles.questionIcon} />
           </Tooltip>
         </div>
-        <div className={styles.swapInputWrapper}>
+        <div className={styles.inputWrapper}>
           <div className={styles.token}>
-            <img className={styles.tokenIcon} />
-            <p className={styles.tokenName}>SOL</p>
+            <img src={baseToken.img} className={styles.tokenIcon} />
+            <p className={styles.tokenName}>{baseToken.symbol}</p>
           </div>
           <NumericInput
             className={styles.input}
-            value={toValue}
-            onChange={setToValue}
+            value={baseValue}
+            onChange={setBaseValue}
           />
         </div>
-        <div className={styles.swapInputWrapper}>
+        <div className={styles.inputWrapper}>
           <div className={styles.token}>
-            <img className={styles.tokenIcon} />
-            <p className={styles.tokenName}>FRKT</p>
+            <img src={quoteToken.img} className={styles.tokenIcon} />
+            <p className={styles.tokenName}>{quoteToken.symbol}</p>
           </div>
           <NumericInput
             className={styles.input}
-            value={toValue}
-            onChange={setToValue}
+            value={quoteValue}
+            onChange={setQuoteValue}
           />
         </div>
         <div className={styles.totalLine}>
           <p className={styles.title}>Total</p>
-          <div className={styles.line}></div>
+          <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
           <NumericInput
             className={styles.input}
-            value={toValue}
-            onChange={setToValue}
+            value={totalValue}
+            onChange={setTotalValue}
           />
         </div>
         <div className={styles.refresh}>

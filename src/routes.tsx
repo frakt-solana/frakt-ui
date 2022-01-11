@@ -27,7 +27,7 @@ import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { SwapContextProvider } from './contexts/Swap';
-import LiquidityPage from './pages/LiquidityPage';
+import LiquidityPage from './pages/PoolsPage';
 
 const wallets = [
   getPhantomWallet(),

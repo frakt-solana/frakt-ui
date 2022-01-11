@@ -14,7 +14,6 @@ import BN from 'bn.js';
 
 import { notify } from '../../utils';
 import { RawUserTokensByMint } from '../userTokens';
-import { PoolInfo } from './swap.model';
 
 export const fetchRaydiumPools = async (
   connection: Connection,
@@ -25,10 +24,10 @@ export const fetchRaydiumPools = async (
 export const fetchPoolInfo = async (
   connection: Connection,
   poolConfig: LiquidityPoolKeysV4,
-): Promise<PoolInfo> => {
-  const info = await Liquidity.getInfo(connection, poolConfig);
-
-  return info;
+): Promise<any> => {
+  // getInfo not exist in Liquidity
+  // const info = await Liquidity.getInfo(connection, poolConfig);
+  // return info;
 };
 
 export const swap = async (
@@ -50,11 +49,11 @@ export const swap = async (
 
     const signers = [];
 
-    const baseTokenAccount = await Spl.getAssociatedTokenAddress({
+    const baseTokenAccount = await Spl.getAssociatedTokenAccount({
       mint: poolConfig.baseMint,
       owner: walletPublicKey,
     });
-    let quoteTokenAccount = await Spl.getAssociatedTokenAddress({
+    let quoteTokenAccount = await Spl.getAssociatedTokenAccount({
       mint: poolConfig.quoteMint,
       owner: walletPublicKey,
     });
