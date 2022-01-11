@@ -32,10 +32,6 @@ export const DetailsHeader = ({
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
 
-  const isVaultVerified = vaultData.safetyBoxes?.every(
-    (nft) => nft.isNftVerified,
-  );
-
   useEffect(() => {
     vaultData?.authority &&
       getNameServiceInfo(vaultData?.authority, connection);
@@ -50,7 +46,7 @@ export const DetailsHeader = ({
       </h2>
       <div className={styles.statusAndOwner}>
         <div className={styles.status}>
-          {isVaultVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
+          {vaultData.isVerified ? <VerifiedBadge /> : <UnverifiedBadge />}
           <Badge
             label={VAULT_BADGES_BY_STATE[vaultData.state]}
             className={styles.badge}

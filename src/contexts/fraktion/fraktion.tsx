@@ -68,11 +68,17 @@ export const getVaults: GetVaults = async (markets) => {
       metadataByNftMint,
     );
 
+    //? Vault verified only if all nfts are verified
+    const isVaultVerified = relatedSafetyBoxesWithMetadata.every(
+      ({ isNftVerified }) => isNftVerified,
+    );
+
     return {
       ...vault,
       //? set state of auction for frontend requirements (more info in getVaultRealState description)
       state: getVaultState(vault.state, relatedAuction),
       realState: vault.state,
+      isVerified: isVaultVerified,
       hasMarket: marketExistenceByFractionMint[fractionMint] || false,
       safetyBoxes: relatedSafetyBoxesWithMetadata,
       auction: {

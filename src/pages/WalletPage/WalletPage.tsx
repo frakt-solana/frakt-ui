@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { getAllUserTokens } from 'solana-nft-metadata';
-import { useConnection } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames/bind';
 import BN from 'bn.js';
 
@@ -35,6 +35,7 @@ const WalletPage = (): JSX.Element => {
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
+  const { connected, publicKey: connectedWalletPubkey } = useWallet();
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
 
@@ -93,15 +94,11 @@ const WalletPage = (): JSX.Element => {
       .filter(
         (vault) =>
           vault.authority === walletPubkey &&
-          vault.state !== VaultState.Inactive,
-      )
-      .filter(
-        (vault) =>
-          vault.authority === walletPubkey && vault.state === VaultState.Active,
+          vault.state !== VaultState.Inactive &&
+          vault.state !== VaultState.Archived,
       )
       .sort(
-        (vaultA: VaultData, vaultB: VaultData) =>
-          vaultB?.createdAt - vaultA?.createdAt,
+        (vaultA: VaultData, vaultB: VaultData) => vaultB.state - vaultA.state,
       );
   }, [vaults, walletPubkey]);
 
@@ -204,14 +201,15 @@ const WalletPage = (): JSX.Element => {
             ) : (
               <>
                 <div className={styles.filters}>
-                  {/*{connected && publicKey.toString() === walletPubkey && (*/}
-                  <Toggle
-                    value={showUnfinished}
-                    label="Show unfinished"
-                    className={styles.filter}
-                    onChange={onToggleUnfinishedClick}
-                  />
-                  {/*)}*/}
+                  {connected &&
+                    connectedWalletPubkey.toString() === walletPubkey && (
+                      <Toggle
+                        value={showUnfinished}
+                        label="Show unfinished"
+                        className={styles.filter}
+                        onChange={onToggleUnfinishedClick}
+                      />
+                    )}
                 </div>
                 {showUnfinished ? (
                   <div className={styles.vaults}>

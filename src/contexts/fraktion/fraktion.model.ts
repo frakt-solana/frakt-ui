@@ -150,6 +150,7 @@ export interface VaultData extends Vault {
   hasMarket: boolean;
   realState: VaultState;
   safetyBoxes: SafetyBoxWithMetadata[];
+  isVerified: boolean;
   auction: {
     auction: Auction | null;
     bids: Bid[] | [];
