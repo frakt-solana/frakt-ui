@@ -35,7 +35,7 @@ const WalletPage = (): JSX.Element => {
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey: connectedWalletPubkey } = useWallet();
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
 
@@ -201,14 +201,15 @@ const WalletPage = (): JSX.Element => {
             ) : (
               <>
                 <div className={styles.filters}>
-                  {connected && publicKey.toString() === walletPubkey && (
-                    <Toggle
-                      value={showUnfinished}
-                      label="Show unfinished"
-                      className={styles.filter}
-                      onChange={onToggleUnfinishedClick}
-                    />
-                  )}
+                  {connected &&
+                    connectedWalletPubkey.toString() === walletPubkey && (
+                      <Toggle
+                        value={showUnfinished}
+                        label="Show unfinished"
+                        className={styles.filter}
+                        onChange={onToggleUnfinishedClick}
+                      />
+                    )}
                 </div>
                 {showUnfinished ? (
                   <div className={styles.vaults}>
