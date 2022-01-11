@@ -8,12 +8,13 @@ import {
   fetchCollectionsData,
   mapVaultsByCollectionName,
 } from '../../utils/collections';
-import { useFraktion } from '../fraktion';
+import { useFraktion, VaultState } from '../fraktion';
 
 export const CollectionsContext =
   React.createContext<CollectionsContextInterface>({
     collectionsData: [],
     vaultsByCollectionName: {},
+    vaultsNotArchivedByCollectionName: {},
     isCollectionsLoading: true,
   });
 
@@ -26,6 +27,13 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
 
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultsByCollectionName(vaults);
+  }, [loading, vaults]);
+
+  const vaultsNotArchivedByCollectionName = useMemo(() => {
+    const vaultsNotArchived = vaults.filter(
+      (vault) => vault.state !== VaultState.Archived,
+    );
+    return loading ? {} : mapVaultsByCollectionName(vaultsNotArchived);
   }, [loading, vaults]);
 
   const getCollectionItems = async (): Promise<void> => {
@@ -46,6 +54,7 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
       value={{
         collectionsData,
         vaultsByCollectionName,
+        vaultsNotArchivedByCollectionName,
         isCollectionsLoading: loading || isLoading,
       }}
     >
@@ -55,8 +64,17 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
 };
 
 export const useCollections = (): CollectionsContextInterface => {
-  const { collectionsData, vaultsByCollectionName, isCollectionsLoading } =
-    useContext(CollectionsContext);
+  const {
+    collectionsData,
+    vaultsByCollectionName,
+    vaultsNotArchivedByCollectionName,
+    isCollectionsLoading,
+  } = useContext(CollectionsContext);
 
-  return { collectionsData, vaultsByCollectionName, isCollectionsLoading };
+  return {
+    collectionsData,
+    vaultsByCollectionName,
+    vaultsNotArchivedByCollectionName,
+    isCollectionsLoading,
+  };
 };

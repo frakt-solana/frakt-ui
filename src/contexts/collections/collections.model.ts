@@ -7,6 +7,7 @@ import {
 export interface CollectionsContextInterface {
   collectionsData: CollectionData[];
   vaultsByCollectionName: VaultsByCollectionName;
+  vaultsNotArchivedByCollectionName: VaultsByCollectionName;
   isCollectionsLoading: boolean;
 }
 

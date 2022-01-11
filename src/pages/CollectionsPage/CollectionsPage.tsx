@@ -64,8 +64,12 @@ const CollectionsPage: FC = () => {
   const sort = watch('sort');
 
   const [searchString, setSearchString] = useState<string>('');
-  const { collectionsData, vaultsByCollectionName, isCollectionsLoading } =
-    useCollections();
+  const {
+    collectionsData,
+    vaultsByCollectionName,
+    vaultsNotArchivedByCollectionName,
+    isCollectionsLoading,
+  } = useCollections();
 
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const searchItems = useDebounce((search: string) => {
@@ -86,22 +90,22 @@ const CollectionsPage: FC = () => {
         ) => {
           if (sortField === 'vault') {
             return compareVaultsArraysBySize(
-              vaultsByCollectionName[collectionNameA],
-              vaultsByCollectionName[collectionNameB],
+              vaultsNotArchivedByCollectionName[collectionNameA],
+              vaultsNotArchivedByCollectionName[collectionNameB],
               sortOrder === 'desc',
             );
           }
           if (sortField === 'nfts') {
             return compareVaultsArraysByNFTsAmount(
-              vaultsByCollectionName[collectionNameA],
-              vaultsByCollectionName[collectionNameB],
+              vaultsNotArchivedByCollectionName[collectionNameA],
+              vaultsNotArchivedByCollectionName[collectionNameB],
               sortOrder === 'desc',
             );
           }
           return 0;
         },
       );
-  }, [collectionsData, searchString, vaultsByCollectionName, sort]);
+  }, [collectionsData, searchString, vaultsNotArchivedByCollectionName, sort]);
 
   return (
     <AppLayout>
