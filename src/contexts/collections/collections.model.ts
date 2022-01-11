@@ -1,7 +1,12 @@
 import { ReactNode } from 'react';
+import {
+  CollectionData,
+  VaultsByCollectionName,
+} from '../../utils/collections';
 
 export interface CollectionsContextInterface {
-  loading: boolean;
+  collectionsData: CollectionData[];
+  vaultsByCollectionName: VaultsByCollectionName;
 }
 
 export interface CollectionsProviderProps {
