@@ -75,10 +75,7 @@ const CollectionsPage: FC = () => {
   }, 300);
 
   const vaultsByCollectionName = useMemo(() => {
-    const vaultsWithoutArchivedNft = vaults.filter(
-      (vault) => vault.state !== VaultState.Archived,
-    );
-    return loading ? {} : mapVaultsByCollectionName(vaultsWithoutArchivedNft);
+    return loading ? {} : mapVaultsByCollectionName(vaults);
   }, [loading, vaults]);
 
   const filteredCollection = useMemo(() => {
@@ -95,15 +92,23 @@ const CollectionsPage: FC = () => {
         ) => {
           if (sortField === 'vault') {
             return compareVaultsArraysBySize(
-              vaultsByCollectionName[collectionNameA],
-              vaultsByCollectionName[collectionNameB],
+              vaultsByCollectionName[collectionNameA].filter(
+                (vault) => vault.state !== VaultState.Archived,
+              ),
+              vaultsByCollectionName[collectionNameB].filter(
+                (vault) => vault.state !== VaultState.Archived,
+              ),
               sortOrder === 'desc',
             );
           }
           if (sortField === 'nfts') {
             return compareVaultsArraysByNFTsAmount(
-              vaultsByCollectionName[collectionNameA],
-              vaultsByCollectionName[collectionNameB],
+              vaultsByCollectionName[collectionNameA].filter(
+                (vault) => vault.state !== VaultState.Archived,
+              ),
+              vaultsByCollectionName[collectionNameB].filter(
+                (vault) => vault.state !== VaultState.Archived,
+              ),
               sortOrder === 'desc',
             );
           }
@@ -144,7 +149,11 @@ const CollectionsPage: FC = () => {
                 key={idx}
                 collectionName={collectionName}
                 thumbnailPath={bannerPath}
-                vaultCount={vaultsByCollectionName[collectionName].length}
+                vaultCount={
+                  vaultsByCollectionName[collectionName].filter(
+                    (vault) => vault.state !== VaultState.Archived,
+                  ).length
+                }
               />
             </NavLink>
           ))}
