@@ -14,7 +14,6 @@ import Pool from './components/Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
-import { MAINNET_SPL_TOKENS } from '@raydium-io/raydium-sdk';
 
 const SORT_VALUES = [
   {
