@@ -30,6 +30,7 @@ import { SwapContextProvider } from './contexts/Swap';
 import CollectionsPage from './pages/CollectionsPage';
 import CollectionPage from './pages/CollectionPage';
 import PoolsPage from './pages/PoolsPage';
+import { CollectionsProvider } from './contexts/collections';
 
 const wallets = [
   getPhantomWallet(),
