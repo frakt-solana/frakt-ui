@@ -1,18 +1,15 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-import { useFraktion, VaultState } from '../../contexts/fraktion';
+import { VaultState } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
 import { URLS } from '../../constants/urls';
 import {
-  CollectionData,
-  mapVaultsByCollectionName,
-  compareVaultsArraysBySize,
   compareVaultsArraysByNFTsAmount,
-  fetchCollectionsData,
+  compareVaultsArraysBySize,
 } from '../../utils/collections';
 import styles from './styles.module.scss';
 import FakeInfinityScroll, {
@@ -21,6 +18,7 @@ import FakeInfinityScroll, {
 import { useDebounce } from '../../hooks';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { CollectionsFilter } from './CollectionsFilter';
+import { useCollections } from '../../contexts/collections';
 
 const SORT_VALUES = [
   {
@@ -66,22 +64,22 @@ const CollectionsPage: FC = () => {
   const sort = watch('sort');
 
   const [searchString, setSearchString] = useState<string>('');
-  const [сollectionsData, setCollectionsData] = useState<CollectionData[]>([]);
+  const {
+    collectionsData,
+    vaultsByCollectionName,
+    vaultsNotArchivedByCollectionName,
+    isCollectionsLoading,
+  } = useCollections();
 
-  const { vaults, loading } = useFraktion();
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const vaultsByCollectionName = useMemo(() => {
-    return loading ? {} : mapVaultsByCollectionName(vaults);
-  }, [loading, vaults]);
-
   const filteredCollection = useMemo(() => {
     const [sortField, sortOrder] = sort.value.split('_');
 
-    return сollectionsData
+    return collectionsData
       .filter(({ collectionName }) =>
         collectionName.toUpperCase().includes(searchString),
       )
@@ -92,33 +90,22 @@ const CollectionsPage: FC = () => {
         ) => {
           if (sortField === 'vault') {
             return compareVaultsArraysBySize(
-              vaultsByCollectionName[collectionNameA],
-              vaultsByCollectionName[collectionNameB],
+              vaultsNotArchivedByCollectionName[collectionNameA],
+              vaultsNotArchivedByCollectionName[collectionNameB],
               sortOrder === 'desc',
             );
           }
           if (sortField === 'nfts') {
             return compareVaultsArraysByNFTsAmount(
-              vaultsByCollectionName[collectionNameA],
-              vaultsByCollectionName[collectionNameB],
+              vaultsNotArchivedByCollectionName[collectionNameA],
+              vaultsNotArchivedByCollectionName[collectionNameB],
               sortOrder === 'desc',
             );
           }
           return 0;
         },
       );
-  }, [сollectionsData, searchString, vaultsByCollectionName, sort]);
-
-  const getCollectionItems = async (): Promise<void> => {
-    const collectionsNames = Object.keys(vaultsByCollectionName);
-    const collectionsData = await fetchCollectionsData(collectionsNames);
-    setCollectionsData(collectionsData);
-  };
-
-  useEffect(() => {
-    !loading && getCollectionItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading]);
+  }, [collectionsData, searchString, vaultsNotArchivedByCollectionName, sort]);
 
   return (
     <AppLayout>
@@ -131,7 +118,7 @@ const CollectionsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={!сollectionsData.length}
+          isLoading={isCollectionsLoading}
           wrapperClassName={styles.cards}
           emptyMessage={'No collections found'}
         >
@@ -142,7 +129,7 @@ const CollectionsPage: FC = () => {
                 collectionName={collectionName}
                 thumbnailPath={bannerPath}
                 vaultCount={
-                  vaultsByCollectionName[collectionName].filter(
+                  vaultsByCollectionName[collectionName]?.filter(
                     (vault) => vault.state !== VaultState.Archived,
                   ).length
                 }
