@@ -8,7 +8,7 @@
 .modal {
   :global {
     .ant-modal-title {
-      font: var(--font-h5);
+      font: var(--font-h4);
       padding-top: 13px;
       text-align: center;
     }
@@ -53,6 +53,11 @@
   cursor: pointer;
   height: 24px;
   width: 24px;
+
+  &:hover {
+    opacity: 0.3;
+    transition: var(--transition-1);
+  }
 }
 
 .depositContent {

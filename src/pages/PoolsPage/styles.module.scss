@@ -3,6 +3,12 @@
   padding-bottom: 64px;
 }
 
+.sortWrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 .title {
   font: var(--font-h4);
   margin-bottom: 8px;
@@ -28,7 +34,7 @@
 .arrowDown {
   position: relative;
   top: 2px;
-  
+
   path {
     stroke: var(--white-color);
   }

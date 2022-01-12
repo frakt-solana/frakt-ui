@@ -1,5 +1,3 @@
-import React from 'react';
-
 import IconSvg from './IconSvg';
 
 const icon = (

@@ -1,6 +1,7 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useSwappableTokenList } from '../../components/SwapForm/hooks';
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -10,10 +11,10 @@ import { ArrowDownSmallIcon } from '../../icons';
 import { useDebounce } from '../../hooks';
 import styles from './styles.module.scss';
 import Pool from './components/Pool';
-import { useSwappableTokenList } from '../../components/SwapForm/hooks';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
+import { MAINNET_SPL_TOKENS } from '@raydium-io/raydium-sdk';
 
 const SORT_VALUES = [
   {
@@ -67,14 +68,6 @@ const SORT_VALUES = [
 ];
 
 const PoolsPage: FC = () => {
-  const [searchString, setSearchString] = useState<string>('');
-  const liquidityPools = useSwappableTokenList();
-  const { itemsToShow, next } = useFakeInfinityScroll(9);
-
-  const searchItems = useDebounce((search: string) => {
-    setSearchString(search.toUpperCase());
-  }, 300);
-
   const { control } = useForm({
     defaultValues: {
       showStaked: true,
@@ -83,11 +76,25 @@ const PoolsPage: FC = () => {
     },
   });
 
+  const [searchString, setSearchString] = useState<string>('');
+  const liquidityPools = useSwappableTokenList();
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
+
+  const searchItems = useDebounce((search: string) => {
+    setSearchString(search.toUpperCase());
+  }, 300);
+
+  const filteredPools = useMemo(() => {
+    return liquidityPools.filter(({ symbol }) =>
+      symbol.toUpperCase().includes(searchString),
+    );
+  }, [liquidityPools, searchString]);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
         <h1 className={styles.title}>Liquidity</h1>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className={styles.sortWrapper}>
           <SearchInput
             size="large"
             onChange={(e) => searchItems(e.target.value || '')}
@@ -124,10 +131,9 @@ const PoolsPage: FC = () => {
           itemsToShow={itemsToShow}
           next={next}
           isLoading={!liquidityPools.length}
-          wrapperClassName={styles.cards}
           emptyMessage={'No Liquidity pool found'}
         >
-          {liquidityPools.map((quoteToken, id) => (
+          {filteredPools.map((quoteToken, id) => (
             <Pool key={id} quoteToken={quoteToken} />
           ))}
         </FakeInfinityScroll>

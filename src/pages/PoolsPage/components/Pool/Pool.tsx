@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import classNames from 'classnames';
 
 import Button from '../../../../components/Button';
 import DepositModal from '../../../../components/DepositModal/DepositModal';
@@ -9,7 +10,6 @@ import { TokenFieldWithBalance } from '../../../../components/TokenField';
 import { SOL_TOKEN } from '../../../../components/SwapForm/constants';
 import { Token } from '../../../../utils';
 import styles from './styles.module.scss';
-
 interface PoolInterface {
   quoteToken: Token;
 }
@@ -28,11 +28,11 @@ const Pool: FC<PoolInterface> = ({ quoteToken }) => {
       <div className={styles.header}>
         <Button className={styles.awarderBtn}>Awarded</Button>
       </div>
-      <div className={styles.body}>
+      <div className={styles.poolCard}>
         <div className={styles.tokenInfo}>
           <div className={styles.tokensIcon}>
-            <img className={styles.img} src={baseToken.img} />
-            <img className={styles.img} src={quoteToken.img} />
+            <img className={styles.image} src={baseToken.img} />
+            <img className={styles.image} src={quoteToken.img} />
           </div>
           <div className={styles.subtitle}>
             {baseToken.symbol} / {quoteToken.symbol}
@@ -40,17 +40,22 @@ const Pool: FC<PoolInterface> = ({ quoteToken }) => {
         </div>
 
         <div className={styles.statsValue}>
-          <div>
+          <div className={styles.totalValue}>
             <p className={styles.title}>Total liquidity</p>
             <p className={styles.value}>$ 120 120 000</p>
           </div>
-          <div>
+          <div className={styles.totalValue}>
             <p className={styles.title}>Apr</p>
             <p className={styles.value}>30%</p>
           </div>
-          <div onClick={() => setDetailsBlock((prev) => !prev)}>
-            <ChevronDownIcon className={styles.chevronVisibleIcon} />
-          </div>
+        </div>
+        <div onClick={() => setDetailsBlock((prev) => !prev)}>
+          <ChevronDownIcon
+            className={classNames(
+              styles.chevronVisibleIcon,
+              detailsBlock && styles.rotate,
+            )}
+          />
         </div>
       </div>
       {detailsBlock && (
@@ -74,7 +79,11 @@ const Pool: FC<PoolInterface> = ({ quoteToken }) => {
                     />
                   </div>
 
-                  <Button className={styles.rewardBtn}>Confirm</Button>
+                  <Button
+                    className={classNames(styles.rewardBtn, styles.confirmBtn)}
+                  >
+                    Confirm
+                  </Button>
                 </div>
               </div>
               <div className={styles.pending}>

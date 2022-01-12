@@ -45,9 +45,9 @@ const DepositModal: FC<DepositModalProps> = ({
           <ControlledToggle
             control={control}
             name="autoSwap"
-            label="Auto-swap uneven amounts"
             className={styles.filter}
           />
+          <p>Auto-swap uneven amounts</p>
           <Tooltip
             overlayInnerStyle={{
               width: 262,
@@ -113,9 +113,12 @@ const DepositModal: FC<DepositModalProps> = ({
         <div className={styles.verify}>
           <Checkbox />
           <p className={styles.text}>
-            I verify that I have read the <a>Fraktion Pools Guide</a> and
-            understand the risks of providing liquidity, including impermanent
-            loss.
+            I verify that I have read the{' '}
+            <a href="#" target="_blank" rel="noopener noreferrer">
+              Fraktion Pools Guide
+            </a>{' '}
+            and understand the risks of providing liquidity, including
+            impermanent loss.
           </p>
         </div>
         <Button className={styles.depositBtn} type="alternative">
