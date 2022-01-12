@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
   CollectionsContextInterface,
   CollectionsProviderProps,
@@ -37,14 +37,20 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
   }, [loading, vaults]);
 
   const getCollectionItems = async (): Promise<void> => {
-    const collectionsNames = Object.keys(vaultsByCollectionName);
-    const collectionsData = await fetchCollectionsData(collectionsNames);
-    setCollectionsData(collectionsData);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const collectionsNames = Object.keys(vaultsByCollectionName);
+      const collectionsData = await fetchCollectionsData(collectionsNames);
+      setCollectionsData(collectionsData);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    setIsLoading(true);
     !loading && getCollectionItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
@@ -61,20 +67,4 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
       {children}
     </CollectionsContext.Provider>
   );
-};
-
-export const useCollections = (): CollectionsContextInterface => {
-  const {
-    collectionsData,
-    vaultsByCollectionName,
-    vaultsNotArchivedByCollectionName,
-    isCollectionsLoading,
-  } = useContext(CollectionsContext);
-
-  return {
-    collectionsData,
-    vaultsByCollectionName,
-    vaultsNotArchivedByCollectionName,
-    isCollectionsLoading,
-  };
 };

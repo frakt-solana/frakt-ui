@@ -1,1 +1,2 @@
-export { CollectionsProvider, useCollections } from './collections.context';
+export { CollectionsProvider } from './collections.context';
+export { useCollections } from './collections.hooks';
