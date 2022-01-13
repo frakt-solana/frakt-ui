@@ -9,6 +9,7 @@ import Button from '../Button';
 import styles from './styles.module.scss';
 import NumericInput from '../NumericInput';
 import { useTokenByMint } from './helper';
+import CustomCheckbox from '../CustomCheckbox';
 
 interface LiquidityFormInterface {
   defaultTokenMint?: string;
@@ -53,12 +54,12 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
       </div>
 
       <div className={styles.verify}>
-        <Checkbox />
+        <CustomCheckbox />
         <p className={styles.text}>
-          I verify that I have read the
+          I verify that I have read the{' '}
           <a href="#" target="_blank" rel="noopener noreferrer">
             Fraktion Pools Guide
-          </a>
+          </a>{' '}
           and understand the risks of providing liquidity, including impermanent
           loss.
         </p>

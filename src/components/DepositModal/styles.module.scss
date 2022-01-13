@@ -15,6 +15,9 @@
     .ant-modal-content {
       border-radius: 10px;
     }
+    .ant-modal-header {
+      border-radius: 10px;
+    }
   }
 }
 
@@ -91,6 +94,7 @@
   color: var(--accent-color-1);
   margin-top: 10px;
   font: var(--font-btn-small);
+  text-decoration: underline;
 }
 
 .inputWrapper {
@@ -126,15 +130,17 @@
 
 .verify {
   display: flex;
+  align-items: center;
   gap: 10px;
 
   .text {
     color: var(--white-color);
     font: var(--font-smallest);
-  }
 
-  a {
-    text-decoration: underline;
+    a {
+      color: var(--accent-color-1);
+      text-decoration: underline;
+    }
   }
 }
 

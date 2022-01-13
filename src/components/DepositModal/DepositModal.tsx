@@ -1,16 +1,16 @@
 import { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Checkbox } from 'antd';
 
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { ControlledToggle } from '../Toggle/Toggle';
+import RefreshIcon from '../../icons/refreshIcon';
+import CustomCheckbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
+import styles from './styles.module.scss';
+import { Token } from '../../utils';
 import { Modal } from '../Modal';
 import Tooltip from '../Tooltip';
 import Button from '../Button';
-import styles from './styles.module.scss';
-import RefreshIcon from '../../icons/refreshIcon';
-import { Token } from '../../utils';
 
 interface DepositModalProps {
   visible: boolean;
@@ -111,7 +111,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <p className={styles.link}>After staking</p>
         </div>
         <div className={styles.verify}>
-          <Checkbox />
+          <CustomCheckbox />
           <p className={styles.text}>
             I verify that I have read the{' '}
             <a href="#" target="_blank" rel="noopener noreferrer">

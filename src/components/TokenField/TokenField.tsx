@@ -5,6 +5,7 @@ import { ChevronDownIcon } from '../../icons';
 import { SelectTokenModal } from '../SelectTokenModal';
 import { Token } from '../../utils';
 import NumericInput from '../NumericInput';
+import { SOL_TOKEN } from '../SwapForm/constants';
 
 export interface TokenFieldProps {
   tokensList?: Token[];
@@ -25,6 +26,7 @@ export interface TokenFieldProps {
   placeholder?: string;
   amountMaxLength?: number;
   disabled?: boolean;
+  quoteTokenSymbol?: string;
 }
 
 const TokenField = ({
@@ -44,6 +46,7 @@ const TokenField = ({
   amountMaxLength,
   placeholder = '0.0',
   disabled = false,
+  quoteTokenSymbol,
 }: TokenFieldProps): JSX.Element => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -101,6 +104,11 @@ const TokenField = ({
             })}
             onClick={() => tokensList && setIsModalOpen(true)}
           >
+            {quoteTokenSymbol && (
+              <span className={classNames(styles.tokenName)}>
+                {quoteTokenSymbol} / {SOL_TOKEN.symbol}
+              </span>
+            )}
             {currentToken ? (
               <img
                 className={styles.tokenLogo}
@@ -108,15 +116,18 @@ const TokenField = ({
                 alt={currentToken.symbol}
               />
             ) : (
-              <div className={styles.noTokenImg} />
+              !quoteTokenSymbol && <div className={styles.noTokenImg} />
             )}
-            <span
-              className={classNames(styles.tokenName, {
-                [styles.tokenName_empty]: !currentToken,
-              })}
-            >
-              {currentToken?.symbol || '---'}
-            </span>
+            {!quoteTokenSymbol && (
+              <span
+                className={classNames(styles.tokenName, {
+                  [styles.tokenName_empty]: !currentToken,
+                })}
+              >
+                {currentToken?.symbol || '---'}
+              </span>
+            )}
+
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>

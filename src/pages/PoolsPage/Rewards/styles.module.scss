@@ -1,0 +1,32 @@
+.title {
+  font: var(--font-secondary);
+  text-transform: uppercase;
+}
+
+.rewards {
+  border: 1px solid var(--gray-color-7);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  min-width: 302px;
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.info {
+  span {
+    font: var(--font-btn-small);
+  }
+}
+
+.harvestBtn {
+  justify-content: center;
+  height: 48px;
+  width: 150px;
+}

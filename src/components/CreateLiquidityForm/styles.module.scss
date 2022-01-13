@@ -41,7 +41,7 @@
 
 .plusIcon {
   svg {
-    fill: var(--gray-color-3);
+    fill: var(--gray-color-6);
     height: 20px;
     width: 20px;
   }
@@ -49,15 +49,19 @@
 
 .verify {
   display: flex;
+  align-items: center;
   margin-top: 30px;
   gap: 10px;
 
   .text {
     color: var(--white-color);
     font: var(--font-smallest);
-  }
 
-  a {
-    text-decoration: underline;
+    a {
+      color: var(--accent-color-1);
+      text-decoration: underline;
+    }
   }
 }
+
+

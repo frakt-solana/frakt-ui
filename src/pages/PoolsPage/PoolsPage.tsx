@@ -10,7 +10,7 @@ import { Container } from '../../components/Layout';
 import { ArrowDownSmallIcon } from '../../icons';
 import { useDebounce } from '../../hooks';
 import styles from './styles.module.scss';
-import Pool from './components/Pool';
+import Pool from './Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
@@ -19,7 +19,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Liquidity (asc) <ArrowDownSmallIcon className={styles.arrowUp} />
+        Liquidity <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'liquidity_asc',
@@ -27,7 +27,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Liquidity (dsc) <ArrowDownSmallIcon className={styles.arrowDown} />
+        Liquidity <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'liquidity_desc',
@@ -35,7 +35,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Trading Vol. (asc) <ArrowDownSmallIcon className={styles.arrowUp} />
+        Trading Vol. <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'trading_asc',
@@ -43,7 +43,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Trading Vol. (dsc) <ArrowDownSmallIcon className={styles.arrowDown} />
+        Trading Vol. <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'trading_desc',
@@ -51,7 +51,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        APR (asc) <ArrowDownSmallIcon className={styles.arrowUp} />
+        APR <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'apr_asc',
@@ -59,7 +59,7 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        APR (dsc) <ArrowDownSmallIcon className={styles.arrowDown} />
+        APR <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'apr_desc',
@@ -76,18 +76,18 @@ const PoolsPage: FC = () => {
   });
 
   const [searchString, setSearchString] = useState<string>('');
-  const liquidityPools = useSwappableTokenList();
+  const swappableTokenList = useSwappableTokenList();
   const { itemsToShow, next } = useFakeInfinityScroll(9);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const filteredPools = useMemo(() => {
-    return liquidityPools.filter(({ symbol }) =>
+  const filteredSWappableTokenList = useMemo(() => {
+    return swappableTokenList.filter(({ symbol }) =>
       symbol.toUpperCase().includes(searchString),
     );
-  }, [liquidityPools, searchString]);
+  }, [swappableTokenList, searchString]);
 
   return (
     <AppLayout>
@@ -129,10 +129,10 @@ const PoolsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={!liquidityPools.length}
+          isLoading={!swappableTokenList.length}
           emptyMessage={'No Liquidity pool found'}
         >
-          {filteredPools.map((quoteToken, id) => (
+          {filteredSWappableTokenList.map((quoteToken, id) => (
             <Pool key={id} quoteToken={quoteToken} />
           ))}
         </FakeInfinityScroll>
