@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { Checkbox } from 'antd';
 
 import { PlusOutlined } from '@ant-design/icons';
 import { SOL_TOKEN } from '../SwapForm/constants';
@@ -8,7 +7,7 @@ import { Token } from '../../utils';
 import Button from '../Button';
 import styles from './styles.module.scss';
 import NumericInput from '../NumericInput';
-import { useTokenByMint } from './helper';
+import { useTokenByMint } from './hooks';
 import CustomCheckbox from '../CustomCheckbox';
 
 interface LiquidityFormInterface {

@@ -173,7 +173,10 @@ const VaultPage: FC = () => {
                       />
                     )}
                     {tab === 'swap' && (
-                      <SwapTab fractionMint={vaultData.fractionMint} />
+                      <SwapTab
+                        vaultMarketAddress={vaultMarket?.address}
+                        fractionMint={vaultData.fractionMint}
+                      />
                     )}
                     {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}
                   </div>

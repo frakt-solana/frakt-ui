@@ -7,9 +7,13 @@ import styles from './styles.module.scss';
 
 interface SwapTabProps {
   fractionMint: string;
+  vaultMarketAddress?: string;
 }
 
-export const SwapTab = ({ fractionMint }: SwapTabProps): JSX.Element => {
+export const SwapTab = ({
+  fractionMint,
+  vaultMarketAddress,
+}: SwapTabProps): JSX.Element => {
   const { poolConfigs, loading: swapLoading } = useSwapContext();
 
   return swapLoading ? (
@@ -25,7 +29,9 @@ export const SwapTab = ({ fractionMint }: SwapTabProps): JSX.Element => {
       ) : (
         <>
           <p>{"Looks like this vault doesn't have a liquidity pool"}</p>
-          <CreateLiquidityForm defaultTokenMint={fractionMint} />
+          {vaultMarketAddress && (
+            <CreateLiquidityForm defaultTokenMint={fractionMint} />
+          )}
         </>
       )}
     </div>
