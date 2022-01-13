@@ -3,13 +3,13 @@ import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
 import { ChevronDownIcon } from '../../icons';
 import { SelectTokenModal } from '../SelectTokenModal';
-import { Token } from '../../utils';
 import NumericInput from '../NumericInput';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 export interface TokenFieldProps {
-  tokensList?: Token[];
-  onTokenChange?: (nextToken: Token) => void;
-  currentToken?: Token;
+  tokensList?: TokenInfo[];
+  onTokenChange?: (nextToken: TokenInfo) => void;
+  currentToken?: TokenInfo;
   value: string;
   onValueChange: (nextValue: string) => void;
   modalTitle?: string;
@@ -104,7 +104,7 @@ const TokenField = ({
             {currentToken ? (
               <img
                 className={styles.tokenLogo}
-                src={currentToken.img}
+                src={currentToken.logoURI}
                 alt={currentToken.symbol}
               />
             ) : (
@@ -139,7 +139,7 @@ interface TokenFieldFormProps
   extends Omit<TokenFieldProps, 'value' | 'onValueChange'> {
   value?: {
     amount: string;
-    token: Token | any;
+    token: TokenInfo | any;
   };
   onChange?: any;
   maxLength?: number;
@@ -152,7 +152,7 @@ export const TokenFieldForm: React.FC<TokenFieldFormProps> = ({
 }) => {
   const onAmountChange = (amount: string) => onChange?.({ ...value, amount });
 
-  const onTokenChange = (token: Token) => onChange?.({ ...value, token });
+  const onTokenChange = (token: TokenInfo) => onChange?.({ ...value, token });
 
   return (
     <TokenField

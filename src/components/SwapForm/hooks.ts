@@ -1,65 +1,38 @@
-import { LiquidityPoolKeysV4, WSOL } from '@raydium-io/raydium-sdk';
-import { useMemo, useState } from 'react';
+import { WSOL } from '@raydium-io/raydium-sdk';
+import { useState } from 'react';
 
-import { PoolInfo, useSwapContext } from '../../contexts/Swap';
-import { useTokensMap } from '../../contexts/TokenList';
-import { notify, Token } from '../../utils';
-
-export const useSwappableTokenList = (): Token[] => {
-  const tokensMap = useTokensMap();
-  const { loading: poolConfigLoading, poolConfigs } = useSwapContext();
-
-  const tokenList: Token[] = useMemo(() => {
-    return poolConfigLoading
-      ? []
-      : poolConfigs.reduce((acc, { baseMint }) => {
-          const token = tokensMap.get(baseMint.toBase58());
-          return token
-            ? [
-                ...acc,
-                {
-                  mint: token.address,
-                  symbol: token.symbol,
-                  img: token.logoURI,
-                  data: token,
-                },
-              ]
-            : acc;
-        }, []);
-  }, [poolConfigLoading, poolConfigs, tokensMap]);
-
-  return tokenList;
-};
+import {
+  RaydiumPoolInfo,
+  useLiquidityPools,
+} from '../../contexts/liquidityPools';
+import { notify } from '../../utils';
 
 export const useLazyPoolInfo = (): {
-  poolInfo: PoolInfo | null;
+  poolInfo: RaydiumPoolInfo | null;
   fetchPoolInfo: (
-    payToken: Token,
-    receiveToken: Token,
-    poolConfigs: LiquidityPoolKeysV4[],
+    payTokenMint: string,
+    receiveTokenMint: string,
   ) => Promise<void>;
   loading: boolean;
 } => {
-  const { fetchPoolInfo } = useSwapContext();
-  const [poolInfo, setPoolInfo] = useState<PoolInfo>(null);
+  const { fetchRaydiumPoolsInfo, poolDataByMint } = useLiquidityPools();
+  const [poolInfo, setPoolInfo] = useState<RaydiumPoolInfo>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetch = async (
-    payToken: Token,
-    receiveToken: Token,
-    poolConfigs: LiquidityPoolKeysV4[],
+    payTokenMint: string,
+    receiveTokenMint: string,
   ): Promise<void> => {
     try {
       setLoading(true);
 
+      //? Token mint (not SOL)
       const tokenMint =
-        payToken.mint === WSOL.mint ? receiveToken.mint : payToken.mint;
+        payTokenMint === WSOL.mint ? receiveTokenMint : payTokenMint;
 
-      const poolConfig = poolConfigs.find(
-        ({ baseMint }) => baseMint.toBase58() === tokenMint,
-      );
+      const poolData = poolDataByMint.get(tokenMint);
 
-      const info = await fetchPoolInfo(poolConfig);
+      const info = (await fetchRaydiumPoolsInfo([poolData.poolConfig]))[0];
 
       setPoolInfo(info);
     } catch (err) {

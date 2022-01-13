@@ -1,11 +1,21 @@
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
 
 export interface LiquidityPoolsContextValues {
-  liquidityPools: any; //TODO: create
   loading: boolean;
+  poolDataByMint: PoolDataByMint;
+  fetchRaydiumPoolsInfo: (
+    raydiumPoolConfigs: LiquidityPoolKeysV4[],
+  ) => Promise<RaydiumPoolInfo[]>;
+  raydiumSwap: (
+    amount: BN,
+    minAmountOut: BN,
+    raydiumPoolConfig: LiquidityPoolKeysV4,
+    isBuy: boolean,
+  ) => Promise<void>;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -26,8 +36,27 @@ export interface RaydiumPoolInfo {
 
 export type RaydiumPoolInfoMap = Map<string, RaydiumPoolInfo>;
 
-export interface Pool {
+export type PoolDataByMint = Map<string, PoolData>;
+
+export interface PoolData {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
-  poolInfo: RaydiumPoolInfo;
+}
+
+export type FetchPoolDataByMint = ({
+  connection,
+  tokensMap,
+}: {
+  connection: Connection;
+  tokensMap: Map<string, TokenInfo>;
+}) => Promise<PoolDataByMint>;
+
+export interface RaydiumPoolInfo {
+  status: BN;
+  baseDecimals: number;
+  quoteDecimals: number;
+  lpDecimals: number;
+  baseReserve: BN;
+  quoteReserve: BN;
+  lpSupply: BN;
 }

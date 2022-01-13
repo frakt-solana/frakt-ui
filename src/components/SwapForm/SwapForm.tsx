@@ -1,15 +1,10 @@
-import { WSOL } from '@raydium-io/raydium-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 import BN from 'bn.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useSwapContext } from '../../contexts/Swap';
 import SettingsIcon from '../../icons/SettingsIcon';
-import { useUserTokens } from '../../contexts/userTokens';
-import { SOL_TOKEN } from './constants';
 import { getOutputAmount } from './helpers';
-import { useLazyPoolInfo, useSwappableTokenList } from './hooks';
-import { Token } from '../../utils';
+import { useLazyPoolInfo } from './hooks';
 import Button from '../Button';
 import { TokenFieldWithBalance } from '../TokenField';
 import styles from './styles.module.scss';
@@ -19,31 +14,27 @@ import { useFraktion } from '../../contexts/fraktion';
 import { ConfirmModal } from '../Modal/Modal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { useLiquidityPools } from '../../contexts/liquidityPools';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { SOL_TOKEN } from '../../utils';
 
 interface SwapFormInterface {
-  defaultTokenMint?: string;
+  defaultTokenMint: string;
 }
 
 const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
-  const swappableTokenList = useSwappableTokenList();
   const { vaults } = useFraktion();
-
-  const defaultReceiveToken = swappableTokenList.find(
-    ({ mint }) => mint === defaultTokenMint,
-  );
-
-  const { connected } = useWallet();
-  const { rawUserTokensByMint } = useUserTokens();
-  const { poolConfigs, swap } = useSwapContext();
-
+  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
 
+  const { connected } = useWallet();
+
   const [payValue, setPayValue] = useState<string>('');
-  const [payToken, setPayToken] = useState<Token | null>(SOL_TOKEN);
+  const [payToken, setPayToken] = useState<TokenInfo | null>(SOL_TOKEN);
 
   const [receiveValue, setReceiveValue] = useState<string>('');
-  const [receiveToken, setReceiveToken] = useState<Token | null>(
-    defaultReceiveToken || null,
+  const [receiveToken, setReceiveToken] = useState<TokenInfo | null>(
+    poolDataByMint.get(defaultTokenMint)?.tokenInfo || null,
   );
 
   const [slippage, setSlippage] = useState<string>('1');
@@ -51,30 +42,34 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     useState<boolean>(false);
 
   useEffect(() => {
-    if (poolConfigs && payToken && receiveToken && payToken !== receiveToken) {
-      fetchPoolInfo(payToken, receiveToken, poolConfigs);
+    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
+      fetchPoolInfo(payToken.address, receiveToken.address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken, poolConfigs]);
+  }, [payToken, receiveToken]);
 
   const intervalRef = useRef<any>();
   useEffect(() => {
     clearInterval(intervalRef.current);
-    if (poolConfigs && payToken && receiveToken && payToken !== receiveToken) {
+    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
       intervalRef.current = setInterval(() => {
-        fetchPoolInfo(payToken, receiveToken, poolConfigs);
+        fetchPoolInfo(payToken.address, receiveToken.address);
       }, 5000);
     }
 
     return () => clearInterval(intervalRef.current);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken, poolConfigs]);
+  }, [payToken, receiveToken]);
 
   useEffect(() => {
     if (poolInfo && payToken !== receiveToken) {
       setReceiveValue(
-        getOutputAmount(payValue, poolInfo, payToken.mint === WSOL.mint),
+        getOutputAmount(
+          payValue,
+          poolInfo,
+          payToken.address === SOL_TOKEN.address,
+        ),
       );
     }
   }, [payValue, payToken, receiveValue, receiveToken, poolInfo]);
@@ -106,78 +101,55 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
         okButtonProps: { style: { borderRadius: 0 } },
         cancelButtonProps: { style: { borderRadius: 0 } },
         onOk: async () => {
-          const isBuy = payToken.mint === WSOL.mint;
+          const isBuy = payToken.address === SOL_TOKEN.address;
 
           //? Need to get suitable pool
           const splToken = isBuy ? receiveToken : payToken;
 
-          const poolConfig = poolConfigs.find(
-            ({ baseMint }) => baseMint.toBase58() === splToken.mint,
-          );
-
-          const payTokenData = payToken.data;
-          const receiveTokenData = receiveToken.data;
+          const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
 
           const tokenAmountBN = new BN(
-            Number(payValue) * 10 ** payTokenData.decimals,
+            Number(payValue) * 10 ** payToken.decimals,
           );
 
           const tokenMinAmountBN = new BN(
             Number(receiveValue) *
-              10 ** receiveTokenData.decimals *
+              10 ** receiveToken.decimals *
               (1 - Number(slippage) / 100),
           );
 
-          await swap(
-            rawUserTokensByMint,
-            tokenAmountBN,
-            tokenMinAmountBN,
-            poolConfig,
-            isBuy,
-          );
+          await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
 
-          fetchPoolInfo(payToken, receiveToken, poolConfigs);
+          fetchPoolInfo(payToken.address, receiveToken.address);
         },
       });
     }
-    const isBuy = payToken.mint === WSOL.mint;
+    const isBuy = payToken.address === SOL_TOKEN.address;
 
     //? Need to get suitable pool
     const splToken = isBuy ? receiveToken : payToken;
 
-    const poolConfig = poolConfigs.find(
-      ({ baseMint }) => baseMint.toBase58() === splToken.mint,
-    );
+    const poolConfig = poolDataByMint.get(splToken.address)?.poolConfig;
 
-    const payTokenData = payToken.data;
-    const receiveTokenData = receiveToken.data;
-
-    const tokenAmountBN = new BN(
-      Number(payValue) * 10 ** payTokenData.decimals,
-    );
+    const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
 
     const tokenMinAmountBN = new BN(
       Number(receiveValue) *
-        10 ** receiveTokenData.decimals *
+        10 ** receiveToken.decimals *
         (1 - Number(slippage) / 100),
     );
 
-    await swap(
-      rawUserTokensByMint,
-      tokenAmountBN,
-      tokenMinAmountBN,
-      poolConfig,
-      isBuy,
-    );
+    await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
 
-    fetchPoolInfo(payToken, receiveToken, poolConfigs);
+    fetchPoolInfo(payToken.address, receiveToken.address);
   };
 
   const vaultInfo = useMemo(() => {
     if (receiveToken && payToken) {
-      const token = payToken.mint === WSOL.mint ? receiveToken : payToken;
+      const token =
+        payToken.address === SOL_TOKEN.address ? receiveToken : payToken;
 
-      return vaults.find(({ fractionMint }) => fractionMint === token.mint);
+      return vaults.find(({ fractionMint }) => fractionMint === token.address);
     } else {
       return null;
     }
@@ -188,7 +160,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       return '';
     }
 
-    const isBuy = payToken.mint === WSOL.mint;
+    const isBuy = payToken.address === SOL_TOKEN.address;
 
     if (isBuy) {
       // ? amount of token per inputed SOL amount (by market price)
@@ -215,24 +187,22 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultInfo, payValue, receiveValue]);
 
-  const onPayTokenChange = (nextToken: Token) => {
-    // if (nextToken.mint === WSOL.mint && receiveToken?.mint === WSOL.mint) {
-    //   setReceiveToken(null);
-    //   setReceiveValue('');
-    // }
-    if (nextToken.mint !== WSOL.mint && receiveToken?.mint !== WSOL.mint) {
+  const onPayTokenChange = (nextToken: TokenInfo) => {
+    if (
+      nextToken.address !== SOL_TOKEN.address &&
+      receiveToken?.address !== SOL_TOKEN.address
+    ) {
       setReceiveToken(SOL_TOKEN);
     }
     setPayValue('');
     setPayToken(nextToken);
   };
 
-  const onReceiveTokenChange = (nextToken: Token) => {
-    // if (nextToken.mint === WSOL.mint && payToken?.mint === WSOL.mint) {
-    //   setPayToken(null);
-    //   setPayValue('');
-    // }
-    if (nextToken.mint !== WSOL.mint && payToken?.mint !== WSOL.mint) {
+  const onReceiveTokenChange = (nextToken: TokenInfo) => {
+    if (
+      nextToken.address !== SOL_TOKEN.address &&
+      payToken?.address !== SOL_TOKEN.address
+    ) {
       setPayToken(SOL_TOKEN);
     }
     setReceiveValue('');
@@ -266,10 +236,16 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
         value={payValue}
         onValueChange={(nextValue) => setPayValue(nextValue)}
         tokensList={
-          payToken?.mint === WSOL.mint ? [SOL_TOKEN] : swappableTokenList
+          payToken?.address === SOL_TOKEN.address
+            ? [SOL_TOKEN]
+            : Array.from(poolDataByMint.values()).map(
+                ({ tokenInfo }) => tokenInfo,
+              )
         }
         currentToken={payToken}
-        onTokenChange={payToken?.mint === WSOL.mint ? null : onPayTokenChange}
+        onTokenChange={
+          payToken?.address === SOL_TOKEN.address ? null : onPayTokenChange
+        }
         modalTitle="Pay"
         label="Pay"
         showMaxButton
@@ -281,10 +257,16 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
         onValueChange={(nextValue) => nextValue}
         currentToken={receiveToken}
         tokensList={
-          receiveToken?.mint === WSOL.mint ? [SOL_TOKEN] : swappableTokenList
+          receiveToken?.address === SOL_TOKEN.address
+            ? [SOL_TOKEN]
+            : Array.from(poolDataByMint.values()).map(
+                ({ tokenInfo }) => tokenInfo,
+              )
         }
         onTokenChange={
-          receiveToken?.mint === WSOL.mint ? null : onReceiveTokenChange
+          receiveToken?.address === SOL_TOKEN.address
+            ? null
+            : onReceiveTokenChange
         }
         modalTitle="Receive"
         label="Receive"
@@ -320,7 +302,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
         </span>
         <span className={styles.info__value}>
           {`${(Number(receiveValue) * (1 - Number(slippage) / 100)).toFixed(
-            receiveToken?.data?.decimals || 0,
+            receiveToken?.decimals || 0,
           )} ${receiveToken?.symbol || ''}`}
         </span>
       </div>

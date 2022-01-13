@@ -1,41 +1,40 @@
-import React from 'react';
 import BN from 'bn.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AccountInfo } from '@solana/web3.js';
-import { WSOL } from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
 
-import { decimalBNToString, Token } from '../../utils';
+import { decimalBNToString, SOL_TOKEN } from '../../utils';
 import { RawUserTokensByMint, useUserTokens } from '../../contexts/userTokens';
 import { useNativeAccount } from '../../hooks';
 import TokenField, { TokenFieldProps } from './TokenField';
 
 const getTokenBalance = (
-  token: Token,
+  token: TokenInfo,
   account: AccountInfo<Buffer>,
   rawUserTokensByMint: RawUserTokensByMint,
 ): string => {
-  if (token?.mint === WSOL.mint) {
+  if (token?.address === SOL_TOKEN.address) {
     return decimalBNToString(new BN(account?.lamports || 0), 3, 9);
   } else {
-    const tokenAccount = rawUserTokensByMint[token?.mint];
+    const tokenAccount = rawUserTokensByMint[token?.address];
 
     return decimalBNToString(
       tokenAccount?.amountBN || new BN(0),
       3,
-      token?.data?.decimals || 9,
+      token?.decimals || 9,
     );
   }
 };
 
 const getMintBalanceMap = (
-  tokensList: Token[],
+  tokensList: TokenInfo[],
   account: AccountInfo<Buffer>,
   rawUserTokensByMint: RawUserTokensByMint,
 ) => {
   return tokensList.reduce((acc, token) => {
     const balance = getTokenBalance(token, account, rawUserTokensByMint);
 
-    balance && balance !== '0' && (acc[token.mint] = balance);
+    balance && balance !== '0' && (acc[token.address] = balance);
 
     return acc;
   }, {});
@@ -66,7 +65,7 @@ export const TokenFieldWithBalance = ({
 
   const balances = getMintBalanceMap(tokensList, account, rawUserTokensByMint);
 
-  const balance = balances[currentToken?.mint];
+  const balance = balances[currentToken?.address];
 
   const onUseMaxButtonClick = () => {
     onValueChange(balance);

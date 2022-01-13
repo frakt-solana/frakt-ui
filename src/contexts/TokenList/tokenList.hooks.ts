@@ -17,7 +17,7 @@ export const useTokensMap = (): Map<string, TokenInfo> => {
   return tokensMap;
 };
 
-export const useSwappableTokensMap = (): Map<string, TokenInfo> => {
-  const { swappableTokensMap } = useTokenListContext();
-  return swappableTokensMap;
+export const useFraktionTokensMap = (): Map<string, TokenInfo> => {
+  const { fraktionTokensMap } = useTokenListContext();
+  return fraktionTokensMap;
 };

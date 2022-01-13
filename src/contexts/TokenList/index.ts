@@ -3,5 +3,5 @@ export { TokenListContextProvider } from './tokenList.context';
 export {
   useTokenListContext,
   useTokensMap,
-  useSwappableTokensMap,
+  useFraktionTokensMap,
 } from './tokenList.hooks';

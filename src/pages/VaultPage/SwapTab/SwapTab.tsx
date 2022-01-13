@@ -1,7 +1,6 @@
 import { Loader } from '../../../components/Loader';
 import SwapForm from '../../../components/SwapForm';
-
-import { useSwapContext } from '../../../contexts/Swap';
+import { useLiquidityPools } from '../../../contexts/liquidityPools';
 import styles from './styles.module.scss';
 
 interface SwapTabProps {
@@ -9,17 +8,15 @@ interface SwapTabProps {
 }
 
 export const SwapTab = ({ fractionMint }: SwapTabProps): JSX.Element => {
-  const { poolConfigs, loading: swapLoading } = useSwapContext();
+  const { poolDataByMint, loading: poolsLoading } = useLiquidityPools();
 
-  return swapLoading ? (
+  return poolsLoading ? (
     <div className={styles.loading}>
       <Loader size="large" />
     </div>
   ) : (
     <div className={styles.swapTab}>
-      {poolConfigs.find(
-        ({ baseMint }) => baseMint.toBase58() === fractionMint,
-      ) ? (
+      {poolDataByMint.has(fractionMint) ? (
         <SwapForm defaultTokenMint={fractionMint} />
       ) : (
         <p>{"Looks like this vault doesn't have a liquidity pool yet."}</p>

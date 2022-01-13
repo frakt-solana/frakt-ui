@@ -1,11 +1,11 @@
 import { Liquidity } from '@raydium-io/raydium-sdk';
 import BN from 'bn.js';
 
-import { PoolInfo } from '../../contexts/Swap';
+import { RaydiumPoolInfo } from '../../contexts/liquidityPools';
 
 export const getOutputAmount = (
   amount: string,
-  poolInfo: PoolInfo,
+  poolInfo: RaydiumPoolInfo,
   isBuy = true,
 ): string => {
   try {

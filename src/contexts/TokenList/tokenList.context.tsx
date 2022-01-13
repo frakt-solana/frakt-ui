@@ -10,7 +10,6 @@ import {
 export const TokenListContext = React.createContext<TokenListContextInterface>({
   tokensList: [],
   tokensMap: new Map<string, TokenInfo>(),
-  swappableTokensMap: new Map<string, TokenInfo>(),
   fraktionTokensList: [],
   fraktionTokensMap: new Map<string, TokenInfo>(),
   loading: true,
@@ -22,7 +21,6 @@ export const TokenListContextProvider = ({
   children: JSX.Element | null;
 }): JSX.Element => {
   const [tokensList, setTokensList] = useState<TokenInfo[]>([]);
-  const [swappableTokensList, setSwappableTokensList] = useState<[]>([]);
   const [fraktionTokensList, setFraktionTokensList] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -36,7 +34,6 @@ export const TokenListContextProvider = ({
       .then(([fraktList, solanaList]) => {
         setTokensList([...fraktList, ...solanaList]);
         setFraktionTokensList(fraktList);
-        setSwappableTokensList(fraktList);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -55,22 +52,6 @@ export const TokenListContextProvider = ({
     });
     return tokenMap;
   }, [tokensList]);
-
-  //? Swappable token map for quick lookup.
-  const swappableTokensMap = useMemo(() => {
-    const swappableTokensMap = new Map();
-    swappableTokensList.forEach((token: TokenInfo) => {
-      swappableTokensMap.set(token.address, token);
-    });
-    //? Add additional tokens (such is FRKT and RAY for swap and etc.)
-    ADDITIONAL_SWAPPABLE_TOKENS_MINTS.forEach((mint) => {
-      const token: TokenInfo = tokensMap.get(mint);
-      if (token) {
-        swappableTokensMap.set(mint, tokensMap.get(mint));
-      }
-    });
-    return swappableTokensMap;
-  }, [swappableTokensList, tokensMap]);
 
   //? Fraktion map for quick lookup.
   const fraktionTokensMap = useMemo(() => {
@@ -93,7 +74,6 @@ export const TokenListContextProvider = ({
         tokensMap,
         loading,
         tokensList,
-        swappableTokensMap,
         fraktionTokensList,
         fraktionTokensMap,
       }}

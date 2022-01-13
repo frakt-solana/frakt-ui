@@ -26,7 +26,6 @@ import { FraktionProvider } from './contexts/fraktion';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
-import { SwapContextProvider } from './contexts/Swap';
 import CollectionsPage from './pages/CollectionsPage';
 import CollectionPage from './pages/CollectionPage';
 import { CollectionsProvider } from './contexts/collections';
@@ -49,69 +48,67 @@ export const Routes = (): JSX.Element => {
             <TokenListContextProvider>
               <UserTokensProvider>
                 <LiquidityPoolsProvider>
-                  <SwapContextProvider>
-                    <FraktionProvider>
-                      <CollectionsProvider>
-                        <Switch>
-                          <Route
-                            exact
-                            path={URLS.ROOT}
-                            component={(): JSX.Element => <HomePage />}
-                          />
-                          <Route
-                            exact
-                            path={URLS.VAULTS}
-                            component={(): JSX.Element => <VaultsPage />}
-                          />
-                          <Route
-                            exact
-                            path={`${URLS.VAULT}/:vaultPubkey`}
-                            component={(): JSX.Element => <VaultPage />}
-                          />
-                          <Route
-                            exact
-                            path={URLS.SWAP}
-                            component={(): JSX.Element => <SwapPage />}
-                          />
-                          <Route
-                            exact
-                            path={URLS.STAKER_PAGE}
-                            component={(): JSX.Element => <StakerPage />}
-                          />
-                          <Route
-                            exact
-                            path={`${URLS.FRAKTIONALIZE}/:vaultPubkey?`}
-                            component={(): JSX.Element => <FraktionalizePage />}
-                          />
-                          <Route
-                            exact
-                            path={`${URLS.WALLET}/:walletPubkey`}
-                            component={(): JSX.Element => <WalletPage />}
-                          />
-                          <Route
-                            exact
-                            path={URLS.COLLECTIONS}
-                            component={(): JSX.Element => <CollectionsPage />}
-                          />
-                          <Route
-                            exact
-                            path={`${URLS.COLLECTION}/:collectionName`}
-                            component={(): JSX.Element => <CollectionPage />}
-                          />
-                          <Route
-                            exact
-                            path={URLS.PAGE_404}
-                            component={(): JSX.Element => <Page404 />}
-                          />
-                          <Route
-                            exact
-                            path={'*'}
-                            component={(): JSX.Element => <Page404 />}
-                          />
-                        </Switch>
-                      </CollectionsProvider>
-                    </FraktionProvider>
-                  </SwapContextProvider>
+                  <FraktionProvider>
+                    <CollectionsProvider>
+                      <Switch>
+                        <Route
+                          exact
+                          path={URLS.ROOT}
+                          component={(): JSX.Element => <HomePage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.VAULTS}
+                          component={(): JSX.Element => <VaultsPage />}
+                        />
+                        <Route
+                          exact
+                          path={`${URLS.VAULT}/:vaultPubkey`}
+                          component={(): JSX.Element => <VaultPage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.SWAP}
+                          component={(): JSX.Element => <SwapPage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.STAKER_PAGE}
+                          component={(): JSX.Element => <StakerPage />}
+                        />
+                        <Route
+                          exact
+                          path={`${URLS.FRAKTIONALIZE}/:vaultPubkey?`}
+                          component={(): JSX.Element => <FraktionalizePage />}
+                        />
+                        <Route
+                          exact
+                          path={`${URLS.WALLET}/:walletPubkey`}
+                          component={(): JSX.Element => <WalletPage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.COLLECTIONS}
+                          component={(): JSX.Element => <CollectionsPage />}
+                        />
+                        <Route
+                          exact
+                          path={`${URLS.COLLECTION}/:collectionName`}
+                          component={(): JSX.Element => <CollectionPage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.PAGE_404}
+                          component={(): JSX.Element => <Page404 />}
+                        />
+                        <Route
+                          exact
+                          path={'*'}
+                          component={(): JSX.Element => <Page404 />}
+                        />
+                      </Switch>
+                    </CollectionsProvider>
+                  </FraktionProvider>
                 </LiquidityPoolsProvider>
               </UserTokensProvider>
             </TokenListContextProvider>

@@ -1,49 +1,46 @@
-import { useConnection } from '@solana/wallet-adapter-react';
 import React, { useEffect, useState } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+
 import { useTokenListContext } from '../TokenList';
-import {
-  fetchRaydiumPoolsConfigs,
-  fetchRaydiumPoolsInfoMap,
-  getFraktionPoolConfigs,
-  getPools,
-} from './liquidityPools.helpers';
+import { fetchRaydiumPoolsInfo, raydiumSwap } from './liquidityPools';
+import { fetchPoolDataByMint } from './liquidityPools.helpers';
 import {
   LiquidityPoolsContextValues,
   LiquidityPoolsProviderType,
+  PoolDataByMint,
 } from './liquidityPools.model';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
-    liquidityPools: [],
     loading: true,
+    poolDataByMint: new Map(),
+    fetchRaydiumPoolsInfo: () => Promise.resolve(null),
+    raydiumSwap: () => Promise.resolve(null),
   });
 
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
   children,
 }) => {
-  const [loading, setLoading] = useState<boolean>(true);
-
   const { fraktionTokensMap } = useTokenListContext();
-
   const { connection } = useConnection();
+  const { publicKey: walletPublicKey, signTransaction } = useWallet();
 
-  const fetchPools = async () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [poolDataByMint, setPoolDataByMint] = useState<PoolDataByMint>(
+    new Map(),
+  );
+
+  const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
-      const configs = await fetchRaydiumPoolsConfigs(connection);
-
-      const poolConfigs = getFraktionPoolConfigs(configs, fraktionTokensMap);
-
-      const poolsInfoMap = await fetchRaydiumPoolsInfoMap(
+      const poolDataByMint = await fetchPoolDataByMint({
         connection,
-        poolConfigs,
-      );
+        tokensMap: fraktionTokensMap,
+      });
 
-      const pools = getPools(poolConfigs, poolsInfoMap, fraktionTokensMap);
-
-      console.log(pools);
-
-      // console.log(poolConfigs);
+      setPoolDataByMint(poolDataByMint);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       setLoading(false);
@@ -51,12 +48,19 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
   };
 
   useEffect(() => {
-    fraktionTokensMap.size && fetchPools();
+    fraktionTokensMap.size && fetchPoolData(fraktionTokensMap);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fraktionTokensMap.size]);
 
   return (
-    <LiquidityPoolsContext.Provider value={{ liquidityPools: [], loading }}>
+    <LiquidityPoolsContext.Provider
+      value={{
+        loading,
+        poolDataByMint,
+        fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
+        raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
+      }}
+    >
       {children}
     </LiquidityPoolsContext.Provider>
   );
