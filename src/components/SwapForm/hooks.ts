@@ -2,11 +2,11 @@ import { LiquidityPoolKeysV4, WSOL } from '@raydium-io/raydium-sdk';
 import { useMemo, useState } from 'react';
 
 import { PoolInfo, useSwapContext } from '../../contexts/Swap';
-import { useTokenMap } from '../../contexts/TokenList';
+import { useTokensMap } from '../../contexts/TokenList';
 import { notify, Token } from '../../utils';
 
 export const useSwappableTokenList = (): Token[] => {
-  const tokensMap = useTokenMap();
+  const tokensMap = useTokensMap();
   const { loading: poolConfigLoading, poolConfigs } = useSwapContext();
 
   const tokenList: Token[] = useMemo(() => {
