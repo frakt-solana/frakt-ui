@@ -29,7 +29,7 @@ export const registerToken = async (
 
     if (data?.success) {
       notify({
-        message: 'Token regitered successfully',
+        message: 'Token registered successfully',
         description: 'Token registration can take up to an hour',
         type: 'success',
       });
