@@ -1,121 +1,134 @@
 
-  .image {
-    width: 80px;
-    height: 80px;
-    background-color: var(--gray-color-7);
-    background-size: cover;
-    background-repeat: no-repeat;
-    border: 1px solid var(--gray-color-1);
-    margin-bottom: 32px;
-    position: relative;
+.image {
+  width: 80px;
+  height: 80px;
+  background-color: var(--gray-color-7);
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid var(--gray-color-1);
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.removeBtn {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--gray-color-3);
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--black-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+
+  &::before {
+    content: '-';
   }
+}
 
-  .removeBtn {
-    width: 20px;
-    height: 20px;
-    border: 1px solid var(--gray-color-3);
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: var(--black-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 0;
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--gray-color-3);
+}
 
-    &::before {
-      content: '-';
+.details {
+  padding: 0 24px;
+  flex-grow: 1;
+
+  :global {
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+
+    .ant-form-vertical .ant-form-item {
+      flex-direction: row;
+    }
+
+    .ant-form-item-label {
+      margin-bottom: 4px;
+      font: var(--font-secondary);
+      opacity: 0.25;
+      text-transform: uppercase;
+      padding: 0 !important;
     }
   }
 
-  .separator {
-    width: 100%;
-    height: 1px;
-    background-color: var(--gray-color-3);
+  @media screen and (max-width: 1450px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.fieldLabel {
+  margin-bottom: 4px;
+  font: var(--font-secondary);
+  opacity: 0.25;
+  text-transform: uppercase;
+}
+
+.detailsTitle {
+  font: var(--font-btn-small);
+  margin-bottom: 24px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.tokenName {
+  font: var(--font-btn-small);
+}
+
+.fieldWrapper {
+  &:last-child {
+    margin-bottom: unset;
   }
 
-  .details {
-    padding: 0 24px;
-    flex-grow: 1;
-    :global
-    {
-     .ant-form-item {
-       margin-bottom: 0;
-     }
-      .ant-form-vertical .ant-form-item {
-        flex-direction: row;
-      }
-      .ant-form-item-label {
-        margin-bottom: 4px;
-        font: var(--font-secondary);
-        opacity: 0.25;
-        text-transform: uppercase;
-        padding: 0!important;
-      }
+  :global {
+    .ant-form-item-control {
+      width: 100%;
     }
   }
+}
 
-  .fieldLabel {
-    margin-bottom: 4px;
-    font: var(--font-secondary);
-    opacity: 0.25;
-    text-transform: uppercase;
-  }
+.continueBtnContainer {
+  width: 100%;
+}
 
-  .detailsTitle {
-    font: var(--font-btn-small);
-    margin-bottom: 24px;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
+.fieldWrapperDouble {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 16px;
+}
 
-  .tokenName {
-    font: var(--font-btn-small);
-  }
+.fieldWrapper_error {
+  color: var(--red-color);
+  font: var(--font-smallest);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-  .fieldWrapper {
-    margin-bottom: 18px;
+.continueBtn {
+  width: 100%;
+  justify-content: center;
+  font: var(--font-btn-small);
+}
 
-    &:last-child {
-      margin-bottom: unset;
-    }
-  }
+.feeMessage {
+  font: var(--font-smallest);
+  font-size: 12px;
+  color: var(--gray-color-8);
+  padding: 0 24px 12px;
+}
 
-  .fieldWrapperDouble {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 16px;
-  }
-
-  .fieldWrapper_error {
-    color: var(--red-color);
-    font: var(--font-smallest);
-    font-size: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .continueBtn {
-    width: 100%;
-    justify-content: center;
-    font: var(--font-btn-small);
-  }
-
-  .continueBtnContainer {
-    width: 100%;
-  }
-
-  .feeMessage {
-    font: var(--font-smallest);
-    font-size: 12px;
-    color: var(--gray-color-8);
-    padding: 0 24px 12px;
-  }
-
-
+.nftNameTitle {
+  margin-bottom: 18px;
+}
 
 
 .priceField {
@@ -142,12 +155,12 @@
 
 .err {
   font-size: 10px;
-    min-height: 32px;
-    line-height: 32px;
-    font-weight: bold;
+  min-height: 32px;
+  line-height: 32px;
+  font-weight: bold;
   color: var(--red-color);
 
-    &:last-child {
-      margin-bottom: 18px;
-    }
+  &:last-child {
+    margin-bottom: 18px;
+  }
 }

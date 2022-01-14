@@ -16,3 +16,4 @@ export { ArrowDownSmallIcon } from './arrowDownSmall';
 export { ArrowLeftIcon } from './ArrowLeftIcon';
 export { CountdownIcon } from './CountdownIcon';
 export { FinishFlagsIcon } from './FinishFlagsIcon';
+export { CloseModalIcon } from './CloseModalIcon';

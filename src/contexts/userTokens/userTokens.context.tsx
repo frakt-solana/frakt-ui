@@ -95,12 +95,14 @@ export const UserTokensProvider = ({
     }
   };
 
-  const removeTokenOptimistic = (tokenMint: string): void => {
+  const removeTokenOptimistic = (mints: string[]): void => {
     const nftEntries = Object.entries(nftsByMint).filter(
-      ([key]) => key !== tokenMint,
+      ([key]) => !mints.includes(key),
     );
     const patchedRawUserTokensByMint = Object.fromEntries(
-      Object.entries(rawUserTokensByMint).filter(([key]) => key !== tokenMint),
+      Object.entries(rawUserTokensByMint).filter(
+        ([key]) => !mints.includes(key),
+      ),
     );
 
     const patchedNfts = nftEntries.map(([mint, metadata]) => ({

@@ -1,0 +1,177 @@
+.sliders {
+  margin-bottom: 30px;
+}
+
+.slideBig,
+.slideSmall {
+  width: 100%;
+  max-width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  background-color: var(--gray-color-5);
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  border: 1px solid var(--gray-color-6);
+}
+
+div.sliderSmall {
+  padding-bottom: 15px;
+  margin-top: 0;
+
+  &::after,
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 35px;
+    height: 100%;
+    z-index: 5;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(270deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  :global {
+
+    .swiper-slide-thumb-active {
+      div {
+        border: 1px solid var(--accent-color-1)
+      }
+    }
+
+    .swiper-button-prev {
+      left: 0;
+
+      &::after, {
+        font-size: 18px;
+        color: var(--white-color);
+        font-weight: 700;
+      }
+    }
+
+    .swiper-button-next {
+      right: 0;
+
+      &::after, {
+        font-size: 18px;
+        color: var(--white-color);
+        font-weight: 700;
+      }
+    }
+
+    .swiper-button-disabled {
+      color: var(--gray-color-3)
+    }
+
+    .swiper-scrollbar {
+      width: 100%;
+      height: 5px;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      background-color: var(--gray-color-3);
+      z-index: 9;
+      cursor: pointer;
+    }
+
+    .swiper-scrollbar-drag {
+      background-color: #fff;
+      height: 5px;
+    }
+  }
+}
+
+.slideSmall {
+  width: 100px;
+  height: 100px;
+  border: 1px solid transparent;
+  transition: border-color .1s ease-in;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid var(--accent-color-1);
+  }
+}
+
+.sliderBig {
+  height: 420px;
+  width: 100%;
+  position: relative;
+  margin-bottom: 10px;
+
+  @media screen and (max-width: 1023px) {
+    height: 350px;
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: 350px;
+  }
+
+  @media screen and (max-width: 370px) {
+    max-width: 300px;
+    height: 300px;
+  }
+
+  &::before {
+    content: '';
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    position: absolute;
+    border: 1px solid var(--gray-color-6);
+    top: 10px;
+    left: 10px;
+    z-index: -1;
+  }
+
+  &::after {
+    content: "No NFT";
+    position: absolute;
+    z-index: -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 40px;
+    color: var(--gray-color-3);
+  }
+}
+
+.nftName {
+  font: var(--font-secondary);
+  line-height: 17px;
+  margin-top: 14px;
+  margin-bottom: 12px;
+  text-align: center;
+  text-transform: uppercase;
+
+  span {
+    margin-right: 10px;
+  }
+}
+
+.toNftList {
+  background-color: var(--accent-color-1);
+  color: var(--white-color);
+  font: var(--font-btn-small);
+  width: 100%;
+  height: 43px;
+  display: block;
+  line-height: 43px;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--accent-color-3);
+    color: var(--white-color)
+  }
+}

@@ -15,13 +15,19 @@ import FakeInfinityScroll, {
 import { useDebounce } from '../../hooks';
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { useFraktionalizeTransactionModal } from './hooks';
+import {
+  FraktionalizeTxnData,
+  useFraktionalizeTransactionModal,
+} from './hooks';
+import { useParams } from 'react-router';
 
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
   const { nfts: rawNfts, loading } = useUserTokens();
+  const { vaultPubkey: currentVaultPubkey } =
+    useParams<{ vaultPubkey: string }>();
 
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
@@ -48,36 +54,33 @@ const FraktionalizePage = (): JSX.Element => {
   };
 
   const onCardClick = (nft: UserNFT): void => {
-    //? Commented out to prevent multiselect until baskets not finished
-    // selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
-    //   ? setSelectedNfts(
-    //       selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
-    //     )
-    //   : setSelectedNfts([...selectedNfts, nft]);
-    setSelectedNfts([nft]);
+    selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
+      ? setSelectedNfts(
+          selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
+        )
+      : setSelectedNfts([...selectedNfts, nft]);
   };
 
-  const runFraktionalization = (
-    userNfts: UserNFT[],
-    tickerName: string,
-    pricePerFraction: number,
-    fractionsAmount: number,
-    basketName = '',
-    tickSize?: number,
-    startBid?: number,
-    isAuction?: boolean,
-  ) => {
-    openTxnModal({
-      userNfts,
+  const runFraktionalization = ({
+    newNfts = [],
+    lockedNfts = [],
+    tickerName,
+    pricePerFraction,
+    fractionsAmount,
+    vaultName,
+    vault,
+  }: FraktionalizeTxnData) => {
+    return openTxnModal({
+      newNfts,
+      lockedNfts,
       tickerName,
       pricePerFraction,
       fractionsAmount,
-      basketName,
-      isAuction,
-      tickSize,
-      startBid,
+      vaultName,
+      vault,
+    }).then(() => {
+      setSelectedNfts([]);
     });
-    setSelectedNfts([]);
   };
 
   const nfts = useMemo(() => {
@@ -90,10 +93,10 @@ const FraktionalizePage = (): JSX.Element => {
     closeTxnModal();
     setTxnModalState('loading');
   };
-
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar
+        currentVaultPubkey={currentVaultPubkey}
         nfts={selectedNfts}
         onDeselect={onDeselect}
         onContinueClick={runFraktionalization}

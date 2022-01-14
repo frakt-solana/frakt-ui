@@ -39,7 +39,8 @@
     "sass": "^1.43.4",
     "solana-nft-metadata": "^1.0.5",
     "styled-components": "^5.3.3",
-    "superstruct": "^0.8.3"
+    "superstruct": "^0.8.3",
+    "swiper": "^7.4.1"
   },
   "scripts": {
     "start": "npm run devnet",

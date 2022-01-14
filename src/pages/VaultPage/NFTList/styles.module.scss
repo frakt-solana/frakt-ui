@@ -1,0 +1,458 @@
+.wrapper {
+  padding-bottom: 100px;
+}
+
+.nftList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  margin-top: 50px;
+
+  @media screen and (max-width: 1023px) {
+    gap: 44px;
+  }
+
+  @media screen and (max-width: 767px) {
+    gap: 22px;
+  }
+}
+
+.nftListItem {
+  border: 1px solid var(--gray-color-3);
+  max-width: calc(33.33% - 18px);
+  width: 100%;
+  position: relative;
+  background-color: var(--black-color);
+  cursor: pointer;
+
+  &::after {
+    position: absolute;
+    display: block;
+    content: '';
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--gray-color-3);
+    top: 10px;
+    left: 10px;
+    z-index: -1;
+  }
+
+  &:hover {
+    border-color: var(--accent-color-1);
+
+    &::after {
+      border-color: var(--accent-color-3);
+      opacity: .5;
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    max-width: calc(50% - 22px);
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: calc(50% - 11px);
+  }
+
+  @media screen and (max-width: 370px) {
+    max-width: 100%;
+  }
+}
+
+.nftImage {
+  width: 100%;
+  height: 350px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100px;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  @media screen and (max-width: 767px) {
+    height: 242px;
+  }
+
+  @media screen and (max-width: 470px) {
+    height: 180px;
+  }
+
+  @media screen and (max-width: 370px) {
+    height: 300px;
+  }
+}
+
+.nftInfoBlock {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--gray-color-3);
+}
+
+.nftTitle {
+  font: var(--font-btn-mid);
+  line-height: 1.25em;
+  margin-bottom: 16px;
+  word-break: break-word;
+
+  @media screen and (max-width: 767px) {
+    font-size: 19px;
+  }
+
+  @media screen and (max-width: 470px) {
+    font-size: 15px;
+  }
+
+  @media screen and (max-width: 370px) {
+    font-size: 20px;
+  }
+}
+
+.nftInfoLabel {
+  font: var(--font-smallest);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--gray-color-3);
+  margin-bottom: 8px;
+}
+
+.nftInfoItem {
+  font: var(--font-btn-small);
+  cursor: pointer;
+
+  svg {
+    vertical-align: text-bottom;
+    margin-left: 10px;
+  }
+
+  @media screen and (max-width: 470px) {
+    font-size: 15px;
+  }
+
+  @media screen and (max-width: 370px) {
+    font-size: 17px;
+  }
+}
+
+:global {
+  .ant-modal-wrap {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(16px);
+  }
+}
+
+.modal {
+  padding-top: 100px !important;
+
+  :global {
+    .ant-modal-content {
+      background-color: transparent;
+      box-shadow: none;
+    }
+
+    .ant-modal-body {
+      padding: 0;
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    width: 343px !important; //there is no way to avoid !important
+    padding-top: 70px !important;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 270px !important; //there is no way to avoid !important
+  }
+}
+
+.closeModalSection {
+  height: 43px;
+  padding-left: 16px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--gray-color-3);
+  border-radius: 30px;
+  position: absolute;
+  top: -70px;
+  right: 0;
+
+  @media screen and (max-width: 1023px) {
+    top: -60px;
+  }
+
+  @media screen and (max-width: 550px) {
+    top: -55px;
+    height: 35px;
+    padding-left: 10px;
+  }
+}
+
+.slideNumber {
+  font: var(--font-btn-mid);
+  margin-right: 16px;
+  margin-top: 5px;
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+  }
+}
+
+.closeModalIcon {
+  height: 43px;
+  width: 43px;
+  border: 1px solid var(--gray-color-3);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: -1px;
+  cursor: pointer;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border: 1px solid var(--white-color);
+  }
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.closeIcon {
+  width: 23px;
+
+  @media screen and (max-width: 470px) {
+    width: 15px;
+  }
+}
+
+.sliderWrapper {
+  padding: 24px;
+  background-color: var(--black-color);
+  border: 1px solid var(--gray-color-3);
+
+  @media screen and (max-width: 1023px) {
+    max-width: 343px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+  }
+
+
+  :global {
+    .swiper-button-disabled {
+      &::after {
+        color: var(--gray-color-3);
+      }
+
+      &:hover {
+        background-color: var(--black-color);
+      }
+    }
+  }
+}
+
+.slide {
+  display: flex;
+  gap: 34px;
+
+  @media screen and (max-width: 1023px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.slideImage {
+  flex-shrink: 0;
+  height: 388px;
+  width: 388px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid var(--gray-color-3);
+
+  @media screen and (max-width: 1023px) {
+    width: 343px;
+    height: 343px;
+    border: none;
+    border-bottom: 1px solid var(--gray-color-3);
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 270px;
+    height: 270px;
+  }
+}
+
+.slideInfoBlock {
+  flex-grow: 1;
+
+  @media screen and (max-width: 1023px) {
+    padding: 24px;
+  }
+}
+
+.collectionLink {
+  display: flex;
+  margin-bottom: 16px;
+
+  &:hover {
+    .collectionName {
+      color: var(--accent-color-3);
+    }
+  }
+
+  .collectionName {
+    color: var(--accent-color-1);
+    transition: color var(--transition-1);
+    font: var(--font-secondary);
+    border-bottom: 1px solid var(--accent-color-1);
+  }
+}
+
+.collectionIcon {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--white-color);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-right: 10px;
+}
+
+.NftDescription {
+  margin-bottom: 16px;
+  font: var(--font-body-small);
+}
+
+.attributesTable {
+  padding-bottom: 32px;
+  font: var(--font-secondary);
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    p:first-child {
+      order: 1;
+    }
+
+    p:last-child {
+      order: 3;
+      word-break: break-word;
+      text-align: right;
+    }
+
+    &::before {
+      content: '';
+      display: inline-block;
+      height: 1px;
+      flex-grow: 1;
+      background: var(--gray-color-3);
+      order: 2;
+      min-width: 25px;
+      margin-top: 11px;
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding-bottom: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-top: 0;
+  }
+}
+
+.sliderNavPrev,
+.sliderNavNext {
+  height: 56px;
+  width: 56px;
+  position: absolute;
+  top: calc(50% - 28px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--gray-color-3);
+  background-color: var(--black-color);
+  z-index: 9;
+  cursor: pointer;
+  transition: var(--transition-1);
+
+  &:hover {
+    background-color: var(--gray-color-5);
+  }
+
+  &::after {
+    font-size: 14px;
+    font-family: swiper-icons;
+    text-transform: none !important;
+    letter-spacing: 0;
+    text-transform: none;
+    font-variant: initial;
+    line-height: 1;
+  }
+
+  @media screen and (max-width: 1023px) {
+    position: fixed;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 30px;
+    height: 30px;
+
+    &::after {
+      font-size: 12px;
+    }
+  }
+
+  @media screen and (max-width: 370px) {
+    display: none;
+  }
+}
+
+.sliderNavPrev {
+  left: -80px;
+
+  &::after {
+    content: 'prev';
+  }
+
+  @media screen and (max-width: 1023px) {
+    left: calc(50% - 255px);
+  }
+
+  @media screen and (max-width: 550px) {
+    left: calc(50% - 175px);
+  }
+}
+
+.sliderNavNext {
+  right: -80px;
+
+  &::after {
+    content: "next";
+  }
+
+  @media screen and (max-width: 1023px) {
+    right: calc(50% - 255px);
+  }
+
+  @media screen and (max-width: 550px) {
+    right: calc(50% - 175px);
+  }
+}

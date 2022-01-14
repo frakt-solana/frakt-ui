@@ -1,24 +1,23 @@
 import { useState } from 'react';
 
-import { useUserTokens, UserNFT } from '../../contexts/userTokens';
-import { useFraktion } from '../../contexts/fraktion';
+import { UserNFT, useUserTokens } from '../../contexts/userTokens';
+import { useFraktion, VaultData } from '../../contexts/fraktion';
 
-interface FraktionalizeTxnData {
-  userNfts: UserNFT[];
+export interface FraktionalizeTxnData {
+  newNfts: UserNFT[];
+  lockedNfts: UserNFT[];
   tickerName: string;
   pricePerFraction: number;
   fractionsAmount: number;
-  basketName?: string;
-  isAuction: boolean;
-  tickSize: number;
-  startBid: number;
+  vaultName: string;
+  vault?: VaultData;
 }
 
 type ModalState = 'loading' | 'success' | 'fail';
 
 export const useFraktionalizeTransactionModal = (): {
   visible: boolean;
-  open: (txnData: FraktionalizeTxnData) => void;
+  open: (txnData: FraktionalizeTxnData) => Promise<void>;
   close: () => void;
   state: ModalState;
   setState: (nextState: ModalState) => void;
@@ -26,7 +25,7 @@ export const useFraktionalizeTransactionModal = (): {
   tickerName: string;
 } => {
   const { removeTokenOptimistic } = useUserTokens();
-  const { fraktionalize } = useFraktion();
+  const { createVault } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<ModalState>('loading');
   const [fractionTokenMint, setFractionTokenMint] = useState<string>('');
@@ -36,33 +35,70 @@ export const useFraktionalizeTransactionModal = (): {
 
   const open = (txnData: FraktionalizeTxnData) => {
     setVisible(true);
-
     setTransactionData(txnData);
-
-    const { userNfts } = txnData;
-
-    if (userNfts.length === 1) {
-      createSingleVault(txnData);
-    } else {
-      //TODO: create basket here
-    }
+    return fraktionalize(txnData);
   };
 
-  const createSingleVault = async (txnData: FraktionalizeTxnData) => {
-    const result = await fraktionalize(
-      txnData.userNfts[0],
-      txnData.tickerName,
-      txnData.pricePerFraction,
-      txnData.fractionsAmount,
-      'SOL',
-    );
+  const fraktionalize = async ({
+    newNfts = [],
+    lockedNfts = [],
+    tickerName,
+    pricePerFraction,
+    fractionsAmount,
+    vaultName,
+    vault,
+  }: FraktionalizeTxnData) => {
+    try {
+      const unfinishedVaultData = (() => {
+        if (vault) {
+          const {
+            vaultPubkey,
+            fractionMint: fractionalMint,
+            fractionTreasury,
+            redeemTreasury,
+          } = vault;
 
-    if (!result) {
-      setState('fail');
-    } else {
+          return {
+            vaultPubkey,
+            fractionalMint,
+            fractionTreasury,
+            redeemTreasury,
+          };
+        }
+
+        return null;
+      })();
+
+      const allNfts = [...lockedNfts, ...newNfts];
+
+      const tokenImageUrl = (() => {
+        const { metadata } = allNfts[0];
+        return metadata.image;
+      })();
+
+      const fractionalMint = await createVault({
+        userNfts: newNfts,
+        fractionsAmount: fractionsAmount,
+        pricePerFraction: pricePerFraction,
+        unfinishedVaultData,
+        tokenData: {
+          tickerName: tickerName,
+          name: vaultName,
+          imageUrl: tokenImageUrl,
+        },
+      });
+
+      if (!fractionalMint) {
+        throw new Error('Some transaction failed');
+      }
+
       setState('success');
-      setFractionTokenMint(result.fractionalMint);
-      removeTokenOptimistic(txnData.userNfts[0].mint);
+      setFractionTokenMint(fractionalMint);
+      removeTokenOptimistic(allNfts.map((nft) => nft.mint));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      setState('fail');
     }
   };
 

@@ -15,29 +15,50 @@
 }
 
 .content {
-  display: grid;
-  grid-template-columns: 5fr 6fr;
-  align-items: start;
-  gap: 64px 124px;
-  padding-bottom: 60px;
+  display: flex;
+  column-gap: 120px;
 
   @media screen and (max-width: 1200px) {
-    gap: 50px;
+    column-gap: 50px;
   }
 
   @media screen and (max-width: 767px) {
-    grid-template-columns: 100%;
-    gap: 30px;
+    flex-direction: column;
+  }
+}
 
-    .col {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-    }
+.col {
+  max-width: 420px;
+  width: 100%;
+
+  @media screen and (max-width: 1023px) {
+    max-width: 350px;
   }
 
-  @media screen and (max-width: 650px) {
-    gap: 25px;
+  @media screen and (max-width: 767px) {
+    max-width: 100%;
+  }
+}
+
+.btnItem {
+  display: flex;
+  min-height: 88px;
+  min-width: 267px;
+  max-width: 100%;
+  width: 100%;
+
+  a {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gray-color-7);
+    transition: background-color var(--transition-1);
+
+    &:hover {
+      background-color: var(--gray-color-3);
+    }
   }
 }
 
@@ -69,7 +90,7 @@
 }
 
 .description {
-  padding: 64px 0 32px;
+  padding-bottom: 32px;
   font: var(--font-body-small);
 
   @media screen and (max-width: 1023px) {
@@ -80,7 +101,7 @@
 
 .collectionLink {
   display: flex;
-  padding: 32px 0 0;
+  padding-bottom: 32px;
 
   &:hover {
     .collectionName {
@@ -90,8 +111,9 @@
 
   .collectionName {
     color: var(--accent-color-1);
-    font: var(--font-body-small);
     transition: color var(--transition-1);
+    font: var(--font-secondary);
+    border-bottom: 1px solid var(--accent-color-1);
   }
 }
 
@@ -107,7 +129,7 @@
 }
 
 .attributesTable {
-  padding: 32px 0;
+  padding-bottom: 32px;
   font: var(--font-secondary);
 
   &__row {
@@ -140,6 +162,10 @@
 
   @media screen and (max-width: 1023px) {
     padding-bottom: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-top: 0;
   }
 }
 
@@ -255,9 +281,16 @@
   font: var(--font-btn-small);
   color: var(--white-color);
   background: transparent;
-  border: none;
+  border: 1px solid var(--gray-color-3);
   cursor: pointer;
   transition: background var(--transition-1), color var(--transition-1);
+
+  @media screen and (max-width: 1023px) {
+    font-size: 15px;
+    width: 33%;
+    height: 38px;
+    padding-top: 10px;
+  }
 
   &:hover {
     background: var(--gray-color-7);
@@ -273,9 +306,33 @@
 
 .tabContent {
   padding-top: 24px;
-  margin-bottom: 128px;
 
   @media screen and (max-width: 1023px) {
-    margin-bottom: 90px;
+    padding-top: 15px;
+  }
+}
+
+.allNfts {
+  margin-top: 60px;
+
+  @media screen and (max-width: 767px) {
+    margin-top: 90px;
+  }
+}
+
+.nftsTitle {
+  font: var(--font-h4);
+
+  @media screen and (max-width: 767px) {
+    font-size: 32px;
+  }
+
+  @media screen and (max-width: 450px) {
+    font-size: 28px;
+  }
+
+  span {
+    margin-right: 15px;
+    color: var(--accent-color-1)
   }
 }

@@ -1,10 +1,10 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { getAllUserTokens } from 'solana-nft-metadata';
-import { useConnection } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames/bind';
 import BN from 'bn.js';
 
@@ -21,6 +21,7 @@ import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { TwitterIcon2 } from '../../icons';
+import Toggle from '../../components/Toggle/Toggle';
 
 interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -34,10 +35,17 @@ const WalletPage = (): JSX.Element => {
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
+  const { connected, publicKey: connectedWalletPubkey } = useWallet();
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
 
+  const [showUnfinished, setShowUnfinished] = useState<boolean>(false);
+
   const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
+
+  const onToggleUnfinishedClick = () => {
+    setShowUnfinished(!showUnfinished);
+  };
 
   const fetchUserTokens = async () => {
     try {
@@ -86,7 +94,20 @@ const WalletPage = (): JSX.Element => {
       .filter(
         (vault) =>
           vault.authority === walletPubkey &&
-          vault.state !== VaultState.Inactive, //? Hide unfinished vaults until baskets not ready
+          vault.state !== VaultState.Inactive &&
+          vault.state !== VaultState.Archived,
+      )
+      .sort(
+        (vaultA: VaultData, vaultB: VaultData) => vaultB.state - vaultA.state,
+      );
+  }, [vaults, walletPubkey]);
+
+  const userUnfinishedVaults = useMemo(() => {
+    return vaults
+      .filter(
+        (vault) =>
+          vault.authority === walletPubkey &&
+          vault.state === VaultState.Inactive,
       )
       .sort(
         (vaultA: VaultData, vaultB: VaultData) =>
@@ -178,19 +199,50 @@ const WalletPage = (): JSX.Element => {
                 <Loader size={'large'} />
               </div>
             ) : (
-              <div className={styles.vaults}>
-                {!userVaults.length && (
-                  <p className={styles.emptyMessage}>No vaults found</p>
+              <>
+                <div className={styles.filters}>
+                  {connected &&
+                    connectedWalletPubkey.toString() === walletPubkey && (
+                      <Toggle
+                        value={showUnfinished}
+                        label="Show unfinished"
+                        className={styles.filter}
+                        onChange={onToggleUnfinishedClick}
+                      />
+                    )}
+                </div>
+                {showUnfinished ? (
+                  <div className={styles.vaults}>
+                    {!userUnfinishedVaults.length && (
+                      <p className={styles.emptyMessage}>
+                        No unfinished vaults found
+                      </p>
+                    )}
+                    {userUnfinishedVaults.map((vault) => (
+                      <NavLink
+                        key={vault.vaultPubkey}
+                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+                      >
+                        <VaultCard vaultData={vault} />
+                      </NavLink>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.vaults}>
+                    {!userVaults.length && (
+                      <p className={styles.emptyMessage}>No vaults found</p>
+                    )}
+                    {userVaults.map((vault) => (
+                      <NavLink
+                        key={vault.vaultPubkey}
+                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+                      >
+                        <VaultCard vaultData={vault} />
+                      </NavLink>
+                    ))}
+                  </div>
                 )}
-                {userVaults.map((vault) => (
-                  <NavLink
-                    key={vault.vaultPubkey}
-                    to={`${URLS.VAULT}/${vault.vaultPubkey}`}
-                  >
-                    <VaultCard vaultData={vault} />
-                  </NavLink>
-                ))}
-              </div>
+              </>
             )}
           </>
         )}
