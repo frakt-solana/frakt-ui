@@ -18,7 +18,7 @@ export const TradeTab = ({
   tokerName,
 }: TradeTabProps): JSX.Element => {
   const { connected } = useWallet();
-  const { createFraktionsMarket } = useFraktion();
+  const { createMarket } = useFraktion();
 
   return vaultMarketAddress ? (
     <div className={styles.tradeWrapper}>
@@ -35,17 +35,20 @@ export const TradeTab = ({
     </div>
   ) : (
     <div className={styles.noMarket}>
-      <p>{"Looks like this vault doesn't have a Serum market"}</p>
+      <p>{"Looks like this vault doesn't have a Serum market yet."}</p>
       {connected && !!tokerName && (
-        <Button
-          type="alternative"
-          className={styles.createMarketBtn}
-          onClick={() =>
-            createFraktionsMarket(vaultInfo.fractionMint, tokerName)
-          }
-        >
-          Create market
-        </Button>
+        <>
+          <Button
+            type="alternative"
+            className={styles.createMarketBtn}
+            onClick={() => createMarket(vaultInfo.fractionMint, tokerName)}
+          >
+            Create market
+          </Button>
+          <p className={styles.warnText}>
+            *Serum market creation can cost up to 5 SOL.
+          </p>
+        </>
       )}
     </div>
   );

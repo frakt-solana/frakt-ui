@@ -26,16 +26,17 @@ export const mapVaultsByCollectionName = (
 
 export const fetchCollectionData = async (
   collectionName: string,
-): Promise<CollectionData> => {
+): Promise<CollectionData | null> => {
   try {
     const responseData = await (
       await fetch(`${COLLECTION_URL}/metadata?collectionName=${collectionName}`)
     ).json();
 
-    return responseData.states.live;
+    return responseData?.states?.live || null;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
+    return null;
   }
 };
 
@@ -58,6 +59,7 @@ export const fetchCollectionsData = async (
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
+    return [];
   }
 };
 

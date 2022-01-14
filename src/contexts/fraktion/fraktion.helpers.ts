@@ -127,7 +127,7 @@ export const parseVaults = (rawVaults: RawVault[] = []): Vault[] =>
       priceMint,
       allowFurtherShareCreation: !!allowFurtherShareCreation,
       pricingLookupAddress,
-      tokenTypeCount,
+      tokenTypeCount: new BN(tokenTypeCount, 16).toNumber(),
       state,
       fractionsSupply: new BN(fractionsSupply, 16),
       lockedPricePerShare: new BN(lockedPricePerShare, 16),
@@ -139,23 +139,26 @@ export const mapSafetyBoxesByVaultPubkey = (
   rawSafetyBoxes: RawSafetyBox[] = [],
 ): Dictionary<SafetyBox[]> =>
   groupBy(
-    rawSafetyBoxes.map(
-      ({
-        safetyBoxPubkey,
-        vault: vaultPubkey,
-        key,
-        tokenMint,
-        store,
-        order,
-      }): SafetyBox => ({
-        safetyBoxPubkey,
-        vaultPubkey,
-        key,
-        nftMint: tokenMint,
-        store,
-        order: new BN(order, 16).toNumber(),
-      }),
-    ),
+    rawSafetyBoxes
+      .map(
+        ({
+          safetyBoxPubkey,
+          vault: vaultPubkey,
+          key,
+          tokenMint,
+          store,
+          order,
+        }): SafetyBox => ({
+          safetyBoxPubkey,
+          vaultPubkey,
+          key,
+          nftMint: tokenMint,
+          store,
+          order: new BN(order, 16).toNumber(),
+        }),
+      )
+      //Sort safetyBoxes by order
+      .sort((safetyBoxA, safetyBoxB) => safetyBoxB.order - safetyBoxA.order),
     'vaultPubkey',
   );
 
@@ -193,7 +196,7 @@ export const transformToSafetyBoxesWithMetadata = (
     .filter((safetyBoxWithMetadata) => !!safetyBoxWithMetadata);
 
 //? Needs because if auction's time finished but any redeem doesn't happened than Vault state will be VaultState.AuctionLive
-export const getVaultRealState = (
+export const getVaultState = (
   vaultState: VaultState,
   auction: Auction,
 ): VaultState => {

@@ -24,10 +24,6 @@
   gap: 32px;
   margin-bottom: 32px;
   flex-wrap: wrap;
-
-  @media screen and (max-width: 767px) {
-    margin-bottom: 0;
-  }
 }
 
 .status {

@@ -42,7 +42,7 @@ export const fetchVaultTokenHoldersAmount = async (
     return 0;
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.log(error);
+    console.error(error);
     return 0;
   }
 };

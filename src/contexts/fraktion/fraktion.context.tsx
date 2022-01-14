@@ -6,13 +6,7 @@ import {
   FraktionContextType,
   VaultData,
 } from './fraktion.model';
-import {
-  buyout,
-  createFraktionsMarket,
-  fraktionalize,
-  getVaults,
-  redeem,
-} from './fraktion';
+import { createMarket, getVaults, createVault } from './fraktion';
 import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
 
@@ -21,12 +15,13 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   error: null,
   vaults: [],
   vaultsMarkets: [],
-  fraktionalize: () => Promise.resolve(null),
-  buyout: () => Promise.resolve(null),
-  redeem: () => Promise.resolve(null),
-  createFraktionsMarket: () => Promise.resolve(null),
+  createMarket: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
+  createVault: () => Promise.resolve(''),
   patchVault: () => {},
+  isPolling: false,
+  startPolling: () => {},
+  stopPolling: () => {},
 });
 
 export const FraktionProvider = ({
@@ -108,35 +103,25 @@ export const FraktionProvider = ({
         error,
         vaults,
         vaultsMarkets,
-        fraktionalize: (
-          userNft,
-          tickerName,
+        createVault: ({
+          userNfts,
           pricePerFraction,
           fractionsAmount,
-          token,
-        ) =>
-          fraktionalize(
-            userNft,
-            tickerName,
+          unfinishedVaultData,
+          tokenData,
+        }) =>
+          createVault({
+            userNfts,
             pricePerFraction,
             fractionsAmount,
-            token,
             walletPublicKey,
             signTransaction,
             connection,
-          ),
-        buyout: (vault, userTokensByMint) =>
-          buyout(
-            vault,
-            userTokensByMint,
-            walletPublicKey,
-            signTransaction,
-            connection,
-          ),
-        redeem: (vault) =>
-          redeem(vault, walletPublicKey, signTransaction, connection),
-        createFraktionsMarket: (fractionsMintAddress, tickerName) =>
-          createFraktionsMarket(
+            unfinishedVaultData,
+            tokenData,
+          }),
+        createMarket: (fractionsMintAddress, tickerName) =>
+          createMarket(
             fractionsMintAddress,
             tickerName,
             walletPublicKey,
@@ -145,6 +130,9 @@ export const FraktionProvider = ({
           ),
         refetch: fetchData,
         patchVault,
+        isPolling,
+        startPolling,
+        stopPolling,
       }}
     >
       {children}

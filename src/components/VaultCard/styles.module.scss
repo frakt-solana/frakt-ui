@@ -3,13 +3,23 @@
   background-color: var(--black-color);
   position: relative;
   z-index: 1;
+
+  @media screen and (max-width: 700px){
+    padding: 18px;
+  }
+
+  @media screen and (max-width: 550px){
+    padding: 11px;
+  }
 }
 
 .cardContainer {
   padding: 0 10px 10px 0;
   height: 100%;
+
   .card {
     height: 100%;
+
     &:before {
       content: '';
       width: 100%;
@@ -19,6 +29,7 @@
       top: 10px;
       left: 10px;
     }
+
     display: flex;
     flex-direction: column;
     position: relative;
@@ -30,38 +41,6 @@
       border-color: var(--accent-color-1);
     }
 
-    .image {
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-color: var(--black-color);
-      height: 360px;
-      border-bottom: 1px solid var(--gray-color-6);
-      position: relative;
-
-      .actions {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 15px;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
-        background-image: linear-gradient(
-          0deg,
-          var(--black-color),
-          transparent
-        );
-
-        .badge {
-          text-transform: uppercase;
-          cursor: default;
-        }
-      }
-    }
-
     .nameContainer {
       @include container();
       border-bottom: 1px solid var(--gray-color-6);
@@ -71,6 +50,17 @@
         font: var(--font-subtitle-2);
         color: var(--white-color);
         margin-bottom: 15px;
+        word-break: break-word;
+        line-height: 1.25em;
+
+        @media screen and (max-width: 700px){
+          font-size: 19px;
+          margin-bottom: 10px;
+        }
+
+        @media screen and (max-width: 550px){
+          font-size: 15px;
+        }
       }
 
       .owner {
@@ -87,6 +77,14 @@
           background-size: cover;
           border-radius: 50%;
         }
+
+        @media screen and (max-width: 700px){
+          font-size: 11px;
+        }
+
+        @media screen and (max-width: 550px){
+          font-size: 9px;
+        }
       }
     }
 
@@ -95,6 +93,15 @@
       display: flex;
       justify-content: space-between;
       gap: 16px;
+
+      @media screen and (max-width: 767px){
+        gap: 10px;
+      }
+
+      @media screen and (max-width: 550px){
+        flex-wrap: wrap;
+      }
+
       .item {
         .title {
           font: var(--font-smallest);
@@ -108,7 +115,197 @@
           font: var(--font-btn-mid);
           color: var(--white-color);
         }
+
+        @media screen and (max-width: 767px){
+          .value {
+            font-size: 19px;
+          }
+        }
+
+        @media screen and (max-width: 550px){
+          min-width: 40%;
+
+          .title {
+            max-width: 55px;
+            font-size: 9px;
+          }
+
+          .value {
+            font-size: 15px;
+          }
+        }
       }
     }
   }
 }
+
+.imageWrapper {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: var(--black-color);
+  height: 360px;
+  border-bottom: 1px solid var(--gray-color-6);
+  position: relative;
+  overflow: hidden;
+
+  @media screen and (max-width: 767px){
+    height: 270px;
+  }
+
+  @media screen and (max-width: 550px){
+    height: 200px;
+  }
+
+  @media screen and (max-width: 450px){
+    height: 160px;
+  }
+
+  @media screen and (max-width: 370px){
+    height: 250px;
+  }
+}
+
+.noImg {
+  position: relative;
+
+  &::before {
+    content: 'No NFT';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    font-size: 40px;
+    color: var(--gray-color-3);
+  }
+}
+
+.vaultImage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  box-shadow: 10px 0 50px rgba(0, 0, 0, 0.5);
+  transition: left var(--transition-1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+
+  &:nth-of-type(1) {
+    z-index: 3;
+  }
+
+  &:nth-of-type(2) {
+    z-index: 2;
+  }
+
+  &:nth-of-type(3) {
+    z-index: 1;
+  }
+}
+
+.has1Img {
+  .vaultImage {
+    &:nth-of-type(2),
+    &:nth-of-type(3) {
+      display: none;
+    }
+  }
+}
+
+.has2Img {
+  .vaultImage {
+    &:nth-of-type(1) {
+      left: -30%;
+    }
+
+    &:nth-of-type(2) {
+      display: block;
+    }
+
+    &:nth-of-type(3) {
+      display: none;
+    }
+  }
+}
+
+.has3Img {
+  .vaultImage {
+    &:nth-of-type(1) {
+      left: -30%;
+    }
+
+    &:nth-of-type(2) {
+      left: -15%;
+    }
+
+    &:nth-of-type(3) {
+      display: block;
+    }
+  }
+}
+
+.imageHovered1 {
+  .vaultImage {
+    &:nth-of-type(1) {
+      left: -70%;
+    }
+  }
+}
+
+.imageHovered2 {
+  .vaultImage {
+    &:nth-of-type(1) {
+      left: -70%;
+    }
+
+    &:nth-of-type(2) {
+      left: -55%;
+    }
+  }
+}
+
+.mainAppearance {
+  position: relative;
+
+  .actions {
+    z-index: 5;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    padding: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 8px;
+    background: linear-gradient(360deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+
+    .badge {
+      text-transform: uppercase;
+      cursor: default;
+
+      &:last-of-type {
+        text-transform: none;
+      }
+    }
+
+    @media screen and (max-width: 700px){
+      padding: 18px;
+    }
+
+    @media screen and (max-width: 550px){
+      padding: 11px;
+      gap: 5px;
+    }
+  }
+}
+
+

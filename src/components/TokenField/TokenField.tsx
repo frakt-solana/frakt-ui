@@ -136,7 +136,7 @@ const TokenField = ({
 };
 
 interface TokenFieldFormProps
-  extends Omit<Omit<TokenFieldProps, 'value'>, 'onValueChange'> {
+  extends Omit<TokenFieldProps, 'value' | 'onValueChange'> {
   value?: {
     amount: string;
     token: Token | any;
@@ -157,7 +157,7 @@ export const TokenFieldForm: React.FC<TokenFieldFormProps> = ({
   return (
     <TokenField
       {...props}
-      value={value.amount}
+      value={value?.amount}
       onValueChange={onAmountChange}
       onTokenChange={onTokenChange}
     />

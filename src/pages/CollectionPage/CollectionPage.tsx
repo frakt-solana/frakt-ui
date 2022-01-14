@@ -20,18 +20,18 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'collectionName_desc',
-  },
-  {
-    label: (
-      <span>
         Name <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
   },
 ];
 
@@ -39,8 +39,8 @@ const CollectionPage: FC = () => {
   const { control, watch } = useForm({
     defaultValues: {
       showActiveVaults: true,
-      showAuctionLiveVaults: false,
-      showAuctionFinishedVaults: false,
+      showAuctionLiveVaults: true,
+      showAuctionFinishedVaults: true,
       showArchivedVaults: false,
       showMyVaults: false,
       showTradableVaults: false,
@@ -76,7 +76,8 @@ const CollectionPage: FC = () => {
     if (filteredVaults) {
       return filteredVaults
         .filter(({ state, authority, hasMarket, safetyBoxes }) => {
-          const { nftName } = safetyBoxes[0];
+          const nftsName =
+            safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
           if (state === VaultState.Inactive) return false;
 
           if (connected && showMyVaults && authority !== publicKey.toString())
@@ -101,7 +102,7 @@ const CollectionPage: FC = () => {
 
           if (showTradableVaults && !hasMarket) return false;
 
-          return nftName.toUpperCase().includes(searchString);
+          return nftsName.some((name) => name.includes(searchString));
         })
         .sort((a, b) => {
           if (sortField === 'collectionName') {
