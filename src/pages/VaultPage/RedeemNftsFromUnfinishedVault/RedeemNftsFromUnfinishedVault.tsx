@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import { VaultData } from '../../../contexts/fraktion';
 import { RedeemNFTs } from '../BuyoutTab/Auction/FinishedAuction/RedeemNFTs';
 
@@ -10,7 +10,7 @@ interface RedeemNftsFromUnfinishedVaultProps {
 
 export const RedeemNftsFromUnfinishedVault: FC<RedeemNftsFromUnfinishedVaultProps> =
   ({ vaultData }) => {
-    return (
+    return vaultData.tokenTypeCount !== 0 ? (
       <div className={styles.wrapper}>
         <RedeemNFTs
           className={styles.redeemNftsFromUnfinishedVault}
@@ -21,5 +21,7 @@ export const RedeemNftsFromUnfinishedVault: FC<RedeemNftsFromUnfinishedVaultProp
           redeem all nfts from it
         </p>
       </div>
+    ) : (
+      <Fragment />
     );
   };
