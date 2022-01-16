@@ -272,7 +272,11 @@ const unlockVaultAndRedeemNfts =
   ) =>
   async (vaultInfo: VaultData) => {
     try {
-      const isVaultLocked = vaultInfo.realState !== VaultState.AuctionFinished;
+      const isVaultLocked =
+        vaultInfo.realState !== VaultState.AuctionFinished &&
+        vaultInfo.realState !== VaultState.Inactive;
+
+      const isVaultInactive = vaultInfo.realState === VaultState.Inactive;
 
       //? Unlock vault if it's locked
       if (isVaultLocked) {
@@ -290,12 +294,18 @@ const unlockVaultAndRedeemNfts =
         --safetyBoxOrder
       ) {
         await redeemNft(vaultInfo, safetyBoxOrder, wallet, connection);
+
         //? Need to set state every time because function fired and vaultData is contant in it's closure
+        //? Don't change state if vault was inactive
         patchVault({
           ...vaultInfo,
           tokenTypeCount: safetyBoxOrder,
-          realState: VaultState.AuctionFinished,
-          state: VaultState.AuctionFinished,
+          realState: isVaultInactive
+            ? vaultInfo.realState
+            : VaultState.AuctionFinished,
+          state: isVaultInactive
+            ? vaultInfo.realState
+            : VaultState.AuctionFinished,
         });
       }
     } catch (error) {
