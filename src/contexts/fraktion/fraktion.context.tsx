@@ -109,6 +109,7 @@ export const FraktionProvider = ({
           fractionsAmount,
           unfinishedVaultData,
           tokenData,
+          rawUserTokensByMint,
         }) =>
           createVault({
             userNfts,
@@ -119,6 +120,7 @@ export const FraktionProvider = ({
             connection,
             unfinishedVaultData,
             tokenData,
+            rawUserTokensByMint,
           }),
         createMarket: (fractionsMintAddress, tickerName) =>
           createMarket(
