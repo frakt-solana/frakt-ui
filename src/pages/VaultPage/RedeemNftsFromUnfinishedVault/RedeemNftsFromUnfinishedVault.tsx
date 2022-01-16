@@ -11,9 +11,15 @@ interface RedeemNftsFromUnfinishedVaultProps {
 export const RedeemNftsFromUnfinishedVault: FC<RedeemNftsFromUnfinishedVaultProps> =
   ({ vaultData }) => {
     return (
-      <RedeemNFTs
-        className={styles.redeemNftsFromUnfinishedVault}
-        vaultData={vaultData}
-      />
+      <div className={styles.wrapper}>
+        <RedeemNFTs
+          className={styles.redeemNftsFromUnfinishedVault}
+          vaultData={vaultData}
+        />
+        <p className={styles.note}>
+          *This action turns vault into finished state, please make sure you
+          redeem all nfts from it
+        </p>
+      </div>
     );
   };
