@@ -19,6 +19,7 @@ import { URLS } from '../../constants';
 import { NFTList } from './NFTList';
 import { CollectionData, fetchCollectionsData } from '../../utils/collections';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
+import { RedeemNftsFromUnfinishedVault } from './RedeemNftsFromUnfinishedVault';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -139,6 +140,10 @@ const VaultPage: FC = () => {
                 vaultData={vaultData}
                 vaultTitleData={vaultTitleData}
               />
+              {vaultData.state === VaultState.Inactive &&
+                !!vaultData.safetyBoxes.length && (
+                  <RedeemNftsFromUnfinishedVault vaultData={vaultData} />
+                )}
               {vaultData.state === VaultState.Inactive && (
                 <div className={styles.btnItem}>
                   <NavigationLink to={`${URLS.FRAKTIONALIZE}/${vaultPubkey}`}>

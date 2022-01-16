@@ -1,3 +1,4 @@
+import classNames from 'classnames/bind';
 import { FC, useEffect } from 'react';
 
 import Button from '../../../../../../components/Button';
@@ -12,15 +13,18 @@ import styles from './styles.module.scss';
 
 interface RedeemNFTsProps {
   vaultData: VaultData;
+  className?: string;
 }
 
-export const RedeemNFTs: FC<RedeemNFTsProps> = ({ vaultData }) => {
+export const RedeemNFTs: FC<RedeemNFTsProps> = ({ vaultData, className }) => {
   const { isPolling, startPolling, stopPolling } = useFraktion();
   const { unlockVaultAndRedeemNfts } = useAuction();
 
   const { safetyBoxes, tokenTypeCount } = vaultData;
 
-  const isVaultLocked = vaultData.realState !== VaultState.AuctionFinished;
+  const isVaultLocked =
+    vaultData.realState !== VaultState.AuctionFinished &&
+    vaultData.realState !== VaultState.Inactive;
 
   const safetyBoxToRedeem = safetyBoxes.find(
     ({ order }) => order === tokenTypeCount - 1,
@@ -39,7 +43,7 @@ export const RedeemNFTs: FC<RedeemNFTsProps> = ({ vaultData }) => {
   }, []);
 
   return (
-    <div className={styles.redeemBlock}>
+    <div className={classNames(styles.redeemBlock, className)}>
       <div
         className={styles.redeemImg}
         style={{ backgroundImage: `url(${vaultImg})` }}

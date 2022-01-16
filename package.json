@@ -22,7 +22,7 @@
     "bn.js": "^5.2.0",
     "borsh": "^0.6.0",
     "classnames": "^2.3.1",
-    "fraktionalizer-client-library": "^2.2.2",
+    "fraktionalizer-client-library": "^2.3.0",
     "immutable-tuple": "^0.4.10",
     "moment": "^2.29.1",
     "numeral": "^2.0.6",
