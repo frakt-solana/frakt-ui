@@ -24,7 +24,7 @@ export const useFraktionalizeTransactionModal = (): {
   fractionTokenMint: string;
   tickerName: string;
 } => {
-  const { removeTokenOptimistic } = useUserTokens();
+  const { removeTokenOptimistic, rawUserTokensByMint } = useUserTokens();
   const { createVault } = useFraktion();
   const [visible, setVisible] = useState<boolean>(false);
   const [state, setState] = useState<ModalState>('loading');
@@ -86,6 +86,7 @@ export const useFraktionalizeTransactionModal = (): {
           name: vaultName,
           imageUrl: tokenImageUrl,
         },
+        rawUserTokensByMint: rawUserTokensByMint,
       });
 
       if (!fractionalMint) {

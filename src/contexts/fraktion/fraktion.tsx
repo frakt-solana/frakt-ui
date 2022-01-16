@@ -142,6 +142,7 @@ export const createVault: CreateVault = async ({
   connection,
   unfinishedVaultData,
   tokenData,
+  rawUserTokensByMint,
 }) => {
   try {
     //? If vault doesn't exist then init vault
@@ -157,6 +158,7 @@ export const createVault: CreateVault = async ({
         walletPublicKey,
         signTransaction,
         connection,
+        rawUserTokensByMint,
       );
     }
 
@@ -228,10 +230,16 @@ const addNFTsToVault: AddNFTsToVault = async (
   walletPublicKey,
   signTransaction,
   connection,
+  rawUserTokensByMint,
 ) => {
+  const nftMintsAndTokenAccounts = userNfts.map(({ mint }) => ({
+    mintAddress: mint,
+    tokenAccount: String(rawUserTokensByMint[mint]?.tokenAccountPubkey),
+  }));
+
   await addNFTsToVaultTransaction({
     connection,
-    nftMints: userNfts.map((nft) => nft.mint),
+    nftMintsAndTokenAccounts,
     vaultProgramId: PROGRAM_PUBKEY,
     userPubkey: walletPublicKey.toString(),
     vaultStrPubkey: vaultPubkey,

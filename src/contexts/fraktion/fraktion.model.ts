@@ -231,6 +231,7 @@ export type AddNFTsToVault = (
   walletPublicKey: PublicKey,
   signTransaction: (transaction: Transaction) => Promise<Transaction>,
   connection: Connection,
+  rawUserTokensByMint: RawUserTokensByMint,
 ) => Promise<void>;
 
 export type FinishVault = (
@@ -255,6 +256,7 @@ interface CreateVaultParams {
     tickerName: string;
     imageUrl: string;
   };
+  rawUserTokensByMint: RawUserTokensByMint;
 }
 
 export type CreateVault = (params: CreateVaultParams) => Promise<string | null>;
