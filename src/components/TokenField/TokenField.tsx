@@ -5,6 +5,7 @@ import { ChevronDownIcon } from '../../icons';
 import { SelectTokenModal } from '../SelectTokenModal';
 import NumericInput from '../NumericInput';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { SOL_TOKEN } from '../../utils';
 
 export interface TokenFieldProps {
   tokensList?: TokenInfo[];
@@ -22,6 +23,7 @@ export interface TokenFieldProps {
   className?: string;
   onUseMaxButtonClick?: () => void;
   error?: boolean;
+  lpTokenSymbol?: string;
   placeholder?: string;
   amountMaxLength?: number;
   disabled?: boolean;
@@ -42,6 +44,7 @@ const TokenField = ({
   onUseMaxButtonClick,
   error,
   amountMaxLength,
+  lpTokenSymbol,
   placeholder = '0.0',
   disabled = false,
 }: TokenFieldProps): JSX.Element => {
@@ -101,6 +104,11 @@ const TokenField = ({
             })}
             onClick={() => tokensList && setIsModalOpen(true)}
           >
+            {lpTokenSymbol && (
+              <span className={classNames(styles.tokenName)}>
+                {lpTokenSymbol} / {SOL_TOKEN.symbol}
+              </span>
+            )}
             {currentToken ? (
               <img
                 className={styles.tokenLogo}
@@ -108,15 +116,17 @@ const TokenField = ({
                 alt={currentToken.symbol}
               />
             ) : (
-              <div className={styles.noTokenImg} />
+              !lpTokenSymbol && <div className={styles.noTokenImg} />
             )}
-            <span
-              className={classNames(styles.tokenName, {
-                [styles.tokenName_empty]: !currentToken,
-              })}
-            >
-              {currentToken?.symbol || '---'}
-            </span>
+            {!lpTokenSymbol && (
+              <span
+                className={classNames(styles.tokenName, {
+                  [styles.tokenName_empty]: !currentToken,
+                })}
+              >
+                {currentToken?.symbol || '---'}
+              </span>
+            )}
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>

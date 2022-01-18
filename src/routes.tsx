@@ -30,6 +30,7 @@ import CollectionsPage from './pages/CollectionsPage';
 import CollectionPage from './pages/CollectionPage';
 import { CollectionsProvider } from './contexts/collections';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
+import PoolsPage from './pages/PoolsPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -95,6 +96,11 @@ export const Routes = (): JSX.Element => {
                           exact
                           path={`${URLS.COLLECTION}/:collectionName`}
                           component={(): JSX.Element => <CollectionPage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.LIQUIDITY}
+                          component={(): JSX.Element => <PoolsPage />}
                         />
                         <Route
                           exact

@@ -1,0 +1,63 @@
+.container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.sortWrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.title {
+  font: var(--font-h4);
+  margin-bottom: 8px;
+}
+
+.search {
+  margin-bottom: 64px;
+  max-width: 375px;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 12px 30px;
+  flex-wrap: wrap;
+}
+
+.filter {
+  width: unset;
+}
+
+.arrowUp,
+.arrowDown {
+  position: relative;
+  top: 2px;
+
+  path {
+    stroke: var(--white-color);
+  }
+}
+
+.arrowDown {
+  transform: rotate(180deg);
+}
+
+.sortingSelectValueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+    path {
+      stroke: var(--accent-color-1);
+    }
+  }
+}
+
+.filtersWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+  gap: 30px;
+}

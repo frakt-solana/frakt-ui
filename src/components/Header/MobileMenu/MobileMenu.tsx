@@ -70,6 +70,9 @@ export const MobileMenu = (): JSX.Element => {
           <li>
             <NavigationLink to={URLS.COLLECTIONS}>Collections</NavigationLink>
           </li>
+          <li>
+            <NavigationLink to={URLS.LIQUIDITY}>Liquidity</NavigationLink>
+          </li>
           {connected && (
             <li>
               <NavigationLink

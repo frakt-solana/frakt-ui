@@ -6,6 +6,7 @@ export const URLS = {
   STAKER_PAGE: '/staker',
   FRAKTIONALIZE: '/fraktionalize',
   WALLET: '/wallet',
+  LIQUIDITY: '/liquidity',
   PAGE_404: '/404',
   COLLECTIONS: '/collections',
   COLLECTION: '/collection',

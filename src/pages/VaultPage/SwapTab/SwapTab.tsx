@@ -1,3 +1,5 @@
+import { FC } from 'react';
+import CreateLiquidityForm from '../../../components/CreateLiquidityForm';
 import { Loader } from '../../../components/Loader';
 import SwapForm from '../../../components/SwapForm';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
@@ -5,9 +7,13 @@ import styles from './styles.module.scss';
 
 interface SwapTabProps {
   fractionMint: string;
+  vaultMarketAddress?: string;
 }
 
-export const SwapTab = ({ fractionMint }: SwapTabProps): JSX.Element => {
+export const SwapTab: FC<SwapTabProps> = ({
+  fractionMint,
+  vaultMarketAddress,
+}) => {
   const { poolDataByMint, loading: poolsLoading } = useLiquidityPools();
 
   return poolsLoading ? (
@@ -19,7 +25,12 @@ export const SwapTab = ({ fractionMint }: SwapTabProps): JSX.Element => {
       {poolDataByMint.has(fractionMint) ? (
         <SwapForm defaultTokenMint={fractionMint} />
       ) : (
-        <p>{"Looks like this vault doesn't have a liquidity pool yet."}</p>
+        <>
+          <p>{"Looks like this vault doesn't have a liquidity pool"}</p>
+          {vaultMarketAddress && (
+            <CreateLiquidityForm defaultTokenMint={fractionMint} />
+          )}
+        </>
       )}
     </div>
   );
