@@ -1,139 +1,23 @@
-import { FC, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FC } from 'react';
 
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { SearchInput } from '../../components/SearchInput';
 import { Container } from '../../components/Layout';
-import { ArrowDownSmallIcon } from '../../icons';
-import { useDebounce } from '../../hooks';
 import styles from './styles.module.scss';
 import Pool from './Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
-import {
-  useCurrentSolanaPrice,
-  useRaydiumPoolsInfo,
-} from '../../utils/liquidityPools/liquidityPools.hooks';
-import {
-  comparePoolsArraysByApr,
-  comparePoolsArraysByTotal,
-} from '../../utils/liquidityPools';
-
-const SORT_VALUES = [
-  {
-    label: (
-      <span>
-        Liquidity <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'liquidity_asc',
-  },
-  {
-    label: (
-      <span>
-        Liquidity <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'liquidity_desc',
-  },
-  {
-    label: (
-      <span>
-        Trading Vol. <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'trading_asc',
-  },
-  {
-    label: (
-      <span>
-        Trading Vol. <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'trading_desc',
-  },
-  {
-    label: (
-      <span>
-        APR <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'apr_asc',
-  },
-  {
-    label: (
-      <span>
-        APR <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'apr_desc',
-  },
-];
+import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const PoolsPage: FC = () => {
-  const { control, watch } = useForm({
-    defaultValues: {
-      showStaked: true,
-      showAwarded: true,
-      sort: SORT_VALUES[1],
-    },
-  });
-
-  const [searchString, setSearchString] = useState<string>('');
-  const sort = watch('sort');
-
+  const { connected } = useWallet();
   const { itemsToShow, next } = useFakeInfinityScroll(9);
-  const { poolDataByMint, loading } = useLiquidityPools();
-
-  const searchItems = useDebounce((search: string) => {
-    setSearchString(search.toUpperCase());
-  }, 300);
-
-  const poolsConfigs = Array.from(poolDataByMint.values()).map(
-    ({ poolConfig }) => poolConfig,
-  );
-
-  const { raydiumPoolInfo } = useRaydiumPoolsInfo(poolsConfigs, loading);
-  const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
-
-  const tokensList = Array.from(poolDataByMint.values());
-
-  const filteredSWappableTokenList = useMemo(() => {
-    const [sortField, sortOrder] = sort.value.split('_');
-
-    const poolsDataList = tokensList.map((poolData, id) => ({
-      ...poolData,
-      poolInfo: raydiumPoolInfo[id],
-    }));
-
-    return poolsDataList
-      .filter(({ tokenInfo }) =>
-        tokenInfo.symbol.toUpperCase().includes(searchString),
-      )
-      .sort(({ poolInfo: poolInfoA }, { poolInfo: poolInfoB }) => {
-        if (sortField === 'liquidity') {
-          return comparePoolsArraysByTotal(
-            poolInfoA,
-            poolInfoB,
-            currentSolanaPriceUSD,
-            sortOrder === 'desc',
-          );
-        }
-        if (sortField === 'apr') {
-          return comparePoolsArraysByApr(
-            poolInfoA,
-            poolInfoB,
-            currentSolanaPriceUSD,
-            sortOrder === 'desc',
-          );
-        }
-        return 0;
-      });
-  }, [tokensList, searchString, sort, currentSolanaPriceUSD, raydiumPoolInfo]);
+  const { formControl, loading, poolsData, raydiumPoolsInfoMap, searchItems } =
+    usePoolsPage();
 
   return (
     <AppLayout>
@@ -146,30 +30,29 @@ const PoolsPage: FC = () => {
             className={styles.search}
             placeholder="Filter by symbol"
           />
-          <div className={styles.filtersWrapper}>
-            <div className={styles.filters}>
+          <div className={styles.filters}>
+            {connected && (
               <ControlledToggle
-                control={control}
-                name="showStaked"
+                control={formControl}
+                name={InputControlsNames.SHOW_STAKED}
                 label="Staked only"
                 className={styles.filter}
               />
-              <ControlledToggle
-                control={control}
-                name="showAwarded"
-                label="Awarded"
-                className={styles.filter}
-              />
-            </div>
-            <div>
-              <ControlledSelect
-                valueContainerClassName={styles.sortingSelectValueContainer}
-                label="Sort by"
-                control={control}
-                name="sort"
-                options={SORT_VALUES}
-              />
-            </div>
+            )}
+            <ControlledToggle
+              control={formControl}
+              name={InputControlsNames.SHOW_AWARDED_ONLY}
+              label="Awarded only"
+              className={styles.filter}
+            />
+            <ControlledSelect
+              valueContainerClassName={styles.sortingSelectContainer}
+              className={styles.sortingSelect}
+              control={formControl}
+              name={InputControlsNames.SORT}
+              label="Sort by"
+              options={SORT_VALUES}
+            />
           </div>
         </div>
         <FakeInfinityScroll
@@ -178,12 +61,13 @@ const PoolsPage: FC = () => {
           isLoading={loading}
           emptyMessage={'No Liquidity pool found'}
         >
-          {filteredSWappableTokenList.map(({ tokenInfo, poolInfo }, id) => (
+          {poolsData.map(({ tokenInfo, isAwarded }, id) => (
             <Pool
               key={id}
               quoteToken={tokenInfo}
-              raydiumPoolInfo={poolInfo}
+              raydiumPoolInfo={raydiumPoolsInfoMap.get(tokenInfo.address)}
               activeId={id}
+              isAwarded={isAwarded}
             />
           ))}
         </FakeInfinityScroll>

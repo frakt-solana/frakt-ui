@@ -1,7 +1,7 @@
 import { Liquidity, LiquidityPoolKeysV4, WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection } from '@solana/web3.js';
-import { BLOCKED_POOLS_IDS } from './liquidityPools.constants';
+import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
 import {
   FetchPoolDataByMint,
   PoolData,
@@ -44,6 +44,7 @@ export const getPoolDataByMint = (
       acc.set(baseMint.toBase58(), {
         tokenInfo,
         poolConfig: raydiumPoolConfig,
+        isAwarded: Math.random() < 0.5,
       });
     }
 
@@ -80,4 +81,18 @@ export const fetchRaydiumPoolsInfoMap = async (
   });
 
   return raydiumPoolInfoMap;
+};
+
+export const fetchSolanaPriceUSD = async (): Promise<number> => {
+  try {
+    const result = await (
+      await fetch(`${COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`)
+    ).json();
+
+    return result?.solana?.usd || 0;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('coingecko api error: ', error);
+    return 0;
+  }
 };

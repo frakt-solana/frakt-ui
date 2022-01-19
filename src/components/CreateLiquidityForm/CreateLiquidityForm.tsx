@@ -23,6 +23,7 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
   const [baseValue, setBaseValue] = useState<string>('');
 
   const [quoteValue, setQuoteValue] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [quoteToken, setQuoteToken] = useState<TokenInfo | null>(token || null);
 
   return (

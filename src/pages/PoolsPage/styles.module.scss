@@ -21,13 +21,25 @@
 
 .filters {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  gap: 12px 30px;
-  flex-wrap: wrap;
+  margin-bottom: 35px;
+  gap: 30px;
 }
 
-.filter {
+.sortingSelect {
   width: unset;
+  margin-left: 8px;
+}
+
+.sortingSelectContainer {
+  svg {
+    position: relative;
+    top: 2px;
+    path {
+      stroke: var(--accent-color-1);
+    }
+  }
 }
 
 .arrowUp,
@@ -42,22 +54,4 @@
 
 .arrowDown {
   transform: rotate(180deg);
-}
-
-.sortingSelectValueContainer {
-  svg {
-    position: relative;
-    top: 2px;
-    path {
-      stroke: var(--accent-color-1);
-    }
-  }
-}
-
-.filtersWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 35px;
-  gap: 30px;
 }

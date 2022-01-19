@@ -11,17 +11,25 @@ import styles from './styles.module.scss';
 import Withdraw from '../Withdraw';
 import Rewards from '../Rewards';
 import { SOL_TOKEN } from '../../../utils';
-import { calculateAPR, calculateTVL } from '../../../utils/liquidityPools';
-import { useCurrentSolanaPrice } from '../../../utils/liquidityPools/liquidityPools.hooks';
-import { RaydiumPoolInfo } from '../../../contexts/liquidityPools';
+import {
+  calculateAPR,
+  calculateTVL,
+  RaydiumPoolInfo,
+  useCurrentSolanaPrice,
+} from '../../../contexts/liquidityPools';
 
 interface PoolInterface {
   quoteToken: TokenInfo;
   activeId: number;
+  isAwarded: boolean;
   raydiumPoolInfo: RaydiumPoolInfo;
 }
 
-const Pool: FC<PoolInterface> = ({ quoteToken, raydiumPoolInfo, activeId }) => {
+const Pool: FC<PoolInterface> = ({
+  quoteToken,
+  raydiumPoolInfo,
+  isAwarded,
+}) => {
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
@@ -34,7 +42,7 @@ const Pool: FC<PoolInterface> = ({ quoteToken, raydiumPoolInfo, activeId }) => {
   return (
     <div className={styles.pool}>
       <div className={styles.header}>
-        <div className={styles.awarder}>Awarded</div>
+        {isAwarded && <div className={styles.awarder}>Awarded</div>}
       </div>
       <div
         className={styles.poolCard}
@@ -54,7 +62,7 @@ const Pool: FC<PoolInterface> = ({ quoteToken, raydiumPoolInfo, activeId }) => {
           <div className={styles.totalValue}>
             <p className={styles.title}>Total liquidity</p>
             <p className={styles.value}>
-              ${calculateTVL(raydiumPoolInfo, currentSolanaPriceUSD)}
+              $ {calculateTVL(raydiumPoolInfo, currentSolanaPriceUSD)}
             </p>
           </div>
           <div className={styles.totalValue}>

@@ -1,26 +1,4 @@
-import { RaydiumPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
-import { COINGECKO_URL } from './liquidityPools.constant';
-import {
-  formatAprToNumber,
-  formatNumberTotal,
-  formatPercent,
-  formatTotalToNumber,
-  groupNumberBySpace,
-} from './liquidityPools.utils';
-
-export const fetchSolanaPriceUSD = async (): Promise<number> => {
-  try {
-    const result = await (
-      await fetch(`${COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`)
-    ).json();
-
-    return result?.solana?.usd || 0;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('coingecko api error: ', error);
-    return 0;
-  }
-};
+import { RaydiumPoolInfo } from './liquidityPools.model';
 
 export const calculateTVL = (
   poolInfo: RaydiumPoolInfo,
@@ -92,3 +70,34 @@ export const comparePoolsArraysByApr = (
     if (aprA > aprB) return -1;
   } else if (aprB > aprA) return -1;
 };
+
+const numberFormatterTotal = new Intl.NumberFormat('en-US', {
+  style: 'decimal',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+export const formatNumberTotal = {
+  format: (val?: number): string | number => {
+    if (!val) {
+      return '--';
+    }
+
+    return numberFormatterTotal.format(val);
+  },
+};
+
+export const formatPercent = new Intl.NumberFormat('en-US', {
+  style: 'percent',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+export const groupNumberBySpace = (formatAmount: string | number): string =>
+  formatAmount.toString().replace(',', ' ');
+
+export const formatTotalToNumber = (formatAmount: number | string): number =>
+  Number(formatAmount?.toString().replace(' ', ''));
+
+export const formatAprToNumber = (formatAmount: number | string): number =>
+  Number(formatAmount?.toString().replace('%', ''));
