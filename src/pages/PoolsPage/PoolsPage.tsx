@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
@@ -18,6 +18,18 @@ const PoolsPage: FC = () => {
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const { formControl, loading, poolsData, raydiumPoolsInfoMap, searchItems } =
     usePoolsPage();
+
+  const [activePoolTokenAddress, setActivePoolTokenAddress] = useState<
+    string | null
+  >();
+
+  const onPoolCardClick = (tokenAddress: string) => {
+    if (tokenAddress === activePoolTokenAddress) {
+      setActivePoolTokenAddress(null);
+    } else {
+      setActivePoolTokenAddress(tokenAddress);
+    }
+  };
 
   return (
     <AppLayout>
@@ -61,13 +73,17 @@ const PoolsPage: FC = () => {
           isLoading={loading}
           emptyMessage={'No Liquidity pool found'}
         >
-          {poolsData.map(({ tokenInfo, isAwarded }, id) => (
+          {poolsData.map((poolData) => (
             <Pool
-              key={id}
-              quoteToken={tokenInfo}
-              raydiumPoolInfo={raydiumPoolsInfoMap.get(tokenInfo.address)}
-              activeId={id}
-              isAwarded={isAwarded}
+              key={poolData.tokenInfo.address}
+              poolData={poolData}
+              raydiumPoolInfo={raydiumPoolsInfoMap.get(
+                poolData.tokenInfo.address,
+              )}
+              isOpen={activePoolTokenAddress === poolData.tokenInfo.address}
+              onPoolCardClick={() =>
+                onPoolCardClick(poolData.tokenInfo.address)
+              }
             />
           ))}
         </FakeInfinityScroll>

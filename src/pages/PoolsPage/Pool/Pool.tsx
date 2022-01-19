@@ -1,6 +1,5 @@
 import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { TokenInfo } from '@solana/spl-token-registry';
 import classNames from 'classnames';
 
 import DepositModal from '../../../components/DepositModal/DepositModal';
@@ -14,28 +13,30 @@ import { SOL_TOKEN } from '../../../utils';
 import {
   calculateAPR,
   calculateTVL,
+  PoolData,
   RaydiumPoolInfo,
   useCurrentSolanaPrice,
 } from '../../../contexts/liquidityPools';
 
 interface PoolInterface {
-  quoteToken: TokenInfo;
-  activeId: number;
-  isAwarded: boolean;
+  poolData: PoolData;
   raydiumPoolInfo: RaydiumPoolInfo;
+  isOpen: boolean;
+  onPoolCardClick?: () => void;
 }
 
 const Pool: FC<PoolInterface> = ({
-  quoteToken,
+  isOpen,
+  poolData,
   raydiumPoolInfo,
-  isAwarded,
+  onPoolCardClick = () => {},
 }) => {
+  const { isAwarded, tokenInfo } = poolData;
+
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
 
-  const [detailsBlockVisible, setDetailsBlockVisible] =
-    useState<boolean>(false);
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
 
@@ -44,17 +45,14 @@ const Pool: FC<PoolInterface> = ({
       <div className={styles.header}>
         {isAwarded && <div className={styles.awarder}>Awarded</div>}
       </div>
-      <div
-        className={styles.poolCard}
-        onClick={() => setDetailsBlockVisible((prev) => !prev)}
-      >
+      <div className={styles.poolCard} onClick={onPoolCardClick}>
         <div className={styles.tokenInfo}>
           <div>
-            <img src={quoteToken.logoURI} className={styles.image} />
+            <img src={tokenInfo.logoURI} className={styles.image} />
             <img src={SOL_TOKEN.logoURI} className={styles.image} />
           </div>
           <div className={styles.subtitle}>
-            {quoteToken.symbol} / {SOL_TOKEN.symbol}
+            {tokenInfo.symbol} / {SOL_TOKEN.symbol}
           </div>
         </div>
 
@@ -75,16 +73,16 @@ const Pool: FC<PoolInterface> = ({
         <ChevronDownIcon
           className={classNames(
             styles.chevronVisibleIcon,
-            detailsBlockVisible && styles.rotate,
+            isOpen && styles.rotate,
           )}
         />
       </div>
-      {detailsBlockVisible && (
+      {isOpen && (
         <div className={styles.poolDetails}>
           {connected ? (
             <>
-              <Withdraw quoteToken={quoteToken} />
-              <Rewards quoteToken={quoteToken} />
+              <Withdraw quoteToken={tokenInfo} />
+              <Rewards quoteToken={tokenInfo} />
               <Button
                 onClick={() => setDepositModalVisible(true)}
                 className={styles.depositBtn}
@@ -106,7 +104,7 @@ const Pool: FC<PoolInterface> = ({
       <DepositModal
         visible={depositModalVisible}
         onCancel={() => setDepositModalVisible(false)}
-        quoteToken={quoteToken}
+        quoteToken={tokenInfo}
         baseToken={SOL_TOKEN}
       />
     </div>
