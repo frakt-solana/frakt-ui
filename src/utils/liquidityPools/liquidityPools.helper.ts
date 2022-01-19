@@ -1,6 +1,11 @@
-import { formatNumber } from '../solanaUtils';
 import { RaydiumPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
 import { COINGECKO_URL } from './liquidityPools.constant';
+import {
+  formatNumberTotal,
+  formatPercent,
+  groupNumberBySpace,
+  replaceSpaceForNumber,
+} from './liquidityPools.utils';
 
 export const fetchSolanaPriceUSD = async (): Promise<number> => {
   try {
@@ -32,8 +37,30 @@ export const calculateTVL = (
     const allQuoteTokenPriceUSD: number =
       quoteTokenAmount * currentSolanaPriceUSD;
 
-    return formatNumber.format(allBaseTokenPriceUSD * allQuoteTokenPriceUSD);
+    return groupNumberBySpace(
+      formatNumberTotal.format(allBaseTokenPriceUSD * allQuoteTokenPriceUSD),
+    );
   }
 };
 
-export const calculateAPR = () => {};
+export const calculateAPR = (
+  raydiumPoolInfo: RaydiumPoolInfo,
+  currentSolanaPriceUSD: number,
+): string => {
+  const totalLiquidity = Number(
+    replaceSpaceForNumber(calculateTVL(raydiumPoolInfo, currentSolanaPriceUSD)),
+  );
+
+  const apr = formatPercent.format(totalLiquidity * 0.00012);
+  return apr;
+};
+
+export const getTotalAmountByPoolInfo = (
+  poolInfo: RaydiumPoolInfo,
+  currentSolanaPriceUSD: number,
+): number => {
+  const formatAmountWithoutSpace = Number(
+    replaceSpaceForNumber(calculateTVL(poolInfo, currentSolanaPriceUSD)),
+  );
+  return formatAmountWithoutSpace;
+};

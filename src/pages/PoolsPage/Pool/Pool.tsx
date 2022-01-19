@@ -54,12 +54,14 @@ const Pool: FC<PoolInterface> = ({ quoteToken, raydiumPoolInfo, activeId }) => {
           <div className={styles.totalValue}>
             <p className={styles.title}>Total liquidity</p>
             <p className={styles.value}>
-              $ {calculateTVL(raydiumPoolInfo, currentSolanaPriceUSD)}
+              ${calculateTVL(raydiumPoolInfo, currentSolanaPriceUSD)}
             </p>
           </div>
           <div className={styles.totalValue}>
             <p className={styles.title}>Apr</p>
-            <p className={styles.value}>{calculateAPR}</p>
+            <p className={styles.value}>
+              {calculateAPR(raydiumPoolInfo, currentSolanaPriceUSD)}
+            </p>
           </div>
         </div>
         <ChevronDownIcon

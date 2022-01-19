@@ -14,7 +14,11 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
-import { useRaydiumPoolsInfo } from '../../utils/liquidityPools/liquidityPools.hooks';
+import {
+  useCurrentSolanaPrice,
+  useRaydiumPoolsInfo,
+} from '../../utils/liquidityPools/liquidityPools.hooks';
+import { getTotalAmountByPoolInfo } from '../../utils/liquidityPools';
 
 const SORT_VALUES = [
   {
@@ -68,15 +72,16 @@ const SORT_VALUES = [
 ];
 
 const PoolsPage: FC = () => {
-  const { control } = useForm({
+  const { control, watch } = useForm({
     defaultValues: {
       showStaked: true,
       showAwarded: true,
-      sort: SORT_VALUES[0],
+      sort: SORT_VALUES[1],
     },
   });
 
   const [searchString, setSearchString] = useState<string>('');
+  const sort = watch('sort');
 
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const { poolDataByMint, loading } = useLiquidityPools();
@@ -90,14 +95,39 @@ const PoolsPage: FC = () => {
   );
 
   const { raydiumPoolInfo } = useRaydiumPoolsInfo(poolsConfigs, loading);
+  const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
 
   const tokensList = Array.from(poolDataByMint.values());
 
   const filteredSWappableTokenList = useMemo(() => {
-    return tokensList.filter(({ tokenInfo }) =>
-      tokenInfo.symbol.toUpperCase().includes(searchString),
-    );
-  }, [tokensList, searchString]);
+    const [sortField, sortOrder] = sort.value.split('_');
+
+    const poolsDataList = tokensList.map((poolData, id) => ({
+      ...poolData,
+      poolInfo: raydiumPoolInfo[id],
+    }));
+
+    return poolsDataList
+      .filter(({ tokenInfo }) =>
+        tokenInfo.symbol.toUpperCase().includes(searchString),
+      )
+      .sort(({ poolInfo: poolInfoA }, { poolInfo: poolInfoB }) => {
+        const numberA = getTotalAmountByPoolInfo(
+          poolInfoA,
+          currentSolanaPriceUSD,
+        );
+        const numberB = getTotalAmountByPoolInfo(
+          poolInfoB,
+          currentSolanaPriceUSD,
+        );
+        if (sortField === 'liquidity' || sortField === 'apr') {
+          if (sortOrder === 'desc') {
+            if (numberA > numberB) return -1;
+          } else if (numberB > numberA) return -1;
+          return 0;
+        }
+      });
+  }, [tokensList, searchString, sort, currentSolanaPriceUSD, raydiumPoolInfo]);
 
   return (
     <AppLayout>
@@ -142,11 +172,11 @@ const PoolsPage: FC = () => {
           isLoading={loading}
           emptyMessage={'No Liquidity pool found'}
         >
-          {filteredSWappableTokenList.map(({ tokenInfo }, id) => (
+          {filteredSWappableTokenList.map(({ tokenInfo, poolInfo }, id) => (
             <Pool
               key={id}
               quoteToken={tokenInfo}
-              raydiumPoolInfo={raydiumPoolInfo[id]}
+              raydiumPoolInfo={poolInfo}
               activeId={id}
             />
           ))}
