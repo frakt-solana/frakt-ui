@@ -18,7 +18,10 @@ import {
   useCurrentSolanaPrice,
   useRaydiumPoolsInfo,
 } from '../../utils/liquidityPools/liquidityPools.hooks';
-import { getTotalAmountByPoolInfo } from '../../utils/liquidityPools';
+import {
+  comparePoolsArraysByApr,
+  comparePoolsArraysByTotal,
+} from '../../utils/liquidityPools';
 
 const SORT_VALUES = [
   {
@@ -112,20 +115,23 @@ const PoolsPage: FC = () => {
         tokenInfo.symbol.toUpperCase().includes(searchString),
       )
       .sort(({ poolInfo: poolInfoA }, { poolInfo: poolInfoB }) => {
-        const numberA = getTotalAmountByPoolInfo(
-          poolInfoA,
-          currentSolanaPriceUSD,
-        );
-        const numberB = getTotalAmountByPoolInfo(
-          poolInfoB,
-          currentSolanaPriceUSD,
-        );
-        if (sortField === 'liquidity' || sortField === 'apr') {
-          if (sortOrder === 'desc') {
-            if (numberA > numberB) return -1;
-          } else if (numberB > numberA) return -1;
-          return 0;
+        if (sortField === 'liquidity') {
+          return comparePoolsArraysByTotal(
+            poolInfoA,
+            poolInfoB,
+            currentSolanaPriceUSD,
+            sortOrder === 'desc',
+          );
         }
+        if (sortField === 'apr') {
+          return comparePoolsArraysByApr(
+            poolInfoA,
+            poolInfoB,
+            currentSolanaPriceUSD,
+            sortOrder === 'desc',
+          );
+        }
+        return 0;
       });
   }, [tokensList, searchString, sort, currentSolanaPriceUSD, raydiumPoolInfo]);
 

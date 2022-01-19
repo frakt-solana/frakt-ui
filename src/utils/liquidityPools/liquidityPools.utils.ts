@@ -20,12 +20,11 @@ export const formatPercent = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 0,
 });
 
-export const groupNumberBySpace = (formatAmount: string | number): string => {
-  return formatAmount.toString().replace(',', ' ');
-};
+export const groupNumberBySpace = (formatAmount: string | number): string =>
+  formatAmount.toString().replace(',', ' ');
 
-export const replaceSpaceForNumber = (
-  formatAmount: number | string,
-): string => {
-  return formatAmount?.toString().replace(' ', '');
-};
+export const formatTotalToNumber = (formatAmount: number | string): number =>
+  Number(formatAmount?.toString().replace(' ', ''));
+
+export const formatAprToNumber = (formatAmount: number | string): number =>
+  Number(formatAmount?.toString().replace('%', ''));
