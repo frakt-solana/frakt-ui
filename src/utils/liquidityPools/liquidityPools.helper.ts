@@ -14,10 +14,11 @@ export const fetchSolanaPriceUSD = async (): Promise<number> => {
       await fetch(`${COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`)
     ).json();
 
-    return result.solana.usd;
-  } catch (e) {
+    return result?.solana?.usd || 0;
+  } catch (error) {
     // eslint-disable-next-line no-console
-    console.log('coingecko api error: ', e);
+    console.error('coingecko api error: ', error);
+    return 0;
   }
 };
 
