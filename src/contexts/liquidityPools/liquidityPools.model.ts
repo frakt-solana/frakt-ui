@@ -41,6 +41,7 @@ export type PoolDataByMint = Map<string, PoolData>;
 export interface PoolData {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
+  isAwarded: boolean;
 }
 
 export type FetchPoolDataByMint = ({

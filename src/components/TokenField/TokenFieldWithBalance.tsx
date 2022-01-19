@@ -42,6 +42,7 @@ const getMintBalanceMap = (
 
 interface TokenFieldWithBalanceProps extends TokenFieldProps {
   showMaxButton?: boolean;
+  lpTokenSymbol?: string;
 }
 
 export const TokenFieldWithBalance = ({
@@ -58,6 +59,7 @@ export const TokenFieldWithBalance = ({
   placeholder = '0.0',
   showMaxButton = false,
   disabled = false,
+  lpTokenSymbol,
 }: TokenFieldWithBalanceProps): JSX.Element => {
   const { connected } = useWallet();
   const { rawUserTokensByMint } = useUserTokens();
@@ -89,6 +91,7 @@ export const TokenFieldWithBalance = ({
           ? onUseMaxButtonClick
           : null
       }
+      lpTokenSymbol={lpTokenSymbol}
       error={error}
       placeholder={placeholder}
       disabled={disabled}

@@ -59,12 +59,16 @@ export const TokenListContextProvider = ({
     fraktionTokensList.forEach((token: TokenInfo) => {
       fraktionTokensMap.set(token.address, token);
     });
-    ADDITIONAL_SWAPPABLE_TOKENS_MINTS.forEach((mint) => {
-      const token: TokenInfo = tokensMap.get(mint);
-      if (token) {
-        fraktionTokensMap.set(mint, tokensMap.get(mint));
-      }
-    });
+
+    if (fraktionTokensMap.size) {
+      ADDITIONAL_SWAPPABLE_TOKENS_MINTS.forEach((mint) => {
+        const token: TokenInfo = tokensMap.get(mint);
+        if (token) {
+          fraktionTokensMap.set(mint, tokensMap.get(mint));
+        }
+      });
+    }
+
     return fraktionTokensMap;
   }, [fraktionTokensList, tokensMap]);
 
