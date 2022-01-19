@@ -37,6 +37,9 @@ export const usePoolsPage = (): {
   poolsData: PoolData[];
   raydiumPoolsInfoMap: RaydiumPoolInfoMap;
   searchItems: (value?: string) => void;
+  currentSolanaPriceUSD: number;
+  activePoolTokenAddress: string | null;
+  onPoolCardClick: (tokenAddress: string) => void;
 } => {
   const { control, watch } = useForm({
     defaultValues: {
@@ -126,12 +129,27 @@ export const usePoolsPage = (): {
     raydiumPoolsInfoMap,
   ]);
 
+  const [activePoolTokenAddress, setActivePoolTokenAddress] = useState<
+    string | null
+  >();
+
+  const onPoolCardClick = (tokenAddress: string) => {
+    if (tokenAddress === activePoolTokenAddress) {
+      setActivePoolTokenAddress(null);
+    } else {
+      setActivePoolTokenAddress(tokenAddress);
+    }
+  };
+
   return {
     formControl: control,
     loading,
     poolsData,
     raydiumPoolsInfoMap,
     searchItems,
+    currentSolanaPriceUSD,
+    activePoolTokenAddress,
+    onPoolCardClick,
   };
 };
 

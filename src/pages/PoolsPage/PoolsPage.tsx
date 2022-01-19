@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
@@ -16,20 +16,16 @@ import { useWallet } from '@solana/wallet-adapter-react';
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
   const { itemsToShow, next } = useFakeInfinityScroll(9);
-  const { formControl, loading, poolsData, raydiumPoolsInfoMap, searchItems } =
-    usePoolsPage();
-
-  const [activePoolTokenAddress, setActivePoolTokenAddress] = useState<
-    string | null
-  >();
-
-  const onPoolCardClick = (tokenAddress: string) => {
-    if (tokenAddress === activePoolTokenAddress) {
-      setActivePoolTokenAddress(null);
-    } else {
-      setActivePoolTokenAddress(tokenAddress);
-    }
-  };
+  const {
+    formControl,
+    loading,
+    poolsData,
+    raydiumPoolsInfoMap,
+    searchItems,
+    currentSolanaPriceUSD,
+    activePoolTokenAddress,
+    onPoolCardClick,
+  } = usePoolsPage();
 
   return (
     <AppLayout>
@@ -80,6 +76,7 @@ const PoolsPage: FC = () => {
               raydiumPoolInfo={raydiumPoolsInfoMap.get(
                 poolData.tokenInfo.address,
               )}
+              currentSolanaPriceUSD={currentSolanaPriceUSD}
               isOpen={activePoolTokenAddress === poolData.tokenInfo.address}
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)

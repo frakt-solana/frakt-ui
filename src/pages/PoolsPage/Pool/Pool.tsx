@@ -1,5 +1,5 @@
-import { FC, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { FC, useEffect, useState } from 'react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import DepositModal from '../../../components/DepositModal/DepositModal';
@@ -13,32 +13,63 @@ import { SOL_TOKEN } from '../../../utils';
 import {
   calculateAPR,
   calculateTVL,
+  fetchRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfo,
-  useCurrentSolanaPrice,
 } from '../../../contexts/liquidityPools';
+import { usePolling } from '../../../hooks';
 
 interface PoolInterface {
   poolData: PoolData;
   raydiumPoolInfo: RaydiumPoolInfo;
   isOpen: boolean;
   onPoolCardClick?: () => void;
+  currentSolanaPriceUSD: number;
 }
+
+const POOL_INFO_POLLING_INTERVAL = 5000;
 
 const Pool: FC<PoolInterface> = ({
   isOpen,
   poolData,
-  raydiumPoolInfo,
+  raydiumPoolInfo: defaultRaydiumPoolInfo,
   onPoolCardClick = () => {},
+  currentSolanaPriceUSD,
 }) => {
-  const { isAwarded, tokenInfo } = poolData;
+  const { isAwarded, tokenInfo, poolConfig } = poolData;
 
+  const { connection } = useConnection();
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
+  const [raydiumPoolInfo, setRaydiumPoolInfo] = useState<RaydiumPoolInfo>(
+    defaultRaydiumPoolInfo,
+  );
 
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
+
+  const poll = async () => {
+    const raydiumPoolInfoMap = await fetchRaydiumPoolsInfoMap(connection, [
+      poolConfig,
+    ]);
+    setRaydiumPoolInfo(raydiumPoolInfoMap.get(tokenInfo.address));
+  };
+
+  const { isPolling, startPolling, stopPolling } = usePolling(
+    poll,
+    POOL_INFO_POLLING_INTERVAL,
+  );
+
+  useEffect(() => {
+    if (isOpen && !isPolling) {
+      startPolling();
+    } else {
+      stopPolling();
+    }
+
+    return () => stopPolling();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   return (
     <div className={styles.pool}>
