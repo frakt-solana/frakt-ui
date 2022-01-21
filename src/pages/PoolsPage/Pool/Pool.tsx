@@ -113,7 +113,7 @@ const Pool: FC<PoolInterface> = ({
           {connected ? (
             <>
               <Withdraw quoteToken={tokenInfo} />
-              <Rewards quoteToken={tokenInfo} />
+              {isAwarded && <Rewards quoteToken={tokenInfo} />}
               <Button
                 onClick={() => setDepositModalVisible(true)}
                 className={styles.depositBtn}
@@ -136,7 +136,8 @@ const Pool: FC<PoolInterface> = ({
         visible={depositModalVisible}
         onCancel={() => setDepositModalVisible(false)}
         quoteToken={tokenInfo}
-        baseToken={SOL_TOKEN}
+        currentSolanaPriceUSD={currentSolanaPriceUSD}
+        poolConfig={poolConfig}
       />
     </div>
   );
