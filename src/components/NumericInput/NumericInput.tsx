@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 
 import { Input, InputProps } from '../Input';
 import styles from './styles.module.scss';
-import { useFormContext, UseFormRegisterReturn } from 'react-hook-form';
 
 export interface NumericInputProps extends Omit<InputProps, 'onChange'> {
   value?: string;

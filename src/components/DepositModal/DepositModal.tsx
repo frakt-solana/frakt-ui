@@ -1,21 +1,15 @@
-import { FC, useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { FC } from 'react';
+import { Controller } from 'react-hook-form';
 
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { ControlledToggle } from '../Toggle/Toggle';
 import RefreshIcon from '../../icons/refreshIcon';
 import CustomCheckbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
 import { Modal } from '../Modal';
-import Tooltip from '../Tooltip';
 import Button from '../Button';
 import { SOL_TOKEN } from '../../utils';
-import { useLazyPoolInfo } from '../SwapForm/hooks';
-import { getOutputAmount } from '../SwapForm/helpers';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { calculateTotalDeposit } from '../../contexts/liquidityPools';
+
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { InputControlsNames, useHandleSwap } from './hooks';
 
@@ -33,20 +27,15 @@ const DepositModal: FC<DepositModalProps> = ({
   quoteToken,
   currentSolanaPriceUSD,
 }) => {
-  const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
-  const { connected } = useWallet();
-
-  const [isVerify, setIsVerify] = useState(false);
-
-  const { formControl, quoteValue, totalValue } = useHandleSwap(
-    quoteToken,
-    currentSolanaPriceUSD,
-  );
-
-  const [baseValue, setBaseValue] = useState<string>('');
-
-  const isDepositBtnEnabled =
-    poolInfo && connected && isVerify && Number(baseValue) > 0;
+  const {
+    formControl,
+    isDepositBtnEnabled,
+    baseValue,
+    totalValue,
+    quoteValue,
+    handleBaseSwap,
+    handleQuoteSwap,
+  } = useHandleSwap(quoteToken, currentSolanaPriceUSD);
 
   return (
     <Modal
@@ -63,17 +52,10 @@ const DepositModal: FC<DepositModalProps> = ({
             <img src={SOL_TOKEN.logoURI} className={styles.tokenIcon} />
             <p className={styles.tokenName}>{SOL_TOKEN.symbol}</p>
           </div>
-
-          <Controller
-            control={formControl}
-            render={({ field: { onChange, value } }) => (
-              <NumericInput
-                className={styles.input}
-                value={value}
-                onChange={onChange}
-              />
-            )}
-            name={InputControlsNames.BASE_VALUE}
+          <NumericInput
+            className={styles.input}
+            value={baseValue}
+            onChange={(e) => handleBaseSwap(e)}
           />
         </div>
         <div className={styles.inputWrapper}>
@@ -81,16 +63,10 @@ const DepositModal: FC<DepositModalProps> = ({
             <img src={quoteToken.logoURI} className={styles.tokenIcon} />
             <p className={styles.tokenName}>{quoteToken.symbol}</p>
           </div>
-          <Controller
-            control={formControl}
-            render={({ field: { onChange, value } }) => (
-              <NumericInput
-                className={styles.input}
-                value={quoteValue}
-                onChange={onChange}
-              />
-            )}
-            name={InputControlsNames.QUOTE_VALUE}
+          <NumericInput
+            className={styles.input}
+            value={quoteValue}
+            onChange={(e) => handleQuoteSwap(e)}
           />
         </div>
         <div className={styles.totalLine}>
@@ -98,11 +74,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <NumericInput
-            className={styles.input}
-            value={totalValue}
-            // onChange={setTotalValue}
-          />
+          <NumericInput className={styles.input} value={totalValue} />
         </div>
         <div className={styles.refresh}>
           <RefreshIcon className={styles.refreshIcon} />
@@ -121,9 +93,12 @@ const DepositModal: FC<DepositModalProps> = ({
           <p className={styles.link}>After staking</p>
         </div>
         <div className={styles.verify}>
-          <CustomCheckbox
-            onChange={() => setIsVerify(!isVerify)}
-            checked={isVerify}
+          <Controller
+            control={formControl}
+            name={InputControlsNames.IS_VERIFY}
+            render={({ field: { ref, ...field } }) => {
+              return <CustomCheckbox {...field} />;
+            }}
           />
           <p className={styles.text}>
             I verify that I have read the{' '}
