@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -17,6 +17,7 @@ import { getOutputAmount } from '../SwapForm/helpers';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { calculateTotalDeposit } from '../../contexts/liquidityPools';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { InputControlsNames, useHandleSwap } from './hooks';
 
 interface DepositModalProps {
   visible: boolean;
@@ -37,27 +38,12 @@ const DepositModal: FC<DepositModalProps> = ({
 
   const [isVerify, setIsVerify] = useState(false);
 
-  const { control } = useForm({ defaultValues: { autoSwap: false } });
+  const { formControl, quoteValue, totalValue } = useHandleSwap(
+    quoteToken,
+    currentSolanaPriceUSD,
+  );
 
-  const [totalValue, setTotalValue] = useState<string>('');
   const [baseValue, setBaseValue] = useState<string>('');
-  const [quoteValue, setQuoteValue] = useState<string>('');
-
-  useEffect(() => {
-    if (SOL_TOKEN && quoteToken && SOL_TOKEN.address !== quoteToken.address) {
-      fetchPoolInfo(SOL_TOKEN.address, quoteToken.address);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SOL_TOKEN, quoteToken]);
-
-  useEffect(() => {
-    if (poolInfo && SOL_TOKEN !== quoteToken) {
-      setQuoteValue(getOutputAmount(baseValue, poolInfo, true));
-      setTotalValue(
-        calculateTotalDeposit(baseValue, quoteValue, currentSolanaPriceUSD),
-      );
-    }
-  }, [baseValue, quoteValue, quoteToken, poolInfo, currentSolanaPriceUSD]);
 
   const isDepositBtnEnabled =
     poolInfo && connected && isVerify && Number(baseValue) > 0;
@@ -72,35 +58,22 @@ const DepositModal: FC<DepositModalProps> = ({
       className={styles.modal}
     >
       <div className={styles.container}>
-        <div className={styles.swap}>
-          <ControlledToggle
-            control={control}
-            name="autoSwap"
-            className={styles.filter}
-          />
-          <p>Auto-swap uneven amounts</p>
-          <Tooltip
-            overlayInnerStyle={{
-              width: 262,
-              fontSize: 10,
-              fontWeight: 700,
-            }}
-            placement="bottom"
-            trigger="hover"
-            overlay="Liquidity must be deposited according to the ratio of tokens in the pool. Check this box to auto-swap your liquidity to that ratio before depositing (this will fail if the price moves more than your slippage tolerance). When you withdraw the liquidity, you will withdraw equal values of both tokens."
-          >
-            <QuestionCircleOutlined className={styles.questionIcon} />
-          </Tooltip>
-        </div>
         <div className={styles.inputWrapper}>
           <div className={styles.token}>
             <img src={SOL_TOKEN.logoURI} className={styles.tokenIcon} />
             <p className={styles.tokenName}>{SOL_TOKEN.symbol}</p>
           </div>
-          <NumericInput
-            className={styles.input}
-            value={baseValue}
-            onChange={setBaseValue}
+
+          <Controller
+            control={formControl}
+            render={({ field: { onChange, value } }) => (
+              <NumericInput
+                className={styles.input}
+                value={value}
+                onChange={onChange}
+              />
+            )}
+            name={InputControlsNames.BASE_VALUE}
           />
         </div>
         <div className={styles.inputWrapper}>
@@ -108,10 +81,16 @@ const DepositModal: FC<DepositModalProps> = ({
             <img src={quoteToken.logoURI} className={styles.tokenIcon} />
             <p className={styles.tokenName}>{quoteToken.symbol}</p>
           </div>
-          <NumericInput
-            className={styles.input}
-            value={quoteValue}
-            onChange={setQuoteValue}
+          <Controller
+            control={formControl}
+            render={({ field: { onChange, value } }) => (
+              <NumericInput
+                className={styles.input}
+                value={quoteValue}
+                onChange={onChange}
+              />
+            )}
+            name={InputControlsNames.QUOTE_VALUE}
           />
         </div>
         <div className={styles.totalLine}>
@@ -122,7 +101,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <NumericInput
             className={styles.input}
             value={totalValue}
-            onChange={setTotalValue}
+            // onChange={setTotalValue}
           />
         </div>
         <div className={styles.refresh}>
