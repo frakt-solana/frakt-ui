@@ -1,23 +1,21 @@
 import { FC } from 'react';
 import { Controller } from 'react-hook-form';
-
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+
+import { InputControlsNames, useDeposit } from './hooks';
 import RefreshIcon from '../../icons/refreshIcon';
 import CustomCheckbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
+import { SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
-import { SOL_TOKEN } from '../../utils';
-
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { InputControlsNames, useHandleSwap } from './hooks';
 
 interface DepositModalProps {
   visible: boolean;
   onCancel: () => void;
   quoteToken: TokenInfo;
-  currentSolanaPriceUSD: number;
   poolConfig: LiquidityPoolKeysV4;
 }
 
@@ -25,17 +23,16 @@ const DepositModal: FC<DepositModalProps> = ({
   visible,
   onCancel,
   quoteToken,
-  currentSolanaPriceUSD,
 }) => {
   const {
     formControl,
     isDepositBtnEnabled,
-    baseValue,
     totalValue,
+    handleChange,
     quoteValue,
-    handleBaseSwap,
-    handleQuoteSwap,
-  } = useHandleSwap(quoteToken, currentSolanaPriceUSD);
+    baseValue,
+    totalChange,
+  } = useDeposit(quoteToken);
 
   return (
     <Modal
@@ -55,7 +52,9 @@ const DepositModal: FC<DepositModalProps> = ({
           <NumericInput
             className={styles.input}
             value={baseValue}
-            onChange={(e) => handleBaseSwap(e)}
+            onChange={(value) =>
+              handleChange(value, InputControlsNames.BASE_VALUE)
+            }
           />
         </div>
         <div className={styles.inputWrapper}>
@@ -66,7 +65,9 @@ const DepositModal: FC<DepositModalProps> = ({
           <NumericInput
             className={styles.input}
             value={quoteValue}
-            onChange={(e) => handleQuoteSwap(e)}
+            onChange={(value) =>
+              handleChange(value, InputControlsNames.QUOTE_VALUE)
+            }
           />
         </div>
         <div className={styles.totalLine}>
@@ -74,7 +75,13 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <NumericInput className={styles.input} value={totalValue} />
+          <NumericInput
+            className={styles.input}
+            value={totalValue}
+            onChange={(value) =>
+              totalChange(value, InputControlsNames.TOTAL_VALUE)
+            }
+          />
         </div>
         <div className={styles.refresh}>
           <RefreshIcon className={styles.refreshIcon} />
@@ -96,7 +103,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <Controller
             control={formControl}
             name={InputControlsNames.IS_VERIFY}
-            render={({ field: { ref, ...field } }) => {
+            render={({ field: { ...field } }) => {
               return <CustomCheckbox {...field} />;
             }}
           />

@@ -136,7 +136,6 @@ const Pool: FC<PoolInterface> = ({
         visible={depositModalVisible}
         onCancel={() => setDepositModalVisible(false)}
         quoteToken={tokenInfo}
-        currentSolanaPriceUSD={currentSolanaPriceUSD}
         poolConfig={poolConfig}
       />
     </div>
