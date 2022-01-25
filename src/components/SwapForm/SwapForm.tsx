@@ -1,8 +1,7 @@
 import BN from 'bn.js';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 import SettingsIcon from '../../icons/SettingsIcon';
-import { getOutputAmount } from './helpers';
 import { useLazyPoolInfo } from './hooks';
 import Button from '../Button';
 import { TokenFieldWithBalance } from '../TokenField';
@@ -14,65 +13,34 @@ import { ConfirmModal } from '../Modal/Modal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
-import { TokenInfo } from '@solana/spl-token-registry';
 import { SOL_TOKEN } from '../../utils';
-import { useDeposit } from '../DepositModal/hooks';
+import { InputControlsNames, useDeposit } from '../DepositModal/hooks';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
-const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
+const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const { vaults } = useFraktion();
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
-  const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
+  const { fetchPoolInfo } = useLazyPoolInfo();
 
-  const [payValue, setPayValue] = useState<string>('');
-  const [payToken, setPayToken] = useState<TokenInfo | null>(SOL_TOKEN);
-
-  const [receiveValue, setReceiveValue] = useState<string>('');
-  const [receiveToken, setReceiveToken] = useState<TokenInfo | null>(
-    poolDataByMint.get(defaultTokenMint)?.tokenInfo || null,
-  );
-
-  const { isSwapBtnEnabled } = useDeposit(receiveToken);
+  const {
+    isSwapBtnEnabled,
+    receiveToken,
+    baseValue,
+    payValue,
+    onPayTokenChange,
+    onReceiveTokenChange,
+    payToken,
+    receiveValue,
+    handleChange,
+    changeSides,
+  } = useDeposit(null, defaultTokenMint);
 
   const [slippage, setSlippage] = useState<string>('1');
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
-      fetchPoolInfo(payToken.address, receiveToken.address);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken]);
-
-  const intervalRef = useRef<any>();
-  useEffect(() => {
-    clearInterval(intervalRef.current);
-    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
-      intervalRef.current = setInterval(() => {
-        fetchPoolInfo(payToken.address, receiveToken.address);
-      }, 5000);
-    }
-
-    return () => clearInterval(intervalRef.current);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken]);
-
-  useEffect(() => {
-    if (poolInfo && payToken !== receiveToken) {
-      setReceiveValue(
-        getOutputAmount(
-          payValue,
-          poolInfo,
-          payToken.address === SOL_TOKEN.address,
-        ),
-      );
-    }
-  }, [payValue, payToken, receiveValue, receiveToken, poolInfo]);
 
   const swapTokens = async () => {
     if (
@@ -109,7 +77,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
           const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
 
           const tokenAmountBN = new BN(
-            Number(payValue) * 10 ** payToken.decimals,
+            Number(baseValue) * 10 ** payToken.decimals,
           );
 
           const tokenMinAmountBN = new BN(
@@ -131,7 +99,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
 
     const poolConfig = poolDataByMint.get(splToken.address)?.poolConfig;
 
-    const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
+    const tokenAmountBN = new BN(Number(baseValue) * 10 ** payToken.decimals);
 
     const tokenMinAmountBN = new BN(
       Number(receiveValue) *
@@ -168,7 +136,8 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
 
       // ? amount of token per inputed SOL amount (by locked price per fraction price)
       const amountLocked =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(baseValue)) /
+        10 ** 2;
 
       const difference = (amountMarket / amountLocked) * 100 - 100;
 
@@ -177,7 +146,8 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
       const amountMarketSOL = Number(receiveValue);
 
       const amountLockedSOL =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(baseValue)) /
+        10 ** 6;
 
       const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
 
@@ -185,40 +155,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo, payValue, receiveValue]);
-
-  const onPayTokenChange = (nextToken: TokenInfo) => {
-    if (
-      nextToken.address !== SOL_TOKEN.address &&
-      receiveToken?.address !== SOL_TOKEN.address
-    ) {
-      setReceiveToken(SOL_TOKEN);
-    }
-    setPayValue('');
-    setPayToken(nextToken);
-  };
-
-  const onReceiveTokenChange = (nextToken: TokenInfo) => {
-    if (
-      nextToken.address !== SOL_TOKEN.address &&
-      payToken?.address !== SOL_TOKEN.address
-    ) {
-      setPayToken(SOL_TOKEN);
-    }
-    setReceiveValue('');
-    setReceiveToken(nextToken);
-  };
-
-  const changeSides = () => {
-    const payValueBuf = payValue;
-    const payTokenBuf = payToken;
-
-    setPayValue(receiveValue);
-    setPayToken(receiveToken);
-
-    setReceiveValue(payValueBuf);
-    setReceiveToken(payTokenBuf);
-  };
+  }, [vaultInfo, baseValue, receiveValue]);
 
   return (
     <div>
@@ -229,10 +166,13 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
           onClick={() => setSlippageModalVisible(true)}
         />
       </div>
+
       <TokenFieldWithBalance
         className={styles.input}
         value={payValue}
-        onValueChange={(nextValue) => setPayValue(nextValue)}
+        onValueChange={(value) =>
+          handleChange(value, InputControlsNames.PAY_VALUE)
+        }
         tokensList={
           payToken?.address === SOL_TOKEN.address
             ? [SOL_TOKEN]
@@ -248,6 +188,7 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
         label="Pay"
         showMaxButton
       />
+
       <ChangeSidesButton onClick={changeSides} />
       <TokenFieldWithBalance
         className={styles.input}

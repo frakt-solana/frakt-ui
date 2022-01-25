@@ -73,7 +73,7 @@ export const useCreateLiquidityForm = (
         currentSolanaPriceUSD,
       ),
     );
-  }, [baseValue, quoteValue, quoteTokenPrice, currentSolanaPriceUSD]);
+  }, [baseValue, quoteValue, quoteTokenPrice, currentSolanaPriceUSD, setValue]);
 
   const isCreateBtnEnabled = connected && isVerified && Number(baseValue) > 0;
 
