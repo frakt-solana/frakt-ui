@@ -1,46 +1,67 @@
 import BN from 'bn.js';
 import { FC, useMemo, useState } from 'react';
+import { Controller } from 'react-hook-form';
 
 import SettingsIcon from '../../icons/SettingsIcon';
-import { useLazyPoolInfo } from './hooks';
 import Button from '../Button';
 import { TokenFieldWithBalance } from '../TokenField';
 import styles from './styles.module.scss';
 import { ChangeSidesButton } from './ChangeSidesButton';
 import { SettingsModal } from './SettingsModal';
-import { useFraktion } from '../../contexts/fraktion';
 import { ConfirmModal } from '../Modal/Modal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
-import { InputControlsNames, useDeposit } from '../DepositModal/hooks';
+import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
+import { useLazyPoolInfo } from './hooks/useLazyPoolInfo';
+import { useSwapForm } from './hooks/useSwapForm';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
 const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
-  const { vaults } = useFraktion();
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { fetchPoolInfo } = useLazyPoolInfo();
 
   const {
     isSwapBtnEnabled,
     receiveToken,
-    baseValue,
     payValue,
     onPayTokenChange,
     onReceiveTokenChange,
     payToken,
     receiveValue,
-    handleChange,
     changeSides,
-  } = useDeposit(null, defaultTokenMint);
+    formControl,
+    vaultInfo,
+  } = useSwapForm(defaultTokenMint);
 
   const [slippage, setSlippage] = useState<string>('1');
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
+
+  const handleSwap = async () => {
+    const isBuy = payToken.address === SOL_TOKEN.address;
+
+    //? Need to get suitable pool
+    const splToken = isBuy ? receiveToken : payToken;
+
+    const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
+
+    const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
+
+    const tokenMinAmountBN = new BN(
+      Number(receiveValue) *
+        10 ** receiveToken.decimals *
+        (1 - Number(slippage) / 100),
+    );
+
+    await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
+
+    fetchPoolInfo(payToken.address, receiveToken.address);
+  };
 
   const swapTokens = async () => {
     if (
@@ -66,30 +87,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         ),
         okText: 'Swap anyway',
         // * @sablevsky, sorry bro :)
-        okButtonProps: { style: { borderRadius: 0 } },
-        cancelButtonProps: { style: { borderRadius: 0 } },
-        onOk: async () => {
-          const isBuy = payToken.address === SOL_TOKEN.address;
-
-          //? Need to get suitable pool
-          const splToken = isBuy ? receiveToken : payToken;
-
-          const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
-
-          const tokenAmountBN = new BN(
-            Number(baseValue) * 10 ** payToken.decimals,
-          );
-
-          const tokenMinAmountBN = new BN(
-            Number(receiveValue) *
-              10 ** receiveToken.decimals *
-              (1 - Number(slippage) / 100),
-          );
-
-          await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
-
-          fetchPoolInfo(payToken.address, receiveToken.address);
-        },
+        onOk: handleSwap,
       });
     }
     const isBuy = payToken.address === SOL_TOKEN.address;
@@ -99,7 +97,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
     const poolConfig = poolDataByMint.get(splToken.address)?.poolConfig;
 
-    const tokenAmountBN = new BN(Number(baseValue) * 10 ** payToken.decimals);
+    const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
 
     const tokenMinAmountBN = new BN(
       Number(receiveValue) *
@@ -111,17 +109,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
     fetchPoolInfo(payToken.address, receiveToken.address);
   };
-
-  const vaultInfo = useMemo(() => {
-    if (receiveToken && payToken) {
-      const token =
-        payToken.address === SOL_TOKEN.address ? receiveToken : payToken;
-
-      return vaults.find(({ fractionMint }) => fractionMint === token.address);
-    } else {
-      return null;
-    }
-  }, [vaults, receiveToken, payToken]);
 
   const valuationDifference: string = useMemo(() => {
     if (!vaultInfo) {
@@ -136,8 +123,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
       // ? amount of token per inputed SOL amount (by locked price per fraction price)
       const amountLocked =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(baseValue)) /
-        10 ** 2;
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
 
       const difference = (amountMarket / amountLocked) * 100 - 100;
 
@@ -146,8 +132,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
       const amountMarketSOL = Number(receiveValue);
 
       const amountLockedSOL =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(baseValue)) /
-        10 ** 6;
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
 
       const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
 
@@ -155,7 +140,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo, baseValue, receiveValue]);
+  }, [vaultInfo, payValue, receiveValue]);
 
   return (
     <div>
@@ -166,50 +151,59 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
           onClick={() => setSlippageModalVisible(true)}
         />
       </div>
-
-      <TokenFieldWithBalance
-        className={styles.input}
-        value={payValue}
-        onValueChange={(value) =>
-          handleChange(value, InputControlsNames.PAY_VALUE)
-        }
-        tokensList={
-          payToken?.address === SOL_TOKEN.address
-            ? [SOL_TOKEN]
-            : Array.from(poolDataByMint.values()).map(
-                ({ tokenInfo }) => tokenInfo,
-              )
-        }
-        currentToken={payToken}
-        onTokenChange={
-          payToken?.address === SOL_TOKEN.address ? null : onPayTokenChange
-        }
-        modalTitle="Pay"
-        label="Pay"
-        showMaxButton
+      <Controller
+        control={formControl}
+        name={InputControlsNames.PAY_VALUE}
+        render={({ field: { onChange, value } }) => (
+          <TokenFieldWithBalance
+            className={styles.input}
+            value={value}
+            onValueChange={onChange}
+            tokensList={
+              payToken?.address === SOL_TOKEN.address
+                ? [SOL_TOKEN]
+                : Array.from(poolDataByMint.values()).map(
+                    ({ tokenInfo }) => tokenInfo,
+                  )
+            }
+            currentToken={payToken}
+            onTokenChange={
+              payToken?.address === SOL_TOKEN.address ? null : onPayTokenChange
+            }
+            modalTitle="Pay"
+            label="Pay"
+            showMaxButton
+          />
+        )}
       />
 
       <ChangeSidesButton onClick={changeSides} />
-      <TokenFieldWithBalance
-        className={styles.input}
-        value={receiveValue}
-        onValueChange={(nextValue) => nextValue}
-        currentToken={receiveToken}
-        tokensList={
-          receiveToken?.address === SOL_TOKEN.address
-            ? [SOL_TOKEN]
-            : Array.from(poolDataByMint.values()).map(
-                ({ tokenInfo }) => tokenInfo,
-              )
-        }
-        onTokenChange={
-          receiveToken?.address === SOL_TOKEN.address
-            ? null
-            : onReceiveTokenChange
-        }
-        modalTitle="Receive"
-        label="Receive"
-        disabled
+      <Controller
+        control={formControl}
+        name={InputControlsNames.RECEIVE_VALUE}
+        render={({ field: { onChange, value } }) => (
+          <TokenFieldWithBalance
+            className={styles.input}
+            value={value}
+            onValueChange={onChange}
+            currentToken={receiveToken}
+            tokensList={
+              receiveToken?.address === SOL_TOKEN.address
+                ? [SOL_TOKEN]
+                : Array.from(poolDataByMint.values()).map(
+                    ({ tokenInfo }) => tokenInfo,
+                  )
+            }
+            onTokenChange={
+              receiveToken?.address === SOL_TOKEN.address
+                ? null
+                : onReceiveTokenChange
+            }
+            modalTitle="Receive"
+            label="Receive"
+            disabled
+          />
+        )}
       />
       <div className={styles.info}>
         <span className={styles.info__title}>

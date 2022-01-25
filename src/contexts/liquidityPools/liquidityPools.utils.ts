@@ -133,7 +133,9 @@ export const calcTotalForCreateLiquidity = (
     Number(baseTokenAmount) * currentSolanaPriceUSD;
 
   const allQuoteTokenPriceUSD =
-    Number(quoteTokenPriceUSD) * Number(quoteTokenAmount);
+    Number(quoteTokenPriceUSD) *
+    Number(quoteTokenAmount) *
+    currentSolanaPriceUSD;
 
   return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };

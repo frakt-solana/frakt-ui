@@ -21,36 +21,36 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
   defaultTokenMint,
   vaultLockedPrice,
 }) => {
-  const { formControl, totalValue, isCreateBtnEnabled, quoteToken } =
-    useCreateLiquidityForm(vaultLockedPrice, defaultTokenMint);
+  const {
+    formControl,
+    totalValue,
+    isCreateBtnEnabled,
+    quoteToken,
+    baseValue,
+    quoteValue,
+    handleSwap,
+  } = useCreateLiquidityForm(vaultLockedPrice, defaultTokenMint);
 
   return (
     <div className={styles.container}>
       <div className={styles.inputWrapper}>
-        <Controller
-          render={({ field: { onChange, value } }) => (
-            <TokenFieldWithBalance
-              className={styles.input}
-              onValueChange={onChange}
-              value={value}
-              currentToken={SOL_TOKEN}
-            />
-          )}
-          name={InputControlsNames.BASE_VALUE}
-          control={formControl}
+        <TokenFieldWithBalance
+          className={styles.input}
+          value={baseValue}
+          onValueChange={(value) =>
+            handleSwap(value, InputControlsNames.BASE_VALUE)
+          }
+          currentToken={SOL_TOKEN}
         />
+
         <PlusOutlined className={styles.plusIcon} />
-        <Controller
-          render={({ field: { onChange, value } }) => (
-            <TokenFieldWithBalance
-              className={styles.input}
-              onValueChange={onChange}
-              value={value}
-              currentToken={quoteToken}
-            />
-          )}
-          name={InputControlsNames.QUOTE_VALUE}
-          control={formControl}
+        <TokenFieldWithBalance
+          className={styles.input}
+          onValueChange={(value) =>
+            handleSwap(value, InputControlsNames.QUOTE_VALUE)
+          }
+          value={quoteValue}
+          currentToken={quoteToken}
         />
       </div>
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Modal as ModalAnt,
   ModalFuncProps,
@@ -26,9 +25,9 @@ export const ConfirmModal = (
     closeIcon: (
       <CloseIcon width="24px" height="24px" className={styles.close} />
     ),
-    okButtonProps: {
-      className: styles.okButton,
-    },
+    okButtonProps: { className: styles.okButton },
+    cancelButtonProps: { className: styles.cancelButton },
+    content: props.content,
     ...props,
   });
 

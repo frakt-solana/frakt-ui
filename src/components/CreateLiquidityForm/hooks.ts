@@ -33,6 +33,9 @@ export const useCreateLiquidityForm = (
   totalValue: string;
   isCreateBtnEnabled: boolean;
   quoteToken: TokenInfo;
+  baseValue: string;
+  quoteValue: string;
+  handleSwap: (value: string, name) => void;
 } => {
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
   const { connected } = useWallet();
@@ -63,6 +66,21 @@ export const useCreateLiquidityForm = (
     9,
   );
 
+  const handleSwap = (value: string, name) => {
+    setValue(name, value);
+    if (name === InputControlsNames.BASE_VALUE) {
+      setValue(
+        InputControlsNames.QUOTE_VALUE,
+        String(Number(value) / Number(quoteTokenPrice)),
+      );
+    } else {
+      setValue(
+        InputControlsNames.BASE_VALUE,
+        String(Number(value) * Number(quoteTokenPrice)),
+      );
+    }
+  };
+
   useEffect(() => {
     setValue(
       InputControlsNames.TOTAL_VALUE,
@@ -82,5 +100,8 @@ export const useCreateLiquidityForm = (
     totalValue,
     isCreateBtnEnabled,
     quoteToken,
+    baseValue,
+    quoteValue,
+    handleSwap,
   };
 };
