@@ -1,6 +1,7 @@
 import {
   Liquidity,
   LiquidityPoolKeysV4,
+  LIQUIDITY_PROGRAM_ID_V4,
   Spl,
   WSOL,
 } from '@raydium-io/raydium-sdk';
@@ -12,8 +13,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import BN from 'bn.js';
-import { notify } from '../../utils';
-import { RawUserTokensByMint } from '../userTokens';
+import { notify, SOL_TOKEN } from '../../utils';
 
 import { RaydiumPoolInfo } from './liquidityPools.model';
 
@@ -173,63 +173,96 @@ export const raydiumSwap =
   };
 
 export const provideRaydiumLiquidity =
-  () =>
   (
     connection: Connection,
     walletPublicKey: PublicKey,
     signTransaction: (transaction: Transaction) => Promise<Transaction>,
   ) =>
   async (
-    baseAmount: number,
-    quoteAmount: number,
+    baseAmount: BN,
+    quoteAmount: BN,
     baseTokenMint: string,
-    quoteTokenMint: string,
-    marketId: string,
-    rawUserTokensByMint: RawUserTokensByMint,
+    quoteTokenMint: string = SOL_TOKEN.address,
+    marketId: PublicKey,
   ): Promise<void> => {
     try {
-      const transaction = new Transaction();
-      const signers: Keypair[] = [];
-
       const associatedPoolKeys = await Liquidity.getAssociatedPoolKeys({
         version: 4,
-        marketId: new PublicKey(marketId),
+        marketId,
         baseMint: new PublicKey(baseTokenMint),
         quoteMint: new PublicKey(quoteTokenMint),
       });
 
-      //TODO: If LP doesn't exist
-      transaction.add(
-        await Liquidity.makeCreatePoolInstruction({
-          poolKeys: associatedPoolKeys,
-          userKeys: {
-            payer: walletPublicKey,
-          },
-        }),
-      );
+      console.log(associatedPoolKeys.lpMint.toBase58());
 
-      const price = baseAmount / quoteAmount; //TODO: BN?
+      const transaction = new Transaction();
+      const signers: Keypair[] = [];
+
+      const frontInstructions: TransactionInstruction[] = [];
+      const endInstructions: TransactionInstruction[] = [];
+
+      const baseTokenAccount = await Spl.getAssociatedTokenAccount({
+        mint: new PublicKey(baseTokenMint),
+        owner: walletPublicKey,
+      });
+
+      let quoteTokenAccount = await Spl.getAssociatedTokenAccount({
+        mint: new PublicKey(quoteTokenMint),
+        owner: walletPublicKey,
+      });
+
+      console.log(quoteTokenAccount);
+
+      //? If quoteTokenMint is WSOL
+      if (quoteTokenMint === SOL_TOKEN.address) {
+        const { newAccount: wsolAccount, instructions: wrapSolInstructions } =
+          await Spl.makeCreateWrappedNativeAccountInstructions({
+            connection,
+            owner: walletPublicKey,
+            payer: walletPublicKey,
+            amount: quoteAmount,
+          });
+
+        quoteTokenAccount = wsolAccount.publicKey;
+
+        for (const instruction of wrapSolInstructions) {
+          frontInstructions.push(instruction);
+        }
+
+        endInstructions.push(
+          Spl.makeCloseAccountInstruction({
+            tokenAccount: wsolAccount.publicKey,
+            owner: walletPublicKey,
+            payer: walletPublicKey,
+          }),
+        );
+
+        signers.push(wsolAccount);
+      }
+
+      // //TODO: If LP doesn't exist
+      // transaction.add(
+      //   await Liquidity.makeCreatePoolInstruction({
+      //     poolKeys: associatedPoolKeys,
+      //     userKeys: {
+      //       payer: walletPublicKey,
+      //     },
+      //   }),
+      // );
 
       //TODO: get tokenAccounts of base and quote token
 
-      const userBaseTokenAccount = new PublicKey(
-        rawUserTokensByMint[baseTokenMint]?.tokenAccountPubkey,
-      );
-      const userQuoteTokenAccount = new PublicKey(
-        rawUserTokensByMint[quoteTokenMint]?.tokenAccountPubkey,
-      );
-
-      transaction.add(
+      frontInstructions.push(
         Spl.makeTransferInstruction({
-          source: userBaseTokenAccount,
+          source: baseTokenAccount,
           destination: associatedPoolKeys.baseVault,
           owner: walletPublicKey,
           amount: baseAmount,
         }),
       );
-      transaction.add(
+      frontInstructions.push(
         Spl.makeTransferInstruction({
-          source: userQuoteTokenAccount,
+          source: quoteTokenAccount,
           destination: associatedPoolKeys.quoteVault,
           owner: walletPublicKey,
           amount: quoteAmount,
@@ -241,14 +274,29 @@ export const provideRaydiumLiquidity =
         mint: associatedPoolKeys.lpMint,
         owner: walletPublicKey,
       });
-      transaction.add(
-        Spl.makeCreateAssociatedTokenAccountInstruction({
-          mint: associatedPoolKeys.lpMint,
-          associatedAccount: lpAta,
+
+      // frontInstructions.push(
+      //   Spl.makeCreateAssociatedTokenAccountInstruction({
+      //     mint: associatedPoolKeys.lpMint,
+      //     associatedAccount: lpAta,
+      //     payer: walletPublicKey,
+      //     owner: walletPublicKey,
+      //   }),
+      // );
+
+      const initPoolInstruction = await Liquidity.makeInitPoolInstruction({
+        poolKeys: associatedPoolKeys,
+        userKeys: {
+          lpTokenAccount: lpAta,
           payer: walletPublicKey,
-          owner: walletPublicKey,
-        }),
-      );
+        },
+      });
+
+      endInstructions.push(initPoolInstruction);
+
+      for (const instruction of [...frontInstructions, ...endInstructions]) {
+        transaction.add(instruction);
+      }
 
       const { blockhash } = await connection.getRecentBlockhash();
       transaction.recentBlockhash = blockhash;
@@ -258,11 +306,11 @@ export const provideRaydiumLiquidity =
       const signedTransaction = await signTransaction(transaction);
       const txid = await connection.sendRawTransaction(
         signedTransaction.serialize(),
-        // { skipPreflight: true },
+        { skipPreflight: true },
       );
 
       notify({
-        message: 'Swap made successfully',
+        message: 'Liquidity provided successfully',
         type: 'success',
       });
 

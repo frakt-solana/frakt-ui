@@ -135,7 +135,7 @@ const Pool: FC<PoolInterface> = ({
       <DepositModal
         visible={depositModalVisible}
         onCancel={() => setDepositModalVisible(false)}
-        quoteToken={tokenInfo}
+        tokenInfo={tokenInfo}
         poolConfig={poolConfig}
       />
     </div>

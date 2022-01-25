@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import BN from 'bn.js';
 import { Controller } from 'react-hook-form';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -11,27 +12,49 @@ import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
+import { useLiquidityPools } from '../../contexts/liquidityPools';
 
 interface DepositModalProps {
   visible: boolean;
   onCancel: () => void;
-  quoteToken: TokenInfo;
+  tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
   visible,
   onCancel,
-  quoteToken,
+  tokenInfo,
+  poolConfig,
 }) => {
   const {
     formControl,
     isDepositBtnEnabled,
     totalValue,
     handleChange,
-    quoteValue,
-    baseValue,
-  } = useDeposit(quoteToken);
+    baseValue, //TODO: rename
+    quoteValue, //TODO: rename
+  } = useDeposit(tokenInfo);
+
+  const { provideRaydiumLiquidity } = useLiquidityPools();
+
+  const onSubmitHandler = () => {
+    const baseTokenMint = tokenInfo.address;
+    const baseAmount = new BN(Number(quoteValue) * 10 ** tokenInfo.decimals);
+
+    const tokenInfoMint = SOL_TOKEN.address;
+    const quoteAmount = new BN(Number(baseValue) * 1e9);
+
+    const marketId = poolConfig.marketId;
+
+    provideRaydiumLiquidity(
+      baseAmount,
+      quoteAmount,
+      baseTokenMint,
+      tokenInfoMint,
+      marketId,
+    );
+  };
 
   return (
     <Modal
@@ -58,8 +81,8 @@ const DepositModal: FC<DepositModalProps> = ({
         </div>
         <div className={styles.inputWrapper}>
           <div className={styles.token}>
-            <img src={quoteToken.logoURI} className={styles.tokenIcon} />
-            <p className={styles.tokenName}>{quoteToken.symbol}</p>
+            <img src={tokenInfo.logoURI} className={styles.tokenIcon} />
+            <p className={styles.tokenName}>{tokenInfo.symbol}</p>
           </div>
           <NumericInput
             className={styles.input}
@@ -111,6 +134,7 @@ const DepositModal: FC<DepositModalProps> = ({
           className={styles.depositBtn}
           type="alternative"
           disabled={!isDepositBtnEnabled}
+          onClick={onSubmitHandler}
         >
           Deposit
         </Button>
