@@ -1,28 +1,28 @@
 import { FC } from 'react';
-import { Checkbox } from 'antd';
+import { Checkbox as CheckboxAnt } from 'antd';
 import classNames from 'classnames';
 
 import styles from './styles.module.scss';
 
-interface CustomCheckboxInterface {
+interface CheckboxInterface {
   className?: string;
   checked?: boolean;
-  onChange?: (value: any) => void;
+  onChange?: (value: boolean) => void;
   value?: boolean;
 }
 
-const CustomCheckbox: FC<CustomCheckboxInterface> = ({
+const Checkbox: FC<CheckboxInterface> = ({
   className,
   onChange = () => {},
   value,
 }) => {
   return (
-    <Checkbox
+    <CheckboxAnt
       onClick={() => onChange(!value)}
       checked={value}
-      className={classNames(styles.customCheckbox, className)}
+      className={classNames(styles.checkbox, className)}
     />
   );
 };
 
-export default CustomCheckbox;
+export default Checkbox;

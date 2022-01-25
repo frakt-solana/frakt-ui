@@ -5,7 +5,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { InputControlsNames, useDeposit } from './hooks';
 import RefreshIcon from '../../icons/refreshIcon';
-import CustomCheckbox from '../CustomCheckbox';
+import Checkbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
@@ -31,7 +31,6 @@ const DepositModal: FC<DepositModalProps> = ({
     handleChange,
     quoteValue,
     baseValue,
-    totalChange,
   } = useDeposit(quoteToken);
 
   return (
@@ -75,13 +74,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <NumericInput
-            className={styles.input}
-            value={totalValue}
-            onChange={(value) =>
-              totalChange(value, InputControlsNames.TOTAL_VALUE)
-            }
-          />
+          <NumericInput className={styles.input} value={totalValue} readOnly />
         </div>
         <div className={styles.refresh}>
           <RefreshIcon className={styles.refreshIcon} />
@@ -102,10 +95,8 @@ const DepositModal: FC<DepositModalProps> = ({
         <div className={styles.verify}>
           <Controller
             control={formControl}
-            name={InputControlsNames.IS_VERIFY}
-            render={({ field: { ...field } }) => {
-              return <CustomCheckbox {...field} />;
-            }}
+            name={InputControlsNames.IS_VERIFIED}
+            render={({ field }) => <Checkbox {...field} />}
           />
           <p className={styles.text}>
             I verify that I have read the{' '}

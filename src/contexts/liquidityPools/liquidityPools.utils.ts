@@ -17,8 +17,8 @@ export const calculateTVL = (
     const allQuoteTokenPriceUSD: number =
       quoteTokenAmount * currentSolanaPriceUSD;
 
-    return groupNumberBySpace(
-      formatNumberTotal.format(allBaseTokenPriceUSD * allQuoteTokenPriceUSD),
+    return formatNumberWithSpaceSeparator(
+      allBaseTokenPriceUSD * allQuoteTokenPriceUSD,
     );
   }
 };
@@ -31,7 +31,7 @@ export const calculateAPR = (
     calculateTVL(raydiumPoolInfo, currentSolanaPriceUSD),
   );
 
-  const apr = formatPercent.format(totalLiquidity * 0.00012);
+  const apr = formatNumberToPercent(totalLiquidity * 0.00012);
   return apr;
 };
 
@@ -71,43 +71,33 @@ export const comparePoolsArraysByApr = (
   } else if (aprB > aprA) return -1;
 };
 
-const numberFormatterTotal = new Intl.NumberFormat('en-US', {
-  style: 'decimal',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-});
+const formatNumberToPercent = (num: number): string =>
+  new Intl.NumberFormat('en-US', {
+    style: 'percent',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(num);
 
-const formatUSD = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});
+const formatNumberWithSpaceSeparator = (num: number): string =>
+  new Intl.NumberFormat('en-US', {
+    style: 'decimal',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })
+    .format(num)
+    .replaceAll(',', ' ');
 
-export const formatPercent = new Intl.NumberFormat('en-US', {
-  style: 'percent',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-});
-
-export const formatNumberTotal = {
-  format: (val?: number): string | number => {
-    if (!val) {
-      return '--';
-    }
-    return numberFormatterTotal.format(val);
-  },
+const formatNumberToCurrency = (num: number): string => {
+  if (!num) {
+    return '0';
+  }
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  })
+    .format(num)
+    .replaceAll(',', ' ');
 };
-
-export const formatNumberUSD = {
-  format: (val?: number): string | number => {
-    if (!val) {
-      return '0';
-    }
-    return formatUSD.format(val);
-  },
-};
-
-export const groupNumberBySpace = (formatAmount: string | number): string =>
-  formatAmount.toString().replace(',', ' ');
 
 export const formatTotalToNumber = (formatAmount: number | string): number =>
   Number(formatAmount?.toString().replace(' ', ''));
@@ -130,7 +120,20 @@ export const calculateTotalDeposit = (
   const allQuoteTokenPriceUSD: number =
     quoteTokenPriceUSD * Number(quoteTokenAmount);
 
-  return groupNumberBySpace(
-    formatNumberUSD.format(allBaseTokenPriceUSD + allQuoteTokenPriceUSD),
-  );
+  return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
+};
+
+export const calcTotalForCreateLiquidity = (
+  baseTokenAmount: string,
+  quoteTokenAmount: string,
+  quoteTokenPriceUSD: string,
+  currentSolanaPriceUSD: number,
+): string => {
+  const allBaseTokenPriceUSD: number =
+    Number(baseTokenAmount) * currentSolanaPriceUSD;
+
+  const allQuoteTokenPriceUSD =
+    Number(quoteTokenPriceUSD) * Number(quoteTokenAmount);
+
+  return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };

@@ -15,14 +15,14 @@ export enum InputControlsNames {
   QUOTE_VALUE = 'quoteValue',
   BASE_VALUE = 'baseValue',
   TOTAL_VALUE = 'totalValue',
-  IS_VERIFY = 'isVerify',
+  IS_VERIFIED = 'isVerified',
 }
 
 export type FormFieldValues = {
   [InputControlsNames.QUOTE_VALUE]: string;
   [InputControlsNames.BASE_VALUE]: string;
   [InputControlsNames.TOTAL_VALUE]: string;
-  [InputControlsNames.IS_VERIFY]: boolean;
+  [InputControlsNames.IS_VERIFIED]: boolean;
 };
 
 export const useDeposit = (
@@ -31,10 +31,11 @@ export const useDeposit = (
   formControl: Control<FormFieldValues>;
   totalValue: string;
   isDepositBtnEnabled: boolean;
-  handleChange: (e: string, name) => void;
-  totalChange: (e: string, name) => void;
+  handleChange: (value: string, name) => void;
   quoteValue: string;
   baseValue: string;
+  currentSolanaPriceUSD: number;
+  isSwapBtnEnabled: boolean;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
@@ -45,11 +46,11 @@ export const useDeposit = (
       [InputControlsNames.QUOTE_VALUE]: '',
       [InputControlsNames.BASE_VALUE]: '',
       [InputControlsNames.TOTAL_VALUE]: '',
-      [InputControlsNames.IS_VERIFY]: false,
+      [InputControlsNames.IS_VERIFIED]: false,
     },
   });
 
-  const { isVerify, quoteValue, baseValue, totalValue } = watch();
+  const { isVerified, quoteValue, baseValue, totalValue } = watch();
 
   useEffect(() => {
     register(InputControlsNames.QUOTE_VALUE);
@@ -58,11 +59,11 @@ export const useDeposit = (
   }, [register]);
 
   useEffect(() => {
-    if (SOL_TOKEN && quoteToken && SOL_TOKEN.address !== quoteToken.address) {
+    if (quoteToken && SOL_TOKEN.address !== quoteToken.address) {
       fetchPoolInfo(SOL_TOKEN.address, quoteToken.address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SOL_TOKEN, quoteToken]);
+  }, [quoteToken]);
 
   const handleChange = (value: string, name) => {
     setValue(name, value);
@@ -80,17 +81,6 @@ export const useDeposit = (
     }
   };
 
-  const totalChange = (value: string, name) => {
-    setValue(name, value);
-
-    // TO DO calc quote token amount
-
-    // const halfTotalValue = Number(value) / 2;
-    // const baseTotalValue = String(halfTotalValue / currentSolanaPriceUSD);
-
-    // setValue(InputControlsNames.BASE_VALUE, baseTotalValue);
-  };
-
   useEffect(() => {
     setValue(
       InputControlsNames.TOTAL_VALUE,
@@ -99,7 +89,9 @@ export const useDeposit = (
   }, [baseValue, quoteValue, currentSolanaPriceUSD, setValue]);
 
   const isDepositBtnEnabled =
-    poolInfo && connected && isVerify && Number(baseValue) > 0;
+    poolInfo && connected && isVerified && Number(baseValue) > 0;
+
+  const isSwapBtnEnabled = poolInfo && connected && Number(baseValue) > 0;
 
   return {
     formControl: control,
@@ -108,6 +100,7 @@ export const useDeposit = (
     handleChange,
     quoteValue,
     baseValue,
-    totalChange,
+    currentSolanaPriceUSD,
+    isSwapBtnEnabled,
   };
 };

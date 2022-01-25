@@ -1,59 +1,68 @@
-import { FC, useState } from 'react';
-
+import { FC } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { SOL_TOKEN } from '../../utils';
+import { Controller } from 'react-hook-form';
+import BN from 'bn.js';
+
+import { InputControlsNames } from '../DepositModal/hooks';
 import { TokenFieldWithBalance } from '../TokenField';
-import Button from '../Button';
-import styles from './styles.module.scss';
+import { useCreateLiquidityForm } from './hooks';
+import Checkbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
-import { useTokenByMint } from './hooks';
-import CustomCheckbox from '../CustomCheckbox';
+import styles from './styles.module.scss';
+import { SOL_TOKEN } from '../../utils';
+import Button from '../Button';
 
 interface LiquidityFormInterface {
-  defaultTokenMint?: string;
+  defaultTokenMint: string;
+  vaultLockedPrice: BN;
 }
 
 const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
   defaultTokenMint,
+  vaultLockedPrice,
 }) => {
-  const token = useTokenByMint(defaultTokenMint);
-  const [totalValue, setTotalValue] = useState<string>('');
-
-  const [baseValue, setBaseValue] = useState<string>('');
-
-  const [quoteValue, setQuoteValue] = useState<string>('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [quoteToken, setQuoteToken] = useState<TokenInfo | null>(token || null);
+  const { formControl, totalValue, isCreateBtnEnabled, quoteToken } =
+    useCreateLiquidityForm(vaultLockedPrice, defaultTokenMint);
 
   return (
     <div className={styles.container}>
       <div className={styles.inputWrapper}>
-        <TokenFieldWithBalance
-          className={styles.input}
-          value={baseValue}
-          onValueChange={(nextValue) => setBaseValue(nextValue)}
-          currentToken={SOL_TOKEN}
+        <Controller
+          render={({ field: { onChange, value } }) => (
+            <TokenFieldWithBalance
+              className={styles.input}
+              onValueChange={onChange}
+              value={value}
+              currentToken={SOL_TOKEN}
+            />
+          )}
+          name={InputControlsNames.BASE_VALUE}
+          control={formControl}
         />
         <PlusOutlined className={styles.plusIcon} />
-        <TokenFieldWithBalance
-          className={styles.input}
-          value={quoteValue}
-          onValueChange={(nextValue) => setQuoteValue(nextValue)}
-          currentToken={quoteToken}
-        />
-      </div>
-      <div>
-        <p className={styles.label}>Total</p>
-        <NumericInput
-          className={styles.input}
-          value={totalValue}
-          onChange={setTotalValue}
+        <Controller
+          render={({ field: { onChange, value } }) => (
+            <TokenFieldWithBalance
+              className={styles.input}
+              onValueChange={onChange}
+              value={value}
+              currentToken={quoteToken}
+            />
+          )}
+          name={InputControlsNames.QUOTE_VALUE}
+          control={formControl}
         />
       </div>
 
+      <p className={styles.label}>Total</p>
+      <NumericInput className={styles.input} value={totalValue} readOnly />
+
       <div className={styles.verify}>
-        <CustomCheckbox />
+        <Controller
+          control={formControl}
+          name={InputControlsNames.IS_VERIFIED}
+          render={({ field }) => <Checkbox {...field} />}
+        />
         <p className={styles.text}>
           I verify that I have read the{' '}
           <a href="#" target="_blank" rel="noopener noreferrer">
@@ -64,7 +73,11 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
         </p>
       </div>
 
-      <Button className={styles.createPoolBtn} type="alternative">
+      <Button
+        className={styles.createPoolBtn}
+        type="alternative"
+        disabled={!isCreateBtnEnabled}
+      >
         Create liquidity pool
       </Button>
     </div>

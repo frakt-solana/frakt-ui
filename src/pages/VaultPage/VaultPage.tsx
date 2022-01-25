@@ -175,6 +175,7 @@ const VaultPage: FC = () => {
                       <SwapTab
                         vaultMarketAddress={vaultMarket?.address}
                         fractionMint={vaultData.fractionMint}
+                        vaultLockedPrice={vaultData.lockedPricePerShare}
                       />
                     )}
                     {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}

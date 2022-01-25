@@ -1,4 +1,3 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import BN from 'bn.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -17,6 +16,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { SOL_TOKEN } from '../../utils';
+import { useDeposit } from '../DepositModal/hooks';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
@@ -27,8 +27,6 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
 
-  const { connected } = useWallet();
-
   const [payValue, setPayValue] = useState<string>('');
   const [payToken, setPayToken] = useState<TokenInfo | null>(SOL_TOKEN);
 
@@ -36,6 +34,8 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
   const [receiveToken, setReceiveToken] = useState<TokenInfo | null>(
     poolDataByMint.get(defaultTokenMint)?.tokenInfo || null,
   );
+
+  const { isSwapBtnEnabled } = useDeposit(receiveToken);
 
   const [slippage, setSlippage] = useState<string>('1');
   const [slippageModalVisible, setSlippageModalVisible] =
@@ -219,8 +219,6 @@ const SwapForm = ({ defaultTokenMint }: SwapFormInterface): JSX.Element => {
     setReceiveValue(payValueBuf);
     setReceiveToken(payTokenBuf);
   };
-
-  const isSwapBtnEnabled = poolInfo && connected && Number(payValue) > 0;
 
   return (
     <div>
