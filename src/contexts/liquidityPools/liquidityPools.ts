@@ -13,6 +13,7 @@ import {
 } from '@solana/web3.js';
 import BN from 'bn.js';
 import { notify } from '../../utils';
+import { RawUserTokensByMint } from '../userTokens';
 
 import { RaydiumPoolInfo } from './liquidityPools.model';
 
@@ -166,6 +167,112 @@ export const raydiumSwap =
 
       notify({
         message: 'Swap failed',
+        type: 'error',
+      });
+    }
+  };
+
+export const provideRaydiumLiquidity =
+  () =>
+  (
+    connection: Connection,
+    walletPublicKey: PublicKey,
+    signTransaction: (transaction: Transaction) => Promise<Transaction>,
+  ) =>
+  async (
+    baseAmount: number,
+    quoteAmount: number,
+    baseTokenMint: string,
+    quoteTokenMint: string,
+    marketId: string,
+    rawUserTokensByMint: RawUserTokensByMint,
+  ): Promise<void> => {
+    try {
+      const transaction = new Transaction();
+      const signers: Keypair[] = [];
+
+      const associatedPoolKeys = await Liquidity.getAssociatedPoolKeys({
+        version: 4,
+        marketId: new PublicKey(marketId),
+        baseMint: new PublicKey(baseTokenMint),
+        quoteMint: new PublicKey(quoteTokenMint),
+      });
+
+      //TODO: If LP doesn't exist
+      transaction.add(
+        await Liquidity.makeCreatePoolInstruction({
+          poolKeys: associatedPoolKeys,
+          userKeys: {
+            payer: walletPublicKey,
+          },
+        }),
+      );
+
+      const price = baseAmount / quoteAmount; //TODO: BN?
+
+      //TODO: get tokenAccounts of base and quote token
+
+      const userBaseTokenAccount = new PublicKey(
+        rawUserTokensByMint[baseTokenMint]?.tokenAccountPubkey,
+      );
+      const userQuoteTokenAccount = new PublicKey(
+        rawUserTokensByMint[quoteTokenMint]?.tokenAccountPubkey,
+      );
+
+      transaction.add(
+        Spl.makeTransferInstruction({
+          source: userBaseTokenAccount,
+          destination: associatedPoolKeys.baseVault,
+          owner: walletPublicKey,
+          amount: baseAmount,
+        }),
+      );
+      transaction.add(
+        Spl.makeTransferInstruction({
+          source: userQuoteTokenAccount,
+          destination: associatedPoolKeys.quoteVault,
+          owner: walletPublicKey,
+          amount: quoteAmount,
+        }),
+      );
+
+      //? if lp ata not exist, you need create it first
+      const lpAta = await Spl.getAssociatedTokenAccount({
+        mint: associatedPoolKeys.lpMint,
+        owner: walletPublicKey,
+      });
+      transaction.add(
+        Spl.makeCreateAssociatedTokenAccountInstruction({
+          mint: associatedPoolKeys.lpMint,
+          associatedAccount: lpAta,
+          payer: walletPublicKey,
+          owner: walletPublicKey,
+        }),
+      );
+
+      const { blockhash } = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = walletPublicKey;
+      transaction.sign(...signers);
+
+      const signedTransaction = await signTransaction(transaction);
+      const txid = await connection.sendRawTransaction(
+        signedTransaction.serialize(),
+        // { skipPreflight: true },
+      );
+
+      notify({
+        message: 'Swap made successfully',
+        type: 'success',
+      });
+
+      return void connection.confirmTransaction(txid);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+
+      notify({
+        message: 'Transaction failed',
         type: 'error',
       });
     }
