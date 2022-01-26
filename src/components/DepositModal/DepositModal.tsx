@@ -40,10 +40,10 @@ const DepositModal: FC<DepositModalProps> = ({
 
   const onSubmitHandler = () => {
     const baseTokenMint = tokenInfo.address;
-    const baseAmount = new BN(Number(quoteValue) * 10 ** tokenInfo.decimals);
+    const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
 
     const tokenInfoMint = SOL_TOKEN.address;
-    const quoteAmount = new BN(Number(baseValue) * 1e9);
+    const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
     const marketId = poolConfig.marketId;
 
@@ -73,9 +73,9 @@ const DepositModal: FC<DepositModalProps> = ({
           </div>
           <NumericInput
             className={styles.input}
-            value={baseValue}
+            value={quoteValue}
             onChange={(value) =>
-              handleChange(value, InputControlsNames.BASE_VALUE)
+              handleChange(value, InputControlsNames.QUOTE_VALUE)
             }
           />
         </div>
@@ -86,9 +86,9 @@ const DepositModal: FC<DepositModalProps> = ({
           </div>
           <NumericInput
             className={styles.input}
-            value={quoteValue}
+            value={baseValue}
             onChange={(value) =>
-              handleChange(value, InputControlsNames.QUOTE_VALUE)
+              handleChange(value, InputControlsNames.BASE_VALUE)
             }
           />
         </div>

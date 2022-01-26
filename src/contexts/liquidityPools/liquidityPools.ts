@@ -1,7 +1,6 @@
 import {
   Liquidity,
   LiquidityPoolKeysV4,
-  LIQUIDITY_PROGRAM_ID_V4,
   Spl,
   WSOL,
 } from '@raydium-io/raydium-sdk';
@@ -193,7 +192,7 @@ export const provideRaydiumLiquidity =
         quoteMint: new PublicKey(quoteTokenMint),
       });
 
-      console.log(associatedPoolKeys.lpMint.toBase58());
+      // console.log(associatedPoolKeys.lpMint.toBase58());
 
       const transaction = new Transaction();
       const signers: Keypair[] = [];
@@ -211,7 +210,7 @@ export const provideRaydiumLiquidity =
         owner: walletPublicKey,
       });
 
-      console.log(quoteTokenAccount);
+      // console.log(quoteTokenAccount);
 
       //? If quoteTokenMint is WSOL
       if (quoteTokenMint === SOL_TOKEN.address) {

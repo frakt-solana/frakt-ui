@@ -25,7 +25,7 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
     formControl,
     totalValue,
     isCreateBtnEnabled,
-    quoteToken,
+    tokenInfo,
     baseValue,
     quoteValue,
     handleSwap,
@@ -36,9 +36,9 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
       <div className={styles.inputWrapper}>
         <TokenFieldWithBalance
           className={styles.input}
-          value={baseValue}
+          value={quoteValue}
           onValueChange={(value) =>
-            handleSwap(value, InputControlsNames.BASE_VALUE)
+            handleSwap(value, InputControlsNames.QUOTE_VALUE)
           }
           currentToken={SOL_TOKEN}
         />
@@ -47,10 +47,10 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
         <TokenFieldWithBalance
           className={styles.input}
           onValueChange={(value) =>
-            handleSwap(value, InputControlsNames.QUOTE_VALUE)
+            handleSwap(value, InputControlsNames.BASE_VALUE)
           }
-          value={quoteValue}
-          currentToken={quoteToken}
+          value={baseValue}
+          currentToken={tokenInfo}
         />
       </div>
 

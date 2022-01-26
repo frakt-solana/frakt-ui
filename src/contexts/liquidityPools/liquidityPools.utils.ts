@@ -110,15 +110,15 @@ export const calculateTotalDeposit = (
   quoteTokenAmount: string,
   currentSolanaPriceUSD: number,
 ): string => {
-  const allBaseTokenPriceUSD: number =
+  const allQuoteTokenPriceUSD: number =
     Number(baseTokenAmount) * currentSolanaPriceUSD;
 
-  const quoteTokenPriceUSD: number =
+  const baseTokenPriceUSD: number =
     (Number(baseTokenAmount) / Number(quoteTokenAmount)) *
     currentSolanaPriceUSD;
 
-  const allQuoteTokenPriceUSD: number =
-    quoteTokenPriceUSD * Number(quoteTokenAmount);
+  const allBaseTokenPriceUSD: number =
+    baseTokenPriceUSD * Number(quoteTokenAmount);
 
   return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };
@@ -126,16 +126,14 @@ export const calculateTotalDeposit = (
 export const calcTotalForCreateLiquidity = (
   baseTokenAmount: string,
   quoteTokenAmount: string,
-  quoteTokenPriceUSD: string,
+  tokenPrice: string,
   currentSolanaPriceUSD: number,
 ): string => {
-  const allBaseTokenPriceUSD: number =
-    Number(baseTokenAmount) * currentSolanaPriceUSD;
+  const allQuoteTokenPriceUSD: number =
+    Number(quoteTokenAmount) * currentSolanaPriceUSD;
 
-  const allQuoteTokenPriceUSD =
-    Number(quoteTokenPriceUSD) *
-    Number(quoteTokenAmount) *
-    currentSolanaPriceUSD;
+  const allBaseTokenPriceUSD =
+    Number(tokenPrice) * Number(baseTokenAmount) * currentSolanaPriceUSD;
 
   return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };

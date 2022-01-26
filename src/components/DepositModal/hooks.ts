@@ -68,28 +68,23 @@ export const useDeposit = (
   const handleChange = (value: string, name) => {
     setValue(name, value);
 
-    switch (name) {
-      case InputControlsNames.QUOTE_VALUE:
-        setValue(
-          InputControlsNames.BASE_VALUE,
-          getOutputAmount(value, poolInfo, false),
-        );
-        break;
-      case InputControlsNames.BASE_VALUE:
-        setValue(
-          InputControlsNames.QUOTE_VALUE,
-          getOutputAmount(value, poolInfo, true),
-        );
-        break;
-      default:
-        break;
+    if (name === InputControlsNames.BASE_VALUE) {
+      setValue(
+        InputControlsNames.QUOTE_VALUE,
+        getOutputAmount(value, poolInfo, false),
+      );
+    } else {
+      setValue(
+        InputControlsNames.BASE_VALUE,
+        getOutputAmount(value, poolInfo, true),
+      );
     }
   };
 
   useEffect(() => {
     setValue(
       InputControlsNames.TOTAL_VALUE,
-      calculateTotalDeposit(baseValue, quoteValue, currentSolanaPriceUSD),
+      calculateTotalDeposit(quoteValue, baseValue, currentSolanaPriceUSD),
     );
   }, [baseValue, quoteValue, currentSolanaPriceUSD, setValue]);
 

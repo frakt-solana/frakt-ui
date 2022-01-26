@@ -32,7 +32,7 @@ export const useCreateLiquidityForm = (
   formControl: Control<FormFieldValues>;
   totalValue: string;
   isCreateBtnEnabled: boolean;
-  quoteToken: TokenInfo;
+  tokenInfo: TokenInfo;
   baseValue: string;
   quoteValue: string;
   handleSwap: (value: string, name) => void;
@@ -41,7 +41,7 @@ export const useCreateLiquidityForm = (
   const { connected } = useWallet();
   const tokensMap = useTokensMap();
 
-  const quoteToken = tokensMap.get(defaultTokenMint) || null;
+  const tokenInfo = tokensMap.get(defaultTokenMint) || null;
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -60,23 +60,19 @@ export const useCreateLiquidityForm = (
     register(InputControlsNames.TOTAL_VALUE);
   }, [register]);
 
-  const quoteTokenPrice = decimalBNToString(
-    vaultLockedPrice.mul(new BN(1e3)),
-    6,
-    9,
-  );
+  const tokenPrice = decimalBNToString(vaultLockedPrice.mul(new BN(1e3)), 6, 9);
 
   const handleSwap = (value: string, name) => {
     setValue(name, value);
     if (name === InputControlsNames.BASE_VALUE) {
       setValue(
         InputControlsNames.QUOTE_VALUE,
-        String(Number(value) / Number(quoteTokenPrice)),
+        String(Number(value) * Number(tokenPrice)),
       );
     } else {
       setValue(
         InputControlsNames.BASE_VALUE,
-        String(Number(value) * Number(quoteTokenPrice)),
+        String(Number(value) / Number(tokenPrice)),
       );
     }
   };
@@ -87,11 +83,11 @@ export const useCreateLiquidityForm = (
       calcTotalForCreateLiquidity(
         baseValue,
         quoteValue,
-        quoteTokenPrice,
+        tokenPrice,
         currentSolanaPriceUSD,
       ),
     );
-  }, [baseValue, quoteValue, quoteTokenPrice, currentSolanaPriceUSD, setValue]);
+  }, [baseValue, quoteValue, tokenPrice, currentSolanaPriceUSD, setValue]);
 
   const isCreateBtnEnabled = connected && isVerified && Number(baseValue) > 0;
 
@@ -99,7 +95,7 @@ export const useCreateLiquidityForm = (
     formControl: control,
     totalValue,
     isCreateBtnEnabled,
-    quoteToken,
+    tokenInfo,
     baseValue,
     quoteValue,
     handleSwap,
