@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useState } from 'react';
 
 import {
   useLiquidityPools,
@@ -12,6 +12,7 @@ import { Control, useForm } from 'react-hook-form';
 import { getOutputAmount } from '../../SwapForm/helpers';
 import { useLazyPoolInfo } from './useLazyPoolInfo';
 import { useFraktion, VaultData } from '../../../contexts/fraktion';
+import { Percent } from '@raydium-io/raydium-sdk';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -32,7 +33,7 @@ export const useSwapForm = (
 ): {
   formControl: Control<FormFieldValues>;
   onPayTokenChange: (nextToken: TokenInfo) => void;
-  onReceiveTokenChange;
+  onReceiveTokenChange: (nextToken: TokenInfo) => void;
   changeSides: () => void;
   currentSolanaPriceUSD: number;
   isSwapBtnEnabled: boolean;
@@ -41,6 +42,8 @@ export const useSwapForm = (
   payValue: string;
   receiveValue: string;
   vaultInfo: VaultData;
+  slippage: string;
+  setSlippage: (nextValue: string) => void;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
@@ -60,6 +63,8 @@ export const useSwapForm = (
   });
 
   const { receiveToken, payValue, payToken, receiveValue } = watch();
+
+  const [slippage, setSlippage] = useState<string>('1');
 
   useEffect(() => {
     register(InputControlsNames.PAY_VALUE);
@@ -124,21 +129,29 @@ export const useSwapForm = (
 
   useEffect(() => {
     if (poolInfo && payToken !== receiveToken) {
-      setValue(
-        InputControlsNames.RECEIVE_VALUE,
-        getOutputAmount(
-          poolDataByMint.get(
-            payToken.address === SOL_TOKEN.address
-              ? receiveToken.address
-              : payToken.address,
-          ).poolConfig,
-          poolInfo,
-          payToken,
-          Number(payValue),
-          receiveToken,
-        ),
+      const { poolConfig } = poolDataByMint.get(
+        payToken.address === SOL_TOKEN.address
+          ? receiveToken.address
+          : payToken.address,
       );
+
+      const persentSlippage = new Percent(
+        Math.round(Number(slippage) * 100),
+        10_000,
+      );
+
+      const { amountOut, minAmountOut, priceImpact } = getOutputAmount(
+        poolConfig,
+        poolInfo,
+        payToken,
+        Number(payValue),
+        receiveToken,
+        persentSlippage,
+      );
+
+      setValue(InputControlsNames.RECEIVE_VALUE, amountOut);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payValue, payToken, receiveValue, receiveToken, poolInfo, setValue]);
 
   useEffect(() => {
@@ -162,5 +175,7 @@ export const useSwapForm = (
     changeSides,
     onReceiveTokenChange,
     vaultInfo,
+    slippage,
+    setSlippage,
   };
 };

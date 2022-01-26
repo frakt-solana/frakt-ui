@@ -5,7 +5,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useTokenListContext } from '../TokenList';
 import {
   fetchRaydiumPoolsInfo,
-  provideRaydiumLiquidity,
+  addRaydiumLiquidity,
   raydiumSwap,
 } from './liquidityPools';
 import { fetchPoolDataByMint } from './liquidityPools.helpers';
@@ -21,7 +21,7 @@ export const LiquidityPoolsContext =
     poolDataByMint: new Map(),
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
-    provideRaydiumLiquidity: () => Promise.resolve(null),
+    addRaydiumLiquidity: () => Promise.resolve(null),
   });
 
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
@@ -64,7 +64,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         poolDataByMint,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
-        provideRaydiumLiquidity: provideRaydiumLiquidity(
+        addRaydiumLiquidity: addRaydiumLiquidity(
           connection,
           walletPublicKey,
           signTransaction,

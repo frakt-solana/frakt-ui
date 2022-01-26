@@ -1,41 +1,52 @@
 import {
-  CurrencyAmount,
   Liquidity,
   LiquidityPoolKeysV4,
   Percent,
+  TokenAmount,
+  Token,
 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
+
 import { RaydiumPoolInfo } from '../../contexts/liquidityPools';
 
 export const getOutputAmount = (
   poolKeys: LiquidityPoolKeysV4,
   poolInfo: RaydiumPoolInfo,
-  baseToken: TokenInfo,
-  baseTokenAmount: number,
-  quoteToken: TokenInfo,
-  slippage = 1,
-): string => {
+  payToken: TokenInfo,
+  payAmount: number,
+  receiveToken: TokenInfo,
+  slippage: Percent = new Percent(1, 100),
+): {
+  amountOut: string;
+  minAmountOut: string;
+  priceImpact: string;
+} => {
   try {
-    const isBuy = baseToken.address !== poolKeys.baseMint.toBase58();
-
-    console.log(isBuy);
-
-    console.log(baseToken.decimals);
-
-    const { anotherCurrencyAmount } = Liquidity.computeAnotherCurrencyAmount({
-      poolKeys,
-      poolInfo,
-      currencyAmount: new CurrencyAmount(
-        baseToken,
-        new BN(baseTokenAmount * 10 ** baseToken.decimals),
+    const currencyAmountIn = new TokenAmount(
+      new Token(
+        payToken.address,
+        payToken.decimals,
+        payToken.symbol,
+        payToken.name,
       ),
-      anotherCurrency: quoteToken,
-      slippage: new Percent(1, 100),
-    });
+      payAmount,
+      false,
+    );
 
-    console.log(anotherCurrencyAmount.toSignificant());
-    return anotherCurrencyAmount.toSignificant();
+    const { amountOut, minAmountOut, priceImpact } =
+      Liquidity.computeCurrencyAmountOut({
+        poolKeys,
+        poolInfo,
+        currencyAmountIn,
+        currencyOut: receiveToken,
+        slippage,
+      });
+
+    return {
+      amountOut: amountOut.toSignificant(),
+      minAmountOut: minAmountOut.toSignificant(),
+      priceImpact: priceImpact.toSignificant(),
+    };
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(err);

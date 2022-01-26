@@ -1,6 +1,6 @@
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
 
@@ -16,13 +16,7 @@ export interface LiquidityPoolsContextValues {
     raydiumPoolConfig: LiquidityPoolKeysV4,
     isBuy: boolean,
   ) => Promise<void>;
-  provideRaydiumLiquidity: (
-    baseAmount: BN,
-    quoteAmount: BN,
-    baseTokenMint: string,
-    quoteTokenMint: string,
-    marketId: PublicKey,
-  ) => Promise<void>;
+  addRaydiumLiquidity: (params: AddRaydiumLiquidityParams) => Promise<void>;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -67,4 +61,12 @@ export interface RaydiumPoolInfo {
   baseReserve: BN;
   quoteReserve: BN;
   lpSupply: BN;
+}
+
+export interface AddRaydiumLiquidityParams {
+  baseToken: TokenInfo;
+  baseAmount: BN;
+  quoteToken: TokenInfo;
+  quoteAmount: BN;
+  poolConfig: LiquidityPoolKeysV4;
 }

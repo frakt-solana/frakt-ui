@@ -36,24 +36,19 @@ const DepositModal: FC<DepositModalProps> = ({
     quoteValue,
   } = useDeposit(tokenInfo, poolConfig);
 
-  const { provideRaydiumLiquidity } = useLiquidityPools();
+  const { addRaydiumLiquidity } = useLiquidityPools();
 
   const onSubmitHandler = () => {
-    const baseTokenMint = tokenInfo.address;
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
-
-    const tokenInfoMint = SOL_TOKEN.address;
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
-    const marketId = poolConfig.marketId;
-
-    provideRaydiumLiquidity(
+    addRaydiumLiquidity({
+      baseToken: tokenInfo,
       baseAmount,
+      quoteToken: SOL_TOKEN,
       quoteAmount,
-      baseTokenMint,
-      tokenInfoMint,
-      marketId,
-    );
+      poolConfig,
+    });
   };
 
   return (

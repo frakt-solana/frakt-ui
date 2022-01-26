@@ -71,27 +71,25 @@ export const useDeposit = (
     setValue(name, value);
 
     if (name === InputControlsNames.BASE_VALUE) {
-      setValue(
-        InputControlsNames.QUOTE_VALUE,
-        getOutputAmount(
-          poolConfig,
-          poolInfo,
-          SOL_TOKEN,
-          Number(value),
-          quoteToken,
-        ),
+      const { amountOut } = getOutputAmount(
+        poolConfig,
+        poolInfo,
+        quoteToken,
+        Number(value),
+        SOL_TOKEN,
       );
+
+      setValue(InputControlsNames.QUOTE_VALUE, amountOut);
     } else {
-      setValue(
-        InputControlsNames.BASE_VALUE,
-        getOutputAmount(
-          poolConfig,
-          poolInfo,
-          quoteToken,
-          Number(value),
-          SOL_TOKEN,
-        ),
+      const { amountOut } = getOutputAmount(
+        poolConfig,
+        poolInfo,
+        SOL_TOKEN,
+        Number(value),
+        quoteToken,
       );
+
+      setValue(InputControlsNames.BASE_VALUE, amountOut);
     }
   };
 

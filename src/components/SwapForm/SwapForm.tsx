@@ -36,9 +36,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     changeSides,
     formControl,
     vaultInfo,
+    slippage,
+    setSlippage,
   } = useSwapForm(defaultTokenMint);
 
-  const [slippage, setSlippage] = useState<string>('1');
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
 
