@@ -22,7 +22,7 @@ export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
 const fetchAllRaydiumPoolsConfigs = async (
   connection: Connection,
 ): Promise<LiquidityPoolKeysV4[]> => {
-  const configs = await Liquidity.getPools(connection);
+  const configs = await Liquidity.fetchAllPoolKeys(connection);
 
   return configs;
 };
@@ -69,7 +69,7 @@ export const fetchRaydiumPoolsInfoMap = async (
 ): Promise<RaydiumPoolInfoMap> => {
   const raydiumPoolInfoMap = new Map<string, RaydiumPoolInfo>();
   (
-    await Liquidity.getMultipleInfo({
+    await Liquidity.fetchMultipleInfo({
       connection,
       pools: raydiumPoolConfigs,
     })

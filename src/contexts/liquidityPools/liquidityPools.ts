@@ -21,7 +21,7 @@ export const fetchRaydiumPoolsInfo =
   async (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ): Promise<RaydiumPoolInfo[]> => {
-    const raydiumPoolsInfo = await Liquidity.getMultipleInfo({
+    const raydiumPoolsInfo = await Liquidity.fetchMultipleInfo({
       connection,
       pools: raydiumPoolConfigs,
     });
@@ -128,14 +128,14 @@ export const raydiumSwap =
           poolKeys: raydiumPoolConfig,
           userKeys: {
             // No need to change according to side
-            baseTokenAccount,
+            tokenAccountIn: baseTokenAccount,
             // No need to change according to side
-            quoteTokenAccount,
+            tokenAccountOut: quoteTokenAccount,
             owner: walletPublicKey,
           },
           amountIn: amount,
-          minAmountOut,
-          side: isBuy ? 'buy' : 'sell',
+          amountOut: minAmountOut,
+          fixedSide: isBuy ? 'in' : 'out',
         }),
       );
 

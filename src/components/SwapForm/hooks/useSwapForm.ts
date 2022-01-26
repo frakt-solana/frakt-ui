@@ -28,7 +28,7 @@ export type FormFieldValues = {
 };
 
 export const useSwapForm = (
-  defaultTokenMint?: string,
+  defaultTokenMint: string,
 ): {
   formControl: Control<FormFieldValues>;
   onPayTokenChange: (nextToken: TokenInfo) => void;
@@ -127,9 +127,15 @@ export const useSwapForm = (
       setValue(
         InputControlsNames.RECEIVE_VALUE,
         getOutputAmount(
-          payValue,
+          poolDataByMint.get(
+            payToken.address === SOL_TOKEN.address
+              ? receiveToken.address
+              : payToken.address,
+          ).poolConfig,
           poolInfo,
-          payToken.address === SOL_TOKEN.address,
+          payToken,
+          Number(payValue),
+          receiveToken,
         ),
       );
     }

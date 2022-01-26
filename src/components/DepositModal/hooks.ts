@@ -10,6 +10,7 @@ import {
 import { SOL_TOKEN } from '../../utils';
 import { getOutputAmount } from '../SwapForm/helpers';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
 export enum InputControlsNames {
   QUOTE_VALUE = 'quoteValue',
@@ -26,7 +27,8 @@ export type FormFieldValues = {
 };
 
 export const useDeposit = (
-  quoteToken?: TokenInfo,
+  quoteToken: TokenInfo,
+  poolConfig: LiquidityPoolKeysV4,
 ): {
   formControl: Control<FormFieldValues>;
   totalValue: string;
@@ -71,12 +73,24 @@ export const useDeposit = (
     if (name === InputControlsNames.BASE_VALUE) {
       setValue(
         InputControlsNames.QUOTE_VALUE,
-        getOutputAmount(value, poolInfo, false),
+        getOutputAmount(
+          poolConfig,
+          poolInfo,
+          SOL_TOKEN,
+          Number(value),
+          quoteToken,
+        ),
       );
     } else {
       setValue(
         InputControlsNames.BASE_VALUE,
-        getOutputAmount(value, poolInfo, true),
+        getOutputAmount(
+          poolConfig,
+          poolInfo,
+          quoteToken,
+          Number(value),
+          SOL_TOKEN,
+        ),
       );
     }
   };

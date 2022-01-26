@@ -32,9 +32,9 @@ const DepositModal: FC<DepositModalProps> = ({
     isDepositBtnEnabled,
     totalValue,
     handleChange,
-    baseValue, //TODO: rename
-    quoteValue, //TODO: rename
-  } = useDeposit(tokenInfo);
+    baseValue,
+    quoteValue,
+  } = useDeposit(tokenInfo, poolConfig);
 
   const { provideRaydiumLiquidity } = useLiquidityPools();
 
