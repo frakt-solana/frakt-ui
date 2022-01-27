@@ -49,8 +49,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
 
-  const tokenMinAmountBN = new BN(Number(tokenMinAmount));
-
   const handleSwap = async () => {
     const isBuy = payToken.address === SOL_TOKEN.address;
 
@@ -59,9 +57,21 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
     const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
 
-    const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
+    const payAmount = new BN(Number(payValue) * 10 ** payToken.decimals);
 
-    await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
+    const quoteAmount = new BN(
+      Number(tokenMinAmount) * 10 ** receiveToken.decimals,
+    );
+
+    // await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
+
+    await raydiumSwap({
+      baseToken: payToken,
+      baseAmount: payAmount,
+      quoteToken: receiveToken,
+      quoteAmount: quoteAmount,
+      poolConfig,
+    });
 
     fetchPoolInfo(payToken.address, receiveToken.address);
   };
