@@ -70,6 +70,12 @@ export const compareVaultsArraysBySize = (
 ): number =>
   desc ? vaultsB.length - vaultsA.length : vaultsA.length - vaultsB.length;
 
+export const compareVaultsArraysByName = (
+  nameA: string,
+  nameB: string,
+  desc = true,
+): number => (desc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA));
+
 export const compareVaultsArraysByNFTsAmount = (
   vaultsA: VaultData[] = [],
   vaultsB: VaultData[] = [],

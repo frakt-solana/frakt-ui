@@ -6,6 +6,7 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
 import { URLS } from '../../constants/urls';
 import {
+  compareVaultsArraysByName,
   compareVaultsArraysByNFTsAmount,
   compareVaultsArraysBySize,
 } from '../../utils/collections';
@@ -50,6 +51,22 @@ const SORT_VALUES = [
       </span>
     ),
     value: 'nfts_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'name_desc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'name_asc',
   },
 ];
 
@@ -96,6 +113,13 @@ const CollectionsPage: FC = () => {
             return compareVaultsArraysByNFTsAmount(
               vaultsNotArchivedByCollectionName[collectionNameA],
               vaultsNotArchivedByCollectionName[collectionNameB],
+              sortOrder === 'desc',
+            );
+          }
+          if (sortField === 'name') {
+            return compareVaultsArraysByName(
+              collectionNameA,
+              collectionNameB,
               sortOrder === 'desc',
             );
           }
