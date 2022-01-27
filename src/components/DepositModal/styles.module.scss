@@ -28,7 +28,7 @@
 
 .input {
   font: var(--font-input) !important;
-
+  
   &::placeholder {
     color: var(--white-color) !important;
   }
@@ -111,6 +111,10 @@
 .totalInputWrapper {
   width: 100%;
   margin-bottom: 25px;
+
+  .totalValue {
+    color: var(--white-color);
+  }
 }
 
 .verify {

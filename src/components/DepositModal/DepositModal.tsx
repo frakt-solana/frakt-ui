@@ -91,7 +91,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <div className={styles.input}>{totalValue}</div>
+          <div className={styles.totalValue}>{totalValue}</div>
         </div>
         <p className={styles.subtitle}>Estimated earnings from fees (7d)</p>
         <div className={styles.depositContent}>

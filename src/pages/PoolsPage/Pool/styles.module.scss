@@ -114,6 +114,13 @@
   }
 }
 
+@media screen and (min-width: 1400px) {
+  .depositBtn {
+    width: 100%;
+    max-width: 371px;
+  }
+}
+
 @media screen and (max-width: 769px) {
   .subtitle {
     font: var(--font-subtitle-2);
