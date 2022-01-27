@@ -152,23 +152,25 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         </span>
         <span className={styles.info__value}>{`${slippage}%`}</span>
       </div>
-      <div className={styles.info}>
-        <span className={styles.info__title}>
-          <span className={styles.info__titleName}>Minimum Received</span>
-          <span>
-            <Tooltip
-              placement="top"
-              trigger="hover"
-              overlay="The least amount of tokens you will recieve on this trade"
-            >
-              <QuestionCircleOutlined />
-            </Tooltip>
+      {tokenMinAmount && (
+        <div className={styles.info}>
+          <span className={styles.info__title}>
+            <span className={styles.info__titleName}>Minimum Received</span>
+            <span>
+              <Tooltip
+                placement="top"
+                trigger="hover"
+                overlay="The least amount of tokens you will recieve on this trade"
+              >
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </span>
           </span>
-        </span>
-        <span className={styles.info__value}>
-          {tokenMinAmount} {receiveToken?.symbol || ''}
-        </span>
-      </div>
+          <span className={styles.info__value}>
+            {tokenMinAmount} {receiveToken?.symbol || ''}
+          </span>
+        </div>
+      )}
       {tokenPriceImpact && (
         <div className={styles.info}>
           <span className={styles.info__title}>

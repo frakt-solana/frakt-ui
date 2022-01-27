@@ -5,7 +5,6 @@ import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { InputControlsNames, useDeposit } from './hooks';
-import RefreshIcon from '../../icons/refreshIcon';
 import Checkbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
@@ -92,11 +91,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <NumericInput className={styles.input} value={totalValue} readOnly />
-        </div>
-        <div className={styles.refresh}>
-          <RefreshIcon className={styles.refreshIcon} />
-          <p className={styles.subtitle}>Refreshing pool data every 10s...</p>
+          <div className={styles.input}>{totalValue}</div>
         </div>
         <p className={styles.subtitle}>Estimated earnings from fees (7d)</p>
         <div className={styles.depositContent}>

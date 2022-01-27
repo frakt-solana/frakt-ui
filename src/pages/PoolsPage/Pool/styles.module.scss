@@ -74,6 +74,7 @@
 .poolDetails {
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
   border-top: 1px solid var(--gray-color-7);
   padding: 20px;
   gap: 20px;
@@ -88,6 +89,7 @@
   padding: 12px 56.5px;
   margin-bottom: 10px;
   width: 100%;
+  max-width: 190px;
 }
 
 .connectBtn {
@@ -106,6 +108,9 @@
 @media screen and (max-width: 1140px) {
   .poolDetails {
     flex-wrap: wrap;
+  }
+  .depositBtn {
+    max-width: 100%;
   }
 }
 

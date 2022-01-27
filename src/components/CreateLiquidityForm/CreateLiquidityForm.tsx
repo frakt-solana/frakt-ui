@@ -7,7 +7,6 @@ import { InputControlsNames } from '../DepositModal/hooks';
 import { TokenFieldWithBalance } from '../TokenField';
 import { useCreateLiquidityForm } from './hooks';
 import Checkbox from '../CustomCheckbox';
-import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
@@ -55,7 +54,7 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
       </div>
 
       <p className={styles.label}>Total</p>
-      <NumericInput className={styles.input} value={totalValue} readOnly />
+      <div className={styles.input}>{totalValue}</div>
 
       <div className={styles.verify}>
         <Controller
