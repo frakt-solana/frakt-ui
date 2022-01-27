@@ -15,7 +15,7 @@ import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { shortenAddress } from '../../utils/solanaUtils';
 import styles from './styles.module.scss';
 import { useTokenListContext } from '../../contexts/TokenList';
-import { decimalBNToString } from '../../utils';
+import { decimalBNToString, FRKT_TOKEN } from '../../utils';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
 import Button from '../../components/Button';
@@ -184,9 +184,11 @@ const WalletPage = (): JSX.Element => {
                 {!userTokens.length && (
                   <p className={styles.emptyMessage}>No tokens found</p>
                 )}
-                {userTokens.map((token) => (
-                  <TokenCard key={token.address} token={token} />
-                ))}
+                {userTokens
+                  .filter((token) => token.address !== FRKT_TOKEN.address)
+                  .map((token) => (
+                    <TokenCard key={token.address} token={token} />
+                  ))}
               </div>
             )}
           </>

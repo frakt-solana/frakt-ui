@@ -21,12 +21,6 @@
   }
 }
 
-.swap {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .subtitle {
   color: var(--white-color);
   font: var(--font-btn-small);
@@ -34,19 +28,9 @@
 
 .input {
   font: var(--font-input) !important;
-
+  
   &::placeholder {
     color: var(--white-color) !important;
-  }
-}
-
-.questionIcon {
-  margin-left: 5px;
-
-  svg {
-    fill: var(--accent-color-1);
-    height: 24px;
-    width: 24px;
   }
 }
 
@@ -126,6 +110,11 @@
 
 .totalInputWrapper {
   width: 100%;
+  margin-bottom: 25px;
+
+  .totalValue {
+    color: var(--white-color);
+  }
 }
 
 .verify {

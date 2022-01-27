@@ -4,8 +4,8 @@ import { useState } from 'react';
 import {
   RaydiumPoolInfo,
   useLiquidityPools,
-} from '../../contexts/liquidityPools';
-import { notify } from '../../utils';
+} from '../../../contexts/liquidityPools';
+import { notify } from '../../../utils';
 
 export const useLazyPoolInfo = (): {
   poolInfo: RaydiumPoolInfo | null;

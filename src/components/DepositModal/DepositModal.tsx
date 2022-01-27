@@ -1,35 +1,54 @@
-import { FC, useState } from 'react';
-import { useForm } from 'react-hook-form';
-
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { FC } from 'react';
+import BN from 'bn.js';
+import { Controller } from 'react-hook-form';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { ControlledToggle } from '../Toggle/Toggle';
-import RefreshIcon from '../../icons/refreshIcon';
-import CustomCheckbox from '../CustomCheckbox';
+
+import { InputControlsNames, useDeposit } from './hooks';
+import Checkbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
+import { SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
-import Tooltip from '../Tooltip';
 import Button from '../Button';
+import { useLiquidityPools } from '../../contexts/liquidityPools';
 
 interface DepositModalProps {
   visible: boolean;
   onCancel: () => void;
-  baseToken: TokenInfo;
-  quoteToken: TokenInfo;
+  tokenInfo: TokenInfo;
+  poolConfig: LiquidityPoolKeysV4;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
   visible,
   onCancel,
-  quoteToken,
-  baseToken,
+  tokenInfo,
+  poolConfig,
 }) => {
-  const { control } = useForm({ defaultValues: { autoSwap: false } });
+  const {
+    formControl,
+    isDepositBtnEnabled,
+    totalValue,
+    handleChange,
+    baseValue,
+    quoteValue,
+  } = useDeposit(tokenInfo, poolConfig);
 
-  const [totalValue, setTotalValue] = useState<string>('');
-  const [baseValue, setBaseValue] = useState<string>('');
-  const [quoteValue, setQuoteValue] = useState<string>('');
+  const { addRaydiumLiquidity } = useLiquidityPools();
+
+  const onSubmitHandler = () => {
+    const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
+    const quoteAmount = new BN(Number(quoteValue) * 1e9);
+
+    addRaydiumLiquidity({
+      baseToken: tokenInfo,
+      baseAmount,
+      quoteToken: SOL_TOKEN,
+      quoteAmount,
+      poolConfig,
+    });
+  };
 
   return (
     <Modal
@@ -41,46 +60,30 @@ const DepositModal: FC<DepositModalProps> = ({
       className={styles.modal}
     >
       <div className={styles.container}>
-        <div className={styles.swap}>
-          <ControlledToggle
-            control={control}
-            name="autoSwap"
-            className={styles.filter}
-          />
-          <p>Auto-swap uneven amounts</p>
-          <Tooltip
-            overlayInnerStyle={{
-              width: 262,
-              fontSize: 10,
-              fontWeight: 700,
-            }}
-            placement="bottom"
-            trigger="hover"
-            overlay="Liquidity must be deposited according to the ratio of tokens in the pool. Check this box to auto-swap your liquidity to that ratio before depositing (this will fail if the price moves more than your slippage tolerance). When you withdraw the liquidity, you will withdraw equal values of both tokens."
-          >
-            <QuestionCircleOutlined className={styles.questionIcon} />
-          </Tooltip>
-        </div>
         <div className={styles.inputWrapper}>
           <div className={styles.token}>
-            <img src={baseToken.logoURI} className={styles.tokenIcon} />
-            <p className={styles.tokenName}>{baseToken.symbol}</p>
-          </div>
-          <NumericInput
-            className={styles.input}
-            value={baseValue}
-            onChange={setBaseValue}
-          />
-        </div>
-        <div className={styles.inputWrapper}>
-          <div className={styles.token}>
-            <img src={quoteToken.logoURI} className={styles.tokenIcon} />
-            <p className={styles.tokenName}>{quoteToken.symbol}</p>
+            <img src={SOL_TOKEN.logoURI} className={styles.tokenIcon} />
+            <p className={styles.tokenName}>{SOL_TOKEN.symbol}</p>
           </div>
           <NumericInput
             className={styles.input}
             value={quoteValue}
-            onChange={setQuoteValue}
+            onChange={(value) =>
+              handleChange(value, InputControlsNames.QUOTE_VALUE)
+            }
+          />
+        </div>
+        <div className={styles.inputWrapper}>
+          <div className={styles.token}>
+            <img src={tokenInfo.logoURI} className={styles.tokenIcon} />
+            <p className={styles.tokenName}>{tokenInfo.symbol}</p>
+          </div>
+          <NumericInput
+            className={styles.input}
+            value={baseValue}
+            onChange={(value) =>
+              handleChange(value, InputControlsNames.BASE_VALUE)
+            }
           />
         </div>
         <div className={styles.totalLine}>
@@ -88,15 +91,7 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <NumericInput
-            className={styles.input}
-            value={totalValue}
-            onChange={setTotalValue}
-          />
-        </div>
-        <div className={styles.refresh}>
-          <RefreshIcon className={styles.refreshIcon} />
-          <p className={styles.subtitle}>Refreshing pool data every 10s...</p>
+          <div className={styles.totalValue}>{totalValue}</div>
         </div>
         <p className={styles.subtitle}>Estimated earnings from fees (7d)</p>
         <div className={styles.depositContent}>
@@ -111,7 +106,11 @@ const DepositModal: FC<DepositModalProps> = ({
           <p className={styles.link}>After staking</p>
         </div>
         <div className={styles.verify}>
-          <CustomCheckbox />
+          <Controller
+            control={formControl}
+            name={InputControlsNames.IS_VERIFIED}
+            render={({ field }) => <Checkbox {...field} />}
+          />
           <p className={styles.text}>
             I verify that I have read the{' '}
             <a href="#" target="_blank" rel="noopener noreferrer">
@@ -121,7 +120,12 @@ const DepositModal: FC<DepositModalProps> = ({
             impermanent loss.
           </p>
         </div>
-        <Button className={styles.depositBtn} type="alternative">
+        <Button
+          className={styles.depositBtn}
+          type="alternative"
+          disabled={!isDepositBtnEnabled}
+          onClick={onSubmitHandler}
+        >
           Deposit
         </Button>
       </div>

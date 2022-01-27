@@ -1,6 +1,20 @@
-import { Liquidity, LiquidityPoolKeysV4, WSOL } from '@raydium-io/raydium-sdk';
+import {
+  CurrencyAmount,
+  Liquidity,
+  LiquidityPoolKeysV4,
+  Spl,
+  SPL_ACCOUNT_LAYOUT,
+  Token,
+  TokenAccount,
+  TokenAmount,
+  WSOL,
+} from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
+import BN from 'bn.js';
+
+import { SOL_TOKEN } from '../../utils';
+
 import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
 import {
   FetchPoolDataByMint,
@@ -22,7 +36,7 @@ export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
 const fetchAllRaydiumPoolsConfigs = async (
   connection: Connection,
 ): Promise<LiquidityPoolKeysV4[]> => {
-  const configs = await Liquidity.getPools(connection);
+  const configs = await Liquidity.fetchAllPoolKeys(connection);
 
   return configs;
 };
@@ -68,12 +82,14 @@ export const fetchRaydiumPoolsInfoMap = async (
   raydiumPoolConfigs: LiquidityPoolKeysV4[],
 ): Promise<RaydiumPoolInfoMap> => {
   const raydiumPoolInfoMap = new Map<string, RaydiumPoolInfo>();
-  (
-    await Liquidity.getMultipleInfo({
-      connection,
-      pools: raydiumPoolConfigs,
-    })
-  ).forEach((poolInfo, idx) => {
+
+  const allPoolsInfo = await Promise.all(
+    raydiumPoolConfigs.map((poolKey) =>
+      Liquidity.fetchInfo({ connection, poolKeys: poolKey }),
+    ),
+  );
+
+  allPoolsInfo.forEach((poolInfo, idx) => {
     raydiumPoolInfoMap.set(
       raydiumPoolConfigs?.[idx]?.baseMint.toBase58(),
       poolInfo,
@@ -95,4 +111,49 @@ export const fetchSolanaPriceUSD = async (): Promise<number> => {
     console.error('coingecko api error: ', error);
     return 0;
   }
+};
+
+export const getTokenAccount = async ({
+  tokenMint,
+  owner,
+  connection,
+}: {
+  tokenMint: PublicKey;
+  owner: PublicKey;
+  connection: Connection;
+}): Promise<TokenAccount | null> => {
+  const tokenAccountPubkey = await Spl.getAssociatedTokenAccount({
+    mint: tokenMint,
+    owner,
+  });
+
+  const tokenAccountEncoded = await connection.getAccountInfo(
+    tokenAccountPubkey,
+  );
+
+  const tokenAccount = tokenAccountEncoded
+    ? {
+        pubkey: tokenAccountPubkey,
+        accountInfo: SPL_ACCOUNT_LAYOUT.decode(tokenAccountEncoded.data),
+      }
+    : null;
+
+  return tokenAccount;
+};
+
+export const getCurrencyAmount = (
+  tokenInfo: TokenInfo,
+  amount: BN,
+): CurrencyAmount | TokenAmount => {
+  return tokenInfo.address === SOL_TOKEN.address
+    ? new CurrencyAmount(SOL_TOKEN, amount)
+    : new TokenAmount(
+        new Token(
+          tokenInfo.address,
+          tokenInfo.decimals,
+          tokenInfo.symbol,
+          tokenInfo.name,
+        ),
+        amount,
+      );
 };
