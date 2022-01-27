@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
+import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Control, useForm } from 'react-hook-form';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
 import {
   calculateTotalDeposit,
@@ -10,7 +11,6 @@ import {
 import { SOL_TOKEN } from '../../utils';
 import { getOutputAmount } from '../SwapForm/helpers';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
 export enum InputControlsNames {
   QUOTE_VALUE = 'quoteValue',
@@ -71,23 +71,23 @@ export const useDeposit = (
     setValue(name, value);
 
     if (name === InputControlsNames.BASE_VALUE) {
-      const { amountOut } = getOutputAmount(
-        poolConfig,
+      const { amountOut } = getOutputAmount({
+        poolKeys: poolConfig,
         poolInfo,
-        quoteToken,
-        Number(value),
-        SOL_TOKEN,
-      );
+        payToken: quoteToken,
+        payAmount: Number(value),
+        receiveToken: SOL_TOKEN,
+      });
 
       setValue(InputControlsNames.QUOTE_VALUE, amountOut);
     } else {
-      const { amountOut } = getOutputAmount(
-        poolConfig,
+      const { amountOut } = getOutputAmount({
+        poolKeys: poolConfig,
         poolInfo,
-        SOL_TOKEN,
-        Number(value),
-        quoteToken,
-      );
+        payToken: SOL_TOKEN,
+        payAmount: Number(value),
+        receiveToken: quoteToken,
+      });
 
       setValue(InputControlsNames.BASE_VALUE, amountOut);
     }

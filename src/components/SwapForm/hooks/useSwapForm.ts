@@ -43,6 +43,8 @@ export const useSwapForm = (
   receiveValue: string;
   vaultInfo: VaultData;
   slippage: string;
+  tokenMinAmount: string;
+  tokenPriceImpact: string;
   setSlippage: (nextValue: string) => void;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
@@ -65,6 +67,8 @@ export const useSwapForm = (
   const { receiveToken, payValue, payToken, receiveValue } = watch();
 
   const [slippage, setSlippage] = useState<string>('1');
+  const [tokenMinAmount, setTokenMinAmountOut] = useState<string>('');
+  const [tokenPriceImpact, setTokenPriceImpact] = useState<string>('');
 
   useEffect(() => {
     register(InputControlsNames.PAY_VALUE);
@@ -140,15 +144,17 @@ export const useSwapForm = (
         10_000,
       );
 
-      const { amountOut, minAmountOut, priceImpact } = getOutputAmount(
-        poolConfig,
+      const { amountOut, minAmountOut, priceImpact } = getOutputAmount({
+        poolKeys: poolConfig,
         poolInfo,
         payToken,
-        Number(payValue),
+        payAmount: Number(payValue),
         receiveToken,
-        persentSlippage,
-      );
+        slippage: persentSlippage,
+      });
 
+      setTokenMinAmountOut(minAmountOut);
+      setTokenPriceImpact(priceImpact);
       setValue(InputControlsNames.RECEIVE_VALUE, amountOut);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,5 +183,7 @@ export const useSwapForm = (
     vaultInfo,
     slippage,
     setSlippage,
+    tokenMinAmount,
+    tokenPriceImpact,
   };
 };

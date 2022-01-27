@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import SettingsIcon from '../../icons/SettingsIcon';
@@ -21,10 +21,9 @@ interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
-const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
-  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
-  const { fetchPoolInfo } = useLazyPoolInfo();
+const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
 
+const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const {
     isSwapBtnEnabled,
     receiveToken,
@@ -32,13 +31,21 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     onPayTokenChange,
     onReceiveTokenChange,
     payToken,
-    receiveValue,
     changeSides,
     formControl,
-    vaultInfo,
     slippage,
     setSlippage,
+    tokenMinAmount,
+    tokenPriceImpact,
   } = useSwapForm(defaultTokenMint);
+
+  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
+  const { fetchPoolInfo } = useLazyPoolInfo();
+  const tokenMinAmountBN = new BN(Number(tokenMinAmount));
+
+  const tokenInfoList = Array.from(poolDataByMint.values()).map(
+    ({ tokenInfo }) => tokenInfo,
+  );
 
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
@@ -53,22 +60,13 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
     const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
 
-    const tokenMinAmountBN = new BN(
-      Number(receiveValue) *
-        10 ** receiveToken.decimals *
-        (1 - Number(slippage) / 100),
-    );
-
     await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
 
     fetchPoolInfo(payToken.address, receiveToken.address);
   };
 
   const swapTokens = async () => {
-    if (
-      parseFloat(valuationDifference) > 15 ||
-      parseFloat(valuationDifference) < -15
-    ) {
+    if (Number(tokenPriceImpact) > MAX_PERCENT_VALUATION_DIFFERENCE) {
       return ConfirmModal({
         title: 'Continue with current price?',
         content: (
@@ -87,7 +85,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
           </div>
         ),
         okText: 'Swap anyway',
-        // * @sablevsky, sorry bro :)
         onOk: handleSwap,
       });
     }
@@ -100,48 +97,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
     const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
 
-    const tokenMinAmountBN = new BN(
-      Number(receiveValue) *
-        10 ** receiveToken.decimals *
-        (1 - Number(slippage) / 100),
-    );
-
     await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
 
     fetchPoolInfo(payToken.address, receiveToken.address);
   };
-
-  const valuationDifference: string = useMemo(() => {
-    if (!vaultInfo) {
-      return '';
-    }
-
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    if (isBuy) {
-      // ? amount of token per inputed SOL amount (by market price)
-      const amountMarket = Number(receiveValue);
-
-      // ? amount of token per inputed SOL amount (by locked price per fraction price)
-      const amountLocked =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
-
-      const difference = (amountMarket / amountLocked) * 100 - 100;
-
-      return isNaN(difference) ? '' : difference.toFixed(2);
-    } else {
-      const amountMarketSOL = Number(receiveValue);
-
-      const amountLockedSOL =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
-
-      const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
-
-      return isNaN(difference) ? '' : difference.toFixed(2);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo, payValue, receiveValue]);
 
   return (
     <div>
@@ -163,9 +122,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             tokensList={
               payToken?.address === SOL_TOKEN.address
                 ? [SOL_TOKEN]
-                : Array.from(poolDataByMint.values()).map(
-                    ({ tokenInfo }) => tokenInfo,
-                  )
+                : tokenInfoList
             }
             currentToken={payToken}
             onTokenChange={
@@ -191,9 +148,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             tokensList={
               receiveToken?.address === SOL_TOKEN.address
                 ? [SOL_TOKEN]
-                : Array.from(poolDataByMint.values()).map(
-                    ({ tokenInfo }) => tokenInfo,
-                  )
+                : tokenInfoList
             }
             onTokenChange={
               receiveToken?.address === SOL_TOKEN.address
@@ -234,13 +189,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             </Tooltip>
           </span>
         </span>
-        <span className={styles.info__value}>
-          {`${(Number(receiveValue) * (1 - Number(slippage) / 100)).toFixed(
-            receiveToken?.decimals || 0,
-          )} ${receiveToken?.symbol || ''}`}
-        </span>
+        <span className={styles.info__value}>{tokenMinAmount}</span>
       </div>
-      {valuationDifference && (
+      {tokenPriceImpact && (
         <div className={styles.info}>
           <span className={styles.info__title}>
             <span className={styles.info__titleName}>Valuation difference</span>
@@ -252,9 +203,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
               <QuestionCircleOutlined />
             </Tooltip>
           </span>
-          <span
-            className={styles.info__value}
-          >{`${valuationDifference}%`}</span>
+          <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
         </div>
       )}
       <Button

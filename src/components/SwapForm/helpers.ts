@@ -9,14 +9,23 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { RaydiumPoolInfo } from '../../contexts/liquidityPools';
 
-export const getOutputAmount = (
-  poolKeys: LiquidityPoolKeysV4,
-  poolInfo: RaydiumPoolInfo,
-  payToken: TokenInfo,
-  payAmount: number,
-  receiveToken: TokenInfo,
-  slippage: Percent = new Percent(1, 100),
-): {
+interface AmountOutParams {
+  poolKeys: LiquidityPoolKeysV4;
+  poolInfo: RaydiumPoolInfo;
+  payToken: TokenInfo;
+  payAmount: number;
+  receiveToken: TokenInfo;
+  slippage?: Percent;
+}
+
+export const getOutputAmount = ({
+  poolKeys,
+  poolInfo,
+  payToken,
+  payAmount,
+  receiveToken,
+  slippage = new Percent(1, 100),
+}: AmountOutParams): {
   amountOut: string;
   minAmountOut: string;
   priceImpact: string;
