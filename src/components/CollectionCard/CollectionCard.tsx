@@ -7,14 +7,17 @@ interface CollectionCardProps {
   collectionName: string;
   thumbnailPath: string;
   className?: string;
-  vaultCount: number;
+  vaultsByCollectionName: any;
 }
 
 const CollectionCard: FC<CollectionCardProps> = ({
   collectionName,
   thumbnailPath,
-  vaultCount,
+  vaultsByCollectionName,
 }) => {
+  const nftsAmount = vaultsByCollectionName.reduce((prev, curr) => {
+    return prev + curr?.safetyBoxes.length;
+  }, 0);
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
@@ -28,11 +31,11 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <div className={styles.stats}>
           <div className={styles.item}>
             <div className={styles.title}>Vaults amount</div>
-            <div className={styles.value}>{vaultCount}</div>
+            <div className={styles.value}>{vaultsByCollectionName.length}</div>
           </div>
           <div className={styles.item}>
             <div className={styles.title}>NFTs amount</div>
-            <div className={styles.value}>{vaultCount}</div>
+            <div className={styles.value}>{nftsAmount}</div>
           </div>
         </div>
       </div>
