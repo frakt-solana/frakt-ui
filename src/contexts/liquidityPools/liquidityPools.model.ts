@@ -70,3 +70,8 @@ export interface AddRaydiumLiquidityParams {
   quoteAmount: BN;
   poolConfig: LiquidityPoolKeysV4;
 }
+
+export interface PromiseFulfilledPools {
+  status: 'fulfilled';
+  value: RaydiumPoolInfo;
+}

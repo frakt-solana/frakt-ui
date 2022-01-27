@@ -20,6 +20,7 @@ import {
   FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
+  PromiseFulfilledPools,
   RaydiumPoolInfo,
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
@@ -82,17 +83,25 @@ export const fetchRaydiumPoolsInfoMap = async (
   raydiumPoolConfigs: LiquidityPoolKeysV4[],
 ): Promise<RaydiumPoolInfoMap> => {
   const raydiumPoolInfoMap = new Map<string, RaydiumPoolInfo>();
-  (
-    await Liquidity.fetchMultipleInfo({
-      connection,
-      pools: raydiumPoolConfigs,
-    })
-  ).forEach((poolInfo, idx) => {
-    raydiumPoolInfoMap.set(
-      raydiumPoolConfigs?.[idx]?.baseMint.toBase58(),
-      poolInfo,
-    );
-  });
+
+  const allPoolsInfo = await Promise.allSettled(
+    raydiumPoolConfigs.map((poolKeys) =>
+      Liquidity.fetchInfo({ connection, poolKeys }),
+    ),
+  );
+
+  allPoolsInfo
+    .filter(
+      ({ value, status }: PromiseFulfilledPools) =>
+        status === 'fulfilled' && value,
+    )
+    .map(({ value }: PromiseFulfilledPools) => value as RaydiumPoolInfo)
+    .forEach((poolInfo, idx) => {
+      raydiumPoolInfoMap.set(
+        raydiumPoolConfigs?.[idx]?.baseMint.toBase58(),
+        poolInfo,
+      );
+    });
 
   return raydiumPoolInfoMap;
 };
