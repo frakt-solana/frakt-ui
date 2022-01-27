@@ -84,8 +84,8 @@ export const fetchRaydiumPoolsInfoMap = async (
   const raydiumPoolInfoMap = new Map<string, RaydiumPoolInfo>();
 
   const allPoolsInfo = await Promise.all(
-    raydiumPoolConfigs.map((poolKeys) =>
-      Liquidity.fetchInfo({ connection, poolKeys }),
+    raydiumPoolConfigs.map((poolKey) =>
+      Liquidity.fetchInfo({ connection, poolKeys: poolKey }),
     ),
   );
 
