@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import {
   Modal as ModalAnt,
   ModalFuncProps,
@@ -16,6 +17,24 @@ export interface ModalProps extends ModalAntProps {
 export interface ModalConfirmProps extends ModalFuncProps {
   className?: string;
 }
+
+export const SwapDifferentPriceContent: FC = () => {
+  return (
+    <>
+      <p>
+        Swap price is very different from the initial price per fraktion set for
+        buyout.
+      </p>
+      <br />
+      <p>
+        It usually happens due to low liquidity in the pool, or the asset being
+        overpriced/underpriced.
+      </p>
+      <br />
+      <p>Do you wish to perform the swap anyway?</p>
+    </>
+  );
+};
 
 export const ConfirmModal = (
   props: ModalConfirmProps,

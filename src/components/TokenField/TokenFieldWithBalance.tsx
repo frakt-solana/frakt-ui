@@ -67,7 +67,7 @@ export const TokenFieldWithBalance = ({
 
   const balances = getMintBalanceMap(tokensList, account, rawUserTokensByMint);
 
-  const balance = balances[currentToken?.address];
+  const balance = balances[currentToken?.address] || 0;
 
   const onUseMaxButtonClick = () => {
     onValueChange(balance);

@@ -8,7 +8,6 @@ import { TokenFieldWithBalance } from '../TokenField';
 import styles from './styles.module.scss';
 import { ChangeSidesButton } from './ChangeSidesButton';
 import { SettingsModal } from './SettingsModal';
-import { ConfirmModal } from '../Modal/Modal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
@@ -16,6 +15,7 @@ import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useLazyPoolInfo } from './hooks/useLazyPoolInfo';
 import { useSwapForm } from './hooks/useSwapForm';
+import { ConfirmModal, SwapDifferentPriceContent } from '../Modal/Modal';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
@@ -41,14 +41,15 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { fetchPoolInfo } = useLazyPoolInfo();
-  const tokenMinAmountBN = new BN(Number(tokenMinAmount));
 
-  const tokenInfoList = Array.from(poolDataByMint.values()).map(
+  const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
     ({ tokenInfo }) => tokenInfo,
   );
 
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
+
+  const tokenMinAmountBN = new BN(Number(tokenMinAmount));
 
   const handleSwap = async () => {
     const isBuy = payToken.address === SOL_TOKEN.address;
@@ -65,41 +66,16 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     fetchPoolInfo(payToken.address, receiveToken.address);
   };
 
-  const swapTokens = async () => {
+  const swapTokens = () => {
     if (Number(tokenPriceImpact) > MAX_PERCENT_VALUATION_DIFFERENCE) {
       return ConfirmModal({
         title: 'Continue with current price?',
-        content: (
-          <div>
-            <p>
-              Swap price is very different from the initial price per fraktion
-              set for buyout.
-            </p>
-            <br />
-            <p>
-              It usually happens due to low liquidity in the pool, or the asset
-              being overpriced/underpriced.
-            </p>
-            <br />
-            <p>Do you wish to perform the swap anyway?</p>
-          </div>
-        ),
+        content: <SwapDifferentPriceContent />,
         okText: 'Swap anyway',
         onOk: handleSwap,
       });
     }
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    //? Need to get suitable pool
-    const splToken = isBuy ? receiveToken : payToken;
-
-    const poolConfig = poolDataByMint.get(splToken.address)?.poolConfig;
-
-    const tokenAmountBN = new BN(Number(payValue) * 10 ** payToken.decimals);
-
-    await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
-
-    fetchPoolInfo(payToken.address, receiveToken.address);
+    handleSwap();
   };
 
   return (
@@ -122,7 +98,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             tokensList={
               payToken?.address === SOL_TOKEN.address
                 ? [SOL_TOKEN]
-                : tokenInfoList
+                : rawPoolsInfo
             }
             currentToken={payToken}
             onTokenChange={
@@ -148,7 +124,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             tokensList={
               receiveToken?.address === SOL_TOKEN.address
                 ? [SOL_TOKEN]
-                : tokenInfoList
+                : rawPoolsInfo
             }
             onTokenChange={
               receiveToken?.address === SOL_TOKEN.address
