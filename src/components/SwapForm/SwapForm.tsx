@@ -165,7 +165,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             </Tooltip>
           </span>
         </span>
-        <span className={styles.info__value}>{tokenMinAmount}</span>
+        <span className={styles.info__value}>
+          {tokenMinAmount} {receiveToken?.symbol || ''}
+        </span>
       </div>
       {tokenPriceImpact && (
         <div className={styles.info}>
