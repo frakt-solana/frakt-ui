@@ -112,7 +112,11 @@ const Pool: FC<PoolInterface> = ({
         <div className={styles.poolDetails}>
           {connected ? (
             <>
-              <Withdraw quoteToken={tokenInfo} />
+              <Withdraw
+                baseToken={tokenInfo}
+                poolConfig={poolConfig}
+                raydiumPoolInfo={raydiumPoolInfo}
+              />
               {isAwarded && <Rewards quoteToken={tokenInfo} />}
               <Button
                 onClick={() => setDepositModalVisible(true)}

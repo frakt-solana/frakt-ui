@@ -43,6 +43,7 @@ const getMintBalanceMap = (
 interface TokenFieldWithBalanceProps extends TokenFieldProps {
   showMaxButton?: boolean;
   lpTokenSymbol?: string;
+  lpBalance?: string;
 }
 
 export const TokenFieldWithBalance = ({
@@ -59,6 +60,7 @@ export const TokenFieldWithBalance = ({
   placeholder = '0.0',
   showMaxButton = false,
   disabled = false,
+  lpBalance,
   lpTokenSymbol,
 }: TokenFieldWithBalanceProps): JSX.Element => {
   const { connected } = useWallet();
@@ -70,7 +72,7 @@ export const TokenFieldWithBalance = ({
   const balance = balances[currentToken?.address] || 0;
 
   const onUseMaxButtonClick = () => {
-    onValueChange(balance);
+    lpBalance ? onValueChange(lpBalance) : onValueChange(balance);
   };
 
   return (

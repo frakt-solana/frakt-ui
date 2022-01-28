@@ -6,6 +6,7 @@ import { getCurrencyAmount, getTokenAccount } from './liquidityPools.helpers';
 import {
   LiquidityTransactionParams,
   RaydiumPoolInfo,
+  RemoveLiquidityTransactionParams,
 } from './liquidityPools.model';
 
 export const fetchRaydiumPoolsInfo =
@@ -146,6 +147,70 @@ export const addRaydiumLiquidity =
 
       notify({
         message: 'Liquidity provided successfully',
+        type: 'success',
+      });
+
+      return void connection.confirmTransaction(txid);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+
+      notify({
+        message: 'Transaction failed',
+        type: 'error',
+      });
+    }
+  };
+
+export const removeRaydiumLiquidity =
+  (
+    connection: Connection,
+    walletPublicKey: PublicKey,
+    signTransaction: (transaction: Transaction) => Promise<Transaction>,
+  ) =>
+  async ({
+    baseToken,
+    poolConfig,
+    amount,
+  }: RemoveLiquidityTransactionParams): Promise<void> => {
+    try {
+      const tokenAccounts = (
+        await Promise.all(
+          [baseToken.address, SOL_TOKEN.address, poolConfig.lpMint].map(
+            (mint) =>
+              getTokenAccount({
+                tokenMint: new PublicKey(mint),
+                owner: walletPublicKey,
+                connection,
+              }),
+          ),
+        )
+      ).filter((tokenAccount) => tokenAccount);
+
+      const { transaction, signers } =
+        await Liquidity.makeRemoveLiquidityTransaction({
+          connection,
+          poolKeys: poolConfig,
+          userKeys: {
+            tokenAccounts: tokenAccounts,
+            owner: walletPublicKey,
+          },
+          tokenAmountIn: amount,
+        });
+
+      const { blockhash } = await connection.getRecentBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = walletPublicKey;
+      transaction.sign(...signers);
+
+      const signedTransaction = await signTransaction(transaction);
+      const txid = await connection.sendRawTransaction(
+        signedTransaction.serialize(),
+        // { skipPreflight: true },
+      );
+
+      notify({
+        message: 'Liquidity withdraw successfully',
         type: 'success',
       });
 
