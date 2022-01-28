@@ -31,6 +31,13 @@ const CollectionCard: FC<CollectionCardProps> = ({
     },
     [],
   ).length;
+
+  const vaultsAmount = vaultsByCollectionName.filter(
+    (value, index, self) =>
+      index ===
+      self.findIndex((vault) => vault.vaultPubkey === value.vaultPubkey),
+  ).length;
+
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
@@ -44,7 +51,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <div className={styles.stats}>
           <div className={styles.item}>
             <div className={styles.title}>Vaults amount</div>
-            <div className={styles.value}>{vaultsByCollectionName.length}</div>
+            <div className={styles.value}>{vaultsAmount}</div>
           </div>
           <div className={styles.item}>
             <div className={styles.title}>NFTs amount</div>
