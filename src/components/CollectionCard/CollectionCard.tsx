@@ -2,12 +2,13 @@ import { FC } from 'react';
 
 import { getCollectionThumbnailUrl } from '../../utils';
 import styles from './styles.module.scss';
+import { VaultData } from '../../contexts/fraktion';
 
 interface CollectionCardProps {
   collectionName: string;
   thumbnailPath: string;
   className?: string;
-  vaultsByCollectionName: any;
+  vaultsByCollectionName: VaultData[];
 }
 
 const CollectionCard: FC<CollectionCardProps> = ({
@@ -16,7 +17,11 @@ const CollectionCard: FC<CollectionCardProps> = ({
   vaultsByCollectionName,
 }) => {
   const nftsAmount = vaultsByCollectionName.reduce((prev, curr) => {
-    return prev + curr?.safetyBoxes.length;
+    let temp = 0;
+    curr?.safetyBoxes.forEach((nft) => {
+      if (nft.nftCollectionName === collectionName) temp += 1;
+    });
+    return prev + temp;
   }, 0);
   return (
     <div className={styles.cardContainer}>

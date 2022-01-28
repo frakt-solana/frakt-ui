@@ -77,18 +77,29 @@ export const compareVaultsArraysByName = (
 ): number => (desc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA));
 
 export const compareVaultsArraysByNFTsAmount = (
-  vaultsA: VaultData[] = [],
-  vaultsB: VaultData[] = [],
+  collectionNameA: string,
+  collectionNameB: string,
+  vaultsNotArchivedByCollectionName: { [key: string]: VaultData[] },
   desc = true,
 ): number => {
-  const amountA = vaultsA.reduce(
-    (acc, { safetyBoxes }) => acc + safetyBoxes.length,
-    0,
-  );
-  const amountB = vaultsB.reduce(
-    (acc, { safetyBoxes }) => acc + safetyBoxes.length,
-    0,
-  );
+  const amountA =
+    vaultsNotArchivedByCollectionName[collectionNameA] ||
+    [].reduce((acc, vault) => {
+      vault?.safetyBoxes.forEach((nft) => {
+        if (nft.nftCollectionName === collectionNameA) acc.push(nft);
+      });
+      return acc;
+    }, []);
+  const amountB =
+    vaultsNotArchivedByCollectionName[collectionNameB] ||
+    [].reduce((acc, vault) => {
+      vault?.safetyBoxes.forEach((nft) => {
+        if (nft.nftCollectionName === collectionNameB) acc.push(nft);
+      });
+      return acc;
+    }, []);
 
-  return desc ? amountB - amountA : amountA - amountB;
+  return desc
+    ? amountB.length - amountA.length
+    : amountA.length - amountB.length;
 };
