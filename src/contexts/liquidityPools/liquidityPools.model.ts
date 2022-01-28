@@ -10,13 +10,8 @@ export interface LiquidityPoolsContextValues {
   fetchRaydiumPoolsInfo: (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
-  raydiumSwap: (
-    amount: BN,
-    minAmountOut: BN,
-    raydiumPoolConfig: LiquidityPoolKeysV4,
-    isBuy: boolean,
-  ) => Promise<void>;
-  addRaydiumLiquidity: (params: AddRaydiumLiquidityParams) => Promise<void>;
+  raydiumSwap: (params: LiquidityTransactionParams) => Promise<void>;
+  addRaydiumLiquidity: (params: LiquidityTransactionParams) => Promise<void>;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -63,7 +58,7 @@ export interface RaydiumPoolInfo {
   lpSupply: BN;
 }
 
-export interface AddRaydiumLiquidityParams {
+export interface LiquidityTransactionParams {
   baseToken: TokenInfo;
   baseAmount: BN;
   quoteToken: TokenInfo;
