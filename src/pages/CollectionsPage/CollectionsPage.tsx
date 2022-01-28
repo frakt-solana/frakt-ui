@@ -24,6 +24,22 @@ const SORT_VALUES = [
   {
     label: (
       <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
+  },
+  {
+    label: (
+      <span>
         Vaults amount <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
@@ -58,7 +74,7 @@ const SORT_VALUES = [
 const CollectionsPage: FC = () => {
   const { control, watch } = useForm({
     defaultValues: {
-      sort: SORT_VALUES[0],
+      sort: SORT_VALUES[2],
     },
   });
   const sort = watch('sort');
@@ -88,6 +104,12 @@ const CollectionsPage: FC = () => {
           { collectionName: collectionNameA },
           { collectionName: collectionNameB },
         ) => {
+          if (sortField === 'collectionName') {
+            if (sortOrder === 'desc') {
+              return collectionNameA.localeCompare(collectionNameB);
+            }
+            return collectionNameB.localeCompare(collectionNameA);
+          }
           if (sortField === 'vault') {
             return compareVaultsArraysBySize(
               vaultsNotArchivedByCollectionName[collectionNameA],

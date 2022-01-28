@@ -8,13 +8,20 @@ import CopyClipboardIcon from '../../../icons/CopyClipboardIcon';
 import classNames from 'classnames';
 import Tooltip from '../../../components/Tooltip';
 import { useVaultTokenHoldersAmount } from '../../../utils/fraktionOwners';
+import { FC } from 'react';
 
-export const InfoTable = ({
+interface InfoTableProps {
+  vaultInfo: VaultData;
+  isActiveOrFinished?: boolean;
+  isArchived?: boolean;
+  marketId?: string;
+}
+
+export const InfoTable: FC<InfoTableProps> = ({
   vaultInfo,
   marketId = null,
-}: {
-  vaultInfo: VaultData;
-  marketId?: string;
+  isActiveOrFinished,
+  isArchived,
 }): JSX.Element => {
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
@@ -31,32 +38,28 @@ export const InfoTable = ({
           {vaultInfo.fractionsSupply.toString().slice(0, -3)}
         </p>
       </div>
+      {!isArchived && (
+        <div className={styles.infoTable__cell}>
+          <p className={styles.infoTable__cellName}>
+            Locked fraktion price ({currency})
+          </p>
+          <p className={styles.infoTable__cellValue}>
+            {decimalBNToString(
+              vaultInfo.lockedPricePerShare.mul(new BN(1e3)),
+              6,
+              9,
+            )}
+          </p>
+        </div>
+      )}
       <div className={styles.infoTable__cell}>
-        <p className={styles.infoTable__cellName}>
-          Locked fraktion price ({currency})
-        </p>
-        <p className={styles.infoTable__cellValue}>
-          {decimalBNToString(
-            vaultInfo.lockedPricePerShare.mul(new BN(1e3)),
-            6,
-            9,
-          )}
-        </p>
-      </div>
-      <div className={styles.infoTable__cell}>
-        <p className={styles.infoTable__cellName}>
-          Locked start bid ({currency})
-        </p>
-        <p className={styles.infoTable__cellValue}>
-          {decimalBNToString(
-            vaultInfo.lockedPricePerShare.mul(vaultInfo.fractionsSupply),
-            2,
-            9,
-          )}
-        </p>
-      </div>
-      <div className={styles.infoTable__cell}>
-        <p className={styles.infoTable__cellName}>Market cap</p>
+        {isActiveOrFinished || isArchived ? (
+          <p className={styles.infoTable__cellName}>Winning bid ({currency})</p>
+        ) : (
+          <p className={styles.infoTable__cellName}>
+            Locked start bid ({currency})
+          </p>
+        )}
         <p className={styles.infoTable__cellValue}>
           {decimalBNToString(
             vaultInfo.lockedPricePerShare.mul(vaultInfo.fractionsSupply),
@@ -65,25 +68,40 @@ export const InfoTable = ({
           )}
         </p>
       </div>
-      <div className={styles.infoTable__cell}>
-        <p className={styles.infoTable__cellName}>Fractions mint</p>
-        <p
-          className={classNames(
-            styles.infoTable__cellValue,
-            styles.infoTable__cellValueCopy,
-          )}
-          onClick={() => copyToClipboard(vaultInfo.fractionMint)}
-        >
-          {shortenAddress(vaultInfo.fractionMint)}
-          <Tooltip
-            placement="bottom"
-            trigger="hover"
-            overlay="Click to copy to clipboard"
+      {!isArchived && (
+        <div className={styles.infoTable__cell}>
+          <p className={styles.infoTable__cellName}>Market cap</p>
+          <p className={styles.infoTable__cellValue}>
+            {decimalBNToString(
+              vaultInfo.lockedPricePerShare.mul(vaultInfo.fractionsSupply),
+              2,
+              9,
+            )}
+          </p>
+        </div>
+      )}
+
+      {!isArchived && (
+        <div className={styles.infoTable__cell}>
+          <p className={styles.infoTable__cellName}>Fractions mint</p>
+          <p
+            className={classNames(
+              styles.infoTable__cellValue,
+              styles.infoTable__cellValueCopy,
+            )}
+            onClick={() => copyToClipboard(vaultInfo.fractionMint)}
           >
-            <CopyClipboardIcon className={styles.copyIcon} width={24} />
-          </Tooltip>
-        </p>
-      </div>
+            {shortenAddress(vaultInfo.fractionMint)}
+            <Tooltip
+              placement="bottom"
+              trigger="hover"
+              overlay="Click to copy to clipboard"
+            >
+              <CopyClipboardIcon className={styles.copyIcon} width={24} />
+            </Tooltip>
+          </p>
+        </div>
+      )}
       {marketId && (
         <div className={styles.infoTable__cell}>
           <p className={styles.infoTable__cellName}>Serum Market ID</p>
@@ -105,7 +123,7 @@ export const InfoTable = ({
           </p>
         </div>
       )}
-      {!!holdersAmount && (
+      {!!holdersAmount && !isArchived && (
         <div className={styles.infoTable__cell}>
           <p className={styles.infoTable__cellName}>Owners</p>
           <p className={styles.infoTable__cellValue}>{holdersAmount}</p>

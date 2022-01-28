@@ -307,6 +307,7 @@
 
 .tabContent {
   padding-top: 24px;
+  max-width: 380px;
 
   @media screen and (max-width: 1023px) {
     padding-top: 15px;

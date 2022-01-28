@@ -151,10 +151,18 @@ const VaultPage: FC = () => {
                   </NavigationLink>
                 </div>
               )}
-              {vaultData.state === VaultState.Active && (
+              {(vaultData.state === VaultState.Active ||
+                vaultData.state === VaultState.AuctionFinished ||
+                vaultData.state === VaultState.AuctionLive ||
+                vaultData.state === VaultState.Archived) && (
                 <InfoTable
                   vaultInfo={vaultData}
                   marketId={vaultMarket?.address}
+                  isActiveOrFinished={
+                    vaultData.state === VaultState.AuctionLive ||
+                    vaultData.state === VaultState.AuctionFinished
+                  }
+                  isArchived={vaultData.state === VaultState.Archived}
                 />
               )}
               {/* //? Show tabs if vault active or bought */}
