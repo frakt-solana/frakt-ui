@@ -16,13 +16,21 @@ const CollectionCard: FC<CollectionCardProps> = ({
   thumbnailPath,
   vaultsByCollectionName,
 }) => {
-  const nftsAmount = vaultsByCollectionName.reduce((prev, curr) => {
-    let temp = 0;
-    curr?.safetyBoxes.forEach((nft) => {
-      if (nft.nftCollectionName === collectionName) temp += 1;
-    });
-    return prev + temp;
-  }, 0);
+  const nftsAmount = vaultsByCollectionName.reduce(
+    (acc: VaultData[], curr, index, self) => {
+      if (
+        index ===
+        self.findIndex((vault) => {
+          if (vault.vaultPubkey === curr.vaultPubkey) return acc;
+        })
+      )
+        curr?.safetyBoxes.forEach((nft) => {
+          if (nft.nftCollectionName === collectionName) acc.push(curr);
+        });
+      return acc;
+    },
+    [],
+  ).length;
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
