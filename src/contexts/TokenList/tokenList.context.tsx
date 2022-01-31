@@ -8,12 +8,11 @@ import {
 } from './tokenList.contants';
 
 export const TokenListContext = React.createContext<TokenListContextInterface>({
-  tokenList: [],
-  tokenMap: new Map<string, TokenInfo>(),
-  swappableTokensMap: new Map<string, TokenInfo>(),
+  tokensList: [],
+  tokensMap: new Map<string, TokenInfo>(),
   fraktionTokensList: [],
   fraktionTokensMap: new Map<string, TokenInfo>(),
-  loading: false,
+  loading: true,
 });
 
 export const TokenListContextProvider = ({
@@ -21,15 +20,11 @@ export const TokenListContextProvider = ({
 }: {
   children: JSX.Element | null;
 }): JSX.Element => {
-  const [tokenList, setTokenList] = useState<TokenInfo[]>([]);
-  const [swappableTokensList, setSwappableTokensList] = useState<TokenInfo[]>(
-    [],
-  );
+  const [tokensList, setTokensList] = useState<TokenInfo[]>([]);
   const [fraktionTokensList, setFraktionTokensList] = useState<TokenInfo[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setLoading(true);
     Promise.all([
       fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL).then((res) => res.json()),
       new TokenListProvider()
@@ -37,9 +32,8 @@ export const TokenListContextProvider = ({
         .then((tokens) => tokens.filterByClusterSlug('mainnet-beta').getList()),
     ])
       .then(([fraktList, solanaList]) => {
-        setTokenList([...fraktList, ...solanaList]);
+        setTokensList([...fraktList, ...solanaList]);
         setFraktionTokensList(fraktList);
-        setSwappableTokensList(fraktList);
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -51,29 +45,13 @@ export const TokenListContextProvider = ({
   }, []);
 
   //? Token map for quick lookup.
-  const tokenMap = useMemo(() => {
+  const tokensMap = useMemo(() => {
     const tokenMap = new Map();
-    tokenList.forEach((token: TokenInfo) => {
+    tokensList.forEach((token: TokenInfo) => {
       tokenMap.set(token.address, token);
     });
     return tokenMap;
-  }, [tokenList]);
-
-  //? Swappable token map for quick lookup.
-  const swappableTokensMap = useMemo(() => {
-    const swappableTokensMap = new Map();
-    swappableTokensList.forEach((token: TokenInfo) => {
-      swappableTokensMap.set(token.address, token);
-    });
-    //? Add additional tokens (such is FRKT and RAY for swap and etc.)
-    ADDITIONAL_SWAPPABLE_TOKENS_MINTS.forEach((mint) => {
-      const token: TokenInfo = tokenMap.get(mint);
-      if (token) {
-        swappableTokensMap.set(mint, tokenMap.get(mint));
-      }
-    });
-    return swappableTokensMap;
-  }, [swappableTokensList, tokenMap]);
+  }, [tokensList]);
 
   //? Fraktion map for quick lookup.
   const fraktionTokensMap = useMemo(() => {
@@ -81,16 +59,25 @@ export const TokenListContextProvider = ({
     fraktionTokensList.forEach((token: TokenInfo) => {
       fraktionTokensMap.set(token.address, token);
     });
+
+    if (fraktionTokensMap.size) {
+      ADDITIONAL_SWAPPABLE_TOKENS_MINTS.forEach((mint) => {
+        const token: TokenInfo = tokensMap.get(mint);
+        if (token) {
+          fraktionTokensMap.set(mint, tokensMap.get(mint));
+        }
+      });
+    }
+
     return fraktionTokensMap;
-  }, [fraktionTokensList]);
+  }, [fraktionTokensList, tokensMap]);
 
   return (
     <TokenListContext.Provider
       value={{
-        tokenMap,
+        tokensMap,
         loading,
-        tokenList,
-        swappableTokensMap,
+        tokensList,
         fraktionTokensList,
         fraktionTokensMap,
       }}

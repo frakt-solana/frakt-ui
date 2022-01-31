@@ -3,13 +3,14 @@ import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
 import { ChevronDownIcon } from '../../icons';
 import { SelectTokenModal } from '../SelectTokenModal';
-import { Token } from '../../utils';
 import NumericInput from '../NumericInput';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { SOL_TOKEN } from '../../utils';
 
 export interface TokenFieldProps {
-  tokensList?: Token[];
-  onTokenChange?: (nextToken: Token) => void;
-  currentToken?: Token;
+  tokensList?: TokenInfo[];
+  onTokenChange?: (nextToken: TokenInfo) => void;
+  currentToken?: TokenInfo;
   value: string;
   onValueChange: (nextValue: string) => void;
   modalTitle?: string;
@@ -22,6 +23,7 @@ export interface TokenFieldProps {
   className?: string;
   onUseMaxButtonClick?: () => void;
   error?: boolean;
+  lpTokenSymbol?: string;
   placeholder?: string;
   amountMaxLength?: number;
   disabled?: boolean;
@@ -42,6 +44,7 @@ const TokenField = ({
   onUseMaxButtonClick,
   error,
   amountMaxLength,
+  lpTokenSymbol,
   placeholder = '0.0',
   disabled = false,
 }: TokenFieldProps): JSX.Element => {
@@ -101,22 +104,29 @@ const TokenField = ({
             })}
             onClick={() => tokensList && setIsModalOpen(true)}
           >
+            {lpTokenSymbol && (
+              <span className={classNames(styles.tokenName)}>
+                {lpTokenSymbol} / {SOL_TOKEN.symbol}
+              </span>
+            )}
             {currentToken ? (
               <img
                 className={styles.tokenLogo}
-                src={currentToken.img}
+                src={currentToken.logoURI}
                 alt={currentToken.symbol}
               />
             ) : (
-              <div className={styles.noTokenImg} />
+              !lpTokenSymbol && <div className={styles.noTokenImg} />
             )}
-            <span
-              className={classNames(styles.tokenName, {
-                [styles.tokenName_empty]: !currentToken,
-              })}
-            >
-              {currentToken?.symbol || '---'}
-            </span>
+            {!lpTokenSymbol && (
+              <span
+                className={classNames(styles.tokenName, {
+                  [styles.tokenName_empty]: !currentToken,
+                })}
+              >
+                {currentToken?.symbol || '---'}
+              </span>
+            )}
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>
@@ -139,7 +149,7 @@ interface TokenFieldFormProps
   extends Omit<TokenFieldProps, 'value' | 'onValueChange'> {
   value?: {
     amount: string;
-    token: Token | any;
+    token: TokenInfo | any;
   };
   onChange?: any;
   maxLength?: number;
@@ -152,7 +162,7 @@ export const TokenFieldForm: React.FC<TokenFieldFormProps> = ({
 }) => {
   const onAmountChange = (amount: string) => onChange?.({ ...value, amount });
 
-  const onTokenChange = (token: Token) => onChange?.({ ...value, token });
+  const onTokenChange = (token: TokenInfo) => onChange?.({ ...value, token });
 
   return (
     <TokenField

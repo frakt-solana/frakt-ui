@@ -26,10 +26,11 @@ import { FraktionProvider } from './contexts/fraktion';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
-import { SwapContextProvider } from './contexts/Swap';
 import CollectionsPage from './pages/CollectionsPage';
 import CollectionPage from './pages/CollectionPage';
 import { CollectionsProvider } from './contexts/collections';
+import { LiquidityPoolsProvider } from './contexts/liquidityPools';
+import PoolsPage from './pages/PoolsPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -47,7 +48,7 @@ export const Routes = (): JSX.Element => {
           <WalletModalProvider>
             <TokenListContextProvider>
               <UserTokensProvider>
-                <SwapContextProvider>
+                <LiquidityPoolsProvider>
                   <FraktionProvider>
                     <CollectionsProvider>
                       <Switch>
@@ -98,6 +99,11 @@ export const Routes = (): JSX.Element => {
                         />
                         <Route
                           exact
+                          path={URLS.LIQUIDITY}
+                          component={(): JSX.Element => <PoolsPage />}
+                        />
+                        <Route
+                          exact
                           path={URLS.PAGE_404}
                           component={(): JSX.Element => <Page404 />}
                         />
@@ -109,7 +115,7 @@ export const Routes = (): JSX.Element => {
                       </Switch>
                     </CollectionsProvider>
                   </FraktionProvider>
-                </SwapContextProvider>
+                </LiquidityPoolsProvider>
               </UserTokensProvider>
             </TokenListContextProvider>
           </WalletModalProvider>

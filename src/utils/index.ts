@@ -3,6 +3,8 @@ import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
 
 import { formatNumber, Notify } from './solanaUtils';
+import { WSOL } from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 export const notify: Notify = ({
   message = '',
@@ -18,6 +20,35 @@ export const notify: Notify = ({
 };
 
 export const DECIMALS_PER_FRKT = 1e8;
+
+export const SOL_TOKEN: TokenInfo = {
+  chainId: 101,
+  address: WSOL.mint,
+  name: 'SOL',
+  decimals: 9,
+  symbol: 'SOL',
+  logoURI:
+    'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
+  extensions: {
+    coingeckoId: 'solana',
+  },
+};
+
+export const FRKT_TOKEN: TokenInfo = {
+  chainId: 101,
+  address: 'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
+  name: 'FRAKT Token',
+  decimals: 8,
+  symbol: 'FRKT',
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
+  extensions: {
+    coingeckoId: 'frakt-token',
+    twitter: 'https://twitter.com/FraktArt',
+    website: 'https://frakt.art',
+  },
+  tags: ['utility-token'],
+};
 
 export const decimalBNToString = (
   bn: BN,
@@ -85,17 +116,6 @@ export const getTokenBalanceValue = (amountBN: BN, decimals: number): string =>
   `${formatNumber.format(
     (amountBN?.toNumber() || 0) / Math.pow(10, decimals),
   )}`;
-
-export interface Token {
-  mint: string;
-  symbol: string;
-  img: string;
-  data: any;
-}
-
-export const getTokenImageUrl = (mint: string): string => {
-  return `https://sdk.raydium.io/icons/${mint}.png`;
-};
 
 export interface ArweaveAttribute {
   trait_type: string;

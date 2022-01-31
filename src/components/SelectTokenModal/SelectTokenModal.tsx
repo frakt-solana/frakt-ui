@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
+
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
 import classNames from 'classnames';
-import { Token } from '../../utils';
 import { SearchInput } from '../SearchInput';
 
 interface SelectTokenModalProps extends ModalProps {
-  onChange?: (token: Token) => void;
-  tokensList: Token[];
+  onChange?: (token: TokenInfo) => void;
+  tokensList: TokenInfo[];
   balances?: {
     [key: string]: string;
   };
@@ -54,7 +55,7 @@ export const SelectTokenModal = ({
       <div className={styles.tokenList}>
         {filterTokens().map((token) => (
           <div
-            key={token.mint}
+            key={token.address}
             className={styles.row}
             onClick={() => {
               onChange(token);
@@ -65,12 +66,12 @@ export const SelectTokenModal = ({
               <div
                 className={styles.icon}
                 style={{
-                  backgroundImage: `url("${token.img}")`,
+                  backgroundImage: `url("${token.logoURI}")`,
                 }}
               />{' '}
               <span className={styles.title}>{token.symbol}</span>
             </div>
-            {balances[token?.mint] || ''}
+            {balances[token?.address] || ''}
           </div>
         ))}
       </div>

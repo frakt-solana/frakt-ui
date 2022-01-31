@@ -1,35 +1,61 @@
-import { Liquidity } from '@raydium-io/raydium-sdk';
-import BN from 'bn.js';
+import {
+  Liquidity,
+  LiquidityPoolKeysV4,
+  Percent,
+  TokenAmount,
+  Token,
+} from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
 
-import { PoolInfo } from '../../contexts/Swap';
+import { RaydiumPoolInfo } from '../../contexts/liquidityPools';
 
-export const getOutputAmount = (
-  amount: string,
-  poolInfo: PoolInfo,
-  isBuy = true,
-): string => {
+interface AmountOutParams {
+  poolKeys: LiquidityPoolKeysV4;
+  poolInfo: RaydiumPoolInfo;
+  payToken: TokenInfo;
+  payAmount: number;
+  receiveToken: TokenInfo;
+  slippage?: Percent;
+}
+
+export const getOutputAmount = ({
+  poolKeys,
+  poolInfo,
+  payToken,
+  payAmount,
+  receiveToken,
+  slippage = new Percent(1, 100),
+}: AmountOutParams): {
+  amountOut: string;
+  minAmountOut: string;
+  priceImpact: string;
+} => {
   try {
-    if (isBuy) {
-      const value =
-        Liquidity.getOutputAmount(
-          new BN(Number(amount) * 10 ** poolInfo.quoteDecimals),
-          poolInfo.quoteReserve,
-          poolInfo.baseReserve,
-        ).toNumber() /
-        10 ** poolInfo.lpDecimals;
+    const currencyAmountIn = new TokenAmount(
+      new Token(
+        payToken.address,
+        payToken.decimals,
+        payToken.symbol,
+        payToken.name,
+      ),
+      payAmount,
+      false,
+    );
 
-      return value.toString();
-    }
+    const { amountOut, minAmountOut, priceImpact } =
+      Liquidity.computeCurrencyAmountOut({
+        poolKeys,
+        poolInfo,
+        currencyAmountIn,
+        currencyOut: receiveToken,
+        slippage,
+      });
 
-    const value =
-      Liquidity.getOutputAmount(
-        new BN(Number(amount) * 10 ** poolInfo.lpDecimals),
-        poolInfo.baseReserve,
-        poolInfo.quoteReserve,
-      ).toNumber() /
-      10 ** poolInfo.quoteDecimals;
-
-    return value.toString();
+    return {
+      amountOut: amountOut.toSignificant(),
+      minAmountOut: minAmountOut.toSignificant(),
+      priceImpact: priceImpact.toSignificant(),
+    };
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(err);

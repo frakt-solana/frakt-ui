@@ -34,6 +34,16 @@
   text-transform: uppercase;
 }
 
+.tertiary {
+  background: var(--accent-shadow-color);
+  border-color: var(--accent-color-1);
+  font: var(--font-btn-small);
+
+  &:hover {
+    background: var(--accent-color-1);
+  }
+}
+
 .alternative {
   padding: 32px 20px;
   background-color: var(--accent-color-1);

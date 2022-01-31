@@ -212,14 +212,14 @@ export function getMarketDetails(
   if (!market) {
     return {};
   }
-  const { tokenList } = useTokenListContext();
+  const { tokensList } = useTokenListContext();
   const marketInfos = getMarketInfos(customMarkets);
   const marketInfo = marketInfos.find((otherMarket) =>
     otherMarket.address.equals(market.address),
   );
   const baseCurrency =
     (market?.baseMintAddress &&
-      tokenList.find(
+      tokensList.find(
         (token) => token.address === market.baseMintAddress.toBase58(),
       )?.symbol) ||
     (marketInfo?.baseLabel && `${marketInfo?.baseLabel}*`) ||

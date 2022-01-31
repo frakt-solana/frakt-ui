@@ -40,7 +40,7 @@ const calculatePricePerFraktion = (
 
 export const DetailsForm: React.FC<DetailsFormProps> = ({ onSubmit }) => {
   const [, setForceUpdate] = useState(1);
-  const { tokenList } = useTokenListContext();
+  const { tokensList } = useTokenListContext();
   const [form] = Form.useForm<Omit<FormValues, 'pricePerFraktion'>>();
 
   const forceUpdate = () => setForceUpdate((val) => val + 1);
@@ -69,7 +69,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ onSubmit }) => {
           <p className={styles.detailsTitle}>Vault details</p>
           <div className={styles.fieldWrapper}>
             <Form.Item
-              rules={[{ validator: validators.vaultName(tokenList) }]}
+              rules={[{ validator: validators.vaultName(tokensList) }]}
               label="Vault name"
               name="vaultName"
               help=""
@@ -96,7 +96,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({ onSubmit }) => {
               label="Ticker"
               name="ticker"
               help=""
-              rules={[{ validator: validators.ticker(tokenList) }]}
+              rules={[{ validator: validators.ticker(tokensList) }]}
             >
               <Input
                 placeholder="XXX"

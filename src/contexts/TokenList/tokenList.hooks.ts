@@ -7,17 +7,17 @@ import { TokenListContext } from './tokenList.context';
 export const useTokenListContext = (): TokenListContextInterface => {
   const context = useContext(TokenListContext);
   if (context === null) {
-    throw new Error('Context not available');
+    throw new Error('TokenListContext not available');
   }
   return context;
 };
 
-export const useTokenMap = (): Map<string, TokenInfo> => {
-  const { tokenMap } = useTokenListContext();
-  return tokenMap;
+export const useTokensMap = (): Map<string, TokenInfo> => {
+  const { tokensMap } = useTokenListContext();
+  return tokensMap;
 };
 
-export const useSwappableTokensMap = (): Map<string, TokenInfo> => {
-  const { swappableTokensMap } = useTokenListContext();
-  return swappableTokensMap;
+export const useFraktionTokensMap = (): Map<string, TokenInfo> => {
+  const { fraktionTokensMap } = useTokenListContext();
+  return fraktionTokensMap;
 };
