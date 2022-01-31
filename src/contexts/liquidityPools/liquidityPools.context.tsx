@@ -6,6 +6,7 @@ import { useTokenListContext } from '../TokenList';
 import {
   fetchRaydiumPoolsInfo,
   addRaydiumLiquidity,
+  removeRaydiumLiquidity,
   raydiumSwap,
 } from './liquidityPools';
 import { fetchPoolDataByMint } from './liquidityPools.helpers';
@@ -22,6 +23,7 @@ export const LiquidityPoolsContext =
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
     addRaydiumLiquidity: () => Promise.resolve(null),
+    removeRaydiumLiquidity: () => Promise.resolve(null),
   });
 
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
@@ -64,6 +66,11 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         poolDataByMint,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
+        removeRaydiumLiquidity: removeRaydiumLiquidity(
+          connection,
+          walletPublicKey,
+          signTransaction,
+        ),
         addRaydiumLiquidity: addRaydiumLiquidity(
           connection,
           walletPublicKey,
