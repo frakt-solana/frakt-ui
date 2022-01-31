@@ -131,7 +131,7 @@ export const addRaydiumLiquidity =
           },
           currencyAmountInA,
           currencyAmountInB,
-          fixedSide: 'b',
+          fixedSide: 'a',
         });
 
       const { blockhash } = await connection.getRecentBlockhash();
