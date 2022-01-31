@@ -1,28 +1,25 @@
+import { FC } from 'react';
+import classNames from 'classnames';
 import BN from 'bn.js';
+
 import { shortenAddress } from '../../../utils/solanaUtils';
 import fraktionConfig from '../../../contexts/fraktion/config';
 import styles from './styles.module.scss';
 import { copyToClipboard, decimalBNToString } from '../../../utils';
-import { VaultData } from '../../../contexts/fraktion';
+import { VaultData, VaultState } from '../../../contexts/fraktion';
 import CopyClipboardIcon from '../../../icons/CopyClipboardIcon';
-import classNames from 'classnames';
 import Tooltip from '../../../components/Tooltip';
 import { useVaultTokenHoldersAmount } from '../../../utils/fraktionOwners';
-import { FC } from 'react';
 
 interface InfoTableProps {
   vaultInfo: VaultData;
-  isActiveOrFinished?: boolean;
-  isArchived?: boolean;
   marketId?: string;
 }
 
 export const InfoTable: FC<InfoTableProps> = ({
   vaultInfo,
   marketId = null,
-  isActiveOrFinished,
-  isArchived,
-}): JSX.Element => {
+}) => {
   const currency =
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
@@ -38,7 +35,7 @@ export const InfoTable: FC<InfoTableProps> = ({
           {vaultInfo.fractionsSupply.toString().slice(0, -3)}
         </p>
       </div>
-      {!isArchived && (
+      {vaultInfo.state !== VaultState.Archived && (
         <div className={styles.infoTable__cell}>
           <p className={styles.infoTable__cellName}>
             Locked fraktion price ({currency})
@@ -53,7 +50,7 @@ export const InfoTable: FC<InfoTableProps> = ({
         </div>
       )}
       <div className={styles.infoTable__cell}>
-        {isActiveOrFinished || isArchived ? (
+        {vaultInfo.state !== VaultState.Active ? (
           <p className={styles.infoTable__cellName}>Winning bid ({currency})</p>
         ) : (
           <p className={styles.infoTable__cellName}>
@@ -68,7 +65,7 @@ export const InfoTable: FC<InfoTableProps> = ({
           )}
         </p>
       </div>
-      {!isArchived && (
+      {vaultInfo.state !== VaultState.Archived && (
         <div className={styles.infoTable__cell}>
           <p className={styles.infoTable__cellName}>Market cap</p>
           <p className={styles.infoTable__cellValue}>
@@ -81,7 +78,7 @@ export const InfoTable: FC<InfoTableProps> = ({
         </div>
       )}
 
-      {!isArchived && (
+      {vaultInfo.state !== VaultState.Archived && (
         <div className={styles.infoTable__cell}>
           <p className={styles.infoTable__cellName}>Fractions mint</p>
           <p
@@ -123,7 +120,7 @@ export const InfoTable: FC<InfoTableProps> = ({
           </p>
         </div>
       )}
-      {!!holdersAmount && !isArchived && (
+      {!!holdersAmount && vaultInfo.state !== VaultState.Archived && (
         <div className={styles.infoTable__cell}>
           <p className={styles.infoTable__cellName}>Owners</p>
           <p className={styles.infoTable__cellValue}>{holdersAmount}</p>

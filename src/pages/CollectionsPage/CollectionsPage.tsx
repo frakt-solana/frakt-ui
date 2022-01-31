@@ -24,22 +24,6 @@ const SORT_VALUES = [
   {
     label: (
       <span>
-        Name <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'collectionName_asc',
-  },
-  {
-    label: (
-      <span>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'collectionName_desc',
-  },
-  {
-    label: (
-      <span>
         Vaults amount <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
@@ -52,6 +36,22 @@ const SORT_VALUES = [
       </span>
     ),
     value: 'vault_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
   },
   {
     label: (
@@ -74,7 +74,7 @@ const SORT_VALUES = [
 const CollectionsPage: FC = () => {
   const { control, watch } = useForm({
     defaultValues: {
-      sort: SORT_VALUES[2],
+      sort: SORT_VALUES[0],
     },
   });
   const sort = watch('sort');
