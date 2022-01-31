@@ -40,6 +40,22 @@ const SORT_VALUES = [
   {
     label: (
       <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
+  },
+  {
+    label: (
+      <span>
         NTFs amount <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
@@ -88,6 +104,12 @@ const CollectionsPage: FC = () => {
           { collectionName: collectionNameA },
           { collectionName: collectionNameB },
         ) => {
+          if (sortField === 'collectionName') {
+            if (sortOrder === 'desc') {
+              return collectionNameA.localeCompare(collectionNameB);
+            }
+            return collectionNameB.localeCompare(collectionNameA);
+          }
           if (sortField === 'vault') {
             return compareVaultsArraysBySize(
               vaultsNotArchivedByCollectionName[collectionNameA],
