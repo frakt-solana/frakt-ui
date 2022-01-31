@@ -170,13 +170,14 @@ export const removeRaydiumLiquidity =
   ) =>
   async ({
     baseToken,
+    quoteToken = SOL_TOKEN,
     poolConfig,
     amount,
   }: RemoveLiquidityTransactionParams): Promise<void> => {
     try {
       const tokenAccounts = (
         await Promise.all(
-          [baseToken.address, SOL_TOKEN.address, poolConfig.lpMint].map(
+          [baseToken.address, quoteToken.address, poolConfig.lpMint].map(
             (mint) =>
               getTokenAccount({
                 tokenMint: new PublicKey(mint),
@@ -210,7 +211,7 @@ export const removeRaydiumLiquidity =
       );
 
       notify({
-        message: 'Liquidity withdraw successfully',
+        message: 'Liquidity withdrawn successfully',
         type: 'success',
       });
 

@@ -15,6 +15,7 @@ import {
   TokenAmount,
 } from '@raydium-io/raydium-sdk';
 import { useUserTokens } from '../../../contexts/userTokens';
+import { SOL_TOKEN } from '../../../utils';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
@@ -31,6 +32,7 @@ const Withdraw: FC<WithdrawInterface> = ({
   const { rawUserTokensByMint } = useUserTokens();
 
   const [withdrawValue, setWithdrawValue] = useState<string>('');
+  const quoteToken = SOL_TOKEN;
 
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
@@ -38,13 +40,14 @@ const Withdraw: FC<WithdrawInterface> = ({
   const tokenLpInfo = rawUserTokensByMint[poolConfig.lpMint.toBase58()];
   const balance = String(Number(tokenLpInfo?.amount) / 10 ** lpDecimals);
 
-  const baseAmount = new BN(Number(withdrawValue) * 10 ** baseToken.decimals);
+  const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
 
   const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
   const onSubmitHandler = () => {
     removeRaydiumLiquidity({
       baseToken,
+      quoteToken,
       amount,
       poolConfig,
     });

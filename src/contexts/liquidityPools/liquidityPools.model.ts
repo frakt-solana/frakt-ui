@@ -71,6 +71,7 @@ export interface LiquidityTransactionParams {
 
 export interface RemoveLiquidityTransactionParams {
   baseToken: TokenInfo;
+  quoteToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   amount: TokenAmount;
 }
