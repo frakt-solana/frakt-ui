@@ -1,1 +1,0 @@
-export { DesktopMenu } from './DesktopMenu';

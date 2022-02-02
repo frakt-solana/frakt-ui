@@ -28,29 +28,20 @@
   top: 0;
   width: 100%;
   z-index: 2;
-  transition: top .3s ease-in-out;
+  transition: top .2s ease-out;
 }
 
 .headerHide {
-  @media screen and (max-width: 1023px) {
-    top: -88px;
-    opacity: 0;
-    z-index: -1;
-    transition: top .3s .3s ease-in-out, opacity .9s ease-in-out, z-index .1s .8s;
-  }
+  top: -50px;
+  transition: top .2s ease-in;
 }
 
 .content {
-  top: 89px;
   position: fixed;
   width: 100%;
-  height: calc(100vh - 89px);
+  height: 100vh;
+  padding-top: 50px;
+  top: 0;
   overflow-y: auto;
   scrollbar-gutter: stable;
-
-  @media screen and (max-width: 1023px) {
-    height: 100vh;
-    padding-top: 89px;
-    top: 0;
-  }
 }

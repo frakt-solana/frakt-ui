@@ -15,17 +15,17 @@ export const AppLayout = ({
   contentClassName = '',
 }: AppLayoutProps): JSX.Element => {
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const [scrollTop, setScrollTop] = useState(0);
   const [prevOffsetTop, setPrevOffsetTop] = useState(0);
 
   const onContentScroll = (event) => {
-    const contentOffsetTop = event.target.scrollTop;
-    setPrevOffsetTop(contentOffsetTop);
+    const offset = event.target.scrollTop;
 
-    if (contentOffsetTop > 200 && contentOffsetTop > prevOffsetTop) {
-      setIsHeaderHidden(true);
-    } else {
-      setIsHeaderHidden(false);
-    }
+    if (offset > scrollTop) setPrevOffsetTop(offset);
+    if (offset < prevOffsetTop) setScrollTop(offset);
+
+    if (offset > 200 && offset > prevOffsetTop) setIsHeaderHidden(true);
+    if (offset + 100 < prevOffsetTop) setIsHeaderHidden(false);
   };
 
   return (
