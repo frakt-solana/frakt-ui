@@ -117,7 +117,13 @@ const Pool: FC<PoolInterface> = ({
                 poolConfig={poolConfig}
                 raydiumPoolInfo={raydiumPoolInfo}
               />
-              {isAwarded && <Rewards quoteToken={tokenInfo} />}
+              {isAwarded && (
+                <Rewards
+                  baseToken={tokenInfo}
+                  poolConfig={poolConfig}
+                  raydiumPoolInfo={raydiumPoolInfo}
+                />
+              )}
               <Button
                 onClick={() => setDepositModalVisible(true)}
                 className={styles.depositBtn}

@@ -7,6 +7,7 @@ import { ReactNode } from 'react';
 export interface LiquidityPoolsContextValues {
   loading: boolean;
   poolDataByMint: PoolDataByMint;
+  programAccounts: any;
   fetchRaydiumPoolsInfo: (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
@@ -15,6 +16,9 @@ export interface LiquidityPoolsContextValues {
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
+  harvestLiquidity: () => Promise<void>;
+  stakeLiquidity: () => Promise<void>;
+  unstakeLiquidity: () => Promise<void>;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -74,4 +78,10 @@ export interface RemoveLiquidityTransactionParams {
   quoteToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   amount: TokenAmount;
+}
+
+export interface ProgramAccountsData {
+  configs: any;
+  routers: any;
+  stakeAccounts: any;
 }

@@ -63,6 +63,7 @@ const PoolsPage: FC = () => {
             />
           </div>
         </div>
+
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}

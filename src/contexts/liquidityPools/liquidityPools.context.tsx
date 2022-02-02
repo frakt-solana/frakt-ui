@@ -8,22 +8,34 @@ import {
   addRaydiumLiquidity,
   removeRaydiumLiquidity,
   raydiumSwap,
+  harvestLiquidity,
+  stakeLiquidity,
+  unstakeLiquidity,
 } from './liquidityPools';
-import { fetchPoolDataByMint } from './liquidityPools.helpers';
+import {
+  fetchPoolDataByMint,
+  fetchProgramAccounts,
+} from './liquidityPools.helpers';
 import {
   LiquidityPoolsContextValues,
   LiquidityPoolsProviderType,
   PoolDataByMint,
+  ProgramAccountsData,
 } from './liquidityPools.model';
+import { PublicKey } from '@solana/web3.js';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
     loading: true,
     poolDataByMint: new Map(),
+    programAccounts: {},
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
     addRaydiumLiquidity: () => Promise.resolve(null),
     removeRaydiumLiquidity: () => Promise.resolve(null),
+    harvestLiquidity: () => Promise.resolve(null),
+    stakeLiquidity: () => Promise.resolve(null),
+    unstakeLiquidity: () => Promise.resolve(null),
   });
 
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
@@ -38,12 +50,25 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
     new Map(),
   );
 
+  const [programAccounts, setProgramAccounts] = useState<ProgramAccountsData>();
+
+  const vaultProgramId = new PublicKey(
+    'JCrmDPsceQew2naUT1UosJLaPW5K6QnV54frXjcBkXvc',
+  );
+
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
       const poolDataByMint = await fetchPoolDataByMint({
         connection,
         tokensMap: fraktionTokensMap,
       });
+
+      const allProgramAccounts = await fetchProgramAccounts({
+        vaultProgramId,
+        connection,
+      });
+
+      setProgramAccounts(allProgramAccounts);
 
       setPoolDataByMint(poolDataByMint);
     } catch (error) {
@@ -53,6 +78,8 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       setLoading(false);
     }
   };
+
+  console.log(programAccounts);
 
   useEffect(() => {
     fraktionTokensMap.size && fetchPoolData(fraktionTokensMap);
@@ -64,6 +91,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       value={{
         loading,
         poolDataByMint,
+        programAccounts,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
         removeRaydiumLiquidity: removeRaydiumLiquidity(
@@ -72,6 +100,21 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
           signTransaction,
         ),
         addRaydiumLiquidity: addRaydiumLiquidity(
+          connection,
+          walletPublicKey,
+          signTransaction,
+        ),
+        harvestLiquidity: harvestLiquidity(
+          connection,
+          walletPublicKey,
+          signTransaction,
+        ),
+        stakeLiquidity: stakeLiquidity(
+          connection,
+          walletPublicKey,
+          signTransaction,
+        ),
+        unstakeLiquidity: unstakeLiquidity(
           connection,
           walletPublicKey,
           signTransaction,

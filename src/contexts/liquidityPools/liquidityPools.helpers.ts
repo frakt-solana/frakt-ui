@@ -1,3 +1,4 @@
+import { getAllProgramAccounts } from '@frakters/fusion-pool';
 import {
   CurrencyAmount,
   Liquidity,
@@ -156,4 +157,18 @@ export const getCurrencyAmount = (
         ),
         amount,
       );
+};
+
+export const fetchProgramAccounts = async ({
+  vaultProgramId,
+  connection,
+}): Promise<any> => {
+  const allProgramAccounts = await getAllProgramAccounts(
+    vaultProgramId,
+    connection,
+  );
+
+  // TODO filter method for allProgramAccounts
+
+  return allProgramAccounts;
 };

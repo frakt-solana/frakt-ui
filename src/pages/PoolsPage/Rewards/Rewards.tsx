@@ -5,11 +5,16 @@ import Button from '../../../components/Button';
 import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
 
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { RaydiumPoolInfo } from '../../../contexts/liquidityPools';
+
 interface RewardsInterface {
-  quoteToken: TokenInfo;
+  baseToken: TokenInfo;
+  poolConfig: LiquidityPoolKeysV4;
+  raydiumPoolInfo: RaydiumPoolInfo;
 }
 
-const Rewards: FC<RewardsInterface> = ({ quoteToken }) => {
+const Rewards: FC<RewardsInterface> = ({ baseToken }) => {
   return (
     <div className={styles.rewards}>
       <p className={styles.title}>Pending rewards</p>
@@ -19,7 +24,7 @@ const Rewards: FC<RewardsInterface> = ({ quoteToken }) => {
             0.0 <span>{SOL_TOKEN.symbol}</span>
           </p>
           <p>
-            0.0 <span>{quoteToken.symbol}</span>
+            0.0 <span>{baseToken.symbol}</span>
           </p>
         </div>
         <Button type="tertiary" className={styles.harvestBtn}>
