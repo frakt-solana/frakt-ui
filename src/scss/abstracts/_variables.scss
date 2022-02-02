@@ -1,5 +1,6 @@
 :root {
   --black-color: #000000;
+  --color-dark: #111111;
   --white-color: #ffffff;
   --accent-color-1: #5d5fef;
   --accent-color-2: #7b61ff;
@@ -7,6 +8,8 @@
   --accent-shadow-color: rgba(93, 95, 239, 0.3);
   --yellow-color: #b5d307;
   --yellow-color-hover: #BFD34C;
+  --green-color: #83D6A4;
+  --darken-green-color: #4B9B6B;
   --red-color: #f83e3e;
   --pink-color: #FF837B;
   --bg-btn-color-1: rgba(62, 158, 248, 0.3);
@@ -21,6 +24,9 @@
   --gray-color-7: rgba(255, 255, 255, 0.1);
   --gray-color-8: rgba(255, 255, 255, 0.5);
   --gray-color-9: #373737;
+
+  --border-gray-1: 1px solid #4d4d4d;
+  --border-white-1: 1px solid #ffffff;
 
   --transition-1: 0.2s ease-in;
 

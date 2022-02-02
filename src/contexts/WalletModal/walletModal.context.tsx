@@ -1,5 +1,4 @@
 import React, { FC, useContext, useState } from 'react';
-import { ConnectWalletModal } from '../../components/ConnectWallerModal';
 import {
   WalletModalContextInterface,
   WalletModalProviderProps,
@@ -24,7 +23,6 @@ export const WalletModalProvider: FC<WalletModalProviderProps> = ({
       }}
     >
       {children}
-      <ConnectWalletModal />
     </WalletModalContext.Provider>
   );
 };

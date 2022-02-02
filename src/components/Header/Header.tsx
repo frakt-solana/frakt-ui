@@ -2,27 +2,22 @@ import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 import { Container } from '../Layout';
-import React, { useState } from 'react';
-import { MobileMenu } from './MobileMenu';
+import React from 'react';
 import { AppNavigation } from './AppNavigation';
 import BurgerMenu from '../BurgerMenu';
 import { NavLink } from 'react-router-dom';
 import { URLS } from '../../constants';
 import NavigationLink from './NavigationLink';
-import { Tooltip } from 'antd';
-import { WalletInfo } from './WalletInfo/WalletInfo';
-import { shortenAddress } from '../../utils/solanaUtils';
-import { ChevronDownIcon } from '../../icons/ChevronDownIcon';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal } from '../../contexts/WalletModal';
+import ConnectButton from '../ConnectButton';
+import ConnectedButton from '../ConnectedButton';
 
 interface HeaderProps {
   className?: string;
 }
 
 const Header = ({ className }: HeaderProps): JSX.Element => {
-  const { connected, publicKey } = useWallet();
-  const { setVisible } = useWalletModal();
+  const { connected } = useWallet();
 
   return (
     <header className={classNames([styles.root, className])}>
@@ -36,31 +31,18 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
             <NavigationLink to={URLS.FRAKTIONALIZE}>Fraktion</NavigationLink>
           </li>
           <li>
-            {connected ? (
-              <Tooltip
-                overlayClassName={styles.walletInfo}
-                trigger="click"
-                placement="topRight"
-                title={WalletInfo}
-              >
-                <button
-                  className={classNames([
+            <div className={styles.profileWrapper}>
+              {connected ? (
+                <ConnectedButton
+                  className={classNames(
                     styles.walletBtn,
-                    styles.walletBtn_connected,
-                  ])}
-                >
-                  {shortenAddress(publicKey.toString())}
-                  <ChevronDownIcon className={styles.walletBtn__icon} />
-                </button>
-              </Tooltip>
-            ) : (
-              <button
-                className={styles.walletBtn}
-                onClick={() => setVisible(true)}
-              >
-                Connect wallet
-              </button>
-            )}
+                    styles.walletConnectedBtn,
+                  )}
+                />
+              ) : (
+                <ConnectButton className={styles.walletBtn} />
+              )}
+            </div>
           </li>
         </ul>
         <BurgerMenu />

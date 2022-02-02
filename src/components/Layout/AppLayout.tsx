@@ -1,7 +1,9 @@
 import Header from '../Header';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import WalletContent from '../WalletContent';
+import { useWalletModal } from '../../contexts/WalletModal';
 
 interface AppLayoutProps {
   children: JSX.Element[] | JSX.Element;
@@ -14,6 +16,7 @@ export const AppLayout = ({
   className = '',
   contentClassName = '',
 }: AppLayoutProps): JSX.Element => {
+  const { visible, setVisible } = useWalletModal();
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const [prevOffsetTop, setPrevOffsetTop] = useState(0);
@@ -28,6 +31,11 @@ export const AppLayout = ({
     if (offset + 100 < prevOffsetTop) setIsHeaderHidden(false);
   };
 
+  useEffect(() => {
+    visible && setVisible(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
+
   return (
     <div className={className}>
       <Header
@@ -40,6 +48,7 @@ export const AppLayout = ({
         id="app-content"
         className={classNames(styles.content, contentClassName)}
       >
+        {visible && <WalletContent />}
         {children}
       </div>
     </div>

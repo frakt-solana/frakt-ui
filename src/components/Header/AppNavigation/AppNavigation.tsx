@@ -1,21 +1,15 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from '../styles.module.scss';
 import classNames from 'classnames/bind';
 import { URLS } from '../../../constants';
-import { WalletInfo } from '../WalletInfo/WalletInfo';
 import NavigationLink from '../NavigationLink';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal } from '../../../contexts/WalletModal';
-import { NavLink } from 'react-router-dom';
-import { Tooltip } from 'antd';
-import { shortenAddress } from '../../../utils/solanaUtils';
-import { ChevronDownIcon } from '../../../icons/ChevronDownIcon';
 
 interface AppNavigation {
   className?: string;
 }
 
-export const AppNavigation = ({ className }: AppNavigation): JSX.Element => {
+export const AppNavigation: FC<AppNavigation> = ({ className }) => {
   const { connected, publicKey } = useWallet();
 
   return (

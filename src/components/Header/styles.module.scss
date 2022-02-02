@@ -17,47 +17,50 @@
     color: var(--white-color);
   }
 }
-
-.walletBtn {
-  padding: 0 20px;
-  cursor: pointer;
-  background: none;
-  outline: none;
-  border: none;
+.profileWrapper {
   height: 100%;
+  .walletBtn {
+    padding: 0 20px;
+    cursor: pointer;
+    background: none;
+    outline: none;
+    border: none;
+    height: 100%;
+    font-size: 18px;
 
-  @media screen and (max-width: 767px) {
-    font-size: 14px;
-    padding: 0 15px;
-  }
+    @media screen and (max-width: 767px) {
+      font-size: 14px;
+      padding: 0 15px;
+    }
 
-  @media screen and (max-width: 500px) {
-    font-size: 10px;
-    padding: 0 10px;
-  }
+    @media screen and (max-width: 500px) {
+      font-size: 10px;
+      padding: 0 10px;
+    }
 
-  &_connected {
-    background: var(--gray-color-7);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: color .2s ease-in,background-color .2s ease-in;
+    &.walletConnectedBtn {
+      background: var(--gray-color-7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: color .2s ease-in, background-color .2s ease-in;
 
-    &:hover {
-      background-color: var(--gray-color-4);
-      color: var(--black-color);
+      &:hover {
+        background-color: var(--gray-color-4);
+        color: var(--black-color);
 
-      svg {
-        fill: var(--black-color);
+        svg {
+          fill: var(--black-color);
+        }
       }
     }
-  }
 
-  &__icon {
-    width: 16px;
-    height: 16px;
-    fill: var(--white-color);
-    transition: fill .2s ease-in;
+    &__icon {
+      width: 16px;
+      height: 16px;
+      fill: var(--white-color);
+      transition: fill .2s ease-in;
+    }
   }
 }
 

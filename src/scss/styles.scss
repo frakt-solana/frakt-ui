@@ -32,3 +32,17 @@ h5 {
     }
   }
 }
+
+.container,
+.container_lg {
+  max-width: 1320px;
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container_lg {
+  max-width: 1430px;
+}
