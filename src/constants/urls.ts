@@ -2,6 +2,7 @@ export const URLS = {
   ROOT: '/',
   SWAP: '/swap',
   MARKET: '/market',
+  MARKET_BUY: '/market/buy',
   VAULTS: '/vaults',
   VAULT: '/vault',
   STAKER_PAGE: '/staker',

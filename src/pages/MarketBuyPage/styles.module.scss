@@ -1,0 +1,92 @@
+.layout {
+  overflow: hidden;
+  max-width: 100vw;
+}
+
+.wrapper {
+  display: flex;
+  margin-top: 23px;
+  position: relative;
+
+  @media screen and (max-width: 1200px) {
+    margin-top: 10px;
+  }
+}
+
+.content {
+  padding-bottom: 50px;
+  padding-left: 20px;
+  width: 100%;
+
+  @media screen and (max-width: 700px) {
+    margin-left: 30px;
+    padding-left: 15px;
+  }
+}
+
+.itemsSortWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32px;
+  gap: 20px;
+
+  @media screen and (max-width: 370px) {
+    flex-wrap: wrap;
+  }
+}
+
+.itemsAmount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-grow: 1;
+  font: var(--font-text-3);
+  color: var(--color-gray-4);
+
+  &::before {
+    content: '';
+    display: block;
+    flex-grow: 1;
+    height: 1px;
+    background-color: var(--color-gray-4);
+  }
+}
+
+.sortingSelect {
+  span {
+    color: var(--white-color);
+  }
+}
+
+.sortingSelectValueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+
+    path {
+      stroke: var(--accent-color-1) !important;
+    }
+  }
+
+  .sortName {
+    color: var(--accent-color-1);
+  }
+}
+
+.sortWrapper {
+  flex-shrink: 0;
+
+  .arrowDown,
+  .arrowUp {
+    path {
+      stroke: var(--white-color);
+    }
+  }
+
+  .arrowDown {
+    transform: rotate(180deg);
+  }
+}
+
