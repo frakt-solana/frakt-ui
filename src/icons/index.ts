@@ -22,3 +22,4 @@ export { FRKTIcon } from './FRKTIcon';
 export { SolanaIcon } from './SolanaIcon';
 export { ArrowRightTop } from './ArrowRightTop';
 export { SwapIcon } from './SwapIcon';
+export { QuestionIcon } from './QuestionIcon';

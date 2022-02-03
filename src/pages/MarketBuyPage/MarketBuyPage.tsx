@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { Sidebar } from './components/Sidebar';
 import { NFTsList } from './components/NFTsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
+import { HeaderBuy } from './components/HeaderBuy';
 
 const SORT_VALUES = [
   {
@@ -48,6 +49,7 @@ const MarketBuyPage = (): JSX.Element => {
           <Sidebar />
 
           <div className={styles.content}>
+            <HeaderBuy />
             <div className={styles.itemsSortWrapper}>
               <div className={styles.itemsAmount}>355 items</div>
               <div className={styles.sortWrapper}>
