@@ -30,6 +30,7 @@ import { SwapContextProvider } from './contexts/Swap';
 import CollectionsPage from './pages/CollectionsPage';
 import CollectionPage from './pages/CollectionPage';
 import { CollectionsProvider } from './contexts/collections';
+import MarketPage from './pages/MarketPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -55,6 +56,11 @@ export const Routes = (): JSX.Element => {
                           exact
                           path={URLS.ROOT}
                           component={(): JSX.Element => <HomePage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.MARKET}
+                          component={(): JSX.Element => <MarketPage />}
                         />
                         <Route
                           exact

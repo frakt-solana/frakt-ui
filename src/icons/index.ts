@@ -20,3 +20,5 @@ export { CloseModalIcon } from './CloseModalIcon';
 export { ArrowDownBtn } from './ArrowDownBtn';
 export { FRKTIcon } from './FRKTIcon';
 export { SolanaIcon } from './SolanaIcon';
+export { ArrowRightTop } from './ArrowRightTop';
+export { SwapIcon } from './SwapIcon';
