@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import styles from './styles.module.scss';
 import { QuestionIcon } from '../../../../icons';
 import { BuyRandomNft } from './BuyRandomNft';
+import { MarketNavigation } from '../../../../components/MarketNavigation';
 
 const tempBgImage =
   'https://aacsdzhn52gnk67swxcahjyrwtcpaykzbsletupsuur7dupnqzsa.arweave.net/AAUh5O3ujNV78rXEA6cRtMTwYVkMlknR8qUj8dHthmQ';
@@ -19,6 +20,7 @@ export const HeaderBuy: FC = () => {
           <QuestionIcon className={styles.questionIcon} />
         </div>
         <BuyRandomNft />
+        <MarketNavigation className={styles.marketNavigation} />
       </div>
     </div>
   );

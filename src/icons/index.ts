@@ -25,3 +25,7 @@ export { SwapIcon } from './SwapIcon';
 export { QuestionIcon } from './QuestionIcon';
 export { MinusIcon } from './MinusIcon';
 export { PlusIcon } from './PlusIcon';
+export { BuyIcon } from './BuyIcon';
+export { SellIcon } from './SellIcon';
+export { InfoIcon } from './InfoIcon';
+export { SwapMarketIcon } from './SwapMarketIcon';

@@ -1,0 +1,36 @@
+.navigation {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  padding-left: 15px;
+  padding-right: 15px;
+  height: 43px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  font: var(--font-text-3);
+  color: var(--white-color);
+  transition: opacity .1s ease-in;
+
+  &:hover {
+    opacity: .5;
+    color: var(--white-color);
+  }
+}
+
+.activeLink {
+  border-color: var(--accent-color-1);
+
+  &:hover {
+    border-color: var(--accent-color-1);
+    cursor: auto;
+    opacity: 1;
+  }
+}
+
+.navIcon {
+  margin-right: 8px;
+}
