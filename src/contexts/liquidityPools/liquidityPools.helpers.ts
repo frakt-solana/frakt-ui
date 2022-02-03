@@ -7,7 +7,6 @@ import {
   Spl,
   SPL_ACCOUNT_LAYOUT,
   Token,
-  TokenAccount,
   TokenAmount,
   WSOL,
 } from '@raydium-io/raydium-sdk';
@@ -123,7 +122,10 @@ export const getTokenAccount = async ({
   tokenMint: PublicKey;
   owner: PublicKey;
   connection: Connection;
-}): Promise<TokenAccount | null> => {
+}): Promise<{
+  pubkey: PublicKey;
+  accountInfo: any;
+} | null> => {
   const tokenAccountPubkey = await Spl.getAssociatedTokenAccount({
     mint: tokenMint,
     owner,
@@ -163,6 +165,9 @@ export const getCurrencyAmount = (
 export const fetchProgramAccounts = async ({
   vaultProgramId,
   connection,
+}: {
+  vaultProgramId: PublicKey;
+  connection: Connection;
 }): Promise<ProgramAccountsData | any> => {
   const allProgramAccounts = await getAllProgramAccounts(
     vaultProgramId,

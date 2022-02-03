@@ -31,7 +31,7 @@ export const getOutputAmount = ({
   priceImpact: string;
 } => {
   try {
-    const currencyAmountIn = new TokenAmount(
+    const amountIn = new TokenAmount(
       new Token(
         payToken.address,
         payToken.decimals,
@@ -42,14 +42,15 @@ export const getOutputAmount = ({
       false,
     );
 
-    const { amountOut, minAmountOut, priceImpact } =
-      Liquidity.computeCurrencyAmountOut({
+    const { amountOut, minAmountOut, priceImpact } = Liquidity.computeAmountOut(
+      {
         poolKeys,
         poolInfo,
-        currencyAmountIn,
+        amountIn,
         currencyOut: receiveToken,
         slippage,
-      });
+      },
+    );
 
     return {
       amountOut: amountOut.toSignificant(),

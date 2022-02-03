@@ -27,6 +27,8 @@ import CONFIG from './config';
 
 const { PROGRAM_PUBKEY } = CONFIG;
 
+const IS_DEVNET = process.env.REACT_APP_NETWORK === 'devnet';
+
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
     loading: true,
@@ -57,17 +59,18 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
 
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
-      const allProgramAccounts = await fetchProgramAccounts({
-        vaultProgramId: new PublicKey(PROGRAM_PUBKEY),
-        connection,
-      });
+      if (IS_DEVNET) {
+        const allProgramAccounts = await fetchProgramAccounts({
+          vaultProgramId: new PublicKey(PROGRAM_PUBKEY),
+          connection,
+        });
+        setProgramAccounts(allProgramAccounts);
+      }
 
       const poolDataByMint = await fetchPoolDataByMint({
         connection,
         tokensMap: fraktionTokensMap,
       });
-
-      setProgramAccounts(allProgramAccounts);
 
       setPoolDataByMint(poolDataByMint);
     } catch (error) {
