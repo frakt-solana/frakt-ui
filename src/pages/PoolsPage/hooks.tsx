@@ -94,8 +94,8 @@ export const usePoolsPage = (): {
     const [sortField, sortOrder] = sort.value.split('_');
 
     return rawPoolsData
-      .filter(({ tokenInfo, isAwarded }) => {
-        if (showAwardedOnly && !isAwarded) {
+      .filter(({ tokenInfo }) => {
+        if (showAwardedOnly) {
           return false;
         }
 

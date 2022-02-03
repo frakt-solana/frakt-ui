@@ -5,16 +5,16 @@ import {
 } from '@frakters/fusion-pool';
 import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import BN from 'bn.js';
-import { useLiquidityPools, vaultProgramId } from '.';
 import { notify, SOL_TOKEN } from '../../utils';
 import { getCurrencyAmount, getTokenAccount } from './liquidityPools.helpers';
-
+import CONFIG from './config';
 import {
   LiquidityTransactionParams,
   RaydiumPoolInfo,
   RemoveLiquidityTransactionParams,
 } from './liquidityPools.model';
+
+const { PROGRAM_PUBKEY } = CONFIG;
 
 export const fetchRaydiumPoolsInfo =
   (connection: Connection) =>
@@ -240,29 +240,18 @@ export const stakeLiquidity =
     walletPublicKey: PublicKey,
     signTransaction: (transaction: Transaction) => Promise<Transaction>,
   ) =>
-  async (): Promise<void> => {
-    const { programAccounts } = useLiquidityPools();
-    const { routers } = programAccounts;
-
-    const router = '8wWVnY2sxrC2dyNYVyTV1DppPpbG3mJMUne6i7z7NVzx';
-
-    const routerAccount = routers.find(
-      ({ routerPubkey }) => routerPubkey === router,
-    );
-
-    console.log(routerAccount);
-
+  async ({ amount, router }): Promise<void> => {
     try {
       await stakeInFusion(
         walletPublicKey,
         connection,
-        vaultProgramId,
-        new PublicKey(routerAccount.token_mint_input),
-        new PublicKey(routerAccount.token_mint_output),
-        new BN(1e10),
-        new PublicKey(routerAccount.routerPubkey),
-        new PublicKey(routerAccount.pool_config_input),
-        new PublicKey(routerAccount.pool_config_output),
+        new PublicKey(PROGRAM_PUBKEY),
+        new PublicKey(router.token_mint_input),
+        new PublicKey(router.token_mint_output),
+        amount,
+        new PublicKey(router.routerPubkey),
+        new PublicKey(router.pool_config_input),
+        new PublicKey(router.pool_config_output),
         async (txn) => {
           const { blockhash } = await connection.getRecentBlockhash();
           txn.recentBlockhash = blockhash;
@@ -291,31 +280,18 @@ export const harvestLiquidity =
     walletPublicKey: PublicKey,
     signTransaction: (transaction: Transaction) => Promise<Transaction>,
   ) =>
-  async (): Promise<void> => {
-    const { programAccounts } = useLiquidityPools();
-    const { routers, stakeAccounts } = programAccounts;
-
-    const routerPubkey = '8wWVnY2sxrC2dyNYVyTV1DppPpbG3mJMUne6i7z7NVzx';
-
-    const stakeAccout = stakeAccounts.find(
-      ({ router }) => router === routerPubkey,
-    );
-
-    const routerAccount = routers.find(
-      ({ routerPubkey }) => routerPubkey === routerPubkey,
-    );
-
+  async ({ router, stakeAccount }): Promise<void> => {
     try {
       await harvestInFusion(
         walletPublicKey,
         connection,
-        vaultProgramId,
-        new PublicKey(routerAccount.token_mint_input),
-        new PublicKey(routerAccount.token_mint_output),
-        new PublicKey(routerAccount.routerPubkey),
-        [new PublicKey(stakeAccout.stakePubkey)],
-        new PublicKey(routerAccount.pool_config_input),
-        new PublicKey(routerAccount.pool_config_output),
+        new PublicKey(PROGRAM_PUBKEY),
+        new PublicKey(router.token_mint_input),
+        new PublicKey(router.token_mint_output),
+        new PublicKey(router.routerPubkey),
+        [new PublicKey(stakeAccount.stakePubkey)],
+        new PublicKey(router.pool_config_input),
+        new PublicKey(router.pool_config_output),
         async (txn) => {
           const { blockhash } = await connection.getRecentBlockhash();
           txn.recentBlockhash = blockhash;
@@ -347,30 +323,17 @@ export const unstakeLiquidity =
     walletPublicKey: PublicKey,
     signTransaction: (transaction: Transaction) => Promise<Transaction>,
   ) =>
-  async (): Promise<void> => {
-    const { programAccounts } = useLiquidityPools();
-    const { configs, routers, stakeAccounts } = programAccounts;
-
-    const routerPubkey = '8wWVnY2sxrC2dyNYVyTV1DppPpbG3mJMUne6i7z7NVzx';
-
-    const stakeAccout = stakeAccounts.find(
-      ({ router }) => router === routerPubkey,
-    );
-
-    const routerAccount = routers.find(
-      ({ routerPubkey }) => routerPubkey === routerPubkey,
-    );
-
+  async ({ router, stakeAccount }): Promise<void> => {
     try {
       await unstakeInFusion(
         walletPublicKey,
-        vaultProgramId,
-        new PublicKey(routerAccount.token_mint_input),
-        new PublicKey(routerAccount.token_mint_output),
-        new PublicKey(routerAccount.routerPubkey),
-        [new PublicKey(stakeAccout.stakePubkey)],
-        new PublicKey(routerAccount.pool_config_input),
-        new PublicKey(routerAccount.pool_config_output),
+        new PublicKey(PROGRAM_PUBKEY),
+        new PublicKey(router.token_mint_input),
+        new PublicKey(router.token_mint_output),
+        new PublicKey(router.routerPubkey),
+        [new PublicKey(stakeAccount.stakePubkey)],
+        new PublicKey(router.pool_config_input),
+        new PublicKey(router.pool_config_output),
         async (txn) => {
           const { blockhash } = await connection.getRecentBlockhash();
           txn.recentBlockhash = blockhash;

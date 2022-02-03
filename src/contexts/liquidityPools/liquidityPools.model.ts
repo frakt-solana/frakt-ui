@@ -3,6 +3,11 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
+import {
+  RouterData,
+  StakeData,
+  ConfigData,
+} from '@frakters/fusion-pool/lib/borsh';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
@@ -16,9 +21,13 @@ export interface LiquidityPoolsContextValues {
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
-  harvestLiquidity: () => Promise<void>;
-  stakeLiquidity: () => Promise<void>;
-  unstakeLiquidity: () => Promise<void>;
+  harvestLiquidity: (
+    params: HarvestLiquidityTransactionParams,
+  ) => Promise<void>;
+  stakeLiquidity: (params: HarvestLiquidityTransactionParams) => Promise<void>;
+  unstakeLiquidity: (
+    params: HarvestLiquidityTransactionParams,
+  ) => Promise<void>;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -44,7 +53,9 @@ export type PoolDataByMint = Map<string, PoolData>;
 export interface PoolData {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
-  isAwarded: boolean;
+  fushionConfig?: ConfigData;
+  router?: RouterData;
+  fushionStakeAccounts?: StakeData;
 }
 
 export type FetchPoolDataByMint = ({
@@ -80,8 +91,14 @@ export interface RemoveLiquidityTransactionParams {
   amount: TokenAmount;
 }
 
+export interface HarvestLiquidityTransactionParams {
+  amount?: BN;
+  router: RouterData;
+  stakeAccount?: StakeData;
+}
+
 export interface ProgramAccountsData {
-  configs: any;
-  routers: any;
-  stakeAccounts: any;
+  fushionConfig: ConfigData;
+  router: RouterData;
+  fushionStakeAccounts: StakeData[];
 }

@@ -36,7 +36,7 @@ const Pool: FC<PoolInterface> = ({
   onPoolCardClick = () => {},
   currentSolanaPriceUSD,
 }) => {
-  const { isAwarded, tokenInfo, poolConfig } = poolData;
+  const { tokenInfo, poolConfig } = poolData;
 
   const { connection } = useConnection();
   const { connected } = useWallet();
@@ -74,7 +74,7 @@ const Pool: FC<PoolInterface> = ({
   return (
     <div className={styles.pool}>
       <div className={styles.header}>
-        {isAwarded && <div className={styles.awarder}>Awarded</div>}
+        <div className={styles.awarder}>Awarded</div>
       </div>
       <div className={styles.poolCard} onClick={onPoolCardClick}>
         <div className={styles.tokenInfo}>
@@ -117,13 +117,11 @@ const Pool: FC<PoolInterface> = ({
                 poolConfig={poolConfig}
                 raydiumPoolInfo={raydiumPoolInfo}
               />
-              {isAwarded && (
-                <Rewards
-                  baseToken={tokenInfo}
-                  poolConfig={poolConfig}
-                  raydiumPoolInfo={raydiumPoolInfo}
-                />
-              )}
+              <Rewards
+                baseToken={tokenInfo}
+                poolConfig={poolConfig}
+                raydiumPoolInfo={raydiumPoolInfo}
+              />
               <Button
                 onClick={() => setDepositModalVisible(true)}
                 className={styles.depositBtn}

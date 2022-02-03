@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 
 import { useTokenListContext } from '../TokenList';
 import {
@@ -22,7 +23,9 @@ import {
   PoolDataByMint,
   ProgramAccountsData,
 } from './liquidityPools.model';
-import { PublicKey } from '@solana/web3.js';
+import CONFIG from './config';
+
+const { PROGRAM_PUBKEY } = CONFIG;
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
@@ -52,20 +55,16 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
 
   const [programAccounts, setProgramAccounts] = useState<ProgramAccountsData>();
 
-  const vaultProgramId = new PublicKey(
-    'JCrmDPsceQew2naUT1UosJLaPW5K6QnV54frXjcBkXvc',
-  );
-
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
+      const allProgramAccounts = await fetchProgramAccounts({
+        vaultProgramId: new PublicKey(PROGRAM_PUBKEY),
+        connection,
+      });
+
       const poolDataByMint = await fetchPoolDataByMint({
         connection,
         tokensMap: fraktionTokensMap,
-      });
-
-      const allProgramAccounts = await fetchProgramAccounts({
-        vaultProgramId,
-        connection,
       });
 
       setProgramAccounts(allProgramAccounts);
@@ -78,8 +77,6 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       setLoading(false);
     }
   };
-
-  console.log(programAccounts);
 
   useEffect(() => {
     fraktionTokensMap.size && fetchPoolData(fraktionTokensMap);

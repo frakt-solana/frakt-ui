@@ -1,4 +1,5 @@
 import { getAllProgramAccounts } from '@frakters/fusion-pool';
+
 import {
   CurrencyAmount,
   Liquidity,
@@ -21,6 +22,7 @@ import {
   FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
+  ProgramAccountsData,
   RaydiumPoolInfo,
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
@@ -59,7 +61,6 @@ export const getPoolDataByMint = (
       acc.set(baseMint.toBase58(), {
         tokenInfo,
         poolConfig: raydiumPoolConfig,
-        isAwarded: Math.random() < 0.5,
       });
     }
 
@@ -162,13 +163,11 @@ export const getCurrencyAmount = (
 export const fetchProgramAccounts = async ({
   vaultProgramId,
   connection,
-}): Promise<any> => {
+}): Promise<ProgramAccountsData | any> => {
   const allProgramAccounts = await getAllProgramAccounts(
     vaultProgramId,
     connection,
   );
-
-  // TODO filter method for allProgramAccounts
 
   return allProgramAccounts;
 };
