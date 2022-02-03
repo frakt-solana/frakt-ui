@@ -1,26 +1,8 @@
 .container {
-  max-width: 1320px;
+  max-width: 1430px;
   padding-left: 15px;
   padding-right: 15px;
   margin: 0 auto;
-}
-
-@media screen and (max-width: 1400px) {
-  .container {
-    max-width: 1140px;
-  }
-}
-
-@media screen and (max-width: 1023px) {
-  .container {
-    max-width: 960px;
-  }
-}
-
-@media screen and (max-width: 767px) {
-  .container {
-    max-width: 540px;
-  }
 }
 
 .header {
