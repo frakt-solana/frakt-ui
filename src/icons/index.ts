@@ -23,3 +23,5 @@ export { SolanaIcon } from './SolanaIcon';
 export { ArrowRightTop } from './ArrowRightTop';
 export { SwapIcon } from './SwapIcon';
 export { QuestionIcon } from './QuestionIcon';
+export { MinusIcon } from './MinusIcon';
+export { PlusIcon } from './PlusIcon';

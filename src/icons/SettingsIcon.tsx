@@ -18,7 +18,13 @@ const icon = (
 //TODO: Describe type
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const SettingsIcon = (props: any): JSX.Element => (
-  <IconSvg icon={icon} viewBox="0 0 24 24" {...props} />
+  <IconSvg
+    className={props.className || ''}
+    width={props.width || '24'}
+    icon={icon}
+    viewBox="0 0 24 24"
+    {...props}
+  />
 );
 
 export default SettingsIcon;
