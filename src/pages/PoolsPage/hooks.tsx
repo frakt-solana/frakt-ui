@@ -71,17 +71,13 @@ export const usePoolsPage = (): {
       const routerAccount = routers.find(
         ({ routerPubkey }) => routerPubkey === routerPubkeys,
       );
-      console.log(routerAccount);
 
       const stakeAccount = stakeAccounts.find(
         ({ router }) => router === routerPubkeys,
       );
 
-      console.log(stakeAccounts);
-
       return { router: routerAccount, stakeAccount };
     }
-    2;
   }, [programAccounts]);
 
   const rawPoolsData = useMemo(() => {

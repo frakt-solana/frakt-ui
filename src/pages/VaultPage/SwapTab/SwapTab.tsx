@@ -35,6 +35,7 @@ export const SwapTab: FC<SwapTabProps> = ({
             <CreateLiquidityForm
               vaultLockedPrice={vaultLockedPrice}
               defaultTokenMint={fractionMint}
+              marketAddress={vaultMarketAddress}
             />
           )}
         </>

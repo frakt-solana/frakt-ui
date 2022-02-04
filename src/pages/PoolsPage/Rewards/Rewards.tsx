@@ -21,10 +21,13 @@ interface RewardsInterface {
 
 const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
   const { harvestLiquidity } = useLiquidityPools();
-  const { router, stakeAccount } = programAccount;
 
   const onSubmitHandler = () => {
-    harvestLiquidity({ router, stakeAccount });
+    if (programAccount) {
+      const { router, stakeAccount } = programAccount;
+
+      harvestLiquidity({ router, stakeAccount });
+    }
   };
 
   return (

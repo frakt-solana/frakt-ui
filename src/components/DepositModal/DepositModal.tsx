@@ -41,30 +41,33 @@ const DepositModal: FC<DepositModalProps> = ({
   } = useDeposit(tokenInfo, poolConfig);
 
   const { addRaydiumLiquidity, stakeLiquidity } = useLiquidityPools();
-  const { router } = programAccount;
 
   const onSubmitHandler = async () => {
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
     try {
-      await addRaydiumLiquidity({
-        baseToken: tokenInfo,
-        baseAmount,
-        quoteToken: SOL_TOKEN,
-        quoteAmount,
-        poolConfig,
-      });
+      if (programAccount) {
+        const { router } = programAccount;
 
-      await stakeLiquidity({
-        amount: new BN(1e6),
-        router,
-      });
+        await addRaydiumLiquidity({
+          baseToken: tokenInfo,
+          baseAmount,
+          quoteToken: SOL_TOKEN,
+          quoteAmount,
+          poolConfig,
+        });
 
-      notify({
-        message: 'successfully',
-        type: 'success',
-      });
+        await stakeLiquidity({
+          amount: new BN(1e6),
+          router,
+        });
+
+        notify({
+          message: 'successfully',
+          type: 'success',
+        });
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

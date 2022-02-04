@@ -39,7 +39,6 @@ const Withdraw: FC<WithdrawInterface> = ({
 
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
-  const { router, stakeAccount } = programAccount;
 
   const tokenLpInfo = rawUserTokensByMint[poolConfig.lpMint.toBase58()];
   const balance = String(Number(tokenLpInfo?.amount) / 10 ** lpDecimals);
@@ -49,32 +48,36 @@ const Withdraw: FC<WithdrawInterface> = ({
   const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
   const onSubmitHandler = async (): Promise<void> => {
-    try {
-      if (balance && stakeAccount.amount) {
-        await unstakeLiquidity({
-          router,
-          stakeAccount,
+    if (programAccount) {
+      const { router, stakeAccount } = programAccount;
+
+      try {
+        if (balance && stakeAccount.amount) {
+          await unstakeLiquidity({
+            router,
+            stakeAccount,
+          });
+          await removeRaydiumLiquidity({
+            baseToken,
+            quoteToken,
+            amount,
+            poolConfig,
+          });
+        }
+        notify({
+          message: 'Liquidity withdrawn successfully',
+          type: 'success',
         });
-        await removeRaydiumLiquidity({
-          baseToken,
-          quoteToken,
-          amount,
-          poolConfig,
+      } catch (error) {
+        setVisibleUnstakeBtn(true);
+        // eslint-disable-next-line no-console
+        console.error(error);
+
+        notify({
+          message: 'Transaction failed',
+          type: 'error',
         });
       }
-      notify({
-        message: 'Liquidity withdrawn successfully',
-        type: 'success',
-      });
-    } catch (error) {
-      setVisibleUnstakeBtn(true);
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      notify({
-        message: 'Transaction failed',
-        type: 'error',
-      });
     }
   };
 

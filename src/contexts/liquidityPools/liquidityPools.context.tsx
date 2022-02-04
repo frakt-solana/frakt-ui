@@ -12,6 +12,7 @@ import {
   harvestLiquidity,
   stakeLiquidity,
   unstakeLiquidity,
+  createRaydiumLiquidityPool,
 } from './liquidityPools';
 import {
   fetchPoolDataByMint,
@@ -27,6 +28,8 @@ import CONFIG from './config';
 
 const { PROGRAM_PUBKEY } = CONFIG;
 
+const IS_DEVNET = process.env.REACT_APP_NETWORK === 'devnet';
+
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
     loading: true,
@@ -34,6 +37,7 @@ export const LiquidityPoolsContext =
     programAccounts: null,
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
+    createRaydiumLiquidityPool: () => Promise.resolve(null),
     addRaydiumLiquidity: () => Promise.resolve(null),
     removeRaydiumLiquidity: () => Promise.resolve(null),
     harvestLiquidity: () => Promise.resolve(null),
@@ -57,17 +61,18 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
 
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
-      const allProgramAccounts = await fetchProgramAccounts({
-        vaultProgramId: new PublicKey(PROGRAM_PUBKEY),
-        connection,
-      });
+      if (IS_DEVNET) {
+        const allProgramAccounts = await fetchProgramAccounts({
+          vaultProgramId: new PublicKey(PROGRAM_PUBKEY),
+          connection,
+        });
+        setProgramAccounts(allProgramAccounts);
+      }
 
       const poolDataByMint = await fetchPoolDataByMint({
         connection,
         tokensMap: fraktionTokensMap,
       });
-
-      setProgramAccounts(allProgramAccounts);
 
       setPoolDataByMint(poolDataByMint);
     } catch (error) {
@@ -91,6 +96,11 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         programAccounts,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
+        createRaydiumLiquidityPool: createRaydiumLiquidityPool(
+          connection,
+          walletPublicKey,
+          signTransaction,
+        ),
         removeRaydiumLiquidity: removeRaydiumLiquidity(
           connection,
           walletPublicKey,
