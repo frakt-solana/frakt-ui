@@ -24,9 +24,7 @@ import {
   PoolDataByMint,
   ProgramAccountsData,
 } from './liquidityPools.model';
-import CONFIG from './config';
-
-const { PROGRAM_PUBKEY } = CONFIG;
+import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
 
 const IS_DEVNET = process.env.REACT_APP_NETWORK === 'devnet';
 
@@ -63,7 +61,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
     try {
       if (IS_DEVNET) {
         const allProgramAccounts = await fetchProgramAccounts({
-          vaultProgramId: new PublicKey(PROGRAM_PUBKEY),
+          vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
           connection,
         });
         setProgramAccounts(allProgramAccounts);
