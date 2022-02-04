@@ -3,16 +3,12 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
-import {
-  RouterData,
-  StakeData,
-  ConfigData,
-} from '@frakters/fusion-pool/lib/borsh';
+import { Config, Router, Stake } from '@frakters/fusion-pool';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
   poolDataByMint: PoolDataByMint;
-  programAccounts: any;
+  programAccounts: ProgramAccountsData;
   fetchRaydiumPoolsInfo: (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
@@ -21,13 +17,9 @@ export interface LiquidityPoolsContextValues {
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
-  harvestLiquidity: (
-    params: HarvestLiquidityTransactionParams,
-  ) => Promise<void>;
-  stakeLiquidity: (params: HarvestLiquidityTransactionParams) => Promise<void>;
-  unstakeLiquidity: (
-    params: HarvestLiquidityTransactionParams,
-  ) => Promise<void>;
+  harvestLiquidity: (params) => Promise<void>;
+  stakeLiquidity: (params) => Promise<void>;
+  unstakeLiquidity: (params) => Promise<void>;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -53,9 +45,9 @@ export type PoolDataByMint = Map<string, PoolData>;
 export interface PoolData {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
-  fushionConfig?: ConfigData;
-  router?: RouterData;
-  fushionStakeAccounts?: StakeData;
+  fushionConfig?: Config;
+  router?: Router;
+  fushionStakeAccounts?: Stake;
 }
 
 export type FetchPoolDataByMint = ({
@@ -91,14 +83,14 @@ export interface RemoveLiquidityTransactionParams {
   amount: TokenAmount;
 }
 
-export interface HarvestLiquidityTransactionParams {
-  amount?: BN;
-  router: RouterData;
-  stakeAccount?: StakeData;
+export interface ProgramAccountsData {
+  configs: Config[];
+  routers: Router[];
+  stakeAccounts: Stake[];
 }
 
-export interface ProgramAccountsData {
-  fushionConfig: ConfigData;
-  router: RouterData;
-  fushionStakeAccounts: StakeData[];
+export interface ProgramAccountData {
+  config?: Config;
+  router: Router;
+  stakeAccount: Stake;
 }

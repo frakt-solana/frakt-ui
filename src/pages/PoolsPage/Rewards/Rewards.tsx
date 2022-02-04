@@ -6,15 +6,27 @@ import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
 
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { RaydiumPoolInfo } from '../../../contexts/liquidityPools';
+import {
+  ProgramAccountData,
+  RaydiumPoolInfo,
+  useLiquidityPools,
+} from '../../../contexts/liquidityPools';
 
 interface RewardsInterface {
   baseToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
+  programAccount: ProgramAccountData;
 }
 
-const Rewards: FC<RewardsInterface> = ({ baseToken }) => {
+const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
+  const { harvestLiquidity } = useLiquidityPools();
+  const { router, stakeAccount } = programAccount;
+
+  const onSubmitHandler = () => {
+    harvestLiquidity({ router, stakeAccount });
+  };
+
   return (
     <div className={styles.rewards}>
       <p className={styles.title}>Pending rewards</p>
@@ -27,7 +39,11 @@ const Rewards: FC<RewardsInterface> = ({ baseToken }) => {
             0.0 <span>{baseToken.symbol}</span>
           </p>
         </div>
-        <Button type="tertiary" className={styles.harvestBtn}>
+        <Button
+          type="tertiary"
+          className={styles.harvestBtn}
+          onClick={onSubmitHandler}
+        >
           Harvest
         </Button>
       </div>

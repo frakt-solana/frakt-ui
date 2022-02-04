@@ -1,4 +1,7 @@
+import BN from 'bn.js';
 import {
+  Router,
+  Stake,
   harvestInFusion,
   stakeInFusion,
   unstakeInFusion,
@@ -111,62 +114,46 @@ export const addRaydiumLiquidity =
     quoteAmount,
     poolConfig,
   }: LiquidityTransactionParams): Promise<void> => {
-    try {
-      const tokenAccounts = (
-        await Promise.all(
-          [baseToken.address, quoteToken.address, poolConfig.lpMint].map(
-            (mint) =>
-              getTokenAccount({
-                tokenMint: new PublicKey(mint),
-                owner: walletPublicKey,
-                connection,
-              }),
-          ),
-        )
-      ).filter((tokenAccount) => tokenAccount);
-
-      const currencyAmountInA = getCurrencyAmount(baseToken, baseAmount);
-      const currencyAmountInB = getCurrencyAmount(SOL_TOKEN, quoteAmount);
-
-      const { transaction, signers } =
-        await Liquidity.makeAddLiquidityTransaction({
-          connection,
-          poolKeys: poolConfig,
-          userKeys: {
-            tokenAccounts,
+    const tokenAccounts = (
+      await Promise.all(
+        [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
+          getTokenAccount({
+            tokenMint: new PublicKey(mint),
             owner: walletPublicKey,
-          },
-          currencyAmountInA,
-          currencyAmountInB,
-          fixedSide: 'b',
-        });
+            connection,
+          }),
+        ),
+      )
+    ).filter((tokenAccount) => tokenAccount);
 
-      const { blockhash } = await connection.getRecentBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = walletPublicKey;
-      transaction.sign(...signers);
+    const currencyAmountInA = getCurrencyAmount(baseToken, baseAmount);
+    const currencyAmountInB = getCurrencyAmount(SOL_TOKEN, quoteAmount);
 
-      const signedTransaction = await signTransaction(transaction);
-      const txid = await connection.sendRawTransaction(
-        signedTransaction.serialize(),
-        // { skipPreflight: true },
-      );
-
-      notify({
-        message: 'Liquidity provided successfully',
-        type: 'success',
+    const { transaction, signers } =
+      await Liquidity.makeAddLiquidityTransaction({
+        connection,
+        poolKeys: poolConfig,
+        userKeys: {
+          tokenAccounts,
+          owner: walletPublicKey,
+        },
+        currencyAmountInA,
+        currencyAmountInB,
+        fixedSide: 'b',
       });
 
-      return void connection.confirmTransaction(txid);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+    const { blockhash } = await connection.getRecentBlockhash();
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = walletPublicKey;
+    transaction.sign(...signers);
 
-      notify({
-        message: 'Transaction failed',
-        type: 'error',
-      });
-    }
+    const signedTransaction = await signTransaction(transaction);
+    const txid = await connection.sendRawTransaction(
+      signedTransaction.serialize(),
+      // { skipPreflight: true },
+    );
+
+    return void connection.confirmTransaction(txid);
   };
 
 export const removeRaydiumLiquidity =
@@ -181,57 +168,41 @@ export const removeRaydiumLiquidity =
     poolConfig,
     amount,
   }: RemoveLiquidityTransactionParams): Promise<void> => {
-    try {
-      const tokenAccounts = (
-        await Promise.all(
-          [baseToken.address, quoteToken.address, poolConfig.lpMint].map(
-            (mint) =>
-              getTokenAccount({
-                tokenMint: new PublicKey(mint),
-                owner: walletPublicKey,
-                connection,
-              }),
-          ),
-        )
-      ).filter((tokenAccount) => tokenAccount);
-
-      const { transaction, signers } =
-        await Liquidity.makeRemoveLiquidityTransaction({
-          connection,
-          poolKeys: poolConfig,
-          userKeys: {
-            tokenAccounts: tokenAccounts,
+    const tokenAccounts = (
+      await Promise.all(
+        [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
+          getTokenAccount({
+            tokenMint: new PublicKey(mint),
             owner: walletPublicKey,
-          },
-          tokenAmountIn: amount,
-        });
+            connection,
+          }),
+        ),
+      )
+    ).filter((tokenAccount) => tokenAccount);
 
-      const { blockhash } = await connection.getRecentBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = walletPublicKey;
-      transaction.sign(...signers);
-
-      const signedTransaction = await signTransaction(transaction);
-      const txid = await connection.sendRawTransaction(
-        signedTransaction.serialize(),
-        // { skipPreflight: true },
-      );
-
-      notify({
-        message: 'Liquidity withdrawn successfully',
-        type: 'success',
+    const { transaction, signers } =
+      await Liquidity.makeRemoveLiquidityTransaction({
+        connection,
+        poolKeys: poolConfig,
+        userKeys: {
+          tokenAccounts: tokenAccounts,
+          owner: walletPublicKey,
+        },
+        tokenAmountIn: amount,
       });
 
-      return void connection.confirmTransaction(txid);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+    const { blockhash } = await connection.getRecentBlockhash();
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = walletPublicKey;
+    transaction.sign(...signers);
 
-      notify({
-        message: 'Transaction failed',
-        type: 'error',
-      });
-    }
+    const signedTransaction = await signTransaction(transaction);
+    const txid = await connection.sendRawTransaction(
+      signedTransaction.serialize(),
+      // { skipPreflight: true },
+    );
+
+    return void connection.confirmTransaction(txid);
   };
 
 export const stakeLiquidity =
@@ -240,38 +211,26 @@ export const stakeLiquidity =
     walletPublicKey: PublicKey,
     signTransaction: (transaction: Transaction) => Promise<Transaction>,
   ) =>
-  async ({ amount, router }): Promise<void> => {
-    try {
-      await stakeInFusion(
-        walletPublicKey,
-        connection,
-        new PublicKey(PROGRAM_PUBKEY),
-        new PublicKey(router.token_mint_input),
-        new PublicKey(router.token_mint_output),
-        amount,
-        new PublicKey(router.routerPubkey),
-        new PublicKey(router.pool_config_input),
-        new PublicKey(router.pool_config_output),
-        async (txn) => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = walletPublicKey;
-          const signed = await signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
-        },
-      );
-
-      notify({ message: 'successfully', type: 'success' });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      notify({
-        message: 'Transaction failed',
-        type: 'error',
-      });
-    }
+  async ({ amount, router }: { amount: BN; router: Router }): Promise<void> => {
+    await stakeInFusion(
+      walletPublicKey,
+      connection,
+      new PublicKey(PROGRAM_PUBKEY),
+      new PublicKey(router.token_mint_input),
+      new PublicKey(router.token_mint_output),
+      amount,
+      new PublicKey(router.routerPubkey),
+      new PublicKey(router.pool_config_input),
+      new PublicKey(router.pool_config_output),
+      async (txn) => {
+        const { blockhash } = await connection.getRecentBlockhash();
+        txn.recentBlockhash = blockhash;
+        txn.feePayer = walletPublicKey;
+        const signed = await signTransaction(txn);
+        const txid = await connection.sendRawTransaction(signed.serialize());
+        return void connection.confirmTransaction(txid);
+      },
+    );
   };
 
 export const harvestLiquidity =
@@ -280,7 +239,13 @@ export const harvestLiquidity =
     walletPublicKey: PublicKey,
     signTransaction: (transaction: Transaction) => Promise<Transaction>,
   ) =>
-  async ({ router, stakeAccount }): Promise<void> => {
+  async ({
+    router,
+    stakeAccount,
+  }: {
+    router: Router;
+    stakeAccount: Stake;
+  }): Promise<void> => {
     try {
       await harvestInFusion(
         walletPublicKey,
@@ -323,37 +288,31 @@ export const unstakeLiquidity =
     walletPublicKey: PublicKey,
     signTransaction: (transaction: Transaction) => Promise<Transaction>,
   ) =>
-  async ({ router, stakeAccount }): Promise<void> => {
-    try {
-      await unstakeInFusion(
-        walletPublicKey,
-        new PublicKey(PROGRAM_PUBKEY),
-        new PublicKey(router.token_mint_input),
-        new PublicKey(router.token_mint_output),
-        new PublicKey(router.routerPubkey),
-        [new PublicKey(stakeAccount.stakePubkey)],
-        new PublicKey(router.pool_config_input),
-        new PublicKey(router.pool_config_output),
-        async (txn) => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = walletPublicKey;
-          const signed = await signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
-        },
-      );
-
-      notify({ message: 'successfully', type: 'success' });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      notify({
-        message: 'Transaction failed',
-        type: 'error',
-      });
-    }
+  async ({
+    router,
+    stakeAccount,
+  }: {
+    router: Router;
+    stakeAccount: Stake;
+  }): Promise<void> => {
+    await unstakeInFusion(
+      walletPublicKey,
+      new PublicKey(PROGRAM_PUBKEY),
+      new PublicKey(router.token_mint_input),
+      new PublicKey(router.token_mint_output),
+      new PublicKey(router.routerPubkey),
+      [new PublicKey(stakeAccount.stakePubkey)],
+      new PublicKey(router.pool_config_input),
+      new PublicKey(router.pool_config_output),
+      async (txn) => {
+        const { blockhash } = await connection.getRecentBlockhash();
+        txn.recentBlockhash = blockhash;
+        txn.feePayer = walletPublicKey;
+        const signed = await signTransaction(txn);
+        const txid = await connection.sendRawTransaction(signed.serialize());
+        return void connection.confirmTransaction(txid);
+      },
+    );
   };
 
 // export const provideRaydiumLiquidity_OLD =

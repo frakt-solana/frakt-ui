@@ -31,7 +31,7 @@ export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
     loading: true,
     poolDataByMint: new Map(),
-    programAccounts: {},
+    programAccounts: null,
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
     addRaydiumLiquidity: () => Promise.resolve(null),

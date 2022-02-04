@@ -163,7 +163,7 @@ export const getCurrencyAmount = (
 export const fetchProgramAccounts = async ({
   vaultProgramId,
   connection,
-}): Promise<ProgramAccountsData | any> => {
+}): Promise<ProgramAccountsData> => {
   const allProgramAccounts = await getAllProgramAccounts(
     vaultProgramId,
     connection,
