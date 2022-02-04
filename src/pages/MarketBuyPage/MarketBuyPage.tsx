@@ -41,37 +41,37 @@ const MarketBuyPage = (): JSX.Element => {
   const sort = watch('sort');
 
   return (
-    <AppLayout className={styles.layout}>
-      <div className="container_lg">
-        <Helmet>
-          <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
-        </Helmet>
-        <div className={styles.wrapper}>
-          <Sidebar />
+    <HeaderStateProvider>
+      <AppLayout className={styles.layout}>
+        <div className="container_lg">
+          <Helmet>
+            <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
+          </Helmet>
+          <div className={styles.wrapper}>
+            <Sidebar />
 
-          <div className={styles.content}>
-            <HeaderStateProvider>
+            <div className={styles.content}>
               <HeaderBuy />
-            </HeaderStateProvider>
-            <div className={styles.itemsSortWrapper}>
-              <div className={styles.itemsAmount}>355 items</div>
-              <div className={styles.sortWrapper}>
-                <ControlledSelect
-                  className={styles.sortingSelect}
-                  valueContainerClassName={styles.sortingSelectValueContainer}
-                  label="Sort by"
-                  control={control}
-                  name="sort"
-                  options={SORT_VALUES}
-                />
+              <div className={styles.itemsSortWrapper}>
+                <div className={styles.itemsAmount}>355 items</div>
+                <div className={styles.sortWrapper}>
+                  <ControlledSelect
+                    className={styles.sortingSelect}
+                    valueContainerClassName={styles.sortingSelectValueContainer}
+                    label="Sort by"
+                    control={control}
+                    name="sort"
+                    options={SORT_VALUES}
+                  />
+                </div>
               </div>
-            </div>
 
-            <NFTsList />
+              <NFTsList />
+            </div>
           </div>
         </div>
-      </div>
-    </AppLayout>
+      </AppLayout>
+    </HeaderStateProvider>
   );
 };
 
