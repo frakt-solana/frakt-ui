@@ -12,6 +12,7 @@ import {
   harvestLiquidity,
   stakeLiquidity,
   unstakeLiquidity,
+  createRaydiumLiquidityPool,
 } from './liquidityPools';
 import {
   fetchPoolDataByMint,
@@ -36,6 +37,7 @@ export const LiquidityPoolsContext =
     programAccounts: {},
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
+    createRaydiumLiquidityPool: () => Promise.resolve(null),
     addRaydiumLiquidity: () => Promise.resolve(null),
     removeRaydiumLiquidity: () => Promise.resolve(null),
     harvestLiquidity: () => Promise.resolve(null),
@@ -94,6 +96,11 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         programAccounts,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
+        createRaydiumLiquidityPool: createRaydiumLiquidityPool(
+          connection,
+          walletPublicKey,
+          signTransaction,
+        ),
         removeRaydiumLiquidity: removeRaydiumLiquidity(
           connection,
           walletPublicKey,
