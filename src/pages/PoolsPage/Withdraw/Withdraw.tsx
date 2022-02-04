@@ -111,7 +111,7 @@ const Withdraw: FC<WithdrawInterface> = ({
           type="tertiary"
           className={styles.rewardBtn}
           onClick={onSubmitHandler}
-          disabled={!parseFloat(balance)}
+          disabled={!parseFloat(balance) || !parseFloat(withdrawValue)}
         >
           Confirm
         </Button>
