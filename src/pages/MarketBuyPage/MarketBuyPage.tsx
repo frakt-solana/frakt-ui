@@ -45,9 +45,7 @@ const MarketBuyPage = (): JSX.Element => {
     <HeaderStateProvider>
       <AppLayout className={styles.layout}>
         <div className={styles.modalWrapper}>
-          <div className="container_lg">
-            <BuyingModal />
-          </div>
+          <BuyingModal />
         </div>
         <div className="container_lg">
           <Helmet>

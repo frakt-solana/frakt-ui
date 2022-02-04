@@ -9,13 +9,25 @@
   }
 }
 
-.poolCard {
+.poolItem {
   max-width: 300px;
   flex-shrink: 1;
   width: calc(25% - 19px);
   position: relative;
   background-color: var(--black-color);
   border: 1px solid var(--color-gray-03);
+  color: var(--white-color);
+  transition: border-color .1s ease-in;
+
+  &:hover {
+    border-color: var(--accent-color-1);
+    color: var(--white-color);
+
+    &::after {
+      border-color: var(--accent-color-1);
+      opacity: .5;
+    }
+  }
 
   @media screen and (max-width: 1200px) {
     width: calc(33.33% - 17px);
@@ -42,6 +54,7 @@
     right: -10px;
     bottom: -10px;
     border: 1px solid var(--color-gray-03);
+    transition: border-color .1s ease-in;
     z-index: -1;
 
     @media screen and (max-width: 550px) {
@@ -49,6 +62,10 @@
       bottom: -6px;
     }
   }
+
+}
+
+.poolCard {
 }
 
 .poolImgWrapper {
