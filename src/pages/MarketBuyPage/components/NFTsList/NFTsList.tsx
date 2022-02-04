@@ -1,57 +1,34 @@
 import styles from './styles.module.scss';
 import React, { FC } from 'react';
+import classNames from 'classnames';
 
-const tempImage =
-  'https://www.arweave.net/xW93zrDmljTvqDiEQdJ5PuMq4CVL5Rz1vAjUO4TznD8';
+interface NFTsListProps {
+  nfts: any;
+  selectedNFTs: any;
+  onCardClick: (nft: any) => void;
+}
 
-const POOLS_DATA = [
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-  {
-    poolImage: tempImage,
-    nftName: 'PUNKS',
-    collectionName: 'cryptopunks',
-  },
-];
-
-export const NFTsList: FC = () => {
+export const NFTsList: FC<NFTsListProps> = ({
+  nfts,
+  selectedNFTs,
+  onCardClick,
+}) => {
   return (
     <ul className={styles.poolsList}>
-      {POOLS_DATA.map((item, index) => (
-        <li key={index} className={styles.nftCard}>
+      {nfts.map((item, index) => (
+        <li
+          key={index}
+          className={styles.nftCard}
+          onClick={() => onCardClick(item)}
+        >
+          <div
+            className={classNames({
+              [styles.borderHover]: true,
+              [styles.selected]: !!selectedNFTs.find(
+                (selectedNft) => selectedNft?.nftId === item.nftId,
+              ),
+            })}
+          />
           <div className={styles.nftImgWrapper}>
             <img
               src={item.poolImage}
@@ -60,7 +37,7 @@ export const NFTsList: FC = () => {
             />
           </div>
           <div className={styles.cardContentWrapper}>
-            <p className={styles.nftName}>{item.nftName}</p>
+            <p className={styles.nftName}>{item.nftId}</p>
             <span className={styles.collectionName}>{item.collectionName}</span>
             <button className={styles.detailsBtn}>Details</button>
           </div>

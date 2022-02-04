@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import styles from './styles.module.scss';
@@ -12,6 +12,7 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { BuyingModal } from './components/BuyingModal';
+import { NFTs_DATA } from './tempData';
 
 const SORT_VALUES = [
   {
@@ -33,6 +34,24 @@ const SORT_VALUES = [
 ];
 
 const MarketBuyPage = (): JSX.Element => {
+  const [selectedNfts, setSelectedNfts] = useState<any>([]);
+
+  const onDeselect = (nft: any) => {
+    setSelectedNfts(
+      selectedNfts.filter((selectedNft) => selectedNft?.nftId !== nft.nftId),
+    );
+  };
+
+  const onCardClick = (nft: any): void => {
+    selectedNfts.find((selectedNft) => selectedNft?.nftId === nft.nftId)
+      ? setSelectedNfts(
+          selectedNfts.filter(
+            (selectedNft) => selectedNft?.nftId !== nft.nftId,
+          ),
+        )
+      : setSelectedNfts([...selectedNfts, nft]);
+  };
+
   const { control, watch } = useForm({
     defaultValues: {
       sort: SORT_VALUES[0],
@@ -45,7 +64,7 @@ const MarketBuyPage = (): JSX.Element => {
     <HeaderStateProvider>
       <AppLayout className={styles.layout}>
         <div className={styles.modalWrapper}>
-          <BuyingModal />
+          <BuyingModal nfts={selectedNfts} onDeselect={onDeselect} />
         </div>
         <div className="container_lg">
           <Helmet>
@@ -71,7 +90,11 @@ const MarketBuyPage = (): JSX.Element => {
                 </div>
               </div>
 
-              <NFTsList />
+              <NFTsList
+                selectedNFTs={selectedNfts}
+                onCardClick={onCardClick}
+                nfts={NFTs_DATA}
+              />
             </div>
           </div>
         </div>

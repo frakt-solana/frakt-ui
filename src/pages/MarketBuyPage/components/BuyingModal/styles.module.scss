@@ -7,7 +7,11 @@
   border-bottom: none;
   background-color: var(--color-gray-7);
   padding: 20px;
-  transform: translateY(-100%);
+  transition: transform .2s ease-out;
+
+  &.visible {
+    transform: translateY(-100%);
+  }
 }
 
 .header {
@@ -146,13 +150,16 @@
 
   svg {
     width: 22px;
-    margin-left: auto;
-    cursor: pointer;
 
     &:hover {
       opacity: .5;
     }
   }
+}
+
+.closeWrapper {
+  margin-left: auto;
+  cursor: pointer;
 }
 
 .itemImg {

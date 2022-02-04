@@ -9,7 +9,12 @@ const { Option } = Select;
 const tempImage =
   'https://www.arweave.net/xW93zrDmljTvqDiEQdJ5PuMq4CVL5Rz1vAjUO4TznD8';
 
-export const BuyingModal: FC = () => {
+interface BuyingModalProps {
+  onDeselect?: (nft: any) => void;
+  nfts: any;
+}
+
+export const BuyingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 
   const settingsRef = useRef();
@@ -17,10 +22,15 @@ export const BuyingModal: FC = () => {
   const toggleSlippageModal = () => setIsSlippageVisible(!isSlippageVisible);
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={classNames({
+        [styles.wrapper]: true,
+        [styles.visible]: nfts.length,
+      })}
+    >
       <div className={styles.header}>
         <p className={styles.title}>
-          You&apos;re buying<span>{2}</span>
+          You&apos;re buying<span>{nfts.length}</span>
         </p>
         <div
           className={classNames({
@@ -51,17 +61,24 @@ export const BuyingModal: FC = () => {
         </div>
       </div>
       <ul className={styles.selectedList}>
-        <li className={styles.selectedItem}>
-          <div
-            className={styles.itemImg}
-            style={{ backgroundImage: `url(${tempImage})` }}
-          />
-          <div className={styles.itemInfo}>
-            <p className={styles.itemId}>{'#23453234'}</p>
-            <p className={styles.collectionName}>{'Hello'}</p>
-          </div>
-          <CloseModalIcon />
-        </li>
+        {nfts.map((nft, index) => (
+          <li key={index} className={styles.selectedItem}>
+            <div
+              className={styles.itemImg}
+              style={{ backgroundImage: `url(${tempImage})` }}
+            />
+            <div className={styles.itemInfo}>
+              <p className={styles.itemId}>{nft.nftId}</p>
+              <p className={styles.collectionName}>{nft.collectionName}</p>
+            </div>
+            <div
+              className={styles.closeWrapper}
+              onClick={() => onDeselect(nft)}
+            >
+              <CloseModalIcon />
+            </div>
+          </li>
+        ))}
       </ul>
       <div className={styles.currencyWrapper}>
         <p className={styles.totalText}>Total</p>
