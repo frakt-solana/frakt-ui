@@ -1,6 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import Button from '../../../components/Button';
-import { URLS } from '../../../constants';
 
 import { useFraktion, VaultData } from '../../../contexts/fraktion';
 import styles from './styles.module.scss';
@@ -25,7 +24,7 @@ export const TradeTab = ({
       <Trade marketAddress={vaultMarketAddress} />
       <p className={styles.tradeLink}>
         <a
-          href={`${URLS.DEX}/#/market/${vaultMarketAddress}`}
+          href={`${process.env.REACT_APP_DEX_URL}/#/market/${vaultMarketAddress}`}
           target="_blank"
           rel="noopener noreferrer"
         >

@@ -1,4 +1,4 @@
-export const URLS = {
+export const PATHS = {
   ROOT: '/',
   SWAP: '/swap',
   VAULTS: '/vaults',
@@ -9,5 +9,7 @@ export const URLS = {
   PAGE_404: '/404',
   COLLECTIONS: '/collections',
   COLLECTION: '/collection',
-  DEX: 'https://dex.fraktion.art',
+  VAULT_PUBKEY: '/:vaultPubkey',
+  WALLET_PUBKEY: '/:walletPubkey',
+  COLLECTION_NAME: '/:collectionName',
 };

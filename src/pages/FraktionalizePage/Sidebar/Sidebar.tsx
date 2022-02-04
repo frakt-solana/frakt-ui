@@ -6,7 +6,7 @@ import { Header } from './Header';
 import { DetailsForm } from './DetailsForm/DetailsForm';
 import { useFraktion } from '../../../contexts/fraktion';
 import { useHistory } from 'react-router';
-import { URLS } from '../../../constants';
+import { PATHS } from '../../../constants';
 import { FraktionalizeTxnData } from '../hooks';
 
 interface SidebarProps {
@@ -111,7 +111,7 @@ const Sidebar = ({
                 vaultName,
                 vault: currentVault,
               }).then(() => {
-                history.push(URLS.FRAKTIONALIZE);
+                history.push(PATHS.FRAKTIONALIZE);
               });
             }}
           />

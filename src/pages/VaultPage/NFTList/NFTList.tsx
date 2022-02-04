@@ -13,7 +13,7 @@ import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import { CopyClipboardIcon, CloseModalIcon } from '../../../icons';
 import { CollectionData } from '../../../utils/collections';
 import { NavLink } from 'react-router-dom';
-import { URLS } from '../../../constants';
+import { PATHS } from '../../../constants';
 import { copyToClipboard, getCollectionThumbnailUrl } from '../../../utils';
 import Tooltip from '../../../components/Tooltip';
 
@@ -122,7 +122,7 @@ export const NFTList: FC<NFTListProps> = ({
                 <div className={styles.slideInfoBlock}>
                   {slide.collectionInfo?.collectionName && (
                     <NavLink
-                      to={`${URLS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
+                      to={`${PATHS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
                       className={styles.collectionLink}
                     >
                       <div

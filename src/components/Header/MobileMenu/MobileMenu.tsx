@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles.module.scss';
 import classNames from 'classnames/bind';
-import { URLS } from '../../../constants';
+import { PATHS } from '../../../constants';
 import { WalletInfo } from '../WalletInfo/WalletInfo';
 import NavigationLink from '../NavigationLink';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -17,7 +17,7 @@ export const MobileMenu = (): JSX.Element => {
       <div className={styles.logoWrapper}>
         <NavLink
           className={classNames(styles.logo, styles.logoMobile)}
-          to={URLS.ROOT}
+          to={PATHS.ROOT}
         >
           Fraktion
         </NavLink>
@@ -29,7 +29,7 @@ export const MobileMenu = (): JSX.Element => {
               [styles.connectedBtn]: connected,
             })}
           >
-            <NavigationLink to={URLS.FRAKTIONALIZE}>
+            <NavigationLink to={PATHS.FRAKTIONALIZE}>
               Fraktionalize
             </NavigationLink>
           </li>
@@ -52,15 +52,15 @@ export const MobileMenu = (): JSX.Element => {
         </ul>
         <ul className={classNames(styles.navMobile, styles.mobileMenu)}>
           <li>
-            <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
+            <NavigationLink to={PATHS.VAULTS}>Vaults</NavigationLink>
           </li>
           <li>
-            <NavigationLink to={URLS.SWAP}>Swap</NavigationLink>
+            <NavigationLink to={PATHS.SWAP}>Swap</NavigationLink>
           </li>
           <li>
             <a
               className={styles.link}
-              href={URLS.DEX}
+              href={process.env.REACT_APP_DEX_URL}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -68,12 +68,12 @@ export const MobileMenu = (): JSX.Element => {
             </a>
           </li>
           <li>
-            <NavigationLink to={URLS.COLLECTIONS}>Collections</NavigationLink>
+            <NavigationLink to={PATHS.COLLECTIONS}>Collections</NavigationLink>
           </li>
           {connected && (
             <li>
               <NavigationLink
-                to={`${URLS.WALLET}/${publicKey.toString()}`}
+                to={`${PATHS.WALLET}/${publicKey.toString()}`}
                 isActive={(_, location) =>
                   location?.pathname?.includes(publicKey.toString()) || false
                 }

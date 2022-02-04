@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles.module.scss';
 import { NavLink } from 'react-router-dom';
-import { URLS } from '../../../constants';
+import { PATHS } from '../../../constants';
 import { ArrowLeftIcon } from '../../../icons';
 import classNames from 'classnames';
 
@@ -15,7 +15,7 @@ export const BackToVaultsListButton = ({
   return (
     <NavLink
       className={classNames(className, styles.backLink)}
-      to={URLS.VAULTS}
+      to={PATHS.VAULTS}
     >
       <ArrowLeftIcon className={styles.arrowIcon} />
       Back to Vaults list
