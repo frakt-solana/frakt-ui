@@ -1,187 +1,44 @@
-.positionWrapper {
-  position: fixed;
-  top: 50px;
-  width: 100%;
-  left: 0;
-  z-index: 99;
-  transition: top .2s ease-out;
-}
-
-.headerHidden {
-  top: 0;
-  transition: top .2s ease-in;
-}
-
-.container {
-  display: flex;
-  &::before {
-    display: block;
-    content: '';
-    width: 228px;
-    flex-shrink: 0;
-  }
-}
-
 .wrapper {
-  display: flex;
-  align-items: center;
+  margin-left: auto;
+  max-width: 295px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: var(--border-gray-1);
+  border-bottom: none;
   background-color: var(--color-gray-7);
-  max-width: 100%;
-  flex-grow: 1;
+  padding: 20px;
+  margin-right: -10px;
+  transform: translateY(-100%);
 }
 
-.randomWrapper {
+.header {
   display: flex;
   align-items: center;
-  width: 100%;
+  justify-content: space-between;
 }
 
-.questionWrapper {
-  width: 106px;
-  border: var(--border-gray-1);
-  overflow: hidden;
-  position: relative;
-  margin-right: 20px;
+.title {
+  font-size: 24px;
+  font-weight: 400;
 
-  &::after {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(8px);
-  }
-}
-
-.poolBgImage {
-  height: 106px;
-  object-fit: cover;
-  display: block;
-}
-
-.questionIcon {
-  position: absolute;
-  left: 29px;
-  top: 21px;
-  z-index: 2;
-}
-
-.buyWrapper {
-  display: flex;
-  gap: 20px;
-}
-
-.settingsWrapper {
-  display: flex;
-  align-items: center;
-  border: var(--border-gray-1);
-  background-color: var(--black-color);
-  height: 43px;
-  padding: 0 12px;
-  font: var(--font-text-3);
-  line-height: 1;
-  position: relative;
-}
-
-.separator {
-  height: 23px;
-  width: 1px;
-  background-color: var(--color-gray-4);
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-.amountControls {
-  display: flex;
-  align-items: center;
-  margin-right: 10px;
-  gap: 5px;
-}
-
-.amountControlIcon {
-  width: 22px;
-  height: 22px;
-  position: relative;
-  background-color: var(--color-gray-4);
-  cursor: pointer;
-  transition: background-color .1s ease-in;
-
-  &:hover {
-    background-color: var(--color-gray-3);
-  }
-
-  &.disabled {
-    background-color: var(--color-gray-7);
-  }
-
-  &::before {
-    display: block;
-    content: '';
-    position: absolute;
-    background-color: var(--white-color);
-    height: 2px;
-    width: 12px;
-    left: 5px;
-    top: 10px;
-  }
-}
-
-.plusIcon {
-  &::after {
-    display: block;
-    content: '';
-    position: absolute;
-    background-color: var(--white-color);
-    width: 2px;
-    height: 12px;
-    left: 10px;
-    top: 5px;
-  }
-}
-
-.selectWrapper {
-  position: relative;
-
-  .dropdown {
-    margin-top: 13px;
-    margin-left: -33px;
-    min-width: 117px !important;
-    left: 0 !important;
-    top: 30px !important;
-    border: var(--border-gray-1);
-    background-color: var(--black-color);
-    padding-top: 17px;
-    padding-bottom: 17px;
-    position: relative;
-    overflow: unset;
-
-    &::before {
-      content: "";
-      display: block;
-      width: 20px;
-      height: 20px;
-      border-left: var(--border-gray-1);
-      border-top: var(--border-gray-1);
-      background-color: var(--black-color);
-      transform: rotate(45deg);
-      position: absolute;
-      right: 30%;
-      top: -11px;
-      z-index: 1;
-    }
+  span {
+    color: var(--accent-color-1);
+    display: inline-block;
+    margin-left: 10px;
   }
 }
 
 .slippageWrapper {
-  position: relative;
   height: 24px;
+  position: relative;
 
   > svg {
     cursor: pointer;
     z-index: 6;
+
+    &:hover {
+      opacity: .5;
+    }
   }
 }
 
@@ -209,8 +66,8 @@
   border: var(--border-gray-1);
   background-color: var(--black-color);
   padding: 20px;
-  top: 100%;
-  left: 0;
+  top: 31px;
+  right: -3px;
   position: absolute;
   margin-top: 7px;
   z-index: 5;
@@ -228,7 +85,7 @@
     background-color: var(--black-color);
     transform: rotate(45deg);
     position: absolute;
-    left: 13px;
+    right: 3px;
     top: -11px;
     z-index: 1;
   }
@@ -275,6 +132,102 @@
   outline: none;
 }
 
+.selectedList {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: var(--border-gray-1);
+  border-bottom: var(--border-gray-1);
+}
+
+.selectedItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+
+  svg {
+    width: 22px;
+    margin-left: auto;
+    cursor: pointer;
+
+    &:hover {
+      opacity: .5;
+    }
+  }
+}
+
+.itemImg {
+  height: 46px;
+  width: 46px;
+  background-color: var(--color-gray-4);
+  background-size: cover;
+  flex-shrink: 0;
+}
+
+.itemId {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}
+
+.collectionName {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.currencyWrapper {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.totalAmount {
+  margin-left: auto;
+}
+
+.separator {
+  height: 23px;
+  width: 1px;
+  background-color: var(--color-gray-4);
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.selectWrapper {
+  position: relative;
+
+  .dropdown {
+    margin-top: 7px;
+    margin-left: -33px;
+    min-width: 117px !important;
+    left: 0 !important;
+    top: 30px !important;
+    border: var(--border-gray-1);
+    background-color: var(--black-color);
+    padding-top: 17px;
+    padding-bottom: 17px;
+    position: relative;
+    overflow: unset;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 20px;
+      height: 20px;
+      border-left: var(--border-gray-1);
+      border-top: var(--border-gray-1);
+      background-color: var(--black-color);
+      transform: rotate(45deg);
+      position: absolute;
+      right: 15%;
+      top: -11px;
+      z-index: 1;
+    }
+  }
+}
+
 .select {
 
   &:global {
@@ -301,6 +254,10 @@
 
 .option {
   font-size: 18px;
+
+  > svg {
+    flex-shrink: 0;
+  }
 
   &:global {
     &.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
@@ -341,13 +298,10 @@
 
 .buyButton {
   font: var(--font-text-3);
-  width: 222px;
+  width: 100%;
+  margin-top: 20px;
   height: 43px;
   background-color: var(--accent-color-1);
   border: 1px solid var(--accent-color-1);
   cursor: pointer;
-}
-
-.marketNavigation {
-  margin-left: auto;
 }

@@ -10,7 +10,8 @@ import { Sidebar } from './components/Sidebar';
 import { NFTsList } from './components/NFTsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
-import { HeaderStateProvider } from '../../contexts/HeaderState/headerState.context';
+import { HeaderStateProvider } from '../../contexts/HeaderState';
+import { BuyingModal } from './components/BuyingModal';
 
 const SORT_VALUES = [
   {
@@ -43,6 +44,11 @@ const MarketBuyPage = (): JSX.Element => {
   return (
     <HeaderStateProvider>
       <AppLayout className={styles.layout}>
+        <div className={styles.modalWrapper}>
+          <div className="container_lg">
+            <BuyingModal />
+          </div>
+        </div>
         <div className="container_lg">
           <Helmet>
             <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
@@ -52,6 +58,7 @@ const MarketBuyPage = (): JSX.Element => {
 
             <div className={styles.content}>
               <HeaderBuy />
+
               <div className={styles.itemsSortWrapper}>
                 <div className={styles.itemsAmount}>355 items</div>
                 <div className={styles.sortWrapper}>

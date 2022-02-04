@@ -89,7 +89,7 @@ export const BuyRandomNft: FC = () => {
           </div>
         </div>
         <p className={styles.slippageInfo}>
-          * Max total (with slippage) = 0.002124 SOL
+          * Max total (with slippage) = {0.002124} SOL
         </p>
       </div>
       <button className={styles.buyButton}>Buy random NFT</button>
