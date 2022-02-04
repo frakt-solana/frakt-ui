@@ -2,13 +2,15 @@ import { useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Control, useForm } from 'react-hook-form';
+import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
 import { useTokensMap } from '../../contexts/TokenList';
-import { decimalBNToString } from '../../utils';
+import { decimalBNToString, SOL_TOKEN } from '../../utils';
 import {
   useCurrentSolanaPrice,
   calcTotalForCreateLiquidity,
+  useLiquidityPools,
 } from '../../contexts/liquidityPools';
 
 export enum InputControlsNames {
@@ -28,6 +30,7 @@ export type FormFieldValues = {
 export const useCreateLiquidityForm = (
   vaultLockedPrice: BN,
   defaultTokenMint: string,
+  marketId: PublicKey,
 ): {
   formControl: Control<FormFieldValues>;
   totalValue: string;
@@ -35,9 +38,11 @@ export const useCreateLiquidityForm = (
   tokenInfo: TokenInfo;
   baseValue: string;
   quoteValue: string;
-  handleSwap: (value: string, name) => void;
+  handleSwap: (value: string, name: InputControlsNames) => void;
+  handleCreateLiquidity: () => void;
 } => {
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
+  const { createRaydiumLiquidityPool } = useLiquidityPools();
   const { connected } = useWallet();
   const tokensMap = useTokensMap();
 
@@ -62,7 +67,7 @@ export const useCreateLiquidityForm = (
 
   const tokenPrice = decimalBNToString(vaultLockedPrice.mul(new BN(1e3)), 6, 9);
 
-  const handleSwap = (value: string, name) => {
+  const handleSwap = (value: string, name: InputControlsNames) => {
     setValue(name, value);
     if (name === InputControlsNames.BASE_VALUE) {
       setValue(
@@ -91,6 +96,21 @@ export const useCreateLiquidityForm = (
 
   const isCreateBtnEnabled = connected && isVerified && Number(baseValue) > 0;
 
+  const handleCreateLiquidity = () => {
+    const baseAmount = new BN(parseFloat(baseValue) * 10 ** tokenInfo.decimals);
+    const quoteAmount = new BN(
+      parseFloat(quoteValue) * 10 ** SOL_TOKEN.decimals,
+    );
+
+    createRaydiumLiquidityPool({
+      baseAmount,
+      quoteAmount,
+      baseToken: tokenInfo,
+      quoteToken: SOL_TOKEN,
+      marketId,
+    });
+  };
+
   return {
     formControl: control,
     totalValue,
@@ -99,5 +119,6 @@ export const useCreateLiquidityForm = (
     baseValue,
     quoteValue,
     handleSwap,
+    handleCreateLiquidity,
   };
 };

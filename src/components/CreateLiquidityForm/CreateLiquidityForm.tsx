@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Controller } from 'react-hook-form';
+import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
 import { InputControlsNames } from '../DepositModal/hooks';
@@ -10,19 +11,17 @@ import Checkbox from '../CustomCheckbox';
 import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
-import { PublicKey } from '@solana/web3.js';
 
 interface LiquidityFormInterface {
   defaultTokenMint: string;
   vaultLockedPrice: BN;
-  marketAddress: string;
+  marketId: PublicKey;
 }
 
 const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
   defaultTokenMint,
   vaultLockedPrice,
-  marketAddress,
+  marketId,
 }) => {
   const {
     formControl,
@@ -32,25 +31,8 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
     baseValue,
     quoteValue,
     handleSwap,
-  } = useCreateLiquidityForm(vaultLockedPrice, defaultTokenMint);
-  const { createRaydiumLiquidityPool } = useLiquidityPools();
-
-  const onCreateLiquidityHandler = () => {
-    const baseAmount = new BN(parseFloat(baseValue) * 10 ** tokenInfo.decimals);
-    const quoteAmount = new BN(
-      parseFloat(quoteValue) * 10 ** SOL_TOKEN.decimals,
-    );
-
-    const marketId = new PublicKey(marketAddress);
-
-    createRaydiumLiquidityPool({
-      baseAmount,
-      quoteAmount,
-      baseToken: tokenInfo,
-      quoteToken: SOL_TOKEN,
-      marketId,
-    });
-  };
+    handleCreateLiquidity,
+  } = useCreateLiquidityForm(vaultLockedPrice, defaultTokenMint, marketId);
 
   return (
     <div className={styles.container}>
@@ -98,7 +80,7 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
         className={styles.createPoolBtn}
         type="alternative"
         disabled={!isCreateBtnEnabled}
-        onClick={onCreateLiquidityHandler}
+        onClick={handleCreateLiquidity}
       >
         Create liquidity pool
       </Button>
