@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
+import { useHeaderState } from '../../contexts/HeaderState';
 
 interface AppLayoutProps {
   children: JSX.Element[] | JSX.Element;
@@ -20,6 +21,7 @@ export const AppLayout = ({
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
   const [prevOffsetTop, setPrevOffsetTop] = useState(0);
+  const { setHeaderVisible } = useHeaderState();
 
   const onContentScroll = (event) => {
     const offset = event.target.scrollTop;
@@ -27,8 +29,14 @@ export const AppLayout = ({
     if (offset > scrollTop) setPrevOffsetTop(offset);
     if (offset < prevOffsetTop) setScrollTop(offset);
 
-    if (offset > 200 && offset > prevOffsetTop) setIsHeaderHidden(true);
-    if (offset + 100 < prevOffsetTop) setIsHeaderHidden(false);
+    if (offset > 200 && offset > prevOffsetTop) {
+      setHeaderVisible(!isHeaderHidden);
+      setIsHeaderHidden(true);
+    }
+    if (offset + 100 < prevOffsetTop) {
+      setHeaderVisible(!isHeaderHidden);
+      setIsHeaderHidden(false);
+    }
   };
 
   useEffect(() => {

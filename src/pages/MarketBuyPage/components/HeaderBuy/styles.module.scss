@@ -1,7 +1,33 @@
+.positionWrapper {
+  position: fixed;
+  top: 50px;
+  width: 100%;
+  left: 0;
+  z-index: 99;
+  transition: top .2s ease-in;
+}
+
+.headerHidden {
+  top: 0;
+  transition: top .2s ease-out;
+}
+
+.container {
+  display: flex;
+  &::before {
+    display: block;
+    content: '';
+    width: 228px;
+    flex-shrink: 0;
+  }
+}
+
 .wrapper {
   display: flex;
   align-items: center;
   background-color: var(--color-gray-7);
+  max-width: 100%;
+  flex-grow: 1;
 }
 
 .randomWrapper {

@@ -10,6 +10,7 @@ import { Sidebar } from './components/Sidebar';
 import { NFTsList } from './components/NFTsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
+import { HeaderStateProvider } from '../../contexts/HeaderState/headerState.context';
 
 const SORT_VALUES = [
   {
@@ -49,7 +50,9 @@ const MarketBuyPage = (): JSX.Element => {
           <Sidebar />
 
           <div className={styles.content}>
-            <HeaderBuy />
+            <HeaderStateProvider>
+              <HeaderBuy />
+            </HeaderStateProvider>
             <div className={styles.itemsSortWrapper}>
               <div className={styles.itemsAmount}>355 items</div>
               <div className={styles.sortWrapper}>

@@ -6,20 +6,20 @@ import {
 
 export const HeaderStateContext =
   React.createContext<HeaderStateContextInterface>({
-    visible: false,
-    setVisible: () => {},
+    headerVisible: true,
+    setHeaderVisible: () => {},
   });
 
 export const HeaderStateProvider: FC<HeaderStateProviderProps> = ({
   children,
 }) => {
-  const [visible, setVisible] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
   return (
     <HeaderStateContext.Provider
       value={{
-        visible,
-        setVisible,
+        headerVisible: isHeaderVisible,
+        setHeaderVisible: setIsHeaderVisible,
       }}
     >
       {children}
@@ -28,7 +28,7 @@ export const HeaderStateProvider: FC<HeaderStateProviderProps> = ({
 };
 
 export const useHeaderState = (): HeaderStateContextInterface => {
-  const { setVisible, visible } = useContext(HeaderStateContext);
+  const { setHeaderVisible, headerVisible } = useContext(HeaderStateContext);
 
-  return { setVisible, visible };
+  return { setHeaderVisible, headerVisible };
 };
