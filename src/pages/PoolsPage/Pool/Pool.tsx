@@ -8,14 +8,12 @@ import { ChevronDownIcon } from '../../../icons';
 import Button from '../../../components/Button';
 import styles from './styles.module.scss';
 import Withdraw from '../Withdraw';
-import Rewards from '../Rewards';
 import { SOL_TOKEN } from '../../../utils';
 import {
   calculateAPR,
   calculateTVL,
   fetchRaydiumPoolsInfoMap,
   PoolData,
-  ProgramAccountData,
   RaydiumPoolInfo,
 } from '../../../contexts/liquidityPools';
 import { usePolling } from '../../../hooks';
@@ -26,7 +24,6 @@ interface PoolInterface {
   isOpen: boolean;
   onPoolCardClick?: () => void;
   currentSolanaPriceUSD: number;
-  programAccount: ProgramAccountData;
 }
 
 const POOL_INFO_POLLING_INTERVAL = 5000;
@@ -37,7 +34,6 @@ const Pool: FC<PoolInterface> = ({
   raydiumPoolInfo: defaultRaydiumPoolInfo,
   onPoolCardClick = () => {},
   currentSolanaPriceUSD,
-  programAccount,
 }) => {
   const { tokenInfo, poolConfig } = poolData;
 
@@ -77,7 +73,7 @@ const Pool: FC<PoolInterface> = ({
   return (
     <div className={styles.pool}>
       <div className={styles.header}>
-        <div className={styles.awarder}>Awarded</div>
+        {/* <div className={styles.awarder}>Awarded</div> */}
       </div>
       <div className={styles.poolCard} onClick={onPoolCardClick}>
         <div className={styles.tokenInfo}>
@@ -119,14 +115,12 @@ const Pool: FC<PoolInterface> = ({
                 baseToken={tokenInfo}
                 poolConfig={poolConfig}
                 raydiumPoolInfo={raydiumPoolInfo}
-                programAccount={programAccount}
               />
-              <Rewards
+              {/* <Rewards
                 baseToken={tokenInfo}
                 poolConfig={poolConfig}
                 raydiumPoolInfo={raydiumPoolInfo}
-                programAccount={programAccount}
-              />
+              /> */}
               <Button
                 onClick={() => setDepositModalVisible(true)}
                 className={styles.depositBtn}
@@ -150,7 +144,6 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
-        programAccount={programAccount}
       />
     </div>
   );

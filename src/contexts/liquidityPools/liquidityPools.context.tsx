@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
 
 import { useTokenListContext } from '../TokenList';
 import {
@@ -14,25 +13,17 @@ import {
   unstakeLiquidity,
   createRaydiumLiquidityPool,
 } from './liquidityPools';
-import {
-  fetchPoolDataByMint,
-  fetchProgramAccounts,
-} from './liquidityPools.helpers';
+import { fetchPoolDataByMint } from './liquidityPools.helpers';
 import {
   LiquidityPoolsContextValues,
   LiquidityPoolsProviderType,
   PoolDataByMint,
-  ProgramAccountsData,
 } from './liquidityPools.model';
-import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
-
-const IS_DEVNET = process.env.REACT_APP_NETWORK === 'devnet';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
     loading: true,
     poolDataByMint: new Map(),
-    programAccounts: null,
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
     createRaydiumLiquidityPool: () => Promise.resolve(null),
@@ -55,18 +46,8 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
     new Map(),
   );
 
-  const [programAccounts, setProgramAccounts] = useState<ProgramAccountsData>();
-
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
-      if (IS_DEVNET) {
-        const allProgramAccounts = await fetchProgramAccounts({
-          vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
-          connection,
-        });
-        setProgramAccounts(allProgramAccounts);
-      }
-
       const poolDataByMint = await fetchPoolDataByMint({
         connection,
         tokensMap: fraktionTokensMap,
@@ -91,7 +72,6 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       value={{
         loading,
         poolDataByMint,
-        programAccounts,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
         createRaydiumLiquidityPool: createRaydiumLiquidityPool(

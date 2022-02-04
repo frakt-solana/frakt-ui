@@ -4,9 +4,8 @@ import { Controller } from 'react-hook-form';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
-import { InputControlsNames } from '../DepositModal/hooks';
+import { useCreateLiquidityForm, InputControlsNames } from './hooks';
 import { TokenFieldWithBalance } from '../TokenField';
-import { useCreateLiquidityForm } from './hooks';
 import Checkbox from '../CustomCheckbox';
 import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';

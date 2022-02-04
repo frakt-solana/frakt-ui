@@ -13,7 +13,6 @@ import { notify, SOL_TOKEN } from '../../../utils';
 import Button from '../../../components/Button';
 import styles from './styles.module.scss';
 import {
-  ProgramAccountData,
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
@@ -22,18 +21,15 @@ interface WithdrawInterface {
   baseToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
-  programAccount: ProgramAccountData;
 }
 
 const Withdraw: FC<WithdrawInterface> = ({
   baseToken,
   poolConfig,
   raydiumPoolInfo,
-  programAccount,
 }) => {
-  const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
+  const { removeRaydiumLiquidity } = useLiquidityPools();
   const { rawUserTokensByMint } = useUserTokens();
-  const [visibleUnstakeBtn, setVisibleUnstakeBtn] = useState<boolean>(false);
   const [withdrawValue, setWithdrawValue] = useState<string>('');
   const quoteToken = SOL_TOKEN;
 
@@ -41,47 +37,13 @@ const Withdraw: FC<WithdrawInterface> = ({
   const { lpDecimals } = raydiumPoolInfo;
 
   const tokenLpInfo = rawUserTokensByMint[poolConfig.lpMint.toBase58()];
-  const balance = String(Number(tokenLpInfo?.amount) / 10 ** lpDecimals);
+  const balance = String(Number(tokenLpInfo?.amount) / 10 ** lpDecimals || 0);
 
   const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
 
   const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
   const onSubmitHandler = async (): Promise<void> => {
-    if (programAccount) {
-      const { router, stakeAccount } = programAccount;
-
-      try {
-        if (balance && stakeAccount.amount) {
-          await unstakeLiquidity({
-            router,
-            stakeAccount,
-          });
-          await removeRaydiumLiquidity({
-            baseToken,
-            quoteToken,
-            amount,
-            poolConfig,
-          });
-        }
-        notify({
-          message: 'Liquidity withdrawn successfully',
-          type: 'success',
-        });
-      } catch (error) {
-        setVisibleUnstakeBtn(true);
-        // eslint-disable-next-line no-console
-        console.error(error);
-
-        notify({
-          message: 'Transaction failed',
-          type: 'error',
-        });
-      }
-    }
-  };
-
-  const onRemoveLiquidityHandler = async () => {
     try {
       await removeRaydiumLiquidity({
         baseToken,
@@ -94,8 +56,6 @@ const Withdraw: FC<WithdrawInterface> = ({
         message: 'Liquidity withdrawn successfully',
         type: 'success',
       });
-
-      setVisibleUnstakeBtn(false);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -107,19 +67,35 @@ const Withdraw: FC<WithdrawInterface> = ({
     }
   };
 
-  // if balance in wallet => removeRaydiumLiquidity()
-  // if balance in stakeAccount => onSubmitHandler()
+  // const onRemoveLiquidityHandler = async () => {
+  //   try {
+  //     await removeRaydiumLiquidity({
+  //       baseToken,
+  //       quoteToken,
+  //       amount,
+  //       poolConfig,
+  //     });
 
-  // if !== 0  => stake
-  // if !== 0  => removeRaydiumLiquidity()
+  //     notify({
+  //       message: 'Liquidity withdrawn successfully',
+  //       type: 'success',
+  //     });
+  //   } catch (error) {
+  //     // eslint-disable-next-line no-console
+  //     console.error(error);
 
-  // stakeAccount... && balance = 0 => unstakeLiquidity() and removeRaydiumLiquidity()
+  //     notify({
+  //       message: 'Transaction failed',
+  //       type: 'error',
+  //     });
+  //   }
+  // };
 
   return (
     <div className={styles.withdraw}>
       <div className={styles.header}>
         <p className={styles.title}>Withdraw</p>
-        <p className={styles.balance}>Balance: {balance || 0}</p>
+        <p className={styles.balance}>Balance: {balance}</p>
       </div>
       <div className={styles.footer}>
         <TokenFieldWithBalance
@@ -135,18 +111,10 @@ const Withdraw: FC<WithdrawInterface> = ({
           type="tertiary"
           className={styles.rewardBtn}
           onClick={onSubmitHandler}
+          disabled={!parseFloat(balance)}
         >
           Confirm
         </Button>
-        {visibleUnstakeBtn && (
-          <Button
-            type="tertiary"
-            className={styles.rewardBtn}
-            onClick={onRemoveLiquidityHandler}
-          >
-            unstake
-          </Button>
-        )}
       </div>
     </div>
   );

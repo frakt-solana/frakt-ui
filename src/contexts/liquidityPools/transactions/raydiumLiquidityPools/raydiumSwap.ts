@@ -6,7 +6,7 @@ import {
   getCurrencyAmount,
   getTokenAccount,
 } from '../../liquidityPools.helpers';
-import { LiquidityTransactionParams } from '../../liquidityPools.model';
+import { SwapTransactionParams } from '../../liquidityPools.model';
 
 export const raydiumSwap =
   (
@@ -20,7 +20,7 @@ export const raydiumSwap =
     quoteToken = SOL_TOKEN,
     quoteAmount,
     poolConfig,
-  }: LiquidityTransactionParams): Promise<void> => {
+  }: SwapTransactionParams): Promise<void> => {
     try {
       const tokenAccounts = (
         await Promise.all(

@@ -11,17 +11,13 @@ import styles from './styles.module.scss';
 import { notify, SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
-import {
-  ProgramAccountData,
-  useLiquidityPools,
-} from '../../contexts/liquidityPools';
+import { useLiquidityPools } from '../../contexts/liquidityPools';
 
 interface DepositModalProps {
   visible: boolean;
   onCancel: () => void;
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
-  programAccount: ProgramAccountData;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
@@ -29,45 +25,38 @@ const DepositModal: FC<DepositModalProps> = ({
   onCancel,
   tokenInfo,
   poolConfig,
-  programAccount,
 }) => {
   const {
     formControl,
     isDepositBtnEnabled,
     totalValue,
     handleChange,
+    handleBlur,
     baseValue,
     quoteValue,
+    liquiditySide,
   } = useDeposit(tokenInfo, poolConfig);
 
-  const { addRaydiumLiquidity, stakeLiquidity } = useLiquidityPools();
+  const { addRaydiumLiquidity } = useLiquidityPools();
 
   const onSubmitHandler = async () => {
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
     try {
-      if (programAccount) {
-        const { router } = programAccount;
+      await addRaydiumLiquidity({
+        baseToken: tokenInfo,
+        baseAmount,
+        quoteToken: SOL_TOKEN,
+        quoteAmount,
+        poolConfig,
+        fixedSide: liquiditySide,
+      });
 
-        await addRaydiumLiquidity({
-          baseToken: tokenInfo,
-          baseAmount,
-          quoteToken: SOL_TOKEN,
-          quoteAmount,
-          poolConfig,
-        });
-
-        await stakeLiquidity({
-          amount: new BN(1e6),
-          router,
-        });
-
-        notify({
-          message: 'successfully',
-          type: 'success',
-        });
-      }
+      notify({
+        message: 'successfully',
+        type: 'success',
+      });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -100,6 +89,7 @@ const DepositModal: FC<DepositModalProps> = ({
             onChange={(value) =>
               handleChange(value, InputControlsNames.QUOTE_VALUE)
             }
+            onBlur={() => handleBlur('a')}
           />
         </div>
         <div className={styles.inputWrapper}>
@@ -113,6 +103,7 @@ const DepositModal: FC<DepositModalProps> = ({
             onChange={(value) =>
               handleChange(value, InputControlsNames.BASE_VALUE)
             }
+            onBlur={() => handleBlur('b')}
           />
         </div>
         <div className={styles.totalLine}>

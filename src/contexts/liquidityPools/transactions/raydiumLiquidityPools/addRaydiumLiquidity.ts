@@ -6,7 +6,7 @@ import {
   getCurrencyAmount,
   getTokenAccount,
 } from '../../liquidityPools.helpers';
-import { LiquidityTransactionParams } from '../../liquidityPools.model';
+import { AddLiquidityTransactionParams } from '../../liquidityPools.model';
 
 export const addRaydiumLiquidity =
   (
@@ -20,7 +20,8 @@ export const addRaydiumLiquidity =
     quoteToken = SOL_TOKEN,
     quoteAmount,
     poolConfig,
-  }: LiquidityTransactionParams): Promise<void> => {
+    fixedSide,
+  }: AddLiquidityTransactionParams): Promise<void> => {
     const tokenAccounts = (
       await Promise.all(
         [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
@@ -46,7 +47,7 @@ export const addRaydiumLiquidity =
         },
         amountInA,
         amountInB,
-        fixedSide: 'b',
+        fixedSide,
       });
 
     const { blockhash } = await connection.getRecentBlockhash();

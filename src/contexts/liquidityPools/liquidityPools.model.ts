@@ -1,4 +1,8 @@
-import { LiquidityPoolKeysV4, TokenAmount } from '@raydium-io/raydium-sdk';
+import {
+  LiquidityPoolKeysV4,
+  LiquiditySide,
+  TokenAmount,
+} from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection, PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
@@ -8,15 +12,14 @@ import { Config, Router, Stake } from '@frakters/fusion-pool';
 export interface LiquidityPoolsContextValues {
   loading: boolean;
   poolDataByMint: PoolDataByMint;
-  programAccounts: ProgramAccountsData;
   fetchRaydiumPoolsInfo: (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
-  raydiumSwap: (params: LiquidityTransactionParams) => Promise<void>;
+  raydiumSwap: (params: SwapTransactionParams) => Promise<void>;
   createRaydiumLiquidityPool: (
     params: CreateLiquidityTransactionParams,
   ) => Promise<void>;
-  addRaydiumLiquidity: (params: LiquidityTransactionParams) => Promise<void>;
+  addRaydiumLiquidity: (params: AddLiquidityTransactionParams) => Promise<void>;
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
@@ -71,12 +74,21 @@ export interface RaydiumPoolInfo {
   lpSupply: BN;
 }
 
-export interface LiquidityTransactionParams {
+export interface SwapTransactionParams {
   baseToken: TokenInfo;
   baseAmount: BN;
   quoteToken: TokenInfo;
   quoteAmount: BN;
   poolConfig: LiquidityPoolKeysV4;
+}
+
+export interface AddLiquidityTransactionParams {
+  baseToken: TokenInfo;
+  baseAmount: BN;
+  quoteToken: TokenInfo;
+  quoteAmount: BN;
+  poolConfig: LiquidityPoolKeysV4;
+  fixedSide: LiquiditySide;
 }
 
 export interface CreateLiquidityTransactionParams {
