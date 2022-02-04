@@ -61,7 +61,7 @@ import { useTokenListContext } from '../../contexts/TokenList';
 export function useMarketsList() {
   const { vaultsMarkets } = useFraktion();
 
-  const _MARKETS = vaultsMarkets.map(({ address, programId }) => ({
+  const _MARKETS = (vaultsMarkets || []).map(({ address, programId }) => ({
     name: undefined,
     address: new PublicKey(address),
     programId: new PublicKey(programId),
