@@ -12,6 +12,7 @@ import {
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
+  ProgramAccountData,
 } from '../../contexts/liquidityPools';
 import styles from './styles.module.scss';
 import { useUserTokens } from '../../contexts/userTokens';
@@ -45,6 +46,7 @@ export const usePoolsPage = (): {
   activePoolTokenAddress: string | null;
   onPoolCardClick: (tokenAddress: string) => void;
   userLpBalanceByMint: LpBalanceByMint;
+  programAccount: ProgramAccountData;
 } => {
   const { control, watch } = useForm({
     defaultValues: {
@@ -60,8 +62,29 @@ export const usePoolsPage = (): {
   const showStaked = watch(InputControlsNames.SHOW_STAKED);
 
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
-  const { poolDataByMint, loading: poolDataByMintLoading } =
-    useLiquidityPools();
+  const {
+    poolDataByMint,
+    loading: poolDataByMintLoading,
+    programAccounts,
+  } = useLiquidityPools();
+
+  const programAccount = useMemo(() => {
+    const routerPubkeys = '3n3XMZPwRVqvSfgT9EZarQwCCw7uhGSESyZwhMX7MFd4';
+
+    if (programAccounts) {
+      const { routers, stakeAccounts } = programAccounts;
+
+      const routerAccount = routers.find(
+        ({ routerPubkey }) => routerPubkey === routerPubkeys,
+      );
+
+      const stakeAccount = stakeAccounts.find(
+        ({ router }) => router === routerPubkeys,
+      );
+
+      return { router: routerAccount, stakeAccount };
+    }
+  }, [programAccounts]);
 
   const rawPoolsData = useMemo(() => {
     return poolDataByMint.size ? Array.from(poolDataByMint.values()) : [];
@@ -188,6 +211,7 @@ export const usePoolsPage = (): {
     activePoolTokenAddress,
     onPoolCardClick,
     userLpBalanceByMint,
+    programAccount,
   };
 };
 

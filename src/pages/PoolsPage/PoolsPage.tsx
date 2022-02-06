@@ -12,6 +12,7 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
+import { poolsDataTest, raydiumPoolInfoTest } from './testPoolData';
 
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
@@ -25,6 +26,7 @@ const PoolsPage: FC = () => {
     currentSolanaPriceUSD,
     activePoolTokenAddress,
     onPoolCardClick,
+    programAccount,
   } = usePoolsPage();
 
   return (
@@ -70,18 +72,17 @@ const PoolsPage: FC = () => {
           isLoading={loading}
           emptyMessage={'No Liquidity pool found'}
         >
-          {poolsData.map((poolData) => (
+          {poolsDataTest.map((poolData) => (
             <Pool
               key={poolData.tokenInfo.address}
               poolData={poolData}
-              raydiumPoolInfo={raydiumPoolsInfoMap.get(
-                poolData.tokenInfo.address,
-              )}
+              raydiumPoolInfo={raydiumPoolInfoTest}
               currentSolanaPriceUSD={currentSolanaPriceUSD}
               isOpen={activePoolTokenAddress === poolData.tokenInfo.address}
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)
               }
+              programAccount={programAccount}
             />
           ))}
         </FakeInfinityScroll>

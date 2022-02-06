@@ -14,9 +14,11 @@ import {
   calculateTVL,
   fetchRaydiumPoolsInfoMap,
   PoolData,
+  ProgramAccountData,
   RaydiumPoolInfo,
 } from '../../../contexts/liquidityPools';
 import { usePolling } from '../../../hooks';
+import Rewards from '../Rewards';
 
 interface PoolInterface {
   poolData: PoolData;
@@ -24,6 +26,7 @@ interface PoolInterface {
   isOpen: boolean;
   onPoolCardClick?: () => void;
   currentSolanaPriceUSD: number;
+  programAccount: ProgramAccountData;
 }
 
 const POOL_INFO_POLLING_INTERVAL = 5000;
@@ -34,6 +37,7 @@ const Pool: FC<PoolInterface> = ({
   raydiumPoolInfo: defaultRaydiumPoolInfo,
   onPoolCardClick = () => {},
   currentSolanaPriceUSD,
+  programAccount,
 }) => {
   const { tokenInfo, poolConfig } = poolData;
 
@@ -115,12 +119,14 @@ const Pool: FC<PoolInterface> = ({
                 baseToken={tokenInfo}
                 poolConfig={poolConfig}
                 raydiumPoolInfo={raydiumPoolInfo}
+                programAccount={programAccount}
               />
-              {/* <Rewards
+              <Rewards
                 baseToken={tokenInfo}
                 poolConfig={poolConfig}
                 raydiumPoolInfo={raydiumPoolInfo}
-              /> */}
+                programAccount={programAccount}
+              />
               <Button
                 onClick={() => setDepositModalVisible(true)}
                 className={styles.depositBtn}
@@ -144,6 +150,7 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
+        programAccount={programAccount}
       />
     </div>
   );

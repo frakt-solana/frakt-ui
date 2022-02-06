@@ -12,6 +12,7 @@ import { Config, Router, Stake } from '@frakters/fusion-pool';
 export interface LiquidityPoolsContextValues {
   loading: boolean;
   poolDataByMint: PoolDataByMint;
+  programAccounts: ProgramAccountsData;
   fetchRaydiumPoolsInfo: (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;

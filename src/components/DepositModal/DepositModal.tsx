@@ -11,7 +11,10 @@ import styles from './styles.module.scss';
 import { notify, SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
+import {
+  ProgramAccountData,
+  useLiquidityPools,
+} from '../../contexts/liquidityPools';
 import { NotifyType } from '../../utils/solanaUtils';
 
 interface DepositModalProps {
@@ -19,6 +22,7 @@ interface DepositModalProps {
   onCancel: () => void;
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
+  programAccount: ProgramAccountData;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
@@ -26,6 +30,7 @@ const DepositModal: FC<DepositModalProps> = ({
   onCancel,
   tokenInfo,
   poolConfig,
+  programAccount,
 }) => {
   const {
     formControl,
@@ -38,26 +43,35 @@ const DepositModal: FC<DepositModalProps> = ({
     liquiditySide,
   } = useDeposit(tokenInfo, poolConfig);
 
-  const { addRaydiumLiquidity } = useLiquidityPools();
+  const { addRaydiumLiquidity, stakeLiquidity } = useLiquidityPools();
 
   const onSubmitHandler = async () => {
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
     try {
-      await addRaydiumLiquidity({
-        baseToken: tokenInfo,
-        baseAmount,
-        quoteToken: SOL_TOKEN,
-        quoteAmount,
-        poolConfig,
-        fixedSide: liquiditySide,
-      });
+      if (programAccount) {
+        const { router } = programAccount;
 
-      notify({
-        message: 'successfully',
-        type: NotifyType.SUCCESS,
-      });
+        await addRaydiumLiquidity({
+          baseToken: tokenInfo,
+          baseAmount,
+          quoteToken: SOL_TOKEN,
+          quoteAmount,
+          poolConfig,
+          fixedSide: liquiditySide,
+        });
+
+        await stakeLiquidity({
+          amount: new BN(1e6),
+          router,
+        });
+
+        notify({
+          message: 'successfully',
+          type: NotifyType.SUCCESS,
+        });
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
