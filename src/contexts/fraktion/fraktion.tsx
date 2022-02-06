@@ -36,6 +36,7 @@ import {
   parseVaults,
   transformToSafetyBoxesWithMetadata,
 } from './fraktion.helpers';
+import { signAndConfirmTransaction } from '../../utils/transactions';
 
 const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
@@ -210,14 +211,14 @@ const initVault: InitVault = async (
     priceMint: SOL_TOKEN_PUBKEY,
     userPubkey: walletPublicKey.toBase58(),
     vaultProgramId: PROGRAM_PUBKEY,
-    sendTxn: async (txn, signers) => {
-      const { blockhash } = await connection?.getRecentBlockhash();
-      txn.recentBlockhash = blockhash;
-      txn.feePayer = walletPublicKey;
-      txn.sign(...signers);
-      const signed = await signTransaction(txn);
-      const txid = await connection.sendRawTransaction(signed.serialize());
-      return void connection.confirmTransaction(txid);
+    sendTxn: async (transaction, signers) => {
+      await signAndConfirmTransaction({
+        transaction,
+        signers,
+        connection,
+        walletPublicKey: walletPublicKey,
+        signTransaction: signTransaction,
+      });
     },
   });
 
@@ -243,14 +244,14 @@ const addNFTsToVault: AddNFTsToVault = async (
     vaultProgramId: PROGRAM_PUBKEY,
     userPubkey: walletPublicKey.toString(),
     vaultStrPubkey: vaultPubkey,
-    sendTxn: async (txn, signers) => {
-      const { blockhash } = await connection?.getRecentBlockhash();
-      txn.recentBlockhash = blockhash;
-      txn.feePayer = walletPublicKey;
-      txn.sign(...signers);
-      const signed = await signTransaction(txn);
-      const txid = await connection.sendRawTransaction(signed.serialize());
-      return void connection.confirmTransaction(txid);
+    sendTxn: async (transaction, signers) => {
+      await signAndConfirmTransaction({
+        transaction,
+        signers,
+        connection,
+        walletPublicKey: walletPublicKey,
+        signTransaction: signTransaction,
+      });
     },
   });
 };
@@ -284,13 +285,13 @@ const finishVault: FinishVault = async (
     fractionTreasury: fractionTreasury,
     redeemTreasury: redeemTreasury,
     vaultProgramId: PROGRAM_PUBKEY,
-    sendTxn: async (txn) => {
-      const { blockhash } = await connection.getRecentBlockhash();
-      txn.recentBlockhash = blockhash;
-      txn.feePayer = walletPublicKey;
-      const signed = await signTransaction(txn);
-      const txid = await connection.sendRawTransaction(signed.serialize());
-      return void connection.confirmTransaction(txid);
+    sendTxn: async (transaction) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        walletPublicKey: walletPublicKey,
+        signTransaction: signTransaction,
+      });
     },
   });
 };

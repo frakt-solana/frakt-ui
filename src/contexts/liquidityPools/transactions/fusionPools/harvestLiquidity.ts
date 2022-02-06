@@ -1,6 +1,8 @@
 import { harvestInFusion, Router, Stake } from '@frakters/fusion-pool';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+
 import { notify } from '../../../../utils';
+import { signAndConfirmTransaction } from '../../../../utils/transactions';
 
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 
@@ -28,13 +30,13 @@ export const harvestLiquidity =
         [new PublicKey(stakeAccount.stakePubkey)],
         new PublicKey(router.pool_config_input),
         new PublicKey(router.pool_config_output),
-        async (txn) => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = walletPublicKey;
-          const signed = await signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
+        async (transaction) => {
+          await signAndConfirmTransaction({
+            transaction,
+            connection,
+            walletPublicKey,
+            signTransaction,
+          });
         },
       );
 

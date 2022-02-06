@@ -1,4 +1,9 @@
-import { useFraktion } from './../fraktion/fraktion.hooks';
+import {
+  useConnection,
+  useWallet,
+  WalletContextState,
+} from '@solana/wallet-adapter-react';
+import { Connection, PublicKey } from '@solana/web3.js';
 import {
   bidOnAuction as bidOnAuctionTransaction,
   startFraktionalizerAuction as startFraktionalizerAuctionTransaction,
@@ -7,15 +12,12 @@ import {
   unlockBacketAfterBuyoutAuction as unlockVaultTransaction,
   withdrawNFTFromCombinedBacket as redeemNftTransaction,
 } from 'fraktionalizer-client-library';
+
+import { useFraktion } from './../fraktion/fraktion.hooks';
 import fraktionConfig from '../fraktion/config';
-import { Connection, PublicKey } from '@solana/web3.js';
 import { VaultData, VaultState } from '../fraktion';
-import {
-  useConnection,
-  useWallet,
-  WalletContextState,
-} from '@solana/wallet-adapter-react';
 import { notify } from '../../utils';
+import { signAndConfirmTransaction } from '../../utils/transactions';
 
 const startFraktionalizerAuction =
   (wallet: WalletContextState, connection: Connection) =>
@@ -43,14 +45,14 @@ const startFraktionalizerAuction =
         redeemTreasury: vaultInfo.redeemTreasury,
         priceMint: vaultInfo.priceMint,
         vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
-        sendTxn: async (txn, signers): Promise<void> => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = wallet.publicKey;
-          txn.sign(...signers);
-          const signed = await wallet.signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
+        sendTxn: async (transaction, signers): Promise<void> => {
+          await signAndConfirmTransaction({
+            transaction,
+            signers,
+            connection,
+            walletPublicKey: wallet.publicKey,
+            signTransaction: wallet.signTransaction,
+          });
         },
         isAuctionInitialized,
       });
@@ -91,14 +93,14 @@ const bidOnAuction =
         redeemTreasury: vaultInfo.redeemTreasury,
         priceMint: vaultInfo.priceMint,
         vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
-        sendTxn: async (txn, signers): Promise<void> => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = wallet.publicKey;
-          txn.sign(...signers);
-          const signed = await wallet.signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
+        sendTxn: async (transaction, signers) => {
+          await signAndConfirmTransaction({
+            transaction,
+            signers,
+            connection,
+            walletPublicKey: wallet.publicKey,
+            signTransaction: wallet.signTransaction,
+          });
         },
       });
       notify({
@@ -131,14 +133,14 @@ const refundBid =
         redeemTreasury: vaultInfo.redeemTreasury,
         priceMint: vaultInfo.priceMint,
         vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
-        sendTxn: async (txn, signers): Promise<void> => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = wallet.publicKey;
-          txn.sign(...signers);
-          const signed = await wallet.signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
+        sendTxn: async (transaction, signers) => {
+          await signAndConfirmTransaction({
+            transaction,
+            signers,
+            connection,
+            walletPublicKey: wallet.publicKey,
+            signTransaction: wallet.signTransaction,
+          });
         },
       });
       notify({
@@ -171,14 +173,14 @@ const redeemRewardsFromAuctionShares =
         fractionMint: vaultInfo.fractionMint,
         priceMint: vaultInfo.priceMint,
         vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
-        sendTxn: async (txn, signers): Promise<void> => {
-          const { blockhash } = await connection.getRecentBlockhash();
-          txn.recentBlockhash = blockhash;
-          txn.feePayer = wallet.publicKey;
-          txn.sign(...signers);
-          const signed = await wallet.signTransaction(txn);
-          const txid = await connection.sendRawTransaction(signed.serialize());
-          return void connection.confirmTransaction(txid);
+        sendTxn: async (transaction, signers) => {
+          await signAndConfirmTransaction({
+            transaction,
+            signers,
+            connection,
+            walletPublicKey: wallet.publicKey,
+            signTransaction: wallet.signTransaction,
+          });
         },
       });
       notify({
@@ -209,13 +211,13 @@ const unlockVault = async (
     vault: vaultInfo.vaultPubkey,
     fractionMint: vaultInfo.fractionMint,
     vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
-    sendTxn: async (txn): Promise<void> => {
-      const { blockhash } = await connection.getRecentBlockhash();
-      txn.recentBlockhash = blockhash;
-      txn.feePayer = wallet.publicKey;
-      const signed = await wallet.signTransaction(txn);
-      const txid = await connection.sendRawTransaction(signed.serialize());
-      return void connection.confirmTransaction(txid);
+    sendTxn: async (transaction) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        walletPublicKey: wallet.publicKey,
+        signTransaction: wallet.signTransaction,
+      });
     },
   });
   notify({
@@ -249,13 +251,13 @@ const redeemNft = async (
     [safetyBoxToRedeem.store],
     fractionMint,
     fraktionConfig.PROGRAM_PUBKEY,
-    async (txn): Promise<void> => {
-      const { blockhash } = await connection.getRecentBlockhash();
-      txn.recentBlockhash = blockhash;
-      txn.feePayer = wallet.publicKey;
-      const signed = await wallet.signTransaction(txn);
-      const txid = await connection.sendRawTransaction(signed.serialize());
-      return void connection.confirmTransaction(txid);
+    async (transaction) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        walletPublicKey: wallet.publicKey,
+        signTransaction: wallet.signTransaction,
+      });
     },
   );
   notify({

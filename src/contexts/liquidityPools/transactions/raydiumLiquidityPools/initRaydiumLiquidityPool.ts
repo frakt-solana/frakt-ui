@@ -14,6 +14,7 @@ import {
 import BN from 'bn.js';
 
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { signAndConfirmTransaction } from '../../../../utils/transactions';
 import { getTokenAccount } from '../../liquidityPools.helpers';
 
 export const initRaydiumLiquidityPool = async ({
@@ -133,21 +134,16 @@ export const initRaydiumLiquidityPool = async ({
     transaction.add(instruction);
   }
 
-  const { blockhash } = await connection.getRecentBlockhash();
-  transaction.recentBlockhash = blockhash;
-  transaction.feePayer = walletPublicKey;
-  transaction.sign(...signers);
-
-  const signedTransaction = await signTransaction(transaction);
-  const txid = await connection.sendRawTransaction(
-    signedTransaction.serialize(),
-    // { skipPreflight: true },
-  );
+  await signAndConfirmTransaction({
+    transaction,
+    signers,
+    connection,
+    walletPublicKey,
+    signTransaction,
+  });
 
   notify({
     message: 'Liquidity provided successfully',
     type: 'success',
   });
-
-  return void connection.confirmTransaction(txid);
 };

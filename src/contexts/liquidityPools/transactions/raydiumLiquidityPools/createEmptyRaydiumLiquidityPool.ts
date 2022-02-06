@@ -5,6 +5,7 @@ import {
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
 import { notify } from '../../../../utils';
+import { signAndConfirmTransaction } from '../../../../utils/transactions';
 
 export const createEmptyRaydiumLiquidityPool = async ({
   connection,
@@ -28,20 +29,15 @@ export const createEmptyRaydiumLiquidityPool = async ({
     }),
   );
 
-  const { blockhash } = await connection.getRecentBlockhash();
-  transaction.recentBlockhash = blockhash;
-  transaction.feePayer = walletPublicKey;
-
-  const signedTransaction = await signTransaction(transaction);
-  const txid = await connection.sendRawTransaction(
-    signedTransaction.serialize(),
-    // { skipPreflight: true },
-  );
+  await signAndConfirmTransaction({
+    transaction,
+    connection,
+    walletPublicKey,
+    signTransaction,
+  });
 
   notify({
     message: 'Liquidity pool created',
     type: 'success',
   });
-
-  return void connection.confirmTransaction(txid);
 };

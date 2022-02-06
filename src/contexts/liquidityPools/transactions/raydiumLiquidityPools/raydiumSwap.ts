@@ -2,6 +2,7 @@ import { Liquidity } from '@raydium-io/raydium-sdk';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { signAndConfirmTransaction } from '../../../../utils/transactions';
 import {
   getCurrencyAmount,
   getTokenAccount,
@@ -49,23 +50,18 @@ export const raydiumSwap =
         fixedSide: 'in',
       });
 
-      const { blockhash } = await connection.getRecentBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = walletPublicKey;
-      transaction.sign(...signers);
-
-      const signedTransaction = await signTransaction(transaction);
-      const txid = await connection.sendRawTransaction(
-        signedTransaction.serialize(),
-        // { skipPreflight: true },
-      );
+      await signAndConfirmTransaction({
+        transaction,
+        signers,
+        connection,
+        walletPublicKey,
+        signTransaction,
+      });
 
       notify({
         message: 'Swap made successfully',
         type: 'success',
       });
-
-      return void connection.confirmTransaction(txid);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
