@@ -2,8 +2,8 @@ import { harvestInFusion, Router, Stake } from '@frakters/fusion-pool';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
 import { notify } from '../../../../utils';
+import { NotifyType } from '../../../../utils/solanaUtils';
 import { signAndConfirmTransaction } from '../../../../utils/transactions';
-
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 
 export const harvestLiquidity =
@@ -42,7 +42,7 @@ export const harvestLiquidity =
 
       notify({
         message: 'Liquidity harvest successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -50,7 +50,7 @@ export const harvestLiquidity =
 
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
     }
   };

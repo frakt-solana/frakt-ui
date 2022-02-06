@@ -16,6 +16,7 @@ import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
+import { NotifyType } from '../../../utils/solanaUtils';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
@@ -54,7 +55,7 @@ const Withdraw: FC<WithdrawInterface> = ({
 
       notify({
         message: 'Liquidity withdrawn successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -62,7 +63,7 @@ const Withdraw: FC<WithdrawInterface> = ({
 
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
     }
   };

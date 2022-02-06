@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import { settleAllFunds } from '../../utils/serumUtils/send';
+import { Market } from '@project-serum/serum';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import {
   useSelectedTokenAccounts,
   useTokenAccounts,
 } from '../../utils/serumUtils/markets';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { notify } from '../../utils';
-import { Market } from '@project-serum/serum';
+import { NotifyType } from '../../utils/solanaUtils';
+import { settleAllFunds } from '../../utils/serumUtils/send';
 
 export default function SerumSettleAllFunds({ market }: { market: Market }) {
   const { connection } = useConnection();
@@ -29,7 +30,7 @@ export default function SerumSettleAllFunds({ market }: { market: Market }) {
         notify({
           message: 'Wallet not connected',
           description: 'Wallet not connected',
-          type: 'error',
+          type: NotifyType.ERROR,
         });
         return;
       }
@@ -38,7 +39,7 @@ export default function SerumSettleAllFunds({ market }: { market: Market }) {
         notify({
           message: 'Error settling funds',
           description: 'TokenAccounts not connected',
-          type: 'error',
+          type: NotifyType.ERROR,
         });
         return;
       }
@@ -62,7 +63,7 @@ export default function SerumSettleAllFunds({ market }: { market: Market }) {
       notify({
         message: 'Error settling funds',
         description: e.message,
-        type: 'error',
+        type: NotifyType.ERROR,
       });
     } finally {
       setSettlingFunds(false);

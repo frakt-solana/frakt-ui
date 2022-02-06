@@ -2,6 +2,7 @@ import { Liquidity } from '@raydium-io/raydium-sdk';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { NotifyType } from '../../../../utils/solanaUtils';
 import { signAndConfirmTransaction } from '../../../../utils/transactions';
 import {
   getCurrencyAmount,
@@ -60,7 +61,7 @@ export const raydiumSwap =
 
       notify({
         message: 'Swap made successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -68,7 +69,7 @@ export const raydiumSwap =
 
       notify({
         message: 'Swap failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
     }
   };

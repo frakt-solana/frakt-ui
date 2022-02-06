@@ -3,6 +3,8 @@
 /* eslint-disable no-console */
 import { Input, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
+import tuple from 'immutable-tuple';
+
 import {
   useFeeDiscountKeys,
   useLocallyStoredFeeDiscountKey,
@@ -22,7 +24,6 @@ import {
 import { getUnixTs, placeOrder } from '../../utils/serumUtils/send';
 import { SwitchChangeEventHandler } from 'antd/es/switch';
 import { refreshCache } from '../../utils/serumUtils/fetch-loop';
-import tuple from 'immutable-tuple';
 import { notify } from '../../utils';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import styles from './styles.module.scss';
@@ -30,6 +31,7 @@ import classNames from 'classnames/bind';
 import Toggle from '../Toggle';
 import Button from '../Button';
 import SerumSettleAllFunds from '../SerumSettleAllFunds/SerumSettleAllFunds';
+import { NotifyType } from '../../utils/solanaUtils';
 
 const sliderMarks = {
   0: '0%',
@@ -226,14 +228,14 @@ export default function TradeForm({
       console.warn('Missing price');
       notify({
         message: 'Missing price',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       return;
     } else if (!baseSize) {
       console.warn('Missing size');
       notify({
         message: 'Missing size',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       return;
     }
@@ -264,7 +266,7 @@ export default function TradeForm({
       notify({
         message: 'Error placing order',
         description: e.message,
-        type: 'error',
+        type: NotifyType.ERROR,
       });
     }
   }

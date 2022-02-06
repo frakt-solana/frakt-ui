@@ -2,6 +2,7 @@ import { Liquidity } from '@raydium-io/raydium-sdk';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { NotifyType } from '../../../../utils/solanaUtils';
 import { CreateLiquidityTransactionParams } from '../../liquidityPools.model';
 import { createEmptyRaydiumLiquidityPool } from './createEmptyRaydiumLiquidityPool';
 import { initRaydiumLiquidityPool } from './initRaydiumLiquidityPool';
@@ -53,7 +54,7 @@ export const createRaydiumLiquidityPool =
 
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
     }
   };

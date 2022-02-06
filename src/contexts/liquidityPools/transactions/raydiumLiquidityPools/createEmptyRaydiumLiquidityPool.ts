@@ -5,6 +5,7 @@ import {
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
 import { notify } from '../../../../utils';
+import { NotifyType } from '../../../../utils/solanaUtils';
 import { signAndConfirmTransaction } from '../../../../utils/transactions';
 
 export const createEmptyRaydiumLiquidityPool = async ({
@@ -38,6 +39,6 @@ export const createEmptyRaydiumLiquidityPool = async ({
 
   notify({
     message: 'Liquidity pool created',
-    type: 'success',
+    type: NotifyType.SUCCESS,
   });
 };

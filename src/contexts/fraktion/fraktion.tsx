@@ -37,6 +37,7 @@ import {
   transformToSafetyBoxesWithMetadata,
 } from './fraktion.helpers';
 import { signAndConfirmTransaction } from '../../utils/transactions';
+import { NotifyType } from '../../utils/solanaUtils';
 
 const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
@@ -128,7 +129,7 @@ export const createMarket: CreateMarket = async (
     notify({
       message: 'Error listing new market',
       description: err.message,
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return false;
   }
@@ -180,7 +181,7 @@ export const createVault: CreateVault = async ({
 
     notify({
       message: 'Fraktionalized successfully',
-      type: 'success',
+      type: NotifyType.SUCCESS,
     });
 
     return fractionalMint;
@@ -189,7 +190,7 @@ export const createVault: CreateVault = async ({
     console.error(error);
     notify({
       message: 'Transaction failed',
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return null;
   }

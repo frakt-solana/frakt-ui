@@ -18,6 +18,7 @@ import fraktionConfig from '../fraktion/config';
 import { VaultData, VaultState } from '../fraktion';
 import { notify } from '../../utils';
 import { signAndConfirmTransaction } from '../../utils/transactions';
+import { NotifyType } from '../../utils/solanaUtils';
 
 const startFraktionalizerAuction =
   (wallet: WalletContextState, connection: Connection) =>
@@ -58,13 +59,13 @@ const startFraktionalizerAuction =
       });
       notify({
         message: 'Auction started successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
       return true;
     } catch (error) {
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       // eslint-disable-next-line no-console
       console.error(error);
@@ -105,13 +106,13 @@ const bidOnAuction =
       });
       notify({
         message: 'Bid placed successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
       return true;
     } catch (error) {
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       // eslint-disable-next-line no-console
       console.error(error);
@@ -145,13 +146,13 @@ const refundBid =
       });
       notify({
         message: 'Bid refunded successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
       return true;
     } catch (error) {
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       // eslint-disable-next-line no-console
       console.error(error);
@@ -185,13 +186,13 @@ const redeemRewardsFromAuctionShares =
       });
       notify({
         message: 'Redeemed SOL successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
       return true;
     } catch (error) {
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       // eslint-disable-next-line no-console
       console.error(error);
@@ -222,7 +223,7 @@ const unlockVault = async (
   });
   notify({
     message: 'Vault unlocked successfully',
-    type: 'success',
+    type: NotifyType.SUCCESS,
   });
 };
 
@@ -262,7 +263,7 @@ const redeemNft = async (
   );
   notify({
     message: 'NFT redeemed successfully',
-    type: 'success',
+    type: NotifyType.SUCCESS,
   });
 };
 
@@ -313,7 +314,7 @@ const unlockVaultAndRedeemNfts =
     } catch (error) {
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       // eslint-disable-next-line no-console
       console.error(error);

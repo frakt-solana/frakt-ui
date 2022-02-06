@@ -1,17 +1,17 @@
 import { notification } from 'antd';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
-
-import { formatNumber, Notify } from './solanaUtils';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+
+import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
 export const notify: Notify = ({
   message = '',
   description = null,
-  type = 'info',
+  type = NotifyType.INFO,
 }) => {
-  (notification as any)[type]({
+  notification[type]({
     className: 'fraktion__notification',
     message,
     description,
@@ -138,7 +138,7 @@ export const copyToClipboard = (value: string): void => {
   navigator.clipboard.writeText(value);
   notify({
     message: 'Copied to clipboard',
-    type: 'success',
+    type: NotifyType.SUCCESS,
   });
 };
 

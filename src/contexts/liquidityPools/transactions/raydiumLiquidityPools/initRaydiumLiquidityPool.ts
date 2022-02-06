@@ -14,6 +14,7 @@ import {
 import BN from 'bn.js';
 
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { NotifyType } from '../../../../utils/solanaUtils';
 import { signAndConfirmTransaction } from '../../../../utils/transactions';
 import { getTokenAccount } from '../../liquidityPools.helpers';
 
@@ -144,6 +145,6 @@ export const initRaydiumLiquidityPool = async ({
 
   notify({
     message: 'Liquidity provided successfully',
-    type: 'success',
+    type: NotifyType.SUCCESS,
   });
 };

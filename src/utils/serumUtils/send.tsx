@@ -40,6 +40,7 @@ import {
   Token,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
+import { NotifyType } from '../solanaUtils';
 
 export async function createTokenAccountTransaction({
   walletPublicKey,
@@ -280,7 +281,7 @@ export async function settleAllFunds({
     notify({
       message: 'Error settling funds',
       description: 'No funds found to settle',
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return;
   }
@@ -380,41 +381,41 @@ export async function placeOrder({
     Math.abs((num / step) % 1) < 1e-5 ||
     Math.abs(((num / step) % 1) - 1) < 1e-5;
   if (isNaN(price)) {
-    notify({ message: 'Invalid price', type: 'error' });
+    notify({ message: 'Invalid price', type: NotifyType.ERROR });
     return;
   }
   if (isNaN(size)) {
-    notify({ message: 'Invalid size', type: 'error' });
+    notify({ message: 'Invalid size', type: NotifyType.ERROR });
     return;
   }
   if (!walletPublicKey) {
-    notify({ message: 'Connect wallet', type: 'error' });
+    notify({ message: 'Connect wallet', type: NotifyType.ERROR });
     return;
   }
   if (!market) {
-    notify({ message: 'Invalid  market', type: 'error' });
+    notify({ message: 'Invalid  market', type: NotifyType.ERROR });
     return;
   }
   if (!isIncrement(size, market.minOrderSize)) {
     notify({
       message: `Size must be an increment of ${formattedMinOrderSize}`,
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return;
   }
   if (size < market.minOrderSize) {
-    notify({ message: 'Size too small', type: 'error' });
+    notify({ message: 'Size too small', type: NotifyType.ERROR });
     return;
   }
   if (!isIncrement(price, market.tickSize)) {
     notify({
       message: `Price must be an increment of ${formattedTickSize}`,
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return;
   }
   if (price < market.tickSize) {
-    notify({ message: 'Price under tick size', type: 'error' });
+    notify({ message: 'Price under tick size', type: NotifyType.ERROR });
     return;
   }
   const owner = walletPublicKey;
@@ -444,7 +445,7 @@ export async function placeOrder({
   if (!payer) {
     notify({
       message: 'Need an SPL token account for cost currency',
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return;
   }
@@ -868,7 +869,7 @@ export async function sendSignedTransaction({
     },
   );
   if (sendNotification) {
-    notify({ message: sentMessage, type: 'success' });
+    notify({ message: sentMessage, type: NotifyType.ERROR });
   }
 
   // eslint-disable-next-line no-console
@@ -929,7 +930,7 @@ export async function sendSignedTransaction({
     done = true;
   }
   if (sendNotification) {
-    notify({ message: successMessage, type: 'success' });
+    notify({ message: successMessage, type: NotifyType.ERROR });
   }
 
   // eslint-disable-next-line no-console

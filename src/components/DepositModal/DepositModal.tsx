@@ -12,6 +12,7 @@ import { notify, SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
+import { NotifyType } from '../../utils/solanaUtils';
 
 interface DepositModalProps {
   visible: boolean;
@@ -55,7 +56,7 @@ const DepositModal: FC<DepositModalProps> = ({
 
       notify({
         message: 'successfully',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -63,7 +64,7 @@ const DepositModal: FC<DepositModalProps> = ({
 
       notify({
         message: 'Transaction failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
     }
   };

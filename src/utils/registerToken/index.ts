@@ -1,4 +1,5 @@
 import { notify } from '../index';
+import { NotifyType } from '../solanaUtils';
 
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/list';
 
@@ -31,12 +32,12 @@ export const registerToken = async (
       notify({
         message: 'Token registered successfully',
         description: 'Token registration can take up to an hour',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } else {
       notify({
         message: 'Token registration failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       return false;
     }
@@ -47,7 +48,7 @@ export const registerToken = async (
     console.error(error);
     notify({
       message: 'Token registration failed',
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return false;
   }

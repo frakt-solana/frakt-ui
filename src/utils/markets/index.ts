@@ -1,4 +1,5 @@
 import { notify } from '../index';
+import { NotifyType } from '../solanaUtils';
 
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
 const MARKETS_URL = 'https://fraktion-markets-pools-endpoin.herokuapp.com/';
@@ -57,12 +58,12 @@ export const registerMarket = async (
       notify({
         message: 'Market regitered successfully',
         description: 'Market registration can take up to an hour',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } else {
       notify({
         message: 'Market registration failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       return false;
     }
@@ -73,7 +74,7 @@ export const registerMarket = async (
     console.error(error);
     notify({
       message: 'Market registration failed',
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return false;
   }
