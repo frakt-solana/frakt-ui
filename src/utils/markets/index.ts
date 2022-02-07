@@ -1,4 +1,5 @@
-import { notify } from '../index';
+import { notify, useBFF } from '../index';
+import API from '../../utils/cacher';
 
 const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
 const MARKETS_URL = 'https://fraktion-markets-pools-endpoin.herokuapp.com/';
@@ -8,7 +9,7 @@ const DEPRECATED_MARKETS = [
   'dvQF6YNQvQ2dQkMyt3rW7ibypCkHJDgVAJvZz6A6gZx',
 ];
 
-export const getMarkets = async (): Promise<
+export const getMarketsFromOldCacher = async (): Promise<
   Array<{
     address: string;
     baseMint: string;
@@ -32,6 +33,25 @@ export const getMarkets = async (): Promise<
     console.error(error);
   }
 };
+
+export const getMarketsFromBFF = (): Promise<
+  {
+    address: string;
+    baseMint: string;
+    programId: string;
+  }[]
+> => {
+  try {
+    return API.getMarkets();
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
+};
+
+export const getMarkets = useBFF()
+  ? getMarketsFromBFF
+  : getMarketsFromOldCacher;
 
 export const registerMarket = async (
   tickerName: string,

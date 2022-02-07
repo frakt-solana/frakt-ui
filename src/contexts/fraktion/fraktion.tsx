@@ -22,10 +22,11 @@ import fraktionConfig from './config';
 import { IS_DEVNET } from '../../config';
 import { registerToken } from '../../utils/registerToken';
 import { adjustPricePerFraction } from './utils';
-import { notify } from '../../utils';
+import { notify, useBFF } from '../../utils';
 import { listMarket } from '../../utils/serumUtils/send';
 import { registerMarket } from '../../utils/markets';
 import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
+import API from '../../utils/cacher';
 import {
   getVaultState,
   mapAuctionsByVaultPubkey,
@@ -40,7 +41,7 @@ import {
 const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS, ADMIN_PUBKEY } =
   fraktionConfig;
 
-export const getVaults: GetVaults = async (markets) => {
+export const getVaultsFromOldCacher: GetVaults = async (markets) => {
   const { allVaults, metas } = await (
     await fetch(VAULTS_AND_META_CACHE_URL)
   ).json();
@@ -90,6 +91,12 @@ export const getVaults: GetVaults = async (markets) => {
 
   return vaultsData;
 };
+
+export const getVaultsFromBff: GetVaults = () => {
+  return API.getVaults();
+};
+
+export const getVaults = useBFF() ? getVaultsFromBff : getVaultsFromOldCacher;
 
 export const createMarket: CreateMarket = async (
   fractionsMint,

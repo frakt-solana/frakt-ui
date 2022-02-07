@@ -145,3 +145,7 @@ export const copyToClipboard = (value: string): void => {
 export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
   return `https://cdn.exchange.art/${thumbaiUrl?.replace(/ /g, '%20')}`;
 };
+
+export const useBFF = (): boolean => {
+  return !process.env.DISABLE_BFF;
+};
