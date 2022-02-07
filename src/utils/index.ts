@@ -145,3 +145,45 @@ export const copyToClipboard = (value: string): void => {
 export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
   return `https://cdn.exchange.art/${thumbaiUrl?.replace(/ /g, '%20')}`;
 };
+
+interface NotificationMessage {
+  onSuccessMessage?: string;
+  onErrorMessage?: string;
+  onFinishMessage?: string;
+}
+
+type WrapAsyncWithTryCatch = <FuncParams, FuncReturn>(
+  func: (params: FuncParams) => Promise<FuncReturn>,
+  notificationMessages: NotificationMessage,
+) => (funcParams: FuncParams) => Promise<FuncReturn>;
+
+export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
+  (transactionFunc, { onSuccessMessage, onErrorMessage, onFinishMessage }) =>
+  async (transactionFuncParams) => {
+    try {
+      const result = await transactionFunc(transactionFuncParams);
+
+      onSuccessMessage &&
+        notify({
+          message: onSuccessMessage,
+          type: NotifyType.SUCCESS,
+        });
+
+      return result;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+
+      onErrorMessage &&
+        notify({
+          message: onErrorMessage,
+          type: NotifyType.ERROR,
+        });
+    } finally {
+      onFinishMessage &&
+        notify({
+          message: onFinishMessage,
+          type: NotifyType.INFO,
+        });
+    }
+  };
