@@ -111,6 +111,7 @@ export const NFTList: FC<NFTListProps> = ({
             }}
             initialSlide={currentSlide}
             onSwiper={setSwiper}
+            onSlideChange={onSliderNavClick()}
             autoHeight={true}
           >
             {safetyBoxesWithCollectionData.map((slide) => (

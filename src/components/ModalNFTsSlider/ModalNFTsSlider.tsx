@@ -78,6 +78,7 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
           initialSlide={currentSlide}
           onSwiper={setSwiper}
           autoHeight={true}
+          onSlideChange={onSliderNavClick()}
         >
           {safetyBoxes.map((slide) => (
             <SwiperSlide key={slide.nftId} className={styles.slide}>
