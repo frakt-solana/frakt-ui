@@ -1,16 +1,62 @@
 .positionWrapper {
   position: fixed;
   top: 50px;
-  width: 100%;
   height: 0;
   left: 0;
-  z-index: 99;
+  right: 0;
+  z-index: 7;
   transition: top .2s ease-out;
+
+  @media screen and (max-width: 1439px) {
+    right: 10px;
+  }
+
+  @media screen and (max-width: 1024px) {
+    right: 0;
+  }
+
+  .container {
+    @media screen and (max-width: 700px) {
+      padding: 0;
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    top: 38px;
+  }
 }
 
 .headerHidden {
   top: 0;
   transition: top .2s ease-in;
+
+  @media screen and (max-width: 1400px) {
+    top: -103px;
+
+    .randomWrapper {
+      padding-bottom: 0;
+    }
+  }
+
+  @media screen and (max-width: 1400px) {
+    top: -93px;
+
+    .randomWrapper {
+      padding-bottom: 10px;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    top: -73px;
+  }
+
+  @media screen and (max-width: 373px) {
+    top: -103px;
+  }
 }
 
 .container {
@@ -20,9 +66,17 @@
   &::before {
     display: block;
     content: '';
-    width: 228px;
+    width: 229px;
     flex-shrink: 0;
     height: 0;
+
+    @media screen and (max-width: 1439px) {
+      width: 234px;
+    }
+
+    @media screen and (max-width: 700px) {
+      width: 45px;
+    }
   }
 }
 
@@ -39,6 +93,16 @@
   display: flex;
   align-items: center;
   width: 100%;
+  transition: padding .3s ease-in;
+
+  @media screen and (max-width: 1400px) {
+    flex-wrap: wrap;
+    padding: 30px;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding: 20px 15px;
+  }
 }
 
 .questionWrapper {
@@ -47,6 +111,10 @@
   overflow: hidden;
   position: relative;
   margin-right: 20px;
+
+  @media screen and (max-width: 1050px) {
+    display: none;
+  }
 
   &::after {
     content: '';
@@ -77,6 +145,24 @@
 .buyWrapper {
   display: flex;
   gap: 20px;
+  margin-right: auto;
+
+  @media screen and (max-width: 920px) {
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  @media screen and (max-width: 767px) {
+    gap: 10px;
+  }
+
+  @media screen and (max-width: 700px) {
+    flex-direction: row;
+  }
+
+  @media screen and (max-width: 550px) {
+    flex-direction: column;
+  }
 }
 
 .settingsWrapper {
@@ -89,6 +175,10 @@
   font: var(--font-text-3);
   line-height: 1;
   position: relative;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 }
 
 .separator {
@@ -147,8 +237,13 @@
   }
 }
 
+.randomNFTsPrice {
+  margin-left: auto;
+}
+
 .selectWrapper {
   position: relative;
+  max-width: 95px;
 
   .dropdown {
     margin-top: 13px;
@@ -162,6 +257,10 @@
     padding-bottom: 17px;
     position: relative;
     overflow: unset;
+
+    @media screen and (max-width: 767px) {
+      font-size: 15px;
+    }
 
     &::before {
       content: "";
@@ -286,16 +385,23 @@
       border: none;
       font-size: 18px;
       padding: 0;
+
+      @media screen and (max-width: 767px) {
+        font-size: 15px;
+      }
     }
+
     &.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
       box-shadow: none;
     }
+
     &.ant-select-single .ant-select-selector .ant-select-selection-item,
     &.ant-select-single .ant-select-selector .ant-select-selection-placeholder {
       display: flex;
       align-items: center;
     }
   }
+
   :global {
     .ant-select-arrow {
       right: 0;
@@ -306,20 +412,30 @@
 .option {
   font-size: 18px;
 
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
+
   &:global {
     &.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
       background-color: var(--color-gray-7);
       font-weight: 400;
     }
+
     &.ant-select-item {
       padding: 5px 19px;
     }
   }
+
   :global {
     .ant-select-item-option-content {
       font-size: 18px;
       display: flex;
       align-items: center;
+
+      @media screen and (max-width: 767px) {
+        font-size: 15px;
+      }
     }
   }
 }
@@ -343,6 +459,10 @@
   margin-top: 10px;
 }
 
+.buySettings {
+  flex-grow: 1;
+}
+
 .buyButton {
   font: var(--font-text-3);
   width: 222px;
@@ -350,8 +470,28 @@
   background-color: var(--accent-color-1);
   border: 1px solid var(--accent-color-1);
   cursor: pointer;
+  margin-right: 30px;
+  flex-grow: 1;
+
+  @media screen and (max-width: 1400px) {
+    margin-right: 0;
+  }
+
+  @media screen and (max-width: 920px) {
+    width: auto;
+  }
 }
 
+
 .marketNavigation {
-  margin-left: auto;
+
+  @media screen and (max-width: 1400px) {
+    margin-bottom: 30px;
+    width: 100%;
+    order: -1;
+  }
+
+  @media screen and (max-width: 767px) {
+    margin-bottom: 20px;
+  }
 }

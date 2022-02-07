@@ -26,22 +26,84 @@
   padding-left: 20px;
   width: 100%;
   padding-top: 105px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 100%;
+    top: -50px;
+    left: -1px;
+    background-color: var(--color-gray-4);
+
+    @media screen and (max-width: 700px) {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 1400px){
+    padding-top: 240px;
+  }
+
+  @media screen and (max-width: 1050px) {
+    padding-top: 190px;
+  }
+
+  @media screen and (max-width: 920px) {
+    padding-top: 240px;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-top: 200px;
+  }
 
   @media screen and (max-width: 700px) {
-    margin-left: 30px;
-    padding-left: 15px;
+    padding-left: 0;
+    padding-top: 150px;
+  }
+
+  @media screen and (max-width: 550px) {
+    padding-top: 200px;
+  }
+
+  @media screen and (max-width: 500px) {
+    padding-top: 190px;
+  }
+
+  @media screen and (max-width: 373px) {
+    padding-top: 240px;
   }
 }
 
 .itemsSortWrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-top: 32px;
   gap: 20px;
+  font: var(--font-text-3);
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 
   @media screen and (max-width: 370px) {
     flex-wrap: wrap;
+  }
+}
+
+.filtersIconWrapper {
+  color: var(--accent-color-1);
+  font-size: 15px;
+  display: none;
+
+  @media screen and (max-width: 700px) {
+    display: block;
+  }
+
+  svg {
+    margin-left: 8px;
   }
 }
 
@@ -51,8 +113,12 @@
   justify-content: space-between;
   gap: 20px;
   flex-grow: 1;
-  font: var(--font-text-3);
   color: var(--color-gray-4);
+
+  @media screen and (max-width: 700px) {
+    margin-left: auto;
+    flex-grow: 0;
+  }
 
   &::before {
     content: '';
@@ -60,6 +126,10 @@
     flex-grow: 1;
     height: 1px;
     background-color: var(--color-gray-4);
+
+    @media screen and (max-width: 700px) {
+      display: none;
+    }
   }
 }
 

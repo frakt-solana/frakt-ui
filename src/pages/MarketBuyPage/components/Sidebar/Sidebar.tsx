@@ -15,9 +15,12 @@ const COLLECTIONS_IN_POOL_DATA = [
 const shortName = (name: string, maxLength: number) =>
   name.length > maxLength ? `${name.slice(0, maxLength - 2)} ...` : name;
 
-export const Sidebar: FC = () => {
-  const [isSidebar, setIsSidebar] = useState<boolean>(false);
+interface SidebarProps {
+  setIsSidebar: (sidebarState: boolean) => void;
+  isSidebar: boolean;
+}
 
+export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
   const showSidebar = () => setIsSidebar(true);
   const hideSidebar = () => setIsSidebar(false);
 

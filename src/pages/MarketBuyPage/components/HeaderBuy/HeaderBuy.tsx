@@ -18,7 +18,7 @@ export const HeaderBuy: FC = () => {
         [styles.headerHidden]: !headerVisible,
       })}
     >
-      <div className={`container_lg ${styles.container}`}>
+      <div className={`container ${styles.container}`}>
         <div className={styles.wrapper}>
           <div className={styles.randomWrapper}>
             <div className={styles.questionWrapper}>

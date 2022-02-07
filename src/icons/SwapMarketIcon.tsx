@@ -16,6 +16,7 @@ export const SwapMarketIcon = ({
   <svg
     className={className || ''}
     width={width || '19'}
+    height="15"
     viewBox="0 0 19 15"
     fill="none"
   >

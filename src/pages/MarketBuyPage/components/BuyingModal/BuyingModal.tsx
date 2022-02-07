@@ -16,6 +16,7 @@ interface BuyingModalProps {
 
 export const BuyingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
+  const [isModalDown, setIsModalDown] = useState<boolean>(false);
 
   const settingsRef = useRef();
 
@@ -26,10 +27,14 @@ export const BuyingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
       className={classNames({
         [styles.wrapper]: true,
         [styles.visible]: nfts.length,
+        [styles.modalDown]: isModalDown,
       })}
     >
       <div className={styles.header}>
-        <p className={styles.title}>
+        <p
+          className={styles.title}
+          onClick={() => setIsModalDown(!isModalDown)}
+        >
           You&apos;re buying<span>{nfts.length}</span>
         </p>
         <div

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import styles from './styles.module.scss';
-import { ArrowDownSmallIcon } from '../../icons';
+import { ArrowDownSmallIcon, FiltersIcon } from '../../icons';
 import { ControlledSelect } from '../../components/Select/Select';
 import { useForm } from 'react-hook-form';
 
@@ -39,6 +39,7 @@ const MarketBuyPage = (): JSX.Element => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [swiper, setSwiper] = useState(null);
+  const [isSidebar, setIsSidebar] = useState<boolean>(false);
 
   const slideTo = (index) => {
     if (swiper) swiper.slideTo(index);
@@ -84,17 +85,24 @@ const MarketBuyPage = (): JSX.Element => {
         <div className={styles.modalWrapper}>
           <BuyingModal nfts={selectedNfts} onDeselect={onDeselect} />
         </div>
-        <div className="container_lg">
+        <div className="container">
           <Helmet>
             <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
           </Helmet>
           <div className={styles.wrapper}>
-            <Sidebar />
+            <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
             <div className={styles.content}>
               <HeaderBuy />
 
               <div className={styles.itemsSortWrapper}>
+                <p
+                  className={styles.filtersIconWrapper}
+                  onClick={() => setIsSidebar(true)}
+                >
+                  Filters
+                  <FiltersIcon />
+                </p>
                 <div className={styles.itemsAmount}>355 items</div>
                 <div className={styles.sortWrapper}>
                   <ControlledSelect

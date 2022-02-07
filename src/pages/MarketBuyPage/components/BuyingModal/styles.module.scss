@@ -6,11 +6,21 @@
   border: var(--border-gray-1);
   border-bottom: none;
   background-color: var(--color-gray-7);
-  padding: 20px;
-  transition: transform .2s ease-out;
+  padding: 0 20px 20px;
+  transition: transform .3s ease-out;
 
   &.visible {
     transform: translateY(-100%);
+  }
+
+  @media screen and (max-width: 1600px) {
+    &.modalDown {
+      transform: translateY(-70px);
+
+      .slippageWrapper {
+        display: none;
+      }
+    }
   }
 }
 
@@ -23,6 +33,8 @@
 .title {
   font-size: 24px;
   font-weight: 400;
+  padding-top: 20px;
+  padding-bottom: 20px;
 
   span {
     color: var(--accent-color-1);
@@ -136,10 +148,15 @@
 }
 
 .selectedList {
-  margin-top: 20px;
   padding-top: 10px;
   border-top: var(--border-gray-1);
   border-bottom: var(--border-gray-1);
+  max-height: calc(100vh - 400px);
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
 }
 
 .selectedItem {

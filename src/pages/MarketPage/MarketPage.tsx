@@ -42,7 +42,7 @@ const MarketPage = (): JSX.Element => {
 
   return (
     <AppLayout className={styles.layout}>
-      <div className="container_lg">
+      <div className="container">
         <Helmet>
           <title>{`Market | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
         </Helmet>
