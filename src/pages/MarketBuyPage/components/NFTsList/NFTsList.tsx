@@ -6,21 +6,19 @@ interface NFTsListProps {
   nfts: any;
   selectedNFTs: any;
   onCardClick: (nft: any) => void;
+  onNftItemClick: (index: number) => () => void;
 }
 
 export const NFTsList: FC<NFTsListProps> = ({
   nfts,
   selectedNFTs,
   onCardClick,
+  onNftItemClick,
 }) => {
   return (
     <ul className={styles.poolsList}>
       {nfts.map((item, index) => (
-        <li
-          key={index}
-          className={styles.nftCard}
-          onClick={() => onCardClick(item)}
-        >
+        <li key={index} className={styles.nftCard}>
           <div
             className={classNames({
               [styles.borderHover]: true,
@@ -28,18 +26,24 @@ export const NFTsList: FC<NFTsListProps> = ({
                 (selectedNft) => selectedNft?.nftId === item.nftId,
               ),
             })}
+            onClick={() => onCardClick(item)}
           />
           <div className={styles.nftImgWrapper}>
             <img
-              src={item.poolImage}
-              alt="pool card"
+              src={item.nftImage}
+              alt="NFT card"
               className={styles.nftImage}
             />
           </div>
           <div className={styles.cardContentWrapper}>
             <p className={styles.nftName}>{item.nftId}</p>
             <span className={styles.collectionName}>{item.collectionName}</span>
-            <button className={styles.detailsBtn}>Details</button>
+            <button
+              className={styles.detailsBtn}
+              onClick={onNftItemClick(index)}
+            >
+              Details
+            </button>
           </div>
         </li>
       ))}

@@ -13,6 +13,7 @@ import { HeaderBuy } from './components/HeaderBuy';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { BuyingModal } from './components/BuyingModal';
 import { NFTs_DATA } from './tempData';
+import { ModalNFTsSlider } from '../../components/ModalNFTsSlider';
 
 const SORT_VALUES = [
   {
@@ -35,6 +36,23 @@ const SORT_VALUES = [
 
 const MarketBuyPage = (): JSX.Element => {
   const [selectedNfts, setSelectedNfts] = useState<any>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const [swiper, setSwiper] = useState(null);
+
+  const slideTo = (index) => {
+    if (swiper) swiper.slideTo(index);
+  };
+
+  const onNftItemClick = (index) => () => {
+    setIsModalVisible(true);
+    setCurrentSlide(index);
+    slideTo(index);
+  };
+
+  const onSliderNavClick = () => () => {
+    if (swiper) setCurrentSlide(swiper.activeIndex);
+  };
 
   const onDeselect = (nft: any) => {
     setSelectedNfts(
@@ -94,10 +112,20 @@ const MarketBuyPage = (): JSX.Element => {
                 selectedNFTs={selectedNfts}
                 onCardClick={onCardClick}
                 nfts={NFTs_DATA}
+                onNftItemClick={onNftItemClick}
               />
             </div>
           </div>
         </div>
+        <ModalNFTsSlider
+          isModalVisible={isModalVisible}
+          currentSlide={currentSlide}
+          safetyBoxes={NFTs_DATA}
+          nftCollections={[]}
+          onSliderNavClick={onSliderNavClick}
+          setIsModalVisible={setIsModalVisible}
+          setSwiper={setSwiper}
+        />
       </AppLayout>
     </HeaderStateProvider>
   );
