@@ -111,7 +111,7 @@ export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
       <p className={styles.slippageInfo}>
         * Max total (with slippage) = {0.002124} SOL
       </p>
-      <button className={styles.buyButton}>Buy for {'SOL'}</button>
+      <button className={styles.buyButton}>Sell for {'SOL'}</button>
     </div>
   );
 };
