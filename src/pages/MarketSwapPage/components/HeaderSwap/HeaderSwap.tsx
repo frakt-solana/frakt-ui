@@ -5,7 +5,7 @@ import { useHeaderState } from '../../../../contexts/HeaderState';
 import classNames from 'classnames';
 import { SolanaIcon } from '../../../../icons';
 
-export const HeaderSell: FC = () => {
+export const HeaderSwap: FC = () => {
   const { headerVisible } = useHeaderState();
   return (
     <div

@@ -1,0 +1,148 @@
+.layout {
+  overflow: hidden;
+  max-width: 100vw;
+}
+
+.modalWrapper {
+  position: fixed;
+  bottom: -1px;
+  right: 15px;
+  left: 0;
+  z-index: 99;
+  height: 1px;
+}
+
+.wrapper {
+  display: flex;
+  position: relative;
+}
+
+.content {
+  padding-bottom: 50px;
+  padding-left: 20px;
+  width: 100%;
+  padding-top: 85px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 100%;
+    top: -50px;
+    left: -1px;
+    background-color: var(--color-gray-4);
+
+    @media screen and (max-width: 700px) {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 1100px) {
+    padding-top: 180px;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-top: 160px;
+  }
+
+  @media screen and (max-width: 403px) {
+    padding-top: 190px;
+  }
+}
+
+.itemsSortWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 32px;
+  gap: 20px;
+  font: var(--font-text-3);
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
+
+  @media screen and (max-width: 370px) {
+    flex-wrap: wrap;
+  }
+}
+
+.filtersIconWrapper {
+  color: var(--accent-color-1);
+  font-size: 15px;
+  display: none;
+  flex-shrink: 0;
+
+  @media screen and (max-width: 700px) {
+    display: block;
+  }
+
+  svg {
+    margin-left: 8px;
+  }
+}
+
+.itemsAmount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  color: var(--color-gray-4);
+
+  @media screen and (max-width: 700px) {
+    margin-left: auto;
+    flex-grow: 0;
+  }
+
+  &::before {
+    content: '';
+    display: block;
+    flex-grow: 1;
+    height: 1px;
+    background-color: var(--color-gray-4);
+
+    @media screen and (max-width: 700px) {
+      display: none;
+    }
+  }
+}
+
+.sortingSelect {
+  span {
+    color: var(--white-color);
+  }
+}
+
+.sortingSelectValueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+
+    path {
+      stroke: var(--accent-color-1) !important;
+    }
+  }
+
+  .sortName {
+    color: var(--accent-color-1);
+  }
+}
+
+.sortWrapper {
+  flex-shrink: 0;
+
+  .arrowDown,
+  .arrowUp {
+    path {
+      stroke: var(--white-color);
+    }
+  }
+
+  .arrowDown {
+    transform: rotate(180deg);
+  }
+}
+
