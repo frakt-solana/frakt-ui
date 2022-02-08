@@ -35,7 +35,7 @@ export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
           className={styles.title}
           onClick={() => setIsModalDown(!isModalDown)}
         >
-          You&apos;re buying<span>{nfts.length}</span>
+          You&apos;re selling<span>{nfts.length}</span>
         </p>
         <div
           className={classNames({
