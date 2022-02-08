@@ -17,10 +17,18 @@
     &.modalDown {
       transform: translateY(-70px);
 
+      @media screen and (max-width: 767px) {
+        transform: translateY(-60px);
+      }
+
       .slippageWrapper {
         display: none;
       }
     }
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: 270px;
   }
 }
 
@@ -35,6 +43,10 @@
   font-weight: 400;
   padding-top: 20px;
   padding-bottom: 20px;
+
+  @media screen and (max-width: 767px) {
+    font-size: 18px;
+  }
 
   span {
     color: var(--accent-color-1);
@@ -166,7 +178,11 @@
   margin-bottom: 10px;
 
   svg {
-    width: 22px;
+    width: 20px;
+
+    @media screen and (max-width: 767px) {
+      width: 16px;
+    }
 
     &:hover {
       opacity: .5;
@@ -185,18 +201,31 @@
   background-color: var(--color-gray-4);
   background-size: cover;
   flex-shrink: 0;
+
+  @media screen and (max-width: 767px) {
+    width: 39px;
+    height: 39px;
+  }
 }
 
 .itemId {
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 5px;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 }
 
 .collectionName {
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
+
+  @media screen and (max-width: 767px) {
+    font-size: 12px;
+  }
 }
 
 .currencyWrapper {
@@ -204,6 +233,10 @@
   align-items: center;
   font-size: 18px;
   margin-top: 20px;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 }
 
 .totalAmount {
@@ -258,6 +291,10 @@
       border: none;
       font-size: 18px;
       padding: 0;
+
+      @media screen and (max-width: 767px) {
+        font-size: 15px;
+      }
     }
     &.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
       box-shadow: none;
@@ -278,6 +315,10 @@
 .option {
   font-size: 18px;
 
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
+
   > svg {
     flex-shrink: 0;
   }
@@ -296,6 +337,10 @@
       font-size: 18px;
       display: flex;
       align-items: center;
+
+      @media screen and (max-width: 767px) {
+        font-size: 15px;
+      }
     }
   }
 }
@@ -327,4 +372,8 @@
   background-color: var(--accent-color-1);
   border: 1px solid var(--accent-color-1);
   cursor: pointer;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 }
