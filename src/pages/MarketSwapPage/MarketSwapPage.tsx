@@ -12,7 +12,7 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderSwap } from './components/HeaderSwap';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { SwappingModal } from './components/SwappingModal';
-import { NFTs_DATA } from './tempData';
+import { NFTs_FROM_DATA } from './tempData';
 import { ModalNFTsSlider } from '../../components/ModalNFTsSlider';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../../components/WalletNotConnected';
@@ -38,7 +38,8 @@ const SORT_VALUES = [
 
 const MarketSwapPage = (): JSX.Element => {
   const { connected } = useWallet();
-  const [selectedNfts, setSelectedNfts] = useState<any>([]);
+  const [selectedSwapFrom, setSelectedSwapFrom] = useState(null);
+  const [selectedSwapTo, setSelectedSwapTo] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [swiper, setSwiper] = useState(null);
@@ -58,20 +59,15 @@ const MarketSwapPage = (): JSX.Element => {
     if (swiper) setCurrentSlide(swiper.activeIndex);
   };
 
-  const onDeselect = (nft: any) => {
-    setSelectedNfts(
-      selectedNfts.filter((selectedNft) => selectedNft?.nftId !== nft.nftId),
-    );
+  const onDeselect = (isFrom: boolean) => {
+    isFrom ? setSelectedSwapFrom(null) : setSelectedSwapTo(null);
   };
-
   const onCardClick = (nft: any): void => {
-    selectedNfts.find((selectedNft) => selectedNft?.nftId === nft.nftId)
-      ? setSelectedNfts(
-          selectedNfts.filter(
-            (selectedNft) => selectedNft?.nftId !== nft.nftId,
-          ),
-        )
-      : setSelectedNfts([...selectedNfts, nft]);
+    if (nft.nftId === selectedSwapFrom?.nftId) {
+      setSelectedSwapFrom(null);
+      return;
+    }
+    setSelectedSwapFrom(nft);
   };
 
   const { control, watch } = useForm({
@@ -85,9 +81,15 @@ const MarketSwapPage = (): JSX.Element => {
   return (
     <HeaderStateProvider>
       <AppLayout className={styles.layout}>
-        <div className={styles.modalWrapper}>
-          <SwappingModal nfts={selectedNfts} onDeselect={onDeselect} />
-        </div>
+        {connected && (
+          <div className={styles.modalWrapper}>
+            <SwappingModal
+              selectedSwapFrom={selectedSwapFrom}
+              selectedSwapTo={selectedSwapTo}
+              onDeselect={onDeselect}
+            />
+          </div>
+        )}
         <div className="container">
           <Helmet>
             <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
@@ -126,9 +128,9 @@ const MarketSwapPage = (): JSX.Element => {
                   </div>
 
                   <NFTsList
-                    selectedNFTs={selectedNfts}
+                    selectedNFT={selectedSwapFrom}
                     onCardClick={onCardClick}
-                    nfts={NFTs_DATA}
+                    nfts={NFTs_FROM_DATA}
                     onNftItemClick={onNftItemClick}
                   />
                 </>
@@ -139,7 +141,7 @@ const MarketSwapPage = (): JSX.Element => {
         <ModalNFTsSlider
           isModalVisible={isModalVisible}
           currentSlide={currentSlide}
-          safetyBoxes={NFTs_DATA}
+          safetyBoxes={NFTs_FROM_DATA}
           nftCollections={[]}
           onSliderNavClick={onSliderNavClick}
           setIsModalVisible={setIsModalVisible}

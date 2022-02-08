@@ -4,14 +4,14 @@ import classNames from 'classnames';
 
 interface NFTsListProps {
   nfts: any;
-  selectedNFTs: any;
+  selectedNFT: any;
   onCardClick: (nft: any) => void;
   onNftItemClick: (index: number) => () => void;
 }
 
 export const NFTsList: FC<NFTsListProps> = ({
   nfts,
-  selectedNFTs,
+  selectedNFT,
   onCardClick,
   onNftItemClick,
 }) => {
@@ -22,9 +22,7 @@ export const NFTsList: FC<NFTsListProps> = ({
           <div
             className={classNames({
               [styles.borderHover]: true,
-              [styles.selected]: !!selectedNFTs.find(
-                (selectedNft) => selectedNft?.nftId === item.nftId,
-              ),
+              [styles.selected]: selectedNFT?.nftId === item.nftId,
             })}
             onClick={() => onCardClick(item)}
           />

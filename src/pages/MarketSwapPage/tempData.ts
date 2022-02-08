@@ -1,7 +1,7 @@
 const tempImage =
   'https://www.arweave.net/ZQchuqm_nhdANQJi5QgMOcfRowykQYTugRLMKl5kI5M';
 
-export const NFTs_DATA = [
+export const NFTs_FROM_DATA = [
   {
     nftImage: tempImage,
     nftId: '#123412521',

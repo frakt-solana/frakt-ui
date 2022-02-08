@@ -47,6 +47,15 @@
   &.selected{
     border-color: var(--green-color);
 
+    &:hover {
+      border-color: var(--green-color);
+
+      &::after {
+        opacity: .5;
+        border-color: var(--green-color);
+      }
+    }
+
     &::after {
       opacity: .5;
       border-color: var(--green-color);
