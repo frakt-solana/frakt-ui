@@ -1,19 +1,26 @@
 import { redeemRewardsFromAuctionShares as redeemRewardsFromAuctionSharesTransaction } from 'fraktionalizer-client-library';
 
-import { signAndConfirmTransaction } from '../../../utils/transactions';
+import {
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../../fraktion/config';
-import {
-  RedeemRewardsFromAuctionSharesParams,
-  WrapperActionTransactionParams,
-  WrapperActionTransactionType,
-} from '../auction.model';
+import { VaultData } from '../../fraktion';
 
-export const rowRedeemRewardsFromAuctionShares = async ({
+interface RedeemRewardsFromAuctionSharesParams {
+  vaultInfo: VaultData;
+}
+
+interface RedeemRewardsFromAuctionSharesRawParams
+  extends RedeemRewardsFromAuctionSharesParams,
+    WalletAndConnection {}
+
+export const rawRedeemRewardsFromAuctionShares = async ({
   wallet,
   connection,
   vaultInfo,
-}: RedeemRewardsFromAuctionSharesParams): Promise<void> => {
+}: RedeemRewardsFromAuctionSharesRawParams): Promise<void> => {
   await redeemRewardsFromAuctionSharesTransaction({
     connection,
     userPubkey: wallet.publicKey.toString(),
@@ -29,15 +36,14 @@ export const rowRedeemRewardsFromAuctionShares = async ({
         transaction,
         signers,
         connection,
-        walletPublicKey: wallet.publicKey,
-        signTransaction: wallet.signTransaction,
+        wallet,
       });
     },
   });
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
-  rowRedeemRewardsFromAuctionShares,
+  rawRedeemRewardsFromAuctionShares,
   {
     onSuccessMessage: 'Redeemed SOL successfull',
     onErrorMessage: 'Transaction failed',
@@ -45,13 +51,8 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
 );
 
 export const redeemRewardsFromAuctionShares =
-  ({ wallet, connection }: WrapperActionTransactionParams) =>
-  (
-    params: Omit<
-      RedeemRewardsFromAuctionSharesParams,
-      WrapperActionTransactionType
-    >,
-  ): Promise<void> =>
+  ({ wallet, connection }: WalletAndConnection) =>
+  (params: RedeemRewardsFromAuctionSharesParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
       wallet,

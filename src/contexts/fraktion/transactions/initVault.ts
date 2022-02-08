@@ -1,20 +1,19 @@
 import { initBacket as initVaultTransaction } from 'fraktionalizer-client-library';
 
 import fraktionConfig from '../config';
-import { signAndConfirmTransaction } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
-  UnfinishedVaultData,
-  WrapperTransactionParams,
-} from '../fraktion.model';
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
+import { wrapAsyncWithTryCatch } from '../../../utils';
+import { UnfinishedVaultData } from '../fraktion.model';
 
 const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS } = fraktionConfig;
 
-export const rowInitVault = async ({
-  walletPublicKey,
-  signTransaction,
+export const rawInitVault = async ({
+  wallet,
   connection,
-}: WrapperTransactionParams): Promise<UnfinishedVaultData> => {
+}: WalletAndConnection): Promise<UnfinishedVaultData> => {
   const {
     vault: vaultPubkey,
     fractionalMint,
@@ -24,15 +23,14 @@ export const rowInitVault = async ({
     connection,
     fractionDecimals: FRACTION_DECIMALS,
     priceMint: SOL_TOKEN_PUBKEY,
-    userPubkey: walletPublicKey.toBase58(),
+    userPubkey: wallet.publicKey.toBase58(),
     vaultProgramId: PROGRAM_PUBKEY,
     sendTxn: async (transaction, signers) => {
       await signAndConfirmTransaction({
         transaction,
         signers,
         connection,
-        walletPublicKey: walletPublicKey,
-        signTransaction: signTransaction,
+        wallet,
       });
     },
   });
@@ -40,15 +38,4 @@ export const rowInitVault = async ({
   return { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury };
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowInitVault, {});
-
-export const initVault = ({
-  connection,
-  walletPublicKey,
-  signTransaction,
-}: WrapperTransactionParams): Promise<UnfinishedVaultData> =>
-  wrappedAsyncWithTryCatch({
-    signTransaction,
-    connection,
-    walletPublicKey,
-  });
+export const initVault = wrapAsyncWithTryCatch(rawInitVault, {});

@@ -39,7 +39,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
 }) => {
   const { fraktionTokensMap } = useTokenListContext();
   const { connection } = useConnection();
-  const { publicKey: walletPublicKey, signTransaction } = useWallet();
+  const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [poolDataByMint, setPoolDataByMint] = useState<PoolDataByMint>(
@@ -75,38 +75,31 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap({
           connection,
-          walletPublicKey,
-          signTransaction,
+          wallet,
         }),
         createRaydiumLiquidityPool: createRaydiumLiquidityPool({
           connection,
-          walletPublicKey,
-          signTransaction,
+          wallet,
         }),
         removeRaydiumLiquidity: removeRaydiumLiquidity({
           connection,
-          walletPublicKey,
-          signTransaction,
+          wallet,
         }),
         addRaydiumLiquidity: addRaydiumLiquidity({
           connection,
-          walletPublicKey,
-          signTransaction,
+          wallet,
         }),
         harvestLiquidity: harvestLiquidity({
           connection,
-          walletPublicKey,
-          signTransaction,
+          wallet,
         }),
         stakeLiquidity: stakeLiquidity({
           connection,
-          walletPublicKey,
-          signTransaction,
+          wallet,
         }),
         unstakeLiquidity: unstakeLiquidity({
           connection,
-          walletPublicKey,
-          signTransaction,
+          wallet,
         }),
       }}
     >

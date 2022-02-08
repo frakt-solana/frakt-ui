@@ -1,18 +1,25 @@
-import { unlockVault, redeemNft } from '.';
+import { unlockVault } from './index';
 import { wrapAsyncWithTryCatch } from '../../../utils';
-import { VaultState } from '../../fraktion';
-import {
-  UnlockVaultAndRedeemNftsParams,
-  UnlockVaultAndRedeemNftsWrapParams,
-  UnlockVaultAndRedeemNftsWrapType,
-} from '../auction.model';
+import { VaultData, VaultState } from '../../fraktion';
+import { WalletAndConnection } from '../../../utils/transactions';
+import { rawRedeemNft } from './redeemNft';
 
-export const rowUnlockVaultAndRedeemNfts = async ({
+interface UnlockVaultAndRedeemNftsParams {
+  vaultInfo: VaultData;
+}
+
+interface UnlockVaultAndRedeemNftsRawParams
+  extends WalletAndConnection,
+    UnlockVaultAndRedeemNftsParams {
+  patchVault: (vaultInfo: VaultData) => void;
+}
+
+export const rawUnlockVaultAndRedeemNfts = async ({
   vaultInfo,
   patchVault,
   wallet,
   connection,
-}: UnlockVaultAndRedeemNftsParams): Promise<void> => {
+}: UnlockVaultAndRedeemNftsRawParams): Promise<void> => {
   const isVaultLocked =
     vaultInfo.realState !== VaultState.AuctionFinished &&
     vaultInfo.realState !== VaultState.Inactive;
@@ -34,7 +41,7 @@ export const rowUnlockVaultAndRedeemNfts = async ({
     safetyBoxOrder > -1;
     --safetyBoxOrder
   ) {
-    await redeemNft({ vaultInfo, safetyBoxOrder, wallet, connection });
+    await rawRedeemNft({ vaultInfo, safetyBoxOrder, wallet, connection });
 
     //? Need to set state every time because function fired and vaultData is contant in it's closure
     //? Don't change state if vault was inactive
@@ -50,20 +57,22 @@ export const rowUnlockVaultAndRedeemNfts = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
-  rowUnlockVaultAndRedeemNfts,
+  rawUnlockVaultAndRedeemNfts,
   {
     onErrorMessage: 'Transaction failed',
   },
 );
 
 export const unlockVaultAndRedeemNfts =
-  ({ wallet, connection, patchVault }: UnlockVaultAndRedeemNftsWrapParams) =>
-  (
-    params: Omit<
-      UnlockVaultAndRedeemNftsParams,
-      UnlockVaultAndRedeemNftsWrapType
-    >,
-  ): Promise<void> =>
+  ({
+    wallet,
+    connection,
+    patchVault,
+  }: Omit<
+    UnlockVaultAndRedeemNftsRawParams,
+    keyof UnlockVaultAndRedeemNftsParams
+  >) =>
+  (params: UnlockVaultAndRedeemNftsParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
       wallet,

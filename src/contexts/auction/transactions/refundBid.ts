@@ -26,8 +26,7 @@ export const refundBid =
             transaction,
             signers,
             connection,
-            walletPublicKey: wallet.publicKey,
-            signTransaction: wallet.signTransaction,
+            wallet,
           });
         },
       });

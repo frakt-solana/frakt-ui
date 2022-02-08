@@ -1,20 +1,32 @@
 import { addNFTsToBacket as addNFTsToVaultTransaction } from 'fraktionalizer-client-library';
 
-import { AddNFTsToVault, WrappedTranscationType } from '../fraktion.model';
-import { signAndConfirmTransaction } from '../../../utils/transactions';
+import {
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../config';
+import { RawUserTokensByMint, UserNFT } from '../../userTokens';
 
 const { PROGRAM_PUBKEY } = fraktionConfig;
 
-export const rowAddNFTsToVault = async ({
+export interface AddNFTsToVault {
+  vaultPubkey: string;
+  userNfts: UserNFT[];
+  rawUserTokensByMint: RawUserTokensByMint;
+}
+
+export interface AddNFTsToRawVault
+  extends AddNFTsToVault,
+    WalletAndConnection {}
+
+export const rawAddNFTsToVault = async ({
   vaultPubkey,
   userNfts,
-  walletPublicKey,
-  signTransaction,
+  wallet,
   connection,
   rawUserTokensByMint,
-}: AddNFTsToVault): Promise<void> => {
+}: AddNFTsToRawVault): Promise<void> => {
   const nftMintsAndTokenAccounts = userNfts.map(({ mint }) => ({
     mintAddress: mint,
     tokenAccount: String(rawUserTokensByMint[mint]?.tokenAccountPubkey),
@@ -24,28 +36,26 @@ export const rowAddNFTsToVault = async ({
     connection,
     nftMintsAndTokenAccounts,
     vaultProgramId: PROGRAM_PUBKEY,
-    userPubkey: walletPublicKey.toString(),
+    userPubkey: wallet.publicKey.toString(),
     vaultStrPubkey: vaultPubkey,
     sendTxn: async (transaction, signers) => {
       await signAndConfirmTransaction({
         transaction,
         signers,
         connection,
-        walletPublicKey: walletPublicKey,
-        signTransaction: signTransaction,
+        wallet,
       });
     },
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowAddNFTsToVault, {});
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddNFTsToVault, {});
 
 export const addNFTsToVault =
-  ({ walletPublicKey, signTransaction, connection }: AddNFTsToVault) =>
-  (params: Omit<AddNFTsToVault, WrappedTranscationType>): Promise<void> =>
+  ({ wallet, connection }: WalletAndConnection) =>
+  (params: AddNFTsToVault): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
-      walletPublicKey,
-      signTransaction,
+      wallet,
       ...params,
     });

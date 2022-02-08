@@ -1,24 +1,31 @@
-import { stakeInFusion } from '@frakters/fusion-pool';
+import { Router, stakeInFusion } from '@frakters/fusion-pool';
 import { PublicKey } from '@solana/web3.js';
+import BN from 'bn.js';
 import { wrapAsyncWithTryCatch } from '../../../../utils';
 
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
 import {
-  StakeLiquidityTransactionParams,
-  WrappedLiquidityTranscationParams,
-  WrapperTransactionParams,
-} from '../../liquidityPools.model';
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 
-export const rowStakeLiquidity = async ({
+export interface StakeLiquidityTransactionParams {
+  router: Router;
+  amount: BN;
+}
+
+export interface StakeLiquidityTransactionRawParams
+  extends StakeLiquidityTransactionParams,
+    WalletAndConnection {}
+
+export const rawStakeLiquidity = async ({
   amount,
   router,
   connection,
-  walletPublicKey,
-  signTransaction,
-}: StakeLiquidityTransactionParams): Promise<void> => {
+  wallet,
+}: StakeLiquidityTransactionRawParams): Promise<void> => {
   await stakeInFusion(
-    walletPublicKey,
+    wallet.publicKey,
     connection,
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new PublicKey(router.token_mint_input),
@@ -31,30 +38,19 @@ export const rowStakeLiquidity = async ({
       await signAndConfirmTransaction({
         transaction,
         connection,
-        walletPublicKey,
-        signTransaction,
+        wallet,
       });
     },
   );
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowStakeLiquidity, {});
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawStakeLiquidity, {});
 
 export const stakeLiquidity =
-  ({
-    connection,
-    walletPublicKey,
-    signTransaction,
-  }: WrapperTransactionParams) =>
-  (
-    params: Omit<
-      StakeLiquidityTransactionParams,
-      WrappedLiquidityTranscationParams
-    >,
-  ): Promise<void> =>
+  ({ connection, wallet }: WalletAndConnection) =>
+  (params: StakeLiquidityTransactionParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
-      signTransaction,
+      wallet,
       connection,
-      walletPublicKey,
       ...params,
     });

@@ -1,14 +1,21 @@
-import {
-  LiquidityAssociatedPoolKeysV4,
-  LiquidityPoolKeysV4,
-  LiquiditySide,
-  TokenAmount,
-} from '@raydium-io/raydium-sdk';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
 import { Config, Router, Stake } from '@frakters/fusion-pool';
+
+import {
+  HarvestLiquidityTransactionParams,
+  StakeLiquidityTransactionParams,
+  UnstakeLiquidityTransactionParams,
+} from './transactions/fusionPools';
+import {
+  AddLiquidityTransactionParams,
+  CreateLiquidityTransactionParams,
+  RemoveLiquidityTransactionParams,
+  SwapTransactionParams,
+} from './transactions/raydiumLiquidityPools';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
@@ -29,7 +36,7 @@ export interface LiquidityPoolsContextValues {
   ) => Promise<void>;
   stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
   unstakeLiquidity: (
-    params: HarvestLiquidityTransactionParams,
+    params: UnstakeLiquidityTransactionParams,
   ) => Promise<void>;
 }
 
@@ -79,52 +86,6 @@ export interface RaydiumPoolInfo {
   lpSupply: BN;
 }
 
-export interface SwapTransactionParams extends WrapperTransactionParams {
-  baseToken: TokenInfo;
-  baseAmount: BN;
-  quoteToken: TokenInfo;
-  quoteAmount: BN;
-  poolConfig: LiquidityPoolKeysV4;
-}
-
-export interface AddLiquidityTransactionParams
-  extends WrapperTransactionParams {
-  baseToken: TokenInfo;
-  baseAmount: BN;
-  quoteToken: TokenInfo;
-  quoteAmount: BN;
-  poolConfig: LiquidityPoolKeysV4;
-  fixedSide: LiquiditySide;
-}
-
-export type WrappedLiquidityTranscationParams =
-  | 'connection'
-  | 'walletPublicKey'
-  | 'signTransaction';
-
-export interface WrapperTransactionParams {
-  connection?: Connection;
-  walletPublicKey?: PublicKey;
-  signTransaction?: (transaction: Transaction) => Promise<Transaction>;
-}
-
-export interface CreateLiquidityTransactionParams
-  extends WrapperTransactionParams {
-  baseAmount: BN;
-  quoteAmount: BN;
-  baseToken: TokenInfo;
-  quoteToken: TokenInfo;
-  marketId: PublicKey;
-}
-
-export interface RemoveLiquidityTransactionParams
-  extends WrapperTransactionParams {
-  baseToken: TokenInfo;
-  quoteToken: TokenInfo;
-  poolConfig: LiquidityPoolKeysV4;
-  amount: TokenAmount;
-}
-
 export interface ProgramAccountsData {
   configs: Config[];
   routers: Router[];
@@ -135,29 +96,4 @@ export interface ProgramAccountData {
   config?: Config;
   router: Router;
   stakeAccount: Stake;
-}
-
-export interface HarvestLiquidityTransactionParams
-  extends WrapperTransactionParams {
-  router: Router;
-  stakeAccount: Stake;
-}
-
-export interface StakeLiquidityTransactionParams
-  extends WrapperTransactionParams {
-  router: Router;
-  amount: BN;
-}
-
-export interface createEmptyRaydiumLiquidityParams
-  extends WrapperTransactionParams {
-  associatedPoolKeys?: LiquidityAssociatedPoolKeysV4;
-}
-
-export interface InitRaydiumLiquidityParams extends WrapperTransactionParams {
-  baseToken: TokenInfo;
-  quoteToken: TokenInfo;
-  baseAmount: BN;
-  quoteAmount: BN;
-  associatedPoolKeys: LiquidityAssociatedPoolKeysV4;
 }

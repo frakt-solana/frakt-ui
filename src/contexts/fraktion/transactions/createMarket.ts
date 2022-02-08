@@ -5,19 +5,23 @@ import { PublicKey } from '@solana/web3.js';
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import { registerMarket } from '../../../utils/markets';
 import { listMarket } from '../../../utils/serumUtils/send';
-import {
-  CreateMarketParams,
-  WrappedAllTranscationsType,
-  WrapperAllTransactionParams,
-} from '../fraktion.model';
+import { WalletAndConnection } from '../../../utils/transactions';
 
-export const rowCreateMarket = async ({
+export interface CreateMarketParams {
+  fractionsMint: string;
+  tickerName: string;
+}
+
+export interface CreateMarketRawParams
+  extends CreateMarketParams,
+    WalletAndConnection {}
+
+export const rawCreateMarket = async ({
   fractionsMint,
   tickerName,
-  walletPublicKey,
-  signAllTransactions,
+  wallet,
   connection,
-}: CreateMarketParams): Promise<void> => {
+}: CreateMarketRawParams): Promise<void> => {
   const dexProgramId = MARKETS.find(({ deprecated }) => !deprecated).programId;
   const LOT_SIZE = 0.1;
   const TICK_SIZE = 0.00001;
@@ -30,8 +34,8 @@ export const rowCreateMarket = async ({
 
   const marketAddress = await listMarket({
     connection,
-    walletPublicKey,
-    signAllTransactions,
+    walletPublicKey: wallet.publicKey,
+    signAllTransactions: wallet.signAllTransactions,
     baseMint: new PublicKey(fractionsMint),
     quoteMint: new PublicKey(WSOL.mint),
     baseLotSize: BASE_LOT_SIZE,
@@ -42,22 +46,15 @@ export const rowCreateMarket = async ({
   await registerMarket(tickerName, marketAddress.toBase58(), fractionsMint);
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowCreateMarket, {
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateMarket, {
   onErrorMessage: 'Error listing new market',
 });
 
 export const createMarket =
-  ({
-    walletPublicKey,
-    signAllTransactions,
-    connection,
-  }: WrapperAllTransactionParams) =>
-  (
-    params: Omit<CreateMarketParams, WrappedAllTranscationsType>,
-  ): Promise<void> =>
+  ({ wallet, connection }: WalletAndConnection) =>
+  (params: CreateMarketParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
-      walletPublicKey,
-      signAllTransactions,
+      wallet,
       ...params,
     });

@@ -1,22 +1,34 @@
 import BN from 'bn.js';
 import { finishBacket as finishVaultTransaction } from 'fraktionalizer-client-library';
 
-import { FinishVaultParams, WrappedTranscationType } from '../fraktion.model';
-import { signAndConfirmTransaction } from '../../../utils/transactions';
+import { UnfinishedVaultData } from '../fraktion.model';
+import {
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import { adjustPricePerFraction } from '../utils';
 import fraktionConfig from '../config';
 
 const { ADMIN_PUBKEY, PROGRAM_PUBKEY } = fraktionConfig;
 
-export const rowFinishVault = async ({
+export interface FinishVaultParams {
+  unfinishedVaultData: UnfinishedVaultData;
+  pricePerFraction: number;
+  fractionsAmount: number;
+}
+
+export interface FinishVaultRawParams
+  extends FinishVaultParams,
+    WalletAndConnection {}
+
+export const rawFinishVault = async ({
   unfinishedVaultData,
   pricePerFraction,
   fractionsAmount,
-  walletPublicKey,
-  signTransaction,
+  wallet,
   connection,
-}: FinishVaultParams): Promise<void> => {
+}: FinishVaultRawParams): Promise<void> => {
   const { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury } =
     unfinishedVaultData;
 
@@ -32,7 +44,7 @@ export const rowFinishVault = async ({
     pricePerShare: pricePerFractionBn,
     numberOfShares: fractionsAmountBn,
     adminPubkey: ADMIN_PUBKEY,
-    userPubkey: walletPublicKey.toString(),
+    userPubkey: wallet.publicKey.toBase58(),
     vault: vaultPubkey,
     fractionalMint: fractionalMint,
     fractionTreasury: fractionTreasury,
@@ -42,21 +54,19 @@ export const rowFinishVault = async ({
       await signAndConfirmTransaction({
         transaction,
         connection,
-        walletPublicKey: walletPublicKey,
-        signTransaction: signTransaction,
+        wallet,
       });
     },
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowFinishVault, {});
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawFinishVault, {});
 
 export const finishVault =
-  ({ walletPublicKey, signTransaction, connection }: FinishVaultParams) =>
-  (params: Omit<FinishVaultParams, WrappedTranscationType>): Promise<void> =>
+  ({ wallet, connection }: WalletAndConnection) =>
+  (params: FinishVaultParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
-      walletPublicKey,
-      signTransaction,
+      wallet,
       ...params,
     });

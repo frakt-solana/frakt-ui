@@ -1,5 +1,5 @@
-export { createVault } from './createVault';
-export { createMarket } from './createMarket';
-export { initVault } from './initVault';
-export { addNFTsToVault } from './addNFTsToVault';
-export { finishVault } from './finishVault';
+export * from './createVault';
+export * from './createMarket';
+export * from './initVault';
+export * from './addNFTsToVault';
+export * from './finishVault';

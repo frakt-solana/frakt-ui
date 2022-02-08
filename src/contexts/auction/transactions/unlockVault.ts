@@ -1,11 +1,18 @@
 import { unlockBacketAfterBuyoutAuction as unlockVaultTransaction } from 'fraktionalizer-client-library';
 
-import { signAndConfirmTransaction } from '../../../utils/transactions';
+import {
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
 import fraktionConfig from '../../fraktion/config';
 import { wrapAsyncWithTryCatch } from '../../../utils';
-import { UnlockVaultParams } from '../auction.model';
+import { VaultData } from '../../fraktion';
 
-export const rowUnlockVault = async ({
+interface UnlockVaultParams extends WalletAndConnection {
+  vaultInfo: VaultData;
+}
+
+export const rawUnlockVault = async ({
   vaultInfo,
   wallet,
   connection,
@@ -22,24 +29,12 @@ export const rowUnlockVault = async ({
       await signAndConfirmTransaction({
         transaction,
         connection,
-        walletPublicKey: wallet.publicKey,
-        signTransaction: wallet.signTransaction,
+        wallet,
       });
     },
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowUnlockVault, {
+export const unlockVault = wrapAsyncWithTryCatch(rawUnlockVault, {
   onSuccessMessage: 'Vault unlocked successfully',
 });
-
-export const unlockVault = ({
-  wallet,
-  connection,
-  vaultInfo,
-}: UnlockVaultParams): Promise<void> =>
-  wrappedAsyncWithTryCatch({
-    connection,
-    wallet,
-    vaultInfo,
-  });

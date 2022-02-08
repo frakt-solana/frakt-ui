@@ -30,11 +30,7 @@ export const FraktionProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const {
-    publicKey: walletPublicKey,
-    signTransaction,
-    signAllTransactions,
-  } = useWallet();
+  const wallet = useWallet();
   const { connection } = useConnection();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -105,13 +101,11 @@ export const FraktionProvider = ({
         vaults,
         vaultsMarkets,
         createVault: createVault({
-          walletPublicKey,
-          signTransaction,
+          wallet,
           connection,
         }),
         createMarket: createMarket({
-          walletPublicKey,
-          signAllTransactions,
+          wallet,
           connection,
         }),
         refetch: fetchData,

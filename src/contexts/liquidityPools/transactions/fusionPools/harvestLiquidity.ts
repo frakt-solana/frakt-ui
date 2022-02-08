@@ -1,24 +1,30 @@
-import { harvestInFusion } from '@frakters/fusion-pool';
+import { harvestInFusion, Router, Stake } from '@frakters/fusion-pool';
 import { PublicKey } from '@solana/web3.js';
 
 import { wrapAsyncWithTryCatch } from '../../../../utils';
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
 import {
-  HarvestLiquidityTransactionParams,
-  WrappedLiquidityTranscationParams,
-  WrapperTransactionParams,
-} from '../../liquidityPools.model';
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
 import { FUSION_PROGRAM_PUBKEY } from './constants';
+
+export interface HarvestLiquidityTransactionParams {
+  router: Router;
+  stakeAccount: Stake;
+}
+
+export interface HarvestLiquidityTransactionRawParams
+  extends HarvestLiquidityTransactionParams,
+    WalletAndConnection {}
 
 export const rowHarvestLiquidity = async ({
   router,
   stakeAccount,
   connection,
-  walletPublicKey,
-  signTransaction,
-}: HarvestLiquidityTransactionParams): Promise<void> => {
+  wallet,
+}: HarvestLiquidityTransactionRawParams): Promise<void> => {
   await harvestInFusion(
-    walletPublicKey,
+    wallet.publicKey,
     connection,
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new PublicKey(router.token_mint_input),
@@ -31,33 +37,22 @@ export const rowHarvestLiquidity = async ({
       await signAndConfirmTransaction({
         transaction,
         connection,
-        walletPublicKey,
-        signTransaction,
+        wallet,
       });
     },
   );
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowHarvestLiquidity, {
-  onSuccessMessage: 'Liquidity harvest successfully',
+  onSuccessMessage: 'Liquidity harvested successfully',
   onErrorMessage: 'Transaction failed',
 });
 
 export const harvestLiquidity =
-  ({
-    connection,
-    walletPublicKey,
-    signTransaction,
-  }: WrapperTransactionParams) =>
-  (
-    params: Omit<
-      HarvestLiquidityTransactionParams,
-      WrappedLiquidityTranscationParams
-    >,
-  ): Promise<void> =>
+  ({ connection, wallet }: WalletAndConnection) =>
+  (params: HarvestLiquidityTransactionParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
-      walletPublicKey,
-      signTransaction,
+      wallet,
       ...params,
     });

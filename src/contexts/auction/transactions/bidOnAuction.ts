@@ -1,20 +1,27 @@
 import { bidOnAuction as bidOnAuctionTransaction } from 'fraktionalizer-client-library';
 
-import { signAndConfirmTransaction } from '../../../utils/transactions';
+import {
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../../fraktion/config';
-import {
-  BidOnAuctionParams,
-  WrapperActionTransactionParams,
-  WrapperActionTransactionType,
-} from '../auction.model';
+import { VaultData } from '../../fraktion';
+interface BidOnAuctionParams {
+  vaultInfo: VaultData;
+  price: number;
+}
 
-export const rowBidOnAuction = async ({
+interface BidOnAuctionRawParams
+  extends BidOnAuctionParams,
+    WalletAndConnection {}
+
+export const rawBidOnAuction = async ({
   wallet,
   connection,
   vaultInfo,
   price,
-}: BidOnAuctionParams): Promise<void> => {
+}: BidOnAuctionRawParams): Promise<void> => {
   const supply = vaultInfo.fractionsSupply.toNumber();
   const perShare = Math.ceil((price * 1e9) / supply);
   const bidCap = perShare * supply;
@@ -38,23 +45,20 @@ export const rowBidOnAuction = async ({
         transaction,
         signers,
         connection,
-        walletPublicKey: wallet.publicKey,
-        signTransaction: wallet.signTransaction,
+        wallet,
       });
     },
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowBidOnAuction, {
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawBidOnAuction, {
   onSuccessMessage: 'Bid placed successfully',
   onErrorMessage: 'Transaction failed',
 });
 
 export const bidOnAuction =
-  ({ wallet, connection }: WrapperActionTransactionParams) =>
-  (
-    params: Omit<BidOnAuctionParams, WrapperActionTransactionType>,
-  ): Promise<void> =>
+  ({ wallet, connection }: WalletAndConnection) =>
+  (params: BidOnAuctionParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
       wallet,

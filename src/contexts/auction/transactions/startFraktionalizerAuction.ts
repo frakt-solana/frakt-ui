@@ -1,22 +1,31 @@
-import { WrapperActionTransactionParams } from './../auction.model';
 import { PublicKey } from '@solana/web3.js';
 import { startFraktionalizerAuction as startFraktionalizerAuctionTransaction } from 'fraktionalizer-client-library';
 
 import { wrapAsyncWithTryCatch } from '../../../utils';
-import { signAndConfirmTransaction } from '../../../utils/transactions';
-import fraktionConfig from '../../fraktion/config';
 import {
-  StartFraktionalizerAuctionParams,
-  WrapperActionTransactionType,
-} from '../auction.model';
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
+import fraktionConfig from '../../fraktion/config';
+import { VaultData } from '../../fraktion';
 
-export const rowStartFraktionalizerAuction = async ({
+interface StartFraktionalizerAuctionParams {
+  vaultInfo: VaultData;
+  price: number;
+  isAuctionInitialized: boolean;
+}
+
+interface StartFraktionalizerAuctionRawParams
+  extends StartFraktionalizerAuctionParams,
+    WalletAndConnection {}
+
+export const rawStartFraktionalizerAuction = async ({
   wallet,
   connection,
   vaultInfo,
   price,
   isAuctionInitialized,
-}: StartFraktionalizerAuctionParams): Promise<void> => {
+}: StartFraktionalizerAuctionRawParams): Promise<void> => {
   const supply = vaultInfo.fractionsSupply.toNumber();
   const perShare = Math.round(price / supply);
   const startingAuctionBidCap = perShare * supply;
@@ -35,13 +44,12 @@ export const rowStartFraktionalizerAuction = async ({
     redeemTreasury: vaultInfo.redeemTreasury,
     priceMint: vaultInfo.priceMint,
     vaultProgramId: fraktionConfig.PROGRAM_PUBKEY,
-    sendTxn: async (transaction, signers): Promise<void> => {
+    sendTxn: async (transaction, signers) => {
       await signAndConfirmTransaction({
         transaction,
         signers,
         connection,
-        walletPublicKey: wallet.publicKey,
-        signTransaction: wallet.signTransaction,
+        wallet,
       });
     },
     isAuctionInitialized,
@@ -49,7 +57,7 @@ export const rowStartFraktionalizerAuction = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
-  rowStartFraktionalizerAuction,
+  rawStartFraktionalizerAuction,
   {
     onSuccessMessage: 'Auction started successfully',
     onErrorMessage: 'Transaction failed',
@@ -57,13 +65,8 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
 );
 
 export const startFraktionalizerAuction =
-  ({ wallet, connection }: WrapperActionTransactionParams) =>
-  (
-    params: Omit<
-      StartFraktionalizerAuctionParams,
-      WrapperActionTransactionType
-    >,
-  ): Promise<void> =>
+  ({ wallet, connection }: WalletAndConnection) =>
+  (params: StartFraktionalizerAuctionParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
       wallet,

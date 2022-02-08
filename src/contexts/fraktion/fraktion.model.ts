@@ -1,12 +1,8 @@
-import { RawUserTokensByMint, UserNFT } from '../userTokens';
-import {
-  Connection,
-  Keypair,
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { RawUserTokensByMint } from '../userTokens';
+import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
+
+import { CreateVaultParams, CreateMarketParams } from './transactions';
 
 export enum VaultState {
   Inactive = 0,
@@ -196,61 +192,9 @@ export interface FraktionContextType {
 
 export type GetVaults = (markets: Market[]) => Promise<VaultData[]>;
 
-export interface WrapperTransactionParams {
-  connection?: Connection;
-  walletPublicKey?: PublicKey;
-  signTransaction?: (transaction: Transaction) => Promise<Transaction>;
-}
-
-export type WrappedTranscationType =
-  | 'connection'
-  | 'walletPublicKey'
-  | 'signTransaction';
-
-export type WrappedAllTranscationsType =
-  | 'connection'
-  | 'walletPublicKey'
-  | 'signAllTransactions';
-
-export interface WrapperAllTransactionParams {
-  connection?: Connection;
-  walletPublicKey?: PublicKey;
-  signAllTransactions?: (transaction: Transaction[]) => Promise<Transaction[]>;
-}
-
-export interface CreateMarketParams extends WrapperAllTransactionParams {
-  fractionsMint: string;
-  tickerName: string;
-}
-
 export type UnfinishedVaultData = {
   vaultPubkey: string;
   fractionalMint: string;
   fractionTreasury: string;
   redeemTreasury: string;
 };
-
-export interface AddNFTsToVault extends WrapperTransactionParams {
-  vaultPubkey: string;
-  userNfts: UserNFT[];
-  rawUserTokensByMint: RawUserTokensByMint;
-}
-
-export interface FinishVaultParams extends WrapperTransactionParams {
-  unfinishedVaultData: UnfinishedVaultData;
-  pricePerFraction: number;
-  fractionsAmount: number;
-}
-
-export interface CreateVaultParams extends WrapperTransactionParams {
-  userNfts: UserNFT[];
-  pricePerFraction: number;
-  fractionsAmount: number;
-  unfinishedVaultData?: UnfinishedVaultData;
-  tokenData: {
-    name: string;
-    tickerName: string;
-    imageUrl: string;
-  };
-  rawUserTokensByMint: RawUserTokensByMint;
-}

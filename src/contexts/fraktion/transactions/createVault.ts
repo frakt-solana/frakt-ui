@@ -1,42 +1,55 @@
-import {
-  CreateVaultParams,
-  WrappedTranscationType,
-  WrapperTransactionParams,
-} from '../fraktion.model';
 import { registerToken } from '../../../utils/registerToken';
 import { IS_DEVNET } from '../../../config';
 import { wrapAsyncWithTryCatch } from '../../../utils';
-import { initVault, addNFTsToVault, finishVault } from './index';
+import { rawInitVault, rawAddNFTsToVault, rawFinishVault } from './index';
+import { RawUserTokensByMint, UserNFT } from '../../userTokens';
+import { UnfinishedVaultData } from '../fraktion.model';
+import { WalletAndConnection } from '../../../utils/transactions';
 
-export const rowCreateVault = async ({
+export interface CreateVaultParams {
+  userNfts: UserNFT[];
+  pricePerFraction: number;
+  fractionsAmount: number;
+  unfinishedVaultData?: UnfinishedVaultData;
+  tokenData: {
+    name: string;
+    tickerName: string;
+    imageUrl: string;
+  };
+  rawUserTokensByMint: RawUserTokensByMint;
+}
+
+export interface CreateVaultRawParams
+  extends CreateVaultParams,
+    WalletAndConnection {}
+
+export const rawCreateVault = async ({
   userNfts = [],
   pricePerFraction,
   fractionsAmount,
-  walletPublicKey,
-  signTransaction,
+  wallet,
   connection,
   unfinishedVaultData,
   tokenData,
   rawUserTokensByMint,
-}: CreateVaultParams): Promise<string | null> => {
+}: CreateVaultRawParams): Promise<string> => {
   //? If vault doesn't exist then init vault
   const { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury } =
     !unfinishedVaultData
-      ? await initVault({ walletPublicKey, signTransaction, connection })
+      ? await rawInitVault({ wallet, connection })
       : unfinishedVaultData;
 
   if (userNfts.length) {
-    await addNFTsToVault({
+    await rawAddNFTsToVault({
       vaultPubkey,
       userNfts,
-      walletPublicKey,
-      signTransaction,
+      wallet,
       connection,
       rawUserTokensByMint,
     });
   }
 
-  await finishVault({
+  await rawFinishVault({
     unfinishedVaultData: {
       vaultPubkey,
       fractionalMint,
@@ -45,8 +58,7 @@ export const rowCreateVault = async ({
     },
     pricePerFraction,
     fractionsAmount,
-    walletPublicKey,
-    signTransaction,
+    wallet,
     connection,
   });
 
@@ -59,23 +71,16 @@ export const rowCreateVault = async ({
   return fractionalMint;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowCreateVault, {
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateVault, {
   onSuccessMessage: 'Fraktionalized successfully',
   onErrorMessage: 'Transaction failed',
 });
 
 export const createVault =
-  ({
-    walletPublicKey,
-    signTransaction,
-    connection,
-  }: WrapperTransactionParams) =>
-  (
-    params: Omit<CreateVaultParams, WrappedTranscationType>,
-  ): Promise<string | null> =>
+  ({ wallet, connection }: WalletAndConnection) =>
+  (params: CreateVaultParams): Promise<string> =>
     wrappedAsyncWithTryCatch({
       connection,
-      walletPublicKey,
-      signTransaction,
+      wallet,
       ...params,
     });

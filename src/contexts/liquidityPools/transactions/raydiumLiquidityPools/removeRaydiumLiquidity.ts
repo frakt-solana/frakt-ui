@@ -1,30 +1,43 @@
-import { Liquidity } from '@raydium-io/raydium-sdk';
+import {
+  Liquidity,
+  LiquidityPoolKeysV4,
+  TokenAmount,
+} from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 
 import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
-import { getTokenAccount } from '../../liquidityPools.helpers';
 import {
-  RemoveLiquidityTransactionParams,
-  WrappedLiquidityTranscationParams,
-  WrapperTransactionParams,
-} from '../../liquidityPools.model';
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
+import { getTokenAccount } from '../../liquidityPools.helpers';
 
-export const rowRemoveRaydiumLiquidity = async ({
+export interface RemoveLiquidityTransactionParams {
+  baseToken: TokenInfo;
+  quoteToken: TokenInfo;
+  poolConfig: LiquidityPoolKeysV4;
+  amount: TokenAmount;
+}
+
+export interface RemoveLiquidityTransactionRawParams
+  extends RemoveLiquidityTransactionParams,
+    WalletAndConnection {}
+
+export const rawRemoveRaydiumLiquidity = async ({
   connection,
-  walletPublicKey,
-  signTransaction,
+  wallet,
   baseToken,
   quoteToken = SOL_TOKEN,
   poolConfig,
   amount,
-}: RemoveLiquidityTransactionParams): Promise<void> => {
+}: RemoveLiquidityTransactionRawParams): Promise<void> => {
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
         getTokenAccount({
           tokenMint: new PublicKey(mint),
-          owner: walletPublicKey,
+          owner: wallet.publicKey,
           connection,
         }),
       ),
@@ -37,7 +50,7 @@ export const rowRemoveRaydiumLiquidity = async ({
       poolKeys: poolConfig,
       userKeys: {
         tokenAccounts: tokenAccounts,
-        owner: walletPublicKey,
+        owner: wallet.publicKey,
       },
       amountIn: amount,
     });
@@ -46,33 +59,22 @@ export const rowRemoveRaydiumLiquidity = async ({
     transaction,
     signers,
     connection,
-    walletPublicKey,
-    signTransaction,
+    wallet,
   });
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
-  rowRemoveRaydiumLiquidity,
+  rawRemoveRaydiumLiquidity,
   {
     onErrorMessage: 'Transaction failed',
   },
 );
 
 export const removeRaydiumLiquidity =
-  ({
-    connection,
-    walletPublicKey,
-    signTransaction,
-  }: WrapperTransactionParams) =>
-  (
-    params: Omit<
-      RemoveLiquidityTransactionParams,
-      WrappedLiquidityTranscationParams
-    >,
-  ): Promise<void> =>
+  ({ connection, wallet }: WalletAndConnection) =>
+  (params: RemoveLiquidityTransactionParams): Promise<void> =>
     wrappedAsyncWithTryCatch({
       connection,
-      walletPublicKey,
-      signTransaction,
+      wallet,
       ...params,
     });

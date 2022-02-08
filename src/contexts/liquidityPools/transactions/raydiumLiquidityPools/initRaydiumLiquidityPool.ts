@@ -1,29 +1,44 @@
-import { Liquidity, Spl } from '@raydium-io/raydium-sdk';
+import {
+  Liquidity,
+  LiquidityAssociatedPoolKeysV4,
+  Spl,
+} from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
 import {
   Keypair,
   PublicKey,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
+import BN from 'bn.js';
 
-import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
-import { getTokenAccount } from '../../liquidityPools.helpers';
+import { SOL_TOKEN } from '../../../../utils';
 import {
-  InitRaydiumLiquidityParams,
-  WrappedLiquidityTranscationParams,
-} from '../../liquidityPools.model';
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
+import { getTokenAccount } from '../../liquidityPools.helpers';
+export interface InitRaydiumLiquidityPoolParams {
+  baseToken: TokenInfo;
+  quoteToken: TokenInfo;
+  baseAmount: BN;
+  quoteAmount: BN;
+  associatedPoolKeys: LiquidityAssociatedPoolKeysV4;
+}
 
-export const rowInitRaydiumLiquidityPool = async ({
+export interface InitRaydiumLiquidityPoolRawParams
+  extends InitRaydiumLiquidityPoolParams,
+    WalletAndConnection {}
+
+export const rawInitRaydiumLiquidityPool = async ({
   connection,
-  walletPublicKey,
-  signTransaction,
+  wallet,
   associatedPoolKeys,
   baseToken,
   quoteToken = SOL_TOKEN,
   baseAmount,
   quoteAmount,
-}: InitRaydiumLiquidityParams): Promise<void> => {
+}: InitRaydiumLiquidityPoolRawParams): Promise<void> => {
   const transaction = new Transaction();
   const signers: Keypair[] = [];
 
@@ -32,12 +47,12 @@ export const rowInitRaydiumLiquidityPool = async ({
 
   const baseTokenAccount = await Spl.getAssociatedTokenAccount({
     mint: new PublicKey(baseToken.address),
-    owner: walletPublicKey,
+    owner: wallet.publicKey,
   });
 
   let quoteTokenAccount = await Spl.getAssociatedTokenAccount({
     mint: new PublicKey(quoteToken.address),
-    owner: walletPublicKey,
+    owner: wallet.publicKey,
   });
 
   //? If quoteTokenMint is WSOL
@@ -45,8 +60,8 @@ export const rowInitRaydiumLiquidityPool = async ({
     const { newAccount: wsolAccount, instructions: wrapSolInstructions } =
       await Spl.makeCreateWrappedNativeAccountInstructions({
         connection,
-        owner: walletPublicKey,
-        payer: walletPublicKey,
+        owner: wallet.publicKey,
+        payer: wallet.publicKey,
         amount: quoteAmount,
       });
 
@@ -59,8 +74,8 @@ export const rowInitRaydiumLiquidityPool = async ({
     endInstructions.push(
       Spl.makeCloseAccountInstruction({
         tokenAccount: wsolAccount.publicKey,
-        owner: walletPublicKey,
-        payer: walletPublicKey,
+        owner: wallet.publicKey,
+        payer: wallet.publicKey,
       }),
     );
 
@@ -71,7 +86,7 @@ export const rowInitRaydiumLiquidityPool = async ({
     Spl.makeTransferInstruction({
       source: baseTokenAccount,
       destination: associatedPoolKeys.baseVault,
-      owner: walletPublicKey,
+      owner: wallet.publicKey,
       amount: baseAmount,
     }),
   );
@@ -80,19 +95,19 @@ export const rowInitRaydiumLiquidityPool = async ({
     Spl.makeTransferInstruction({
       source: quoteTokenAccount,
       destination: associatedPoolKeys.quoteVault,
-      owner: walletPublicKey,
+      owner: wallet.publicKey,
       amount: quoteAmount,
     }),
   );
 
   const lpAta = await Spl.getAssociatedTokenAccount({
     mint: associatedPoolKeys.lpMint,
-    owner: walletPublicKey,
+    owner: wallet.publicKey,
   });
 
   const lpTokenAccount = await getTokenAccount({
     tokenMint: associatedPoolKeys.lpMint,
-    owner: walletPublicKey,
+    owner: wallet.publicKey,
     connection,
   });
 
@@ -102,8 +117,8 @@ export const rowInitRaydiumLiquidityPool = async ({
       Spl.makeCreateAssociatedTokenAccountInstruction({
         mint: associatedPoolKeys.lpMint,
         associatedAccount: lpAta,
-        payer: walletPublicKey,
-        owner: walletPublicKey,
+        payer: wallet.publicKey,
+        owner: wallet.publicKey,
       }),
     );
   }
@@ -113,7 +128,7 @@ export const rowInitRaydiumLiquidityPool = async ({
       poolKeys: associatedPoolKeys,
       userKeys: {
         lpTokenAccount: lpAta,
-        payer: walletPublicKey,
+        payer: wallet.publicKey,
       },
     }),
   );
@@ -126,31 +141,6 @@ export const rowInitRaydiumLiquidityPool = async ({
     transaction,
     signers,
     connection,
-    walletPublicKey,
-    signTransaction,
+    wallet,
   });
 };
-
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
-  rowInitRaydiumLiquidityPool,
-  {
-    onSuccessMessage: 'Liquidity provided successfully',
-    onErrorMessage: 'Transaction failed',
-  },
-);
-
-export const initRaydiumLiquidityPool =
-  ({
-    connection,
-    walletPublicKey,
-    signTransaction,
-  }: InitRaydiumLiquidityParams) =>
-  (
-    params: Omit<InitRaydiumLiquidityParams, WrappedLiquidityTranscationParams>,
-  ): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      walletPublicKey,
-      signTransaction,
-      ...params,
-    });
