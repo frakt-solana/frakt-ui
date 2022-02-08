@@ -15,17 +15,13 @@
 .wrapper {
   display: flex;
   position: relative;
-
-  @media screen and (max-width: 1200px) {
-    margin-top: 10px;
-  }
 }
 
 .content {
   padding-bottom: 50px;
   padding-left: 20px;
   width: 100%;
-  padding-top: 105px;
+  padding-top: 85px;
   position: relative;
 
   &::before {
@@ -43,37 +39,16 @@
     }
   }
 
-  @media screen and (max-width: 1400px){
-    padding-top: 240px;
-  }
-
-  @media screen and (max-width: 1050px) {
-    padding-top: 190px;
-  }
-
-  @media screen and (max-width: 920px) {
-    padding-top: 240px;
+  @media screen and (max-width: 1100px) {
+    padding-top: 180px;
   }
 
   @media screen and (max-width: 767px) {
-    padding-top: 200px;
+    padding-top: 160px;
   }
 
-  @media screen and (max-width: 700px) {
-    padding-left: 0;
-    padding-top: 150px;
-  }
-
-  @media screen and (max-width: 550px) {
-    padding-top: 200px;
-  }
-
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 403px) {
     padding-top: 190px;
-  }
-
-  @media screen and (max-width: 373px) {
-    padding-top: 240px;
   }
 }
 
@@ -97,6 +72,7 @@
   color: var(--accent-color-1);
   font-size: 15px;
   display: none;
+  flex-shrink: 0;
 
   @media screen and (max-width: 700px) {
     display: block;
@@ -113,6 +89,7 @@
   justify-content: space-between;
   gap: 20px;
   flex-grow: 1;
+  flex-shrink: 0;
   color: var(--color-gray-4);
 
   @media screen and (max-width: 700px) {

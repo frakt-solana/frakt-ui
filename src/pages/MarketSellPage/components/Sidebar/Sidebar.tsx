@@ -7,7 +7,7 @@ import { SearchOutlined } from '@ant-design/icons';
 const { Panel } = Collapse;
 
 const tempItemBg =
-  'https://www.arweave.net/TUCIGroXreLVvKxdBhSBG_pq8jEyl_IWXyEIwR8Ue5Y';
+  'https://www.arweave.net/wizYMhv_7n32cSSojQo57O80CreV8jegjhUheSiybFc';
 
 const COLLECTIONS_IN_POOL_DATA = [
   { name: 'monkeys', items: 123 },

@@ -1,13 +1,9 @@
 import React, { FC } from 'react';
 import styles from './styles.module.scss';
-import { QuestionIcon } from '../../../../icons';
-import { BuyRandomNft } from './BuyRandomNft';
 import { MarketNavigation } from '../../../../components/MarketNavigation';
 import { useHeaderState } from '../../../../contexts/HeaderState';
 import classNames from 'classnames';
-
-const tempBgImage =
-  'https://aacsdzhn52gnk67swxcahjyrwtcpaykzbsletupsuur7dupnqzsa.arweave.net/AAUh5O3ujNV78rXEA6cRtMTwYVkMlknR8qUj8dHthmQ';
+import { SolanaIcon } from '../../../../icons';
 
 export const HeaderSell: FC = () => {
   const { headerVisible } = useHeaderState();
@@ -20,16 +16,21 @@ export const HeaderSell: FC = () => {
     >
       <div className={`container ${styles.container}`}>
         <div className={styles.wrapper}>
-          <div className={styles.randomWrapper}>
-            <div className={styles.questionWrapper}>
-              <img
-                src={tempBgImage}
-                alt="Pool image"
-                className={styles.poolBgImage}
-              />
-              <QuestionIcon className={styles.questionIcon} />
+          <div className={styles.headerWrapper}>
+            <div className={styles.sellInfoWrapper}>
+              <p className={styles.sellInfoItem}>
+                {0.002124} <SolanaIcon /> SOL
+              </p>
+              <div className={styles.separator} />
+              <p className={styles.sellInfoItem}>
+                {0.002124}
+                <div
+                  className={styles.infoImage}
+                  style={{ backgroundImage: `url(${'/'})` }}
+                />
+                {'PUNKS'}
+              </p>
             </div>
-            <BuyRandomNft />
             <MarketNavigation className={styles.marketNavigation} />
           </div>
         </div>
