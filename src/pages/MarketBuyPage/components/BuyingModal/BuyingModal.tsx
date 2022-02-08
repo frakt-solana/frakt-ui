@@ -6,8 +6,6 @@ import classNames from 'classnames';
 import { Select } from 'antd';
 
 const { Option } = Select;
-const tempImage =
-  'https://www.arweave.net/xW93zrDmljTvqDiEQdJ5PuMq4CVL5Rz1vAjUO4TznD8';
 
 interface BuyingModalProps {
   onDeselect?: (nft: any) => void;
@@ -70,7 +68,7 @@ export const BuyingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
           <li key={index} className={styles.selectedItem}>
             <div
               className={styles.itemImg}
-              style={{ backgroundImage: `url(${tempImage})` }}
+              style={{ backgroundImage: `url(${nft?.nftImage})` }}
             />
             <div className={styles.itemInfo}>
               <p className={styles.itemId}>{nft.nftId}</p>

@@ -1,13 +1,7 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './styles.module.scss';
-import SettingsIcon from '../../../../icons/SettingsIcon';
-import { ArrowDownBtn, CloseModalIcon, SolanaIcon } from '../../../../icons';
+import { CloseModalIcon } from '../../../../icons';
 import classNames from 'classnames';
-import { Select } from 'antd';
-
-const { Option } = Select;
-const tempImage =
-  'https://www.arweave.net/xW93zrDmljTvqDiEQdJ5PuMq4CVL5Rz1vAjUO4TznD8';
 
 interface BuyingModalProps {
   onDeselect?: (nft: any) => void;
