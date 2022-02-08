@@ -1,0 +1,1 @@
+export { HeaderBuy } from './HeaderBuy';
