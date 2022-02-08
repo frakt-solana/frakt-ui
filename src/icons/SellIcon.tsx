@@ -12,7 +12,6 @@ const icon = (
 export const SellIcon = ({
   className,
   width,
-  height,
 }: React.SVGProps<SVGSVGElement>): JSX.Element => (
   <svg
     className={className || ''}

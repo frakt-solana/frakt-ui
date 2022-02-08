@@ -1,8 +1,13 @@
 import styles from './styles.module.scss';
 import classNames from 'classnames';
-import React, { FC, useState } from 'react';
-import { Input } from 'antd';
+import React, { FC } from 'react';
+import { Collapse, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+
+const { Panel } = Collapse;
+
+const tempItemBg =
+  'https://www.arweave.net/TUCIGroXreLVvKxdBhSBG_pq8jEyl_IWXyEIwR8Ue5Y';
 
 const COLLECTIONS_IN_POOL_DATA = [
   { name: 'monkeys', items: 123 },
@@ -10,6 +15,11 @@ const COLLECTIONS_IN_POOL_DATA = [
   { name: 'monkeys', items: 123 },
   { name: 'monkeys', items: 123 },
   { name: 'monkeys', items: 123 },
+];
+
+const FILTERS_DATA = [
+  { name: 'Famale', items: 123 },
+  { name: 'Male', items: 123 },
 ];
 
 const shortName = (name: string, maxLength: number) =>
@@ -65,6 +75,44 @@ export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
               </li>
             ))}
           </ul>
+          <div className={styles.chosenItemWrapper}>
+            <div className={styles.chosenItem}>
+              <div
+                className={styles.chosenImage}
+                style={{ backgroundImage: `url(${tempItemBg})` }}
+              />
+              <div className={styles.chosenInfo}>
+                <p className={styles.chosenName}>Cryptopunks</p>
+                <p className={styles.chosenItemsAmount}>{385} items</p>
+              </div>
+            </div>
+            <div className={styles.chosenFilter}>
+              <Collapse collapsible="header" className={styles.collapse}>
+                <Panel
+                  header="character"
+                  key="1"
+                  className={styles.collapseHeader}
+                >
+                  <ul className={styles.sidebarList}>
+                    {FILTERS_DATA.map((item, index) => (
+                      <li
+                        className={styles.sidebarListItem}
+                        key={item.name + index}
+                      >
+                        <div className={styles.sidebarItemCheckbox} />
+                        <span className={styles.sidebarItemName}>
+                          {shortName(item.name, 9)}
+                        </span>
+                        <span className={styles.sidebarItemAmount}>
+                          {item.items}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              </Collapse>
+            </div>
+          </div>
         </div>
       </div>
     </>

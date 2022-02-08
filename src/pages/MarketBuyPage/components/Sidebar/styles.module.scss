@@ -72,7 +72,6 @@
   max-width: 192px;
   outline: none;
   margin-right: 20px;
-  margin-bottom: 30px;
 
   @media screen and (max-width: 370px) {
     margin-bottom: 20px;
@@ -97,6 +96,7 @@
   padding-top: 20px;
   padding-bottom: 20px;
   border-bottom: var(--border-gray-1);
+  margin-top: 30px;
 
   @media screen and (max-width: 700px) {
     padding-right: 15px;
@@ -188,4 +188,99 @@
       left: 0;
     }
   }
+}
+
+.chosenItemWrapper {
+  margin-top: 30px;
+
+  .sidebarList {
+    margin-top: 0;
+  }
+
+  .sidebarListItem {
+    text-transform: none;
+  }
+
+  :global {
+    .ant-collapse {
+      border: none;
+      border-radius: 0;
+    }
+
+    .ant-collapse > .ant-collapse-item:last-child,
+    .ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
+      padding: 8px 10px;
+      border-radius: 0;
+      border: none;
+    }
+
+    .ant-collapse > .ant-collapse-item:last-child {
+      padding: 0;
+    }
+
+    .ant-collapse-item:last-child > .ant-collapse-content {
+      border: none;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 10px;
+    }
+
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+      position: absolute;
+      right: 0;
+      top: 13px;
+
+      svg {
+        transform: rotate(-90deg);
+      }
+    }
+
+    .ant-collapse-content {
+      background-color: var(--color-gray-7);
+    }
+  }
+}
+
+.chosenItem {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: var(--color-gray-7);
+  display: flex;
+  align-items: center;
+}
+
+.chosenImage {
+  background-color: var(--color-gray-4);
+  height: 46px;
+  width: 46px;
+  background-size: cover;
+  background-position: center;
+}
+
+.chosenInfo {
+  margin-left: 10px;
+}
+
+.chosenName {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.chosenItemsAmount {
+  font-size: 14px;
+}
+
+.collapse {
+  border: none;
+}
+
+.collapseHeader {
+  height: 38px;
+  font: var(--font-text-5);
+  text-transform: uppercase;
+  border: none;
+  background-color: var(--color-gray-7);
 }
