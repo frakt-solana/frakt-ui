@@ -6,6 +6,9 @@ const DEPRECATED_MARKETS = [
   'dvQF6YNQvQ2dQkMyt3rW7ibypCkHJDgVAJvZz6A6gZx',
 ];
 
+const APP_MARKETS_URL = process.env.REACT_APP_MARKETS_URL;
+const REGISTRAR_MARKET_URL = process.env.REACT_APP_REGISTRAR_MARKET_URL;
+
 export const getMarkets = async (): Promise<
   Array<{
     address: string;
@@ -14,7 +17,7 @@ export const getMarkets = async (): Promise<
   }>
 > => {
   try {
-    const res = await fetch(process.env.REACT_APP_MARKETS_URL);
+    const res = await fetch(APP_MARKETS_URL);
     const { fraktionMarkets } = await res.json();
     return fraktionMarkets
       .map((market) => {
@@ -37,7 +40,7 @@ export const registerMarket = async (
   baseMint: string,
 ): Promise<boolean> => {
   try {
-    const res = await fetch(process.env.REACT_APP_REGISTRAR_MARKET_URL, {
+    const res = await fetch(REGISTRAR_MARKET_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

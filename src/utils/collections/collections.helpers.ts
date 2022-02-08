@@ -5,6 +5,8 @@ import {
   PromiseFulfilledResult,
 } from './collections.model';
 
+const EXCHANGE_COLLECTION_INFO_API = process.env.REACT_APP_COLLECTION_URL;
+
 export const mapVaultsByCollectionName = (
   vaults: VaultData[],
 ): VaultsByCollectionName => {
@@ -29,7 +31,7 @@ export const fetchCollectionData = async (
   try {
     const responseData = await (
       await fetch(
-        `${process.env.REACT_APP_COLLECTION_URL}/metadata?collectionName=${collectionName}`,
+        `${EXCHANGE_COLLECTION_INFO_API}/metadata?collectionName=${collectionName}`,
       )
     ).json();
 
