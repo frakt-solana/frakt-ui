@@ -1,5 +1,4 @@
 import { VaultData } from '../../contexts/fraktion';
-import { COLLECTION_URL } from './collections.constant';
 import {
   CollectionData,
   VaultsByCollectionName,
@@ -29,7 +28,9 @@ export const fetchCollectionData = async (
 ): Promise<CollectionData | null> => {
   try {
     const responseData = await (
-      await fetch(`${COLLECTION_URL}/metadata?collectionName=${collectionName}`)
+      await fetch(
+        `${process.env.REACT_APP_COLLECTION_URL}/metadata?collectionName=${collectionName}`,
+      )
     ).json();
 
     return responseData?.states?.live || null;

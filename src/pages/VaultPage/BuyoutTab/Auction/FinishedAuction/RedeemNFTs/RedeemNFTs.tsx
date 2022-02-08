@@ -33,7 +33,7 @@ export const RedeemNFTs: FC<RedeemNFTsProps> = ({ vaultData, className }) => {
   const vaultImg = safetyBoxToRedeem?.nftImage;
 
   const redeemNFTValueHandler = () => {
-    unlockVaultAndRedeemNfts(vaultData);
+    unlockVaultAndRedeemNfts({ vaultInfo: vaultData });
   };
 
   useEffect(() => {

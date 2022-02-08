@@ -1,24 +1,20 @@
+import { Liquidity, Spl } from '@raydium-io/raydium-sdk';
 import {
-  Liquidity,
-  LiquidityAssociatedPoolKeysV4,
-  Spl,
-} from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-import {
-  Connection,
   Keypair,
   PublicKey,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
-import BN from 'bn.js';
 
-import { notify, SOL_TOKEN } from '../../../../utils';
-import { NotifyType } from '../../../../utils/solanaUtils';
+import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
 import { signAndConfirmTransaction } from '../../../../utils/transactions';
 import { getTokenAccount } from '../../liquidityPools.helpers';
+import {
+  InitRaydiumLiquidityParams,
+  WrappedLiquidityTranscationParams,
+} from '../../liquidityPools.model';
 
-export const initRaydiumLiquidityPool = async ({
+export const rowInitRaydiumLiquidityPool = async ({
   connection,
   walletPublicKey,
   signTransaction,
@@ -27,16 +23,7 @@ export const initRaydiumLiquidityPool = async ({
   quoteToken = SOL_TOKEN,
   baseAmount,
   quoteAmount,
-}: {
-  baseToken: TokenInfo;
-  quoteToken: TokenInfo;
-  baseAmount: BN;
-  quoteAmount: BN;
-  connection: Connection;
-  walletPublicKey: PublicKey;
-  signTransaction: (transaction: Transaction) => Promise<Transaction>;
-  associatedPoolKeys: LiquidityAssociatedPoolKeysV4;
-}): Promise<void> => {
+}: InitRaydiumLiquidityParams): Promise<void> => {
   const transaction = new Transaction();
   const signers: Keypair[] = [];
 
@@ -142,9 +129,28 @@ export const initRaydiumLiquidityPool = async ({
     walletPublicKey,
     signTransaction,
   });
-
-  notify({
-    message: 'Liquidity provided successfully',
-    type: NotifyType.SUCCESS,
-  });
 };
+
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+  rowInitRaydiumLiquidityPool,
+  {
+    onSuccessMessage: 'Liquidity provided successfully',
+    onErrorMessage: 'Transaction failed',
+  },
+);
+
+export const initRaydiumLiquidityPool =
+  ({
+    connection,
+    walletPublicKey,
+    signTransaction,
+  }: InitRaydiumLiquidityParams) =>
+  (
+    params: Omit<InitRaydiumLiquidityParams, WrappedLiquidityTranscationParams>,
+  ): Promise<void> =>
+    wrappedAsyncWithTryCatch({
+      connection,
+      walletPublicKey,
+      signTransaction,
+      ...params,
+    });
