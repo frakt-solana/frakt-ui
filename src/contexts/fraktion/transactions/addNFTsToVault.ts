@@ -1,6 +1,7 @@
 import { addNFTsToBacket as addNFTsToVaultTransaction } from 'fraktionalizer-client-library';
 
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -51,11 +52,6 @@ export const rawAddNFTsToVault = async ({
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddNFTsToVault, {});
 
-export const addNFTsToVault =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: AddNFTsToVault): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const addNFTsToVault = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

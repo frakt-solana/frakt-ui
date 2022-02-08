@@ -3,6 +3,7 @@ import { startFraktionalizerAuction as startFraktionalizerAuctionTransaction } f
 
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -64,11 +65,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   },
 );
 
-export const startFraktionalizerAuction =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: StartFraktionalizerAuctionParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const startFraktionalizerAuction = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

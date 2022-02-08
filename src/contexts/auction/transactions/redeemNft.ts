@@ -1,6 +1,7 @@
 import { withdrawNFTFromCombinedBacket as redeemNftTransaction } from 'fraktionalizer-client-library';
 
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -54,11 +55,4 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawRedeemNft, {
   onSuccessMessage: 'NFT redeemed successfully',
 });
 
-export const redeemNft =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: RedeemNftParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const redeemNft = createTransactionFuncFromRaw(wrappedAsyncWithTryCatch);

@@ -1,6 +1,7 @@
 import { bidOnAuction as bidOnAuctionTransaction } from 'fraktionalizer-client-library';
 
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -56,11 +57,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawBidOnAuction, {
   onErrorMessage: 'Transaction failed',
 });
 
-export const bidOnAuction =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: BidOnAuctionParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const bidOnAuction = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

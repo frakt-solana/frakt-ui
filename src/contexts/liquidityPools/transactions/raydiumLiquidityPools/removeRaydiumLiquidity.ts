@@ -8,6 +8,7 @@ import { PublicKey } from '@solana/web3.js';
 
 import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
@@ -70,11 +71,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   },
 );
 
-export const removeRaydiumLiquidity =
-  ({ connection, wallet }: WalletAndConnection) =>
-  (params: RemoveLiquidityTransactionParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const removeRaydiumLiquidity = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

@@ -9,6 +9,7 @@ import BN from 'bn.js';
 
 import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
@@ -80,11 +81,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddRaydiumLiquidity, {
   onErrorMessage: 'Transaction failed',
 });
 
-export const addRaydiumLiquidity =
-  ({ connection, wallet }: WalletAndConnection) =>
-  (params: AddLiquidityTransactionParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const addRaydiumLiquidity = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

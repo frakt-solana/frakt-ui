@@ -4,6 +4,7 @@ import BN from 'bn.js';
 import { wrapAsyncWithTryCatch } from '../../../../utils';
 
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
@@ -46,11 +47,6 @@ export const rawStakeLiquidity = async ({
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawStakeLiquidity, {});
 
-export const stakeLiquidity =
-  ({ connection, wallet }: WalletAndConnection) =>
-  (params: StakeLiquidityTransactionParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      wallet,
-      connection,
-      ...params,
-    });
+export const stakeLiquidity = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

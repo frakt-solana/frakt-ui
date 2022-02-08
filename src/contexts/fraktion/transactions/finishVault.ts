@@ -3,6 +3,7 @@ import { finishBacket as finishVaultTransaction } from 'fraktionalizer-client-li
 
 import { UnfinishedVaultData } from '../fraktion.model';
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -62,11 +63,6 @@ export const rawFinishVault = async ({
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawFinishVault, {});
 
-export const finishVault =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: FinishVaultParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const finishVault = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

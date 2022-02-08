@@ -4,7 +4,10 @@ import { wrapAsyncWithTryCatch } from '../../../utils';
 import { rawInitVault, rawAddNFTsToVault, rawFinishVault } from './index';
 import { RawUserTokensByMint, UserNFT } from '../../userTokens';
 import { UnfinishedVaultData } from '../fraktion.model';
-import { WalletAndConnection } from '../../../utils/transactions';
+import {
+  createTransactionFuncFromRaw,
+  WalletAndConnection,
+} from '../../../utils/transactions';
 
 export interface CreateVaultParams {
   userNfts: UserNFT[];
@@ -76,11 +79,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateVault, {
   onErrorMessage: 'Transaction failed',
 });
 
-export const createVault =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: CreateVaultParams): Promise<string> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const createVault = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

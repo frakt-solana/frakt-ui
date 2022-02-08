@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js';
 import { wrapAsyncWithTryCatch } from '../../../../utils';
 
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
@@ -47,11 +48,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawUnstakeLiquidity, {
   onErrorMessage: 'Transaction failed',
 });
 
-export const unstakeLiquidity =
-  ({ connection, wallet }: WalletAndConnection) =>
-  (params: UnstakeLiquidityTransactionParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const unstakeLiquidity = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

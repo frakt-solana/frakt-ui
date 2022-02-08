@@ -1,6 +1,7 @@
 import { redeemRewardsFromAuctionShares as redeemRewardsFromAuctionSharesTransaction } from 'fraktionalizer-client-library';
 
 import {
+  createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -50,11 +51,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   },
 );
 
-export const redeemRewardsFromAuctionShares =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: RedeemRewardsFromAuctionSharesParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const redeemRewardsFromAuctionShares = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

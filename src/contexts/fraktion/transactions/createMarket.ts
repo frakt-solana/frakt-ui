@@ -5,7 +5,10 @@ import { PublicKey } from '@solana/web3.js';
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import { registerMarket } from '../../../utils/markets';
 import { listMarket } from '../../../utils/serumUtils/send';
-import { WalletAndConnection } from '../../../utils/transactions';
+import {
+  createTransactionFuncFromRaw,
+  WalletAndConnection,
+} from '../../../utils/transactions';
 
 export interface CreateMarketParams {
   fractionsMint: string;
@@ -50,11 +53,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateMarket, {
   onErrorMessage: 'Error listing new market',
 });
 
-export const createMarket =
-  ({ wallet, connection }: WalletAndConnection) =>
-  (params: CreateMarketParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const createMarket = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

@@ -63,6 +63,7 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   },
 );
 
+//? Can't use createTransactionFuncFromRaw in thit case
 export const unlockVaultAndRedeemNfts =
   ({
     wallet,

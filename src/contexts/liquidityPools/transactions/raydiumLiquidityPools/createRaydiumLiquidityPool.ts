@@ -4,7 +4,10 @@ import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
 import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
-import { WalletAndConnection } from '../../../../utils/transactions';
+import {
+  createTransactionFuncFromRaw,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
 import { rawCreateEmptyRaydiumLiquidityPool } from './createEmptyRaydiumLiquidityPool';
 import { rawInitRaydiumLiquidityPool } from './initRaydiumLiquidityPool';
 
@@ -64,11 +67,6 @@ const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   },
 );
 
-export const createRaydiumLiquidityPool =
-  ({ connection, wallet }: WalletAndConnection) =>
-  (params: CreateLiquidityTransactionParams): Promise<void> =>
-    wrappedAsyncWithTryCatch({
-      connection,
-      wallet,
-      ...params,
-    });
+export const createRaydiumLiquidityPool = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);
