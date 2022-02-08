@@ -14,7 +14,7 @@ interface BuyingModalProps {
   nfts: any;
 }
 
-export const BuyingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
+export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
   const [isModalDown, setIsModalDown] = useState<boolean>(false);
 

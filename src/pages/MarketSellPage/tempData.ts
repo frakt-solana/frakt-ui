@@ -1,5 +1,5 @@
 const tempImage =
-  'https://www.arweave.net/F1_v3OZz38CzQgWWTsKyAXlsSRJRN_ntjokbRKuQgEo';
+  'https://www.arweave.net/-0zPCeLUs2CecVtYMOmfnJ0pqB0oXTifjt5Q2-H6COg';
 
 export const NFTs_DATA = [
   {

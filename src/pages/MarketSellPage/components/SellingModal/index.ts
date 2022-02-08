@@ -1,1 +1,1 @@
-export { BuyingModal } from './BuyingModal';
+export { SellingModal } from './SellingModal';

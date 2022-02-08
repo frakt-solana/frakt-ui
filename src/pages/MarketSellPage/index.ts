@@ -1,1 +1,1 @@
-export { default } from './MarketBuyPage';
+export { default } from './MarketSellPage';

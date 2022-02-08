@@ -9,7 +9,7 @@ import classNames from 'classnames';
 const tempBgImage =
   'https://aacsdzhn52gnk67swxcahjyrwtcpaykzbsletupsuur7dupnqzsa.arweave.net/AAUh5O3ujNV78rXEA6cRtMTwYVkMlknR8qUj8dHthmQ';
 
-export const HeaderBuy: FC = () => {
+export const HeaderSell: FC = () => {
   const { headerVisible } = useHeaderState();
   return (
     <div

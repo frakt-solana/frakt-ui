@@ -32,6 +32,7 @@ import CollectionPage from './pages/CollectionPage';
 import { CollectionsProvider } from './contexts/collections';
 import MarketPage from './pages/MarketPage';
 import MarketBuyPage from './pages/MarketBuyPage';
+import MarketSellPage from './pages/MarketSellPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -67,6 +68,11 @@ export const Routes = (): JSX.Element => {
                           exact
                           path={URLS.MARKET_BUY}
                           component={(): JSX.Element => <MarketBuyPage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.MARKET_SELL}
+                          component={(): JSX.Element => <MarketSellPage />}
                         />
                         <Route
                           exact

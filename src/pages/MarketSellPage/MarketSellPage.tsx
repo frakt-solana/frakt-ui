@@ -9,9 +9,9 @@ import { useForm } from 'react-hook-form';
 import { Sidebar } from './components/Sidebar';
 import { NFTsList } from './components/NFTsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { HeaderBuy } from './components/HeaderBuy';
+import { HeaderSell } from './components/HeaderSell';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
-import { BuyingModal } from './components/BuyingModal';
+import { SellingModal } from './components/SellingModal';
 import { NFTs_DATA } from './tempData';
 import { ModalNFTsSlider } from '../../components/ModalNFTsSlider';
 
@@ -34,7 +34,7 @@ const SORT_VALUES = [
   },
 ];
 
-const MarketBuyPage = (): JSX.Element => {
+const MarketSellPage = (): JSX.Element => {
   const [selectedNfts, setSelectedNfts] = useState<any>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -83,7 +83,7 @@ const MarketBuyPage = (): JSX.Element => {
     <HeaderStateProvider>
       <AppLayout className={styles.layout}>
         <div className={styles.modalWrapper}>
-          <BuyingModal nfts={selectedNfts} onDeselect={onDeselect} />
+          <SellingModal nfts={selectedNfts} onDeselect={onDeselect} />
         </div>
         <div className="container">
           <Helmet>
@@ -93,7 +93,7 @@ const MarketBuyPage = (): JSX.Element => {
             <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
             <div className={styles.content}>
-              <HeaderBuy />
+              <HeaderSell />
 
               <div className={styles.itemsSortWrapper}>
                 <p
@@ -139,4 +139,4 @@ const MarketBuyPage = (): JSX.Element => {
   );
 };
 
-export default MarketBuyPage;
+export default MarketSellPage;
