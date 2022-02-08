@@ -1,24 +1,19 @@
-import {
-  Liquidity,
-  LiquidityAssociatedPoolKeysV4,
-} from '@raydium-io/raydium-sdk';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { Liquidity } from '@raydium-io/raydium-sdk';
+import { Transaction } from '@solana/web3.js';
 
-import { notify } from '../../../../utils';
-import { NotifyType } from '../../../../utils/solanaUtils';
+import { wrapAsyncWithTryCatch } from '../../../../utils';
 import { signAndConfirmTransaction } from '../../../../utils/transactions';
+import {
+  createEmptyRaydiumLiquidityParams,
+  WrappedLiquidityTranscationParams,
+} from '../../liquidityPools.model';
 
-export const createEmptyRaydiumLiquidityPool = async ({
+const rowCreateEmptyRaydiumLiquidityPool = async ({
   connection,
   walletPublicKey,
   signTransaction,
   associatedPoolKeys,
-}: {
-  connection: Connection;
-  walletPublicKey: PublicKey;
-  signTransaction: (transaction: Transaction) => Promise<Transaction>;
-  associatedPoolKeys: LiquidityAssociatedPoolKeysV4;
-}): Promise<void> => {
+}: createEmptyRaydiumLiquidityParams): Promise<void> => {
   const transaction = new Transaction();
 
   transaction.add(
@@ -36,9 +31,33 @@ export const createEmptyRaydiumLiquidityPool = async ({
     walletPublicKey,
     signTransaction,
   });
-
-  notify({
-    message: 'Liquidity pool created',
-    type: NotifyType.SUCCESS,
-  });
 };
+
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+  rowCreateEmptyRaydiumLiquidityPool,
+  {
+    onSuccessMessage: 'Liquidity pool created',
+    onErrorMessage: 'Transaction failed',
+  },
+);
+
+export const createEmptyRaydiumLiquidityPool =
+  ({
+    connection,
+    walletPublicKey,
+    signTransaction,
+    associatedPoolKeys,
+  }: createEmptyRaydiumLiquidityParams) =>
+  (
+    params: Omit<
+      createEmptyRaydiumLiquidityParams,
+      WrappedLiquidityTranscationParams
+    >,
+  ): Promise<void> =>
+    wrappedAsyncWithTryCatch({
+      connection,
+      walletPublicKey,
+      signTransaction,
+      associatedPoolKeys,
+      ...params,
+    });

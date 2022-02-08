@@ -73,37 +73,41 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         loading,
         poolDataByMint,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
-        raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
-        createRaydiumLiquidityPool: createRaydiumLiquidityPool(
+        raydiumSwap: raydiumSwap({
           connection,
           walletPublicKey,
           signTransaction,
-        ),
-        removeRaydiumLiquidity: removeRaydiumLiquidity(
+        }),
+        createRaydiumLiquidityPool: createRaydiumLiquidityPool({
           connection,
           walletPublicKey,
           signTransaction,
-        ),
-        addRaydiumLiquidity: addRaydiumLiquidity(
+        }),
+        removeRaydiumLiquidity: removeRaydiumLiquidity({
           connection,
           walletPublicKey,
           signTransaction,
-        ),
-        harvestLiquidity: harvestLiquidity(
+        }),
+        addRaydiumLiquidity: addRaydiumLiquidity({
           connection,
           walletPublicKey,
           signTransaction,
-        ),
-        stakeLiquidity: stakeLiquidity(
+        }),
+        harvestLiquidity: harvestLiquidity({
           connection,
           walletPublicKey,
           signTransaction,
-        ),
-        unstakeLiquidity: unstakeLiquidity(
+        }),
+        stakeLiquidity: stakeLiquidity({
           connection,
           walletPublicKey,
           signTransaction,
-        ),
+        }),
+        unstakeLiquidity: unstakeLiquidity({
+          connection,
+          walletPublicKey,
+          signTransaction,
+        }),
       }}
     >
       {children}

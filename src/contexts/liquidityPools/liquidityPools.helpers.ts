@@ -16,7 +16,7 @@ import BN from 'bn.js';
 
 import { SOL_TOKEN } from '../../utils';
 
-import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
+import { BLOCKED_POOLS_IDS } from './liquidityPools.constants';
 import {
   FetchPoolDataByMint,
   PoolData,
@@ -103,7 +103,9 @@ export const fetchRaydiumPoolsInfoMap = async (
 export const fetchSolanaPriceUSD = async (): Promise<number> => {
   try {
     const result = await (
-      await fetch(`${COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`)
+      await fetch(
+        `${process.env.REACT_APP_COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`,
+      )
     ).json();
 
     return result?.solana?.usd || 0;

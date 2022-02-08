@@ -1,34 +1,60 @@
-import { Router, stakeInFusion } from '@frakters/fusion-pool';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import BN from 'bn.js';
+import { stakeInFusion } from '@frakters/fusion-pool';
+import { PublicKey } from '@solana/web3.js';
+import { wrapAsyncWithTryCatch } from '../../../../utils';
 
 import { signAndConfirmTransaction } from '../../../../utils/transactions';
+import {
+  StakeLiquidityTransactionParams,
+  WrappedLiquidityTranscationParams,
+  WrapperTransactionParams,
+} from '../../liquidityPools.model';
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 
+export const rowStakeLiquidity = async ({
+  amount,
+  router,
+  connection,
+  walletPublicKey,
+  signTransaction,
+}: StakeLiquidityTransactionParams): Promise<void> => {
+  await stakeInFusion(
+    walletPublicKey,
+    connection,
+    new PublicKey(FUSION_PROGRAM_PUBKEY),
+    new PublicKey(router.token_mint_input),
+    new PublicKey(router.token_mint_output),
+    amount,
+    new PublicKey(router.routerPubkey),
+    new PublicKey(router.pool_config_input),
+    new PublicKey(router.pool_config_output),
+    async (transaction) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        walletPublicKey,
+        signTransaction,
+      });
+    },
+  );
+};
+
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowStakeLiquidity, {});
+
 export const stakeLiquidity =
+  ({
+    connection,
+    walletPublicKey,
+    signTransaction,
+  }: WrapperTransactionParams) =>
   (
-    connection: Connection,
-    walletPublicKey: PublicKey,
-    signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  ) =>
-  async ({ amount, router }: { amount: BN; router: Router }): Promise<void> => {
-    await stakeInFusion(
-      walletPublicKey,
+    params: Omit<
+      StakeLiquidityTransactionParams,
+      WrappedLiquidityTranscationParams
+    >,
+  ): Promise<void> =>
+    wrappedAsyncWithTryCatch({
+      signTransaction,
       connection,
-      new PublicKey(FUSION_PROGRAM_PUBKEY),
-      new PublicKey(router.token_mint_input),
-      new PublicKey(router.token_mint_output),
-      amount,
-      new PublicKey(router.routerPubkey),
-      new PublicKey(router.pool_config_input),
-      new PublicKey(router.pool_config_output),
-      async (transaction) => {
-        await signAndConfirmTransaction({
-          transaction,
-          connection,
-          walletPublicKey,
-          signTransaction,
-        });
-      },
-    );
-  };
+      walletPublicKey,
+      ...params,
+    });

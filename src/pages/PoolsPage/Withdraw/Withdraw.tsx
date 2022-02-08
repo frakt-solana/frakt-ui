@@ -9,14 +9,13 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { TokenFieldWithBalance } from '../../../components/TokenField';
 import { useUserTokens } from '../../../contexts/userTokens';
-import { notify, SOL_TOKEN } from '../../../utils';
+import { SOL_TOKEN } from '../../../utils';
 import Button from '../../../components/Button';
 import styles from './styles.module.scss';
 import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
-import { NotifyType } from '../../../utils/solanaUtils';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
@@ -45,52 +44,13 @@ const Withdraw: FC<WithdrawInterface> = ({
   const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
   const onSubmitHandler = async (): Promise<void> => {
-    try {
-      await removeRaydiumLiquidity({
-        baseToken,
-        quoteToken,
-        amount,
-        poolConfig,
-      });
-
-      notify({
-        message: 'Liquidity withdrawn successfully',
-        type: NotifyType.SUCCESS,
-      });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      notify({
-        message: 'Transaction failed',
-        type: NotifyType.ERROR,
-      });
-    }
+    await removeRaydiumLiquidity({
+      baseToken,
+      quoteToken,
+      amount,
+      poolConfig,
+    });
   };
-
-  // const onRemoveLiquidityHandler = async () => {
-  //   try {
-  //     await removeRaydiumLiquidity({
-  //       baseToken,
-  //       quoteToken,
-  //       amount,
-  //       poolConfig,
-  //     });
-
-  //     notify({
-  //       message: 'Liquidity withdrawn successfully',
-  //       type: 'success',
-  //     });
-  //   } catch (error) {
-  //     // eslint-disable-next-line no-console
-  //     console.error(error);
-
-  //     notify({
-  //       message: 'Transaction failed',
-  //       type: 'error',
-  //     });
-  //   }
-  // };
 
   return (
     <div className={styles.withdraw}>

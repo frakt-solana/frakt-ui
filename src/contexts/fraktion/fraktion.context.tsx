@@ -6,9 +6,10 @@ import {
   FraktionContextType,
   VaultData,
 } from './fraktion.model';
-import { createMarket, getVaults, createVault } from './fraktion';
 import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
+import { getVaults } from './fraktion';
+import { createMarket, createVault } from './transactions';
 
 export const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -103,33 +104,16 @@ export const FraktionProvider = ({
         error,
         vaults,
         vaultsMarkets,
-        createVault: ({
-          userNfts,
-          pricePerFraction,
-          fractionsAmount,
-          unfinishedVaultData,
-          tokenData,
-          rawUserTokensByMint,
-        }) =>
-          createVault({
-            userNfts,
-            pricePerFraction,
-            fractionsAmount,
-            walletPublicKey,
-            signTransaction,
-            connection,
-            unfinishedVaultData,
-            tokenData,
-            rawUserTokensByMint,
-          }),
-        createMarket: (fractionsMintAddress, tickerName) =>
-          createMarket(
-            fractionsMintAddress,
-            tickerName,
-            walletPublicKey,
-            signAllTransactions,
-            connection,
-          ),
+        createVault: createVault({
+          walletPublicKey,
+          signTransaction,
+          connection,
+        }),
+        createMarket: createMarket({
+          walletPublicKey,
+          signAllTransactions,
+          connection,
+        }),
         refetch: fetchData,
         patchVault,
         isPolling,

@@ -41,7 +41,12 @@ export const TradeTab = ({
           <Button
             type="alternative"
             className={styles.createMarketBtn}
-            onClick={() => createMarket(vaultInfo.fractionMint, tokerName)}
+            onClick={() =>
+              createMarket({
+                fractionsMint: vaultInfo.fractionMint,
+                tickerName: tokerName,
+              })
+            }
           >
             Create market
           </Button>

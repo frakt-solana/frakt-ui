@@ -34,7 +34,7 @@ export const LiveAuction: FC<LiveAuctionProps> = ({ vaultInfo }) => {
     vaultInfo?.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   const placeBidHandler = (values) => {
-    bidOnAuction(vaultInfo, +values.startBid.amount);
+    bidOnAuction({ vaultInfo, price: +values.startBid.amount });
   };
 
   return (

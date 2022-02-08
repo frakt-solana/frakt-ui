@@ -8,11 +8,10 @@ import { InputControlsNames, useDeposit } from './hooks';
 import Checkbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
-import { notify, SOL_TOKEN } from '../../utils';
+import { SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
-import { NotifyType } from '../../utils/solanaUtils';
 
 interface DepositModalProps {
   visible: boolean;
@@ -44,29 +43,14 @@ const DepositModal: FC<DepositModalProps> = ({
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
-    try {
-      await addRaydiumLiquidity({
-        baseToken: tokenInfo,
-        baseAmount,
-        quoteToken: SOL_TOKEN,
-        quoteAmount,
-        poolConfig,
-        fixedSide: liquiditySide,
-      });
-
-      notify({
-        message: 'successfully',
-        type: NotifyType.SUCCESS,
-      });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      notify({
-        message: 'Transaction failed',
-        type: NotifyType.ERROR,
-      });
-    }
+    await addRaydiumLiquidity({
+      baseToken: tokenInfo,
+      baseAmount,
+      quoteToken: SOL_TOKEN,
+      quoteAmount,
+      poolConfig,
+      fixedSide: liquiditySide,
+    });
   };
 
   return (

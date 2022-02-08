@@ -185,16 +185,8 @@ export interface FraktionContextType {
   error: any;
   vaults: VaultData[];
   vaultsMarkets: Market[];
-  createVault: (
-    params: Omit<
-      CreateVaultParams,
-      'walletPublicKey' | 'signTransaction' | 'connection'
-    >,
-  ) => Promise<string | null>;
-  createMarket: (
-    fractionsMintAddress: string,
-    tickerName: string,
-  ) => Promise<boolean>;
+  createVault: (params: CreateVaultParams) => Promise<string | null>;
+  createMarket: (params: CreateMarketParams) => Promise<void>;
   refetch: fetchDataFunction;
   patchVault: patchVaultFunction;
   isPolling: boolean;
@@ -204,13 +196,32 @@ export interface FraktionContextType {
 
 export type GetVaults = (markets: Market[]) => Promise<VaultData[]>;
 
-export type CreateMarket = (
-  fractionsMint: string,
-  tickerName: string,
-  walletPublicKey: PublicKey,
-  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>,
-  connection: Connection,
-) => Promise<boolean>;
+export interface WrapperTransactionParams {
+  connection?: Connection;
+  walletPublicKey?: PublicKey;
+  signTransaction?: (transaction: Transaction) => Promise<Transaction>;
+}
+
+export type WrappedTranscationType =
+  | 'connection'
+  | 'walletPublicKey'
+  | 'signTransaction';
+
+export type WrappedAllTranscationsType =
+  | 'connection'
+  | 'walletPublicKey'
+  | 'signAllTransactions';
+
+export interface WrapperAllTransactionParams {
+  connection?: Connection;
+  walletPublicKey?: PublicKey;
+  signAllTransactions?: (transaction: Transaction[]) => Promise<Transaction[]>;
+}
+
+export interface CreateMarketParams extends WrapperAllTransactionParams {
+  fractionsMint: string;
+  tickerName: string;
+}
 
 export type UnfinishedVaultData = {
   vaultPubkey: string;
@@ -219,37 +230,22 @@ export type UnfinishedVaultData = {
   redeemTreasury: string;
 };
 
-export type InitVault = (
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-) => Promise<UnfinishedVaultData>;
+export interface AddNFTsToVault extends WrapperTransactionParams {
+  vaultPubkey: string;
+  userNfts: UserNFT[];
+  rawUserTokensByMint: RawUserTokensByMint;
+}
 
-export type AddNFTsToVault = (
-  vaultPubkey: string,
-  userNfts: UserNFT[],
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-  rawUserTokensByMint: RawUserTokensByMint,
-) => Promise<void>;
+export interface FinishVaultParams extends WrapperTransactionParams {
+  unfinishedVaultData: UnfinishedVaultData;
+  pricePerFraction: number;
+  fractionsAmount: number;
+}
 
-export type FinishVault = (
-  unfinishedVaultData: UnfinishedVaultData,
-  pricePerFraction: number,
-  fractionsAmount: number,
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-) => Promise<void>;
-
-interface CreateVaultParams {
+export interface CreateVaultParams extends WrapperTransactionParams {
   userNfts: UserNFT[];
   pricePerFraction: number;
   fractionsAmount: number;
-  walletPublicKey: PublicKey;
-  signTransaction: (transaction: Transaction) => Promise<Transaction>;
-  connection: Connection;
   unfinishedVaultData?: UnfinishedVaultData;
   tokenData: {
     name: string;
@@ -258,5 +254,3 @@ interface CreateVaultParams {
   };
   rawUserTokensByMint: RawUserTokensByMint;
 }
-
-export type CreateVault = (params: CreateVaultParams) => Promise<string | null>;
