@@ -14,6 +14,8 @@ import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { SwappingModal } from './components/SwappingModal';
 import { NFTs_DATA } from './tempData';
 import { ModalNFTsSlider } from '../../components/ModalNFTsSlider';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletNotConnected } from '../../components/WalletNotConnected';
 
 const SORT_VALUES = [
   {
@@ -35,6 +37,7 @@ const SORT_VALUES = [
 ];
 
 const MarketSwapPage = (): JSX.Element => {
+  const { connected } = useWallet();
   const [selectedNfts, setSelectedNfts] = useState<any>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -95,33 +98,41 @@ const MarketSwapPage = (): JSX.Element => {
             <div className={styles.content}>
               <HeaderSwap />
 
-              <div className={styles.itemsSortWrapper}>
-                <p
-                  className={styles.filtersIconWrapper}
-                  onClick={() => setIsSidebar(true)}
-                >
-                  Filters
-                  <FiltersIcon />
-                </p>
-                <div className={styles.itemsAmount}>355 items</div>
-                <div className={styles.sortWrapper}>
-                  <ControlledSelect
-                    className={styles.sortingSelect}
-                    valueContainerClassName={styles.sortingSelectValueContainer}
-                    label="Sort by"
-                    control={control}
-                    name="sort"
-                    options={SORT_VALUES}
-                  />
-                </div>
-              </div>
+              {!connected ? (
+                <WalletNotConnected />
+              ) : (
+                <>
+                  <div className={styles.itemsSortWrapper}>
+                    <p
+                      className={styles.filtersIconWrapper}
+                      onClick={() => setIsSidebar(true)}
+                    >
+                      Filters
+                      <FiltersIcon />
+                    </p>
+                    <div className={styles.itemsAmount}>355 items</div>
+                    <div className={styles.sortWrapper}>
+                      <ControlledSelect
+                        className={styles.sortingSelect}
+                        valueContainerClassName={
+                          styles.sortingSelectValueContainer
+                        }
+                        label="Sort by"
+                        control={control}
+                        name="sort"
+                        options={SORT_VALUES}
+                      />
+                    </div>
+                  </div>
 
-              <NFTsList
-                selectedNFTs={selectedNfts}
-                onCardClick={onCardClick}
-                nfts={NFTs_DATA}
-                onNftItemClick={onNftItemClick}
-              />
+                  <NFTsList
+                    selectedNFTs={selectedNfts}
+                    onCardClick={onCardClick}
+                    nfts={NFTs_DATA}
+                    onNftItemClick={onNftItemClick}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
