@@ -16,7 +16,7 @@ import BN from 'bn.js';
 
 import { SOL_TOKEN } from '../../utils';
 
-import { BLOCKED_POOLS_IDS } from './liquidityPools.constants';
+import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
 import {
   FetchPoolDataByMint,
   PoolData,
