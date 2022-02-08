@@ -133,17 +133,25 @@
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
+
+  :global {
+    .ant-checkbox {
+      + span {
+        padding-left: 5px;
+      }
+
+      .ant-checkbox-inner {
+        width: 18px;
+        height: 18px;
+        border: var(--border-gray-1);
+        border-radius: 0;
+      }
+    }
+  }
 }
 
 .sidebarListItem:first-of-type {
   padding-top: 0;
-}
-
-.sidebarItemCheckbox {
-  margin-right: 5px;
-  width: 18px;
-  height: 18px;
-  border: var(--border-gray-1);
 }
 
 .sidebarItemAmount {

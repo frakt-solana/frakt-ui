@@ -1,7 +1,7 @@
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import React, { FC } from 'react';
-import { Collapse, Input } from 'antd';
+import { Checkbox, Collapse, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
@@ -65,10 +65,9 @@ export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
           <ul className={styles.sidebarList}>
             {COLLECTIONS_IN_POOL_DATA.map((item, index) => (
               <li className={styles.sidebarListItem} key={item.name + index}>
-                <div className={styles.sidebarItemCheckbox} />
-                <span className={styles.sidebarItemName}>
+                <Checkbox className={styles.sidebarItemName}>
                   {shortName(item.name, 9)}
-                </span>
+                </Checkbox>
                 <span className={styles.sidebarItemAmount}>
                   {item.items} items
                 </span>
@@ -99,10 +98,9 @@ export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
                         className={styles.sidebarListItem}
                         key={item.name + index}
                       >
-                        <div className={styles.sidebarItemCheckbox} />
-                        <span className={styles.sidebarItemName}>
+                        <Checkbox className={styles.sidebarItemName}>
                           {shortName(item.name, 9)}
-                        </span>
+                        </Checkbox>
                         <span className={styles.sidebarItemAmount}>
                           {item.items}
                         </span>
