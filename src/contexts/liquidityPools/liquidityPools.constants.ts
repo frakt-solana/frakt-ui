@@ -4,4 +4,4 @@ export const BLOCKED_POOLS_IDS = [
 ];
 
 //? Using for fetching prices of tokens in USD
-export const COINGECKO_URL = 'https://api.coingecko.com/api/v3';
+export const COINGECKO_URL = process.env.REACT_APP_COINGECKO_URL;

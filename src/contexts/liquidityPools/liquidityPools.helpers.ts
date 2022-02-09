@@ -1,4 +1,4 @@
-import { getAllProgramAccounts } from '@frakters/fusion-pool';
+import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 
 import {
   CurrencyAmount,
@@ -173,6 +173,6 @@ export const fetchProgramAccounts = async ({
     vaultProgramId,
     connection,
   );
-
+  console.log(allProgramAccounts);
   return allProgramAccounts;
 };

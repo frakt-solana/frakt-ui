@@ -1,13 +1,25 @@
-import {
-  LiquidityPoolKeysV4,
-  LiquiditySide,
-  TokenAmount,
-} from '@raydium-io/raydium-sdk';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
-import { Config, Router, Stake } from '@frakters/fusion-pool';
+
+import {
+  StakeLiquidityTransactionParams,
+  UnstakeLiquidityTransactionParams,
+} from './transactions/fusionPools';
+import {
+  AddLiquidityTransactionParams,
+  RemoveLiquidityTransactionParams,
+  SwapTransactionParams,
+} from './transactions/raydiumLiquidityPools';
+import {
+  MainPoolConfigView,
+  MainRouterView,
+  SecondStakeAccountView,
+  SecondaryRewardView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
@@ -17,16 +29,16 @@ export interface LiquidityPoolsContextValues {
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
   raydiumSwap: (params: SwapTransactionParams) => Promise<void>;
-  createRaydiumLiquidityPool: (
-    params: CreateLiquidityTransactionParams,
-  ) => Promise<void>;
+  createRaydiumLiquidityPool: (params: any) => Promise<void>;
   addRaydiumLiquidity: (params: AddLiquidityTransactionParams) => Promise<void>;
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
-  harvestLiquidity: (params) => Promise<void>;
-  stakeLiquidity: (params) => Promise<void>;
-  unstakeLiquidity: (params) => Promise<void>;
+  harvestLiquidity: (params: any) => Promise<void>;
+  stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
+  unstakeLiquidity: (
+    params: UnstakeLiquidityTransactionParams,
+  ) => Promise<void>;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -52,9 +64,6 @@ export type PoolDataByMint = Map<string, PoolData>;
 export interface PoolData {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
-  fushionConfig?: Config;
-  router?: Router;
-  fushionStakeAccounts?: Stake;
 }
 
 export type FetchPoolDataByMint = ({
@@ -75,46 +84,15 @@ export interface RaydiumPoolInfo {
   lpSupply: BN;
 }
 
-export interface SwapTransactionParams {
-  baseToken: TokenInfo;
-  baseAmount: BN;
-  quoteToken: TokenInfo;
-  quoteAmount: BN;
-  poolConfig: LiquidityPoolKeysV4;
-}
-
-export interface AddLiquidityTransactionParams {
-  baseToken: TokenInfo;
-  baseAmount: BN;
-  quoteToken: TokenInfo;
-  quoteAmount: BN;
-  poolConfig: LiquidityPoolKeysV4;
-  fixedSide: LiquiditySide;
-}
-
-export interface CreateLiquidityTransactionParams {
-  baseAmount: BN;
-  quoteAmount: BN;
-  baseToken: TokenInfo;
-  quoteToken: TokenInfo;
-  marketId: PublicKey;
-}
-
-export interface RemoveLiquidityTransactionParams {
-  baseToken: TokenInfo;
-  quoteToken: TokenInfo;
-  poolConfig: LiquidityPoolKeysV4;
-  amount: TokenAmount;
-}
-
 export interface ProgramAccountsData {
-  configs: Config[];
-  routers: Router[];
-  stakeAccounts: Stake[];
+  mainPoolConfigs: MainPoolConfigView[];
+  mainRouters: MainRouterView[];
+  secondaryStakeAccounts: SecondStakeAccountView[];
+  secondaryRewards: SecondaryRewardView[];
+  stakeAccounts: StakeAccountView[];
 }
 
 export interface ProgramAccountData {
-  config?: Config;
-  router: Router;
-  stakeAccount: Stake;
+  mainRouter: MainRouterView;
+  stakeAccount: StakeAccountView;
 }

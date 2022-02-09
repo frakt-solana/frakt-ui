@@ -9,7 +9,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { TokenFieldWithBalance } from '../../../components/TokenField';
 import { useUserTokens } from '../../../contexts/userTokens';
-import { notify, SOL_TOKEN } from '../../../utils';
+import { SOL_TOKEN } from '../../../utils';
 import Button from '../../../components/Button';
 import styles from './styles.module.scss';
 import {
@@ -17,7 +17,6 @@ import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
-import { NotifyType } from '../../../utils/solanaUtils';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
@@ -35,7 +34,6 @@ const Withdraw: FC<WithdrawInterface> = ({
   const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
   const { rawUserTokensByMint } = useUserTokens();
   const [withdrawValue, setWithdrawValue] = useState<string>('');
-  const [visibleUnstakeBtn, setVisibleUnstakeBtn] = useState<boolean>(false);
   const quoteToken = SOL_TOKEN;
 
   const { lpMint } = poolConfig;
@@ -50,60 +48,18 @@ const Withdraw: FC<WithdrawInterface> = ({
 
   const onSubmitHandler = async (): Promise<void> => {
     if (programAccount) {
-      const { router, stakeAccount } = programAccount;
+      const { mainRouter, stakeAccount } = programAccount;
 
-      try {
-        if (balance && stakeAccount.amount) {
-          await unstakeLiquidity({
-            router,
-            stakeAccount,
-          });
-          await removeRaydiumLiquidity({
-            baseToken,
-            quoteToken,
-            amount,
-            poolConfig,
-          });
-        }
-        notify({
-          message: 'Liquidity withdrawn successfully',
-          type: NotifyType.SUCCESS,
-        });
-      } catch (error) {
-        setVisibleUnstakeBtn(true);
-        // eslint-disable-next-line no-console
-        console.error(error);
+      await unstakeLiquidity({
+        router: mainRouter,
+        stakeAccount,
+      });
 
-        notify({
-          message: 'Transaction failed',
-          type: NotifyType.ERROR,
-        });
-      }
-    }
-  };
-
-  const onRemoveLiquidityHandler = async () => {
-    try {
       await removeRaydiumLiquidity({
         baseToken,
         quoteToken,
         amount,
         poolConfig,
-      });
-
-      notify({
-        message: 'Liquidity withdrawn successfully',
-        type: NotifyType.SUCCESS,
-      });
-
-      setVisibleUnstakeBtn(false);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      notify({
-        message: 'Transaction failed',
-        type: NotifyType.ERROR,
       });
     }
   };
@@ -132,15 +88,6 @@ const Withdraw: FC<WithdrawInterface> = ({
         >
           Confirm
         </Button>
-        {visibleUnstakeBtn && (
-          <Button
-            type="tertiary"
-            className={styles.rewardBtn}
-            onClick={onRemoveLiquidityHandler}
-          >
-            unstake
-          </Button>
-        )}
       </div>
     </div>
   );

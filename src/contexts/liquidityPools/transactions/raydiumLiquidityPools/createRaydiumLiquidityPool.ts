@@ -1,60 +1,72 @@
 import { Liquidity } from '@raydium-io/raydium-sdk';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { PublicKey } from '@solana/web3.js';
+import BN from 'bn.js';
 
-import { notify, SOL_TOKEN } from '../../../../utils';
-import { NotifyType } from '../../../../utils/solanaUtils';
-import { CreateLiquidityTransactionParams } from '../../liquidityPools.model';
-import { createEmptyRaydiumLiquidityPool } from './createEmptyRaydiumLiquidityPool';
-import { initRaydiumLiquidityPool } from './initRaydiumLiquidityPool';
+import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
+import {
+  createTransactionFuncFromRaw,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
+import { rawCreateEmptyRaydiumLiquidityPool } from './createEmptyRaydiumLiquidityPool';
+import { rawInitRaydiumLiquidityPool } from './initRaydiumLiquidityPool';
 
-export const createRaydiumLiquidityPool =
-  (
-    connection: Connection,
-    walletPublicKey: PublicKey,
-    signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  ) =>
-  async ({
+export interface CreateLiquidityTransactionParams {
+  baseAmount: BN;
+  quoteAmount: BN;
+  baseToken: TokenInfo;
+  quoteToken: TokenInfo;
+  marketId: PublicKey;
+}
+
+export interface CreateLiquidityTransactionRawParams
+  extends CreateLiquidityTransactionParams,
+    WalletAndConnection {}
+
+const rawCreateRaydiumLiquidityPool = async ({
+  baseAmount,
+  quoteAmount,
+  baseToken,
+  quoteToken = SOL_TOKEN,
+  marketId,
+  connection,
+  wallet,
+}: CreateLiquidityTransactionRawParams): Promise<void> => {
+  const associatedPoolKeys = await Liquidity.getAssociatedPoolKeys({
+    version: 4,
+    marketId,
+    baseMint: new PublicKey(baseToken.address),
+    quoteMint: new PublicKey(quoteToken.address),
+  });
+
+  // const marketAccountInfo = await connection.getAccountInfo(marketId);
+  // console.log(SPL_ACCOUNT_LAYOUT.decode(marketAccountInfo.data));
+
+  await rawCreateEmptyRaydiumLiquidityPool({
+    connection,
+    wallet,
+    associatedPoolKeys,
+  });
+
+  await rawInitRaydiumLiquidityPool({
+    connection,
+    wallet,
+    associatedPoolKeys,
+    baseToken,
+    quoteToken,
     baseAmount,
     quoteAmount,
-    baseToken,
-    quoteToken = SOL_TOKEN,
-    marketId,
-  }: CreateLiquidityTransactionParams): Promise<void> => {
-    try {
-      const associatedPoolKeys = await Liquidity.getAssociatedPoolKeys({
-        version: 4,
-        marketId,
-        baseMint: new PublicKey(baseToken.address),
-        quoteMint: new PublicKey(quoteToken.address),
-      });
+  });
+};
 
-      // const marketAccountInfo = await connection.getAccountInfo(marketId);
-      // console.log(SPL_ACCOUNT_LAYOUT.decode(marketAccountInfo.data));
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+  rawCreateRaydiumLiquidityPool,
+  {
+    onSuccessMessage: 'Liquidity pool created',
+    onErrorMessage: 'Transaction failed',
+  },
+);
 
-      await createEmptyRaydiumLiquidityPool({
-        connection,
-        walletPublicKey,
-        signTransaction,
-        associatedPoolKeys,
-      });
-
-      await initRaydiumLiquidityPool({
-        connection,
-        walletPublicKey,
-        signTransaction,
-        associatedPoolKeys,
-        baseToken,
-        quoteToken,
-        baseAmount,
-        quoteAmount,
-      });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      notify({
-        message: 'Transaction failed',
-        type: NotifyType.ERROR,
-      });
-    }
-  };
+export const createRaydiumLiquidityPool = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

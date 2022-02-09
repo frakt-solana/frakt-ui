@@ -1,10 +1,11 @@
 import { VaultData } from '../../contexts/fraktion';
-import { COLLECTION_URL } from './collections.constant';
 import {
   CollectionData,
   VaultsByCollectionName,
   PromiseFulfilledResult,
 } from './collections.model';
+
+const EXCHANGE_COLLECTION_INFO_API = process.env.REACT_APP_COLLECTION_URL;
 
 export const mapVaultsByCollectionName = (
   vaults: VaultData[],
@@ -29,7 +30,9 @@ export const fetchCollectionData = async (
 ): Promise<CollectionData | null> => {
   try {
     const responseData = await (
-      await fetch(`${COLLECTION_URL}/metadata?collectionName=${collectionName}`)
+      await fetch(
+        `${EXCHANGE_COLLECTION_INFO_API}/metadata?collectionName=${collectionName}`,
+      )
     ).json();
 
     return responseData?.states?.live || null;

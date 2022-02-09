@@ -47,7 +47,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
     userFractionsAmount.mul(winningBid.bidAmountPerShare).toNumber() / 1e9;
 
   const redeemValueHandler = () => {
-    redeemRewardsFromAuctionShares(vaultInfo).then(() =>
+    redeemRewardsFromAuctionShares({ vaultInfo }).then(() =>
       setIsRedeemAvailable(false),
     );
   };

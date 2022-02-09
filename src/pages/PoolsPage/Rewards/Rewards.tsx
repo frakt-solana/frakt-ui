@@ -1,11 +1,10 @@
 import { FC } from 'react';
-
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+
 import Button from '../../../components/Button';
 import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
-
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import {
   ProgramAccountData,
   RaydiumPoolInfo,
@@ -24,9 +23,9 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
 
   const onSubmitHandler = () => {
     if (programAccount) {
-      const { router, stakeAccount } = programAccount;
+      const { mainRouter, stakeAccount } = programAccount;
 
-      harvestLiquidity({ router, stakeAccount });
+      harvestLiquidity({ router: mainRouter, stakeAccount });
     }
   };
 

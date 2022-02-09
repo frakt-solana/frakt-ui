@@ -1,38 +1,56 @@
-import { Router, Stake, unstakeInFusion } from '@frakters/fusion-pool';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { unstakeInFusion } from '@frakters/frkt-multiple-reward';
+import {
+  MainRouterView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
+import { Provider } from '@project-serum/anchor';
+import { PublicKey } from '@solana/web3.js';
 
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
+import { wrapAsyncWithTryCatch } from '../../../../utils';
 import { FUSION_PROGRAM_PUBKEY } from './constants';
+import {
+  createTransactionFuncFromRaw,
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
 
-export const unstakeLiquidity =
-  (
-    connection: Connection,
-    walletPublicKey: PublicKey,
-    signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  ) =>
-  async ({
-    router,
-    stakeAccount,
-  }: {
-    router: Router;
-    stakeAccount: Stake;
-  }): Promise<void> => {
-    await unstakeInFusion(
-      walletPublicKey,
-      new PublicKey(FUSION_PROGRAM_PUBKEY),
-      new PublicKey(router.token_mint_input),
-      new PublicKey(router.token_mint_output),
-      new PublicKey(router.routerPubkey),
-      [new PublicKey(stakeAccount.stakePubkey)],
-      new PublicKey(router.pool_config_input),
-      new PublicKey(router.pool_config_output),
-      async (transaction) => {
-        await signAndConfirmTransaction({
-          transaction,
-          connection,
-          walletPublicKey,
-          signTransaction,
-        });
-      },
-    );
-  };
+export interface UnstakeLiquidityTransactionParams {
+  router: MainRouterView;
+  stakeAccount: StakeAccountView;
+}
+
+export interface UnstakeLiquidityTransactionRawParams
+  extends UnstakeLiquidityTransactionParams,
+    WalletAndConnection {}
+
+export const rawUnstakeLiquidity = async ({
+  router,
+  stakeAccount,
+  connection,
+  wallet,
+}: UnstakeLiquidityTransactionRawParams): Promise<void> => {
+  await unstakeInFusion(
+    new PublicKey(FUSION_PROGRAM_PUBKEY),
+    new Provider(connection, wallet, null),
+    wallet.publicKey,
+    new PublicKey(router.tokenMintInput),
+    new PublicKey(router.tokenMintOutput),
+    new PublicKey(stakeAccount.stakeAccountPubkey),
+    async (transaction) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        wallet,
+      });
+    },
+  );
+};
+
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawUnstakeLiquidity, {
+  onSuccessMessage: 'Liquidity harvest successfully',
+  onErrorMessage: 'Transaction failed',
+});
+
+export const unstakeLiquidity = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

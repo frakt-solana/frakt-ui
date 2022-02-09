@@ -29,6 +29,8 @@ const PoolsPage: FC = () => {
     programAccount,
   } = usePoolsPage();
 
+  console.log(programAccount);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>

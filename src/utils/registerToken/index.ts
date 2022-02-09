@@ -1,7 +1,7 @@
 import { notify } from '../index';
 import { NotifyType } from '../solanaUtils';
 
-const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/list';
+const REGISTRAR_TOKEN_URL = process.env.REACT_APP_REGISTRAR_TOKEN_URL;
 
 export const registerToken = async (
   tickerName: string,
@@ -11,7 +11,7 @@ export const registerToken = async (
   vaultPubkey: string,
 ): Promise<boolean> => {
   try {
-    const res = await fetch(REGISTRAR_URL, {
+    const res = await fetch(REGISTRAR_TOKEN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,51 +1,76 @@
-import { Liquidity } from '@raydium-io/raydium-sdk';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import {
+  Liquidity,
+  LiquidityPoolKeysV4,
+  TokenAmount,
+} from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { PublicKey } from '@solana/web3.js';
 
-import { SOL_TOKEN } from '../../../../utils';
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
+import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
+import {
+  createTransactionFuncFromRaw,
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
 import { getTokenAccount } from '../../liquidityPools.helpers';
-import { RemoveLiquidityTransactionParams } from '../../liquidityPools.model';
 
-export const removeRaydiumLiquidity =
-  (
-    connection: Connection,
-    walletPublicKey: PublicKey,
-    signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  ) =>
-  async ({
-    baseToken,
-    quoteToken = SOL_TOKEN,
-    poolConfig,
-    amount,
-  }: RemoveLiquidityTransactionParams): Promise<void> => {
-    const tokenAccounts = (
-      await Promise.all(
-        [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
-          getTokenAccount({
-            tokenMint: new PublicKey(mint),
-            owner: walletPublicKey,
-            connection,
-          }),
-        ),
-      )
-    ).filter((tokenAccount) => tokenAccount);
+export interface RemoveLiquidityTransactionParams {
+  baseToken: TokenInfo;
+  quoteToken: TokenInfo;
+  poolConfig: LiquidityPoolKeysV4;
+  amount: TokenAmount;
+}
 
-    const { transaction, signers } =
-      await Liquidity.makeRemoveLiquidityTransaction({
-        connection,
-        poolKeys: poolConfig,
-        userKeys: {
-          tokenAccounts: tokenAccounts,
-          owner: walletPublicKey,
-        },
-        amountIn: amount,
-      });
+export interface RemoveLiquidityTransactionRawParams
+  extends RemoveLiquidityTransactionParams,
+    WalletAndConnection {}
 
-    await signAndConfirmTransaction({
-      transaction,
-      signers,
+export const rawRemoveRaydiumLiquidity = async ({
+  connection,
+  wallet,
+  baseToken,
+  quoteToken = SOL_TOKEN,
+  poolConfig,
+  amount,
+}: RemoveLiquidityTransactionRawParams): Promise<void> => {
+  const tokenAccounts = (
+    await Promise.all(
+      [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
+        getTokenAccount({
+          tokenMint: new PublicKey(mint),
+          owner: wallet.publicKey,
+          connection,
+        }),
+      ),
+    )
+  ).filter((tokenAccount) => tokenAccount);
+
+  const { transaction, signers } =
+    await Liquidity.makeRemoveLiquidityTransaction({
       connection,
-      walletPublicKey,
-      signTransaction,
+      poolKeys: poolConfig,
+      userKeys: {
+        tokenAccounts: tokenAccounts,
+        owner: wallet.publicKey,
+      },
+      amountIn: amount,
     });
-  };
+
+  await signAndConfirmTransaction({
+    transaction,
+    signers,
+    connection,
+    wallet,
+  });
+};
+
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+  rawRemoveRaydiumLiquidity,
+  {
+    onErrorMessage: 'Transaction failed',
+  },
+);
+
+export const removeRaydiumLiquidity = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

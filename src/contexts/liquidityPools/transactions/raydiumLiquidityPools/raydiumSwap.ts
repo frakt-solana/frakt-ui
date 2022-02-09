@@ -1,75 +1,80 @@
-import { Liquidity } from '@raydium-io/raydium-sdk';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { PublicKey } from '@solana/web3.js';
+import BN from 'bn.js';
 
-import { notify, SOL_TOKEN } from '../../../../utils';
-import { NotifyType } from '../../../../utils/solanaUtils';
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
+import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
+import {
+  createTransactionFuncFromRaw,
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
 import {
   getCurrencyAmount,
   getTokenAccount,
 } from '../../liquidityPools.helpers';
-import { SwapTransactionParams } from '../../liquidityPools.model';
 
-export const raydiumSwap =
-  (
-    connection: Connection,
-    walletPublicKey: PublicKey,
-    signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  ) =>
-  async ({
-    baseToken,
-    baseAmount,
-    quoteToken = SOL_TOKEN,
-    quoteAmount,
-    poolConfig,
-  }: SwapTransactionParams): Promise<void> => {
-    try {
-      const tokenAccounts = (
-        await Promise.all(
-          [baseToken.address, quoteToken.address].map((mint) =>
-            getTokenAccount({
-              tokenMint: new PublicKey(mint),
-              owner: walletPublicKey,
-              connection,
-            }),
-          ),
-        )
-      ).filter((tokenAccount) => tokenAccount);
+export interface SwapTransactionParams {
+  baseToken: TokenInfo;
+  baseAmount: BN;
+  quoteToken: TokenInfo;
+  quoteAmount: BN;
+  poolConfig: LiquidityPoolKeysV4;
+}
 
-      const amountIn = getCurrencyAmount(baseToken, baseAmount);
-      const amountOut = getCurrencyAmount(quoteToken, quoteAmount);
+export interface SwapTransactionRawParams
+  extends SwapTransactionParams,
+    WalletAndConnection {}
 
-      const { transaction, signers } = await Liquidity.makeSwapTransaction({
-        connection,
-        poolKeys: poolConfig,
-        userKeys: {
-          tokenAccounts,
-          owner: walletPublicKey,
-        },
-        amountIn,
-        amountOut,
-        fixedSide: 'in',
-      });
+export const rawRaydiumSwap = async ({
+  baseToken,
+  baseAmount,
+  quoteToken = SOL_TOKEN,
+  quoteAmount,
+  poolConfig,
+  connection,
+  wallet,
+}: SwapTransactionRawParams): Promise<void> => {
+  const tokenAccounts = (
+    await Promise.all(
+      [baseToken.address, quoteToken.address].map((mint) =>
+        getTokenAccount({
+          tokenMint: new PublicKey(mint),
+          owner: wallet.publicKey,
+          connection,
+        }),
+      ),
+    )
+  ).filter((tokenAccount) => tokenAccount);
 
-      await signAndConfirmTransaction({
-        transaction,
-        signers,
-        connection,
-        walletPublicKey,
-        signTransaction,
-      });
+  const amountIn = getCurrencyAmount(baseToken, baseAmount);
+  const amountOut = getCurrencyAmount(quoteToken, quoteAmount);
 
-      notify({
-        message: 'Swap made successfully',
-        type: NotifyType.SUCCESS,
-      });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+  const { transaction, signers } = await Liquidity.makeSwapTransaction({
+    connection,
+    poolKeys: poolConfig,
+    userKeys: {
+      tokenAccounts,
+      owner: wallet.publicKey,
+    },
+    amountIn,
+    amountOut,
+    fixedSide: 'in',
+  });
 
-      notify({
-        message: 'Swap failed',
-        type: NotifyType.ERROR,
-      });
-    }
-  };
+  await signAndConfirmTransaction({
+    transaction,
+    signers,
+    connection,
+    wallet,
+  });
+};
+
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawRaydiumSwap, {
+  onSuccessMessage: 'Swap made successfully',
+  onErrorMessage: 'Swap failed',
+});
+
+export const raydiumSwap = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

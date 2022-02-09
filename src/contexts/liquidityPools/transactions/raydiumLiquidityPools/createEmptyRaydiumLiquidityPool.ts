@@ -2,30 +2,33 @@ import {
   Liquidity,
   LiquidityAssociatedPoolKeysV4,
 } from '@raydium-io/raydium-sdk';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { Transaction } from '@solana/web3.js';
 
-import { notify } from '../../../../utils';
-import { NotifyType } from '../../../../utils/solanaUtils';
-import { signAndConfirmTransaction } from '../../../../utils/transactions';
+import {
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../../utils/transactions';
 
-export const createEmptyRaydiumLiquidityPool = async ({
+export interface CreateEmptyRaydiumLiquidityParams {
+  associatedPoolKeys?: LiquidityAssociatedPoolKeysV4;
+}
+
+export interface CreateEmptyRaydiumLiquidityRawParams
+  extends CreateEmptyRaydiumLiquidityParams,
+    WalletAndConnection {}
+
+export const rawCreateEmptyRaydiumLiquidityPool = async ({
   connection,
-  walletPublicKey,
-  signTransaction,
+  wallet,
   associatedPoolKeys,
-}: {
-  connection: Connection;
-  walletPublicKey: PublicKey;
-  signTransaction: (transaction: Transaction) => Promise<Transaction>;
-  associatedPoolKeys: LiquidityAssociatedPoolKeysV4;
-}): Promise<void> => {
+}: CreateEmptyRaydiumLiquidityRawParams): Promise<void> => {
   const transaction = new Transaction();
 
   transaction.add(
     await Liquidity.makeCreatePoolInstruction({
       poolKeys: associatedPoolKeys,
       userKeys: {
-        payer: walletPublicKey,
+        payer: wallet.publicKey,
       },
     }),
   );
@@ -33,12 +36,6 @@ export const createEmptyRaydiumLiquidityPool = async ({
   await signAndConfirmTransaction({
     transaction,
     connection,
-    walletPublicKey,
-    signTransaction,
-  });
-
-  notify({
-    message: 'Liquidity pool created',
-    type: NotifyType.SUCCESS,
+    wallet,
   });
 };
