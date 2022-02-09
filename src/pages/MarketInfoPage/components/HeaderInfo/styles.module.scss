@@ -1,0 +1,66 @@
+.header {}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-gray-7);
+  max-width: 100%;
+  flex-grow: 1;
+  pointer-events: auto;
+  padding: 20px;
+
+  @media screen and (max-width: 1100px) {
+    padding: 30px;
+  }
+
+  @media screen and (max-width: 700px) {
+    padding: 20px 15px;
+  }
+}
+
+.headerWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  transition: padding .3s ease-in;
+
+  @media screen and (max-width: 1100px) {
+    flex-wrap: wrap;
+  }
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  font: var(--font-text-1);
+  text-transform: uppercase;
+  margin-right: auto;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
+}
+
+.poolImage {
+  width: 43px;
+  height: 43px;
+  overflow: hidden;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-gray-1);
+}
+
+.marketNavigation {
+
+  @media screen and (max-width: 1100px) {
+    margin-bottom: 30px;
+    width: 100%;
+    order: -1;
+  }
+
+  @media screen and (max-width: 767px) {
+    margin-bottom: 20px;
+  }
+}

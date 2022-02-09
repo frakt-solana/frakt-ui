@@ -34,6 +34,7 @@ import MarketPage from './pages/MarketPage';
 import MarketBuyPage from './pages/MarketBuyPage';
 import MarketSellPage from './pages/MarketSellPage';
 import MarketSwapPage from './pages/MarketSwapPage';
+import MarketInfoPage from './pages/MarketInfoPage';
 
 const wallets = [
   getPhantomWallet(),
@@ -79,6 +80,11 @@ export const Routes = (): JSX.Element => {
                           exact
                           path={URLS.MARKET_SWAP}
                           component={(): JSX.Element => <MarketSwapPage />}
+                        />
+                        <Route
+                          exact
+                          path={URLS.MARKET_INFO}
+                          component={(): JSX.Element => <MarketInfoPage />}
                         />
                         <Route
                           exact

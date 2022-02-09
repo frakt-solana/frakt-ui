@@ -1,0 +1,209 @@
+.notConnected {
+  max-width: 100%;
+}
+
+.wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.leftSide,
+.rightSide {
+  width: 50%;
+}
+
+.leftSide {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.priceWrapper,
+.additionalItem,
+.rightSide {
+  padding: 30px;
+  border: var(--border-gray-1);
+  border-radius: 10px;
+}
+
+.rightSide {
+  flex-shrink: 0;
+}
+
+.priceWrapper {
+  width: 60%;
+}
+
+.cardTitle {
+  font: var(--font-text-2);
+  margin-bottom: 20px;
+}
+
+.priceItem {
+  height: 43px;
+  display: flex;
+  align-items: center;
+  font: var(--font-text-3);
+  border-bottom: var(--border-gray-1);
+  padding: 0 10px;
+  background-color: var(--color-gray-7);
+
+  &:first-of-type {
+    border-top: var(--border-gray-1);
+  }
+
+  &.priceItemBuy {
+    background: linear-gradient(90deg, rgba(131, 214, 164, 0.36) 0%, rgba(131, 214, 164, 0) 93.75%);
+
+    > p {
+      color: var(--green-color);
+    }
+  }
+
+  &.priceItemMid {
+    background: linear-gradient(90deg, rgba(77, 77, 77, 0.36) 0%, rgba(77, 77, 77, 0) 93.75%);
+
+    > p {
+      color: var(--color-gray-4);
+    }
+  }
+
+  &.priceItemSell {
+    background: linear-gradient(90deg, rgba(255, 102, 102, 0.36) 0%, rgba(255, 102, 102, 0) 93.75%);
+
+    > p {
+      color: var(--red-error-color);
+    }
+  }
+
+  > p {
+    font: var(--font-text-5);
+    text-transform: uppercase;
+  }
+
+  > span {
+    margin-left: auto;
+  }
+
+  > svg {
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+}
+
+
+.additionalInfo {
+  width: 40%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.additionalItem {
+  flex-grow: 1;
+  background-color: var(--color-gray-7);
+}
+
+.additionalContent {
+  display: flex;
+  align-items: center;
+
+  > span {
+    margin-right: 10px;
+  }
+
+  > svg {
+    margin-right: 5px;
+  }
+}
+
+.historyHeader {
+  display: flex;
+  background-color: var(--color-gray-7);
+
+  .historyCell {
+    font: var(--font-text-5);
+    color: var(--color-gray-4);
+  }
+}
+
+.historyItem {
+  display: flex;
+  background: linear-gradient(90deg, rgba(77, 77, 77, 0.36) 0%, rgba(77, 77, 77, 0) 93.75%);
+
+  &.buy {
+    background: linear-gradient(90deg, rgba(131, 214, 164, 0.36) 0%, rgba(131, 214, 164, 0) 93.75%);
+
+    .historyAction {
+      color: var(--green-color);
+      border-color: var(--green-color);
+    }
+  }
+
+  &.sell {
+    background: linear-gradient(90deg, rgba(255, 102, 102, 0.36) 0%, rgba(255, 102, 102, 0) 93.75%);
+
+    .historyAction {
+      color: var(--red-error-color);
+      border-color: var(--red-error-color);
+    }
+  }
+
+  &.swap {
+    background: linear-gradient(90deg, rgba(62, 158, 248, 0.36) 0%, rgba(62, 158, 248, 0) 93.75%);
+
+    .historyAction {
+      color: var(--border-btn-color-1);
+      border-color: var(--border-btn-color-1);
+    }
+  }
+}
+
+.historyCell {
+  text-transform: uppercase;
+  width: 20%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-left: var(--border-gray-1);
+  font-size: 14px;
+  min-width: 130px;
+}
+
+.swapCell {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.historyImage {
+  width: 50px;
+  height: 50px;
+  background-position: 25px top, center;
+  background-repeat: no-repeat, no-repeat;
+  background-size: cover, cover;
+}
+
+.historyPrice {
+  display: flex;
+  align-items: center;
+
+  > svg {
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+}
+
+.historyAction {
+  width: 38px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--border-gray-1);
+  font-family: var(--font-family-inter);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.03em;
+}
