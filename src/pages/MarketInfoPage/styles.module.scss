@@ -1,3 +1,9 @@
+.layout {
+  @media screen and (max-width: 767px) {
+    padding-top: 38px;
+  }
+}
+
 .notConnected {
   max-width: 100%;
 }
@@ -7,17 +13,30 @@
   align-items: flex-start;
   gap: 30px;
   margin-top: 50px;
+
+  @media screen and (max-width: 1440px) {
+    flex-wrap: wrap;
+  }
 }
 
 .leftSide,
 .rightSide {
   width: 50%;
+
+  @media screen and (max-width: 1440px) {
+    width: auto;
+    flex-grow: 1;
+  }
 }
 
 .leftSide {
   display: flex;
   align-items: flex-start;
   gap: 30px;
+
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+  }
 }
 
 .priceWrapper,
@@ -26,19 +45,66 @@
   padding: 30px;
   border: var(--border-gray-1);
   border-radius: 10px;
+
+  @media screen and (max-width: 740px) {
+    padding: 20px;
+  }
 }
 
 .rightSide {
   flex-shrink: 0;
+  max-width: 100%;
+  position: relative;
+  margin-bottom: 50px;
+
+  @media screen and (max-width: 740px) {
+    padding-right: 0;
+    margin-right: -15px;
+    max-width: calc(100% + 15px);
+  }
+
+  &::after {
+    display: none;
+    position: absolute;
+    content: '';
+    width: 32px;
+    right: 0;
+    top: -1px;
+    bottom: -1px;
+    background: linear-gradient(270deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 1;
+
+    @media screen and (max-width: 740px) {
+      display: block;
+    }
+  }
+}
+
+.historyList {
+  max-width: 120%;
+  overflow-X: auto;
+  width: 100%;
+
+  &::-webkit-scrollbar {
+    height: 0;
+  }
 }
 
 .priceWrapper {
   width: 60%;
+
+  @media screen and (max-width: 767px) {
+    width: 100%;
+  }
 }
 
 .cardTitle {
   font: var(--font-text-2);
   margin-bottom: 20px;
+
+  @media screen and (max-width: 767px) {
+    margin-bottom: 10px;
+  }
 }
 
 .priceItem {
@@ -49,6 +115,10 @@
   border-bottom: var(--border-gray-1);
   padding: 0 10px;
   background-color: var(--color-gray-7);
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 
   &:first-of-type {
     border-top: var(--border-gray-1);
@@ -99,16 +169,27 @@
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
+
+  @media screen and (max-width: 767px) {
+    width: 100%;
+    gap: 15px;
+  }
 }
 
 .additionalItem {
   flex-grow: 1;
   background-color: var(--color-gray-7);
+  min-width: 250px;
 }
 
 .additionalContent {
   display: flex;
   align-items: center;
+  font: var(--font-text-3);
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
 
   > span {
     margin-right: 10px;
@@ -126,6 +207,7 @@
   .historyCell {
     font: var(--font-text-5);
     color: var(--color-gray-4);
+    background-color: var(--color-gray-7);
   }
 }
 
@@ -170,6 +252,8 @@
   border-left: var(--border-gray-1);
   font-size: 14px;
   min-width: 130px;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 .swapCell {

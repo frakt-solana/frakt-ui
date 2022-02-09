@@ -24,7 +24,7 @@
   width: 100%;
   transition: padding .3s ease-in;
 
-  @media screen and (max-width: 1100px) {
+  @media screen and (max-width: 767px) {
     flex-wrap: wrap;
   }
 }
@@ -50,17 +50,27 @@
   background-size: cover;
   background-position: center;
   background-color: var(--color-gray-1);
+
+  @media screen and (max-width: 767px) {
+    height: 38px;
+    width: 38px;
+  }
+
+  @media screen and (max-width: 500px) {
+    height: 23px;
+    width: 23px;
+  }
+}
+
+.title {
+  font: var(--font-text-1);
 }
 
 .marketNavigation {
 
-  @media screen and (max-width: 1100px) {
-    margin-bottom: 30px;
-    width: 100%;
-    order: -1;
-  }
-
   @media screen and (max-width: 767px) {
     margin-bottom: 20px;
+    width: 100%;
+    order: -1;
   }
 }
