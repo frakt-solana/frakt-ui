@@ -12,7 +12,7 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderSwap } from './components/HeaderSwap';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { SwappingModal } from './components/SwappingModal';
-import { NFTs_FROM_DATA } from './tempData';
+import { NFTs_FROM_DATA, NFTs_TO_DATA } from './tempData';
 import { ModalNFTsSlider } from '../../components/ModalNFTsSlider';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../../components/WalletNotConnected';
@@ -38,6 +38,7 @@ const SORT_VALUES = [
 
 const MarketSwapPage = (): JSX.Element => {
   const { connected } = useWallet();
+  const [isPrivetNFTsList, setIsPrivetNFTsList] = useState<boolean>(true);
   const [selectedSwapFrom, setSelectedSwapFrom] = useState(null);
   const [selectedSwapTo, setSelectedSwapTo] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -62,12 +63,27 @@ const MarketSwapPage = (): JSX.Element => {
   const onDeselect = (isFrom: boolean) => {
     isFrom ? setSelectedSwapFrom(null) : setSelectedSwapTo(null);
   };
+
   const onCardClick = (nft: any): void => {
-    if (nft.nftId === selectedSwapFrom?.nftId) {
-      setSelectedSwapFrom(null);
-      return;
+    if (isPrivetNFTsList) {
+      if (nft.nftId === selectedSwapFrom?.nftId) {
+        setSelectedSwapFrom(null);
+        return;
+      }
+      setSelectedSwapFrom(nft);
+    } else {
+      if (nft.nftId === selectedSwapTo?.nftId) {
+        setSelectedSwapTo(null);
+        return;
+      }
+      setSelectedSwapTo(nft);
     }
-    setSelectedSwapFrom(nft);
+  };
+
+  const changeNFTsList = (isPrivetNFTsListNeeded: boolean) => {
+    isPrivetNFTsListNeeded
+      ? setIsPrivetNFTsList(true)
+      : setIsPrivetNFTsList(false);
   };
 
   const { control, watch } = useForm({
@@ -86,6 +102,8 @@ const MarketSwapPage = (): JSX.Element => {
             <SwappingModal
               selectedSwapFrom={selectedSwapFrom}
               selectedSwapTo={selectedSwapTo}
+              isPrivetNFTsList={isPrivetNFTsList}
+              changeNFTsList={changeNFTsList}
               onDeselect={onDeselect}
             />
           </div>
@@ -127,12 +145,21 @@ const MarketSwapPage = (): JSX.Element => {
                     </div>
                   </div>
 
-                  <NFTsList
-                    selectedNFT={selectedSwapFrom}
-                    onCardClick={onCardClick}
-                    nfts={NFTs_FROM_DATA}
-                    onNftItemClick={onNftItemClick}
-                  />
+                  {isPrivetNFTsList ? (
+                    <NFTsList
+                      selectedNFT={selectedSwapFrom}
+                      onCardClick={onCardClick}
+                      nfts={NFTs_FROM_DATA}
+                      onNftItemClick={onNftItemClick}
+                    />
+                  ) : (
+                    <NFTsList
+                      selectedNFT={selectedSwapTo}
+                      onCardClick={onCardClick}
+                      nfts={NFTs_TO_DATA}
+                      onNftItemClick={onNftItemClick}
+                    />
+                  )}
                 </>
               )}
             </div>

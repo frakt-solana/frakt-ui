@@ -1,20 +1,26 @@
 import React, { FC, useState } from 'react';
 import styles from './styles.module.scss';
-import { CloseModalIcon } from '../../../../icons';
+import { CloseModalIcon, SwapMarketIcon } from '../../../../icons';
 import classNames from 'classnames';
 
 interface BuyingModalProps {
-  onDeselect?: (nft: any) => void;
   selectedSwapFrom: any;
   selectedSwapTo: any;
+  isPrivetNFTsList: boolean;
+  changeNFTsList: (isPrivetNFTsListNeeded: boolean) => void;
+  onDeselect?: (nft: any) => void;
 }
 
 export const SwappingModal: FC<BuyingModalProps> = ({
-  onDeselect,
   selectedSwapFrom,
   selectedSwapTo,
+  isPrivetNFTsList,
+  changeNFTsList,
+  onDeselect,
 }) => {
   const [isModalDown, setIsModalDown] = useState<boolean>(false);
+
+  const activeTab = !selectedSwapFrom || !selectedSwapTo;
 
   return (
     <div
@@ -23,20 +29,32 @@ export const SwappingModal: FC<BuyingModalProps> = ({
         [styles.modalDown]: isModalDown,
       })}
     >
-      <div
-        className={styles.closeOpenModal}
-        onClick={() => setIsModalDown(!isModalDown)}
-      >
-        Close/Open
+      <div className={styles.openModal} onClick={() => setIsModalDown(false)} />
+      <div className={styles.closeModal} onClick={() => setIsModalDown(true)}>
+        <CloseModalIcon width={20} />
       </div>
-      <div className={`${styles.swapItem} ${styles.swapItemFrom}`}>
+      <div
+        className={classNames({
+          [styles.swapItem]: true,
+          [styles.swapItemFrom]: true,
+          [styles.swapItemActive]:
+            (isPrivetNFTsList && activeTab) || isModalDown,
+        })}
+      >
         <div className={styles.header}>
           <p className={styles.title}>Swap from</p>
         </div>
         {!selectedSwapFrom ? (
           <>
             <p className={styles.noSelected}>Choose your assets to swap from</p>
-            <button className={styles.selectAssets}>Select assets</button>
+            {!isPrivetNFTsList && (
+              <button
+                className={styles.selectAssets}
+                onClick={() => changeNFTsList(true)}
+              >
+                Select assets
+              </button>
+            )}
           </>
         ) : (
           <div className={styles.selectedItem}>
@@ -52,16 +70,68 @@ export const SwappingModal: FC<BuyingModalProps> = ({
             </div>
             <div
               className={styles.closeWrapper}
-              onClick={() => onDeselect('nft')}
+              onClick={() => onDeselect(true)}
             >
               <CloseModalIcon />
             </div>
           </div>
         )}
+        <div
+          className={classNames({
+            [styles.swapIconWrapper]: true,
+            [styles.swapIconActive]: !activeTab,
+          })}
+        >
+          <SwapMarketIcon />
+        </div>
       </div>
-      {selectedSwapFrom && selectedSwapTo && (
-        <button className={styles.swapButton}>Swap</button>
-      )}
+      <div className={classNames({ [styles.decorLines]: !activeTab })} />
+      <div
+        className={classNames({
+          [styles.swapItem]: true,
+          [styles.swapItemTo]: true,
+          [styles.swapItemActive]: !isPrivetNFTsList && activeTab,
+        })}
+      >
+        <div className={styles.header}>
+          <p className={styles.title}>Swap to</p>
+        </div>
+        {!selectedSwapTo ? (
+          <>
+            <p className={styles.noSelected}>Choose your assets to receive</p>
+            {isPrivetNFTsList && (
+              <button
+                className={styles.selectAssets}
+                onClick={() => changeNFTsList(false)}
+              >
+                Select assets
+              </button>
+            )}
+          </>
+        ) : (
+          <div className={styles.selectedItem}>
+            <div
+              className={styles.itemImg}
+              style={{ backgroundImage: `url(${selectedSwapTo?.nftImage})` }}
+            />
+            <div className={styles.itemInfo}>
+              <p className={styles.itemId}>{selectedSwapTo?.nftId}</p>
+              <p className={styles.collectionName}>
+                {selectedSwapTo?.collectionName}
+              </p>
+            </div>
+            <div
+              className={styles.closeWrapper}
+              onClick={() => onDeselect(false)}
+            >
+              <CloseModalIcon />
+            </div>
+          </div>
+        )}
+        {selectedSwapFrom && selectedSwapTo && (
+          <button className={styles.swapButton}>Swap</button>
+        )}
+      </div>
     </div>
   );
 };
