@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles.module.scss';
 import classNames from 'classnames/bind';
-import { URLS } from '../../../constants';
+import { PATHS } from '../../../constants';
 import { WalletInfo } from '../WalletInfo/WalletInfo';
 import NavigationLink from '../NavigationLink';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -17,20 +17,20 @@ export const DesktopMenu = (): JSX.Element => {
 
   return (
     <>
-      <NavLink className={styles.logo} to={URLS.ROOT}>
+      <NavLink className={styles.logo} to={PATHS.ROOT}>
         Fraktion
       </NavLink>
       <ul className={classNames(styles.navigation, styles.navigation_left)}>
         <li>
-          <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
+          <NavigationLink to={PATHS.VAULTS}>Vaults</NavigationLink>
         </li>
         <li>
-          <NavigationLink to={URLS.SWAP}>Swap</NavigationLink>
+          <NavigationLink to={PATHS.SWAP}>Swap</NavigationLink>
         </li>
         <li>
           <a
             className={styles.link}
-            href={URLS.DEX}
+            href={process.env.REACT_APP_DEX_URL}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -38,15 +38,15 @@ export const DesktopMenu = (): JSX.Element => {
           </a>
         </li>
         <li>
-          <NavigationLink to={URLS.COLLECTIONS}>Collections</NavigationLink>
+          <NavigationLink to={PATHS.COLLECTIONS}>Collections</NavigationLink>
         </li>
         <li>
-          <NavigationLink to={URLS.LIQUIDITY}>Liquidity</NavigationLink>
+          <NavigationLink to={PATHS.LIQUIDITY}>Liquidity</NavigationLink>
         </li>
         {connected && (
           <li>
             <NavigationLink
-              to={`${URLS.WALLET}/${publicKey.toString()}`}
+              to={`${PATHS.WALLET}/${publicKey.toString()}`}
               isActive={(_, location) =>
                 location?.pathname?.includes(publicKey.toString()) || false
               }
@@ -58,7 +58,9 @@ export const DesktopMenu = (): JSX.Element => {
       </ul>
       <ul className={styles.navigation}>
         <li className={styles.bgAccent}>
-          <NavigationLink to={URLS.FRAKTIONALIZE}>Fraktionalize</NavigationLink>
+          <NavigationLink to={PATHS.FRAKTIONALIZE}>
+            Fraktionalize
+          </NavigationLink>
         </li>
         <li>
           {connected ? (
