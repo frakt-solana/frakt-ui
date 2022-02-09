@@ -11,6 +11,11 @@
 
   &.visible {
     transform: translateY(-100%);
+
+    .closeModal {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
   @media screen and (max-width: 1600px) {
@@ -24,11 +29,37 @@
       .slippageWrapper {
         display: none;
       }
+
+      .closeModal {
+        transform: translateY(250px);
+        opacity: 0;
+      }
     }
   }
 
   @media screen and (max-width: 767px) {
     max-width: 270px;
+  }
+}
+
+.closeModal {
+  position: absolute;
+  top: -60px;
+  right: 0;
+  width: 43px;
+  height: 43px;
+  border: var(--border-gray-1);
+  background-color: var(--black-color);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform .5s .3s ease-out, opacity .3s .3s ease-in;
+  transform: translateY(250px);
+  opacity: 0;
+
+  @media screen and (max-width: 1600px) {
+    display: flex;
   }
 }
 

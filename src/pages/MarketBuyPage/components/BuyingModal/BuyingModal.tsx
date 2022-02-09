@@ -25,14 +25,14 @@ export const BuyingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
       className={classNames({
         [styles.wrapper]: true,
         [styles.visible]: nfts.length,
-        [styles.modalDown]: isModalDown,
+        [styles.modalDown]: isModalDown && nfts.length,
       })}
     >
+      <div className={styles.closeModal} onClick={() => setIsModalDown(true)}>
+        <CloseModalIcon width={20} />
+      </div>
       <div className={styles.header}>
-        <p
-          className={styles.title}
-          onClick={() => setIsModalDown(!isModalDown)}
-        >
+        <p className={styles.title} onClick={() => setIsModalDown(false)}>
           You&apos;re buying<span>{nfts.length}</span>
         </p>
         <div
