@@ -2,19 +2,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import BN from 'bn.js';
 
-import { ArrowDownSmallIcon } from '../../icons';
-import { useDebounce } from '../../hooks';
+import { ArrowDownSmallIcon } from '../../../icons';
+import { useDebounce } from '../../../hooks';
 import {
-  useCurrentSolanaPrice,
   useLiquidityPools,
-  comparePoolsArraysByApr,
-  comparePoolsArraysByTotal,
+  compareNumbers,
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
-} from '../../contexts/liquidityPools';
-import styles from './styles.module.scss';
-import { useUserTokens } from '../../contexts/userTokens';
+} from '../../../contexts/liquidityPools';
+import styles from '../styles.module.scss';
+import { useUserTokens } from '../../../contexts/userTokens';
+import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -41,10 +40,10 @@ export const usePoolsPage = (): {
   poolsData: PoolData[];
   raydiumPoolsInfoMap: RaydiumPoolInfoMap;
   searchItems: (value?: string) => void;
-  currentSolanaPriceUSD: number;
   activePoolTokenAddress: string | null;
   onPoolCardClick: (tokenAddress: string) => void;
   userLpBalanceByMint: LpBalanceByMint;
+  poolsStatsByMarketId: PoolsStatsByMarketId;
 } => {
   const { control, watch } = useForm({
     defaultValues: {
@@ -54,12 +53,16 @@ export const usePoolsPage = (): {
     },
   });
   const { rawUserTokensByMint, loading: userTokensLoading } = useUserTokens();
+  const {
+    poolsStatsByMarketId,
+    fetchPoolsStats,
+    loading: poolsStatsLoading,
+  } = useLazyPoolsStats();
   const [searchString, setSearchString] = useState<string>('');
   const sort = watch(InputControlsNames.SORT);
   const showAwardedOnly = watch(InputControlsNames.SHOW_AWARDED_ONLY);
   const showStaked = watch(InputControlsNames.SHOW_STAKED);
 
-  const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
   const { poolDataByMint, loading: poolDataByMintLoading } =
     useLiquidityPools();
 
@@ -105,13 +108,25 @@ export const usePoolsPage = (): {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawPoolsData]);
 
-  const loading = poolsInfoMapLoading || poolDataByMintLoading;
+  const loading =
+    poolsInfoMapLoading || poolDataByMintLoading || poolsStatsLoading;
+
+  useEffect(() => {
+    if (rawPoolsData.length) {
+      const marketIds = rawPoolsData.map(({ poolConfig }) =>
+        poolConfig.marketId.toBase58(),
+      );
+
+      fetchPoolsStats(marketIds);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawPoolsData]);
 
   const poolsData = useMemo(() => {
     if (
       !rawPoolsData.length ||
-      !currentSolanaPriceUSD ||
-      !raydiumPoolsInfoMap.size
+      !raydiumPoolsInfoMap.size ||
+      !poolsStatsByMarketId.size
     ) {
       return [];
     }
@@ -138,18 +153,16 @@ export const usePoolsPage = (): {
       })
       .sort(({ poolConfig: poolConfigA }, { poolConfig: poolConfigB }) => {
         if (sortField === 'liquidity') {
-          return comparePoolsArraysByTotal(
-            raydiumPoolsInfoMap.get(poolConfigA.baseMint.toBase58()),
-            raydiumPoolsInfoMap.get(poolConfigB.baseMint.toBase58()),
-            currentSolanaPriceUSD,
+          return compareNumbers(
+            poolsStatsByMarketId.get(poolConfigA.marketId.toBase58()).liquidity,
+            poolsStatsByMarketId.get(poolConfigB.marketId.toBase58()).liquidity,
             sortOrder === 'desc',
           );
         }
         if (sortField === 'apr') {
-          return comparePoolsArraysByApr(
-            raydiumPoolsInfoMap.get(poolConfigA.baseMint.toBase58()),
-            raydiumPoolsInfoMap.get(poolConfigB.baseMint.toBase58()),
-            currentSolanaPriceUSD,
+          return compareNumbers(
+            poolsStatsByMarketId.get(poolConfigA.marketId.toBase58()).apy,
+            poolsStatsByMarketId.get(poolConfigB.marketId.toBase58()).apy,
             sortOrder === 'desc',
           );
         }
@@ -161,7 +174,7 @@ export const usePoolsPage = (): {
     sort,
     showAwardedOnly,
     showStaked,
-    currentSolanaPriceUSD,
+    poolsStatsByMarketId,
     raydiumPoolsInfoMap,
     userLpBalanceByMint,
   ]);
@@ -184,10 +197,10 @@ export const usePoolsPage = (): {
     poolsData,
     raydiumPoolsInfoMap,
     searchItems,
-    currentSolanaPriceUSD,
     activePoolTokenAddress,
     onPoolCardClick,
     userLpBalanceByMint,
+    poolsStatsByMarketId,
   };
 };
 
@@ -228,7 +241,7 @@ export const SORT_VALUES: SortValue[] = [
   {
     label: (
       <span>
-        APR <ArrowDownSmallIcon className={styles.arrowDown} />
+        APY <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'apr_desc',
@@ -236,7 +249,7 @@ export const SORT_VALUES: SortValue[] = [
   {
     label: (
       <span>
-        APR <ArrowDownSmallIcon className={styles.arrowUp} />
+        APY <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'apr_asc',

@@ -22,9 +22,9 @@ const PoolsPage: FC = () => {
     poolsData,
     raydiumPoolsInfoMap,
     searchItems,
-    currentSolanaPriceUSD,
     activePoolTokenAddress,
     onPoolCardClick,
+    poolsStatsByMarketId,
   } = usePoolsPage();
 
   return (
@@ -77,7 +77,9 @@ const PoolsPage: FC = () => {
               raydiumPoolInfo={raydiumPoolsInfoMap.get(
                 poolData.tokenInfo.address,
               )}
-              currentSolanaPriceUSD={currentSolanaPriceUSD}
+              poolStats={poolsStatsByMarketId.get(
+                poolData.poolConfig.marketId.toBase58(),
+              )}
               isOpen={activePoolTokenAddress === poolData.tokenInfo.address}
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)

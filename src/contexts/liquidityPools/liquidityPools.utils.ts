@@ -35,6 +35,16 @@ export const calculateAPR = (
   return apr;
 };
 
+export const compareNumbers = (
+  numberA = 0,
+  numberB = 0,
+  desc = true,
+): number => {
+  if (desc) {
+    if (numberA > numberB) return -1;
+  } else if (numberB > numberA) return -1;
+};
+
 export const comparePoolsArraysByTotal = (
   poolInfoA: RaydiumPoolInfo,
   poolInfoB: RaydiumPoolInfo,
@@ -71,14 +81,14 @@ export const comparePoolsArraysByApr = (
   } else if (aprB > aprA) return -1;
 };
 
-const formatNumberToPercent = (num: number): string =>
+export const formatNumberToPercent = (num: number): string =>
   new Intl.NumberFormat('en-US', {
     style: 'percent',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(num);
 
-const formatNumberWithSpaceSeparator = (num: number): string =>
+export const formatNumberWithSpaceSeparator = (num: number): string =>
   new Intl.NumberFormat('en-US', {
     style: 'decimal',
     minimumFractionDigits: 0,
@@ -87,7 +97,7 @@ const formatNumberWithSpaceSeparator = (num: number): string =>
     .format(num)
     .replaceAll(',', ' ');
 
-const formatNumberToCurrency = (num: number): string => {
+export const formatNumberToCurrency = (num: number): string => {
   if (!num) {
     return '0';
   }
@@ -120,7 +130,7 @@ export const calculateTotalDeposit = (
   const allBaseTokenPriceUSD: number =
     baseTokenPriceUSD * Number(quoteTokenAmount);
 
-  return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
+  return String(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };
 
 export const calcTotalForCreateLiquidity = (

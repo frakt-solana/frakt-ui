@@ -24,18 +24,20 @@
 
 .poolCard {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 20px 25px 20px 20px;
-  flex-wrap: wrap;
   cursor: pointer;
+
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+  }
 }
 
 .tokenInfo {
   display: flex;
   align-items: center;
   gap: 20px;
-  width: 60%;
+  flex-grow: 1;
 }
 
 .image {
@@ -45,6 +47,7 @@
 }
 
 .chevronVisibleIcon {
+  margin-left: 60px;
   cursor: pointer;
   fill: var(--white-color);
   width: 24px;
@@ -69,6 +72,18 @@
 .statsValue {
   display: flex;
   gap: 60px;
+
+  @media screen and (max-width: 769px) {
+    order: 1;
+    width: 100%;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 10px;
+
+    .value {
+      margin-top: 0;
+    }
+  }
 }
 
 .poolDetails {
@@ -78,10 +93,18 @@
   border-top: 1px solid var(--gray-color-7);
   padding: 20px;
   gap: 20px;
+
+  @media screen and (max-width: 1140px) {
+    flex-wrap: wrap;
+  }
 }
 
 .subtitle {
   font: var(--font-subtitle);
+
+  @media screen and (max-width: 769px) {
+    font: var(--font-subtitle-2);
+  }
 }
 
 .depositBtn {
@@ -90,6 +113,15 @@
   margin-bottom: 10px;
   width: 100%;
   max-width: 190px;
+
+  @media screen and (max-width: 1140px) {
+    max-width: 100%;
+  }
+
+  @media screen and (min-width: 1400px) {
+    width: 100%;
+    max-width: 371px;
+  }
 }
 
 .connectBtn {
@@ -105,48 +137,14 @@
   }
 }
 
-@media screen and (max-width: 1140px) {
-  .poolDetails {
-    flex-wrap: wrap;
-  }
-  .depositBtn {
-    max-width: 100%;
-  }
-}
+.totalValue {
+  min-width: 90px;
 
-@media screen and (min-width: 1400px) {
-  .depositBtn {
-    width: 100%;
-    max-width: 371px;
-  }
-}
-
-@media screen and (max-width: 769px) {
-  .subtitle {
-    font: var(--font-subtitle-2);
-  }
-
-  .statsValue {
-    order: 1;
-    width: 100%;
-    flex-direction: column;
-    gap: 0;
-    margin-top: 10px;
-
-    .value {
-      margin-top: 0;
-    }
-  }
-
-  .totalValue {
+  @media screen and (max-width: 769px) {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     margin-top: 10px;
-  }
-
-  .tokenInfo {
-    width: 80%;
   }
 }

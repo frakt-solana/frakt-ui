@@ -4,6 +4,7 @@ import { NotifyType } from '../solanaUtils';
 const DEPRECATED_MARKETS = [
   'EQ5XjC1neq4FbqLUaeHLx48CTougsPYdsGgti4KqEFUT',
   'dvQF6YNQvQ2dQkMyt3rW7ibypCkHJDgVAJvZz6A6gZx',
+  'HngbFS7vMUeEm3JHYHJLwEuitdeKXv8oe27skwwsiYK',
 ];
 
 const APP_MARKETS_URL = process.env.REACT_APP_MARKETS_URL;

@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
-import DepositModal from '../../../components/DepositModal/DepositModal';
+import DepositModal from '../../../components/DepositModal';
 import { useWalletModal } from '../../../contexts/WalletModal';
 import { ChevronDownIcon } from '../../../icons';
 import Button from '../../../components/Button';
@@ -10,20 +10,20 @@ import styles from './styles.module.scss';
 import Withdraw from '../Withdraw';
 import { SOL_TOKEN } from '../../../utils';
 import {
-  calculateAPR,
-  calculateTVL,
   fetchRaydiumPoolsInfoMap,
+  formatNumberWithSpaceSeparator,
   PoolData,
   RaydiumPoolInfo,
 } from '../../../contexts/liquidityPools';
 import { usePolling } from '../../../hooks';
+import { PoolStats } from '../hooks';
 
 interface PoolInterface {
   poolData: PoolData;
   raydiumPoolInfo: RaydiumPoolInfo;
+  poolStats: PoolStats;
   isOpen: boolean;
   onPoolCardClick?: () => void;
-  currentSolanaPriceUSD: number;
 }
 
 const POOL_INFO_POLLING_INTERVAL = 5000;
@@ -33,7 +33,7 @@ const Pool: FC<PoolInterface> = ({
   poolData,
   raydiumPoolInfo: defaultRaydiumPoolInfo,
   onPoolCardClick = () => {},
-  currentSolanaPriceUSD,
+  poolStats,
 }) => {
   const { tokenInfo, poolConfig } = poolData;
 
@@ -90,16 +90,15 @@ const Pool: FC<PoolInterface> = ({
           <div className={styles.totalValue}>
             <p className={styles.title}>Total liquidity</p>
             <p className={styles.value}>
-              $ {calculateTVL(raydiumPoolInfo, currentSolanaPriceUSD)}
+              $ {formatNumberWithSpaceSeparator(poolStats.liquidity)}
             </p>
           </div>
           <div className={styles.totalValue}>
-            <p className={styles.title}>Apr</p>
-            <p className={styles.value}>
-              {calculateAPR(raydiumPoolInfo, currentSolanaPriceUSD)}
-            </p>
+            <p className={styles.title}>Apy</p>
+            <p className={styles.value}>{poolStats.apy}%</p>
           </div>
         </div>
+
         <ChevronDownIcon
           className={classNames(
             styles.chevronVisibleIcon,
@@ -144,6 +143,7 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
+        poolStats={poolStats}
       />
     </div>
   );
