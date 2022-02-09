@@ -11,8 +11,6 @@ import classNames from 'classnames';
 import { POOL_HISTORY_DATA } from './tempData';
 import { HistoryListItem } from './components/HistoryListItem';
 
-console.log(POOL_HISTORY_DATA);
-
 const MarketInfoPage = (): JSX.Element => {
   const { connected } = useWallet();
 
