@@ -26,8 +26,6 @@ import {
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
 
-const COINGECKO_URL = process.env.REACT_APP_COINGECKO_URL;
-
 export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
   connection,
   tokensMap,
