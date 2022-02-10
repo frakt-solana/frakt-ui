@@ -43,6 +43,7 @@
 
     .nameContainer {
       @include container();
+      border-top: 1px solid var(--gray-color-6);
       border-bottom: 1px solid var(--gray-color-6);
       flex-grow: 1;
 
@@ -112,7 +113,7 @@
         }
 
         .value {
-          font: var(--font-btn-mid);
+          font: var(--font-btn-small);
           color: var(--white-color);
         }
 
@@ -144,7 +145,7 @@
   background-repeat: no-repeat;
   background-position: center center;
   background-color: var(--black-color);
-  height: 360px;
+  height: 265px;
   border-bottom: 1px solid var(--gray-color-6);
   position: relative;
   overflow: hidden;

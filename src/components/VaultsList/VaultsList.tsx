@@ -31,6 +31,7 @@ export const VaultsList: FC<VaultsListProps> = ({
       {vaults.map((vault) => (
         <NavLink
           key={vault.vaultPubkey}
+          className={styles.item}
           to={`${URLS.VAULT}/${vault.vaultPubkey}`}
         >
           <VaultCard vaultData={vault} />

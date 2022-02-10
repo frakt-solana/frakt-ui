@@ -11,6 +11,7 @@ import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { VaultsList } from '../../components/VaultsList';
+import { Sidebar } from './components/Sidebar';
 
 const SORT_VALUES = [
   {
@@ -179,7 +180,10 @@ const VaultsPage = (): JSX.Element => {
             />
           </div>
         </div>
-        <VaultsList vaults={vaults} isLoading={loading} />
+        <div className={styles.wrapper}>
+          <Sidebar />
+          <VaultsList vaults={vaults} isLoading={loading} />
+        </div>
       </Container>
     </AppLayout>
   );

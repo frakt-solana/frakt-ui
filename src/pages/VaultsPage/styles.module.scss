@@ -3,6 +3,16 @@
   padding-bottom: 64px;
 }
 
+.wrapper {
+  display: flex;
+  margin-top: 23px;
+  position: relative;
+
+  @media screen and (max-width: 1200px) {
+    margin-top: 10px;
+  }
+}
+
 .search {
   margin-bottom: 18px;
 }
