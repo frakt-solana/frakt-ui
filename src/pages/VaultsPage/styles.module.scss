@@ -1,5 +1,4 @@
 .content {
-  padding-top: 64px;
   padding-bottom: 64px;
 }
 
@@ -13,8 +12,38 @@
   }
 }
 
+.contentWrapper {
+  padding-top: 64px;
+  padding-left: 20px;
+}
+
+.title {
+  font: var(--font-title-2);
+  margin-bottom: 32px;
+}
+
+.searchSortWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
 .search {
-  margin-bottom: 18px;
+  min-width: 328px;
+  width: auto;
+  padding: 0;
+
+  > input {
+    font: var(--font-text-3);
+  }
+}
+
+.vaultsAmount  {
+  margin-left: auto;
+  margin-right: 20px;
+  white-space: nowrap;
+  font: var(--font-text-3);
+  color: var(--color-gray-4);
 }
 
 .filters {
@@ -41,11 +70,8 @@
   transform: rotate(180deg);
 }
 
-.sortingSelect {
-  min-width: 270px;
-}
-
 .sortingSelectValueContainer {
+  white-space: nowrap;
   svg {
     position: relative;
     top: 2px;

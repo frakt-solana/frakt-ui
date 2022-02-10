@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -124,12 +124,6 @@ const VaultsPage = (): JSX.Element => {
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
-        <SearchInput
-          size="large"
-          onChange={(e) => searchItems(e.target.value || '')}
-          className={styles.search}
-          placeholder="Search by vault name"
-        />
         <div className={styles.filtersWrapper}>
           <div className={styles.filters}>
             <ControlledToggle
@@ -169,20 +163,33 @@ const VaultsPage = (): JSX.Element => {
               className={styles.filter}
             />
           </div>
-          <div>
-            <ControlledSelect
-              className={styles.sortingSelect}
-              valueContainerClassName={styles.sortingSelectValueContainer}
-              label="Sort by"
-              control={control}
-              name="sort"
-              options={SORT_VALUES}
-            />
-          </div>
         </div>
         <div className={styles.wrapper}>
           <Sidebar />
-          <VaultsList vaults={vaults} isLoading={loading} />
+          <div className={styles.contentWrapper}>
+            <h2 className={styles.title}>
+              Create, buy and sell fraktions of NFTs
+            </h2>
+            <div className={styles.searchSortWrapper}>
+              <SearchInput
+                onChange={(e) => searchItems(e.target.value || '')}
+                className={styles.search}
+                placeholder="Search by curator, collection or asset"
+              />
+              <p className={styles.vaultsAmount}>{325} Vaults</p>
+              <div className={styles.sortWrapper}>
+                <ControlledSelect
+                  className={styles.sortingSelect}
+                  valueContainerClassName={styles.sortingSelectValueContainer}
+                  label="Sort by"
+                  control={control}
+                  name="sort"
+                  options={SORT_VALUES}
+                />
+              </div>
+            </div>
+            <VaultsList vaults={vaults} isLoading={loading} />
+          </div>
         </div>
       </Container>
     </AppLayout>
