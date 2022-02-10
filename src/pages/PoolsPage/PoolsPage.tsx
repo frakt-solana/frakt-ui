@@ -23,10 +23,10 @@ const PoolsPage: FC = () => {
     poolsData,
     raydiumPoolsInfoMap,
     searchItems,
-    currentSolanaPriceUSD,
     activePoolTokenAddress,
     onPoolCardClick,
     programAccount,
+    poolsStatsByMarketId,
   } = usePoolsPage();
 
   console.log(programAccount);
@@ -71,15 +71,21 @@ const PoolsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={loading}
+          // isLoading={loading}
           emptyMessage={'No Liquidity pool found'}
         >
-          {poolsDataTest.map((poolData) => (
+          {poolsDataTest.map(({ poolData, poolStatsTest }) => (
             <Pool
               key={poolData.tokenInfo.address}
               poolData={poolData}
               raydiumPoolInfo={raydiumPoolInfoTest}
-              currentSolanaPriceUSD={currentSolanaPriceUSD}
+              // raydiumPoolInfo={raydiumPoolsInfoMap.get(
+              //   poolData.tokenInfo.address,
+              // )}
+              // poolStats={poolsStatsByMarketId.get(
+              //   poolData.poolConfig.marketId.toBase58(),
+              // )}
+              poolStats={poolStatsTest}
               isOpen={activePoolTokenAddress === poolData.tokenInfo.address}
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)

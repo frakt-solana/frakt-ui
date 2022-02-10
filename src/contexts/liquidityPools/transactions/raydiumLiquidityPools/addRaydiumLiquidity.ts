@@ -77,7 +77,7 @@ const rawAddRaydiumLiquidity = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddRaydiumLiquidity, {
-  onSuccessMessage: 'successfully',
+  onSuccessMessage: 'Liquidity provided successfully',
   onErrorMessage: 'Transaction failed',
 });
 

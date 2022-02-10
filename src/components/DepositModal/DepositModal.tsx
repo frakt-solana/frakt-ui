@@ -13,8 +13,10 @@ import { Modal } from '../Modal';
 import Button from '../Button';
 import {
   ProgramAccountData,
+  formatNumberToCurrency,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
+import { PoolStats } from '../../pages/PoolsPage/hooks/useLazyPoolsStats';
 
 interface DepositModalProps {
   visible: boolean;
@@ -22,6 +24,7 @@ interface DepositModalProps {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   programAccount: ProgramAccountData;
+  poolStats: PoolStats;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
@@ -30,6 +33,7 @@ const DepositModal: FC<DepositModalProps> = ({
   tokenInfo,
   poolConfig,
   programAccount,
+  poolStats,
 }) => {
   const {
     formControl,
@@ -110,19 +114,24 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <div className={styles.totalValue}>{totalValue}</div>
+          <div className={styles.totalValue}>
+            {formatNumberToCurrency(parseFloat(totalValue))}
+          </div>
         </div>
         <p className={styles.subtitle}>Estimated earnings from fees (7d)</p>
         <div className={styles.depositContent}>
           <div className={styles.depositInfo}>
             <p className={styles.value}>
-              $ 0.00 <span>/ month</span>
+              {formatNumberToCurrency(
+                parseFloat(totalValue) * (poolStats.apy / 100),
+              )}{' '}
+              <span>/ month</span>
             </p>
             <p className={styles.value}>
-              8.38 % <span>/ apr</span>
+              {poolStats.apy}% <span>/ apy</span>
             </p>
           </div>
-          <p className={styles.link}>After staking</p>
+          {/* <p className={styles.link}>After staking</p> */}
         </div>
         <div className={styles.verify}>
           <Controller

@@ -66,7 +66,15 @@ export const raydiumPoolInfoTest = {
 
 export const poolsDataTest = [
   {
-    tokenInfo: tokeInfoTest,
-    poolConfig: poolConfigTest,
+    poolData: {
+      tokenInfo: tokeInfoTest,
+      poolConfig: poolConfigTest,
+    },
+    poolStatsTest: {
+      apy: 2,
+      fee7d: 2,
+      fee24h: 2,
+      liquidity: 2,
+    },
   },
 ];
