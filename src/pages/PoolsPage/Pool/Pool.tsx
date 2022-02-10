@@ -1,22 +1,23 @@
 import { FC, useEffect, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import DepositModal from '../../../components/DepositModal';
 import { useWalletModal } from '../../../contexts/WalletModal';
 import { ChevronDownIcon } from '../../../icons';
-import Button from '../../../components/Button';
 import styles from './styles.module.scss';
-import Withdraw from '../Withdraw';
 import { SOL_TOKEN } from '../../../utils';
 import {
-  fetchRaydiumPoolsInfoMap,
   formatNumberWithSpaceSeparator,
   PoolData,
   RaydiumPoolInfo,
 } from '../../../contexts/liquidityPools';
-import { usePolling } from '../../../hooks';
 import { PoolStats } from '../hooks';
+import { useUserSplAccount } from '../../../utils/accounts';
+import {
+  PoolDetailsWalletConnected,
+  PoolDetailsWalletDisconnected,
+} from './components';
 
 interface PoolInterface {
   poolData: PoolData;
@@ -26,49 +27,33 @@ interface PoolInterface {
   onPoolCardClick?: () => void;
 }
 
-const POOL_INFO_POLLING_INTERVAL = 5000;
-
 const Pool: FC<PoolInterface> = ({
   isOpen,
   poolData,
-  raydiumPoolInfo: defaultRaydiumPoolInfo,
+  raydiumPoolInfo,
   onPoolCardClick = () => {},
   poolStats,
 }) => {
   const { tokenInfo, poolConfig } = poolData;
-
-  const { connection } = useConnection();
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const [raydiumPoolInfo, setRaydiumPoolInfo] = useState<RaydiumPoolInfo>(
-    defaultRaydiumPoolInfo,
-  );
 
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
 
-  const poll = async () => {
-    const raydiumPoolInfoMap = await fetchRaydiumPoolsInfoMap(connection, [
-      poolConfig,
-    ]);
-    setRaydiumPoolInfo(raydiumPoolInfoMap.get(tokenInfo.address));
-  };
-
-  const { isPolling, startPolling, stopPolling } = usePolling(
-    poll,
-    POOL_INFO_POLLING_INTERVAL,
-  );
+  const {
+    accountInfo: lpTokenAccountInfo,
+    subscribe,
+    unsubscribe,
+  } = useUserSplAccount();
 
   useEffect(() => {
-    if (isOpen && !isPolling) {
-      startPolling();
-    } else {
-      stopPolling();
+    if (isOpen && connected) {
+      subscribe(poolConfig.lpMint);
     }
-
-    return () => stopPolling();
+    return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, connected]);
 
   return (
     <div className={styles.pool}>
@@ -106,40 +91,24 @@ const Pool: FC<PoolInterface> = ({
           )}
         />
       </div>
-      {isOpen && (
-        <div className={styles.poolDetails}>
-          {connected ? (
-            <>
-              <Withdraw
-                baseToken={tokenInfo}
-                poolConfig={poolConfig}
-                raydiumPoolInfo={raydiumPoolInfo}
-              />
-              {/* <Rewards
-                baseToken={tokenInfo}
-                poolConfig={poolConfig}
-                raydiumPoolInfo={raydiumPoolInfo}
-              /> */}
-              <Button
-                onClick={() => setDepositModalVisible(true)}
-                className={styles.depositBtn}
-                type="alternative"
-              >
-                Deposit
-              </Button>
-            </>
-          ) : (
-            <Button
-              onClick={() => setVisible(true)}
-              className={styles.connectBtn}
-            >
-              Connect wallet
-            </Button>
-          )}
-        </div>
+      {isOpen && connected && (
+        <PoolDetailsWalletConnected
+          setDepositModalVisible={setDepositModalVisible}
+          poolData={poolData}
+          raydiumPoolInfo={raydiumPoolInfo}
+          lpTokenAccountInfo={lpTokenAccountInfo}
+          className={styles.poolDetails}
+        />
+      )}
+      {isOpen && !connected && (
+        <PoolDetailsWalletDisconnected
+          setWalletModalVisible={setVisible}
+          className={styles.poolDetails}
+        />
       )}
       <DepositModal
         visible={depositModalVisible}
+        setVisible={setDepositModalVisible}
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}

@@ -19,6 +19,7 @@ import { PoolStats } from '../../pages/PoolsPage/hooks/useLazyPoolsStats';
 
 interface DepositModalProps {
   visible: boolean;
+  setVisible: (visible: boolean) => void;
   onCancel: () => void;
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
@@ -27,6 +28,7 @@ interface DepositModalProps {
 
 const DepositModal: FC<DepositModalProps> = ({
   visible,
+  setVisible,
   onCancel,
   tokenInfo,
   poolConfig,
@@ -57,6 +59,8 @@ const DepositModal: FC<DepositModalProps> = ({
       poolConfig,
       fixedSide: liquiditySide,
     });
+
+    setVisible(false);
   };
 
   return (
