@@ -6,7 +6,12 @@ import { useTokenListContext } from '../TokenList';
 import {
   fetchRaydiumPoolsInfo,
   addRaydiumLiquidity,
+  removeRaydiumLiquidity,
   raydiumSwap,
+  harvestLiquidity,
+  stakeLiquidity,
+  unstakeLiquidity,
+  createRaydiumLiquidityPool,
 } from './liquidityPools';
 import { fetchPoolDataByMint } from './liquidityPools.helpers';
 import {
@@ -21,7 +26,12 @@ export const LiquidityPoolsContext =
     poolDataByMint: new Map(),
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
+    createRaydiumLiquidityPool: () => Promise.resolve(null),
     addRaydiumLiquidity: () => Promise.resolve(null),
+    removeRaydiumLiquidity: () => Promise.resolve(null),
+    harvestLiquidity: () => Promise.resolve(null),
+    stakeLiquidity: () => Promise.resolve(null),
+    unstakeLiquidity: () => Promise.resolve(null),
   });
 
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
@@ -29,7 +39,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
 }) => {
   const { fraktionTokensMap } = useTokenListContext();
   const { connection } = useConnection();
-  const { publicKey: walletPublicKey, signTransaction } = useWallet();
+  const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [poolDataByMint, setPoolDataByMint] = useState<PoolDataByMint>(
@@ -63,12 +73,34 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         loading,
         poolDataByMint,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
-        raydiumSwap: raydiumSwap(connection, walletPublicKey, signTransaction),
-        addRaydiumLiquidity: addRaydiumLiquidity(
+        raydiumSwap: raydiumSwap({
           connection,
-          walletPublicKey,
-          signTransaction,
-        ),
+          wallet,
+        }),
+        createRaydiumLiquidityPool: createRaydiumLiquidityPool({
+          connection,
+          wallet,
+        }),
+        removeRaydiumLiquidity: removeRaydiumLiquidity({
+          connection,
+          wallet,
+        }),
+        addRaydiumLiquidity: addRaydiumLiquidity({
+          connection,
+          wallet,
+        }),
+        harvestLiquidity: harvestLiquidity({
+          connection,
+          wallet,
+        }),
+        stakeLiquidity: stakeLiquidity({
+          connection,
+          wallet,
+        }),
+        unstakeLiquidity: unstakeLiquidity({
+          connection,
+          wallet,
+        }),
       }}
     >
       {children}

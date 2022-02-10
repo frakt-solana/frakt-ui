@@ -1,4 +1,6 @@
 import { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
 import CreateLiquidityForm from '../../../components/CreateLiquidityForm';
@@ -19,6 +21,7 @@ export const SwapTab: FC<SwapTabProps> = ({
   vaultLockedPrice,
 }) => {
   const { poolDataByMint, loading: poolsLoading } = useLiquidityPools();
+  const { connected } = useWallet();
 
   return poolsLoading ? (
     <div className={styles.loading}>
@@ -31,10 +34,11 @@ export const SwapTab: FC<SwapTabProps> = ({
       ) : (
         <>
           <p>{"Looks like this vault doesn't have a liquidity pool"}</p>
-          {vaultMarketAddress && (
+          {vaultMarketAddress && connected && (
             <CreateLiquidityForm
               vaultLockedPrice={vaultLockedPrice}
               defaultTokenMint={fractionMint}
+              marketId={new PublicKey(vaultMarketAddress)}
             />
           )}
         </>

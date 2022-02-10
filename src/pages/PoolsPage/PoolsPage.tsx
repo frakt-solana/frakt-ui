@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
@@ -11,7 +12,6 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
@@ -22,9 +22,9 @@ const PoolsPage: FC = () => {
     poolsData,
     raydiumPoolsInfoMap,
     searchItems,
-    currentSolanaPriceUSD,
     activePoolTokenAddress,
     onPoolCardClick,
+    poolsStatsByMarketId,
   } = usePoolsPage();
 
   return (
@@ -47,12 +47,12 @@ const PoolsPage: FC = () => {
                 className={styles.filter}
               />
             )}
-            <ControlledToggle
+            {/* <ControlledToggle
               control={formControl}
               name={InputControlsNames.SHOW_AWARDED_ONLY}
               label="Awarded only"
               className={styles.filter}
-            />
+            /> */}
             <ControlledSelect
               valueContainerClassName={styles.sortingSelectContainer}
               className={styles.sortingSelect}
@@ -63,6 +63,7 @@ const PoolsPage: FC = () => {
             />
           </div>
         </div>
+
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
@@ -76,7 +77,9 @@ const PoolsPage: FC = () => {
               raydiumPoolInfo={raydiumPoolsInfoMap.get(
                 poolData.tokenInfo.address,
               )}
-              currentSolanaPriceUSD={currentSolanaPriceUSD}
+              poolStats={poolsStatsByMarketId.get(
+                poolData.poolConfig.marketId.toBase58(),
+              )}
               isOpen={activePoolTokenAddress === poolData.tokenInfo.address}
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)

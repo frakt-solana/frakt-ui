@@ -11,43 +11,56 @@ import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
+import {
+  formatNumberToCurrency,
+  useLiquidityPools,
+} from '../../contexts/liquidityPools';
+import { PoolStats } from '../../pages/PoolsPage/hooks/useLazyPoolsStats';
 
 interface DepositModalProps {
   visible: boolean;
+  setVisible: (visible: boolean) => void;
   onCancel: () => void;
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
+  poolStats: PoolStats;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
   visible,
+  setVisible,
   onCancel,
   tokenInfo,
   poolConfig,
+  poolStats,
 }) => {
   const {
     formControl,
     isDepositBtnEnabled,
     totalValue,
     handleChange,
+    handleBlur,
     baseValue,
     quoteValue,
+    liquiditySide,
   } = useDeposit(tokenInfo, poolConfig);
 
   const { addRaydiumLiquidity } = useLiquidityPools();
 
-  const onSubmitHandler = () => {
+  const onSubmitHandler = async () => {
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
-    addRaydiumLiquidity({
+    await addRaydiumLiquidity({
       baseToken: tokenInfo,
       baseAmount,
       quoteToken: SOL_TOKEN,
       quoteAmount,
       poolConfig,
+      fixedSide: liquiditySide,
     });
+
+    setVisible(false);
   };
 
   return (
@@ -71,6 +84,7 @@ const DepositModal: FC<DepositModalProps> = ({
             onChange={(value) =>
               handleChange(value, InputControlsNames.QUOTE_VALUE)
             }
+            onBlur={() => handleBlur('a')}
           />
         </div>
         <div className={styles.inputWrapper}>
@@ -84,6 +98,7 @@ const DepositModal: FC<DepositModalProps> = ({
             onChange={(value) =>
               handleChange(value, InputControlsNames.BASE_VALUE)
             }
+            onBlur={() => handleBlur('b')}
           />
         </div>
         <div className={styles.totalLine}>
@@ -91,19 +106,24 @@ const DepositModal: FC<DepositModalProps> = ({
           <div className={styles.line} />
         </div>
         <div className={styles.totalInputWrapper}>
-          <div className={styles.totalValue}>{totalValue}</div>
+          <div className={styles.totalValue}>
+            {formatNumberToCurrency(parseFloat(totalValue))}
+          </div>
         </div>
         <p className={styles.subtitle}>Estimated earnings from fees (7d)</p>
         <div className={styles.depositContent}>
           <div className={styles.depositInfo}>
             <p className={styles.value}>
-              $ 0.00 <span>/ month</span>
+              {formatNumberToCurrency(
+                parseFloat(totalValue) * (poolStats.apy / 100),
+              )}{' '}
+              <span>/ month</span>
             </p>
             <p className={styles.value}>
-              8.38 % <span>/ apr</span>
+              {poolStats.apy}% <span>/ apy</span>
             </p>
           </div>
-          <p className={styles.link}>After staking</p>
+          {/* <p className={styles.link}>After staking</p> */}
         </div>
         <div className={styles.verify}>
           <Controller

@@ -6,7 +6,7 @@ import { VaultState } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
-import { URLS } from '../../constants/urls';
+import { PATHS } from '../../constants';
 import {
   compareVaultsArraysByNFTsAmount,
   compareVaultsArraysBySize,
@@ -145,7 +145,7 @@ const CollectionsPage: FC = () => {
           emptyMessage={'No collections found'}
         >
           {filteredCollection.map(({ collectionName, bannerPath }, idx) => (
-            <NavLink key={idx} to={`${URLS.COLLECTION}/${collectionName}`}>
+            <NavLink key={idx} to={`${PATHS.COLLECTION}/${collectionName}`}>
               <CollectionCard
                 key={idx}
                 collectionName={collectionName}

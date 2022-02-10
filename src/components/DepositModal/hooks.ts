@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
 
 import {
   calculateTotalDeposit,
@@ -17,6 +17,7 @@ export enum InputControlsNames {
   BASE_VALUE = 'baseValue',
   TOTAL_VALUE = 'totalValue',
   IS_VERIFIED = 'isVerified',
+  LIQUIDITY_SIDE = 'liquiditySide',
 }
 
 export type FormFieldValues = {
@@ -24,6 +25,7 @@ export type FormFieldValues = {
   [InputControlsNames.BASE_VALUE]: string;
   [InputControlsNames.TOTAL_VALUE]: string;
   [InputControlsNames.IS_VERIFIED]: boolean;
+  [InputControlsNames.LIQUIDITY_SIDE]: LiquiditySide;
 };
 
 export const useDeposit = (
@@ -33,10 +35,12 @@ export const useDeposit = (
   formControl: Control<FormFieldValues>;
   totalValue: string;
   isDepositBtnEnabled: boolean;
-  handleChange: (value: string, name) => void;
+  handleChange: (value: string, name: InputControlsNames) => void;
+  handleBlur: (value: LiquiditySide) => void;
   quoteValue: string;
   baseValue: string;
   currentSolanaPriceUSD: number;
+  liquiditySide: LiquiditySide | null;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
@@ -49,10 +53,12 @@ export const useDeposit = (
       [InputControlsNames.BASE_VALUE]: '',
       [InputControlsNames.TOTAL_VALUE]: '',
       [InputControlsNames.IS_VERIFIED]: false,
+      [InputControlsNames.LIQUIDITY_SIDE]: null,
     },
   });
 
-  const { isVerified, quoteValue, baseValue, totalValue } = watch();
+  const { isVerified, quoteValue, baseValue, totalValue, liquiditySide } =
+    watch();
 
   useEffect(() => {
     register(InputControlsNames.QUOTE_VALUE);
@@ -67,7 +73,7 @@ export const useDeposit = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteToken]);
 
-  const handleChange = (value: string, name) => {
+  const handleChange = (value: string, name: InputControlsNames) => {
     setValue(name, value);
 
     if (name === InputControlsNames.BASE_VALUE) {
@@ -93,6 +99,10 @@ export const useDeposit = (
     }
   };
 
+  const handleBlur = (value: LiquiditySide) => {
+    setValue(InputControlsNames.LIQUIDITY_SIDE, value);
+  };
+
   useEffect(() => {
     setValue(
       InputControlsNames.TOTAL_VALUE,
@@ -108,8 +118,10 @@ export const useDeposit = (
     totalValue,
     isDepositBtnEnabled,
     handleChange,
+    handleBlur,
     quoteValue,
     baseValue,
     currentSolanaPriceUSD,
+    liquiditySide,
   };
 };

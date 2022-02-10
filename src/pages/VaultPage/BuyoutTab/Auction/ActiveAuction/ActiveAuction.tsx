@@ -29,7 +29,11 @@ export const ActiveAuction: FC<PendingAuctionProps> = ({ vaultInfo }) => {
     .toNumber();
 
   const onStartAuctionClick = () => {
-    startFraktionalizerAuction(vaultInfo, startBid, isAuctionInitialized);
+    startFraktionalizerAuction({
+      vaultInfo,
+      price: startBid,
+      isAuctionInitialized,
+    });
   };
 
   return (

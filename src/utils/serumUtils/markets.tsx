@@ -46,6 +46,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { notify } from '../index';
 import { useFraktion } from '../../contexts/fraktion';
 import { useTokenListContext } from '../../contexts/TokenList';
+import { NotifyType } from '../solanaUtils';
 
 // Used in debugging, should be false in production
 // const _IGNORE_DEPRECATED = false;
@@ -61,7 +62,7 @@ import { useTokenListContext } from '../../contexts/TokenList';
 export function useMarketsList() {
   const { vaultsMarkets } = useFraktion();
 
-  const _MARKETS = vaultsMarkets.map(({ address, programId }) => ({
+  const _MARKETS = (vaultsMarkets || []).map(({ address, programId }) => ({
     name: undefined,
     address: new PublicKey(address),
     programId: new PublicKey(programId),
@@ -101,7 +102,7 @@ export function useAllMarkets() {
           notify({
             message: 'Error loading all market',
             description: e.message,
-            type: 'error',
+            type: NotifyType.ERROR,
           });
           return null;
         }
@@ -282,7 +283,7 @@ export function MarketProvider({ marketAddress, setMarketAddress, children }) {
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       return;
     }
@@ -292,7 +293,7 @@ export function MarketProvider({ marketAddress, setMarketAddress, children }) {
         notify({
           message: 'Error loading market',
           description: e.message,
-          type: 'error',
+          type: NotifyType.ERROR,
         }),
       );
     // eslint-disable-next-line
@@ -943,7 +944,7 @@ export function useUnmigratedDeprecatedMarkets() {
         console.log('Failed loading market');
         notify({
           message: 'Error loading market',
-          type: 'error',
+          type: NotifyType.ERROR,
         });
         return null;
       }
@@ -961,7 +962,7 @@ export function useUnmigratedDeprecatedMarkets() {
         notify({
           message: 'Error loading market',
           description: e.message,
-          type: 'error',
+          type: NotifyType.ERROR,
         });
         return null;
       }
@@ -1031,7 +1032,7 @@ export function useGetOpenOrdersForDeprecatedMarkets(): {
         notify({
           message: `Error loading open orders for deprecated ${marketName}`,
           description: e.message,
-          type: 'error',
+          type: NotifyType.ERROR,
         });
         return null;
       }

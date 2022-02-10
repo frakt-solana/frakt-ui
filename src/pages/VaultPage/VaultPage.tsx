@@ -15,7 +15,7 @@ import { SwapTab } from './SwapTab/SwapTab';
 import { DetailsHeader } from './DetailsHeader/DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
 import NavigationLink from '../../components/Header/NavigationLink';
-import { URLS } from '../../constants';
+import { PATHS } from '../../constants';
 import { NFTList } from './NFTList';
 import { CollectionData, fetchCollectionsData } from '../../utils/collections';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
@@ -146,7 +146,7 @@ const VaultPage: FC = () => {
                 )}
               {vaultData.state === VaultState.Inactive && (
                 <div className={styles.btnItem}>
-                  <NavigationLink to={`${URLS.FRAKTIONALIZE}/${vaultPubkey}`}>
+                  <NavigationLink to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}>
                     Add NFTs and launch vault
                   </NavigationLink>
                 </div>

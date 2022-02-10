@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Controller } from 'react-hook-form';
+import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
-import { InputControlsNames } from '../DepositModal/hooks';
+import { useCreateLiquidityForm, InputControlsNames } from './hooks';
 import { TokenFieldWithBalance } from '../TokenField';
-import { useCreateLiquidityForm } from './hooks';
 import Checkbox from '../CustomCheckbox';
 import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
@@ -14,11 +14,13 @@ import Button from '../Button';
 interface LiquidityFormInterface {
   defaultTokenMint: string;
   vaultLockedPrice: BN;
+  marketId: PublicKey;
 }
 
 const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
   defaultTokenMint,
   vaultLockedPrice,
+  marketId,
 }) => {
   const {
     formControl,
@@ -28,7 +30,8 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
     baseValue,
     quoteValue,
     handleSwap,
-  } = useCreateLiquidityForm(vaultLockedPrice, defaultTokenMint);
+    handleCreateLiquidity,
+  } = useCreateLiquidityForm(vaultLockedPrice, defaultTokenMint, marketId);
 
   return (
     <div className={styles.container}>
@@ -76,6 +79,7 @@ const CreateLiquidityForm: FC<LiquidityFormInterface> = ({
         className={styles.createPoolBtn}
         type="alternative"
         disabled={!isCreateBtnEnabled}
+        onClick={handleCreateLiquidity}
       >
         Create liquidity pool
       </Button>

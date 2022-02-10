@@ -7,10 +7,16 @@ export interface TokenAccount {
   info: TokenAccountInfo;
 }
 
+export enum NotifyType {
+  SUCCESS = 'success',
+  ERROR = 'error',
+  INFO = 'info',
+}
+
 export interface NotifyOject {
   message: string;
   description?: string;
-  type?: 'success' | 'error' | 'info';
+  type?: NotifyType;
 }
 
 export type Notify = (value: NotifyOject) => void;

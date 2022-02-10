@@ -6,6 +6,7 @@ import {
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
 import { notify } from '../../../utils';
+import { NotifyType } from '../../../utils/solanaUtils';
 
 export const useLazyPoolInfo = (): {
   poolInfo: RaydiumPoolInfo | null;
@@ -40,8 +41,8 @@ export const useLazyPoolInfo = (): {
       console.error(err);
 
       notify({
-        type: 'error',
         message: 'Error fetching pool info',
+        type: NotifyType.ERROR,
       });
     } finally {
       setLoading(false);

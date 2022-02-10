@@ -1,17 +1,17 @@
 import { notification } from 'antd';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
-
-import { formatNumber, Notify } from './solanaUtils';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+
+import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
 export const notify: Notify = ({
   message = '',
   description = null,
-  type = 'info',
+  type = NotifyType.INFO,
 }) => {
-  (notification as any)[type]({
+  notification[type]({
     className: 'fraktion__notification',
     message,
     description,
@@ -138,10 +138,52 @@ export const copyToClipboard = (value: string): void => {
   navigator.clipboard.writeText(value);
   notify({
     message: 'Copied to clipboard',
-    type: 'success',
+    type: NotifyType.SUCCESS,
   });
 };
 
 export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
   return `https://cdn.exchange.art/${thumbaiUrl?.replace(/ /g, '%20')}`;
 };
+
+interface NotificationMessage {
+  onSuccessMessage?: string;
+  onErrorMessage?: string;
+  onFinishMessage?: string;
+}
+
+type WrapAsyncWithTryCatch = <FuncParams, FuncReturn>(
+  func: (params: FuncParams) => Promise<FuncReturn>,
+  notificationMessages: NotificationMessage,
+) => (funcParams: FuncParams) => Promise<FuncReturn>;
+
+export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
+  (transactionFunc, { onSuccessMessage, onErrorMessage, onFinishMessage }) =>
+  async (transactionFuncParams) => {
+    try {
+      const result = await transactionFunc(transactionFuncParams);
+
+      onSuccessMessage &&
+        notify({
+          message: onSuccessMessage,
+          type: NotifyType.SUCCESS,
+        });
+
+      return result;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+
+      onErrorMessage &&
+        notify({
+          message: onErrorMessage,
+          type: NotifyType.ERROR,
+        });
+    } finally {
+      onFinishMessage &&
+        notify({
+          message: onFinishMessage,
+          type: NotifyType.INFO,
+        });
+    }
+  };

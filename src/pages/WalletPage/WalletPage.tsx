@@ -10,7 +10,7 @@ import BN from 'bn.js';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { URLS } from '../../constants';
+import { PATHS } from '../../constants';
 import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { shortenAddress } from '../../utils/solanaUtils';
 import styles from './styles.module.scss';
@@ -72,7 +72,7 @@ const WalletPage = (): JSX.Element => {
           ),
       );
     } catch (err) {
-      history.replace(URLS.ROOT);
+      history.replace(PATHS.ROOT);
       // eslint-disable-next-line no-console
       console.error(err);
     }
@@ -223,7 +223,7 @@ const WalletPage = (): JSX.Element => {
                     {userUnfinishedVaults.map((vault) => (
                       <NavLink
                         key={vault.vaultPubkey}
-                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+                        to={`${PATHS.VAULT}/${vault.vaultPubkey}`}
                       >
                         <VaultCard vaultData={vault} />
                       </NavLink>
@@ -237,7 +237,7 @@ const WalletPage = (): JSX.Element => {
                     {userVaults.map((vault) => (
                       <NavLink
                         key={vault.vaultPubkey}
-                        to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+                        to={`${PATHS.VAULT}/${vault.vaultPubkey}`}
                       >
                         <VaultCard vaultData={vault} />
                       </NavLink>
@@ -257,7 +257,7 @@ const TokenCard = ({ token }: { token: TokenInfoWithAmount }): JSX.Element => {
   const vaultPubkey = (token.extensions as any)?.vaultPubkey;
 
   return (
-    <NavLink to={`${URLS.VAULT}/${vaultPubkey}`} className={styles.token}>
+    <NavLink to={`${PATHS.VAULT}/${vaultPubkey}`} className={styles.token}>
       <div className={styles.token__info}>
         <img
           className={styles.token__logo}

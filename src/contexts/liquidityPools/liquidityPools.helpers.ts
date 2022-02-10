@@ -1,3 +1,5 @@
+import { getAllProgramAccounts } from '@frakters/fusion-pool';
+
 import {
   CurrencyAmount,
   Liquidity,
@@ -5,7 +7,6 @@ import {
   Spl,
   SPL_ACCOUNT_LAYOUT,
   Token,
-  TokenAccount,
   TokenAmount,
   WSOL,
 } from '@raydium-io/raydium-sdk';
@@ -20,6 +21,7 @@ import {
   FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
+  ProgramAccountsData,
   RaydiumPoolInfo,
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
@@ -58,7 +60,6 @@ export const getPoolDataByMint = (
       acc.set(baseMint.toBase58(), {
         tokenInfo,
         poolConfig: raydiumPoolConfig,
-        isAwarded: Math.random() < 0.5,
       });
     }
 
@@ -121,7 +122,10 @@ export const getTokenAccount = async ({
   tokenMint: PublicKey;
   owner: PublicKey;
   connection: Connection;
-}): Promise<TokenAccount | null> => {
+}): Promise<{
+  pubkey: PublicKey;
+  accountInfo: any;
+} | null> => {
   const tokenAccountPubkey = await Spl.getAssociatedTokenAccount({
     mint: tokenMint,
     owner,
@@ -156,4 +160,19 @@ export const getCurrencyAmount = (
         ),
         amount,
       );
+};
+
+export const fetchProgramAccounts = async ({
+  vaultProgramId,
+  connection,
+}: {
+  vaultProgramId: PublicKey;
+  connection: Connection;
+}): Promise<ProgramAccountsData> => {
+  const allProgramAccounts = await getAllProgramAccounts(
+    vaultProgramId,
+    connection,
+  );
+
+  return allProgramAccounts;
 };
