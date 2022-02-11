@@ -23,13 +23,13 @@
   &:first-child .bidder::after {
     content: 'winner';
     margin-left: 14px;
-    color: var(--yellow-color)
+    color: var(--yellow-color);
   }
 }
 
 .number {
   font-weight: bold;
-  margin-right:8px;
+  margin-right: 8px;
 }
 
 .bidder {
@@ -88,5 +88,4 @@
     background-color: var(--border-btn-color-1);
     border-color: var(--accent-color-3);
   }
-
 }

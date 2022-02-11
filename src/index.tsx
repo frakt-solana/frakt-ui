@@ -4,6 +4,7 @@ import App from './App';
 import 'antd/dist/antd.dark.css';
 import './scss/styles.scss';
 import * as serviceWorker from './serviceWorker';
+
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

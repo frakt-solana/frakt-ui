@@ -9,7 +9,7 @@ import Badge, {
 import { shortenAddress } from '../../utils/solanaUtils';
 import { decimalBNToString, shortBigNumber } from '../../utils';
 import fraktionConfig from '../../contexts/fraktion/config';
-import { useTokenMap } from '../../contexts/TokenList';
+import { useTokensMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
 import { Bid, VaultData, VaultState } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
@@ -20,7 +20,7 @@ export interface VaultCardProps {
 }
 
 export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
-  const tokenMap = useTokenMap();
+  const tokensMap = useTokensMap();
   const { connection } = useConnection();
   const [vaultTitleData, setVaultTitleData] = useState<{
     name: string;
@@ -37,11 +37,11 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
 
   useEffect(() => {
     setVaultTitleData({
-      name: tokenMap.get(vaultData.fractionMint)?.name || '',
-      symbol: tokenMap.get(vaultData.fractionMint)?.symbol || '',
+      name: tokensMap.get(vaultData.fractionMint)?.name || '',
+      symbol: tokensMap.get(vaultData.fractionMint)?.symbol || '',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenMap]);
+  }, [tokensMap]);
 
   useEffect(() => {
     vaultData.authority && getNameServiceInfo(vaultData.authority, connection);

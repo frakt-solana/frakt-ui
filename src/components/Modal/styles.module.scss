@@ -41,4 +41,9 @@
 
 .okButton {
   background: var(--accent-color-1);
+  border-radius: 0 !important;
+}
+
+.cancelButton {
+  border-radius: 0 !important;
 }

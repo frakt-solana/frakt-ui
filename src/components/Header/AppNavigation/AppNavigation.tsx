@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import styles from '../styles.module.scss';
 import classNames from 'classnames/bind';
-import { URLS } from '../../../constants';
+import { PATHS } from '../../../constants';
 import NavigationLink from '../NavigationLink';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -21,18 +21,18 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
       )}
     >
       <li>
-        <NavigationLink to={URLS.MARKET}>Market</NavigationLink>
+        <NavigationLink to={PATHS.MARKET}>Market</NavigationLink>
       </li>
       <li>
-        <NavigationLink to={URLS.VAULTS}>Vaults</NavigationLink>
+        <NavigationLink to={PATHS.VAULTS}>Vaults</NavigationLink>
       </li>
       <li>
-        <NavigationLink to={URLS.SWAP}>Swap</NavigationLink>
+        <NavigationLink to={PATHS.SWAP}>Swap</NavigationLink>
       </li>
       <li>
         <a
           className={styles.link}
-          href={URLS.DEX}
+          href={process.env.REACT_APP_DEX_URL}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -40,12 +40,15 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
         </a>
       </li>
       <li>
-        <NavigationLink to={URLS.COLLECTIONS}>Collections</NavigationLink>
+        <NavigationLink to={PATHS.COLLECTIONS}>Collections</NavigationLink>
+      </li>
+      <li>
+        <NavigationLink to={PATHS.YIELD}>Yield</NavigationLink>
       </li>
       {connected && (
         <li>
           <NavigationLink
-            to={`${URLS.WALLET}/${publicKey.toString()}`}
+            to={`${PATHS.WALLET}/${publicKey.toString()}`}
             isActive={(_, location) =>
               location?.pathname?.includes(publicKey.toString()) || false
             }

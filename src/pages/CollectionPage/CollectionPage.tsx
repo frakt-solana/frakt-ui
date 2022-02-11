@@ -75,35 +75,46 @@ const CollectionPage: FC = () => {
 
     if (filteredVaults) {
       return filteredVaults
-        .filter(({ state, authority, hasMarket, safetyBoxes }) => {
-          const nftsName =
-            safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
-          if (state === VaultState.Inactive) return false;
+        .filter(
+          (
+            { state, authority, hasMarket, safetyBoxes, vaultPubkey },
+            index,
+            self,
+          ) => {
+            const nftsName =
+              safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
+            if (state === VaultState.Inactive) return false;
 
-          if (connected && showMyVaults && authority !== publicKey.toString())
-            return false;
+            if (connected && showMyVaults && authority !== publicKey.toString())
+              return false;
 
-          const removeActiveVaults =
-            !showActiveVaults && state === VaultState.Active;
-          const removeLiveVaults =
-            !showAuctionLiveVaults && state === VaultState.AuctionLive;
-          const removeFinishedVaults =
-            !showAuctionFinishedVaults && state === VaultState.AuctionFinished;
-          const removeArchivedVaults =
-            !showArchivedVaults && state === VaultState.Archived;
+            const removeActiveVaults =
+              !showActiveVaults && state === VaultState.Active;
+            const removeLiveVaults =
+              !showAuctionLiveVaults && state === VaultState.AuctionLive;
+            const removeFinishedVaults =
+              !showAuctionFinishedVaults &&
+              state === VaultState.AuctionFinished;
+            const removeArchivedVaults =
+              !showArchivedVaults && state === VaultState.Archived;
 
-          if (removeActiveVaults) return false;
+            if (removeActiveVaults) return false;
 
-          if (removeLiveVaults) return false;
+            if (removeLiveVaults) return false;
 
-          if (removeFinishedVaults) return false;
+            if (removeFinishedVaults) return false;
 
-          if (removeArchivedVaults) return false;
+            if (removeArchivedVaults) return false;
 
-          if (showTradableVaults && !hasMarket) return false;
+            if (showTradableVaults && !hasMarket) return false;
 
-          return nftsName.some((name) => name.includes(searchString));
-        })
+            if (
+              index ===
+              self.findIndex((vault) => vault.vaultPubkey === vaultPubkey)
+            )
+              return nftsName.some((name) => name.includes(searchString));
+          },
+        )
         .sort((a, b) => {
           if (sortField === 'collectionName') {
             if (sortOrder === 'desc') {

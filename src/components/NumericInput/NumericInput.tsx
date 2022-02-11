@@ -13,6 +13,7 @@ export interface NumericInputProps extends Omit<InputProps, 'onChange'> {
   className?: string;
   maxLength?: number;
   error?: boolean;
+  readonly?: boolean;
 }
 
 function isNumeric(value: any): boolean {
@@ -30,6 +31,7 @@ const NumericInput = React.forwardRef(
       className,
       error,
       maxLength,
+      readonly,
       ...props
     }: NumericInputProps,
     ref,
@@ -54,6 +56,7 @@ const NumericInput = React.forwardRef(
         className={classNames([styles.numberInput, className])}
         ref={ref}
         error={error}
+        readOnly={readonly}
         {...props}
       />
     );

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { URLS } from '../../constants';
+import { PATHS } from '../../constants';
 import { VaultData } from '../../contexts/fraktion';
 
 import FakeInfinityScroll, {
@@ -32,7 +32,7 @@ export const VaultsList: FC<VaultsListProps> = ({
         <NavLink
           key={vault.vaultPubkey}
           className={styles.item}
-          to={`${URLS.VAULT}/${vault.vaultPubkey}`}
+          to={`${PATHS.VAULT}/${vault.vaultPubkey}`}
         >
           <VaultCard vaultData={vault} />
         </NavLink>
