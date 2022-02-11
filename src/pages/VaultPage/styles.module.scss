@@ -323,6 +323,7 @@
 
 .nftsTitle {
   font: var(--font-h4);
+  display: flex;
 
   @media screen and (max-width: 767px) {
     font-size: 32px;
@@ -336,4 +337,10 @@
     margin-right: 15px;
     color: var(--accent-color-1);
   }
+}
+
+.addNftsLink {
+  display: flex;
+  align-items: center;
+  margin-left: 14px;
 }

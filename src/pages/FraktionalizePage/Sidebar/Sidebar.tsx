@@ -5,15 +5,15 @@ import { UserNFT } from '../../../contexts/userTokens';
 import styles from './styles.module.scss';
 import { Header } from './Header';
 import { DetailsForm } from './DetailsForm/DetailsForm';
-import { useFraktion } from '../../../contexts/fraktion';
-import { useHistory } from 'react-router';
-import { PATHS } from '../../../constants';
-import { FraktionalizeTxnData } from '../hooks';
+import { useFraktion, VaultState } from '../../../contexts/fraktion';
+import { AddNftsToActiveVault, FraktionalizeTxnData } from '../hooks';
+import { DetailsFormDisabled } from './DetailsForm/DetailsFormDisabled';
 
 interface SidebarProps {
   onDeselect?: (nft: UserNFT) => void;
   currentVaultPubkey: string;
   onContinueClick: (params: FraktionalizeTxnData) => Promise<void>;
+  addNftsToActiveVault: AddNftsToActiveVault;
   nfts: UserNFT[];
 }
 
@@ -22,18 +22,19 @@ const Sidebar = ({
   currentVaultPubkey,
   nfts,
   onContinueClick,
+  addNftsToActiveVault,
 }: SidebarProps): JSX.Element => {
   const [isMobileSidebar, setIsMobileSidebar] = useState(false);
   const isBasket = nfts.length > 1;
 
   const { vaults } = useFraktion();
-  const history = useHistory();
 
   const currentVault = useMemo(
     () => vaults.find((el) => el.vaultPubkey === currentVaultPubkey),
     [currentVaultPubkey, vaults],
   );
   const lockedNfts = currentVault?.safetyBoxes || [];
+  const isVaultActive = currentVault?.state === VaultState.Active;
 
   const changeSidebarVisibility = () => {
     setIsMobileSidebar(!isMobileSidebar);
@@ -76,47 +77,54 @@ const Sidebar = ({
         <div className={styles.toggle_wrapper}>
           <div className={styles.separator} />
         </div>
-        {!isSidebarClosed && (
-          <DetailsForm
-            onSubmit={({ ticker, pricePerFraktion, supply, vaultName }) => {
-              const transformedLockedNfts: UserNFT[] = lockedNfts.map(
-                ({
-                  nftImage,
-                  nftAttributes,
-                  nftMint,
-                  nftDescription,
-                  nftName,
-                }) => {
-                  return {
-                    mint: nftMint,
-                    metadata: {
-                      name: nftName,
-                      symbol: '',
-                      description: nftDescription,
-                      image: nftImage,
-                      animation_url: '',
-                      external_url: '',
-                      attributes: nftAttributes,
-                      properties: null,
-                    },
-                  } as UserNFT;
-                },
-              );
+        {!isSidebarClosed &&
+          (isVaultActive ? (
+            <DetailsFormDisabled
+              vaultData={currentVault}
+              continueBtnDisabled={!nfts.length}
+              onSubmit={() =>
+                addNftsToActiveVault({ vaultData: currentVault, nfts })
+              }
+            />
+          ) : (
+            <DetailsForm
+              onSubmit={({ ticker, pricePerFraktion, supply, vaultName }) => {
+                const transformedLockedNfts: UserNFT[] = lockedNfts.map(
+                  ({
+                    nftImage,
+                    nftAttributes,
+                    nftMint,
+                    nftDescription,
+                    nftName,
+                  }) => {
+                    return {
+                      mint: nftMint,
+                      metadata: {
+                        name: nftName,
+                        symbol: '',
+                        description: nftDescription,
+                        image: nftImage,
+                        animation_url: '',
+                        external_url: '',
+                        attributes: nftAttributes,
+                        properties: null,
+                      },
+                    } as UserNFT;
+                  },
+                );
 
-              onContinueClick({
-                newNfts: nfts,
-                lockedNfts: transformedLockedNfts,
-                tickerName: ticker,
-                pricePerFraction: pricePerFraktion,
-                fractionsAmount: Number(supply),
-                vaultName,
-                vault: currentVault,
-              }).then(() => {
-                history.push(PATHS.FRAKTIONALIZE);
-              });
-            }}
-          />
-        )}
+                onContinueClick({
+                  newNfts: nfts,
+                  lockedNfts: transformedLockedNfts,
+                  tickerName: ticker,
+                  pricePerFraction: pricePerFraktion,
+                  fractionsAmount: Number(supply),
+                  vaultName,
+                  vault: currentVault,
+                });
+              }}
+            />
+          ))}
       </div>
     </div>
   );
