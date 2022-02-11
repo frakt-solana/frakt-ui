@@ -2,7 +2,11 @@ import { RawUserTokensByMint } from '../userTokens';
 import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
 
-import { CreateVaultParams, CreateMarketParams } from './transactions';
+import {
+  CreateVaultParams,
+  CreateMarketParams,
+  AddNFTsToVault,
+} from './transactions';
 
 export enum VaultState {
   Inactive = 0,
@@ -183,6 +187,7 @@ export interface FraktionContextType {
   vaultsMarkets: Market[];
   createVault: (params: CreateVaultParams) => Promise<string | null>;
   createMarket: (params: CreateMarketParams) => Promise<void>;
+  addNFTsToVault: (params: AddNFTsToVault) => Promise<void>;
   refetch: fetchDataFunction;
   patchVault: patchVaultFunction;
   isPolling: boolean;

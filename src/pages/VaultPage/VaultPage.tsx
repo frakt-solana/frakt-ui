@@ -1,6 +1,8 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
+import { NavLink } from 'react-router-dom';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -20,6 +22,7 @@ import { NFTList } from './NFTList';
 import { CollectionData, fetchCollectionsData } from '../../utils/collections';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
 import { RedeemNftsFromUnfinishedVault } from './RedeemNftsFromUnfinishedVault';
+import Button from '../../components/Button';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -28,6 +31,7 @@ const VaultPage: FC = () => {
   const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
     CollectionData[]
   >([]);
+  const wallet = useWallet();
 
   const tokensMap = useTokensMap();
   const vaultData: VaultData = useMemo(() => {
@@ -192,6 +196,15 @@ const VaultPage: FC = () => {
           <h4 className={styles.nftsTitle}>
             <span>{vaultData?.safetyBoxes.length}</span>
             NFTs inside the vault
+            {wallet.publicKey?.toBase58() === vaultData?.authority &&
+              vaultData?.realState === VaultState.Active && (
+                <NavLink
+                  to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}
+                  className={styles.addNftsLink}
+                >
+                  <Button>Add NFTs</Button>
+                </NavLink>
+              )}
           </h4>
           <NFTList
             safetyBoxes={vaultData?.safetyBoxes}
