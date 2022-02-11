@@ -16,9 +16,9 @@ const SwapPage = (): JSX.Element => {
     <AppLayout contentClassName={styles.exchange}>
       <div className={styles.container}>
         <h1 className={styles.title}>Swap</h1>
-        <div className={styles.description}>
-          Swap fraktions with your crypto assets{' '}
-        </div>
+        <h2 className={styles.subtitle}>
+          Swap fraktions with your crypto assets
+        </h2>
         {loading ? (
           <div className={styles.loader}>
             <Loader size={'large'} />

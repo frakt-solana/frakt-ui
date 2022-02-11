@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from '../styles.module.scss';
 import classNames from 'classnames/bind';
 import { PATHS } from '../../../constants';
@@ -41,7 +40,7 @@ export const DesktopMenu = (): JSX.Element => {
           <NavigationLink to={PATHS.COLLECTIONS}>Collections</NavigationLink>
         </li>
         <li>
-          <NavigationLink to={PATHS.LIQUIDITY}>Liquidity</NavigationLink>
+          <NavigationLink to={PATHS.YIELD}>Yield</NavigationLink>
         </li>
         {connected && (
           <li>

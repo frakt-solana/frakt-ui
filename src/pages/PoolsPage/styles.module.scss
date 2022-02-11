@@ -10,8 +10,13 @@
 }
 
 .title {
-  font: var(--font-h4);
+  font: var(--font-title-1);
   margin-bottom: 8px;
+}
+
+.subtitle {
+  font: var(--font-text-2);
+  margin-bottom: 18px;
 }
 
 .search {

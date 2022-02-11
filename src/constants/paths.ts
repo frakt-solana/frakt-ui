@@ -11,5 +11,5 @@ export const PATHS = {
   VAULT_PUBKEY: '/:vaultPubkey',
   WALLET_PUBKEY: '/:walletPubkey',
   COLLECTION_NAME: '/:collectionName',
-  LIQUIDITY: '/liquidity',
+  YIELD: '/yield',
 };

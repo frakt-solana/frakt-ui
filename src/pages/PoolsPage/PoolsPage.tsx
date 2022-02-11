@@ -30,7 +30,10 @@ const PoolsPage: FC = () => {
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <h1 className={styles.title}>Liquidity</h1>
+        <h1 className={styles.title}>Yield</h1>
+        <h2 className={styles.subtitle}>
+          Provide NFTs and liquidity to protocol and reap the rewards
+        </h2>
         <div className={styles.sortWrapper}>
           <SearchInput
             size="large"
