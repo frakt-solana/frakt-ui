@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import styles from './styles.module.scss';
 import { VaultData } from '../../../../contexts/fraktion';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
@@ -13,15 +13,23 @@ import VaultCard from '../../../../components/VaultCard';
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
 const SLIDER_BREAKPOINTS = {
-  240: {
-    slidesPerView: 3.9,
-    spaceBetween: 24,
-  },
+  240: { slidesPerView: 1.5, spaceBetween: 20 },
+  370: { slidesPerView: 2 },
+  600: { slidesPerView: 2.3 },
+  701: { slidesPerView: 1.6, spaceBetween: 25 },
+  800: { slidesPerView: 1.9 },
+  900: { slidesPerView: 2.2 },
+  1000: { slidesPerView: 2.5 },
+  1100: { slidesPerView: 3 },
+  1200: { slidesPerView: 3.3 },
+  1300: { slidesPerView: 3.6 },
+  1400: { slidesPerView: 3.9 },
 };
 
 interface VaultsSliderProps {
   className?: string;
   isAuction?: boolean;
+  isLoading?: boolean;
   title?: string;
   vaults: VaultData[];
 }
@@ -29,14 +37,22 @@ interface VaultsSliderProps {
 export const VaultsSlider: FC<VaultsSliderProps> = ({
   className,
   isAuction,
+  isLoading,
   title,
   vaults,
 }) => {
   const prevBtn = useRef<HTMLDivElement>(null);
   const nextBtn = useRef<HTMLDivElement>(null);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
+
+  if (isLoading) return null;
 
   return (
-    <div className={classNames(styles.sliderWrapper, className)}>
+    <div
+      className={classNames(styles.sliderWrapper, className, {
+        [styles.notFirstSlide]: currentSlideIndex > 0,
+      })}
+    >
       <h3 className={styles.sliderTitle}>
         {title}
         <div
@@ -51,6 +67,8 @@ export const VaultsSlider: FC<VaultsSliderProps> = ({
       <Swiper
         className={styles.slider}
         breakpoints={SLIDER_BREAKPOINTS}
+        onRealIndexChange={(swiper) => setCurrentSlideIndex(swiper.realIndex)}
+        spaceBetween={24}
         navigation={{
           prevEl: prevBtn.current,
           nextEl: nextBtn.current,

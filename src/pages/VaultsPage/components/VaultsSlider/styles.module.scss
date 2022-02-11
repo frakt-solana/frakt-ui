@@ -6,6 +6,12 @@
   position: relative;
   margin-right: -15px;
 
+  @media screen and (max-width: 700px) {
+    padding-left: 25px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+  }
+
   &::after {
     position: absolute;
     content: '';
@@ -18,13 +24,67 @@
     z-index: 1;
   }
 
+  &::before {
+    position: absolute;
+    content: '';
+    display: block;
+    width: 52px;
+    left: 40px;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(270deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+    z-index: 2;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity .3s ease-in;
+
+    @media screen and (max-width: 700px) {
+      left: 25px;
+    }
+  }
+
+
+  &.notFirstSlide {
+    &::before {
+      opacity: 1;
+    }
+  }
+
   .sliderNavPrev {
     right: -56px;
     left: unset;
+    top: -9px;
+
+    @media screen and (max-width: 900px) {
+      top: -12px;
+    }
+
+    @media screen and (max-width: 700px) {
+      right: -30px;
+      top: 0;
+    }
+
+    @media screen and (max-width: 500px) {
+      top: -5px;
+    }
   }
 
   .sliderNavNext {
     right: -122px;
+    top: -9px;
+
+    @media screen and (max-width: 900px) {
+      top: -12px;
+    }
+
+    @media screen and (max-width: 700px) {
+      right: -70px;
+      top: 0;
+    }
+
+    @media screen and (max-width: 500px) {
+      top: -5px;
+    }
   }
 }
 
@@ -36,6 +96,18 @@
   font: var(--font-text-1);
   left: 9%;
   top: -20px;
+
+  @media screen and (max-width: 900px) {
+    top: -17px;
+  }
+
+  @media screen and (max-width: 700px) {
+    top: -15px;
+  }
+
+  @media screen and (max-width: 500px) {
+    top: -10px;
+  }
 }
 
 .slider {
@@ -43,6 +115,7 @@
     .swiper-wrapper {
       align-items: stretch;
     }
+
     .swiper-slide {
       height: auto;
     }

@@ -1,4 +1,5 @@
 .sidebar {
+  padding-top: 30px;
   max-width: 214px;
   width: 100%;
   background-color: var(--black-color);
@@ -11,10 +12,19 @@
   top: 0;
   align-self: flex-start;
   overflow: auto;
-  flex-shrink: 0;
 
   &::-webkit-scrollbar {
     width: 0;
+  }
+
+  :global {
+    .ant-input-affix-wrapper {
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      padding-left: 1px;
+      border-bottom: 1px solid var(--color-gray-03);
+    }
   }
 
   @media screen and (max-width: 700px) {
@@ -23,7 +33,7 @@
     position: fixed;
     left: 0;
     top: 0;
-    transform: translateX(calc(-100% + 45px));
+    transform: translateX(-102%);
     height: 100vh;
     overflow: auto;
     padding-top: 110px;
@@ -57,11 +67,36 @@
   }
 }
 
+.searchInput {
+  font: var(--font-text-3);
+  max-width: 192px;
+  outline: none;
+  margin-right: 20px;
+
+  @media screen and (max-width: 370px) {
+    margin-bottom: 20px;
+  }
+
+  &::placeholder {
+    color: var(--color-gray-03);
+  }
+}
+
+.searchIcon {
+  margin-right: 5px;
+
+  svg {
+    width: 14px;
+    color: var(--color-gray-03);
+  }
+}
+
 .sidebarItem {
   padding-right: 20px;
   padding-top: 20px;
   padding-bottom: 20px;
   border-bottom: var(--border-gray-1);
+  margin-top: 30px;
 
   @media screen and (max-width: 700px) {
     padding-right: 15px;
@@ -81,35 +116,15 @@
   font: var(--font-text-5);
   margin-bottom: 5px;
   text-transform: uppercase;
-
-  span {
-    text-transform: lowercase;
-  }
-}
-
-.sidebarSubtitle {
-  font: var(--font-text-5);
-  color: var(--color-gray-4);
-  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
 }
 
 .sidebarList {
-  margin-top: 10px;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  padding: 10px;
-  background-color: var(--color-gray-7);
+  margin-top: 20px;
 }
 
-.sidebarListBorder {
-  margin-top: 10px;
-  border-radius: 10px;
-  border: var(--border-gray-1);
-  overflow: hidden;
-}
-
-.sidebarListItem,
-.sidebarActivityListItem {
+.sidebarListItem {
   border-bottom: var(--border-gray-1);
   padding-top: 8px;
   padding-bottom: 8px;
@@ -118,94 +133,41 @@
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
+
+  :global {
+    .ant-checkbox {
+      + span {
+        padding-left: 5px;
+      }
+
+      .ant-checkbox-inner {
+        width: 18px;
+        height: 18px;
+        border: var(--border-gray-1);
+        border-radius: 0;
+      }
+    }
+
+    .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+    .ant-checkbox-checked .ant-checkbox-inner,
+    .ant-checkbox:hover .ant-checkbox-inner,
+    .ant-checkbox-input:focus + .ant-checkbox-inner {
+      border-color: var(--accent-color-1);
+      background-color: var(--accent-shadow-color);
+    }
+  }
 }
 
 .sidebarListItem:first-of-type {
   padding-top: 0;
 }
 
-.sidebarActivityListItem {
-  padding: 9px;
-  justify-content: space-between;
-
-  &:last-of-type {
-    border-bottom: none;
-  }
-}
-
-.sidebarItemNum {
-  margin-right: 5px;
-}
-
-.sidebarItemImg {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  margin-right: 5px;
-  background-color: var(--color-gray-4);
-}
-
-.sidebarItemData {
+.sidebarItemAmount {
   margin-left: auto;
 }
 
 .sidebarItemName {
   margin-right: 10px;
-  font: var(--font-text-5);
-  font-weight: 400;
-}
-
-.typeLabel {
-  font-family: var(--font-family-inter);
-  font-size: 10px;
-  font-weight: bold;
-  width: 38px;
-  height: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: var(--border-gray-1);
-  color: var(--color-gray-4);
-  flex-shrink: 0;
-}
-
-.sell {
-  background: linear-gradient(90deg, rgba(255, 102, 102, 0.36) 0%, rgba(255, 102, 102, 0) 93.75%);
-
-  .typeLabel {
-    border-color: var(--red-error-color);
-    color: var(--red-error-color);
-  }
-}
-
-.buy {
-  background: linear-gradient(90deg, rgba(131, 214, 164, 0.36) 0%, rgba(131, 214, 164, 0) 93.75%);
-
-  .typeLabel {
-    border-color: var(--green-color);
-    color: var(--green-color);
-  }
-}
-
-.swap {
-  background: linear-gradient(90deg, rgba(62, 158, 248, 0.36) 0%, rgba(62, 158, 248, 0) 93.75%);
-
-  .typeLabel {
-    border-color: var(--border-btn-color-1);
-    color: var(--border-btn-color-1);
-  }
-}
-
-.swapItems {
-  display: flex;
-  flex-direction: column;
-
-  svg {
-    margin: 7px auto;
-  }
 }
 
 .seeMoreLink {
@@ -242,4 +204,103 @@
       left: 0;
     }
   }
+}
+
+.chosenItemWrapper {
+  margin-top: 30px;
+
+  .sidebarList {
+    margin-top: 0;
+  }
+
+  .sidebarListItem {
+    text-transform: none;
+  }
+
+  :global {
+    .ant-collapse {
+      border: none;
+      border-radius: 0;
+
+      > .ant-collapse-item .ant-collapse-header-collapsible-only .ant-collapse-header-text {
+        display: block;
+      }
+    }
+
+    .ant-collapse > .ant-collapse-item:last-child,
+    .ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
+      padding: 8px 10px;
+      border-radius: 0;
+      border: none;
+    }
+
+    .ant-collapse > .ant-collapse-item:last-child {
+      padding: 0;
+    }
+
+    .ant-collapse-item:last-child > .ant-collapse-content {
+      border: none;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 10px;
+    }
+
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+      position: absolute;
+      right: 0;
+      top: 13px;
+
+      svg {
+        transform: rotate(-90deg);
+      }
+    }
+
+    .ant-collapse-content {
+      background-color: var(--color-gray-7);
+    }
+  }
+}
+
+.chosenItem {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: var(--color-gray-7);
+  display: flex;
+  align-items: center;
+}
+
+.chosenImage {
+  background-color: var(--color-gray-4);
+  height: 46px;
+  width: 46px;
+  background-size: cover;
+  background-position: center;
+}
+
+.chosenInfo {
+  margin-left: 10px;
+}
+
+.chosenName {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.chosenItemsAmount {
+  font-size: 14px;
+}
+
+.collapse {
+  border: none;
+}
+
+.collapseHeader {
+  height: 38px;
+  font: var(--font-text-5);
+  text-transform: uppercase;
+  border: none;
+  background-color: var(--color-gray-7);
 }

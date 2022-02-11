@@ -1,39 +1,36 @@
 import styles from './styles.module.scss';
 import classNames from 'classnames';
-import { ArrowRightTop, SwapIcon } from '../../../../icons';
-import { NavLink } from 'react-router-dom';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
+import { Checkbox, Collapse, Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
-const TRENDING_DATA = [
-  { name: 'mask1', percent: '45%' },
-  { name: 'monkey', percent: '43%' },
-  { name: 'punks', percent: '42%' },
-  { name: 'yobidoyobiyobidoyobi', percent: '40%' },
-  { name: 'mask', percent: '38%' },
+const { Panel } = Collapse;
+
+const tempItemBg =
+  'https://www.arweave.net/TUCIGroXreLVvKxdBhSBG_pq8jEyl_IWXyEIwR8Ue5Y';
+
+const COLLECTIONS_IN_POOL_DATA = [
+  { name: 'monkeys', items: 123 },
+  { name: 'cryptopunk', items: 123 },
+  { name: 'monkeys', items: 123 },
+  { name: 'monkeys', items: 123 },
+  { name: 'monkeys', items: 123 },
 ];
 
-const BEST_APRS_DATA = [
-  { name: 'mask1', percent: '1 324.00%', image: '#' },
-  { name: 'mask2', percent: '1 324.00%', image: '#' },
-  { name: 'mask3', percent: '1 324.00%', image: '#' },
-  { name: 'mask4', percent: '1 324.00%', image: '#' },
-  { name: 'safdfsdasdf', percent: '1 324.00%', image: '#' },
-];
-
-const ACTIVITY_DATA = [
-  { name: 'meeb #565', type: 'sell' },
-  { name: 'meeb #56577576', type: 'buy' },
-  { name: 'meeb #565775762', type: 'buy' },
-  { name: 'meeb #565775763', type: 'buy' },
-  { name: 'BIG PUNK WITH Something', name2: 'meeb #56577557', type: 'swap' },
+const FILTERS_DATA = [
+  { name: 'Famale', items: 123 },
+  { name: 'Male', items: 123 },
 ];
 
 const shortName = (name: string, maxLength: number) =>
   name.length > maxLength ? `${name.slice(0, maxLength - 2)} ...` : name;
 
-export const Sidebar: FC = () => {
-  const [isSidebar, setIsSidebar] = useState<boolean>(false);
+interface SidebarProps {
+  setIsSidebar: (sidebarState: boolean) => void;
+  isSidebar: boolean;
+}
 
+export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
   const showSidebar = () => setIsSidebar(true);
   const hideSidebar = () => setIsSidebar(false);
 
@@ -55,86 +52,65 @@ export const Sidebar: FC = () => {
           [styles.sidebarVisible]: isSidebar,
         })}
       >
-        <div className={styles.sidebarItem}>
-          <h6 className={styles.sidebarTitle}>trending</h6>
-          <span className={styles.sidebarSubtitle}>(7d turnover)</span>
-          <ul className={styles.sidebarList}>
-            {TRENDING_DATA.map((item, index) => (
-              <li
-                className={styles.sidebarListItem}
-                key={item.name + item.percent}
-              >
-                <span className={styles.sidebarItemNum}>{index + 1}</span>
-                <span className={styles.sidebarItemName}>
-                  {shortName(item.name, 11)}
-                </span>
-                <span className={styles.sidebarItemData}>{item.percent}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={styles.sidebarItem}>
-          <h6 className={styles.sidebarTitle}>activity</h6>
-          <ul className={styles.sidebarListBorder}>
-            {ACTIVITY_DATA.map((item) => (
-              <li
-                className={classNames(
-                  styles.sidebarActivityListItem,
-                  styles[item.type],
-                )}
-                key={item.name + item.type}
-              >
-                {item.type === 'swap' ? (
-                  <>
-                    <div className={styles.swapItems}>
-                      <span className={styles.sidebarItemName}>
-                        {shortName(item.name, 15)}
-                      </span>
-                      <SwapIcon />
-                      <span className={styles.sidebarItemName}>
-                        {shortName(item.name2, 15)}
-                      </span>
-                    </div>
-                    <span className={styles.typeLabel}>{item.type}</span>
-                  </>
-                ) : (
-                  <>
-                    <span className={styles.sidebarItemName}>
-                      {shortName(item.name, 15)}
-                    </span>
-                    <span className={styles.typeLabel}>{item.type}</span>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-          <NavLink to={`/`} className={styles.seeMoreLink}>
-            See More <ArrowRightTop />
-          </NavLink>
-        </div>
-
+        <Input
+          className={styles.searchInput}
+          placeholder="Search for ID"
+          prefix={<SearchOutlined className={styles.searchIcon} />}
+        />
         <div className={styles.sidebarItem}>
           <h6 className={styles.sidebarTitle}>
-            best apr<span>s</span>
+            <span>collections in pool</span>
+            <span>385</span>
           </h6>
           <ul className={styles.sidebarList}>
-            {BEST_APRS_DATA.map((item) => (
-              <li className={styles.sidebarListItem} key={item.name}>
-                <div
-                  className={styles.sidebarItemImg}
-                  style={{ backgroundImage: `url(${item.image})` }}
-                />
-                <span className={styles.sidebarItemName}>
-                  {shortName(item.name, 8)}
+            {COLLECTIONS_IN_POOL_DATA.map((item, index) => (
+              <li className={styles.sidebarListItem} key={item.name + index}>
+                <Checkbox className={styles.sidebarItemName}>
+                  {shortName(item.name, 9)}
+                </Checkbox>
+                <span className={styles.sidebarItemAmount}>
+                  {item.items} items
                 </span>
-                <span className={styles.sidebarItemData}>{item.percent}</span>
               </li>
             ))}
           </ul>
-          <NavLink to={`/`} className={styles.seeMoreLink}>
-            See More <ArrowRightTop />
-          </NavLink>
+          <div className={styles.chosenItemWrapper}>
+            <div className={styles.chosenItem}>
+              <div
+                className={styles.chosenImage}
+                style={{ backgroundImage: `url(${tempItemBg})` }}
+              />
+              <div className={styles.chosenInfo}>
+                <p className={styles.chosenName}>Cryptopunks</p>
+                <p className={styles.chosenItemsAmount}>{385} items</p>
+              </div>
+            </div>
+            <div className={styles.chosenFilter}>
+              <Collapse collapsible="header" className={styles.collapse}>
+                <Panel
+                  header="character"
+                  key="1"
+                  className={styles.collapseHeader}
+                >
+                  <ul className={styles.sidebarList}>
+                    {FILTERS_DATA.map((item, index) => (
+                      <li
+                        className={styles.sidebarListItem}
+                        key={item.name + index}
+                      >
+                        <Checkbox className={styles.sidebarItemName}>
+                          {shortName(item.name, 9)}
+                        </Checkbox>
+                        <span className={styles.sidebarItemAmount}>
+                          {item.items}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              </Collapse>
+            </div>
+          </div>
         </div>
       </div>
     </>

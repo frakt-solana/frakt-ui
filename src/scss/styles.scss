@@ -82,21 +82,13 @@ h5 {
     line-height: 1;
   }
 
-  @media screen and (max-width: 1023px) {
-    position: fixed;
-  }
-
-  @media screen and (max-width: 550px) {
+  @media screen and (max-width: 700px) {
     width: 30px;
     height: 30px;
 
     &::after {
       font-size: 12px;
     }
-  }
-
-  @media screen and (max-width: 370px) {
-    display: none;
   }
 }
 

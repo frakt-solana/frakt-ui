@@ -13,6 +13,7 @@ import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { VaultsList } from '../../components/VaultsList';
 import { Sidebar } from './components/Sidebar';
 import { VaultsSlider } from './components/VaultsSlider';
+import { FiltersIcon } from '../../icons';
 
 const SORT_VALUES = [
   {
@@ -60,6 +61,7 @@ const VaultsPage = (): JSX.Element => {
   const showArchivedVaults = watch('showArchivedVaults');
   const showTradableVaults = watch('showTradableVaults');
   const sort = watch('sort');
+  const [isSidebar, setIsSidebar] = useState<boolean>(false);
 
   const { loading, vaults: rawVaults } = useFraktion();
   const [searchString, setSearchString] = useState<string>('');
@@ -166,7 +168,7 @@ const VaultsPage = (): JSX.Element => {
           </div>
         </div>
         <div className={styles.wrapper}>
-          <Sidebar />
+          <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
           <div className={styles.contentWrapper}>
             <h2 className={styles.title}>
               Create, buy and sell fraktions of NFTs
@@ -177,6 +179,13 @@ const VaultsPage = (): JSX.Element => {
                 className={styles.search}
                 placeholder="Search by curator, collection or asset"
               />
+              <p
+                className={styles.filtersIconWrapper}
+                onClick={() => setIsSidebar(true)}
+              >
+                Filters
+                <FiltersIcon />
+              </p>
               <p className={styles.vaultsAmount}>{325} Vaults</p>
               <div className={styles.sortWrapper}>
                 <ControlledSelect
@@ -193,6 +202,7 @@ const VaultsPage = (): JSX.Element => {
               className={styles.sliderFeatured}
               vaults={vaults}
               title={'Featured vaults'}
+              isLoading={loading}
             />
             <VaultsList vaults={vaults} isLoading={loading} />
           </div>
