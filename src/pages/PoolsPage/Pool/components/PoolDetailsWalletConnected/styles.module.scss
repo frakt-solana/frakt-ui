@@ -1,0 +1,16 @@
+.depositBtn {
+  justify-content: center;
+  padding: 12px 56.5px;
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 190px;
+
+  @media screen and (max-width: 1140px) {
+    max-width: 100%;
+  }
+
+  @media screen and (min-width: 1400px) {
+    width: 100%;
+    max-width: 371px;
+  }
+}

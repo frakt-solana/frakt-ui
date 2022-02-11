@@ -1,10 +1,11 @@
 import { VaultData } from '../../contexts/fraktion';
-import { COLLECTION_URL } from './collections.constant';
 import {
   CollectionData,
   VaultsByCollectionName,
   PromiseFulfilledResult,
 } from './collections.model';
+
+const EXCHANGE_COLLECTION_INFO_API = process.env.REACT_APP_COLLECTION_URL;
 
 export const mapVaultsByCollectionName = (
   vaults: VaultData[],
@@ -29,7 +30,9 @@ export const fetchCollectionData = async (
 ): Promise<CollectionData | null> => {
   try {
     const responseData = await (
-      await fetch(`${COLLECTION_URL}/metadata?collectionName=${collectionName}`)
+      await fetch(
+        `${EXCHANGE_COLLECTION_INFO_API}/metadata?collectionName=${collectionName}`,
+      )
     ).json();
 
     return responseData?.states?.live || null;
@@ -70,19 +73,36 @@ export const compareVaultsArraysBySize = (
 ): number =>
   desc ? vaultsB.length - vaultsA.length : vaultsA.length - vaultsB.length;
 
+export const compareVaultsArraysByName = (
+  nameA: string,
+  nameB: string,
+  desc = true,
+): number => (desc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA));
+
 export const compareVaultsArraysByNFTsAmount = (
-  vaultsA: VaultData[] = [],
-  vaultsB: VaultData[] = [],
+  collectionNameA: string,
+  collectionNameB: string,
+  vaultsNotArchivedByCollectionName: { [key: string]: VaultData[] },
   desc = true,
 ): number => {
-  const amountA = vaultsA.reduce(
-    (acc, { safetyBoxes }) => acc + safetyBoxes.length,
-    0,
-  );
-  const amountB = vaultsB.reduce(
-    (acc, { safetyBoxes }) => acc + safetyBoxes.length,
-    0,
-  );
+  const amountA =
+    vaultsNotArchivedByCollectionName[collectionNameA] ||
+    [].reduce((acc, vault) => {
+      vault?.safetyBoxes.forEach((nft) => {
+        if (nft.nftCollectionName === collectionNameA) acc.push(nft);
+      });
+      return acc;
+    }, []);
+  const amountB =
+    vaultsNotArchivedByCollectionName[collectionNameB] ||
+    [].reduce((acc, vault) => {
+      vault?.safetyBoxes.forEach((nft) => {
+        if (nft.nftCollectionName === collectionNameB) acc.push(nft);
+      });
+      return acc;
+    }, []);
 
-  return desc ? amountB - amountA : amountA - amountB;
+  return desc
+    ? amountB.length - amountA.length
+    : amountA.length - amountB.length;
 };

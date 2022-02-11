@@ -1,6 +1,8 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import classNames from 'classnames/bind';
+import { NavLink } from 'react-router-dom';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -9,17 +11,18 @@ import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable/InfoTable';
 import styles from './styles.module.scss';
 import { BuyoutTab } from './BuyoutTab';
-import { useTokenMap } from '../../contexts/TokenList';
+import { useTokensMap } from '../../contexts/TokenList';
 import { TradeTab } from './TradeTab/TradeTab';
 import { SwapTab } from './SwapTab/SwapTab';
 import { DetailsHeader } from './DetailsHeader/DetailsHeader';
 import { BackToVaultsListButton } from './BackToVaultsListButton';
 import NavigationLink from '../../components/Header/NavigationLink';
-import { URLS } from '../../constants';
+import { PATHS } from '../../constants';
 import { NFTList } from './NFTList';
 import { CollectionData, fetchCollectionsData } from '../../utils/collections';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
 import { RedeemNftsFromUnfinishedVault } from './RedeemNftsFromUnfinishedVault';
+import Button from '../../components/Button';
 
 const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
@@ -28,8 +31,9 @@ const VaultPage: FC = () => {
   const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
     CollectionData[]
   >([]);
+  const wallet = useWallet();
 
-  const tokenMap = useTokenMap();
+  const tokensMap = useTokensMap();
   const vaultData: VaultData = useMemo(() => {
     return vaults.find(
       ({ vaultPubkey: publicKey }) => publicKey === vaultPubkey,
@@ -65,11 +69,11 @@ const VaultPage: FC = () => {
     !loading &&
       vaultData &&
       setVaultTitleData({
-        name: tokenMap.get(vaultData.fractionMint)?.name || '',
-        symbol: tokenMap.get(vaultData.fractionMint)?.symbol || '',
+        name: tokensMap.get(vaultData.fractionMint)?.name || '',
+        symbol: tokensMap.get(vaultData.fractionMint)?.symbol || '',
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenMap, vaultData]);
+  }, [tokensMap, vaultData]);
 
   useEffect(() => {
     (async () => {
@@ -146,12 +150,12 @@ const VaultPage: FC = () => {
                 )}
               {vaultData.state === VaultState.Inactive && (
                 <div className={styles.btnItem}>
-                  <NavigationLink to={`${URLS.FRAKTIONALIZE}/${vaultPubkey}`}>
+                  <NavigationLink to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}>
                     Add NFTs and launch vault
                   </NavigationLink>
                 </div>
               )}
-              {vaultData.state === VaultState.Active && (
+              {vaultData && (
                 <InfoTable
                   vaultInfo={vaultData}
                   marketId={vaultMarket?.address}
@@ -172,7 +176,11 @@ const VaultPage: FC = () => {
                       />
                     )}
                     {tab === 'swap' && (
-                      <SwapTab fractionMint={vaultData.fractionMint} />
+                      <SwapTab
+                        vaultMarketAddress={vaultMarket?.address}
+                        fractionMint={vaultData.fractionMint}
+                        vaultLockedPrice={vaultData.lockedPricePerShare}
+                      />
                     )}
                     {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}
                   </div>
@@ -188,6 +196,15 @@ const VaultPage: FC = () => {
           <h4 className={styles.nftsTitle}>
             <span>{vaultData?.safetyBoxes.length}</span>
             NFTs inside the vault
+            {wallet.publicKey?.toBase58() === vaultData?.authority &&
+              vaultData?.realState === VaultState.Active && (
+                <NavLink
+                  to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}
+                  className={styles.addNftsLink}
+                >
+                  <Button>Add NFTs</Button>
+                </NavLink>
+              )}
           </h4>
           <NFTList
             safetyBoxes={vaultData?.safetyBoxes}

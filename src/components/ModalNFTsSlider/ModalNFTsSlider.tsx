@@ -4,7 +4,7 @@ import styles from './stalys.module.scss';
 import { CloseModalIcon } from '../../icons/CloseModalIcon';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { NavLink } from 'react-router-dom';
-import { URLS } from '../../constants';
+import { PATHS } from '../../constants';
 import { copyToClipboard, getCollectionThumbnailUrl } from '../../utils';
 import { shortenAddress } from '../../utils/solanaUtils';
 import Tooltip from '../Tooltip';
@@ -89,7 +89,7 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
               <div className={styles.slideInfoBlock}>
                 {slide.collectionInfo?.collectionName && (
                   <NavLink
-                    to={`${URLS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
+                    to={`${PATHS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
                     className={styles.collectionLink}
                   >
                     <div

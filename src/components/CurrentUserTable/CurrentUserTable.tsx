@@ -4,10 +4,10 @@ import styles from './styles.module.scss';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { frktBNToString } from '../../utils';
-import { useNativeAccount } from '../../hooks/useNativeAccount';
 import { formatNumber, shortenAddress } from '../../utils/solanaUtils';
 import { FRKTIcon, SolanaIcon } from '../../icons';
 import { useFrktBalance } from '../../contexts/userTokens';
+import { useNativeAccount } from '../../utils/accounts';
 
 interface CurrentUserTableProps {
   className?: string;

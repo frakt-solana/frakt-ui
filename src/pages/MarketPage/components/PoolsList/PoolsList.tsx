@@ -2,7 +2,7 @@ import styles from './styles.module.scss';
 import { SolanaIcon } from '../../../../icons';
 import React, { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { URLS } from '../../../../constants';
+import { PATHS } from '../../../../constants';
 
 const tempImage =
   'https://w55pcai3doppkjvizydkia7l3kkdl3rdexzt5rlduyukdfehs4yq.arweave.net/t3rxARsbnvUmqM4GpAPr2pQ17iMl8z7FY6YooZSHlzE';
@@ -78,7 +78,7 @@ export const PoolsList: FC = () => {
   return (
     <ul className={styles.poolsList}>
       {POOLS_DATA.map((item, index) => (
-        <NavLink key={index} to={URLS.MARKET_BUY} className={styles.poolItem}>
+        <NavLink key={index} to={PATHS.MARKET_BUY} className={styles.poolItem}>
           <li className={styles.poolCard}>
             <div className={styles.poolImgWrapper}>
               <img

@@ -14,14 +14,12 @@
 }
 
 .title {
-  font-size: 48px;
-  font-weight: bold;
+  font: var(--font-title-2);
   margin-bottom: 8px;
 }
 
-.description {
-  font-size: 24px;
-  // margin-bottom: 24px;
+.subtitle {
+  font: var(--font-text-2);
   margin-bottom: 36px;
 }
 

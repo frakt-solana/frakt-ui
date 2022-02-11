@@ -1,0 +1,68 @@
+import BN from 'bn.js';
+import { finishBacket as finishVaultTransaction } from 'fraktionalizer-client-library';
+
+import { UnfinishedVaultData } from '../fraktion.model';
+import {
+  createTransactionFuncFromRaw,
+  signAndConfirmTransaction,
+  WalletAndConnection,
+} from '../../../utils/transactions';
+import { wrapAsyncWithTryCatch } from '../../../utils';
+import { adjustPricePerFraction } from '../utils';
+import fraktionConfig from '../config';
+
+const { ADMIN_PUBKEY, PROGRAM_PUBKEY } = fraktionConfig;
+
+export interface FinishVaultParams {
+  unfinishedVaultData: UnfinishedVaultData;
+  pricePerFraction: number;
+  fractionsAmount: number;
+}
+
+export interface FinishVaultRawParams
+  extends FinishVaultParams,
+    WalletAndConnection {}
+
+export const rawFinishVault = async ({
+  unfinishedVaultData,
+  pricePerFraction,
+  fractionsAmount,
+  wallet,
+  connection,
+}: FinishVaultRawParams): Promise<void> => {
+  const { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury } =
+    unfinishedVaultData;
+
+  const fractionsAmountBn = new BN(fractionsAmount * 1e3);
+
+  const pricePerFractionBn = adjustPricePerFraction(
+    new BN(pricePerFraction * 1e6),
+    fractionsAmountBn,
+  );
+
+  await finishVaultTransaction({
+    connection,
+    pricePerShare: pricePerFractionBn,
+    numberOfShares: fractionsAmountBn,
+    adminPubkey: ADMIN_PUBKEY,
+    userPubkey: wallet.publicKey.toBase58(),
+    vault: vaultPubkey,
+    fractionalMint: fractionalMint,
+    fractionTreasury: fractionTreasury,
+    redeemTreasury: redeemTreasury,
+    vaultProgramId: PROGRAM_PUBKEY,
+    sendTxn: async (transaction) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        wallet,
+      });
+    },
+  });
+};
+
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawFinishVault, {});
+
+export const finishVault = createTransactionFuncFromRaw(
+  wrappedAsyncWithTryCatch,
+);

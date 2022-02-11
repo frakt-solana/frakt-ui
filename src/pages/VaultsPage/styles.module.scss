@@ -3,6 +3,16 @@
   padding-bottom: 64px;
 }
 
+.title {
+  font: var(--font-title-2);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font: var(--font-text-2);
+  margin-bottom: 36px;
+}
+
 .search {
   margin-bottom: 18px;
 }

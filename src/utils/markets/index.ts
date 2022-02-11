@@ -1,12 +1,14 @@
 import { notify } from '../index';
-
-const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/market';
-const MARKETS_URL = 'https://fraktion-markets-pools-endpoin.herokuapp.com/';
+import { NotifyType } from '../solanaUtils';
 
 const DEPRECATED_MARKETS = [
   'EQ5XjC1neq4FbqLUaeHLx48CTougsPYdsGgti4KqEFUT',
   'dvQF6YNQvQ2dQkMyt3rW7ibypCkHJDgVAJvZz6A6gZx',
+  'HngbFS7vMUeEm3JHYHJLwEuitdeKXv8oe27skwwsiYK',
 ];
+
+const APP_MARKETS_URL = process.env.REACT_APP_MARKETS_URL;
+const REGISTRAR_MARKET_URL = process.env.REACT_APP_REGISTRAR_MARKET_URL;
 
 export const getMarkets = async (): Promise<
   Array<{
@@ -16,7 +18,7 @@ export const getMarkets = async (): Promise<
   }>
 > => {
   try {
-    const res = await fetch(MARKETS_URL);
+    const res = await fetch(APP_MARKETS_URL);
     const { fraktionMarkets } = await res.json();
     return fraktionMarkets
       .map((market) => {
@@ -39,7 +41,7 @@ export const registerMarket = async (
   baseMint: string,
 ): Promise<boolean> => {
   try {
-    const res = await fetch(REGISTRAR_URL, {
+    const res = await fetch(REGISTRAR_MARKET_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -57,12 +59,12 @@ export const registerMarket = async (
       notify({
         message: 'Market regitered successfully',
         description: 'Market registration can take up to an hour',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } else {
       notify({
         message: 'Market registration failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       return false;
     }
@@ -73,7 +75,7 @@ export const registerMarket = async (
     console.error(error);
     notify({
       message: 'Market registration failed',
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return false;
   }

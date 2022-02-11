@@ -20,17 +20,8 @@
 }
 
 .title {
-  font-size: 48px;
-  font-weight: bold;
+  font: var(--font-title-2);
   margin-bottom: 2px;
-
-  @media screen and (max-width: 1023px) {
-    font-size: 40px;
-  }
-
-  @media screen and (max-width: 767px) {
-    font-size: 32px;
-  }
 }
 
 .description {
@@ -84,36 +75,36 @@
 }
 
 .tab {
-   padding: 18px 24px;
-   width: 120px;
-   font: var(--font-btn-small);
-   color: var(--white-color);
-   background: transparent;
-   border: 1px solid var(--gray-color-3);
-   cursor: pointer;
-   transition: background var(--transition-1), color var(--transition-1);
+  padding: 18px 24px;
+  width: 120px;
+  font: var(--font-btn-small);
+  color: var(--white-color);
+  background: transparent;
+  border: 1px solid var(--gray-color-3);
+  cursor: pointer;
+  transition: background var(--transition-1), color var(--transition-1);
 
-   @media screen and (max-width: 1023px) {
-     font-size: 15px;
-     height: 38px;
-     padding-top: 10px;
-   }
+  @media screen and (max-width: 1023px) {
+    font-size: 15px;
+    height: 38px;
+    padding-top: 10px;
+  }
 
   @media screen and (max-width: 767px) {
     width: 50%;
   }
 
-   &:hover {
-     background: var(--gray-color-7);
-   }
+  &:hover {
+    background: var(--gray-color-7);
+  }
 
-   &Active,
-   &Active:hover {
-     background: var(--white-color);
-     color: var(--black-color);
-     pointer-events: none;
-   }
- }
+  &Active,
+  &Active:hover {
+    background: var(--white-color);
+    color: var(--black-color);
+    pointer-events: none;
+  }
+}
 
 .tokensContainer {
   display: flex;

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './styles.module.scss';
-import { URLS } from '../../constants';
+import { PATHS } from '../../constants';
 import classNames from 'classnames';
 import { BuyIcon, InfoIcon, SellIcon, SwapMarketIcon } from '../../icons';
 
@@ -16,7 +16,7 @@ export const MarketNavigation: FC<HeaderBuyProps> = ({ className }) => {
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={URLS.MARKET_BUY}
+          to={PATHS.MARKET_BUY}
         >
           <BuyIcon className={styles.navIcon} />
           Buy
@@ -26,7 +26,7 @@ export const MarketNavigation: FC<HeaderBuyProps> = ({ className }) => {
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={URLS.MARKET_SELL}
+          to={PATHS.MARKET_SELL}
         >
           <SellIcon className={styles.navIcon} />
           Sell
@@ -36,7 +36,7 @@ export const MarketNavigation: FC<HeaderBuyProps> = ({ className }) => {
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={URLS.MARKET_SWAP}
+          to={PATHS.MARKET_SWAP}
         >
           <SwapMarketIcon className={styles.navIcon} />
           Swap
@@ -46,7 +46,7 @@ export const MarketNavigation: FC<HeaderBuyProps> = ({ className }) => {
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={URLS.MARKET_INFO}
+          to={PATHS.MARKET_INFO}
         >
           <InfoIcon className={styles.navIcon} />
           Info

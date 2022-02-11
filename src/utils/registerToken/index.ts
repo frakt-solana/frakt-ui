@@ -1,6 +1,7 @@
 import { notify } from '../index';
+import { NotifyType } from '../solanaUtils';
 
-const REGISTRAR_URL = 'https://fraktion-tokens-register.herokuapp.com/list';
+const REGISTRAR_TOKEN_URL = process.env.REACT_APP_REGISTRAR_TOKEN_URL;
 
 export const registerToken = async (
   tickerName: string,
@@ -10,7 +11,7 @@ export const registerToken = async (
   vaultPubkey: string,
 ): Promise<boolean> => {
   try {
-    const res = await fetch(REGISTRAR_URL, {
+    const res = await fetch(REGISTRAR_TOKEN_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,12 +32,12 @@ export const registerToken = async (
       notify({
         message: 'Token registered successfully',
         description: 'Token registration can take up to an hour',
-        type: 'success',
+        type: NotifyType.SUCCESS,
       });
     } else {
       notify({
         message: 'Token registration failed',
-        type: 'error',
+        type: NotifyType.ERROR,
       });
       return false;
     }
@@ -47,7 +48,7 @@ export const registerToken = async (
     console.error(error);
     notify({
       message: 'Token registration failed',
-      type: 'error',
+      type: NotifyType.ERROR,
     });
     return false;
   }
