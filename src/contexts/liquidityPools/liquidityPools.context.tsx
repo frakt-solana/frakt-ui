@@ -24,7 +24,10 @@ import {
   ProgramAccountsData,
 } from './liquidityPools.model';
 import { PublicKey } from '@solana/web3.js';
-import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
+import {
+  FUSION_PROGRAM_PUBKEY,
+  harvestSecondaryLiquidity,
+} from './transactions/fusionPools';
 
 const IS_DEVNET = process.env.REACT_APP_NETWORK === 'devnet';
 
@@ -39,6 +42,7 @@ export const LiquidityPoolsContext =
     addRaydiumLiquidity: () => Promise.resolve(null),
     removeRaydiumLiquidity: () => Promise.resolve(null),
     harvestLiquidity: () => Promise.resolve(null),
+    harvestSecondaryLiquidity: () => Promise.resolve(null),
     stakeLiquidity: () => Promise.resolve(null),
     unstakeLiquidity: () => Promise.resolve(null),
   });
@@ -110,6 +114,10 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
           wallet,
         }),
         harvestLiquidity: harvestLiquidity({
+          connection,
+          wallet,
+        }),
+        harvestSecondaryLiquidity: harvestSecondaryLiquidity({
           connection,
           wallet,
         }),

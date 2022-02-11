@@ -35,6 +35,7 @@ export interface LiquidityPoolsContextValues {
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
   harvestLiquidity: (params: any) => Promise<void>;
+  harvestSecondaryLiquidity: (params: any) => Promise<void>;
   stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,
@@ -95,4 +96,6 @@ export interface ProgramAccountsData {
 export interface ProgramAccountData {
   mainRouter: MainRouterView;
   stakeAccount: StakeAccountView;
+  secondaryReward: SecondaryRewardView;
+  secondaryStakeAccount: SecondStakeAccountView;
 }

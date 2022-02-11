@@ -1,3 +1,9 @@
+import {
+  MainRouterView,
+  SecondaryRewardView,
+  SecondStakeAccountView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
 import { RaydiumPoolInfo } from './liquidityPools.model';
 
 export const calculateTVL = (
@@ -146,4 +152,34 @@ export const calcTotalForCreateLiquidity = (
     Number(tokenPrice) * Number(baseTokenAmount) * currentSolanaPriceUSD;
 
   return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
+};
+
+export const calcLiquidityRewards = (
+  mainRouter: MainRouterView,
+  stakeAccount: StakeAccountView,
+) => {
+  const rewards =
+    ((mainRouter.cumulative.toNumber() +
+      mainRouter.apr.toNumber() *
+        (Math.floor(Date.now() / 1000) - mainRouter.lastTime.toNumber()) -
+      stakeAccount.stakedAtCumulative.toNumber()) *
+      stakeAccount.amount.toNumber()) /
+    1e10 /
+    100;
+
+  return rewards.toFixed(4);
+};
+
+export const caclLiquiditySecondRewars = (
+  stakeAccount: StakeAccountView,
+  secondaryReward: SecondaryRewardView,
+  secondaryStakeAccount: SecondStakeAccountView,
+) => {
+  if (secondaryReward && secondaryStakeAccount) {
+    return (
+      secondaryReward.tokensPerSecondPerPoint.toNumber() *
+      (Date.now() / 1000 - secondaryStakeAccount.lastHarvestedAt.toNumber())
+    );
+  }
+  return 0;
 };

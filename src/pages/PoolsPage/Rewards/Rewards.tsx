@@ -6,6 +6,8 @@ import Button from '../../../components/Button';
 import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
 import {
+  caclLiquiditySecondRewars,
+  calcLiquidityRewards,
   ProgramAccountData,
   RaydiumPoolInfo,
   useLiquidityPools,
@@ -19,14 +21,18 @@ interface RewardsInterface {
 }
 
 const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
-  const { harvestLiquidity } = useLiquidityPools();
+  const { harvestLiquidity, harvestSecondaryLiquidity } = useLiquidityPools();
+  const { mainRouter, stakeAccount, secondaryReward, secondaryStakeAccount } =
+    programAccount;
 
-  const onSubmitHandler = () => {
-    if (programAccount) {
-      const { mainRouter, stakeAccount } = programAccount;
+  const onSubmitHandler = async () => {
+    await harvestLiquidity({ router: mainRouter, stakeAccount });
 
-      harvestLiquidity({ router: mainRouter, stakeAccount });
-    }
+    await harvestSecondaryLiquidity({
+      router: mainRouter,
+      stakeAccount,
+      secondaryReward,
+    });
   };
 
   return (
@@ -35,10 +41,16 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
       <div className={styles.content}>
         <div className={styles.info}>
           <p>
-            0.0 <span>{SOL_TOKEN.symbol}</span>
+            {calcLiquidityRewards(mainRouter, stakeAccount)}{' '}
+            <span>{SOL_TOKEN.symbol}</span>
           </p>
           <p>
-            0.0 <span>{baseToken.symbol}</span>
+            {caclLiquiditySecondRewars(
+              stakeAccount,
+              secondaryReward,
+              secondaryStakeAccount,
+            )}{' '}
+            <span>{baseToken.symbol}</span>
           </p>
         </div>
         <Button

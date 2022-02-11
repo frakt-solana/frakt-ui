@@ -73,20 +73,34 @@ export const usePoolsPage = (): {
   } = useLiquidityPools();
 
   const programAccount = useMemo(() => {
-    const routerPubkeys = 'BvwqrxKGoPPtjniFrYTv3wAtYJomsE7Vm3szT7RyvcjP';
+    const routerPubkeys = 'DEMDLLuVXvABA2V1RneXUWWnNUwk5nH7L6vLUjWEEvuZ';
 
     if (programAccounts) {
-      const { mainRouters, stakeAccounts } = programAccounts;
+      const {
+        mainRouters,
+        stakeAccounts,
+        secondaryRewards,
+        secondaryStakeAccounts,
+      } = programAccounts;
 
       const routerAccount = mainRouters.find(
         ({ mainRouterPubkey }) => mainRouterPubkey === routerPubkeys,
+      );
+
+      const secondaryReward = secondaryRewards.find(
+        ({ routerPubkey }) => routerPubkey === routerPubkeys,
       );
 
       const confirmStakeAccount = stakeAccounts.find(
         ({ isStaked }) => isStaked === true,
       );
 
-      return { mainRouter: routerAccount, stakeAccount: confirmStakeAccount };
+      return {
+        mainRouter: routerAccount,
+        stakeAccount: confirmStakeAccount,
+        secondaryReward,
+        secondaryStakeAccount: secondaryStakeAccounts[0],
+      };
     }
   }, [programAccounts]);
 
