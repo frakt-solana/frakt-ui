@@ -2,12 +2,12 @@ import { FC, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-import { VaultState } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
 import { PATHS } from '../../constants';
 import {
+  compareVaultsArraysByName,
   compareVaultsArraysByNFTsAmount,
   compareVaultsArraysBySize,
 } from '../../utils/collections';
@@ -69,6 +69,22 @@ const SORT_VALUES = [
     ),
     value: 'nfts_asc',
   },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'name_desc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'name_asc',
+  },
 ];
 
 const CollectionsPage: FC = () => {
@@ -82,7 +98,6 @@ const CollectionsPage: FC = () => {
   const [searchString, setSearchString] = useState<string>('');
   const {
     collectionsData,
-    vaultsByCollectionName,
     vaultsNotArchivedByCollectionName,
     isCollectionsLoading,
   } = useCollections();
@@ -119,8 +134,16 @@ const CollectionsPage: FC = () => {
           }
           if (sortField === 'nfts') {
             return compareVaultsArraysByNFTsAmount(
-              vaultsNotArchivedByCollectionName[collectionNameA],
-              vaultsNotArchivedByCollectionName[collectionNameB],
+              collectionNameA,
+              collectionNameB,
+              vaultsNotArchivedByCollectionName,
+              sortOrder === 'desc',
+            );
+          }
+          if (sortField === 'name') {
+            return compareVaultsArraysByName(
+              collectionNameA,
+              collectionNameB,
               sortOrder === 'desc',
             );
           }
@@ -144,20 +167,21 @@ const CollectionsPage: FC = () => {
           wrapperClassName={styles.cards}
           emptyMessage={'No collections found'}
         >
-          {filteredCollection.map(({ collectionName, bannerPath }, idx) => (
-            <NavLink key={idx} to={`${PATHS.COLLECTION}/${collectionName}`}>
-              <CollectionCard
-                key={idx}
-                collectionName={collectionName}
-                thumbnailPath={bannerPath}
-                vaultCount={
-                  vaultsByCollectionName[collectionName]?.filter(
-                    (vault) => vault.state !== VaultState.Archived,
-                  ).length
-                }
-              />
-            </NavLink>
-          ))}
+          {filteredCollection.map(
+            ({ collectionName, bannerPath }, idx) =>
+              vaultsNotArchivedByCollectionName[collectionName] && (
+                <NavLink key={idx} to={`${PATHS.COLLECTION}/${collectionName}`}>
+                  <CollectionCard
+                    key={idx}
+                    collectionName={collectionName}
+                    thumbnailPath={bannerPath}
+                    vaultsByCollectionName={
+                      vaultsNotArchivedByCollectionName[collectionName]
+                    }
+                  />
+                </NavLink>
+              ),
+          )}
         </FakeInfinityScroll>
       </Container>
     </AppLayout>
