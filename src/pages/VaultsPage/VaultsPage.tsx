@@ -174,11 +174,13 @@ const VaultsPage = (): JSX.Element => {
               Create, buy and sell fraktions of NFTs
             </h2>
             <div className={styles.searchSortWrapper}>
-              <SearchInput
-                onChange={(e) => searchItems(e.target.value || '')}
-                className={styles.search}
-                placeholder="Search by curator, collection or asset"
-              />
+              <p className={styles.searchWrapper}>
+                <SearchInput
+                  onChange={(e) => searchItems(e.target.value || '')}
+                  className={styles.search}
+                  placeholder="Search by curator, collection or asset"
+                />
+              </p>
               <p
                 className={styles.filtersIconWrapper}
                 onClick={() => setIsSidebar(true)}
@@ -198,12 +200,14 @@ const VaultsPage = (): JSX.Element => {
                 />
               </div>
             </div>
-            <VaultsSlider
-              className={styles.sliderFeatured}
-              vaults={vaults}
-              title={'Featured vaults'}
-              isLoading={loading}
-            />
+            {vaults.length && (
+              <VaultsSlider
+                className={styles.sliderFeatured}
+                vaults={vaults}
+                title={'Featured vaults'}
+                isLoading={loading}
+              />
+            )}
             <VaultsList vaults={vaults} isLoading={loading} />
           </div>
         </div>

@@ -27,6 +27,7 @@
   color: var(--accent-color-1);
   font-size: 15px;
   display: none;
+  margin-right: auto;
 
   @media screen and (max-width: 700px) {
     display: block;
@@ -40,12 +41,21 @@
 .title {
   font: var(--font-title-2);
   margin-bottom: 32px;
+
+  @media screen and (max-width: 450px) {
+    margin-bottom: 15px;
+  }
 }
 
 .searchSortWrapper {
   display: flex;
   align-items: center;
   margin-bottom: 50px;
+  flex-wrap: wrap;
+
+  @media screen and (max-width: 450px) {
+    margin-bottom: 35px;
+  }
 
   .search {
     min-width: 328px;
@@ -55,6 +65,24 @@
     > input {
       font: var(--font-text-3);
     }
+
+    @media screen and (max-width: 900px) {
+      margin-bottom: 30px;
+    }
+
+    @media screen and (max-width: 450px) {
+      width: 100%;
+
+      > input {
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+.searchWrapper {
+  @media screen and (max-width: 900px) {
+    width: 100%;
   }
 }
 
@@ -64,6 +92,38 @@
   white-space: nowrap;
   font: var(--font-text-3);
   color: var(--color-gray-4);
+  display: flex;
+  align-items: center;
+
+  @media screen and (max-width: 900px) {
+    flex-grow: 1;
+    margin-left: 0;
+  }
+
+  @media screen and (max-width: 700px) {
+    flex-grow: 0;
+  }
+
+  @media screen and (max-width: 450px) {
+    font-size: 15px;
+  }
+
+  &::before {
+    content: '';
+    display: none;
+    height: 1px;
+    background-color: var(--color-gray-4);
+    margin-right: 20px;
+    flex-grow: 1;
+
+    @media screen and (max-width: 900px) {
+      display: block;
+    }
+
+    @media screen and (max-width: 700px) {
+      display: none;
+    }
+  }
 }
 
 .filters {
@@ -121,4 +181,10 @@
 
 .sliderFeatured {
   margin-bottom: 50px;
+}
+
+.sortingSelect {
+  @media screen and (max-width: 450px) {
+    font-size: 15px;
+  }
 }
