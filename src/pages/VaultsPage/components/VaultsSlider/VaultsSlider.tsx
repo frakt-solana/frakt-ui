@@ -9,6 +9,8 @@ import 'swiper/modules/thumbs/thumbs';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import classNames from 'classnames';
 import VaultCard from '../../../../components/VaultCard';
+import { NavLink } from 'react-router-dom';
+import { PATHS } from '../../../../constants';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -76,7 +78,9 @@ export const VaultsSlider: FC<VaultsSliderProps> = ({
       >
         {vaults.map((vault) => (
           <SwiperSlide key={vault.vaultPubkey}>
-            <VaultCard vaultData={vault} />
+            <NavLink to={`${PATHS.VAULT}/${vault.vaultPubkey}`}>
+              <VaultCard vaultData={vault} />
+            </NavLink>
           </SwiperSlide>
         ))}
       </Swiper>
