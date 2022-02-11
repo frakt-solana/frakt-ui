@@ -160,7 +160,7 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             </div>
           </div>
           <div className={styles.item}>
-            <div className={styles.title}>Fraktion price ({currency})</div>
+            <div className={styles.title}>Fraktion price&nbsp;({currency})</div>
             <div className={styles.value}>
               {lockedPricePerShareNum
                 ? shortBigNumber(vaultData.lockedPricePerShare, 6, 6)

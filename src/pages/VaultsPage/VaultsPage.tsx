@@ -12,6 +12,7 @@ import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { VaultsList } from '../../components/VaultsList';
 import { Sidebar } from './components/Sidebar';
+import { VaultsSlider } from './components/VaultsSlider';
 
 const SORT_VALUES = [
   {
@@ -188,6 +189,11 @@ const VaultsPage = (): JSX.Element => {
                 />
               </div>
             </div>
+            <VaultsSlider
+              className={styles.sliderFeatured}
+              vaults={vaults}
+              title={'Featured vaults'}
+            />
             <VaultsList vaults={vaults} isLoading={loading} />
           </div>
         </div>

@@ -15,6 +15,8 @@
 .contentWrapper {
   padding-top: 64px;
   padding-left: 20px;
+  flex-grow: 1;
+  max-width: 1166px;
 }
 
 .title {
@@ -26,15 +28,15 @@
   display: flex;
   align-items: center;
   margin-bottom: 50px;
-}
 
-.search {
-  min-width: 328px;
-  width: auto;
-  padding: 0;
+  .search {
+    min-width: 328px;
+    width: auto;
+    padding: 0;
 
-  > input {
-    font: var(--font-text-3);
+    > input {
+      font: var(--font-text-3);
+    }
   }
 }
 
@@ -97,4 +99,8 @@
       order: 1;
     }
   }
+}
+
+.sliderFeatured {
+  margin-bottom: 50px;
 }
