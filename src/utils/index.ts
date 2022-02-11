@@ -1,15 +1,17 @@
 import { notification } from 'antd';
 import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
+import { WSOL } from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
 
-import { formatNumber, Notify } from './solanaUtils';
+import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
 export const notify: Notify = ({
   message = '',
   description = null,
-  type = 'info',
+  type = NotifyType.INFO,
 }) => {
-  (notification as any)[type]({
+  notification[type]({
     className: 'fraktion__notification',
     message,
     description,
@@ -18,6 +20,35 @@ export const notify: Notify = ({
 };
 
 export const DECIMALS_PER_FRKT = 1e8;
+
+export const SOL_TOKEN: TokenInfo = {
+  chainId: 101,
+  address: WSOL.mint,
+  name: 'SOL',
+  decimals: 9,
+  symbol: 'SOL',
+  logoURI:
+    'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
+  extensions: {
+    coingeckoId: 'solana',
+  },
+};
+
+export const FRKT_TOKEN: TokenInfo = {
+  chainId: 101,
+  address: 'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
+  name: 'FRAKT Token',
+  decimals: 8,
+  symbol: 'FRKT',
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
+  extensions: {
+    coingeckoId: 'frakt-token',
+    twitter: 'https://twitter.com/FraktArt',
+    website: 'https://frakt.art',
+  },
+  tags: ['utility-token'],
+};
 
 export const decimalBNToString = (
   bn: BN,
@@ -86,17 +117,6 @@ export const getTokenBalanceValue = (amountBN: BN, decimals: number): string =>
     (amountBN?.toNumber() || 0) / Math.pow(10, decimals),
   )}`;
 
-export interface Token {
-  mint: string;
-  symbol: string;
-  img: string;
-  data: any;
-}
-
-export const getTokenImageUrl = (mint: string): string => {
-  return `https://sdk.raydium.io/icons/${mint}.png`;
-};
-
 export interface ArweaveAttribute {
   trait_type: string;
   value: number | string;
@@ -118,10 +138,52 @@ export const copyToClipboard = (value: string): void => {
   navigator.clipboard.writeText(value);
   notify({
     message: 'Copied to clipboard',
-    type: 'success',
+    type: NotifyType.SUCCESS,
   });
 };
 
 export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
   return `https://cdn.exchange.art/${thumbaiUrl?.replace(/ /g, '%20')}`;
 };
+
+interface NotificationMessage {
+  onSuccessMessage?: string;
+  onErrorMessage?: string;
+  onFinishMessage?: string;
+}
+
+type WrapAsyncWithTryCatch = <FuncParams, FuncReturn>(
+  func: (params: FuncParams) => Promise<FuncReturn>,
+  notificationMessages: NotificationMessage,
+) => (funcParams: FuncParams) => Promise<FuncReturn>;
+
+export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
+  (transactionFunc, { onSuccessMessage, onErrorMessage, onFinishMessage }) =>
+  async (transactionFuncParams) => {
+    try {
+      const result = await transactionFunc(transactionFuncParams);
+
+      onSuccessMessage &&
+        notify({
+          message: onSuccessMessage,
+          type: NotifyType.SUCCESS,
+        });
+
+      return result;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+
+      onErrorMessage &&
+        notify({
+          message: onErrorMessage,
+          type: NotifyType.ERROR,
+        });
+    } finally {
+      onFinishMessage &&
+        notify({
+          message: onFinishMessage,
+          type: NotifyType.INFO,
+        });
+    }
+  };

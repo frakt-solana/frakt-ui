@@ -6,7 +6,7 @@ import { VaultState } from '../../contexts/fraktion';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import CollectionCard from '../../components/CollectionCard';
-import { URLS } from '../../constants/urls';
+import { PATHS } from '../../constants';
 import {
   compareVaultsArraysByNFTsAmount,
   compareVaultsArraysBySize,
@@ -36,6 +36,22 @@ const SORT_VALUES = [
       </span>
     ),
     value: 'vault_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
   },
   {
     label: (
@@ -88,6 +104,12 @@ const CollectionsPage: FC = () => {
           { collectionName: collectionNameA },
           { collectionName: collectionNameB },
         ) => {
+          if (sortField === 'collectionName') {
+            if (sortOrder === 'desc') {
+              return collectionNameA.localeCompare(collectionNameB);
+            }
+            return collectionNameB.localeCompare(collectionNameA);
+          }
           if (sortField === 'vault') {
             return compareVaultsArraysBySize(
               vaultsNotArchivedByCollectionName[collectionNameA],
@@ -123,7 +145,7 @@ const CollectionsPage: FC = () => {
           emptyMessage={'No collections found'}
         >
           {filteredCollection.map(({ collectionName, bannerPath }, idx) => (
-            <NavLink key={idx} to={`${URLS.COLLECTION}/${collectionName}`}>
+            <NavLink key={idx} to={`${PATHS.COLLECTION}/${collectionName}`}>
               <CollectionCard
                 key={idx}
                 collectionName={collectionName}

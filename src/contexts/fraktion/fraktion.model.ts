@@ -1,12 +1,12 @@
-import { RawUserTokensByMint, UserNFT } from '../userTokens';
-import {
-  Connection,
-  Keypair,
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { RawUserTokensByMint } from '../userTokens';
+import { Keypair, TransactionInstruction } from '@solana/web3.js';
 import BN from 'bn.js';
+
+import {
+  CreateVaultParams,
+  CreateMarketParams,
+  AddNFTsToVault,
+} from './transactions';
 
 export enum VaultState {
   Inactive = 0,
@@ -185,16 +185,9 @@ export interface FraktionContextType {
   error: any;
   vaults: VaultData[];
   vaultsMarkets: Market[];
-  createVault: (
-    params: Omit<
-      CreateVaultParams,
-      'walletPublicKey' | 'signTransaction' | 'connection'
-    >,
-  ) => Promise<string | null>;
-  createMarket: (
-    fractionsMintAddress: string,
-    tickerName: string,
-  ) => Promise<boolean>;
+  createVault: (params: CreateVaultParams) => Promise<string | null>;
+  createMarket: (params: CreateMarketParams) => Promise<void>;
+  addNFTsToVault: (params: AddNFTsToVault) => Promise<void>;
   refetch: fetchDataFunction;
   patchVault: patchVaultFunction;
   isPolling: boolean;
@@ -204,59 +197,9 @@ export interface FraktionContextType {
 
 export type GetVaults = (markets: Market[]) => Promise<VaultData[]>;
 
-export type CreateMarket = (
-  fractionsMint: string,
-  tickerName: string,
-  walletPublicKey: PublicKey,
-  signAllTransactions: (transactions: Transaction[]) => Promise<Transaction[]>,
-  connection: Connection,
-) => Promise<boolean>;
-
 export type UnfinishedVaultData = {
   vaultPubkey: string;
   fractionalMint: string;
   fractionTreasury: string;
   redeemTreasury: string;
 };
-
-export type InitVault = (
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-) => Promise<UnfinishedVaultData>;
-
-export type AddNFTsToVault = (
-  vaultPubkey: string,
-  userNfts: UserNFT[],
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-  rawUserTokensByMint: RawUserTokensByMint,
-) => Promise<void>;
-
-export type FinishVault = (
-  unfinishedVaultData: UnfinishedVaultData,
-  pricePerFraction: number,
-  fractionsAmount: number,
-  walletPublicKey: PublicKey,
-  signTransaction: (transaction: Transaction) => Promise<Transaction>,
-  connection: Connection,
-) => Promise<void>;
-
-interface CreateVaultParams {
-  userNfts: UserNFT[];
-  pricePerFraction: number;
-  fractionsAmount: number;
-  walletPublicKey: PublicKey;
-  signTransaction: (transaction: Transaction) => Promise<Transaction>;
-  connection: Connection;
-  unfinishedVaultData?: UnfinishedVaultData;
-  tokenData: {
-    name: string;
-    tickerName: string;
-    imageUrl: string;
-  };
-  rawUserTokensByMint: RawUserTokensByMint;
-}
-
-export type CreateVault = (params: CreateVaultParams) => Promise<string | null>;

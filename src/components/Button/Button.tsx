@@ -10,7 +10,7 @@ interface IButtonRegularProps {
   linkAttrs?: any;
   onClick?: (args: any) => any;
   children: any;
-  type?: 'primary' | 'secondary' | 'alternative';
+  type?: 'primary' | 'secondary' | 'tertiary' | 'alternative';
 }
 
 const Button = ({

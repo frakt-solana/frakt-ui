@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useParams, useHistory } from 'react-router';
 
 import Button from '../../components/Button';
 import { Container } from '../../components/Layout';
@@ -19,7 +20,7 @@ import {
   FraktionalizeTxnData,
   useFraktionalizeTransactionModal,
 } from './hooks';
-import { useParams } from 'react-router';
+import { PATHS } from '../../constants';
 
 const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
@@ -28,6 +29,7 @@ const FraktionalizePage = (): JSX.Element => {
   const { nfts: rawNfts, loading } = useUserTokens();
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
+  const history = useHistory();
 
   const [searchString, setSearchString] = useState<string>('');
   const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
@@ -39,6 +41,7 @@ const FraktionalizePage = (): JSX.Element => {
     setState: setTxnModalState,
     fractionTokenMint,
     tickerName,
+    addNftsToActiveVault,
   } = useFraktionalizeTransactionModal();
   const { itemsToShow, next, setItemsToShow } = useFakeInfinityScroll(15);
 
@@ -61,7 +64,7 @@ const FraktionalizePage = (): JSX.Element => {
       : setSelectedNfts([...selectedNfts, nft]);
   };
 
-  const runFraktionalization = ({
+  const onContinueClick = ({
     newNfts = [],
     lockedNfts = [],
     tickerName,
@@ -80,6 +83,7 @@ const FraktionalizePage = (): JSX.Element => {
       vault,
     }).then(() => {
       setSelectedNfts([]);
+      history.push(PATHS.FRAKTIONALIZE);
     });
   };
 
@@ -99,7 +103,13 @@ const FraktionalizePage = (): JSX.Element => {
         currentVaultPubkey={currentVaultPubkey}
         nfts={selectedNfts}
         onDeselect={onDeselect}
-        onContinueClick={runFraktionalization}
+        onContinueClick={onContinueClick}
+        addNftsToActiveVault={(params) =>
+          addNftsToActiveVault(params).then(() => {
+            setSelectedNfts([]);
+            history.push(PATHS.FRAKTIONALIZE);
+          })
+        }
       />
       <Container component="main" className={styles.contentWrapper}>
         <div id="content-reducer" className={styles.contentReducer}>

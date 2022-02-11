@@ -6,9 +6,10 @@ import {
   FraktionContextType,
   VaultData,
 } from './fraktion.model';
-import { createMarket, getVaults, createVault } from './fraktion';
 import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
+import { getVaults } from './fraktion';
+import { addNFTsToVault, createMarket, createVault } from './transactions';
 
 export const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -16,6 +17,7 @@ export const FraktionContext = React.createContext<FraktionContextType>({
   vaults: [],
   vaultsMarkets: [],
   createMarket: () => Promise.resolve(null),
+  addNFTsToVault: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
   createVault: () => Promise.resolve(''),
   patchVault: () => {},
@@ -29,11 +31,7 @@ export const FraktionProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const {
-    publicKey: walletPublicKey,
-    signTransaction,
-    signAllTransactions,
-  } = useWallet();
+  const wallet = useWallet();
   const { connection } = useConnection();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -103,33 +101,18 @@ export const FraktionProvider = ({
         error,
         vaults,
         vaultsMarkets,
-        createVault: ({
-          userNfts,
-          pricePerFraction,
-          fractionsAmount,
-          unfinishedVaultData,
-          tokenData,
-          rawUserTokensByMint,
-        }) =>
-          createVault({
-            userNfts,
-            pricePerFraction,
-            fractionsAmount,
-            walletPublicKey,
-            signTransaction,
-            connection,
-            unfinishedVaultData,
-            tokenData,
-            rawUserTokensByMint,
-          }),
-        createMarket: (fractionsMintAddress, tickerName) =>
-          createMarket(
-            fractionsMintAddress,
-            tickerName,
-            walletPublicKey,
-            signAllTransactions,
-            connection,
-          ),
+        createVault: createVault({
+          wallet,
+          connection,
+        }),
+        createMarket: createMarket({
+          wallet,
+          connection,
+        }),
+        addNFTsToVault: addNFTsToVault({
+          wallet,
+          connection,
+        }),
         refetch: fetchData,
         patchVault,
         isPolling,

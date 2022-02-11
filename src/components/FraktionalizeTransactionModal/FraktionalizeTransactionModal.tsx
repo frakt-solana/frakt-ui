@@ -90,7 +90,7 @@ const SuccessContent = ({
 
   const onClipboardIconClick = () => copyToClipboard(fractionsMintAddress);
   const onCreateMarketButtonClick = () => {
-    createMarket(fractionsMintAddress, tickerName);
+    createMarket({ fractionsMint: fractionsMintAddress, tickerName });
     onCancel();
   };
 

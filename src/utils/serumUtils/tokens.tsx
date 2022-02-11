@@ -122,10 +122,10 @@ export async function getTokenAccountInfo(
 // todo: use this to map custom mints to custom tickers. Add functionality once custom markets store mints
 export function useMintToTickers(): { [mint: string]: string } {
   const { customMarkets } = useCustomMarkets();
-  const { tokenList } = useTokenListContext();
+  const { tokensList } = useTokenListContext();
   return useMemo(() => {
     return Object.fromEntries(
-      tokenList.map((mint) => [mint.address, mint.symbol]),
+      tokensList.map((mint) => [mint.address, mint.symbol]),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customMarkets.length]);
