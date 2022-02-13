@@ -10,8 +10,13 @@ import {
   parseVaults,
   transformToSafetyBoxesWithMetadata,
 } from './fraktion.helpers';
+import { Cacher, IS_BFF_ENABLED } from '../../utils/cacher';
 
-export const getVaults: GetVaults = async (markets) => {
+export const getVaultsFromBff: GetVaults = () => {
+  return Cacher.getVaults();
+};
+
+export const getVaultsFromOldCacher: GetVaults = async (markets) => {
   const { allVaults, metas } = await (
     await fetch(VAULTS_AND_META_CACHE_URL)
   ).json();
@@ -61,3 +66,7 @@ export const getVaults: GetVaults = async (markets) => {
 
   return vaultsData;
 };
+
+export const getVaults = IS_BFF_ENABLED
+  ? getVaultsFromBff
+  : getVaultsFromOldCacher;
