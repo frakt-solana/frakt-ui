@@ -19,6 +19,7 @@ import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { CollectionsProvider } from './contexts/collections';
+import { NftPoolsProvider } from './contexts/nftPools';
 
 const wallets = [
   getPhantomWallet(),
@@ -37,9 +38,11 @@ function App(): JSX.Element {
             <UserTokensProvider>
               <LiquidityPoolsProvider>
                 <FraktionProvider>
-                  <CollectionsProvider>
-                    <Router />
-                  </CollectionsProvider>
+                  <NftPoolsProvider>
+                    <CollectionsProvider>
+                      <Router />
+                    </CollectionsProvider>
+                  </NftPoolsProvider>
                 </FraktionProvider>
               </LiquidityPoolsProvider>
             </UserTokensProvider>
