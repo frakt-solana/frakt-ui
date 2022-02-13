@@ -5,8 +5,8 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { decimalBNToString, SOL_TOKEN } from '../../utils';
 import { RawUserTokensByMint, useUserTokens } from '../../contexts/userTokens';
-import { useNativeAccount } from '../../hooks';
 import TokenField, { TokenFieldProps } from './TokenField';
+import { useNativeAccount } from '../../utils/accounts';
 
 const getTokenBalance = (
   token: TokenInfo,

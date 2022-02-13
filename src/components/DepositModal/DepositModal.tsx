@@ -20,6 +20,7 @@ import { PoolStats } from '../../pages/PoolsPage/hooks/useLazyPoolsStats';
 
 interface DepositModalProps {
   visible: boolean;
+  setVisible: (visible: boolean) => void;
   onCancel: () => void;
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
@@ -29,6 +30,7 @@ interface DepositModalProps {
 
 const DepositModal: FC<DepositModalProps> = ({
   visible,
+  setVisible,
   onCancel,
   tokenInfo,
   poolConfig,
@@ -68,6 +70,8 @@ const DepositModal: FC<DepositModalProps> = ({
         amount: new BN(1e6),
         router: mainRouter,
       });
+
+      setVisible(false);
     }
   };
 
@@ -151,7 +155,7 @@ const DepositModal: FC<DepositModalProps> = ({
         <Button
           className={styles.depositBtn}
           type="alternative"
-          disabled={!isDepositBtnEnabled}
+          // disabled={!isDepositBtnEnabled}
           onClick={onSubmitHandler}
         >
           Deposit

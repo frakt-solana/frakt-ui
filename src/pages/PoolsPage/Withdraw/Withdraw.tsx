@@ -8,7 +8,6 @@ import {
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { TokenFieldWithBalance } from '../../../components/TokenField';
-import { useUserTokens } from '../../../contexts/userTokens';
 import { SOL_TOKEN } from '../../../utils';
 import Button from '../../../components/Button';
 import styles from './styles.module.scss';
@@ -17,12 +16,14 @@ import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
+import { AccountInfoParsed } from '../../../utils/accounts';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
-  programAccount: ProgramAccountData;
+  programAccount?: ProgramAccountData;
+  lpTokenAccountInfo: AccountInfoParsed;
 }
 
 const Withdraw: FC<WithdrawInterface> = ({
@@ -30,25 +31,25 @@ const Withdraw: FC<WithdrawInterface> = ({
   poolConfig,
   raydiumPoolInfo,
   programAccount,
+  lpTokenAccountInfo,
 }) => {
   const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
-  const { rawUserTokensByMint } = useUserTokens();
+
   const [withdrawValue, setWithdrawValue] = useState<string>('');
-  const quoteToken = SOL_TOKEN;
 
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
 
-  const tokenLpInfo = rawUserTokensByMint[poolConfig.lpMint.toBase58()];
-  const balance = String(Number(tokenLpInfo?.amount) / 10 ** lpDecimals || 0);
-
-  const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
-
-  const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
+  const balance = String(
+    lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0,
+  );
 
   const onSubmitHandler = async (): Promise<void> => {
     if (programAccount) {
       const { mainRouter, stakeAccount } = programAccount;
+
+      const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
+      const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
       await unstakeLiquidity({
         router: mainRouter,
@@ -57,10 +58,12 @@ const Withdraw: FC<WithdrawInterface> = ({
 
       await removeRaydiumLiquidity({
         baseToken,
-        quoteToken,
+        quoteToken: SOL_TOKEN,
         amount,
         poolConfig,
       });
+
+      setWithdrawValue('');
     }
   };
 

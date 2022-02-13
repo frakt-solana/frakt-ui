@@ -151,7 +151,7 @@ const VaultPage: FC = () => {
                   </NavigationLink>
                 </div>
               )}
-              {vaultData.state === VaultState.Active && (
+              {vaultData && (
                 <InfoTable
                   vaultInfo={vaultData}
                   marketId={vaultMarket?.address}

@@ -176,3 +176,49 @@ export const fetchProgramAccounts = async ({
   console.log(allProgramAccounts);
   return allProgramAccounts;
 };
+
+export const fetchProgramAccountByRouter = async ({
+  vaultProgramId,
+  connection,
+  routerPubkeys = 'DEMDLLuVXvABA2V1RneXUWWnNUwk5nH7L6vLUjWEEvuZ',
+}: {
+  vaultProgramId: PublicKey;
+  connection: Connection;
+  routerPubkeys: string;
+}) => {
+  const allProgramAccounts = await fetchProgramAccounts({
+    vaultProgramId,
+    connection,
+  });
+  return getProgramAccountByRouter(allProgramAccounts, routerPubkeys);
+};
+
+export const getProgramAccountByRouter = (
+  allProgramAccounts,
+  routerPubkeys,
+) => {
+  const {
+    mainRouters,
+    stakeAccounts,
+    secondaryRewards,
+    secondaryStakeAccounts,
+  } = allProgramAccounts;
+  const routerAccount = mainRouters.find(
+    ({ mainRouterPubkey }) => mainRouterPubkey === routerPubkeys,
+  );
+
+  const secondaryReward = secondaryRewards.filter(
+    ({ routerPubkey }) => routerPubkey === routerPubkeys,
+  );
+
+  const confirmStakeAccount = stakeAccounts.find(
+    ({ isStaked }) => isStaked === true,
+  );
+
+  return {
+    mainRouter: routerAccount,
+    stakeAccount: confirmStakeAccount,
+    secondaryReward,
+    secondaryStakeAccount: secondaryStakeAccounts[0],
+  };
+};

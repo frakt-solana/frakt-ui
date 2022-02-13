@@ -18,7 +18,7 @@ import { FUSION_PROGRAM_PUBKEY } from './constants';
 export interface HarvestSecondaryLiquidityTransactionParams {
   router: MainRouterView;
   stakeAccount: StakeAccountView;
-  secondaryReward: SecondaryRewardView;
+  secondaryReward: SecondaryRewardView[];
 }
 
 export interface HarvestSecondaryLiquidityTransactionRawParams
@@ -32,13 +32,17 @@ export const rowHarvestSecondaryLiquidity = async ({
   wallet,
   secondaryReward,
 }: HarvestSecondaryLiquidityTransactionRawParams): Promise<void> => {
+  const rewardsTokenMint = secondaryReward.map(
+    ({ tokenMint }) => new PublicKey(tokenMint),
+  );
+
   await harvestSecondaryReward(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
-    [new PublicKey(secondaryReward.tokenMint)],
+    rewardsTokenMint,
     new PublicKey(stakeAccount.stakeAccountPubkey),
     async (transaction) => {
       await signAndConfirmTransaction({

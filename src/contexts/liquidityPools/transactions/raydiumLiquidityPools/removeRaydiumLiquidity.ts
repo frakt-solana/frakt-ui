@@ -67,6 +67,7 @@ export const rawRemoveRaydiumLiquidity = async ({
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   rawRemoveRaydiumLiquidity,
   {
+    onSuccessMessage: 'Liquidity removed successfully',
     onErrorMessage: 'Transaction failed',
   },
 );

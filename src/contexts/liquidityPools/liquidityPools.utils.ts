@@ -4,6 +4,7 @@ import {
   SecondStakeAccountView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
+import BN, { max, min } from 'bn.js';
 import { RaydiumPoolInfo } from './liquidityPools.model';
 
 export const calculateTVL = (
@@ -158,28 +159,48 @@ export const calcLiquidityRewards = (
   mainRouter: MainRouterView,
   stakeAccount: StakeAccountView,
 ) => {
-  const rewards =
+  const check_date = min(
+    new BN(Math.floor(Date.now() / 1000)),
+    mainRouter.endTime,
+  );
+
+  const reward =
     ((mainRouter.cumulative.toNumber() +
       mainRouter.apr.toNumber() *
-        (Math.floor(Date.now() / 1000) - mainRouter.lastTime.toNumber()) -
+        (check_date.toNumber() - mainRouter.lastTime.toNumber()) -
       stakeAccount.stakedAtCumulative.toNumber()) *
       stakeAccount.amount.toNumber()) /
-    1e10 /
-    100;
+    1e4 /
+    mainRouter.decimalsInput.toNumber() /
+    mainRouter.decimalsOutput.toNumber();
 
-  return rewards.toFixed(4);
+  return reward.toFixed(4);
 };
 
 export const caclLiquiditySecondRewars = (
   stakeAccount: StakeAccountView,
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
+  mainRouter: MainRouterView,
 ) => {
   if (secondaryReward && secondaryStakeAccount) {
-    return (
-      secondaryReward.tokensPerSecondPerPoint.toNumber() *
-      (Date.now() / 1000 - secondaryStakeAccount.lastHarvestedAt.toNumber())
-    );
+    const calculation =
+      ((Math.floor(Date.now() / 1000) -
+        secondaryStakeAccount.lastHarvestedAt.toNumber()) *
+        secondaryReward.tokensPerSecondPerPoint.toNumber() *
+        stakeAccount.amount.toNumber()) /
+      mainRouter.decimalsInput.toNumber() /
+      secondaryReward.decimalsOutput.toNumber();
+    return calculation;
+  } else {
+    const calculation =
+      ((Math.floor(Date.now() / 1000) -
+        max(secondaryReward.startTime, stakeAccount.stakedAt).toNumber()) *
+        secondaryReward.tokensPerSecondPerPoint.toNumber() *
+        stakeAccount.amount.toNumber()) /
+      mainRouter.decimalsInput.toNumber() /
+      secondaryReward.decimalsOutput.toNumber();
+
+    return calculation.toFixed(4);
   }
-  return 0;
 };

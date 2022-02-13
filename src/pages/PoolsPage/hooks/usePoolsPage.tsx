@@ -11,7 +11,6 @@ import {
   PoolData,
   RaydiumPoolInfoMap,
   ProgramAccountData,
-  useCurrentSolanaPrice,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../styles.module.scss';
@@ -73,7 +72,7 @@ export const usePoolsPage = (): {
   } = useLiquidityPools();
 
   const programAccount = useMemo(() => {
-    const routerPubkeys = 'DEMDLLuVXvABA2V1RneXUWWnNUwk5nH7L6vLUjWEEvuZ';
+    const routerPubkeys = 'EsF2vf7bQAs4JEm6WkNRvDcgKziskFYc7Zp87mEQCckb';
 
     if (programAccounts) {
       const {
@@ -87,11 +86,15 @@ export const usePoolsPage = (): {
         ({ mainRouterPubkey }) => mainRouterPubkey === routerPubkeys,
       );
 
-      const secondaryReward = secondaryRewards.find(
+      const secondaryReward = secondaryRewards.filter(
         ({ routerPubkey }) => routerPubkey === routerPubkeys,
       );
 
-      const confirmStakeAccount = stakeAccounts.find(
+      const stakeAccount = stakeAccounts.filter(
+        ({ routerPubkey }) => routerPubkey === routerPubkeys,
+      );
+
+      const confirmStakeAccount = stakeAccount.find(
         ({ isStaked }) => isStaked === true,
       );
 

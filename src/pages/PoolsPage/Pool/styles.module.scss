@@ -107,36 +107,6 @@
   }
 }
 
-.depositBtn {
-  justify-content: center;
-  padding: 12px 56.5px;
-  margin-bottom: 10px;
-  width: 100%;
-  max-width: 190px;
-
-  @media screen and (max-width: 1140px) {
-    max-width: 100%;
-  }
-
-  @media screen and (min-width: 1400px) {
-    width: 100%;
-    max-width: 371px;
-  }
-}
-
-.connectBtn {
-  display: flex;
-  justify-content: center;
-  border: 1px solid var(--gray-color-3);
-  font: var(--font-btn-small);
-  padding: 12px 0;
-  width: 100%;
-
-  &:hover {
-    border-color: var(--gray-color-3);
-  }
-}
-
 .totalValue {
   min-width: 90px;
 

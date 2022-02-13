@@ -96,6 +96,6 @@ export interface ProgramAccountsData {
 export interface ProgramAccountData {
   mainRouter: MainRouterView;
   stakeAccount: StakeAccountView;
-  secondaryReward: SecondaryRewardView;
+  secondaryReward: SecondaryRewardView[];
   secondaryStakeAccount: SecondStakeAccountView;
 }
