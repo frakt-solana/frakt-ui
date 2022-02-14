@@ -29,8 +29,6 @@ const PoolsPage: FC = () => {
     poolsStatsByMarketId,
   } = usePoolsPage();
 
-  console.log(programAccount);
-
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
@@ -71,7 +69,7 @@ const PoolsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          // isLoading={loading}
+          isLoading={!programAccount}
           emptyMessage={'No Liquidity pool found'}
         >
           {poolsDataTest.map(({ poolData, poolStatsTest }) => (

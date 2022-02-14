@@ -26,7 +26,7 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
     programAccount;
 
   const onSubmitHandler = async () => {
-    // await harvestLiquidity({ router: mainRouter, stakeAccount });
+    await harvestLiquidity({ router: mainRouter, stakeAccount });
     await harvestSecondaryLiquidity({
       router: mainRouter,
       stakeAccount,
@@ -44,12 +44,25 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
             <span>{SOL_TOKEN.symbol}</span>
           </p>
           <p>
-            {caclLiquiditySecondRewars(
-              stakeAccount,
-              secondaryReward[0],
-              secondaryStakeAccount,
-              mainRouter,
+            {secondaryReward.map((secondaryReward) =>
+              caclLiquiditySecondRewars(
+                stakeAccount,
+                secondaryReward,
+                secondaryStakeAccount,
+                mainRouter,
+              ),
             )}{' '}
+            <span>{baseToken.symbol}</span>
+          </p>
+          <p>
+            {secondaryReward.map((secondaryReward) =>
+              caclLiquiditySecondRewars(
+                stakeAccount,
+                secondaryReward,
+                secondaryStakeAccount,
+                mainRouter,
+              ),
+            )}
             <span>{baseToken.symbol}</span>
           </p>
         </div>

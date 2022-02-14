@@ -158,7 +158,7 @@ export const calcTotalForCreateLiquidity = (
 export const calcLiquidityRewards = (
   mainRouter: MainRouterView,
   stakeAccount: StakeAccountView,
-) => {
+): string => {
   const check_date = min(
     new BN(Math.floor(Date.now() / 1000)),
     mainRouter.endTime,
@@ -174,7 +174,7 @@ export const calcLiquidityRewards = (
     mainRouter.decimalsInput.toNumber() /
     mainRouter.decimalsOutput.toNumber();
 
-  return reward.toFixed(4);
+  return reward.toFixed(2);
 };
 
 export const caclLiquiditySecondRewars = (
@@ -182,7 +182,7 @@ export const caclLiquiditySecondRewars = (
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
   mainRouter: MainRouterView,
-) => {
+): string => {
   if (secondaryReward && secondaryStakeAccount) {
     const calculation =
       ((Math.floor(Date.now() / 1000) -
@@ -191,7 +191,7 @@ export const caclLiquiditySecondRewars = (
         stakeAccount.amount.toNumber()) /
       mainRouter.decimalsInput.toNumber() /
       secondaryReward.decimalsOutput.toNumber();
-    return calculation;
+    return calculation.toFixed(2);
   } else {
     const calculation =
       ((Math.floor(Date.now() / 1000) -
@@ -201,6 +201,6 @@ export const caclLiquiditySecondRewars = (
       mainRouter.decimalsInput.toNumber() /
       secondaryReward.decimalsOutput.toNumber();
 
-    return calculation.toFixed(4);
+    return calculation.toFixed(2);
   }
 };

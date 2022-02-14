@@ -155,7 +155,7 @@ const DepositModal: FC<DepositModalProps> = ({
         <Button
           className={styles.depositBtn}
           type="alternative"
-          // disabled={!isDepositBtnEnabled}
+          disabled={!isDepositBtnEnabled}
           onClick={onSubmitHandler}
         >
           Deposit

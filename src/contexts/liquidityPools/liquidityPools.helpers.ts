@@ -1,3 +1,4 @@
+import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools/constants';
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 
 import {
@@ -21,6 +22,7 @@ import {
   FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
+  ProgramAccountData,
   ProgramAccountsData,
   RaydiumPoolInfo,
   RaydiumPoolInfoMap,
@@ -173,36 +175,26 @@ export const fetchProgramAccounts = async ({
     vaultProgramId,
     connection,
   );
-  console.log(allProgramAccounts);
+
   return allProgramAccounts;
 };
 
-export const fetchProgramAccountByRouter = async ({
-  vaultProgramId,
-  connection,
-  routerPubkeys = 'DEMDLLuVXvABA2V1RneXUWWnNUwk5nH7L6vLUjWEEvuZ',
-}: {
-  vaultProgramId: PublicKey;
-  connection: Connection;
-  routerPubkeys: string;
-}) => {
+export const getProgramAccountByRouter = async (
+  routerPubkeys: string,
+  connection: Connection,
+): Promise<ProgramAccountData> => {
   const allProgramAccounts = await fetchProgramAccounts({
-    vaultProgramId,
+    vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
     connection,
   });
-  return getProgramAccountByRouter(allProgramAccounts, routerPubkeys);
-};
 
-export const getProgramAccountByRouter = (
-  allProgramAccounts,
-  routerPubkeys,
-) => {
   const {
     mainRouters,
     stakeAccounts,
     secondaryRewards,
     secondaryStakeAccounts,
   } = allProgramAccounts;
+
   const routerAccount = mainRouters.find(
     ({ mainRouterPubkey }) => mainRouterPubkey === routerPubkeys,
   );
@@ -211,7 +203,11 @@ export const getProgramAccountByRouter = (
     ({ routerPubkey }) => routerPubkey === routerPubkeys,
   );
 
-  const confirmStakeAccount = stakeAccounts.find(
+  const stakeAccount = stakeAccounts.filter(
+    ({ routerPubkey }) => routerPubkey === routerPubkeys,
+  );
+
+  const confirmStakeAccount = stakeAccount.find(
     ({ isStaked }) => isStaked === true,
   );
 

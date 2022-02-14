@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import DepositModal from '../../../components/DepositModal';
@@ -20,9 +20,7 @@ import {
   PoolDetailsWalletDisconnected,
 } from './components';
 import { usePolling } from '../../../hooks';
-import { FUSION_PROGRAM_PUBKEY } from '../../../contexts/liquidityPools/transactions/fusionPools';
-import { PublicKey } from '@solana/web3.js';
-import { fetchProgramAccountByRouter } from '../../../contexts/liquidityPools/liquidityPools.helpers';
+import { useLazyProgramAccount } from '../hooks/useLazyProgramAccount';
 interface PoolInterface {
   poolData: PoolData;
   raydiumPoolInfo: RaydiumPoolInfo;
@@ -39,15 +37,13 @@ const Pool: FC<PoolInterface> = ({
   poolData,
   raydiumPoolInfo,
   onPoolCardClick = () => {},
-  programAccount,
   poolStats,
+  programAccount,
 }) => {
   const { tokenInfo, poolConfig } = poolData;
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const { connection } = useConnection();
-  const [programAccountPool, setProgramAccountPool] =
-    useState<ProgramAccountData>(programAccount);
+  const { fetchProgramAccountInfo } = useLazyProgramAccount();
 
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
@@ -59,12 +55,9 @@ const Pool: FC<PoolInterface> = ({
   } = useUserSplAccount();
 
   const poll = async () => {
-    const raydiumPoolInfoMap = await fetchProgramAccountByRouter({
-      vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
-      connection,
-      routerPubkeys: 'EsF2vf7bQAs4JEm6WkNRvDcgKziskFYc7Zp87mEQCckb',
-    });
-    setProgramAccountPool(raydiumPoolInfoMap);
+    await fetchProgramAccountInfo(
+      'EsF2vf7bQAs4JEm6WkNRvDcgKziskFYc7Zp87mEQCckb',
+    );
   };
 
   const { isPolling, startPolling, stopPolling } = usePolling(
@@ -73,15 +66,14 @@ const Pool: FC<PoolInterface> = ({
   );
 
   useEffect(() => {
-    if (isOpen && !isPolling) {
+    if (isOpen && !isPolling && connected) {
       startPolling();
     } else {
       stopPolling();
     }
-
     return () => stopPolling();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, connected]);
 
   useEffect(() => {
     if (isOpen && connected) {

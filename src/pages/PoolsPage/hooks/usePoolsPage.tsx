@@ -15,6 +15,7 @@ import {
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../styles.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
+import { useLazyProgramAccount } from './useLazyProgramAccount';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -71,39 +72,11 @@ export const usePoolsPage = (): {
     programAccounts,
   } = useLiquidityPools();
 
-  const programAccount = useMemo(() => {
-    const routerPubkeys = 'EsF2vf7bQAs4JEm6WkNRvDcgKziskFYc7Zp87mEQCckb';
+  const { programAccount, fetchProgramAccountInfo } = useLazyProgramAccount();
 
+  useEffect(() => {
     if (programAccounts) {
-      const {
-        mainRouters,
-        stakeAccounts,
-        secondaryRewards,
-        secondaryStakeAccounts,
-      } = programAccounts;
-
-      const routerAccount = mainRouters.find(
-        ({ mainRouterPubkey }) => mainRouterPubkey === routerPubkeys,
-      );
-
-      const secondaryReward = secondaryRewards.filter(
-        ({ routerPubkey }) => routerPubkey === routerPubkeys,
-      );
-
-      const stakeAccount = stakeAccounts.filter(
-        ({ routerPubkey }) => routerPubkey === routerPubkeys,
-      );
-
-      const confirmStakeAccount = stakeAccount.find(
-        ({ isStaked }) => isStaked === true,
-      );
-
-      return {
-        mainRouter: routerAccount,
-        stakeAccount: confirmStakeAccount,
-        secondaryReward,
-        secondaryStakeAccount: secondaryStakeAccounts[0],
-      };
+      fetchProgramAccountInfo('EsF2vf7bQAs4JEm6WkNRvDcgKziskFYc7Zp87mEQCckb');
     }
   }, [programAccounts]);
 
