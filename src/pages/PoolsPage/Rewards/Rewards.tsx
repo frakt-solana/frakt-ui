@@ -54,17 +54,6 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
             )}{' '}
             <span>{baseToken.symbol}</span>
           </p>
-          <p>
-            {secondaryReward.map((secondaryReward) =>
-              caclLiquiditySecondRewars(
-                stakeAccount,
-                secondaryReward,
-                secondaryStakeAccount,
-                mainRouter,
-              ),
-            )}
-            <span>{baseToken.symbol}</span>
-          </p>
         </div>
         <Button
           type="tertiary"
