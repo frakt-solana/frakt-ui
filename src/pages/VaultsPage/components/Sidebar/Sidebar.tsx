@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import React, { FC } from 'react';
 import { Checkbox, Collapse, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { ControlledCheckbox } from '../../../../components/Checkbox/Checkbox';
 
 const { Panel } = Collapse;
 
@@ -26,13 +27,20 @@ const shortName = (name: string, maxLength: number) =>
   name.length > maxLength ? `${name.slice(0, maxLength - 2)} ...` : name;
 
 interface SidebarProps {
-  setIsSidebar: (sidebarState: boolean) => void;
   isSidebar: boolean;
+  control: any;
+  setIsSidebar: (sidebarState: boolean) => void;
 }
 
-export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
+export const Sidebar: FC<SidebarProps> = ({
+  isSidebar,
+  setIsSidebar,
+  control,
+}) => {
   const showSidebar = () => setIsSidebar(true);
   const hideSidebar = () => setIsSidebar(false);
+
+  console.log(control);
 
   return (
     <>
@@ -52,11 +60,30 @@ export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
           [styles.sidebarVisible]: isSidebar,
         })}
       >
-        <Input
-          className={styles.searchInput}
-          placeholder="Search for ID"
-          prefix={<SearchOutlined className={styles.searchIcon} />}
-        />
+        <div className={styles.filterList}>
+          <Collapse
+            collapsible="header"
+            defaultActiveKey={['1']}
+            className={styles.collapse}
+          >
+            <Panel
+              header="verification"
+              key="1"
+              className={styles.collapseHeader}
+            >
+              <ul className={styles.sidebarList}>
+                <li className={styles.sidebarListItem}>
+                  <ControlledCheckbox
+                    control={control}
+                    name={'showVerifiedVaults'}
+                    label={'Verified only'}
+                  />
+                  <span className={styles.sidebarItemAmount}>{123}</span>
+                </li>
+              </ul>
+            </Panel>
+          </Collapse>
+        </div>
         <div className={styles.sidebarItem}>
           <h6 className={styles.sidebarTitle}>
             <span>collections in pool</span>

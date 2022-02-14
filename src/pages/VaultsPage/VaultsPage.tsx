@@ -168,7 +168,11 @@ const VaultsPage = (): JSX.Element => {
           </div>
         </div>
         <div className={styles.wrapper}>
-          <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
+          <Sidebar
+            isSidebar={isSidebar}
+            control={control}
+            setIsSidebar={setIsSidebar}
+          />
           <div className={styles.contentWrapper}>
             <h2 className={styles.title}>
               Create, buy and sell fraktions of NFTs
