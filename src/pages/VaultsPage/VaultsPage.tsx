@@ -200,7 +200,7 @@ const VaultsPage = (): JSX.Element => {
                 />
               </div>
             </div>
-            {vaults.length && (
+            {!!vaults.length && (
               <VaultsSlider
                 className={styles.sliderFeatured}
                 vaults={vaults}

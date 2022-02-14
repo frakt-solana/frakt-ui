@@ -6,13 +6,13 @@ import 'swiper/swiper.min.css';
 import 'swiper/modules/navigation/navigation.scss';
 import 'swiper/modules/pagination/pagination.scss';
 import 'swiper/modules/thumbs/thumbs';
-import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
+import SwiperCore, { Navigation, Autoplay } from 'swiper';
 import classNames from 'classnames';
 import VaultCard from '../../../../components/VaultCard';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../../../constants';
 
-SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
+SwiperCore.use([Navigation, Autoplay]);
 
 const SLIDER_BREAKPOINTS = {
   240: { slidesPerView: 1.5, spaceBetween: 20 },
@@ -75,6 +75,8 @@ export const VaultsSlider: FC<VaultsSliderProps> = ({
           prevEl: prevBtn.current,
           nextEl: nextBtn.current,
         }}
+        autoplay={{ delay: 3000 }}
+        speed={1000}
       >
         {vaults.map((vault) => (
           <SwiperSlide key={vault.vaultPubkey}>
