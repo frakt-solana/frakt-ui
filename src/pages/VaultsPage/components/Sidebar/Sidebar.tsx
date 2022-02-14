@@ -1,9 +1,9 @@
 import styles from './styles.module.scss';
 import classNames from 'classnames';
-import React, { FC } from 'react';
-import { Checkbox, Collapse, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import React, { FC, useState } from 'react';
+import { Checkbox, Collapse, Radio } from 'antd';
 import { ControlledCheckbox } from '../../../../components/Checkbox/Checkbox';
+import { ControlledRadio } from '../../../../components/CustomRadio/CustomRadio';
 
 const { Panel } = Collapse;
 
@@ -40,7 +40,11 @@ export const Sidebar: FC<SidebarProps> = ({
   const showSidebar = () => setIsSidebar(true);
   const hideSidebar = () => setIsSidebar(false);
 
-  console.log(control);
+  const [currentRadio, setCurrentRadio] = useState<number>(1);
+
+  const changeRadio = () => (event) => {
+    setCurrentRadio(event.current?.value);
+  };
 
   return (
     <>
@@ -81,6 +85,80 @@ export const Sidebar: FC<SidebarProps> = ({
                   <span className={styles.sidebarItemAmount}>{123}</span>
                 </li>
               </ul>
+            </Panel>
+          </Collapse>
+        </div>
+        <div className={styles.filterList}>
+          <Collapse
+            collapsible="header"
+            defaultActiveKey={['1']}
+            className={styles.collapse}
+          >
+            <Panel header="tradable" key="1" className={styles.collapseHeader}>
+              <ul className={styles.sidebarList}>
+                <li className={styles.sidebarListItem}>
+                  <ControlledCheckbox
+                    control={control}
+                    name={'showTradableVaults'}
+                    label={'tradable'}
+                  />
+                  <span className={styles.sidebarItemAmount}>{123}</span>
+                </li>
+              </ul>
+            </Panel>
+          </Collapse>
+        </div>
+        <div className={styles.filterList}>
+          <Collapse
+            collapsible="header"
+            defaultActiveKey={['1']}
+            className={styles.collapse}
+          >
+            <Panel header="tradable" key="1" className={styles.collapseHeader}>
+              <Radio.Group
+                className={styles.sidebarList}
+                onChange={changeRadio()}
+                value={currentRadio}
+              >
+                <ul className={styles.sidebarList}>
+                  <li className={styles.sidebarListItem}>
+                    <ControlledRadio
+                      control={control}
+                      name={'showActiveVaults'}
+                      label={'Active'}
+                      value={1}
+                    />
+                    <span className={styles.sidebarItemAmount}>{123}</span>
+                  </li>
+                  <li className={styles.sidebarListItem}>
+                    <ControlledRadio
+                      control={control}
+                      name={'showAuctionLiveVaults'}
+                      label={'Auction live'}
+                      value={2}
+                    />
+                    <span className={styles.sidebarItemAmount}>{123}</span>
+                  </li>
+                  <li className={styles.sidebarListItem}>
+                    <ControlledRadio
+                      control={control}
+                      name={'showAuctionFinishedVaults'}
+                      label={'Auction finished'}
+                      value={3}
+                    />
+                    <span className={styles.sidebarItemAmount}>{123}</span>
+                  </li>
+                  <li className={styles.sidebarListItem}>
+                    <ControlledRadio
+                      control={control}
+                      name={'showArchivedVaults'}
+                      label={'Archived'}
+                      value={4}
+                    />
+                    <span className={styles.sidebarItemAmount}>{123}</span>
+                  </li>
+                </ul>
+              </Radio.Group>
             </Panel>
           </Collapse>
         </div>

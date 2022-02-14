@@ -153,18 +153,6 @@ const VaultsPage = (): JSX.Element => {
               label="Archived"
               className={styles.filter}
             />
-            <ControlledToggle
-              control={control}
-              name="showVerifiedVaults"
-              label="Verified"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showTradableVaults"
-              label="Tradable"
-              className={styles.filter}
-            />
           </div>
         </div>
         <div className={styles.wrapper}>

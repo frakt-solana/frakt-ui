@@ -1,4 +1,4 @@
-import { Checkbox } from 'antd';
+import { Checkbox, Radio } from 'antd';
 import classNames from 'classnames/bind';
 import { Control, Controller } from 'react-hook-form';
 import styles from './styles.module.scss';
@@ -7,7 +7,7 @@ import React from 'react';
 interface IToggleProps {
   className?: string;
   disabled?: boolean;
-  value?: boolean;
+  value?: number;
   defaultChecked?: boolean;
   label?: string;
   onChange?: (value: any) => void;
@@ -18,24 +18,22 @@ interface IControlledToggleProps extends IToggleProps {
   name: string;
 }
 
-const CustomCheckbox = ({
+const CustomRadio = ({
   className = '',
   disabled = false,
-  onChange = () => {},
-  value = false,
+  value,
   label = null,
 }: IToggleProps): JSX.Element => (
-  <Checkbox
-    className={classNames(styles.checkbox, className)}
+  <Radio
+    className={classNames(styles.radio, className)}
     disabled={disabled}
-    checked={value}
-    onClick={() => onChange(!value)}
+    value={value}
   >
     {label}
-  </Checkbox>
+  </Radio>
 );
 
-export const ControlledCheckbox = ({
+export const ControlledRadio = ({
   control,
   name,
   ...props
@@ -44,7 +42,7 @@ export const ControlledCheckbox = ({
     control={control}
     name={name}
     render={({ field: { ref, ...field } }) => {
-      return <CustomCheckbox {...props} {...field} />;
+      return <CustomRadio {...props} {...field} />;
     }}
   />
 );

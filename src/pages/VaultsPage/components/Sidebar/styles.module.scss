@@ -182,6 +182,11 @@
 }
 
 .filterList {
+  margin-top: 20px;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
 
   .sidebarList {
     margin-top: 0;
