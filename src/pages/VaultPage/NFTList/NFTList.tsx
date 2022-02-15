@@ -1,10 +1,10 @@
 import { FC, useRef, useState } from 'react';
 import SwiperCore, {
   FreeMode,
+  Lazy,
   Navigation,
   Scrollbar,
   Thumbs,
-  Lazy,
 } from 'swiper';
 
 import styles from './styles.module.scss';
@@ -18,15 +18,12 @@ import 'swiper/modules/navigation/navigation.scss';
 import 'swiper/modules/pagination/pagination.scss';
 import 'swiper/modules/lazy/lazy.scss';
 import 'swiper/modules/thumbs/thumbs';
-import { CopyClipboardIcon, CloseModalIcon } from '../../../icons';
+import { CloseModalIcon } from '../../../icons';
 import { CollectionData } from '../../../utils/collections';
-import { NavLink } from 'react-router-dom';
-import { PATHS } from '../../../constants';
-import { copyToClipboard, getCollectionThumbnailUrl } from '../../../utils';
-import Tooltip from '../../../components/Tooltip';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../components/FakeInfinityScroll';
+import { SlideItem } from './SlideItem';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar, Lazy]);
 
@@ -46,9 +43,11 @@ export const NFTList: FC<NFTListProps> = ({
   const [swiper, setSwiper] = useState(null);
   const { itemsToShow, next } = useFakeInfinityScroll(9);
 
+  const [slidesToShow, setSlidesToShow] = useState<SafetyBoxWithMetadata[]>([]);
+
   const safetyBoxesWithCollectionData: Array<
     SafetyBoxWithMetadata & { collectionInfo: CollectionData }
-  > = safetyBoxes.map((box) => ({
+  > = slidesToShow.map((box) => ({
     ...box,
     collectionInfo: nftCollections.find(
       (coll) => coll.collectionName === box.nftCollectionName,
@@ -63,13 +62,64 @@ export const NFTList: FC<NFTListProps> = ({
   const nextBtn = useRef<HTMLDivElement>(null);
 
   const onNftItemClick = (index) => () => {
-    setIsModalVisible(true);
+    console.log('1 ->', index);
     setCurrentSlide(index);
-    slideTo(index);
+    if (safetyBoxes.length >= 30) {
+      if (index > 4) {
+        setSlidesToShow(safetyBoxes.slice(index - 5, index + 5));
+        setIsModalVisible(true);
+        slideTo(5);
+        console.log('2 ->', index);
+      } else {
+        setSlidesToShow(safetyBoxes.slice(0, 10));
+        setIsModalVisible(true);
+        slideTo(index);
+        console.log('3 ->', index);
+      }
+    } else {
+      setSlidesToShow(safetyBoxes);
+      setIsModalVisible(true);
+      slideTo(index);
+      console.log('4 ->', index);
+    }
+    console.log('5 ->', index);
   };
 
-  const onSliderNavClick = () => () => {
-    if (swiper) setCurrentSlide(swiper.activeIndex);
+  const prependSlides = (slides: number) => {
+    const slidesToAdd = safetyBoxes.slice(currentSlide - slides, currentSlide);
+    // console.log(currentSlide, slidesToAdd);
+    setSlidesToShow([...slidesToAdd, ...slidesToShow]);
+  };
+
+  const appendSlides = (slides: number) => {
+    const slidesToAdd = safetyBoxes.slice(currentSlide, currentSlide + slides);
+    setSlidesToShow([...slidesToShow, ...slidesToAdd]);
+  };
+
+  const onSliderNavPrevClick = () => {
+    if (safetyBoxes.length >= 30) {
+      if (currentSlide <= 0) return;
+      setCurrentSlide(currentSlide - 1);
+      // console.log(swiper.activeIndex);
+      if (swiper && swiper.activeIndex === 1) {
+        prependSlides(5);
+        // console.log('prepend');
+      }
+    } else {
+      if (swiper) setCurrentSlide(swiper.activeIndex);
+    }
+  };
+  const onSliderNavNextClick = () => {
+    if (safetyBoxes.length >= 30) {
+      if (currentSlide >= safetyBoxes.length) return;
+      setCurrentSlide(currentSlide + 1);
+      if (swiper && swiper.activeIndex === swiper.slides.length - 1) {
+        console.log(swiper.slides.length);
+        appendSlides(5);
+      }
+    } else {
+      if (swiper) setCurrentSlide(swiper.activeIndex);
+    }
   };
 
   return (
@@ -134,75 +184,19 @@ export const NFTList: FC<NFTListProps> = ({
           >
             {safetyBoxesWithCollectionData.map((slide) => (
               <SwiperSlide key={slide.nftMint} className={styles.slide}>
-                <div
-                  data-background={slide.nftImage}
-                  className={`${styles.slideImage} swiper-lazy`}
-                />
-                <div className={styles.slideInfoBlock}>
-                  {slide.collectionInfo?.collectionName && (
-                    <NavLink
-                      to={`${PATHS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
-                      className={styles.collectionLink}
-                    >
-                      <div
-                        className={styles.collectionIcon}
-                        style={{
-                          backgroundImage: `url(${getCollectionThumbnailUrl(
-                            slide.collectionInfo?.thumbnailPath,
-                          )})`,
-                        }}
-                      />
-                      <p className={styles.collectionName}>
-                        {slide.collectionInfo?.collectionName}
-                      </p>
-                    </NavLink>
-                  )}
-                  <h5 className={styles.nftTitle}>{slide.nftName}</h5>
-                  {slide.nftDescription && (
-                    <p className={styles.NftDescription}>
-                      {slide.nftDescription}
-                    </p>
-                  )}
-                  {!!slide.nftAttributes?.length && (
-                    <div className={styles.attributesTable}>
-                      {slide.nftAttributes.map(({ trait_type, value }, idx) => (
-                        <div key={idx} className={styles.attributesTable__row}>
-                          <p>{trait_type}</p>
-                          <p>{value}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <p className={styles.nftInfoLabel}>NFT MINT</p>
-                  <p
-                    className={styles.nftInfoItem}
-                    onClick={() => copyToClipboard(slide.nftMint)}
-                  >
-                    {shortenAddress(slide.nftMint)}
-                    <Tooltip
-                      placement="bottom"
-                      trigger="hover"
-                      overlay="Click to copy to clipboard"
-                    >
-                      <CopyClipboardIcon
-                        className={styles.copyIcon}
-                        width={24}
-                      />
-                    </Tooltip>
-                  </p>
-                </div>
+                <SlideItem slide={slide} />
               </SwiperSlide>
             ))}
           </Swiper>
           <div
             ref={prevBtn}
             className={styles.sliderNavPrev}
-            onClick={onSliderNavClick()}
+            onClick={onSliderNavPrevClick}
           />
           <div
             ref={nextBtn}
             className={styles.sliderNavNext}
-            onClick={onSliderNavClick()}
+            onClick={onSliderNavNextClick}
           />
         </div>
       </Modal>
