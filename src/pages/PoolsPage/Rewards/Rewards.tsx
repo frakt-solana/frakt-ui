@@ -8,7 +8,7 @@ import styles from './styles.module.scss';
 import {
   caclLiquiditySecondRewars,
   calcLiquidityRewards,
-  ProgramAccountData,
+  FusionPoolInfo,
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
@@ -17,13 +17,13 @@ interface RewardsInterface {
   baseToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
-  programAccount: ProgramAccountData;
+  fusionPoolInfo: FusionPoolInfo;
 }
 
-const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
+const Rewards: FC<RewardsInterface> = ({ baseToken, fusionPoolInfo }) => {
   const { harvestLiquidity, harvestSecondaryLiquidity } = useLiquidityPools();
   const { mainRouter, stakeAccount, secondaryReward, secondaryStakeAccount } =
-    programAccount;
+    fusionPoolInfo;
 
   const onSubmitHandler = async () => {
     await harvestLiquidity({ router: mainRouter, stakeAccount });
@@ -43,17 +43,23 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, programAccount }) => {
             {calcLiquidityRewards(mainRouter, stakeAccount)}{' '}
             <span>{SOL_TOKEN.symbol}</span>
           </p>
-          <p>
-            {secondaryReward.map((secondaryReward) =>
-              caclLiquiditySecondRewars(
-                stakeAccount,
-                secondaryReward,
-                secondaryStakeAccount,
-                mainRouter,
-              ),
-            )}{' '}
-            <span>{baseToken.symbol}</span>
-          </p>
+          <div>
+            <div className={styles.rewardInfo}>
+              {secondaryReward.map((secondaryReward) => (
+                <span key={secondaryReward.tokenMint}>
+                  <span>
+                    {caclLiquiditySecondRewars(
+                      stakeAccount,
+                      secondaryReward,
+                      secondaryStakeAccount,
+                      mainRouter,
+                    )}
+                  </span>{' '}
+                  <span>{baseToken.symbol}</span>
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
         <Button
           type="tertiary"

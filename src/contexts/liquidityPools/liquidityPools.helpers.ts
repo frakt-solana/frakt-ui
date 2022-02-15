@@ -1,6 +1,4 @@
-import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools/constants';
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
-
 import {
   CurrencyAmount,
   Liquidity,
@@ -11,18 +9,16 @@ import {
   TokenAmount,
   WSOL,
 } from '@raydium-io/raydium-sdk';
+import BN from 'bn.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection, PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
 
 import { SOL_TOKEN } from '../../utils';
-
 import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
 import {
   FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
-  ProgramAccountData,
   ProgramAccountsData,
   RaydiumPoolInfo,
   RaydiumPoolInfoMap,
@@ -177,44 +173,4 @@ export const fetchProgramAccounts = async ({
   );
 
   return allProgramAccounts;
-};
-
-export const getProgramAccountByRouter = async (
-  routerPubkeys: string,
-  connection: Connection,
-): Promise<ProgramAccountData> => {
-  const allProgramAccounts = await fetchProgramAccounts({
-    vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
-    connection,
-  });
-
-  const {
-    mainRouters,
-    stakeAccounts,
-    secondaryRewards,
-    secondaryStakeAccounts,
-  } = allProgramAccounts;
-
-  const routerAccount = mainRouters.find(
-    ({ mainRouterPubkey }) => mainRouterPubkey === routerPubkeys,
-  );
-
-  const secondaryReward = secondaryRewards.filter(
-    ({ routerPubkey }) => routerPubkey === routerPubkeys,
-  );
-
-  const stakeAccount = stakeAccounts.filter(
-    ({ routerPubkey }) => routerPubkey === routerPubkeys,
-  );
-
-  const confirmStakeAccount = stakeAccount.find(
-    ({ isStaked }) => isStaked === true,
-  );
-
-  return {
-    mainRouter: routerAccount,
-    stakeAccount: confirmStakeAccount,
-    secondaryReward,
-    secondaryStakeAccount: secondaryStakeAccounts[0],
-  };
 };

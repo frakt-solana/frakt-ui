@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
+import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
 import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -11,7 +12,6 @@ import Pool from './Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
-import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
 import { poolsDataTest, raydiumPoolInfoTest } from './testPoolData';
 
 const PoolsPage: FC = () => {
@@ -25,9 +25,11 @@ const PoolsPage: FC = () => {
     searchItems,
     activePoolTokenAddress,
     onPoolCardClick,
-    programAccount,
+    fusionPoolInfoMap,
     poolsStatsByMarketId,
   } = usePoolsPage();
+
+  console.log(fusionPoolInfoMap);
 
   return (
     <AppLayout>
@@ -69,7 +71,7 @@ const PoolsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={!programAccount}
+          isLoading={!fusionPoolInfoMap.size}
           emptyMessage={'No Liquidity pool found'}
         >
           {poolsDataTest.map(({ poolData, poolStatsTest }) => (
@@ -88,7 +90,9 @@ const PoolsPage: FC = () => {
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)
               }
-              programAccount={programAccount}
+              fusionPoolInfo={fusionPoolInfoMap.get(
+                poolData.poolConfig.lpMint.toBase58(),
+              )}
             />
           ))}
         </FakeInfinityScroll>

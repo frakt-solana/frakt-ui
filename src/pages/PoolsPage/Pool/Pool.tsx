@@ -2,32 +2,32 @@ import { FC, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
-import DepositModal from '../../../components/DepositModal';
+import { useLazyFusionPools } from '../hooks/useLazyFusionPools';
 import { useWalletModal } from '../../../contexts/WalletModal';
+import { useUserSplAccount } from '../../../utils/accounts';
+import DepositModal from '../../../components/DepositModal';
 import { ChevronDownIcon } from '../../../icons';
-import styles from './styles.module.scss';
+import { usePolling } from '../../../hooks';
 import { SOL_TOKEN } from '../../../utils';
+import styles from './styles.module.scss';
 import {
   formatNumberWithSpaceSeparator,
   PoolData,
-  ProgramAccountData,
+  FusionPoolInfo,
   RaydiumPoolInfo,
 } from '../../../contexts/liquidityPools';
 import { PoolStats } from '../hooks';
-import { useUserSplAccount } from '../../../utils/accounts';
 import {
   PoolDetailsWalletConnected,
   PoolDetailsWalletDisconnected,
 } from './components';
-import { usePolling } from '../../../hooks';
-import { useLazyProgramAccount } from '../hooks/useLazyProgramAccount';
 interface PoolInterface {
   poolData: PoolData;
   raydiumPoolInfo: RaydiumPoolInfo;
   poolStats: PoolStats;
   isOpen: boolean;
   onPoolCardClick?: () => void;
-  programAccount: ProgramAccountData;
+  fusionPoolInfo: FusionPoolInfo;
 }
 
 const POOL_INFO_POLLING_INTERVAL = 10_000;
@@ -38,12 +38,12 @@ const Pool: FC<PoolInterface> = ({
   raydiumPoolInfo,
   onPoolCardClick = () => {},
   poolStats,
-  programAccount,
+  fusionPoolInfo,
 }) => {
   const { tokenInfo, poolConfig } = poolData;
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const { fetchProgramAccountInfo } = useLazyProgramAccount();
+  const { fetchProgramAccountInfo } = useLazyFusionPools();
 
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
@@ -55,9 +55,7 @@ const Pool: FC<PoolInterface> = ({
   } = useUserSplAccount();
 
   const poll = async () => {
-    await fetchProgramAccountInfo(
-      'EsF2vf7bQAs4JEm6WkNRvDcgKziskFYc7Zp87mEQCckb',
-    );
+    await fetchProgramAccountInfo([poolData.poolConfig.lpMint.toBase58()]);
   };
 
   const { isPolling, startPolling, stopPolling } = usePolling(
@@ -126,7 +124,7 @@ const Pool: FC<PoolInterface> = ({
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
           className={styles.poolDetails}
-          programAccount={programAccount}
+          fusionPoolInfo={fusionPoolInfo}
         />
       )}
       {isOpen && !connected && (
@@ -141,7 +139,7 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
-        programAccount={programAccount}
+        fusionPoolInfo={fusionPoolInfo}
         poolStats={poolStats}
       />
     </div>

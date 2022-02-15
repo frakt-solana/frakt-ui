@@ -3,7 +3,7 @@ import Button from '../../../../../components/Button';
 
 import {
   PoolData,
-  ProgramAccountData,
+  FusionPoolInfo,
   RaydiumPoolInfo,
 } from '../../../../../contexts/liquidityPools';
 import { AccountInfoParsed } from '../../../../../utils/accounts';
@@ -17,7 +17,7 @@ interface PoolDetailsWalletConnectedProps {
   raydiumPoolInfo: RaydiumPoolInfo;
   lpTokenAccountInfo?: AccountInfoParsed;
   className?: string;
-  programAccount: ProgramAccountData;
+  fusionPoolInfo: FusionPoolInfo;
 }
 
 export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
@@ -27,7 +27,7 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
     raydiumPoolInfo,
     lpTokenAccountInfo,
     className,
-    programAccount,
+    fusionPoolInfo,
   }) => {
     const { tokenInfo, poolConfig } = poolData;
 
@@ -43,7 +43,7 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
           baseToken={tokenInfo}
           poolConfig={poolConfig}
           raydiumPoolInfo={raydiumPoolInfo}
-          programAccount={programAccount}
+          fusionPoolInfo={fusionPoolInfo}
         />
         <Button
           onClick={() => setDepositModalVisible(true)}

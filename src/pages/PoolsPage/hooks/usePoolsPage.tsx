@@ -10,12 +10,12 @@ import {
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
-  ProgramAccountData,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../styles.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
-import { useLazyProgramAccount } from './useLazyProgramAccount';
+import { FusionPoolInfoByMint, useLazyFusionPools } from './useLazyFusionPools';
+import { poolConfigsTest } from '../testPoolData';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -45,7 +45,7 @@ export const usePoolsPage = (): {
   activePoolTokenAddress: string | null;
   onPoolCardClick: (tokenAddress: string) => void;
   userLpBalanceByMint: LpBalanceByMint;
-  programAccount: ProgramAccountData;
+  fusionPoolInfoMap: FusionPoolInfoByMint;
   poolsStatsByMarketId: PoolsStatsByMarketId;
 } => {
   const { control, watch } = useForm({
@@ -66,19 +66,10 @@ export const usePoolsPage = (): {
   const showAwardedOnly = watch(InputControlsNames.SHOW_AWARDED_ONLY);
   const showStaked = watch(InputControlsNames.SHOW_STAKED);
 
-  const {
-    poolDataByMint,
-    loading: poolDataByMintLoading,
-    programAccounts,
-  } = useLiquidityPools();
+  const { poolDataByMint, loading: poolDataByMintLoading } =
+    useLiquidityPools();
 
-  const { programAccount, fetchProgramAccountInfo } = useLazyProgramAccount();
-
-  useEffect(() => {
-    if (programAccounts) {
-      fetchProgramAccountInfo('EsF2vf7bQAs4JEm6WkNRvDcgKziskFYc7Zp87mEQCckb');
-    }
-  }, [programAccounts]);
+  const { fusionPoolInfoMap, fetchProgramAccountInfo } = useLazyFusionPools();
 
   const rawPoolsData = useMemo(() => {
     return poolDataByMint.size ? Array.from(poolDataByMint.values()) : [];
@@ -119,6 +110,16 @@ export const usePoolsPage = (): {
 
       fetchPoolsInfoMap(poolConfigs);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawPoolsData]);
+
+  useEffect(() => {
+    // if (rawPoolsData.length) {
+    const lpMints = poolConfigsTest.map((poolConfig) =>
+      poolConfig.lpMint.toBase58(),
+    );
+    fetchProgramAccountInfo(lpMints);
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawPoolsData]);
 
@@ -214,7 +215,7 @@ export const usePoolsPage = (): {
     activePoolTokenAddress,
     onPoolCardClick,
     userLpBalanceByMint,
-    programAccount,
+    fusionPoolInfoMap,
     poolsStatsByMarketId,
   };
 };

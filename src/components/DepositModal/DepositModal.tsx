@@ -12,7 +12,7 @@ import { SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
 import {
-  ProgramAccountData,
+  FusionPoolInfo,
   formatNumberToCurrency,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
@@ -24,7 +24,7 @@ interface DepositModalProps {
   onCancel: () => void;
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
-  programAccount: ProgramAccountData;
+  fusionPoolInfo: FusionPoolInfo;
   poolStats: PoolStats;
 }
 
@@ -34,7 +34,7 @@ const DepositModal: FC<DepositModalProps> = ({
   onCancel,
   tokenInfo,
   poolConfig,
-  programAccount,
+  fusionPoolInfo,
   poolStats,
 }) => {
   const {
@@ -54,8 +54,8 @@ const DepositModal: FC<DepositModalProps> = ({
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
-    if (programAccount) {
-      const { mainRouter } = programAccount;
+    if (fusionPoolInfo) {
+      const { mainRouter } = fusionPoolInfo;
 
       await addRaydiumLiquidity({
         baseToken: tokenInfo,

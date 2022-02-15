@@ -93,7 +93,7 @@ export interface ProgramAccountsData {
   stakeAccounts: StakeAccountView[];
 }
 
-export interface ProgramAccountData {
+export interface FusionPoolInfo {
   mainRouter: MainRouterView;
   stakeAccount: StakeAccountView;
   secondaryReward: SecondaryRewardView[];

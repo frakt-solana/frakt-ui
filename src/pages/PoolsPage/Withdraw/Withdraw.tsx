@@ -12,7 +12,7 @@ import { SOL_TOKEN } from '../../../utils';
 import Button from '../../../components/Button';
 import styles from './styles.module.scss';
 import {
-  ProgramAccountData,
+  FusionPoolInfo,
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
@@ -22,7 +22,7 @@ interface WithdrawInterface {
   baseToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
-  programAccount?: ProgramAccountData;
+  programAccount?: FusionPoolInfo;
   lpTokenAccountInfo: AccountInfoParsed;
 }
 
