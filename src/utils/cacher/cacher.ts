@@ -2,8 +2,10 @@ import BN from 'bn.js';
 
 import { VaultData } from '../../contexts/fraktion';
 import { DEPRECATED_MARKETS } from '../markets';
+import { NftPoolData } from './nftPools';
+import { parseRawNftPools } from './nftPools/nftPools.helpers';
 
-export const IS_BFF_ENABLED = process.env.REACT_APP_DISABLE_BFF;
+export const IS_BFF_ENABLED = !process.env.REACT_APP_DISABLE_BFF;
 
 const CACHER_URL = process.env.REACT_APP_BFF_URL;
 
@@ -58,6 +60,13 @@ class API {
           programId: REACT_APP_SERUM_MARKET_PROGRAM_PUBKEY,
         };
       });
+  }
+
+  public async getNftPools(): Promise<NftPoolData[]> {
+    const res = await fetch(`${CACHER_URL}/nft-pools`);
+    const rawPoolsData = await res.json();
+
+    return parseRawNftPools(rawPoolsData);
   }
 }
 

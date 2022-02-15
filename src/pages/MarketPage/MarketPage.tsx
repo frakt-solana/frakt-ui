@@ -42,8 +42,6 @@ const MarketPage = (): JSX.Element => {
 
   const { initialFetch, poolsState, loading } = useNftPools();
 
-  console.log(poolsState);
-
   useEffect(() => {
     initialFetch();
   }, []);

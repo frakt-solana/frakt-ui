@@ -9,6 +9,7 @@ import {
 } from './nftPools.model';
 import { getAllProgramAccounts } from './nftPools';
 import { DEFAULT_POOLS_STATE } from './nftPools.constants';
+import { Cacher } from '../../utils/cacher';
 
 export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   poolsState: DEFAULT_POOLS_STATE,
@@ -32,8 +33,10 @@ export const NftPoolsProvider = ({
   const initialFetch: FetchDataFunc = async () => {
     try {
       setLoading(true);
-      const info = await getAllProgramAccounts({ connection });
-      setPoolsState(info);
+      await Cacher.getNftPools();
+
+      // const info = await getAllProgramAccounts({ connection });
+      // setPoolsState(info);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
