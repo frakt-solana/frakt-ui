@@ -1,5 +1,8 @@
 import { GetVaults, Vault, VaultData } from './fraktion.model';
-import { VAULTS_AND_META_CACHE_URL } from './fraktion.constants';
+import {
+  VAULTS_AND_META_CACHE_URL,
+  ADDITIONAL_VERIFIED_VAULTS,
+} from './fraktion.constants';
 import {
   getVaultState,
   mapAuctionsByVaultPubkey,
@@ -45,9 +48,12 @@ export const getVaultsFromOldCacher: GetVaults = async (markets) => {
     );
 
     //? Vault verified only if all nfts are verified
-    const isVaultVerified = relatedSafetyBoxesWithMetadata.every(
-      ({ isNftVerified }) => isNftVerified,
-    );
+    //? Added short-term solution to verify vaults
+    const isVaultVerified =
+      ADDITIONAL_VERIFIED_VAULTS.includes(vaultPubkey) ||
+      relatedSafetyBoxesWithMetadata.every(
+        ({ isNftVerified }) => isNftVerified,
+      );
 
     return {
       ...vault,
