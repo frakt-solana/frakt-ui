@@ -1,5 +1,11 @@
 .wrapper {
   padding-bottom: 100px;
+
+  :global {
+    .infinite-scroll-component {
+      overflow: unset !important;
+    }
+  }
 }
 
 .nftList {

@@ -17,6 +17,9 @@ import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../../constants';
 import { copyToClipboard, getCollectionThumbnailUrl } from '../../../utils';
 import Tooltip from '../../../components/Tooltip';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../../components/FakeInfinityScroll';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -34,6 +37,7 @@ export const NFTList: FC<NFTListProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(1);
   const [swiper, setSwiper] = useState(null);
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
 
   const safetyBoxesWithCollectionData: Array<
     SafetyBoxWithMetadata & { collectionInfo: CollectionData }
@@ -63,9 +67,15 @@ export const NFTList: FC<NFTListProps> = ({
 
   return (
     <div className={styles.wrapper}>
-      <ul className={classNames(styles.nftList, className)}>
+      <FakeInfinityScroll
+        itemsToShow={itemsToShow}
+        next={next}
+        isLoading={false}
+        wrapperClassName={classNames(styles.nftList, className)}
+        emptyMessage="No NFTs found"
+      >
         {safetyBoxes.map((nft, index) => (
-          <li
+          <div
             className={styles.nftListItem}
             key={nft.nftMint}
             onClick={onNftItemClick(index)}
@@ -81,9 +91,9 @@ export const NFTList: FC<NFTListProps> = ({
                 {shortenAddress(nft.nftMint)}
               </span>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </FakeInfinityScroll>
       <Modal
         visible={isModalVisible}
         className={styles.modal}
