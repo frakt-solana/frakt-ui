@@ -71,7 +71,7 @@ export const MobileMenu = (): JSX.Element => {
             <NavigationLink to={PATHS.COLLECTIONS}>Collections</NavigationLink>
           </li>
           <li>
-            <NavigationLink to={PATHS.LIQUIDITY}>Liquidity</NavigationLink>
+            <NavigationLink to={PATHS.YIELD}>Yield</NavigationLink>
           </li>
           {connected && (
             <li>

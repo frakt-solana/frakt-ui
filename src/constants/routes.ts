@@ -63,7 +63,7 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: PATHS.LIQUIDITY,
+    path: PATHS.YIELD,
     component: PoolsPage,
   },
   {

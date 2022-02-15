@@ -123,6 +123,10 @@ const VaultsPage = (): JSX.Element => {
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
+        <h1 className={styles.title}>Vaults</h1>
+        <h2 className={styles.subtitle}>
+          Create, buy and sell fraktions of NFT
+        </h2>
         <SearchInput
           size="large"
           onChange={(e) => searchItems(e.target.value || '')}
