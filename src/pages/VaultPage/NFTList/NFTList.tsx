@@ -1,5 +1,11 @@
 import { FC, useRef, useState } from 'react';
-import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
+import SwiperCore, {
+  FreeMode,
+  Navigation,
+  Scrollbar,
+  Thumbs,
+  Lazy,
+} from 'swiper';
 
 import styles from './styles.module.scss';
 import { SafetyBoxWithMetadata } from '../../../contexts/fraktion';
@@ -10,6 +16,7 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import 'swiper/swiper.min.css';
 import 'swiper/modules/navigation/navigation.scss';
 import 'swiper/modules/pagination/pagination.scss';
+import 'swiper/modules/lazy/lazy.scss';
 import 'swiper/modules/thumbs/thumbs';
 import { CopyClipboardIcon, CloseModalIcon } from '../../../icons';
 import { CollectionData } from '../../../utils/collections';
@@ -21,7 +28,7 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../components/FakeInfinityScroll';
 
-SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
+SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar, Lazy]);
 
 interface NFTListProps {
   safetyBoxes?: SafetyBoxWithMetadata[];
@@ -123,12 +130,13 @@ export const NFTList: FC<NFTListProps> = ({
             initialSlide={currentSlide}
             onSwiper={setSwiper}
             autoHeight={true}
+            lazy
           >
             {safetyBoxesWithCollectionData.map((slide) => (
               <SwiperSlide key={slide.nftMint} className={styles.slide}>
                 <div
-                  style={{ backgroundImage: `url(${slide.nftImage})` }}
-                  className={styles.slideImage}
+                  data-background={slide.nftImage}
+                  className={`${styles.slideImage} swiper-lazy`}
                 />
                 <div className={styles.slideInfoBlock}>
                   {slide.collectionInfo?.collectionName && (

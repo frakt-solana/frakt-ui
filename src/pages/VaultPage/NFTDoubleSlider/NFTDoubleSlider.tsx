@@ -4,12 +4,19 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import 'swiper/swiper.min.css';
 import 'swiper/modules/navigation/navigation.scss';
 import 'swiper/modules/pagination/pagination.scss';
+import 'swiper/modules/lazy/lazy.scss';
 import 'swiper/modules/thumbs/thumbs';
-import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
+import SwiperCore, {
+  FreeMode,
+  Navigation,
+  Scrollbar,
+  Thumbs,
+  Lazy,
+} from 'swiper';
 import { HashLink as AnchorLink } from 'react-router-hash-link';
 import { SafetyBoxWithMetadata, VaultData } from '../../../contexts/fraktion';
 
-SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
+SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar, Lazy]);
 
 const THUMBS_SLIDER_BREAKPOINTS = {
   240: { slidesPerView: 2.5 },
@@ -49,12 +56,13 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
         slidesPerView={1}
         className={styles.sliderBig}
         thumbs={{ swiper: thumbsSwiper }}
+        lazy
       >
         {safetyBoxes.map((box) => (
           <SwiperSlide key={box.nftMint}>
             <div
-              className={styles.slideBig}
-              style={{ backgroundImage: `url(${box.nftImage})` }}
+              className={`${styles.slideBig} swiper-lazy`}
+              data-background={box.nftImage}
             />
           </SwiperSlide>
         ))}
@@ -68,6 +76,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
             navigation={true}
             scrollbar={{ draggable: true }}
             onSwiper={setThumbsSwiper}
+            lazy
           >
             {safetyBoxes.map((box, index) => (
               <SwiperSlide
@@ -79,8 +88,8 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
                 )}
               >
                 <div
-                  className={styles.slideSmall}
-                  style={{ backgroundImage: `url(${box.nftImage})` }}
+                  className={`${styles.slideSmall} swiper-lazy`}
+                  data-background={box.nftImage}
                 />
               </SwiperSlide>
             ))}
