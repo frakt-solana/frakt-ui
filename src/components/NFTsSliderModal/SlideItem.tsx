@@ -1,13 +1,13 @@
 import styles from './styles.module.scss';
 import { NavLink } from 'react-router-dom';
-import { PATHS } from '../../../constants';
-import { copyToClipboard, getCollectionThumbnailUrl } from '../../../utils';
-import { shortenAddress } from '../../../utils/solanaUtils';
-import Tooltip from '../../../components/Tooltip';
-import { CopyClipboardIcon } from '../../../icons/CopyClipboardIcon';
-import { FC } from 'react';
-import { SafetyBoxWithMetadata } from '../../../contexts/fraktion';
-import { CollectionData } from '../../../utils/collections';
+import { PATHS } from '../../constants';
+import { copyToClipboard, getCollectionThumbnailUrl } from '../../utils';
+import { shortenAddress } from '../../utils/solanaUtils';
+import Tooltip from '../Tooltip';
+import { CopyClipboardIcon } from '../../icons/CopyClipboardIcon';
+import React, { FC } from 'react';
+import { SafetyBoxWithMetadata } from '../../contexts/fraktion';
+import { CollectionData } from '../../utils/collections';
 
 interface SlideItemProps {
   slide: SafetyBoxWithMetadata & { collectionInfo: CollectionData };
