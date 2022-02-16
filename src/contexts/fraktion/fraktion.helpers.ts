@@ -1,5 +1,6 @@
 import { keyBy, groupBy, Dictionary } from 'lodash';
 import BN from 'bn.js';
+import moment from 'moment';
 
 import {
   Auction,
@@ -14,9 +15,9 @@ import {
   SafetyBoxWithMetadata,
   RawNftMetadata,
   NftMetadata,
+  VaultState,
 } from './fraktion.model';
-import { VaultState } from '.';
-import moment from 'moment';
+import { UserNFT } from '../userTokens';
 
 export const mapAuctionsByVaultPubkey = (
   rawAuctions: RawAuction[] = [],
@@ -206,4 +207,25 @@ export const getVaultState = (
   }
 
   return vaultState;
+};
+
+export const safetyBoxWithNftMetadataToUserNFT = (
+  safetyBox: SafetyBoxWithMetadata,
+): UserNFT => {
+  const { nftAttributes, nftDescription, nftImage, nftMint, nftName } =
+    safetyBox;
+
+  return {
+    mint: nftMint,
+    metadata: {
+      name: nftName,
+      symbol: nftName,
+      description: nftDescription,
+      image: nftImage,
+      animation_url: nftImage,
+      external_url: '',
+      attributes: nftAttributes,
+      properties: {},
+    },
+  };
 };

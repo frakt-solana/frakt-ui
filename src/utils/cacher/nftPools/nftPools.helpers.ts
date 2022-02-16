@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import { groupBy, keyBy, Dictionary } from 'lodash';
 
+import { UserNFT } from '../../../contexts/userTokens';
 import {
   AnchorState,
   RawCommunityPool,
@@ -128,6 +129,27 @@ const getSafetyDepositBoxWithNftMetadata = (
   );
 
   return safetyDepositBoxWithNftMetadata;
+};
+
+export const safetyDepositBoxWithNftMetadataToUserNFT = (
+  safetyBox: SafetyDepositBoxWithNftMetadata,
+): UserNFT => {
+  const { nftAttributes, nftDescription, nftImage, nftMint, nftName } =
+    safetyBox;
+
+  return {
+    mint: nftMint.toBase58(),
+    metadata: {
+      name: nftName,
+      symbol: nftName,
+      description: nftDescription,
+      image: nftImage,
+      animation_url: nftImage,
+      external_url: '',
+      attributes: nftAttributes,
+      properties: {},
+    },
+  };
 };
 
 export const parseRawNftPools = (

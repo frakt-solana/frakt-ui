@@ -16,6 +16,7 @@ import { useNftPool } from '../../contexts/nftPools/nftPools.hooks';
 import { Loader } from '../../components/Loader';
 import { UserNFT } from '../../contexts/userTokens';
 import { NFTsList } from '../../components/NFTsList';
+import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../utils/cacher/nftPools/nftPools.helpers';
 
 const MarketBuyPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -33,21 +34,7 @@ const MarketBuyPage = (): JSX.Element => {
 
   const nfts: UserNFT[] = useMemo(() => {
     if (pool) {
-      return pool.safetyBoxes.map(
-        ({ nftAttributes, nftDescription, nftImage, nftMint, nftName }) => ({
-          mint: nftMint.toBase58(),
-          metadata: {
-            name: nftName,
-            symbol: nftName,
-            description: nftDescription,
-            image: nftImage,
-            animation_url: nftImage,
-            external_url: '',
-            attributes: nftAttributes,
-            properties: {},
-          },
-        }),
-      );
+      return pool.safetyBoxes.map(safetyDepositBoxWithNftMetadataToUserNFT);
     }
 
     return [];

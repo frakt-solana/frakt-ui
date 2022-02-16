@@ -122,16 +122,29 @@ export interface ArweaveAttribute {
   value: number | string;
 }
 
+interface NFTCreator {
+  address: string;
+  share: number;
+}
+
+interface NFTFile {
+  type: string;
+  uri: string;
+}
+
 export interface ArweaveMetadata {
   name: string;
   symbol: string;
   description: string;
   seller_fee_basis_points?: number;
   image: string;
-  animation_url: string;
-  external_url: string;
+  animation_url?: string;
+  external_url?: string;
   attributes: ArweaveAttribute[];
-  properties: any;
+  properties?: {
+    creators?: NFTCreator[];
+    files?: NFTFile[];
+  };
 }
 
 export const copyToClipboard = (value: string): void => {

@@ -1,5 +1,6 @@
 import styles from './styles.module.scss';
-import { FC, useState } from 'react';
+import { Dictionary } from 'lodash';
+import { FC } from 'react';
 
 import { UserNFT } from '../../contexts/userTokens';
 import { NFTCard } from '../NFTCard';
@@ -7,34 +8,36 @@ import { ModalNFTsSlider } from '../ModalNFTsSlider';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../FakeInfinityScroll';
+import { CollectionData } from '../../utils/collections';
+import { useModalNFTsSlider } from '../ModalNFTsSlider/hooks';
 
 interface NFTsListProps {
   nfts: UserNFT[];
+  collectionByNftMint?: Dictionary<CollectionData>;
   onCardClick?: (nft: UserNFT) => void;
 }
 
 export const NFTsList: FC<NFTsListProps> = ({
   nfts,
   onCardClick = () => {},
+  collectionByNftMint = {},
 }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(1);
-  const [swiper, setSwiper] = useState(null);
-
-  const slideTo = (index: number) => {
-    if (swiper) swiper.slideTo(index);
-  };
+  const {
+    isModalVisible,
+    setIsModalVisible,
+    currentSlide,
+    setCurrentSlide,
+    slideTo,
+    onSliderNavClick,
+    setSwiper,
+  } = useModalNFTsSlider();
 
   const onNftItemClick = (index: number) => () => {
     setIsModalVisible(true);
     setCurrentSlide(index);
     slideTo(index);
-  };
-
-  const onSliderNavClick = () => () => {
-    if (swiper) setCurrentSlide(swiper.activeIndex);
   };
 
   return (
@@ -59,7 +62,7 @@ export const NFTsList: FC<NFTsListProps> = ({
         isModalVisible={isModalVisible}
         currentSlide={currentSlide}
         nfts={nfts}
-        nftCollections={[]}
+        collectionByNftMint={collectionByNftMint}
         onSliderNavClick={onSliderNavClick}
         setIsModalVisible={setIsModalVisible}
         setSwiper={setSwiper}
