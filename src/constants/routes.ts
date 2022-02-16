@@ -13,11 +13,12 @@ import {
   CollectionsPage,
   CollectionPage,
 } from '../pages';
+import Roulette from '../components/Roulette';
 
 interface Route {
   path: string;
   exact: boolean;
-  component: FC;
+  component: any;
 }
 
 export const routes: Route[] = [
@@ -60,6 +61,11 @@ export const routes: Route[] = [
     exact: true,
     path: `${PATHS.COLLECTION}${PATHS.COLLECTION_NAME}`,
     component: CollectionPage,
+  },
+  {
+    exact: true,
+    path: '/slider',
+    component: Roulette,
   },
   {
     exact: true,

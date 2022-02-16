@@ -1,0 +1,198 @@
+$card-width: 23.541667vw;
+$cards-count: 19;
+$cards-shift-count: 14;
+// $cards-spaces-count: 18;
+$card-container-width: calc($card-width * $cards-count);
+// $base-carousel-shift: calc($card-width/(-2));
+$base-carousel-shift: (100vw - $card-width * 5) /2;
+// $base-carousel-shift: 0px;
+
+$shift-card-container-includes-card-width: (-1) * $card-width *
+  $cards-shift-count;
+
+$shift-card-container-includes-spaces-width: (-1) * $card-width;
+
+$shift-card-container: calc(
+  $base-carousel-shift + $shift-card-container-includes-card-width
+);
+$scale-animation-duration: 0.5s;
+
+$cards-setup: no-animation $scale-animation-duration 0s,
+  scale-card-from-75-to-100 calc($scale-animation-duration * 2) 0s,
+  scale-card-from-50-to-100 calc($scale-animation-duration * 3) 0s,
+  scale-card-from-25-to-100 calc($scale-animation-duration * 4) 0s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 0.5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 1s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 1.5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 2s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 2.5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 3s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 3.5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 4s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 4.5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 5.5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 6s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 6.5s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 7s,
+  scale-card-from-0-to-100 calc($scale-animation-duration * 5) 7.5s;
+
+@mixin setupAnimation($animtaion, $duration, $delay) {
+  @if $animtaion != no-animation {
+    animation-name: $animtaion;
+    animation-duration: $duration;
+    animation-delay: $delay;
+    animation-timing-function: linear;
+  }
+}
+.carousel {
+  position: relative;
+  // overflow: hidden;
+  height: $card-width;
+  width: 100vw;
+}
+.carousel-container {
+  position: absolute;
+  display: flex;
+  animation-name: spin-courusel;
+  animation-duration: 7.5s;
+  // animation-duration: 8s;
+  animation-timing-function: linear;
+  animation-direction: normal;
+  animation-delay: 0.5s;
+  // animation-iteration-count: infinite;
+  transition: translate;
+  transition-property: transform;
+  // transition-duration: 7.5s;
+  // transition-timing-function: linear;
+  transform: translateX($base-carousel-shift);
+}
+
+.card {
+  position: relative;
+  width: $card-width;
+  height: $card-width;
+  transform: scale(0.82066869);
+  &:last-child {
+    margin-right: 0.00111111vh;
+  }
+}
+
+.card_image_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 97.050147%;
+  height: 97.050147%;
+  border: 1px solid var(--gray-color-3);
+  z-index: 1;
+}
+
+.card_image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.card_background {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 97.345133%;
+  height: 97.345133%;
+  background-color: var(--black-color);
+  border: 1px solid var(--gray-color-3);
+}
+
+@for $i from 1 through length($cards-setup) {
+  $cards-item: nth($cards-setup, $i);
+  .card#{$i - 1} {
+    @include setupAnimation(
+      nth($cards-item, 1),
+      nth($cards-item, 2),
+      nth($cards-item, 3)
+    );
+  }
+}
+
+// .card0 {
+//   @include setupAnimation(scale-card, 2s);
+// }
+
+@keyframes spin-courusel {
+  from {
+    transform: translateX($base-carousel-shift);
+  }
+  to {
+    transform: translateX($shift-card-container);
+  }
+}
+
+// @keyframes scale-card {
+//   0% {
+//     transform: scale(0.82066869);
+//   }
+//   // 25% {
+//   //   transform: scale(0.91033434);
+//   // }
+//   50% {
+//     transform: scale(1);
+//   }
+//   // 75% {
+//   //   transform: scale(0.91033434);
+//   // }
+//   100% {
+//     transform: scale(0.82066869);
+//   }
+// }
+
+@keyframes scale-card-from-75-to-100 {
+  from {
+    transform: scale(0.91033434);
+  }
+  to {
+    transform: scale(0.82066869);
+  }
+}
+
+@keyframes scale-card-from-50-to-100 {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.82066869);
+  }
+}
+
+@keyframes scale-card-from-25-to-100 {
+  0% {
+    transform: scale(0.91033434);
+  }
+  33.33% {
+    transform: scale(1);
+  }
+  66.66% {
+    transform: scale(0.91033434);
+  }
+  100% {
+    transform: scale(0.82066869);
+  }
+}
+
+@keyframes scale-card-from-0-to-100 {
+  0% {
+    transform: scale(0.82066869);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.82066869);
+  }
+}
+
+// 0.8
+// 0.9
+// 1
+// 0.9
+// 0.8
