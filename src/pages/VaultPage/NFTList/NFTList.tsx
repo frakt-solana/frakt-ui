@@ -73,41 +73,8 @@ export const NFTList: FC<NFTListProps> = ({
     }
   };
 
-  const prependSlides = (slides: number) => {
-    const slidesToAdd = safetyBoxes.slice(currentSlide - slides, currentSlide);
-    // console.log(currentSlide, slidesToAdd);
-    setSlidesToShow([...slidesToAdd, ...slidesToShow]);
-  };
-
-  const appendSlides = (slides: number) => {
-    const slidesToAdd = safetyBoxes.slice(currentSlide, currentSlide + slides);
-    setSlidesToShow([...slidesToShow, ...slidesToAdd]);
-  };
-
-  const onSliderNavPrevClick = () => {
-    if (safetyBoxes.length >= 30) {
-      if (currentSlide <= 0) return;
-      setCurrentSlide(currentSlide - 1);
-      // console.log(swiper.activeIndex);
-      if (swiper && swiper.activeIndex === 1) {
-        prependSlides(5);
-        // console.log('prepend');
-      }
-    } else {
-      if (swiper) setCurrentSlide(swiper.activeIndex);
-    }
-  };
-  const onSliderNavNextClick = () => {
-    if (safetyBoxes.length >= 30) {
-      if (currentSlide >= safetyBoxes.length) return;
-      setCurrentSlide(currentSlide + 1);
-      if (swiper && swiper.activeIndex === swiper.slides.length - 1) {
-        console.log(swiper.slides.length);
-        appendSlides(5);
-      }
-    } else {
-      if (swiper) setCurrentSlide(swiper.activeIndex);
-    }
+  const onSlideChange = (swiper) => {
+    setCurrentSlide(swiper.activeIndex);
   };
 
   return (
@@ -168,6 +135,7 @@ export const NFTList: FC<NFTListProps> = ({
             initialSlide={currentSlide}
             onSwiper={setSwiper}
             autoHeight={true}
+            onSlideChange={onSlideChange}
             lazy
           >
             {safetyBoxesWithCollectionData.map((slide) => (
@@ -176,16 +144,8 @@ export const NFTList: FC<NFTListProps> = ({
               </SwiperSlide>
             ))}
           </Swiper>
-          <div
-            ref={prevBtn}
-            className={styles.sliderNavPrev}
-            onClick={onSliderNavPrevClick}
-          />
-          <div
-            ref={nextBtn}
-            className={styles.sliderNavNext}
-            onClick={onSliderNavNextClick}
-          />
+          <div ref={prevBtn} className={styles.sliderNavPrev} />
+          <div ref={nextBtn} className={styles.sliderNavNext} />
         </div>
       </Modal>
     </div>
