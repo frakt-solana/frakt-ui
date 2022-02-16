@@ -1,22 +1,27 @@
 .radio {
   :global {
-    .ant-checkbox {
+    .ant-radio {
       + span {
         padding-left: 5px;
       }
 
-      .ant-checkbox-inner {
+      .ant-radio-inner {
         width: 18px;
         height: 18px;
         border: var(--border-gray-1);
-        border-radius: 0;
       }
     }
 
-    .ant-checkbox-wrapper:hover .ant-checkbox-inner,
-    .ant-checkbox-checked .ant-checkbox-inner,
-    .ant-checkbox:hover .ant-checkbox-inner,
-    .ant-checkbox-input:focus + .ant-checkbox-inner {
+    .ant-radio-inner::after {
+      top: 4px;
+      left: 4px;
+      background-color: var(--white-color);
+    }
+
+    .ant-radio-wrapper:hover .ant-radio-inner,
+    .ant-radio-checked .ant-radio-inner,
+    .ant-radio:hover .ant-radio-inner,
+    .ant-radio-input:focus + .ant-radio-inner {
       border-color: var(--accent-color-1);
       background-color: var(--accent-shadow-color);
     }

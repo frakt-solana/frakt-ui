@@ -13,6 +13,11 @@
       }
     }
 
+    .ant-checkbox-inner::after {
+      top: 7px;
+      left: 4px;
+    }
+
     .ant-checkbox-wrapper:hover .ant-checkbox-inner,
     .ant-checkbox-checked .ant-checkbox-inner,
     .ant-checkbox:hover .ant-checkbox-inner,

@@ -42,8 +42,8 @@ export const Sidebar: FC<SidebarProps> = ({
 
   const [currentRadio, setCurrentRadio] = useState<number>(1);
 
-  const changeRadio = () => (event) => {
-    setCurrentRadio(event.current?.value);
+  const changeRadio = (event) => {
+    setCurrentRadio(event.target.value);
   };
 
   return (
@@ -117,10 +117,11 @@ export const Sidebar: FC<SidebarProps> = ({
             <Panel header="tradable" key="1" className={styles.collapseHeader}>
               <Radio.Group
                 className={styles.sidebarList}
-                onChange={changeRadio()}
+                onChange={changeRadio}
                 value={currentRadio}
               >
                 <ul className={styles.sidebarList}>
+                  target
                   <li className={styles.sidebarListItem}>
                     <ControlledRadio
                       control={control}
