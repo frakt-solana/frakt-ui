@@ -42,6 +42,8 @@ interface NFTDoubleSliderProps {
   };
 }
 
+const MAX_SAFETY_BOX_SIZE = 20;
+
 export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
   vaultData,
   safetyBoxes = [],
@@ -52,8 +54,8 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
   const [slidesToShow, setSlidesToShow] = useState<SafetyBoxWithMetadata[]>([]);
 
   useEffect(() => {
-    if (safetyBoxes.length >= 30) {
-      setSlidesToShow(safetyBoxes.slice(0, 30));
+    if (safetyBoxes.length >= MAX_SAFETY_BOX_SIZE) {
+      setSlidesToShow(safetyBoxes.slice(0, MAX_SAFETY_BOX_SIZE));
     } else {
       setSlidesToShow(safetyBoxes);
     }
