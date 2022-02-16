@@ -12,12 +12,12 @@ import {
   FraktionalizePage,
   CollectionsPage,
   CollectionPage,
+  MarketPage,
+  MarketBuyPage,
+  MarketSellPage,
+  MarketSwapPage,
+  MarketInfoPage,
 } from '../pages';
-import MarketPage from '../pages/MarketPage';
-import MarketBuyPage from '../pages/MarketBuyPage';
-import MarketSellPage from '../pages/MarketSellPage';
-import MarketSwapPage from '../pages/MarketSwapPage';
-import MarketInfoPage from '../pages/MarketInfoPage';
 
 interface Route {
   path: string;

@@ -16,7 +16,7 @@ export const BuyIcon = ({
   <svg
     className={className || ''}
     width={width || '15'}
-    height='15'
+    height="15"
     viewBox="0 0 15 15"
     fill="none"
   >
