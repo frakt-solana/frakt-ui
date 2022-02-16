@@ -10,11 +10,12 @@ import {
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
+  useLazyFusionPools,
+  FusionPoolInfoByMint,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../styles.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
-import { FusionPoolInfoByMint, useLazyFusionPools } from './useLazyFusionPools';
 import { poolConfigsTest } from '../testPoolData';
 
 export type LpBalanceByMint = Map<string, BN>;
@@ -69,7 +70,7 @@ export const usePoolsPage = (): {
   const { poolDataByMint, loading: poolDataByMintLoading } =
     useLiquidityPools();
 
-  const { fusionPoolInfoMap, fetchProgramAccountInfo } = useLazyFusionPools();
+  const { fusionPoolInfoMap, fetchFusionPoolsInfo } = useLazyFusionPools();
 
   const rawPoolsData = useMemo(() => {
     return poolDataByMint.size ? Array.from(poolDataByMint.values()) : [];
@@ -118,7 +119,7 @@ export const usePoolsPage = (): {
     const lpMints = poolConfigsTest.map((poolConfig) =>
       poolConfig.lpMint.toBase58(),
     );
-    fetchProgramAccountInfo(lpMints);
+    fetchFusionPoolsInfo(lpMints);
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawPoolsData]);

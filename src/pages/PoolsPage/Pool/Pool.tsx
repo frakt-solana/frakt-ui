@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
-import { useLazyFusionPools } from '../hooks/useLazyFusionPools';
 import { useWalletModal } from '../../../contexts/WalletModal';
 import { useUserSplAccount } from '../../../utils/accounts';
 import DepositModal from '../../../components/DepositModal';
@@ -15,6 +14,7 @@ import {
   PoolData,
   FusionPoolInfo,
   RaydiumPoolInfo,
+  useLazyFusionPools,
 } from '../../../contexts/liquidityPools';
 import { PoolStats } from '../hooks';
 import {
@@ -43,7 +43,7 @@ const Pool: FC<PoolInterface> = ({
   const { tokenInfo, poolConfig } = poolData;
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const { fetchProgramAccountInfo } = useLazyFusionPools();
+  const { fetchFusionPoolsInfo } = useLazyFusionPools();
 
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
@@ -55,7 +55,7 @@ const Pool: FC<PoolInterface> = ({
   } = useUserSplAccount();
 
   const poll = async () => {
-    await fetchProgramAccountInfo([poolData.poolConfig.lpMint.toBase58()]);
+    await fetchFusionPoolsInfo([poolData.poolConfig.lpMint.toBase58()]);
   };
 
   const { isPolling, startPolling, stopPolling } = usePolling(
@@ -84,7 +84,7 @@ const Pool: FC<PoolInterface> = ({
   return (
     <div className={styles.pool}>
       <div className={styles.header}>
-        {/* <div className={styles.awarder}>Awarded</div> */}
+        {fusionPoolInfo && <div className={styles.awarder}>Awarded</div>}
       </div>
       <div className={styles.poolCard} onClick={onPoolCardClick}>
         <div className={styles.tokenInfo}>

@@ -54,25 +54,24 @@ const DepositModal: FC<DepositModalProps> = ({
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
+    await addRaydiumLiquidity({
+      baseToken: tokenInfo,
+      baseAmount,
+      quoteToken: SOL_TOKEN,
+      quoteAmount,
+      poolConfig,
+      fixedSide: liquiditySide,
+    });
+
     if (fusionPoolInfo) {
       const { mainRouter } = fusionPoolInfo;
-
-      await addRaydiumLiquidity({
-        baseToken: tokenInfo,
-        baseAmount,
-        quoteToken: SOL_TOKEN,
-        quoteAmount,
-        poolConfig,
-        fixedSide: liquiditySide,
-      });
 
       await stakeLiquidity({
         amount: new BN(1e6),
         router: mainRouter,
       });
-
-      setVisible(false);
     }
+    setVisible(false);
   };
 
   return (

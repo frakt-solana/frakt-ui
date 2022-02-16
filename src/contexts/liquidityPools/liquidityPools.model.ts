@@ -24,7 +24,6 @@ import {
 export interface LiquidityPoolsContextValues {
   loading: boolean;
   poolDataByMint: PoolDataByMint;
-  programAccounts: ProgramAccountsData;
   fetchRaydiumPoolsInfo: (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
@@ -62,6 +61,8 @@ export type RaydiumPoolInfoMap = Map<string, RaydiumPoolInfo>;
 
 export type PoolDataByMint = Map<string, PoolData>;
 
+export type FusionPoolInfoByMint = Map<string, FusionPoolInfo>;
+
 export interface PoolData {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
@@ -85,7 +86,7 @@ export interface RaydiumPoolInfo {
   lpSupply: BN;
 }
 
-export interface ProgramAccountsData {
+export interface FusionPoolsInfo {
   mainPoolConfigs: MainPoolConfigView[];
   mainRouters: MainRouterView[];
   secondaryStakeAccounts: SecondStakeAccountView[];

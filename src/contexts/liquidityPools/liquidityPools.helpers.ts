@@ -19,10 +19,17 @@ import {
   FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
-  ProgramAccountsData,
+  FusionPoolsInfo,
   RaydiumPoolInfo,
   RaydiumPoolInfoMap,
+  FusionPoolInfoByMint,
+  FusionPoolInfo,
 } from './liquidityPools.model';
+import {
+  MainRouterView,
+  SecondaryRewardView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
   connection,
@@ -166,11 +173,90 @@ export const fetchProgramAccounts = async ({
 }: {
   vaultProgramId: PublicKey;
   connection: Connection;
-}): Promise<ProgramAccountsData> => {
+}): Promise<FusionPoolsInfo> => {
   const allProgramAccounts = await getAllProgramAccounts(
     vaultProgramId,
     connection,
   );
 
   return allProgramAccounts;
+};
+
+const getFusionDataMap = (
+  allProgramAccounts: FusionPoolsInfo,
+  lpMints: string[],
+) => {
+  const {
+    secondaryRewards,
+    stakeAccounts,
+    mainRouters,
+    secondaryStakeAccounts,
+  } = allProgramAccounts;
+
+  const getRouterByMint = (lpMint: string): MainRouterView => {
+    return mainRouters.find(
+      ({ tokenMintOutput }) => tokenMintOutput === lpMint,
+    );
+  };
+
+  const routerInfoByMint = lpMints.reduce((routerInfoMap, lpMint) => {
+    const router = getRouterByMint(lpMint);
+
+    routerInfoMap.set(lpMint, router);
+    return routerInfoMap;
+  }, new Map<string, MainRouterView>());
+
+  const secondaryRewardByMint = lpMints.reduce(
+    (secondaryRewardInfoMap, lpMint) => {
+      const { mainRouterPubkey } = getRouterByMint(lpMint);
+
+      const secondaryReward = secondaryRewards.filter(
+        ({ routerPubkey }) => routerPubkey === mainRouterPubkey,
+      );
+
+      secondaryRewardInfoMap.set(lpMint, secondaryReward);
+      return secondaryRewardInfoMap;
+    },
+    new Map<string, SecondaryRewardView[]>(),
+  );
+
+  const stakeAccountsByMint = lpMints.reduce((stakeAccountInfoMap, lpMint) => {
+    const { mainRouterPubkey } = getRouterByMint(lpMint);
+
+    const stakeAccount = stakeAccounts
+      .filter(({ routerPubkey }) => routerPubkey === mainRouterPubkey)
+      .find(({ isStaked }) => isStaked);
+
+    stakeAccountInfoMap.set(lpMint, stakeAccount);
+    return stakeAccountInfoMap;
+  }, new Map<string, StakeAccountView>());
+
+  return {
+    routerInfoByMint,
+    secondaryRewardByMint,
+    stakeAccountsByMint,
+    secondaryStakeAccounts,
+  };
+};
+
+export const fetchFusionPoolInfo = (
+  allProgramAccounts: FusionPoolsInfo,
+  lpMints: string[],
+): FusionPoolInfoByMint => {
+  const {
+    routerInfoByMint,
+    secondaryRewardByMint,
+    stakeAccountsByMint,
+    secondaryStakeAccounts,
+  } = getFusionDataMap(allProgramAccounts, lpMints);
+
+  return lpMints.reduce((fusionPoolInfo, lpMint) => {
+    fusionPoolInfo.set(lpMint, {
+      mainRouter: routerInfoByMint.get(lpMint),
+      stakeAccount: stakeAccountsByMint.get(lpMint),
+      secondaryReward: secondaryRewardByMint.get(lpMint),
+      secondaryStakeAccount: secondaryStakeAccounts[0],
+    });
+    return fusionPoolInfo;
+  }, new Map<string, FusionPoolInfo>());
 };

@@ -39,12 +39,14 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
         />
-        <Rewards
-          baseToken={tokenInfo}
-          poolConfig={poolConfig}
-          raydiumPoolInfo={raydiumPoolInfo}
-          fusionPoolInfo={fusionPoolInfo}
-        />
+        {fusionPoolInfo && (
+          <Rewards
+            baseToken={tokenInfo}
+            poolConfig={poolConfig}
+            raydiumPoolInfo={raydiumPoolInfo}
+            fusionPoolInfo={fusionPoolInfo}
+          />
+        )}
         <Button
           onClick={() => setDepositModalVisible(true)}
           className={styles.depositBtn}
