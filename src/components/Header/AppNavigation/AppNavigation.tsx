@@ -21,6 +21,9 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
       )}
     >
       <li>
+        <NavigationLink to={PATHS.TEST}>Test</NavigationLink>
+      </li>
+      <li>
         <NavigationLink to={PATHS.MARKET}>Market</NavigationLink>
       </li>
       <li>

@@ -17,4 +17,5 @@ export const PATHS = {
   WALLET_PUBKEY: '/:walletPubkey',
   COLLECTION_NAME: '/:collectionName',
   YIELD: '/yield',
+  TEST: '/market_test',
 };
