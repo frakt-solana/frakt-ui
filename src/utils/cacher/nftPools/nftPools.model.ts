@@ -1,5 +1,5 @@
-import { BN } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
+import BN from 'bn.js';
 
 export type AnchorState = { [key: string]: unknown };
 
@@ -50,6 +50,8 @@ export interface LotteryTicket {
 }
 export enum LotteryTicketState {
   USED = 'used',
+  REVEALED = 'revealed',
+  TO_BE_REVEALED = 'toBeRevealed',
 }
 
 //? PoolWhitelists types
@@ -65,7 +67,8 @@ export interface PoolWhitelist {
   whitelistedAddress: PublicKey;
 }
 export enum PoolWhitelistType {
-  EMPTY = 'empty',
+  SINGLE_NFT_WHITELIST = 'singleNftWhitelist',
+  CREATOR_WHITELIST = 'creatorWhitelist',
 }
 
 //? SafetyDepositBoxes types
@@ -85,6 +88,7 @@ export interface SafetyDepositBox {
 export enum SafetyDepositBoxState {
   EMPTY = 'empty',
   LOCKED = 'locked',
+  TO_BE_WITHDRAWN = 'toBeWithdrawn',
 }
 export interface SafetyDepositBoxWithNftMetadata extends SafetyDepositBox {
   nftAttributes: NftAttributes;
