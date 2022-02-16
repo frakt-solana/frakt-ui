@@ -1,17 +1,18 @@
-import React, { Dispatch, FC, useRef } from 'react';
+import { Dispatch, FC, useRef } from 'react';
 import { Modal } from 'antd';
 import styles from './stalys.module.scss';
 import { CloseModalIcon } from '../../icons/CloseModalIcon';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import { NavLink } from 'react-router-dom';
-import { PATHS } from '../../constants';
-import { copyToClipboard, getCollectionThumbnailUrl } from '../../utils';
+// import { NavLink } from 'react-router-dom';
+// import { PATHS } from '../../constants';
+import { copyToClipboard /* getCollectionThumbnailUrl */ } from '../../utils';
 import { shortenAddress } from '../../utils/solanaUtils';
 import Tooltip from '../Tooltip';
 import { CopyClipboardIcon } from '../../icons/CopyClipboardIcon';
-import { SafetyBoxWithMetadata } from '../../contexts/fraktion';
-import { CollectionData } from '../../utils/collections';
+// import { SafetyBoxWithMetadata } from '../../contexts/fraktion';
+// import { CollectionData } from '../../utils/collections';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
+import { UserNFT } from '../../contexts/userTokens';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -19,7 +20,7 @@ interface ModalNFTsSliderProps {
   isModalVisible: boolean;
   currentSlide: number;
   className?: string;
-  safetyBoxes: any; // SafetyBoxWithMetadata[]
+  nfts: UserNFT[];
   nftCollections: any; // CollectionData[]
   onSliderNavClick: () => () => void;
   setIsModalVisible: (status: boolean) => void;
@@ -28,8 +29,8 @@ interface ModalNFTsSliderProps {
 
 export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
   className,
-  safetyBoxes,
-  nftCollections,
+  nfts,
+  // nftCollections,
   isModalVisible,
   currentSlide,
   setIsModalVisible,
@@ -39,14 +40,14 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
   const prevBtn = useRef<HTMLDivElement>(null);
   const nextBtn = useRef<HTMLDivElement>(null);
 
-  const safetyBoxesWithCollectionData: Array<
-    SafetyBoxWithMetadata & { collectionInfo: CollectionData }
-  > = safetyBoxes.map((box) => ({
-    ...box,
-    collectionInfo: nftCollections.find(
-      (coll) => coll.collectionName === box.nftCollectionName,
-    ),
-  }));
+  // const safetyBoxesWithCollectionData: Array<
+  //   SafetyBoxWithMetadata & { collectionInfo: CollectionData }
+  // > = safetyBoxes.map((box) => ({
+  //   ...box,
+  //   collectionInfo: nftCollections.find(
+  //     (coll) => coll.collectionName === box.nftCollectionName,
+  //   ),
+  // }));
 
   return (
     <Modal
@@ -60,7 +61,7 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
     >
       <div className={styles.closeModalSection}>
         <span className={styles.slideNumber}>
-          {currentSlide + 1}/{safetyBoxes.length}
+          {currentSlide + 1}/{nfts.length}
         </span>
         <div
           className={styles.closeModalIcon}
@@ -80,14 +81,14 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
           autoHeight={true}
           onSlideChange={onSliderNavClick()}
         >
-          {safetyBoxes.map((slide) => (
-            <SwiperSlide key={slide.nftId} className={styles.slide}>
+          {nfts.map((nft) => (
+            <SwiperSlide key={nft.mint} className={styles.slide}>
               <div
-                style={{ backgroundImage: `url(${slide.nftImage})` }}
+                style={{ backgroundImage: `url(${nft.metadata.image})` }}
                 className={styles.slideImage}
               />
               <div className={styles.slideInfoBlock}>
-                {slide.collectionInfo?.collectionName && (
+                {/* {slide.collectionInfo?.collectionName && (
                   <NavLink
                     to={`${PATHS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
                     className={styles.collectionLink}
@@ -104,29 +105,31 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
                       {slide.collectionInfo?.collectionName}
                     </p>
                   </NavLink>
-                )}
-                <h5 className={styles.nftTitle}>{slide.nftId}</h5>
-                {slide.nftDescription && (
+                )} */}
+                <h5 className={styles.nftTitle}>{nft.metadata.name}</h5>
+                {nft.metadata.description && (
                   <p className={styles.NftDescription}>
-                    {slide.nftDescription}
+                    {nft.metadata.description}
                   </p>
                 )}
-                {!!slide.nftAttributes?.length && (
+                {!!nft.metadata.attributes?.length && (
                   <div className={styles.attributesTable}>
-                    {slide.nftAttributes.map(({ trait_type, value }, idx) => (
-                      <div key={idx} className={styles.attributesTable__row}>
-                        <p>{trait_type}</p>
-                        <p>{value}</p>
-                      </div>
-                    ))}
+                    {nft.metadata.attributes.map(
+                      ({ trait_type, value }, idx) => (
+                        <div key={idx} className={styles.attributesTable__row}>
+                          <p>{trait_type}</p>
+                          <p>{value}</p>
+                        </div>
+                      ),
+                    )}
                   </div>
                 )}
                 <p className={styles.nftInfoLabel}>NFT MINT</p>
                 <p
                   className={styles.nftInfoItem}
-                  onClick={() => copyToClipboard(slide.nftMint)}
+                  onClick={() => copyToClipboard(nft.mint)}
                 >
-                  {shortenAddress(slide.nftId)}
+                  {shortenAddress(nft.mint)}
                   <Tooltip
                     placement="bottom"
                     trigger="hover"

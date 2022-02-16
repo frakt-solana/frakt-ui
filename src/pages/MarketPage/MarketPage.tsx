@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 import { Input } from 'antd';
@@ -11,6 +11,8 @@ import { PoolsList } from './components/PoolsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { useNftPools } from '../../contexts/nftPools/nftPools.hooks';
 import styles from './styles.module.scss';
+import { Loader } from '../../components/Loader';
+import { CommunityPoolState } from '../../utils/cacher/nftPools';
 
 const SORT_VALUES = [
   {
@@ -40,11 +42,11 @@ const MarketPage = (): JSX.Element => {
 
   const sort = watch('sort');
 
-  const { initialFetch, poolsState, loading } = useNftPools();
+  const { pools: rawPools, loading } = useNftPools();
 
-  useEffect(() => {
-    initialFetch();
-  }, []);
+  const pools = useMemo(() => {
+    return rawPools.filter(({ state }) => state === CommunityPoolState.ACTIVE);
+  }, [rawPools]);
 
   return (
     <AppLayout className={styles.layout}>
@@ -75,8 +77,7 @@ const MarketPage = (): JSX.Element => {
                 />
               </div>
             </div>
-
-            <PoolsList />
+            {loading ? <Loader /> : <PoolsList pools={pools} />}
           </div>
         </div>
       </div>

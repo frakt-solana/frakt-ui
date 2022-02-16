@@ -1,19 +1,13 @@
-import React, { useState } from 'react';
-import { useConnection } from '@solana/wallet-adapter-react';
+import React, { useEffect, useState } from 'react';
 
 import { usePolling } from '../../hooks';
-import {
-  FetchDataFunc,
-  NftPoolsContextValues,
-  PoolsState,
-} from './nftPools.model';
-import { getAllProgramAccounts } from './nftPools';
-import { DEFAULT_POOLS_STATE } from './nftPools.constants';
+import { FetchDataFunc, NftPoolsContextValues } from './nftPools.model';
 import { Cacher } from '../../utils/cacher';
+import { NftPoolData } from '../../utils/cacher/nftPools';
 
 export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
-  poolsState: DEFAULT_POOLS_STATE,
-  loading: true,
+  pools: [],
+  loading: false,
   initialFetch: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
   isPolling: false,
@@ -26,17 +20,14 @@ export const NftPoolsProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [poolsState, setPoolsState] = useState<PoolsState>(DEFAULT_POOLS_STATE);
-  const { connection } = useConnection();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [pools, setPools] = useState<NftPoolData[]>([]);
 
   const initialFetch: FetchDataFunc = async () => {
     try {
       setLoading(true);
-      await Cacher.getNftPools();
-
-      // const info = await getAllProgramAccounts({ connection });
-      // setPoolsState(info);
+      const pools = await Cacher.getNftPools();
+      setPools(pools);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -47,13 +38,20 @@ export const NftPoolsProvider = ({
 
   const silentFetch: FetchDataFunc = async () => {
     try {
-      const info = await getAllProgramAccounts({ connection });
-      setPoolsState(info);
+      const pools = await Cacher.getNftPools();
+      setPools(pools);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (!loading && !pools.length) {
+      initialFetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, pools]);
 
   const { isPolling, startPolling, stopPolling } = usePolling(
     silentFetch,
@@ -63,7 +61,7 @@ export const NftPoolsProvider = ({
   return (
     <NftPoolsContext.Provider
       value={{
-        poolsState,
+        pools,
         loading,
         initialFetch,
         refetch: silentFetch,

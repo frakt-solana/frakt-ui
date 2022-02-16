@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet';
-
-import styles from './styles.module.scss';
-import { ArrowDownSmallIcon, FiltersIcon } from '../../icons';
-import { ControlledSelect } from '../../components/Select/Select';
 import { useForm } from 'react-hook-form';
 
+import { ArrowDownSmallIcon, FiltersIcon } from '../../icons';
+import { ControlledSelect } from '../../components/Select/Select';
 import { Sidebar } from './components/Sidebar';
 import { NFTsList } from './components/NFTsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderSell } from './components/HeaderSell';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { SellingModal } from './components/SellingModal';
-import { NFTs_DATA } from './tempData';
-import { ModalNFTsSlider } from '../../components/ModalNFTsSlider';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../../components/WalletNotConnected';
+import { useUserTokens } from '../../contexts/userTokens';
+import { Loader } from '../../components/Loader';
+import styles from './styles.module.scss';
 
 const SORT_VALUES = [
   {
@@ -39,24 +38,8 @@ const SORT_VALUES = [
 const MarketSellPage = (): JSX.Element => {
   const { connected } = useWallet();
   const [selectedNfts, setSelectedNfts] = useState<any>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(1);
-  const [swiper, setSwiper] = useState(null);
+
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
-
-  const slideTo = (index) => {
-    if (swiper) swiper.slideTo(index);
-  };
-
-  const onNftItemClick = (index) => () => {
-    setIsModalVisible(true);
-    setCurrentSlide(index);
-    slideTo(index);
-  };
-
-  const onSliderNavClick = () => () => {
-    if (swiper) setCurrentSlide(swiper.activeIndex);
-  };
 
   const onDeselect = (nft: any) => {
     setSelectedNfts(
@@ -74,13 +57,15 @@ const MarketSellPage = (): JSX.Element => {
       : setSelectedNfts([...selectedNfts, nft]);
   };
 
-  const { control, watch } = useForm({
+  const { control /* watch */ } = useForm({
     defaultValues: {
       sort: SORT_VALUES[0],
     },
   });
 
-  const sort = watch('sort');
+  // const sort = watch('sort');
+
+  const { nfts, loading } = useUserTokens();
 
   return (
     <HeaderStateProvider>
@@ -125,26 +110,16 @@ const MarketSellPage = (): JSX.Element => {
                     </div>
                   </div>
 
-                  <NFTsList
-                    selectedNFTs={selectedNfts}
-                    onCardClick={onCardClick}
-                    nfts={NFTs_DATA}
-                    onNftItemClick={onNftItemClick}
-                  />
+                  {loading ? (
+                    <Loader />
+                  ) : (
+                    <NFTsList onCardClick={onCardClick} nfts={nfts} />
+                  )}
                 </>
               )}
             </div>
           </div>
         </div>
-        <ModalNFTsSlider
-          isModalVisible={isModalVisible}
-          currentSlide={currentSlide}
-          safetyBoxes={NFTs_DATA}
-          nftCollections={[]}
-          onSliderNavClick={onSliderNavClick}
-          setIsModalVisible={setIsModalVisible}
-          setSwiper={setSwiper}
-        />
       </AppLayout>
     </HeaderStateProvider>
   );

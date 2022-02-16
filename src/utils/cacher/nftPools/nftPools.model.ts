@@ -9,7 +9,7 @@ export type AnchorAccountBFF<T> = {
 };
 
 //? CommunityPools types
-export type RawCommunityPoolBFF = AnchorAccountBFF<{
+export type RawCommunityPool = AnchorAccountBFF<{
   authority: string;
   createdAt: string;
   fractionMint: string;
@@ -35,7 +35,7 @@ export enum CommunityPoolState {
 }
 
 //? LotteryTickets types
-export type RawLotteryTicketBFF = AnchorAccountBFF<{
+export type RawLotteryTicket = AnchorAccountBFF<{
   communityPool: string;
   lotteryTicketState: AnchorState;
   ticketHolder: string;
@@ -55,7 +55,7 @@ export enum LotteryTicketState {
 }
 
 //? PoolWhitelists types
-export type RawPoolWhitelistBFF = AnchorAccountBFF<{
+export type RawPoolWhitelist = AnchorAccountBFF<{
   communityPool: string;
   whitelistType: AnchorState;
   whitelistedAddress: string;
@@ -72,7 +72,7 @@ export enum PoolWhitelistType {
 }
 
 //? SafetyDepositBoxes types
-export type RawSafetyDepositBoxBFF = AnchorAccountBFF<{
+export type RawSafetyDepositBox = AnchorAccountBFF<{
   communityPool: string;
   nftMint: string;
   safetyBoxState: AnchorState;
@@ -101,7 +101,7 @@ export interface SafetyDepositBoxWithNftMetadata extends SafetyDepositBox {
 
 //? NftMetadata types
 export type NftAttributes = { trait_type: string; value: string | number }[];
-export type RawNftMetadataBFF = {
+export type RawNftMetadata = {
   attributes: NftAttributes;
   collectionName: string;
   description: string;
@@ -112,12 +112,12 @@ export type RawNftMetadataBFF = {
 };
 
 //? NftPoolData types
-export interface RawNftPoolDataBFF {
-  communityPools: RawCommunityPoolBFF[];
-  lotteryTickets: RawLotteryTicketBFF[];
-  poolWhitelists: RawPoolWhitelistBFF[];
-  safetyDepositBoxes: RawSafetyDepositBoxBFF[];
-  nftsMetadata: RawNftMetadataBFF[];
+export interface RawNftPoolData {
+  communityPools: RawCommunityPool[];
+  lotteryTickets: RawLotteryTicket[];
+  poolWhitelists: RawPoolWhitelist[];
+  safetyDepositBoxes: RawSafetyDepositBox[];
+  nftsMetadata: RawNftMetadata[];
 }
 
 export interface NftPoolData extends CommunityPool {
