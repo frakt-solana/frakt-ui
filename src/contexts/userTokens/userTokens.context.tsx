@@ -84,6 +84,7 @@ export const UserTokensProvider = ({
         }),
       );
 
+      //TODO fetch nft metadata only by call
       setNftsByMint(arweaveMetadata);
       setNfts(tokensArray);
       setRawUserTokensByMint(rawUserTokensByMint);

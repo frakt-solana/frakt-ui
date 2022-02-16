@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { usePolling } from '../../hooks';
 import { FetchDataFunc, NftPoolsContextValues } from './nftPools.model';
 import { Cacher } from '../../utils/cacher';
 import { NftPoolData } from '../../utils/cacher/nftPools';
+import { depositNftToCommunityPool } from './transactions';
 
 export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   pools: [],
@@ -13,6 +15,7 @@ export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   isPolling: false,
   startPolling: () => {},
   stopPolling: () => {},
+  depositNftToCommunityPool: () => Promise.resolve(null),
 });
 
 export const NftPoolsProvider = ({
@@ -20,6 +23,9 @@ export const NftPoolsProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
+  const { connection } = useConnection();
+  const wallet = useWallet();
+
   const [loading, setLoading] = useState<boolean>(false);
   const [pools, setPools] = useState<NftPoolData[]>([]);
 
@@ -68,6 +74,10 @@ export const NftPoolsProvider = ({
         isPolling,
         startPolling,
         stopPolling,
+        depositNftToCommunityPool: depositNftToCommunityPool({
+          connection,
+          wallet,
+        }),
       }}
     >
       {children}

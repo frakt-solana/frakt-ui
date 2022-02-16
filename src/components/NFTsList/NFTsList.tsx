@@ -1,19 +1,22 @@
 import styles from './styles.module.scss';
 import { FC, useState } from 'react';
 
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../contexts/userTokens';
 import { NFTCard } from '../NFTCard';
-import { ModalNFTsSlider } from '../../../../components/ModalNFTsSlider';
+import { ModalNFTsSlider } from '../ModalNFTsSlider';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
-} from '../../../../components/FakeInfinityScroll';
+} from '../FakeInfinityScroll';
 
 interface NFTsListProps {
   nfts: UserNFT[];
-  onCardClick: (nft: UserNFT) => void;
+  onCardClick?: (nft: UserNFT) => void;
 }
 
-export const NFTsList: FC<NFTsListProps> = ({ nfts, onCardClick }) => {
+export const NFTsList: FC<NFTsListProps> = ({
+  nfts,
+  onCardClick = () => {},
+}) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
 
   const [isModalVisible, setIsModalVisible] = useState(false);

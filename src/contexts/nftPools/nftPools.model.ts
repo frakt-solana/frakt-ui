@@ -1,4 +1,7 @@
+import { Dictionary } from 'lodash';
+
 import { NftPoolData } from '../../utils/cacher/nftPools';
+import { DepositNftToCommunityPoolParams } from './transactions';
 
 export type FetchDataFunc = () => Promise<void>;
 
@@ -10,4 +13,14 @@ export type NftPoolsContextValues = {
   isPolling: boolean;
   startPolling: () => void;
   stopPolling: () => void;
+  depositNftToCommunityPool: (
+    params: DepositNftToCommunityPoolParams,
+  ) => Promise<void>;
+};
+
+export type UseNftPool = (poolPubkey: string) => {
+  pool: NftPoolData;
+  loading: boolean;
+  whitelistedMintsDictionary: Dictionary<boolean>;
+  whitelistedCreatorsDictionary: Dictionary<boolean>;
 };
