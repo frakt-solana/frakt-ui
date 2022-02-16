@@ -13,11 +13,6 @@ import classNames from 'classnames';
 import { shortenAddress } from '../../../utils/solanaUtils';
 import { Modal } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/navigation/navigation.scss';
-import 'swiper/modules/pagination/pagination.scss';
-import 'swiper/modules/lazy/lazy.scss';
-import 'swiper/modules/thumbs/thumbs';
 import { CloseModalIcon } from '../../../icons';
 import { CollectionData } from '../../../utils/collections';
 import FakeInfinityScroll, {
