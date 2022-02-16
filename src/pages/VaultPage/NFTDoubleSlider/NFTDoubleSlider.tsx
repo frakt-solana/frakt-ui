@@ -1,13 +1,10 @@
-import React, { FC, MouseEventHandler, useState } from 'react';
-import styles from './styles.module.scss';
+import { FC, MouseEventHandler, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/navigation/navigation.scss';
-import 'swiper/modules/pagination/pagination.scss';
-import 'swiper/modules/thumbs/thumbs';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 import { HashLink as AnchorLink } from 'react-router-hash-link';
+
 import { SafetyBoxWithMetadata, VaultData } from '../../../contexts/fraktion';
+import styles from './styles.module.scss';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 

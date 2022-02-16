@@ -9,6 +9,7 @@ interface UseModalNFTsSlider {
   slideTo: (index: number) => void;
   onSliderNavClick: () => void;
   setSwiper: (swiper: SwiperCore) => void;
+  openOnCertainSlide: (index: number) => void;
 }
 
 export const useModalNFTsSlider = (): UseModalNFTsSlider => {
@@ -24,6 +25,12 @@ export const useModalNFTsSlider = (): UseModalNFTsSlider => {
     if (swiper) setCurrentSlide(swiper.activeIndex);
   };
 
+  const openOnCertainSlide = (index: number) => {
+    setIsModalVisible(true);
+    setCurrentSlide(index);
+    slideTo(index);
+  };
+
   return {
     isModalVisible,
     setIsModalVisible,
@@ -32,5 +39,6 @@ export const useModalNFTsSlider = (): UseModalNFTsSlider => {
     slideTo,
     onSliderNavClick,
     setSwiper,
+    openOnCertainSlide,
   };
 };

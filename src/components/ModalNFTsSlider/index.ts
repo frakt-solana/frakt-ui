@@ -1,1 +1,2 @@
-export { ModalNFTsSlider } from './ModalNFTsSlider';
+export * from './ModalNFTsSlider';
+export * from './hooks';
