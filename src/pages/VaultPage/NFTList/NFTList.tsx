@@ -62,27 +62,15 @@ export const NFTList: FC<NFTListProps> = ({
   const nextBtn = useRef<HTMLDivElement>(null);
 
   const onNftItemClick = (index) => () => {
-    console.log('1 ->', index);
     setCurrentSlide(index);
     if (safetyBoxes.length >= 30) {
-      if (index > 4) {
-        setSlidesToShow(safetyBoxes.slice(index - 5, index + 5));
-        setIsModalVisible(true);
-        slideTo(5);
-        console.log('2 ->', index);
-      } else {
-        setSlidesToShow(safetyBoxes.slice(0, 10));
-        setIsModalVisible(true);
-        slideTo(index);
-        console.log('3 ->', index);
-      }
+      setSlidesToShow([safetyBoxes[index]]);
+      setIsModalVisible(true);
     } else {
       setSlidesToShow(safetyBoxes);
       setIsModalVisible(true);
       slideTo(index);
-      console.log('4 ->', index);
     }
-    console.log('5 ->', index);
   };
 
   const prependSlides = (slides: number) => {
