@@ -1,4 +1,4 @@
-import React, { FC, MouseEventHandler, useState } from 'react';
+import React, { FC, MouseEventHandler, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import 'swiper/swiper.min.css';
@@ -49,25 +49,36 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
   currentSlideData,
 }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [slidesToShow, setSlidesToShow] = useState<SafetyBoxWithMetadata[]>([]);
+
+  useEffect(() => {
+    if (safetyBoxes.length >= 30) {
+      setSlidesToShow(safetyBoxes.slice(0, 30));
+    } else {
+      setSlidesToShow(safetyBoxes);
+    }
+  }, [safetyBoxes]);
 
   return (
     <div className={styles.sliders}>
-      <Swiper
-        slidesPerView={1}
-        className={styles.sliderBig}
-        thumbs={{ swiper: thumbsSwiper }}
-        lazy
-      >
-        {safetyBoxes.map((box) => (
-          <SwiperSlide key={box.nftMint}>
-            <div
-              className={`${styles.slideBig} swiper-lazy`}
-              data-background={box.nftImage}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      {vaultData?.safetyBoxes.length > 1 && (
+      {!!slidesToShow.length && (
+        <Swiper
+          slidesPerView={1}
+          className={styles.sliderBig}
+          thumbs={{ swiper: thumbsSwiper }}
+          lazy
+        >
+          {slidesToShow.map((box) => (
+            <SwiperSlide key={box.nftMint}>
+              <div
+                className={`${styles.slideBig} swiper-lazy`}
+                data-background={box.nftImage}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
+      {slidesToShow.length > 1 && (
         <>
           <Swiper
             breakpoints={THUMBS_SLIDER_BREAKPOINTS}
@@ -78,7 +89,7 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
             onSwiper={setThumbsSwiper}
             lazy
           >
-            {safetyBoxes.map((box, index) => (
+            {slidesToShow.map((box, index) => (
               <SwiperSlide
                 key={box.nftMint}
                 onClick={onSlideThumbClick(
