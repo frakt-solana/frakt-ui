@@ -165,7 +165,7 @@ const MarketSwapPage = (): JSX.Element => {
             </div>
           </div>
         </div>
-        <ModalNFTsSlider
+        {/* <ModalNFTsSlider
           isModalVisible={isModalVisible}
           currentSlide={currentSlide}
           safetyBoxes={NFTs_FROM_DATA}
@@ -173,7 +173,7 @@ const MarketSwapPage = (): JSX.Element => {
           onSliderNavClick={onSliderNavClick}
           setIsModalVisible={setIsModalVisible}
           setSwiper={setSwiper}
-        />
+        /> */}
       </AppLayout>
     </HeaderStateProvider>
   );

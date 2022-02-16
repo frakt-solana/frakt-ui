@@ -1,52 +1,66 @@
 import styles from './styles.module.scss';
-import React, { FC } from 'react';
-import classNames from 'classnames';
+import { FC, useState } from 'react';
+
+import { UserNFT } from '../../../../contexts/userTokens';
+import { NFTCard } from '../NFTCard';
+import { ModalNFTsSlider } from '../../../../components/ModalNFTsSlider';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../../../components/FakeInfinityScroll';
 
 interface NFTsListProps {
-  nfts: any;
-  selectedNFTs: any;
-  onCardClick: (nft: any) => void;
-  onNftItemClick: (index: number) => () => void;
+  nfts: UserNFT[];
+  onCardClick: (nft: UserNFT) => void;
 }
 
-export const NFTsList: FC<NFTsListProps> = ({
-  nfts,
-  selectedNFTs,
-  onCardClick,
-  onNftItemClick,
-}) => {
+export const NFTsList: FC<NFTsListProps> = ({ nfts, onCardClick }) => {
+  const { itemsToShow, next } = useFakeInfinityScroll(12);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const [swiper, setSwiper] = useState(null);
+
+  const slideTo = (index: number) => {
+    if (swiper) swiper.slideTo(index);
+  };
+
+  const onNftItemClick = (index: number) => () => {
+    setIsModalVisible(true);
+    setCurrentSlide(index);
+    slideTo(index);
+  };
+
+  const onSliderNavClick = () => () => {
+    if (swiper) setCurrentSlide(swiper.activeIndex);
+  };
+
   return (
-    <ul className={styles.poolsList}>
-      {nfts.map((item, index) => (
-        <li key={index} className={styles.nftCard}>
-          <div
-            className={classNames({
-              [styles.borderHover]: true,
-              [styles.selected]: !!selectedNFTs.find(
-                (selectedNft) => selectedNft?.nftId === item.nftId,
-              ),
-            })}
-            onClick={() => onCardClick(item)}
+    <>
+      <FakeInfinityScroll
+        itemsToShow={itemsToShow}
+        next={next}
+        isLoading={false}
+        wrapperClassName={styles.poolsList}
+        emptyMessage="No suitable NFTs found"
+      >
+        {nfts.map((nft, idx) => (
+          <NFTCard
+            key={nft.mint}
+            nft={nft}
+            onClick={() => onCardClick(nft)}
+            onDetailsClick={onNftItemClick(idx)}
           />
-          <div className={styles.nftImgWrapper}>
-            <img
-              src={item.nftImage}
-              alt="NFT card"
-              className={styles.nftImage}
-            />
-          </div>
-          <div className={styles.cardContentWrapper}>
-            <p className={styles.nftName}>{item.nftId}</p>
-            <span className={styles.collectionName}>{item.collectionName}</span>
-            <button
-              className={styles.detailsBtn}
-              onClick={onNftItemClick(index)}
-            >
-              Details
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+        ))}
+      </FakeInfinityScroll>
+      <ModalNFTsSlider
+        isModalVisible={isModalVisible}
+        currentSlide={currentSlide}
+        nfts={nfts}
+        nftCollections={[]}
+        onSliderNavClick={onSliderNavClick}
+        setIsModalVisible={setIsModalVisible}
+        setSwiper={setSwiper}
+      />
+    </>
   );
 };

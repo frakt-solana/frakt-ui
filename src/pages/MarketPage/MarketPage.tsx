@@ -42,12 +42,7 @@ const MarketPage = (): JSX.Element => {
 
   const sort = watch('sort');
 
-  const { initialFetch, pools: rawPools, loading } = useNftPools();
-
-  useEffect(() => {
-    initialFetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { pools: rawPools, loading } = useNftPools();
 
   const pools = useMemo(() => {
     return rawPools.filter(({ state }) => state === CommunityPoolState.ACTIVE);

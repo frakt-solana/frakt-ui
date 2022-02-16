@@ -1,4 +1,4 @@
-.poolItem {
+.poolCard {
   max-width: 300px;
   flex-shrink: 1;
   width: calc(25% - 19px);
@@ -51,9 +51,6 @@
       bottom: -6px;
     }
   }
-}
-
-.poolCard {
 }
 
 .poolImgWrapper {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { usePolling } from '../../hooks';
 import { FetchDataFunc, NftPoolsContextValues } from './nftPools.model';
@@ -7,7 +7,7 @@ import { NftPoolData } from '../../utils/cacher/nftPools';
 
 export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   pools: [],
-  loading: true,
+  loading: false,
   initialFetch: () => Promise.resolve(null),
   refetch: () => Promise.resolve(null),
   isPolling: false,
@@ -20,7 +20,7 @@ export const NftPoolsProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [pools, setPools] = useState<NftPoolData[]>([]);
 
   const initialFetch: FetchDataFunc = async () => {
@@ -45,6 +45,13 @@ export const NftPoolsProvider = ({
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (!loading && !pools.length) {
+      initialFetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, pools]);
 
   const { isPolling, startPolling, stopPolling } = usePolling(
     silentFetch,
