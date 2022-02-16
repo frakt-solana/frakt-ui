@@ -1,50 +1,31 @@
-import { Checkbox, Radio } from 'antd';
+import { Radio } from 'antd';
 import classNames from 'classnames/bind';
-import { Control, Controller } from 'react-hook-form';
 import styles from './styles.module.scss';
 import React from 'react';
 
 interface IToggleProps {
   className?: string;
   disabled?: boolean;
-  value?: number;
+  checked?: boolean;
+  value: string;
   defaultChecked?: boolean;
   label?: string;
   onChange?: (value: any) => void;
 }
 
-interface IControlledToggleProps extends IToggleProps {
-  control: Control<any>;
-  name: string;
-}
-
-const CustomRadio = ({
+export const ControlledRadio = ({
   className = '',
   disabled = false,
-  value,
+  checked = false,
   label = null,
+  value,
 }: IToggleProps): JSX.Element => (
   <Radio
     className={classNames(styles.radio, className)}
     disabled={disabled}
+    checked={checked}
     value={value}
   >
     {label}
   </Radio>
 );
-
-export const ControlledRadio = ({
-  control,
-  name,
-  ...props
-}: IControlledToggleProps): JSX.Element => (
-  <Controller
-    control={control}
-    name={name}
-    render={({ field: { ref, ...field } }) => {
-      return <CustomRadio {...props} {...field} />;
-    }}
-  />
-);
-
-export default Checkbox;

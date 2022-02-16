@@ -1,13 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
-import { VaultState, useFraktion } from '../../contexts/fraktion';
+import { useFraktion, VaultState } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
-import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { VaultsList } from '../../components/VaultsList';
@@ -45,20 +44,15 @@ const SORT_VALUES = [
 const VaultsPage = (): JSX.Element => {
   const { control, watch } = useForm({
     defaultValues: {
-      showActiveVaults: true,
-      showAuctionLiveVaults: false,
-      showAuctionFinishedVaults: false,
-      showArchivedVaults: false,
+      showVaultsStatus: 'showActiveVaults',
       showVerifiedVaults: true,
       showTradableVaults: false,
       sort: SORT_VALUES[0],
     },
   });
-  const showActiveVaults = watch('showActiveVaults');
-  const showAuctionLiveVaults = watch('showAuctionLiveVaults');
-  const showAuctionFinishedVaults = watch('showAuctionFinishedVaults');
+
+  const showVaultsStatus = watch('showVaultsStatus');
   const showVerifiedVaults = watch('showVerifiedVaults');
-  const showArchivedVaults = watch('showArchivedVaults');
   const showTradableVaults = watch('showTradableVaults');
   const sort = watch('sort');
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
@@ -76,6 +70,13 @@ const VaultsPage = (): JSX.Element => {
       .filter(({ state, hasMarket, safetyBoxes, isVerified }) => {
         const nftsName =
           safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
+
+        const showActiveVaults = showVaultsStatus === 'showActiveVaults';
+        const showAuctionLiveVaults =
+          showVaultsStatus === 'showAuctionLiveVaults';
+        const showAuctionFinishedVaults =
+          showVaultsStatus === 'showAuctionFinishedVaults';
+        const showArchivedVaults = showVaultsStatus === 'showArchivedVaults';
 
         //? Filter out unfinished vaults
         if (state === VaultState.Inactive) return false;
@@ -115,10 +116,7 @@ const VaultsPage = (): JSX.Element => {
   }, [
     searchString,
     rawVaults,
-    showActiveVaults,
-    showAuctionLiveVaults,
-    showAuctionFinishedVaults,
-    showArchivedVaults,
+    showVaultsStatus,
     showVerifiedVaults,
     showTradableVaults,
     sort,
@@ -127,34 +125,6 @@ const VaultsPage = (): JSX.Element => {
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
-        <div className={styles.filtersWrapper}>
-          <div className={styles.filters}>
-            <ControlledToggle
-              control={control}
-              name="showActiveVaults"
-              label="Active"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showAuctionLiveVaults"
-              label="Auction live"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showAuctionFinishedVaults"
-              label="Auction finished"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showArchivedVaults"
-              label="Archived"
-              className={styles.filter}
-            />
-          </div>
-        </div>
         <div className={styles.wrapper}>
           <Sidebar
             isSidebar={isSidebar}
