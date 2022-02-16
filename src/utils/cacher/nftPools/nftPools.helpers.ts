@@ -4,22 +4,22 @@ import { groupBy, keyBy, Dictionary } from 'lodash';
 
 import {
   AnchorState,
-  RawCommunityPoolBFF,
+  RawCommunityPool,
   CommunityPool,
   CommunityPoolState,
-  RawLotteryTicketBFF,
+  RawLotteryTicket,
   LotteryTicket,
   LotteryTicketState,
   PoolWhitelist,
-  RawPoolWhitelistBFF,
+  RawPoolWhitelist,
   PoolWhitelistType,
-  RawSafetyDepositBoxBFF,
+  RawSafetyDepositBox,
   SafetyDepositBoxState,
   SafetyDepositBox,
-  RawNftMetadataBFF,
+  RawNftMetadata,
   SafetyDepositBoxWithNftMetadata,
   NftPoolData,
-  RawNftPoolDataBFF,
+  RawNftPoolData,
 } from './nftPools.model';
 
 const parseAnchorState = <T>(anchorState: AnchorState): T => {
@@ -29,9 +29,9 @@ const parseAnchorState = <T>(anchorState: AnchorState): T => {
 };
 
 const parseRawCommunityPool = (
-  rawCommunityPoolBFF: RawCommunityPoolBFF,
+  rawCommunityPool: RawCommunityPool,
 ): CommunityPool => {
-  const { publicKey: rawPublicKey, account } = rawCommunityPoolBFF;
+  const { publicKey: rawPublicKey, account } = rawCommunityPool;
 
   return {
     publicKey: new PublicKey(rawPublicKey),
@@ -46,7 +46,7 @@ const parseRawCommunityPool = (
 };
 
 const parseRawLotteryTicket = (
-  rawLotteryTicket: RawLotteryTicketBFF,
+  rawLotteryTicket: RawLotteryTicket,
 ): LotteryTicket => {
   const { publicKey: rawPublicKey, account } = rawLotteryTicket;
 
@@ -62,7 +62,7 @@ const parseRawLotteryTicket = (
 };
 
 const parseRawPoolWhitelist = (
-  rawPoolWhitelist: RawPoolWhitelistBFF,
+  rawPoolWhitelist: RawPoolWhitelist,
 ): PoolWhitelist => {
   const { publicKey: rawPublicKey, account } = rawPoolWhitelist;
 
@@ -75,7 +75,7 @@ const parseRawPoolWhitelist = (
 };
 
 const parseRawSafetyDepositBox = (
-  rawSafetyDepositBox: RawSafetyDepositBoxBFF,
+  rawSafetyDepositBox: RawSafetyDepositBox,
 ): SafetyDepositBox => {
   const { publicKey: rawPublicKey, account } = rawSafetyDepositBox;
 
@@ -90,47 +90,11 @@ const parseRawSafetyDepositBox = (
   };
 };
 
-export const parseRawNftPools = (
-  rawPoolsData: RawNftPoolDataBFF,
-): NftPoolData[] => {
-  const {
-    communityPools: rawCommunityPoolBFF,
-    lotteryTickets: rawLotteryTicketsBFF,
-    poolWhitelists: rawPoolWhitelists,
-    safetyDepositBoxes: rawSafetyDepositBoxes,
-    nftsMetadata: rawNftsMetadata,
-  } = rawPoolsData;
-
-  const communityPools = (rawCommunityPoolBFF as RawCommunityPoolBFF[]).map(
-    (communityPool) => parseRawCommunityPool(communityPool),
-  );
-
-  const lotteryTicketsByCommunityPool = groupBy(
-    (rawLotteryTicketsBFF as RawLotteryTicketBFF[]).map((lotteryTicket) =>
-      parseRawLotteryTicket(lotteryTicket),
-    ),
-    'communityPool',
-  );
-
-  const poolWhitelistsByCommunityPool = groupBy(
-    (rawPoolWhitelists as RawPoolWhitelistBFF[]).map((poolWhitelist) =>
-      parseRawPoolWhitelist(poolWhitelist),
-    ),
-    'communityPool',
-  );
-
-  const safetyDepositBoxes: SafetyDepositBox[] = (
-    rawSafetyDepositBoxes as RawSafetyDepositBoxBFF[]
-  )
-    .map((safetyDepositBox) => parseRawSafetyDepositBox(safetyDepositBox))
-    .filter(
-      ({ safetyBoxState }) => safetyBoxState !== SafetyDepositBoxState.EMPTY,
-    );
-
-  const rawNftsMetadataByMint = keyBy(
-    rawNftsMetadata as RawNftMetadataBFF[],
-    'mint',
-  );
+const getSafetyDepositBoxWithNftMetadata = (
+  safetyDepositBoxes: SafetyDepositBox[],
+  rawNftsMetadata: RawNftMetadata[],
+) => {
+  const rawNftsMetadataByMint = keyBy(rawNftsMetadata, 'mint');
 
   const safetyDepositBoxWithNftMetadata = safetyDepositBoxes.reduce(
     (acc: SafetyDepositBoxWithNftMetadata[], safetyDepositBox) => {
@@ -161,6 +125,47 @@ export const parseRawNftPools = (
       return acc;
     },
     [],
+  );
+
+  return safetyDepositBoxWithNftMetadata;
+};
+
+export const parseRawNftPools = (
+  rawPoolsData: RawNftPoolData,
+): NftPoolData[] => {
+  const {
+    communityPools: rawCommunityPoolBFF,
+    lotteryTickets: rawLotteryTicketsBFF,
+    poolWhitelists: rawPoolWhitelists,
+    safetyDepositBoxes: rawSafetyDepositBoxes,
+    nftsMetadata: rawNftsMetadata,
+  } = rawPoolsData;
+
+  const communityPools = (rawCommunityPoolBFF as RawCommunityPool[]).map(
+    parseRawCommunityPool,
+  );
+
+  const lotteryTicketsByCommunityPool = groupBy(
+    (rawLotteryTicketsBFF as RawLotteryTicket[]).map(parseRawLotteryTicket),
+    'communityPool',
+  );
+
+  const poolWhitelistsByCommunityPool = groupBy(
+    (rawPoolWhitelists as RawPoolWhitelist[]).map(parseRawPoolWhitelist),
+    'communityPool',
+  );
+
+  const safetyDepositBoxes: SafetyDepositBox[] = (
+    rawSafetyDepositBoxes as RawSafetyDepositBox[]
+  )
+    .map(parseRawSafetyDepositBox)
+    .filter(
+      ({ safetyBoxState }) => safetyBoxState !== SafetyDepositBoxState.EMPTY,
+    );
+
+  const safetyDepositBoxWithNftMetadata = getSafetyDepositBoxWithNftMetadata(
+    safetyDepositBoxes,
+    rawNftsMetadata,
   );
 
   const safetyDepositBoxesWithMetadataByCommunityPool: Dictionary<
