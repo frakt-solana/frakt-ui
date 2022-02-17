@@ -1,12 +1,17 @@
-import { FC, MouseEventHandler, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
-import { HashLink as AnchorLink } from 'react-router-hash-link';
-
-import { SafetyBoxWithMetadata, VaultData } from '../../../contexts/fraktion';
+import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import SwiperCore, {
+  FreeMode,
+  Navigation,
+  Scrollbar,
+  Thumbs,
+  Lazy,
+} from 'swiper';
+import { HashLink as AnchorLink } from 'react-router-hash-link';
+import { SafetyBoxWithMetadata, VaultData } from '../../../contexts/fraktion';
 
-SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
+SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar, Lazy]);
 
 const THUMBS_SLIDER_BREAKPOINTS = {
   240: { slidesPerView: 2.5 },
@@ -32,6 +37,8 @@ interface NFTDoubleSliderProps {
   };
 }
 
+const MAX_SAFETY_BOX_SIZE = 20;
+
 export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
   vaultData,
   safetyBoxes = [],
@@ -39,24 +46,36 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
   currentSlideData,
 }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [slidesToShow, setSlidesToShow] = useState<SafetyBoxWithMetadata[]>([]);
+
+  useEffect(() => {
+    if (safetyBoxes.length >= MAX_SAFETY_BOX_SIZE) {
+      setSlidesToShow(safetyBoxes.slice(0, MAX_SAFETY_BOX_SIZE));
+    } else {
+      setSlidesToShow(safetyBoxes);
+    }
+  }, [safetyBoxes]);
 
   return (
     <div className={styles.sliders}>
-      <Swiper
-        slidesPerView={1}
-        className={styles.sliderBig}
-        thumbs={{ swiper: thumbsSwiper }}
-      >
-        {safetyBoxes.map((box) => (
-          <SwiperSlide key={box.nftMint}>
-            <div
-              className={styles.slideBig}
-              style={{ backgroundImage: `url(${box.nftImage})` }}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-      {vaultData?.safetyBoxes.length > 1 && (
+      {!!slidesToShow.length && (
+        <Swiper
+          slidesPerView={1}
+          className={styles.sliderBig}
+          thumbs={{ swiper: thumbsSwiper }}
+          lazy
+        >
+          {slidesToShow.map((box) => (
+            <SwiperSlide key={box.nftMint}>
+              <div
+                className={`${styles.slideBig} swiper-lazy`}
+                data-background={box.nftImage}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
+      {slidesToShow.length > 1 && (
         <>
           <Swiper
             breakpoints={THUMBS_SLIDER_BREAKPOINTS}
@@ -65,8 +84,9 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
             navigation={true}
             scrollbar={{ draggable: true }}
             onSwiper={setThumbsSwiper}
+            lazy
           >
-            {safetyBoxes.map((box, index) => (
+            {slidesToShow.map((box, index) => (
               <SwiperSlide
                 key={box.nftMint}
                 onClick={onSlideThumbClick(
@@ -76,8 +96,8 @@ export const NFTDoubleSlider: FC<NFTDoubleSliderProps> = ({
                 )}
               >
                 <div
-                  className={styles.slideSmall}
-                  style={{ backgroundImage: `url(${box.nftImage})` }}
+                  className={`${styles.slideSmall} swiper-lazy`}
+                  data-background={box.nftImage}
                 />
               </SwiperSlide>
             ))}
