@@ -134,9 +134,8 @@ const CollectionsPage: FC = () => {
           }
           if (sortField === 'nfts') {
             return compareVaultsArraysByNFTsAmount(
-              collectionNameA,
-              collectionNameB,
-              vaultsNotArchivedByCollectionName,
+              vaultsNotArchivedByCollectionName[collectionNameA],
+              vaultsNotArchivedByCollectionName[collectionNameB],
               sortOrder === 'desc',
             );
           }

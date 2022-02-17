@@ -10,18 +10,27 @@ const EXCHANGE_COLLECTION_INFO_API = process.env.REACT_APP_COLLECTION_URL;
 export const mapVaultsByCollectionName = (
   vaults: VaultData[],
 ): VaultsByCollectionName => {
-  return vaults.reduce((vaultByCollectionName, vault) => {
-    vault.safetyBoxes.forEach((safetyBox) => {
-      if (safetyBox.isNftVerified) {
-        const vaultsByCollectionName =
-          vaultByCollectionName[safetyBox.nftCollectionName] || [];
-        vaultByCollectionName[safetyBox.nftCollectionName] = [
-          ...vaultsByCollectionName,
-          vault,
-        ];
+  return vaults.reduce((acc: VaultsByCollectionName, vault) => {
+    const { safetyBoxes } = vault;
+    const collectionsInVault = safetyBoxes
+      .filter(({ isNftVerified }) => isNftVerified)
+      .map(({ nftCollectionName }) => nftCollectionName);
+
+    collectionsInVault.forEach((collectionName) => {
+      if (!acc[collectionName]) {
+        acc[collectionName] = [vault];
+      } else {
+        if (
+          !acc[collectionName].find(
+            (_vault) => _vault?.vaultPubkey === vault.vaultPubkey,
+          )
+        ) {
+          acc[collectionName] = [...acc[collectionName], vault];
+        }
       }
     });
-    return vaultByCollectionName;
+
+    return acc;
   }, {});
 };
 
@@ -80,29 +89,17 @@ export const compareVaultsArraysByName = (
 ): number => (desc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA));
 
 export const compareVaultsArraysByNFTsAmount = (
-  collectionNameA: string,
-  collectionNameB: string,
-  vaultsNotArchivedByCollectionName: { [key: string]: VaultData[] },
+  vaultsA: VaultData[] = [],
+  vaultsB: VaultData[] = [],
   desc = true,
 ): number => {
-  const amountA =
-    vaultsNotArchivedByCollectionName[collectionNameA] ||
-    [].reduce((acc, vault) => {
-      vault?.safetyBoxes.forEach((nft) => {
-        if (nft.nftCollectionName === collectionNameA) acc.push(nft);
-      });
-      return acc;
-    }, []);
-  const amountB =
-    vaultsNotArchivedByCollectionName[collectionNameB] ||
-    [].reduce((acc, vault) => {
-      vault?.safetyBoxes.forEach((nft) => {
-        if (nft.nftCollectionName === collectionNameB) acc.push(nft);
-      });
-      return acc;
-    }, []);
+  const getNftsAmount = (vaults: VaultData[]) =>
+    vaults.reduce((acc, { safetyBoxes }) => {
+      return acc + safetyBoxes.length;
+    }, 0);
 
-  return desc
-    ? amountB.length - amountA.length
-    : amountA.length - amountB.length;
+  const nftsAmountA = getNftsAmount(vaultsA);
+  const nftsAmountB = getNftsAmount(vaultsB);
+
+  return desc ? nftsAmountB - nftsAmountA : nftsAmountA - nftsAmountB;
 };
