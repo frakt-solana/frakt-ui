@@ -10,7 +10,6 @@
   position: relative;
   background-color: var(--black-color);
   border: 1px solid var(--color-gray-03);
-  cursor: pointer;
   transition: border-color var(--transition-1);
 
   &::after {
@@ -33,6 +32,8 @@
 }
 
 .nftCardHover {
+  cursor: pointer;
+
   &:hover {
     border-color: var(--accent-color-1);
 
