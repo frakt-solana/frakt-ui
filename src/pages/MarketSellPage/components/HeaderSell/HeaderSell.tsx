@@ -5,7 +5,11 @@ import { useHeaderState } from '../../../../contexts/HeaderState';
 import classNames from 'classnames';
 import { SolanaIcon } from '../../../../icons';
 
-export const HeaderSell: FC = () => {
+interface HeaderSellProps {
+  poolPublicKey: string;
+}
+
+export const HeaderSell: FC<HeaderSellProps> = ({ poolPublicKey }) => {
   const { headerVisible } = useHeaderState();
   return (
     <div
@@ -31,7 +35,10 @@ export const HeaderSell: FC = () => {
                 {'PUNKS'}
               </p>
             </div>
-            <MarketNavigation className={styles.marketNavigation} />
+            <MarketNavigation
+              className={styles.marketNavigation}
+              poolPublicKey={poolPublicKey}
+            />
           </div>
         </div>
       </div>

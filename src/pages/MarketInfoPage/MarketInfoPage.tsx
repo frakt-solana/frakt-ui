@@ -1,17 +1,22 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router-dom';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import styles from './styles.module.scss';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../../components/WalletNotConnected';
 import { HeaderInfo } from './components/HeaderInfo';
 import { SolanaIcon } from '../../icons';
 import classNames from 'classnames';
 import { POOL_HISTORY_DATA } from './tempData';
 import { HistoryListItem } from './components/HistoryListItem';
+import { usePublicKeyParam } from '../../hooks';
 
 const MarketInfoPage = (): JSX.Element => {
+  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  usePublicKeyParam(poolPubkey);
+
   const { connected } = useWallet();
 
   return (
@@ -20,7 +25,7 @@ const MarketInfoPage = (): JSX.Element => {
         <Helmet>
           <title>{`Market/Info | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
         </Helmet>
-        <HeaderInfo />
+        <HeaderInfo poolPublicKey={poolPubkey} />
         {!connected ? (
           <WalletNotConnected className={styles.notConnected} />
         ) : (

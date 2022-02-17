@@ -1,18 +1,25 @@
-import React, { FC, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
+import classNames from 'classnames';
+import { Select } from 'antd';
+
+import { UserNFT } from '../../../../contexts/userTokens';
 import styles from './styles.module.scss';
 import SettingsIcon from '../../../../icons/SettingsIcon';
 import { ArrowDownBtn, CloseModalIcon, SolanaIcon } from '../../../../icons';
-import classNames from 'classnames';
-import { Select } from 'antd';
 
 const { Option } = Select;
 
 interface BuyingModalProps {
+  onSubmit: () => void;
   onDeselect?: (nft: any) => void;
-  nfts: any;
+  nft: UserNFT;
 }
 
-export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
+export const SellingModal: FC<BuyingModalProps> = ({
+  onDeselect,
+  nft,
+  onSubmit,
+}) => {
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
   const [isModalDown, setIsModalDown] = useState<boolean>(false);
 
@@ -24,19 +31,19 @@ export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
     <div
       className={classNames({
         [styles.wrapper]: true,
-        [styles.visible]: nfts.length,
-        [styles.modalDown]: isModalDown && nfts.length,
+        [styles.visible]: !!nft,
+        [styles.modalDown]: isModalDown && !!nft,
       })}
     >
-      <div className={styles.closeModal} onClick={() => setIsModalDown(true)}>
+      {/* <div className={styles.closeModal} onClick={() => setIsModalDown(true)}>
         <CloseModalIcon width={20} />
-      </div>
+      </div> */}
       <div className={styles.header}>
         <p
           className={styles.title}
           onClick={() => setIsModalDown(!isModalDown)}
         >
-          You&apos;re selling<span>{nfts.length}</span>
+          You&apos;re selling{!!nft && <span>1</span>}
         </p>
         <div
           className={classNames({
@@ -67,15 +74,15 @@ export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
         </div>
       </div>
       <ul className={styles.selectedList}>
-        {nfts.map((nft, index) => (
-          <li key={index} className={styles.selectedItem}>
+        {!!nft && (
+          <li className={styles.selectedItem}>
             <div
               className={styles.itemImg}
-              style={{ backgroundImage: `url(${nft?.nftImage})` }}
+              style={{ backgroundImage: `url(${nft.metadata.image})` }}
             />
             <div className={styles.itemInfo}>
-              <p className={styles.itemId}>{nft.nftId}</p>
-              <p className={styles.collectionName}>{nft.collectionName}</p>
+              <p className={styles.itemId}>{nft.metadata.name}</p>
+              {/* <p className={styles.collectionName}>{nft.collectionName}</p> */}
             </div>
             <div
               className={styles.closeWrapper}
@@ -84,7 +91,7 @@ export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
               <CloseModalIcon />
             </div>
           </li>
-        ))}
+        )}
       </ul>
       <div className={styles.currencyWrapper}>
         <p className={styles.totalText}>Total</p>
@@ -112,7 +119,9 @@ export const SellingModal: FC<BuyingModalProps> = ({ onDeselect, nfts }) => {
       <p className={styles.slippageInfo}>
         * Max total (with slippage) = {0.002124} SOL
       </p>
-      <button className={styles.buyButton}>Sell for {'SOL'}</button>
+      <button className={styles.buyButton} onClick={onSubmit}>
+        Sell for {'SOL'}
+      </button>
     </div>
   );
 };

@@ -5,7 +5,12 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
-import { useFraktion, VaultState } from '../../contexts/fraktion';
+import {
+  VaultState,
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+} from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
@@ -59,6 +64,9 @@ const VaultsPage = (): JSX.Element => {
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
 
   const { loading, vaults: rawVaults } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
+
   const [searchString, setSearchString] = useState<string>('');
 
   const { featuredVaultsPubKeyList } = useFeaturedVaultsPublicKeys();

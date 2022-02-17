@@ -1,60 +1,65 @@
-import { useState } from 'react';
+import { useParams } from 'react-router';
+import { useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 
 import { ArrowDownSmallIcon, FiltersIcon } from '../../icons';
 import { ControlledSelect } from '../../components/Select/Select';
 import { Sidebar } from './components/Sidebar';
-import { NFTsList } from './components/NFTsList';
+import { NFTsList } from '../../components/NFTsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderSell } from './components/HeaderSell';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { SellingModal } from './components/SellingModal';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../../components/WalletNotConnected';
-import { useUserTokens } from '../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import styles from './styles.module.scss';
 
-const SORT_VALUES = [
-  {
-    label: (
-      <span className={styles.sortName}>
-        Name <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'collectionName_asc',
-  },
-  {
-    label: (
-      <span className={styles.sortName}>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'collectionName_desc',
-  },
-];
+import {
+  useNftPool,
+  useNftPools,
+  useNftPoolsInitialFetch,
+} from '../../contexts/nftPools';
+import { usePublicKeyParam } from '../../hooks';
+import { PublicKey } from '@solana/web3.js';
 
 const MarketSellPage = (): JSX.Element => {
-  const { connected } = useWallet();
-  const [selectedNfts, setSelectedNfts] = useState<any>([]);
+  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  usePublicKeyParam(poolPubkey);
 
+  useNftPoolsInitialFetch();
+
+  const { depositNftToCommunityPool } = useNftPools();
+
+  const { pool, whitelistedMintsDictionary } = useNftPool(poolPubkey);
+  const {
+    nfts: rawNfts,
+    loading: userNftsLoading,
+    removeTokenOptimistic,
+  } = useUserTokens();
+
+  const { connected } = useWallet();
+  const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
 
-  const onDeselect = (nft: any) => {
-    setSelectedNfts(
-      selectedNfts.filter((selectedNft) => selectedNft?.nftId !== nft.nftId),
-    );
+  const onSelect = (nft: UserNFT) => {
+    setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));
   };
-
-  const onCardClick = (nft: any): void => {
-    selectedNfts.find((selectedNft) => selectedNft?.nftId === nft.nftId)
-      ? setSelectedNfts(
-          selectedNfts.filter(
-            (selectedNft) => selectedNft?.nftId !== nft.nftId,
-          ),
-        )
-      : setSelectedNfts([...selectedNfts, nft]);
+  const onDeselect = () => {
+    setSelectedNft(null);
+  };
+  const onSell = () => {
+    //TODO Remove NFT from list after successfull selling
+    depositNftToCommunityPool({
+      pool,
+      nftMint: new PublicKey(selectedNft?.mint),
+      afterTransaction: () => {
+        removeTokenOptimistic([selectedNft?.mint]);
+        onDeselect();
+      },
+    });
   };
 
   const { control /* watch */ } = useForm({
@@ -65,13 +70,19 @@ const MarketSellPage = (): JSX.Element => {
 
   // const sort = watch('sort');
 
-  const { nfts, loading } = useUserTokens();
+  const nfts = useMemo(() => {
+    return rawNfts.filter(({ mint }) => !!whitelistedMintsDictionary[mint]);
+  }, [rawNfts, whitelistedMintsDictionary]);
 
   return (
     <HeaderStateProvider>
       <AppLayout className={styles.layout}>
         <div className={styles.modalWrapper}>
-          <SellingModal nfts={selectedNfts} onDeselect={onDeselect} />
+          <SellingModal
+            nft={selectedNft}
+            onDeselect={onDeselect}
+            onSubmit={onSell}
+          />
         </div>
         <div className="container">
           <Helmet>
@@ -81,7 +92,7 @@ const MarketSellPage = (): JSX.Element => {
             <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
             <div className={styles.content}>
-              <HeaderSell />
+              <HeaderSell poolPublicKey={poolPubkey} />
 
               {!connected ? (
                 <WalletNotConnected />
@@ -110,10 +121,14 @@ const MarketSellPage = (): JSX.Element => {
                     </div>
                   </div>
 
-                  {loading ? (
+                  {userNftsLoading ? (
                     <Loader />
                   ) : (
-                    <NFTsList onCardClick={onCardClick} nfts={nfts} />
+                    <NFTsList
+                      onCardClick={onSelect}
+                      nfts={nfts}
+                      selectedNft={selectedNft}
+                    />
                   )}
                 </>
               )}
@@ -126,3 +141,22 @@ const MarketSellPage = (): JSX.Element => {
 };
 
 export default MarketSellPage;
+
+const SORT_VALUES = [
+  {
+    label: (
+      <span className={styles.sortName}>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span className={styles.sortName}>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
+  },
+];

@@ -13,3 +13,4 @@ export { default as MarketBuyPage } from '../pages/MarketBuyPage';
 export { default as MarketSellPage } from '../pages/MarketSellPage';
 export { default as MarketSwapPage } from '../pages/MarketSwapPage';
 export { default as MarketInfoPage } from '../pages/MarketInfoPage';
+export { default as MarketTestPage } from './MarketTestPage';

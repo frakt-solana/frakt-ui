@@ -1,8 +1,12 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styles from './styles.module.scss';
 import { MarketNavigation } from '../../../../components/MarketNavigation';
 
-export const HeaderInfo: FC = () => {
+interface HeaderInfoProps {
+  poolPublicKey: string;
+}
+
+export const HeaderInfo: FC<HeaderInfoProps> = ({ poolPublicKey }) => {
   return (
     <div className={styles.header}>
       <div className={styles.wrapper}>
@@ -11,7 +15,10 @@ export const HeaderInfo: FC = () => {
             <div className={styles.poolImage} />
             <h2 className={styles.title}>PUNKS</h2>
           </div>
-          <MarketNavigation className={styles.marketNavigation} />
+          <MarketNavigation
+            className={styles.marketNavigation}
+            poolPublicKey={poolPublicKey}
+          />
         </div>
       </div>
     </div>

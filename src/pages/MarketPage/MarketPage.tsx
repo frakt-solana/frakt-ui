@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 import { Input } from 'antd';
@@ -9,43 +9,34 @@ import { ControlledSelect } from '../../components/Select/Select';
 import { Sidebar } from './components/Sidebar';
 import { PoolsList } from './components/PoolsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { useNftPools } from '../../contexts/nftPools/nftPools.hooks';
+import {
+  useNftPools,
+  useNftPoolsInitialFetch,
+  useNftPoolsPolling,
+} from '../../contexts/nftPools';
 import styles from './styles.module.scss';
 import { Loader } from '../../components/Loader';
 import { CommunityPoolState } from '../../utils/cacher/nftPools';
 
-const SORT_VALUES = [
-  {
-    label: (
-      <span className={styles.sortName}>
-        Name <ArrowDownSmallIcon className={styles.arrowDown} />
-      </span>
-    ),
-    value: 'collectionName_asc',
-  },
-  {
-    label: (
-      <span className={styles.sortName}>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
-      </span>
-    ),
-    value: 'collectionName_desc',
-  },
-];
-
-const MarketPage = (): JSX.Element => {
-  const { control, watch } = useForm({
+const MarketPage: FC = () => {
+  const { control /* watch */ } = useForm({
     defaultValues: {
       sort: SORT_VALUES[0],
     },
   });
 
-  const sort = watch('sort');
+  // const sort = watch('sort');
 
   const { pools: rawPools, loading } = useNftPools();
+  useNftPoolsInitialFetch();
+  useNftPoolsPolling();
 
   const pools = useMemo(() => {
-    return rawPools.filter(({ state }) => state === CommunityPoolState.ACTIVE);
+    return rawPools.filter(
+      ({ state, publicKey }) =>
+        state === CommunityPoolState.ACTIVE &&
+        publicKey.toBase58() === 'BoC5dJVZtPk6MVtDsXpeqPmLrAiQJmCrc7MwnyuaSn5e',
+    );
   }, [rawPools]);
 
   return (
@@ -86,3 +77,22 @@ const MarketPage = (): JSX.Element => {
 };
 
 export default MarketPage;
+
+const SORT_VALUES = [
+  {
+    label: (
+      <span className={styles.sortName}>
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'collectionName_asc',
+  },
+  {
+    label: (
+      <span className={styles.sortName}>
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'collectionName_desc',
+  },
+];

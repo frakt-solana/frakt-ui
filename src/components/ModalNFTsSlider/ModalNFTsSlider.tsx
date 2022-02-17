@@ -1,18 +1,15 @@
-import { Dispatch, FC, useRef } from 'react';
+import { FC, useRef } from 'react';
 import { Modal } from 'antd';
-import styles from './stalys.module.scss';
-import { CloseModalIcon } from '../../icons/CloseModalIcon';
+import { Dictionary } from 'lodash';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-// import { NavLink } from 'react-router-dom';
-// import { PATHS } from '../../constants';
-import { copyToClipboard /* getCollectionThumbnailUrl */ } from '../../utils';
-import { shortenAddress } from '../../utils/solanaUtils';
-import Tooltip from '../Tooltip';
-import { CopyClipboardIcon } from '../../icons/CopyClipboardIcon';
-// import { SafetyBoxWithMetadata } from '../../contexts/fraktion';
-// import { CollectionData } from '../../utils/collections';
+
+import { CloseModalIcon } from '../../icons/CloseModalIcon';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
+
 import { UserNFT } from '../../contexts/userTokens';
+import { CollectionData } from '../../utils/collections';
+import { SlideContent } from './components';
+import styles from './styles.module.scss';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -21,16 +18,18 @@ interface ModalNFTsSliderProps {
   currentSlide: number;
   className?: string;
   nfts: UserNFT[];
-  nftCollections: any; // CollectionData[]
-  onSliderNavClick: () => () => void;
+  collectionByNftMint?: Dictionary<CollectionData>;
+  onSliderNavClick: () => void;
   setIsModalVisible: (status: boolean) => void;
-  setSwiper: Dispatch<any>;
+  setSwiper: (swiper: SwiperCore) => void;
 }
+
+const MAX_NFTS_LENGTH = 20;
 
 export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
   className,
-  nfts,
-  // nftCollections,
+  nfts: rawNfts,
+  collectionByNftMint = {},
   isModalVisible,
   currentSlide,
   setIsModalVisible,
@@ -40,14 +39,8 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
   const prevBtn = useRef<HTMLDivElement>(null);
   const nextBtn = useRef<HTMLDivElement>(null);
 
-  // const safetyBoxesWithCollectionData: Array<
-  //   SafetyBoxWithMetadata & { collectionInfo: CollectionData }
-  // > = safetyBoxes.map((box) => ({
-  //   ...box,
-  //   collectionInfo: nftCollections.find(
-  //     (coll) => coll.collectionName === box.nftCollectionName,
-  //   ),
-  // }));
+  const nfts =
+    rawNfts.length > MAX_NFTS_LENGTH ? [rawNfts[currentSlide]] : rawNfts;
 
   return (
     <Modal
@@ -61,7 +54,7 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
     >
       <div className={styles.closeModalSection}>
         <span className={styles.slideNumber}>
-          {currentSlide + 1}/{nfts.length}
+          {currentSlide + 1}/{rawNfts.length}
         </span>
         <div
           className={styles.closeModalIcon}
@@ -79,78 +72,27 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
           initialSlide={currentSlide}
           onSwiper={setSwiper}
           autoHeight={true}
-          onSlideChange={onSliderNavClick()}
+          onSlideChange={onSliderNavClick}
         >
           {nfts.map((nft) => (
-            <SwiperSlide key={nft.mint} className={styles.slide}>
-              <div
-                style={{ backgroundImage: `url(${nft.metadata.image})` }}
-                className={styles.slideImage}
+            <SwiperSlide key={nft.mint}>
+              <SlideContent
+                key={nft.mint}
+                nft={nft}
+                collection={collectionByNftMint[nft.mint]}
               />
-              <div className={styles.slideInfoBlock}>
-                {/* {slide.collectionInfo?.collectionName && (
-                  <NavLink
-                    to={`${PATHS.COLLECTION}/${slide.collectionInfo?.collectionName}`}
-                    className={styles.collectionLink}
-                  >
-                    <div
-                      className={styles.collectionIcon}
-                      style={{
-                        backgroundImage: `url(${getCollectionThumbnailUrl(
-                          slide.collectionInfo?.thumbnailPath,
-                        )})`,
-                      }}
-                    />
-                    <p className={styles.collectionName}>
-                      {slide.collectionInfo?.collectionName}
-                    </p>
-                  </NavLink>
-                )} */}
-                <h5 className={styles.nftTitle}>{nft.metadata.name}</h5>
-                {nft.metadata.description && (
-                  <p className={styles.NftDescription}>
-                    {nft.metadata.description}
-                  </p>
-                )}
-                {!!nft.metadata.attributes?.length && (
-                  <div className={styles.attributesTable}>
-                    {nft.metadata.attributes.map(
-                      ({ trait_type, value }, idx) => (
-                        <div key={idx} className={styles.attributesTable__row}>
-                          <p>{trait_type}</p>
-                          <p>{value}</p>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                )}
-                <p className={styles.nftInfoLabel}>NFT MINT</p>
-                <p
-                  className={styles.nftInfoItem}
-                  onClick={() => copyToClipboard(nft.mint)}
-                >
-                  {shortenAddress(nft.mint)}
-                  <Tooltip
-                    placement="bottom"
-                    trigger="hover"
-                    overlay="Click to copy to clipboard"
-                  >
-                    <CopyClipboardIcon className={styles.copyIcon} width={24} />
-                  </Tooltip>
-                </p>
-              </div>
             </SwiperSlide>
           ))}
         </Swiper>
         <div
           ref={prevBtn}
           className={styles.sliderNavPrev}
-          onClick={onSliderNavClick()}
+          onClick={onSliderNavClick}
         />
         <div
           ref={nextBtn}
           className={styles.sliderNavNext}
-          onClick={onSliderNavClick()}
+          onClick={onSliderNavClick}
         />
       </div>
     </Modal>

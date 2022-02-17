@@ -17,6 +17,7 @@ import {
   MarketSellPage,
   MarketSwapPage,
   MarketInfoPage,
+  MarketTestPage,
 } from '../pages';
 
 interface Route {
@@ -26,6 +27,11 @@ interface Route {
 }
 
 export const routes: Route[] = [
+  {
+    exact: true,
+    path: PATHS.TEST,
+    component: MarketTestPage,
+  },
   {
     exact: true,
     path: PATHS.ROOT,

@@ -6,7 +6,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { ArrowDownSmallIcon } from '../../icons';
-import { useFraktion, VaultState } from '../../contexts/fraktion';
+import {
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+  VaultState,
+} from '../../contexts/fraktion';
 import { useDebounce } from '../../hooks';
 import { SearchInput } from '../../components/SearchInput';
 import { ControlledSelect } from '../../components/Select/Select';
@@ -60,6 +65,8 @@ const CollectionPage: FC = () => {
   const [searchString, setSearchString] = useState<string>('');
   const { collectionName } = useParams<{ collectionName: string }>();
   const { vaults, loading } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
 
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultsByCollectionName(vaults);

@@ -1,0 +1,114 @@
+.slide {
+  display: flex;
+  gap: 34px;
+
+  @media screen and (max-width: 1023px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.slideImage {
+  flex-shrink: 0;
+  height: 388px;
+  width: 388px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid var(--gray-color-3);
+
+  @media screen and (max-width: 1023px) {
+    width: 343px;
+    height: 343px;
+    border: none;
+    border-bottom: 1px solid var(--gray-color-3);
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 270px;
+    height: 270px;
+  }
+}
+
+.slideInfoBlock {
+  flex-grow: 1;
+
+  @media screen and (max-width: 1023px) {
+    padding: 24px;
+  }
+}
+
+.collectionLink {
+  display: flex;
+  margin-bottom: 16px;
+
+  &:hover {
+    .collectionName {
+      color: var(--accent-color-3);
+    }
+  }
+
+  .collectionName {
+    color: var(--accent-color-1);
+    transition: color var(--transition-1);
+    font: var(--font-secondary);
+    border-bottom: 1px solid var(--accent-color-1);
+  }
+}
+
+.collectionIcon {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--white-color);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-right: 10px;
+}
+
+.NftDescription {
+  margin-bottom: 16px;
+  font: var(--font-body-small);
+}
+
+.attributesTable {
+  padding-bottom: 32px;
+  font: var(--font-secondary);
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    p:first-child {
+      order: 1;
+    }
+
+    p:last-child {
+      order: 3;
+      word-break: break-word;
+      text-align: right;
+    }
+
+    &::before {
+      content: '';
+      display: inline-block;
+      height: 1px;
+      flex-grow: 1;
+      background: var(--gray-color-3);
+      order: 2;
+      min-width: 25px;
+      margin-top: 11px;
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding-bottom: 0;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-top: 0;
+  }
+}

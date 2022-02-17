@@ -5,9 +5,8 @@ import { DEPRECATED_MARKETS } from '../markets';
 import { NftPoolData } from './nftPools';
 import { parseRawNftPools } from './nftPools/nftPools.helpers';
 
-export const IS_BFF_ENABLED = !process.env.REACT_APP_DISABLE_BFF;
-
 const CACHER_URL = process.env.REACT_APP_BFF_URL;
+export const IS_BFF_ENABLED = !!CACHER_URL;
 
 const REACT_APP_SERUM_MARKET_PROGRAM_PUBKEY =
   process.env.REACT_APP_SERUM_MARKET_PROGRAM_PUBKEY;
@@ -25,12 +24,13 @@ class API {
   public async getVaults(): Promise<VaultData[]> {
     const res = await fetch(`${CACHER_URL}/vaults`);
     const vaults = await res.json();
+
     return vaults.map((vault: VaultData) => ({
       ...vault,
       auction: {
         auction: {
           ...vault.auction.auction,
-          tickSize: new BN(vault.auction.auction.tickSize, 16),
+          tickSize: new BN(vault.auction.auction?.tickSize, 16),
         },
         bids: vault.auction.bids.map((bid) => ({
           ...bid,
@@ -51,6 +51,7 @@ class API {
   > {
     const res = await fetch(`${CACHER_URL}/markets`);
     const markets = await res.json();
+
     return markets
       .filter((market) => !DEPRECATED_MARKETS.includes(market.address))
       .map((market) => {

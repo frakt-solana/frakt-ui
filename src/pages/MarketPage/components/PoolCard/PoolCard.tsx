@@ -1,7 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { FC } from 'react';
 
-import { NftPoolData } from '../../../../utils/cacher/nftPools';
+import {
+  NftPoolData,
+  SafetyDepositBoxState,
+} from '../../../../utils/cacher/nftPools';
 import styles from './styles.module.scss';
 import { PATHS } from '../../../../constants';
 import { SolanaIcon } from '../../../../icons';
@@ -10,30 +13,29 @@ interface PoolCardProps {
   pool: NftPoolData;
 }
 
-const MOCK_IMAGE =
-  'https://w55pcai3doppkjvizydkia7l3kkdl3rdexzt5rlduyukdfehs4yq.arweave.net/t3rxARsbnvUmqM4GpAPr2pQ17iMl8z7FY6YooZSHlzE';
-
-const MOCK_TOKEN_NAME = 'FRKT';
+const MOCK_TOKEN_NAME = 'TODO';
 
 const MOCK_PRICE = 3.12;
 
 export const PoolCard: FC<PoolCardProps> = ({ pool }) => {
   const { publicKey, safetyBoxes } = pool;
 
-  const collectionsAmount = 2;
+  const collectionsAmount = 'X';
 
   const nftsAmount = safetyBoxes.length;
 
-  const poolImage = MOCK_IMAGE;
+  const poolImage = pool.safetyBoxes.filter(
+    ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
+  )?.[0]?.nftImage;
 
-  const tokenImage = MOCK_IMAGE;
+  const tokenImage = '';
 
   const tokenName = MOCK_TOKEN_NAME;
 
   //TODO refactor routes
   return (
     <NavLink
-      to={`${PATHS.MARKET}/${publicKey.toBase58()}/sell`}
+      to={`${PATHS.MARKET}/${publicKey.toBase58()}/buy`}
       className={styles.poolCard}
     >
       <div className={styles.poolImgWrapper}>
