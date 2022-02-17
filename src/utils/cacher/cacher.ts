@@ -24,12 +24,13 @@ class API {
   public async getVaults(): Promise<VaultData[]> {
     const res = await fetch(`${CACHER_URL}/vaults`);
     const vaults = await res.json();
+
     return vaults.map((vault: VaultData) => ({
       ...vault,
       auction: {
         auction: {
           ...vault.auction.auction,
-          tickSize: new BN(vault.auction.auction.tickSize, 16),
+          tickSize: new BN(vault.auction.auction?.tickSize, 16),
         },
         bids: vault.auction.bids.map((bid) => ({
           ...bid,
@@ -50,6 +51,7 @@ class API {
   > {
     const res = await fetch(`${CACHER_URL}/markets`);
     const markets = await res.json();
+
     return markets
       .filter((market) => !DEPRECATED_MARKETS.includes(market.address))
       .map((market) => {

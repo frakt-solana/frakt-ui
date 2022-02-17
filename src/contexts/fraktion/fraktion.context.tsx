@@ -8,8 +8,8 @@ import {
 } from './fraktion.model';
 import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
-import { getVaults } from './fraktion';
 import { addNFTsToVault, createMarket, createVault } from './transactions';
+import { Cacher } from '../../utils/cacher';
 
 export const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -43,7 +43,8 @@ export const FraktionProvider = ({
     try {
       setLoading(true);
       const markets = await getMarkets();
-      const vaultsData = await getVaults(markets);
+      const vaultsData = await Cacher.getVaults();
+      markets;
 
       setVaultsMarkets(markets);
       setVaults(vaultsData);
@@ -59,7 +60,8 @@ export const FraktionProvider = ({
   const silentFetchData: fetchDataFunction = async () => {
     try {
       const markets = await getMarkets();
-      const vaultsData = await getVaults(markets);
+      const vaultsData = await Cacher.getVaults();
+      markets;
       setVaultsMarkets(markets);
       setVaults(vaultsData);
     } catch {} //eslint-disable-line

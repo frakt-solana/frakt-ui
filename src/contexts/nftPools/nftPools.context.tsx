@@ -5,7 +5,7 @@ import { usePolling } from '../../hooks';
 import { FetchDataFunc, NftPoolsContextValues } from './nftPools.model';
 import { Cacher } from '../../utils/cacher';
 import { NftPoolData } from '../../utils/cacher/nftPools';
-import { depositNftToCommunityPool } from './transactions';
+import { depositNftToCommunityPool, getLotteryTicket } from './transactions';
 
 export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   pools: [],
@@ -16,6 +16,7 @@ export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   startPolling: () => {},
   stopPolling: () => {},
   depositNftToCommunityPool: () => Promise.resolve(null),
+  getLotteryTicket: () => Promise.resolve(null),
 });
 
 export const NftPoolsProvider = ({
@@ -52,13 +53,6 @@ export const NftPoolsProvider = ({
     }
   };
 
-  useEffect(() => {
-    if (!loading && !pools.length) {
-      initialFetch();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, pools]);
-
   const { isPolling, startPolling, stopPolling } = usePolling(
     silentFetch,
     10000,
@@ -78,6 +72,7 @@ export const NftPoolsProvider = ({
           connection,
           wallet,
         }),
+        getLotteryTicket: getLotteryTicket({ connection, wallet }),
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
@@ -12,7 +12,7 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { usePublicKeyParam } from '../../hooks';
-import { useNftPool } from '../../contexts/nftPools/nftPools.hooks';
+import { useNftPool, useNftPools } from '../../contexts/nftPools';
 import { Loader } from '../../components/Loader';
 import { UserNFT } from '../../contexts/userTokens';
 import { NFTsList } from '../../components/NFTsList';
@@ -21,6 +21,8 @@ import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../utils/cacher/nft
 const MarketBuyPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
   usePublicKeyParam(poolPubkey);
+
+  const { getLotteryTicket } = useNftPools();
 
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
 
@@ -36,9 +38,20 @@ const MarketBuyPage = (): JSX.Element => {
     if (pool) {
       return pool.safetyBoxes.map(safetyDepositBoxWithNftMetadataToUserNFT);
     }
-
     return [];
   }, [pool]);
+
+  const buyRandomNft = async () => {
+    const lotteryTicketPubkey = await getLotteryTicket({ pool });
+    //? Run roulette
+    //? subscribe to changes
+    // eslint-disable-next-line no-console
+    console.log(lotteryTicketPubkey);
+  };
+
+  useEffect(() => {
+    buyRandomNft();
+  }, []);
 
   // const sort = watch('sort');
 

@@ -17,10 +17,7 @@ import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import styles from './styles.module.scss';
 
-import {
-  useNftPool,
-  useNftPools,
-} from '../../contexts/nftPools/nftPools.hooks';
+import { useNftPool, useNftPools } from '../../contexts/nftPools';
 import { usePublicKeyParam } from '../../hooks';
 import { PublicKey } from '@solana/web3.js';
 

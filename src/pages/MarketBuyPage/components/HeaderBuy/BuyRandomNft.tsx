@@ -20,6 +20,7 @@ export const BuyRandomNft: FC = () => {
   const increaseNFTsAmount = () => setRandomNFTsAmount(randomNFTsAmount + 1);
 
   const toggleSlippageModal = () => setIsSlippageVisible(!isSlippageVisible);
+
   return (
     <div className={styles.buyWrapper}>
       <div className={styles.buySettings}>
