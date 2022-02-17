@@ -1,32 +1,12 @@
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import React, { FC, useState } from 'react';
-import { Checkbox, Collapse, Radio } from 'antd';
+import { Collapse, Radio } from 'antd';
 import { ControlledCheckbox } from '../../../../components/Checkbox/Checkbox';
 import { ControlledRadio } from '../../../../components/CustomRadio/CustomRadio';
 import { Controller } from 'react-hook-form';
-import Toggle from '../../../../components/Toggle';
 
 const { Panel } = Collapse;
-
-const tempItemBg =
-  'https://www.arweave.net/TUCIGroXreLVvKxdBhSBG_pq8jEyl_IWXyEIwR8Ue5Y';
-
-const COLLECTIONS_IN_POOL_DATA = [
-  { name: 'monkeys', items: 123 },
-  { name: 'cryptopunk', items: 123 },
-  { name: 'monkeys', items: 123 },
-  { name: 'monkeys', items: 123 },
-  { name: 'monkeys', items: 123 },
-];
-
-const FILTERS_DATA = [
-  { name: 'Famale', items: 123 },
-  { name: 'Male', items: 123 },
-];
-
-const shortName = (name: string, maxLength: number) =>
-  name.length > maxLength ? `${name.slice(0, maxLength - 2)} ...` : name;
 
 interface SidebarProps {
   isSidebar: boolean;
@@ -84,7 +64,6 @@ export const Sidebar: FC<SidebarProps> = ({
                     name={'showVerifiedVaults'}
                     label={'Verified only'}
                   />
-                  <span className={styles.sidebarItemAmount}>{123}</span>
                 </li>
               </ul>
             </Panel>
@@ -104,7 +83,6 @@ export const Sidebar: FC<SidebarProps> = ({
                     name={'showTradableVaults'}
                     label={'Tradable only'}
                   />
-                  <span className={styles.sidebarItemAmount}>{123}</span>
                 </li>
               </ul>
             </Panel>
@@ -122,7 +100,7 @@ export const Sidebar: FC<SidebarProps> = ({
                 onChange={changeRadio}
                 value={currentRadio}
               >
-                <ul className={styles.sidebarList}>
+                <div className={styles.sidebarList}>
                   <Controller
                     control={control}
                     name={'showVaultsStatus'}
@@ -131,50 +109,38 @@ export const Sidebar: FC<SidebarProps> = ({
                         value={value}
                         onChange={(e) => onChange(e.target.value)}
                       >
-                        <li className={styles.sidebarListItem}>
+                        <div className={styles.sidebarListItem}>
                           <ControlledRadio
                             value={'showActiveVaults'}
                             label={'Active'}
                             {...field}
                           />
-                          <span className={styles.sidebarItemAmount}>
-                            {123}
-                          </span>
-                        </li>
-                        <li className={styles.sidebarListItem}>
+                        </div>
+                        <div className={styles.sidebarListItem}>
                           <ControlledRadio
                             value={'showAuctionLiveVaults'}
                             label={'Auction live'}
                             {...field}
                           />
-                          <span className={styles.sidebarItemAmount}>
-                            {123}
-                          </span>
-                        </li>
-                        <li className={styles.sidebarListItem}>
+                        </div>
+                        <div className={styles.sidebarListItem}>
                           <ControlledRadio
                             value={'showAuctionFinishedVaults'}
                             label={'Auction finished'}
                             {...field}
                           />
-                          <span className={styles.sidebarItemAmount}>
-                            {123}
-                          </span>
-                        </li>
-                        <li className={styles.sidebarListItem}>
+                        </div>
+                        <div className={styles.sidebarListItem}>
                           <ControlledRadio
                             value={'showArchivedVaults'}
                             label={'Archived'}
                             {...field}
                           />
-                          <span className={styles.sidebarItemAmount}>
-                            {123}
-                          </span>
-                        </li>
+                        </div>
                       </Radio.Group>
                     )}
                   />
-                </ul>
+                </div>
               </Radio.Group>
             </Panel>
           </Collapse>

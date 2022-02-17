@@ -120,6 +120,17 @@
 
 .sidebarList {
   margin-top: 20px;
+  width: 100%;
+
+  :global {
+    .ant-radio-group {
+      width: 100%;
+
+      > div:first-of-type {
+        padding-top: 0;
+      }
+    }
+  }
 }
 
 .sidebarListItem {
@@ -133,7 +144,7 @@
   text-transform: uppercase;
 }
 
-.sidebarListItem:first-of-type {
+li.sidebarListItem:first-of-type {
   padding-top: 0;
 }
 
