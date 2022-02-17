@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
-export const useFeaturedVaultsPublicKeys = () => {
+export const useFeaturedVaultsPublicKeys = (): {
+  featuredVaultsPubKeyList: string[];
+} => {
   const [featuredVaultsPubKeyList, setFeaturedVaultsPubKeyList] = useState<
     string[]
   >([]);

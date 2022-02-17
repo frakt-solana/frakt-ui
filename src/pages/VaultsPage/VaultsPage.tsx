@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
-import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
+import { useFraktion, VaultState } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
@@ -126,13 +126,20 @@ const VaultsPage = (): JSX.Element => {
   ]);
 
   const featuredVaults = useMemo(() => {
-    if (vaults.length && featuredVaultsPubKeyList.length) {
-      return vaults.filter((vault) =>
+    if (rawVaults.length && featuredVaultsPubKeyList.length) {
+      return rawVaults.filter((vault) =>
         featuredVaultsPubKeyList.some((key) => key === vault.vaultPubkey),
       );
     }
     return [];
-  }, [vaults, featuredVaultsPubKeyList]);
+  }, [rawVaults, featuredVaultsPubKeyList]);
+
+  const liveAuctionVaults = useMemo(() => {
+    if (vaults.length) {
+      return rawVaults.filter(({ state }) => state === VaultState.AuctionLive);
+    }
+    return [];
+  }, [rawVaults, vaults.length]);
 
   return (
     <AppLayout>
@@ -180,6 +187,15 @@ const VaultsPage = (): JSX.Element => {
                 vaults={featuredVaults}
                 title={'Featured vaults'}
                 isLoading={loading}
+              />
+            )}
+            {!!liveAuctionVaults.length && (
+              <VaultsSlider
+                className={styles.sliderFeatured}
+                vaults={liveAuctionVaults}
+                title={'Live auction'}
+                isLoading={loading}
+                isAuction
               />
             )}
             <VaultsList vaults={vaults} isLoading={loading} />

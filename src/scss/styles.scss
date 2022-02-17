@@ -72,6 +72,10 @@ h5 {
     background-color: var(--gray-color-5);
   }
 
+  &.swiper-button-lock {
+    display: none;
+  }
+
   &::after {
     font-size: 14px;
     font-family: swiper-icons;

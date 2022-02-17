@@ -117,6 +117,7 @@
         .value {
           font: var(--font-btn-small);
           color: var(--white-color);
+          margin-top: 8px;
         }
 
         @media screen and (max-width: 767px){
@@ -313,6 +314,16 @@
       gap: 5px;
     }
   }
+}
+
+.countdown {
+  display: flex;
+  align-items: center;
+}
+
+.timeDelim {
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 

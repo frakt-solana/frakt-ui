@@ -81,7 +81,7 @@ export const VaultsSlider: FC<VaultsSliderProps> = ({
         {vaults.map((vault) => (
           <SwiperSlide key={vault.vaultPubkey}>
             <NavLink to={`${PATHS.VAULT}/${vault.vaultPubkey}`}>
-              <VaultCard vaultData={vault} />
+              <VaultCard vaultData={vault} isAuction={isAuction} />
             </NavLink>
           </SwiperSlide>
         ))}
