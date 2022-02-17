@@ -113,7 +113,11 @@ const MarketSellPage = (): JSX.Element => {
                   {userNftsLoading ? (
                     <Loader />
                   ) : (
-                    <NFTsList onCardClick={onSelect} nfts={nfts} />
+                    <NFTsList
+                      onCardClick={onSelect}
+                      nfts={nfts}
+                      selectedNft={selectedNft}
+                    />
                   )}
                 </>
               )}

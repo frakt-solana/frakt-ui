@@ -9,15 +9,18 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../FakeInfinityScroll';
 import { CollectionData } from '../../utils/collections';
+
 interface NFTsListProps {
   nfts: UserNFT[];
+  selectedNft?: UserNFT;
   collectionByNftMint?: Dictionary<CollectionData>;
   onCardClick?: (nft: UserNFT) => void;
 }
 
 export const NFTsList: FC<NFTsListProps> = ({
   nfts,
-  onCardClick = () => {},
+  selectedNft,
+  onCardClick,
   collectionByNftMint = {},
 }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
@@ -44,8 +47,9 @@ export const NFTsList: FC<NFTsListProps> = ({
           <NFTCard
             key={nft.mint}
             nft={nft}
-            onClick={() => onCardClick(nft)}
+            onClick={onCardClick && (() => onCardClick(nft))}
             onDetailsClick={() => openOnCertainSlide(idx)}
+            isSelected={selectedNft?.mint === nft.mint}
           />
         ))}
       </FakeInfinityScroll>

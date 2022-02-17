@@ -1,54 +1,17 @@
-.nftCard {
-  max-width: 300px;
-  flex-shrink: 1;
-  width: calc(25% - 19px);
-  position: relative;
-  background-color: var(--black-color);
-
-  @media screen and (max-width: 1200px) {
-    width: calc(33.33% - 17px);
-  }
-
-  @media screen and (max-width: 900px) {
-    width: calc(50% - 13px);
-    max-width: 330px;
-  }
+.nftCardWrapper {
+  padding: 0 10px 10px 0;
 
   @media screen and (max-width: 550px) {
-    width: calc(50% - 10px);
-  }
-
-  @media screen and (max-width: 370px) {
-    width: 100%;
+    padding: 0 6px 6px 0;
   }
 }
 
-.borderHover {
-  position: absolute;
-  display: block;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.nftCard {
+  position: relative;
+  background-color: var(--black-color);
   border: 1px solid var(--color-gray-03);
   cursor: pointer;
-
-  &.selected {
-    border-color: var(--green-color);
-
-    &::after {
-      opacity: 0.5;
-      border-color: var(--green-color);
-    }
-  }
-  &:hover {
-    border-color: var(--accent-color-1);
-
-    &::after {
-      opacity: 0.5;
-      border-color: var(--accent-color-1);
-    }
-  }
+  transition: border-color var(--transition-1);
 
   &::after {
     content: '';
@@ -60,11 +23,32 @@
     bottom: -10px;
     border: 1px solid var(--color-gray-03);
     z-index: -1;
+    transition: border-color var(--transition-1), opacity var(--transition-1);
 
     @media screen and (max-width: 550px) {
       right: -6px;
       bottom: -6px;
     }
+  }
+}
+
+.nftCardHover {
+  &:hover {
+    border-color: var(--accent-color-1);
+
+    &::after {
+      opacity: 0.5;
+      border-color: var(--accent-color-1);
+    }
+  }
+}
+
+.nftCardSelected {
+  border-color: var(--accent-color-1);
+
+  &::after {
+    opacity: 0.5;
+    border-color: var(--accent-color-1);
   }
 }
 
@@ -132,6 +116,8 @@
 .nftName {
   font: var(--font-text-2);
   margin-bottom: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .collectionName {

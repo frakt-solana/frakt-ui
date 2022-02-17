@@ -1,10 +1,15 @@
 .poolsList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 25px;
   margin-top: 20px;
 
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+
+  @media screen and (max-width: 1199px) {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
   @media screen and (max-width: 550px) {
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
   }
 }
