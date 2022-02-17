@@ -8,18 +8,18 @@
   margin-top: 10px;
   width: 100%;
   height: 48px;
-  color: var(--black-color);
-  background-color: var(--green-color);
+  color: var(--white-color);
+  background-color: var(--accent-color-1);
   font: var(--font-btn-small);
   border: none;
   cursor: pointer;
-  transition: background-color .2s ease-in;
+  transition: background-color var(--transition-1), color var(--transition-1);
 
   &:hover {
-    background-color: var(--darken-green-color);
+    background-color: var(--accent-color-3);
+    color: var(--white-color);
   }
 }
-
 
 .table {
   margin-bottom: 12px;
@@ -33,13 +33,13 @@
 }
 
 .row {
-   width: 100%;
-   display: flex;
-   justify-content: space-between;
-   align-items: flex-start;
-   font: var(--font-text-3);
-   border-bottom: var(--border-gray-1);
-   margin-bottom: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font: var(--font-text-3);
+  border-bottom: var(--border-gray-1);
+  margin-bottom: 10px;
 
   span {
     margin-right: auto;
@@ -49,7 +49,7 @@
     margin-left: 10px;
     margin-right: 5px;
   }
- }
+}
 
 .name {
   margin-right: 20px;
