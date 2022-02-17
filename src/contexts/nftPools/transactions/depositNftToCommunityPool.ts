@@ -19,6 +19,7 @@ export interface DepositNftToCommunityPoolParams {
   pool: NftPoolData;
   nftMint: PublicKey;
   byCreator?: boolean;
+  afterTransaction?: () => void;
 }
 
 export interface DepositNftToCommunityPoolRawParams
@@ -31,6 +32,7 @@ const rawDepositNftToCommunityPool = async ({
   pool,
   nftMint,
   byCreator = false,
+  afterTransaction,
 }: DepositNftToCommunityPoolRawParams): Promise<void> => {
   const { publicKey: nftUserTokenAccount } = await getTokenAccount({
     tokenMint: nftMint,
@@ -46,6 +48,7 @@ const rawDepositNftToCommunityPool = async ({
     ({ whitelistedAddress }) =>
       whitelistedAddress.toBase58() === nftMint.toBase58(),
   ); //! Add condition for creator
+  //TODO
 
   await depositNftToCommunityPoolTxn(
     {
@@ -70,6 +73,8 @@ const rawDepositNftToCommunityPool = async ({
       },
     },
   );
+
+  afterTransaction && afterTransaction();
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(

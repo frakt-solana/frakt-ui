@@ -31,7 +31,11 @@ const MarketSellPage = (): JSX.Element => {
   const { depositNftToCommunityPool } = useNftPools();
 
   const { pool, whitelistedMintsDictionary } = useNftPool(poolPubkey);
-  const { nfts: rawNfts, loading: userNftsLoading } = useUserTokens();
+  const {
+    nfts: rawNfts,
+    loading: userNftsLoading,
+    removeTokenOptimistic,
+  } = useUserTokens();
 
   const { connected } = useWallet();
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
@@ -48,6 +52,10 @@ const MarketSellPage = (): JSX.Element => {
     depositNftToCommunityPool({
       pool,
       nftMint: new PublicKey(selectedNft?.mint),
+      afterTransaction: () => {
+        removeTokenOptimistic([selectedNft?.mint]);
+        onDeselect();
+      },
     });
   };
 

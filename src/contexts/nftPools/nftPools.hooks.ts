@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 
 import { PoolWhitelistType } from '../../utils/cacher/nftPools';
 import { NftPoolsContext } from './nftPools.context';
@@ -6,6 +6,15 @@ import { NftPoolsContextValues, UseNftPool } from './nftPools.model';
 
 export const useNftPools = (): NftPoolsContextValues => {
   const context = useContext(NftPoolsContext);
+
+  useEffect(() => {
+    const { isPolling, startPolling, stopPolling } = context;
+
+    stopPolling();
+    return () => !isPolling && startPolling();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return context;
 };
 
