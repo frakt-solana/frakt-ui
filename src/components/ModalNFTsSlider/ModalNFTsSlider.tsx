@@ -24,9 +24,11 @@ interface ModalNFTsSliderProps {
   setSwiper: (swiper: SwiperCore) => void;
 }
 
+const MAX_NFTS_LENGTH = 20;
+
 export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
   className,
-  nfts,
+  nfts: rawNfts,
   collectionByNftMint = {},
   isModalVisible,
   currentSlide,
@@ -36,6 +38,9 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
 }) => {
   const prevBtn = useRef<HTMLDivElement>(null);
   const nextBtn = useRef<HTMLDivElement>(null);
+
+  const nfts =
+    rawNfts.length > MAX_NFTS_LENGTH ? [rawNfts[currentSlide]] : rawNfts;
 
   return (
     <Modal
@@ -49,7 +54,7 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
     >
       <div className={styles.closeModalSection}>
         <span className={styles.slideNumber}>
-          {currentSlide + 1}/{nfts.length}
+          {currentSlide + 1}/{rawNfts.length}
         </span>
         <div
           className={styles.closeModalIcon}

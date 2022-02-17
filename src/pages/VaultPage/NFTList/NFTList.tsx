@@ -4,7 +4,6 @@ import { keyBy, Dictionary } from 'lodash';
 import classNames from 'classnames';
 
 import { SafetyBoxWithMetadata } from '../../../contexts/fraktion';
-import { shortenAddress } from '../../../utils/solanaUtils';
 import { CollectionData } from '../../../utils/collections';
 import {
   ModalNFTsSlider,
@@ -12,6 +11,10 @@ import {
 } from '../../../components/ModalNFTsSlider';
 import { safetyBoxWithNftMetadataToUserNFT } from '../../../contexts/fraktion/fraktion.helpers';
 import styles from './styles.module.scss';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../../components/FakeInfinityScroll';
+import { NFTCard } from '../NFTCard';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
@@ -26,6 +29,8 @@ export const NFTList: FC<NFTListProps> = ({
   nftCollections,
   className,
 }) => {
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
+
   const {
     isModalVisible,
     setIsModalVisible,
@@ -54,27 +59,21 @@ export const NFTList: FC<NFTListProps> = ({
 
   return (
     <div className={styles.wrapper}>
-      <ul className={classNames(styles.nftList, className)}>
-        {safetyBoxes.map((nft, index) => (
-          <li
-            className={styles.nftListItem}
-            key={nft.nftMint}
+      <FakeInfinityScroll
+        itemsToShow={itemsToShow}
+        next={next}
+        isLoading={false}
+        wrapperClassName={classNames(styles.nftList, className)}
+        emptyMessage="No NFTs found"
+      >
+        {safetyBoxes.map((safetyBox, index) => (
+          <NFTCard
+            key={safetyBox.nftMint}
+            safetyBox={safetyBox}
             onClick={() => openOnCertainSlide(index)}
-          >
-            <div
-              style={{ backgroundImage: `url(${nft.nftImage})` }}
-              className={styles.nftImage}
-            />
-            <div className={styles.nftInfoBlock}>
-              <h5 className={styles.nftTitle}>{nft.nftName}</h5>
-              <span className={styles.nftInfoLabel}>NFT MINT</span>
-              <span className={styles.nftInfoItem}>
-                {shortenAddress(nft.nftMint)}
-              </span>
-            </div>
-          </li>
+          />
         ))}
-      </ul>
+      </FakeInfinityScroll>
       <ModalNFTsSlider
         isModalVisible={isModalVisible}
         currentSlide={currentSlide}
