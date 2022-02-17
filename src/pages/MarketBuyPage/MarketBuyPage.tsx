@@ -12,7 +12,12 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
 import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { usePublicKeyParam } from '../../hooks';
-import { useNftPool, useNftPools } from '../../contexts/nftPools';
+import {
+  useNftPool,
+  useNftPools,
+  useNftPoolsInitialFetch,
+  useNftPoolsPolling,
+} from '../../contexts/nftPools';
 import { Loader } from '../../components/Loader';
 import { UserNFT } from '../../contexts/userTokens';
 import { NFTsList } from '../../components/NFTsList';
@@ -23,6 +28,8 @@ const MarketBuyPage = (): JSX.Element => {
   usePublicKeyParam(poolPubkey);
 
   const { getLotteryTicket } = useNftPools();
+  useNftPoolsInitialFetch();
+  useNftPoolsPolling();
 
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
 
@@ -49,9 +56,9 @@ const MarketBuyPage = (): JSX.Element => {
     console.log(lotteryTicketPubkey);
   };
 
-  useEffect(() => {
-    buyRandomNft();
-  }, []);
+  // useEffect(() => {
+  //   buyRandomNft();
+  // }, []);
 
   // const sort = watch('sort');
 

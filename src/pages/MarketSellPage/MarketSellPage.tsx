@@ -17,13 +17,19 @@ import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { Loader } from '../../components/Loader';
 import styles from './styles.module.scss';
 
-import { useNftPool, useNftPools } from '../../contexts/nftPools';
+import {
+  useNftPool,
+  useNftPools,
+  useNftPoolsInitialFetch,
+} from '../../contexts/nftPools';
 import { usePublicKeyParam } from '../../hooks';
 import { PublicKey } from '@solana/web3.js';
 
 const MarketSellPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
   usePublicKeyParam(poolPubkey);
+
+  useNftPoolsInitialFetch();
 
   const { depositNftToCommunityPool } = useNftPools();
 

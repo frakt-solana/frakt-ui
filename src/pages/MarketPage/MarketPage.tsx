@@ -9,7 +9,11 @@ import { ControlledSelect } from '../../components/Select/Select';
 import { Sidebar } from './components/Sidebar';
 import { PoolsList } from './components/PoolsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { useNftPools } from '../../contexts/nftPools/nftPools.hooks';
+import {
+  useNftPools,
+  useNftPoolsInitialFetch,
+  useNftPoolsPolling,
+} from '../../contexts/nftPools';
 import styles from './styles.module.scss';
 import { Loader } from '../../components/Loader';
 import { CommunityPoolState } from '../../utils/cacher/nftPools';
@@ -24,6 +28,8 @@ const MarketPage: FC = () => {
   // const sort = watch('sort');
 
   const { pools: rawPools, loading } = useNftPools();
+  useNftPoolsInitialFetch();
+  useNftPoolsPolling();
 
   const pools = useMemo(() => {
     return rawPools.filter(

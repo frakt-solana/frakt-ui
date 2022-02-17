@@ -7,23 +7,31 @@ import { NftPoolsContextValues, UseNftPool } from './nftPools.model';
 export const useNftPools = (): NftPoolsContextValues => {
   const context = useContext(NftPoolsContext);
 
-  const { isPolling, startPolling, stopPolling, loading, pools, initialFetch } =
-    context;
+  return context;
+};
+
+export const useNftPoolsInitialFetch = (): void => {
+  const { loading, pools, initialFetch } = useNftPools();
 
   useEffect(() => {
     if (!loading && !pools.length) {
       initialFetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, pools]);
+  }, []);
+};
+
+export const useNftPoolsPolling = (): void => {
+  const { isPolling, startPolling, stopPolling } = useNftPools();
 
   useEffect(() => {
-    stopPolling();
-    return () => !isPolling && startPolling();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    !isPolling && startPolling();
 
-  return context;
+    return () => {
+      isPolling && stopPolling();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPolling]);
 };
 
 export const useNftPool: UseNftPool = (poolPubkey) => {
