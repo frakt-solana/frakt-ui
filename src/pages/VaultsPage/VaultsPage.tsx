@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
-import { useFraktion, VaultState } from '../../contexts/fraktion';
+import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
@@ -13,6 +13,7 @@ import { VaultsList } from '../../components/VaultsList';
 import { Sidebar } from './components/Sidebar';
 import { VaultsSlider } from './components/VaultsSlider';
 import { FiltersIcon } from '../../icons';
+import { useFeaturedVaultsPublicKeys } from './vaultsPage.hooks';
 
 const SORT_VALUES = [
   {
@@ -59,6 +60,8 @@ const VaultsPage = (): JSX.Element => {
 
   const { loading, vaults: rawVaults } = useFraktion();
   const [searchString, setSearchString] = useState<string>('');
+
+  const { featuredVaultsPubKeyList } = useFeaturedVaultsPublicKeys();
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
@@ -122,6 +125,15 @@ const VaultsPage = (): JSX.Element => {
     sort,
   ]);
 
+  const featuredVaults = useMemo(() => {
+    if (vaults.length && featuredVaultsPubKeyList.length) {
+      return vaults.filter((vault) =>
+        featuredVaultsPubKeyList.some((key) => key === vault.vaultPubkey),
+      );
+    }
+    return [];
+  }, [vaults, featuredVaultsPubKeyList]);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
@@ -162,10 +174,10 @@ const VaultsPage = (): JSX.Element => {
                 />
               </div>
             </div>
-            {!!vaults.length && (
+            {!!featuredVaults.length && (
               <VaultsSlider
                 className={styles.sliderFeatured}
-                vaults={vaults}
+                vaults={featuredVaults}
                 title={'Featured vaults'}
                 isLoading={loading}
               />
