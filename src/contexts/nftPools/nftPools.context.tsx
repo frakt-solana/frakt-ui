@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { usePolling } from '../../hooks';
