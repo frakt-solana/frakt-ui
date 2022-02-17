@@ -8,7 +8,7 @@ import styles from './styles.module.scss';
 import Statistics from './sections/Statistics/Statistics';
 import Ecosystem from './sections/Ecosystem';
 import Partners from './sections/Partners';
-import { DiscordIcon, TwitterIcon } from '../../icons';
+import { DiscordIcon, FraktLogoIcon, TwitterIcon } from '../../icons';
 import Roadmap from './sections/Roadmap';
 import classNames from 'classnames/bind';
 
