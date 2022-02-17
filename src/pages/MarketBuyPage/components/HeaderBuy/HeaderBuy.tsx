@@ -9,7 +9,11 @@ import classNames from 'classnames';
 const tempBgImage =
   'https://aacsdzhn52gnk67swxcahjyrwtcpaykzbsletupsuur7dupnqzsa.arweave.net/AAUh5O3ujNV78rXEA6cRtMTwYVkMlknR8qUj8dHthmQ';
 
-export const HeaderBuy: FC = () => {
+interface HeaderBuyProps {
+  poolPublicKey: string;
+}
+
+export const HeaderBuy: FC<HeaderBuyProps> = ({ poolPublicKey }) => {
   const { headerVisible } = useHeaderState();
   return (
     <div
@@ -30,7 +34,10 @@ export const HeaderBuy: FC = () => {
               <QuestionIcon className={styles.questionIcon} />
             </div>
             <BuyRandomNft />
-            <MarketNavigation className={styles.marketNavigation} />
+            <MarketNavigation
+              className={styles.marketNavigation}
+              poolPublicKey={poolPublicKey}
+            />
           </div>
         </div>
       </div>

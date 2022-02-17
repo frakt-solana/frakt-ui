@@ -81,7 +81,7 @@ const MarketSellPage = (): JSX.Element => {
             <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
             <div className={styles.content}>
-              <HeaderSell />
+              <HeaderSell poolPublicKey={poolPubkey} />
 
               {!connected ? (
                 <WalletNotConnected />

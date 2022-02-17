@@ -1,11 +1,15 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styles from './styles.module.scss';
 import { MarketNavigation } from '../../../../components/MarketNavigation';
 import { useHeaderState } from '../../../../contexts/HeaderState';
 import classNames from 'classnames';
 import { SolanaIcon } from '../../../../icons';
 
-export const HeaderSwap: FC = () => {
+interface HeaderSwapProps {
+  poolPublicKey: string;
+}
+
+export const HeaderSwap: FC<HeaderSwapProps> = ({ poolPublicKey }) => {
   const { headerVisible } = useHeaderState();
   return (
     <div
@@ -31,7 +35,10 @@ export const HeaderSwap: FC = () => {
                 {'PUNKS'}
               </p>
             </div>
-            <MarketNavigation className={styles.marketNavigation} />
+            <MarketNavigation
+              className={styles.marketNavigation}
+              poolPublicKey={poolPublicKey}
+            />
           </div>
         </div>
       </div>

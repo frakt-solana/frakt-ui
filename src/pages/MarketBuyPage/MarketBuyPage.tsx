@@ -53,7 +53,7 @@ const MarketBuyPage = (): JSX.Element => {
             <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
             <div className={styles.content}>
-              <HeaderBuy />
+              <HeaderBuy poolPublicKey={poolPubkey} />
 
               <div className={styles.itemsSortWrapper}>
                 <p

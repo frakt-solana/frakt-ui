@@ -5,9 +5,8 @@ import { DEPRECATED_MARKETS } from '../markets';
 import { NftPoolData } from './nftPools';
 import { parseRawNftPools } from './nftPools/nftPools.helpers';
 
-export const IS_BFF_ENABLED = process.env.REACT_APP_DISABLE_BFF === 'false';
-
 const CACHER_URL = process.env.REACT_APP_BFF_URL;
+export const IS_BFF_ENABLED = !!CACHER_URL;
 
 const REACT_APP_SERUM_MARKET_PROGRAM_PUBKEY =
   process.env.REACT_APP_SERUM_MARKET_PROGRAM_PUBKEY;

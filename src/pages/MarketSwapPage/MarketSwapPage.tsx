@@ -13,6 +13,8 @@ import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { SwappingModal } from './components/SwappingModal';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../../components/WalletNotConnected';
+import { useParams } from 'react-router-dom';
+import { usePublicKeyParam } from '../../hooks';
 
 const SORT_VALUES = [
   {
@@ -34,6 +36,9 @@ const SORT_VALUES = [
 ];
 
 const MarketSwapPage = (): JSX.Element => {
+  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  usePublicKeyParam(poolPubkey);
+
   const { connected } = useWallet();
   const [isPrivetNFTsList, setIsPrivetNFTsList] = useState<boolean>(true);
   const [selectedSwapFrom, setSelectedSwapFrom] = useState(null);
@@ -80,7 +85,7 @@ const MarketSwapPage = (): JSX.Element => {
             <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
             <div className={styles.content}>
-              <HeaderSwap />
+              <HeaderSwap poolPublicKey={poolPubkey} />
 
               {!connected ? (
                 <WalletNotConnected />
