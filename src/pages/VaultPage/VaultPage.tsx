@@ -7,7 +7,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
-import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
+import {
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+  VaultData,
+  VaultState,
+} from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable/InfoTable';
 import styles from './styles.module.scss';
 import { BuyoutTab } from './BuyoutTab';
@@ -28,6 +34,9 @@ const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
+
   const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
     CollectionData[]
   >([]);

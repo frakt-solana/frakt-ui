@@ -5,7 +5,12 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
-import { VaultState, useFraktion } from '../../contexts/fraktion';
+import {
+  VaultState,
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+} from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
@@ -60,6 +65,9 @@ const VaultsPage = (): JSX.Element => {
   const sort = watch('sort');
 
   const { loading, vaults: rawVaults } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
+
   const [searchString, setSearchString] = useState<string>('');
 
   const searchItems = useDebounce((search: string) => {

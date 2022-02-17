@@ -19,6 +19,10 @@ import { useDebounce } from '../../hooks';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { CollectionsFilter } from './CollectionsFilter';
 import { useCollections } from '../../contexts/collections';
+import {
+  useFraktionInitialFetch,
+  useFraktionPolling,
+} from '../../contexts/fraktion';
 
 const SORT_VALUES = [
   {
@@ -101,6 +105,8 @@ const CollectionsPage: FC = () => {
     vaultsNotArchivedByCollectionName,
     isCollectionsLoading,
   } = useCollections();
+  useFraktionInitialFetch();
+  useFraktionPolling();
 
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const searchItems = useDebounce((search: string) => {

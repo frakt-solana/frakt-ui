@@ -1,18 +1,16 @@
-import { useRef, useEffect, useMemo, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { Percent } from '@raydium-io/raydium-sdk';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { Control, useForm } from 'react-hook-form';
 
 import {
   useLiquidityPools,
   useCurrentSolanaPrice,
 } from '../../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../../utils';
-
-import { TokenInfo } from '@solana/spl-token-registry';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { Control, useForm } from 'react-hook-form';
 import { getOutputAmount } from '../../SwapForm/helpers';
 import { useLazyPoolInfo } from './useLazyPoolInfo';
-import { useFraktion, VaultData } from '../../../contexts/fraktion';
-import { Percent } from '@raydium-io/raydium-sdk';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -41,7 +39,6 @@ export const useSwapForm = (
   payToken: TokenInfo;
   payValue: string;
   receiveValue: string;
-  vaultInfo: VaultData;
   slippage: string;
   tokenMinAmount: string;
   tokenPriceImpact: string;
@@ -52,7 +49,6 @@ export const useSwapForm = (
   const { poolDataByMint } = useLiquidityPools();
   const { connected } = useWallet();
   const intervalRef = useRef<any>();
-  const { vaults } = useFraktion();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -106,17 +102,6 @@ export const useSwapForm = (
     setValue(InputControlsNames.RECEIVE_VALUE, payValueBuf);
     setValue(InputControlsNames.RECEIVE_TOKEN, payTokenBuf);
   };
-
-  const vaultInfo = useMemo(() => {
-    if (receiveToken && payToken) {
-      const token =
-        payToken.address === SOL_TOKEN.address ? receiveToken : payToken;
-
-      return vaults.find(({ fractionMint }) => fractionMint === token.address);
-    } else {
-      return null;
-    }
-  }, [vaults, receiveToken, payToken]);
 
   useEffect(() => {
     clearInterval(intervalRef.current);
@@ -180,7 +165,6 @@ export const useSwapForm = (
     receiveValue,
     changeSides,
     onReceiveTokenChange,
-    vaultInfo,
     slippage,
     setSlippage,
     tokenMinAmount,

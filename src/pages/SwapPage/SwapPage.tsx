@@ -1,16 +1,15 @@
+import { WSOL } from '@raydium-io/raydium-sdk';
+
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import SwapForm from '../../components/SwapForm';
 import { Loader } from '../../components/Loader';
-import { WSOL } from '@raydium-io/raydium-sdk';
-import { useFraktion } from '../../contexts/fraktion';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 
 const SwapPage = (): JSX.Element => {
   const { loading: poolsDataLoading } = useLiquidityPools();
-  const { loading: vaultsLoading } = useFraktion();
 
-  const loading = poolsDataLoading || vaultsLoading;
+  const loading = poolsDataLoading;
 
   return (
     <AppLayout contentClassName={styles.exchange}>
