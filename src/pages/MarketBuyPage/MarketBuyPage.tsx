@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
@@ -22,6 +22,64 @@ import { Loader } from '../../components/Loader';
 import { UserNFT } from '../../contexts/userTokens';
 import { NFTsList } from '../../components/NFTsList';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../utils/cacher/nftPools/nftPools.helpers';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
+import { publicKey, struct, u64 } from '@raydium-io/raydium-sdk';
+
+export const LOTTERY_TICKET_ACCOUNT_LAYOUT = struct([
+  publicKey('community_pool'),
+  publicKey('ticket_holder'),
+  publicKey('winning_safety_box'),
+  u64('lottery_ticket_state'),
+]);
+
+const useLotteryTicketSubscription = () => {
+  const { connection } = useConnection();
+  const wallet = useWallet();
+
+  const subscriptionId = useRef<number>();
+
+  const subscribe = (
+    lotteryTicketPublicKey: PublicKey,
+    callback = () => {},
+  ) => {
+    subscriptionId.current = connection.onAccountChange(
+      lotteryTicketPublicKey,
+      (lotteryTicketAccountEncoded) => {
+        LOTTERY_TICKET_ACCOUNT_LAYOUT.decode(lotteryTicketAccountEncoded.data);
+
+        // console.log({
+        //   community_pool: x.community_pool.toBase58(),
+        //   ticket_holder: x.ticket_holder.toBase58(),
+        //   winning_safety_box: x.winning_safety_box.toBase58(),
+        //   lottery_ticket_state: x.lottery_ticket_state,
+        // });
+
+        //TODO lotteryTicketAccountEncoded check
+
+        callback();
+        // unsubscribe()
+      },
+    );
+  };
+
+  const unsubscribe = () => {
+    if (subscriptionId.current) {
+      connection.removeAccountChangeListener(subscriptionId.current);
+      subscriptionId.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connection, wallet]);
+
+  return {
+    subscribe,
+    unsubscribe,
+  };
+};
 
 const MarketBuyPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -48,19 +106,18 @@ const MarketBuyPage = (): JSX.Element => {
     return [];
   }, [pool]);
 
-  const buyRandomNft = async () => {
+  const { subscribe } = useLotteryTicketSubscription();
+
+  const onBuy = async () => {
     const lotteryTicketPubkey = await getLotteryTicket({ pool });
-    //? Run roulette
-    //? subscribe to changes
+
     // eslint-disable-next-line no-console
-    console.log(lotteryTicketPubkey);
+    subscribe(lotteryTicketPubkey, () => console.log('Account changed'));
+    // //? Run roulette
+    // //? subscribe to changes
+    // // eslint-disable-next-line no-console
+    // console.log(lotteryTicketPubkey?.toBase58());
   };
-
-  // useEffect(() => {
-  //   buyRandomNft();
-  // }, []);
-
-  // const sort = watch('sort');
 
   return (
     <HeaderStateProvider>
@@ -73,7 +130,7 @@ const MarketBuyPage = (): JSX.Element => {
             <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
             <div className={styles.content}>
-              <HeaderBuy poolPublicKey={poolPubkey} />
+              <HeaderBuy poolPublicKey={poolPubkey} onBuy={onBuy} />
 
               <div className={styles.itemsSortWrapper}>
                 <p
