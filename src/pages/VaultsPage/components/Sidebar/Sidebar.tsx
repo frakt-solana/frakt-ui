@@ -2,7 +2,7 @@ import styles from './styles.module.scss';
 import classNames from 'classnames';
 import React, { FC, useState } from 'react';
 import { Collapse, Radio } from 'antd';
-import { ControlledCheckbox } from '../../../../components/Checkbox/Checkbox';
+import CustomCheckbox from '../../../../components/Checkbox/Checkbox';
 import { CustomRadio } from '../../../../components/CustomRadio';
 import { Control, Controller } from 'react-hook-form';
 import {
@@ -66,10 +66,14 @@ export const Sidebar: FC<SidebarProps> = ({
             >
               <ul className={styles.sidebarList}>
                 <li className={styles.sidebarListItem}>
-                  <ControlledCheckbox
+                  <Controller
                     control={control}
                     name={SidebarCheckboxNames.SHOW_VERIFIED_VAULTS}
-                    label={'Verified only'}
+                    render={({ field: { ref, ...field } }) => {
+                      return (
+                        <CustomCheckbox {...field} label={'Verified only'} />
+                      );
+                    }}
                   />
                 </li>
               </ul>
@@ -85,10 +89,14 @@ export const Sidebar: FC<SidebarProps> = ({
             <Panel header="tradable" key="1" className={styles.collapseHeader}>
               <ul className={styles.sidebarList}>
                 <li className={styles.sidebarListItem}>
-                  <ControlledCheckbox
+                  <Controller
                     control={control}
                     name={SidebarCheckboxNames.SHOW_TRADABLE_VAULTS}
-                    label={'Tradable only'}
+                    render={({ field: { ref, ...field } }) => {
+                      return (
+                        <CustomCheckbox {...field} label={'Tradable only'} />
+                      );
+                    }}
                   />
                 </li>
               </ul>

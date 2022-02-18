@@ -1,6 +1,5 @@
 import { Checkbox } from 'antd';
 import classNames from 'classnames/bind';
-import { Control, Controller } from 'react-hook-form';
 import styles from './styles.module.scss';
 import React from 'react';
 
@@ -10,11 +9,6 @@ interface ToggleProps {
   value?: boolean;
   label?: string;
   onChange?: (value: boolean) => void;
-}
-
-interface ControlledToggleProps extends ToggleProps {
-  control: Control<any>;
-  name: string;
 }
 
 const CustomCheckbox = ({
@@ -34,18 +28,4 @@ const CustomCheckbox = ({
   </Checkbox>
 );
 
-export const ControlledCheckbox = ({
-  control,
-  name,
-  ...props
-}: ControlledToggleProps): JSX.Element => (
-  <Controller
-    control={control}
-    name={name}
-    render={({ field: { ref, ...field } }) => {
-      return <CustomCheckbox {...props} {...field} />;
-    }}
-  />
-);
-
-export default Checkbox;
+export default CustomCheckbox;
