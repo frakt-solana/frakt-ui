@@ -66,7 +66,7 @@
       font: var(--font-text-3);
     }
 
-    @media screen and (max-width: 900px) {
+    @media screen and (max-width: 800px) {
       margin-bottom: 30px;
     }
 
@@ -81,7 +81,7 @@
 }
 
 .searchWrapper {
-  @media screen and (max-width: 900px) {
+  @media screen and (max-width: 800px) {
     width: 100%;
   }
 }
@@ -123,6 +123,14 @@
     @media screen and (max-width: 700px) {
       display: none;
     }
+  }
+}
+
+.sortWrapper {
+  margin-left: auto;
+
+  @media screen and (max-width: 800px) {
+    margin-left: 0;
   }
 }
 

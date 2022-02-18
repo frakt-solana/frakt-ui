@@ -191,7 +191,6 @@ const VaultsPage = (): JSX.Element => {
                 Filters
                 <FiltersIcon />
               </p>
-              <p className={styles.vaultsAmount}>{vaults.length} Vaults</p>
               <div className={styles.sortWrapper}>
                 <ControlledSelect
                   className={styles.sortingSelect}
