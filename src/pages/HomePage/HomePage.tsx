@@ -1,5 +1,4 @@
 import { Helmet } from 'react-helmet';
-import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import WhyNeedsSection from './sections/WhyNeedsSection';
 import ProcessSection from './sections/ProcessSection';
@@ -15,9 +14,9 @@ import {
   TwitterIcon,
 } from '../../icons';
 import Roadmap from './sections/Roadmap';
-import classNames from 'classnames/bind';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
+import { FullPotentialSection } from './sections/FullPotentialSection/FullPotentialSection';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -57,6 +56,7 @@ const HomePage = (): JSX.Element => {
           </div>
         </section>
         <Statistics />
+        <FullPotentialSection />
         {/*<WhyNeedsSection className={styles.whyNeeds} />*/}
         {/*<ProcessSection className={styles.howItWorks} />*/}
         {/*<Ecosystem />*/}

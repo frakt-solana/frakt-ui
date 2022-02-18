@@ -31,3 +31,7 @@ export { InfoIcon } from './InfoIcon';
 export { SwapMarketIcon } from './SwapMarketIcon';
 export { FiltersIcon } from './FiltersIcon';
 export { FraktLogoIcon } from './FraktLogoIcon';
+export { FraktionalizationInfoIcon } from './FraktionalizationInfoIcon';
+export { PoolsInfoIcon } from './PoolsInfoIcon';
+export { LandingInfoIcon } from './LandingInfoIcon';
+export { YieldInfoIcon } from './YieldInfoIcon';

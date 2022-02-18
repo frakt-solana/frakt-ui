@@ -33,6 +33,14 @@ h5 {
   }
 }
 
+.section {
+  padding-top: 200px;
+
+  @media screen and (max-width: 767px) {
+    padding-top: 150px;
+  }
+}
+
 .container {
   max-width: 1430px;
   width: 100%;

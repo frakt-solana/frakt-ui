@@ -2,7 +2,6 @@ import { useCountUp } from 'react-countup';
 import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
-import { Container } from '../../../../components/Layout';
 import { useEffect, useRef, useState } from 'react';
 
 interface Statistic {
