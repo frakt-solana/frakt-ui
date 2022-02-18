@@ -1,22 +1,16 @@
 import { Helmet } from 'react-helmet';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import WhyNeedsSection from './sections/WhyNeedsSection';
-import ProcessSection from './sections/ProcessSection';
-import FAQSection from './sections/FAQSection';
 import styles from './styles.module.scss';
 import Statistics from './sections/Statistics/Statistics';
-import Ecosystem from './sections/Ecosystem';
-import Partners from './sections/Partners';
 import {
   ArrowRightTop,
   DiscordIcon,
   FraktLogoIcon,
   TwitterIcon,
 } from '../../icons';
-import Roadmap from './sections/Roadmap';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
-import { FullPotentialSection } from './sections/FullPotentialSection/FullPotentialSection';
+import { FullPotentialSection } from './sections/FullPotentialSection';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -36,7 +30,7 @@ const HomePage = (): JSX.Element => {
                     NFTs. Oh, and get rewarded in the process!
                   </p>
                   <div className={styles.subtitleNav}>
-                    <NavLink to={PATHS.VAULTS} className={`tryItOut-btn`}>
+                    <NavLink to={PATHS.VAULTS} className={`common-accent-btn`}>
                       Try it out
                     </NavLink>
                     <a

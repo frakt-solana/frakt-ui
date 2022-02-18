@@ -1,0 +1,19 @@
+.wrapper {
+  max-width: 440px;
+}
+
+.title {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-size: 40px;
+}
+
+.text {
+  font: var(--font-text-2);
+  margin-bottom: 20px;
+}
+
+.buttonDisabled {
+  background-color: var(--accent-shadow-color);
+  pointer-events: none;
+}
