@@ -11,9 +11,10 @@ const tempBgImage =
 
 interface HeaderBuyProps {
   poolPublicKey: string;
+  onBuy: () => void;
 }
 
-export const HeaderBuy: FC<HeaderBuyProps> = ({ poolPublicKey }) => {
+export const HeaderBuy: FC<HeaderBuyProps> = ({ poolPublicKey, onBuy }) => {
   const { headerVisible } = useHeaderState();
   return (
     <div
@@ -33,7 +34,7 @@ export const HeaderBuy: FC<HeaderBuyProps> = ({ poolPublicKey }) => {
               />
               <QuestionIcon className={styles.questionIcon} />
             </div>
-            <BuyRandomNft />
+            <BuyRandomNft onBuy={onBuy} />
             <MarketNavigation
               className={styles.marketNavigation}
               poolPublicKey={poolPublicKey}

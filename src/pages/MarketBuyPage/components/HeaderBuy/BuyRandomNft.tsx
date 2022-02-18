@@ -1,23 +1,21 @@
-import React, { FC, useRef, useState } from 'react';
-import styles from './styles.module.scss';
+import { FC, useRef, useState } from 'react';
 import classNames from 'classnames';
+
+import styles from './styles.module.scss';
 import SettingsIcon from '../../../../icons/SettingsIcon';
 import { Select } from 'antd';
 import { ArrowDownBtn, SolanaIcon } from '../../../../icons';
 
 const { Option } = Select;
 
-export const BuyRandomNft: FC = () => {
-  const [randomNFTsAmount, setRandomNFTsAmount] = useState<number>(1);
+interface BuyRandomNftProps {
+  onBuy: () => void;
+}
+
+export const BuyRandomNft: FC<BuyRandomNftProps> = ({ onBuy }) => {
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 
   const settingsRef = useRef();
-
-  const decreaseNFTsAmount = () => {
-    if (randomNFTsAmount === 0) return;
-    setRandomNFTsAmount(randomNFTsAmount - 1);
-  };
-  const increaseNFTsAmount = () => setRandomNFTsAmount(randomNFTsAmount + 1);
 
   const toggleSlippageModal = () => setIsSlippageVisible(!isSlippageVisible);
 
@@ -53,26 +51,11 @@ export const BuyRandomNft: FC = () => {
             </div>
           </div>
           <div className={styles.separator} />
-          <div className={styles.amountControls}>
-            <div
-              onClick={decreaseNFTsAmount}
-              className={classNames(
-                styles.amountControlIcon,
-                styles.minusIcon,
-                { [styles.disabled]: !randomNFTsAmount },
-              )}
-            />
-            {randomNFTsAmount}
-            <div
-              onClick={increaseNFTsAmount}
-              className={classNames(styles.amountControlIcon, styles.plusIcon)}
-            />
-          </div>
           <p className={styles.randomNFTsPrice}>{0.002124}</p>
           <div className={styles.separator} />
           <div className={styles.selectWrapper} ref={settingsRef}>
             <Select
-              defaultValue={'SOL'}
+              defaultValue={'TOKEN'}
               className={styles.select}
               suffixIcon={<ArrowDownBtn />}
               dropdownClassName={styles.dropdown}
@@ -93,7 +76,9 @@ export const BuyRandomNft: FC = () => {
           * Max total (with slippage) = {0.002124} SOL
         </p>
       </div>
-      <button className={styles.buyButton}>Buy random NFT</button>
+      <button className={styles.buyButton} onClick={onBuy}>
+        Buy random NFT
+      </button>
     </div>
   );
 };
