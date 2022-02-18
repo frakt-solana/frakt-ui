@@ -8,15 +8,9 @@ import Badge, {
 } from '../Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { decimalBNToString, shortBigNumber } from '../../utils';
-import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokensMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import {
-  Bid,
-  useAuctionCountdown,
-  VaultData,
-  VaultState,
-} from '../../contexts/fraktion';
+import { Bid, VaultData } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import { MainInfo } from './MainInfo';
@@ -38,8 +32,6 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultData, isAuction }) => {
 
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
-  const currency =
-    vaultData.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   const safetyBoxes = vaultData?.safetyBoxes || [];
 
@@ -162,7 +154,6 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultData, isAuction }) => {
             vaultData={vaultData}
             fractionsSupplyNum={fractionsSupplyNum}
             lockedPricePerShareNum={lockedPricePerShareNum}
-            startBid={startBid}
             winBid={winBid}
           />
         ) : (
