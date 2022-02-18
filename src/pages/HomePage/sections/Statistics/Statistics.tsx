@@ -78,9 +78,8 @@ const Statistics = (): JSX.Element => {
 
   return (
     <div className={classNames([styles.statistics])}>
-      <Container component="div" className={styles.statisticsContainer}>
+      <div className={`${styles.statisticsContainer} container`}>
         <div className={styles.stat}>
-          <span className={styles.title}>NFTs Locked in Vaults</span>
           <span className={styles.value}>
             <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
             <span
@@ -88,19 +87,9 @@ const Statistics = (): JSX.Element => {
               style={{ display: isLoading ? 'none' : 'inline' }}
             />
           </span>
+          <span className={styles.title}>NFTs locked</span>
         </div>
         <div className={styles.stat}>
-          <span className={styles.title}>Issued Tokens</span>
-          <span className={styles.value}>
-            <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
-            <span
-              ref={issuedTokensRef}
-              style={{ display: isLoading ? 'none' : 'inline' }}
-            />
-          </span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.title}>Total Value Locked</span>
           <span className={styles.value}>
             <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
             <span
@@ -108,8 +97,9 @@ const Statistics = (): JSX.Element => {
               style={{ display: isLoading ? 'none' : 'inline' }}
             />
           </span>
+          <span className={styles.title}>Total Value Locked</span>
         </div>
-      </Container>
+      </div>
     </div>
   );
 };
