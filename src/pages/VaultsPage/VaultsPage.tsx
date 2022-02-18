@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -53,7 +53,7 @@ const VaultsPage = (): JSX.Element => {
     defaultValues: {
       [InputControlsNames.SHOW_VAULTS_STATUS]:
         StatusRadioNames.SHOW_ACTIVE_VAULTS,
-      [InputControlsNames.SHOW_VERIFIED_VAULTS]: true,
+      [InputControlsNames.SHOW_VERIFIED_VAULTS]: false,
       [InputControlsNames.SHOW_TRADABLE_VAULTS]: false,
       sort: SORT_VALUES[0],
     },
@@ -64,6 +64,7 @@ const VaultsPage = (): JSX.Element => {
   const showTradableVaults = watch('showTradableVaults');
   const sort = watch('sort');
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
+  const [isFilterTouched, setIsFilterTouched] = useState<boolean>(false);
 
   const { loading, vaults: rawVaults } = useFraktion();
   useFraktionInitialFetch();
@@ -72,6 +73,15 @@ const VaultsPage = (): JSX.Element => {
   const [searchString, setSearchString] = useState<string>('');
 
   const { featuredVaultsPublicKeys } = useFeaturedVaultsPublicKeys();
+
+  useEffect(() => {
+    if (
+      showVaultsStatus !== StatusRadioNames.SHOW_ACTIVE_VAULTS ||
+      searchString !== ''
+    ) {
+      setIsFilterTouched(true);
+    }
+  }, [showVaultsStatus, searchString]);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
@@ -193,7 +203,7 @@ const VaultsPage = (): JSX.Element => {
                 />
               </div>
             </div>
-            {!!featuredVaults.length && (
+            {!!featuredVaults.length && !isFilterTouched && (
               <VaultsSlider
                 className={styles.sliderFeatured}
                 vaults={featuredVaults}
@@ -201,7 +211,7 @@ const VaultsPage = (): JSX.Element => {
                 isLoading={loading}
               />
             )}
-            {!!liveAuctionVaults.length && (
+            {!!liveAuctionVaults.length && !isFilterTouched && (
               <VaultsSlider
                 className={styles.sliderFeatured}
                 vaults={liveAuctionVaults}
