@@ -19,6 +19,8 @@ import {
 } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
+import { MainInfo } from './MainInfo';
+import { AuctionInfo } from './AuctionInfo';
 
 export interface VaultCardProps {
   vaultData: VaultData;
@@ -33,12 +35,6 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultData, isAuction }) => {
     symbol: string;
   }>({ name: '', symbol: '' });
   const [imageHoverIndex, setImageHoverIndex] = useState<number>(0);
-
-  const auctionEndingTime = vaultData?.auction?.auction?.isStarted
-    ? vaultData?.auction?.auction?.endingAt
-    : 0;
-
-  const { leftTime } = useAuctionCountdown(auctionEndingTime);
 
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
@@ -162,69 +158,21 @@ export const VaultCard: FC<VaultCardProps> = ({ vaultData, isAuction }) => {
           </div>
         </div>
         {isAuction ? (
-          <div className={styles.stats}>
-            <div className={styles.item}>
-              <div className={styles.title}>
-                TIME <br /> LEFT
-              </div>
-              <div className={styles.value}>
-                {fractionsSupplyNum ? (
-                  <div className={styles.countdown}>
-                    <p className={styles.timeItem}>{leftTime.days}d</p>
-                    <span className={styles.timeDelim}>:</span>
-                    <p className={styles.timeItem}>{leftTime.hours}h</p>
-                    <span className={styles.timeDelim}>:</span>
-                    <p className={styles.timeItem}>{leftTime.minutes}m</p>
-                    <span className={styles.timeDelim}>:</span>
-                    <p className={styles.timeItem}>{leftTime.seconds}s</p>
-                  </div>
-                ) : (
-                  'No value'
-                )}
-              </div>
-            </div>
-            <div className={styles.item}>
-              <div className={styles.title}>LAST&nbsp;BID (SOL)</div>
-              <div className={styles.value}>
-                {lockedPricePerShareNum ? winBid : 'No value'}
-              </div>
-            </div>
-          </div>
+          <AuctionInfo
+            vaultData={vaultData}
+            fractionsSupplyNum={fractionsSupplyNum}
+            lockedPricePerShareNum={lockedPricePerShareNum}
+            startBid={startBid}
+            winBid={winBid}
+          />
         ) : (
-          <div className={styles.stats}>
-            <div className={styles.item}>
-              <div className={styles.title}>Total supply</div>
-              <div className={styles.value}>
-                {fractionsSupplyNum
-                  ? shortBigNumber(vaultData.fractionsSupply, 1, 3)
-                  : 'No value'}
-              </div>
-            </div>
-            <div className={styles.item}>
-              <div className={styles.title}>
-                Fraktion price&nbsp;({currency})
-              </div>
-              <div className={styles.value}>
-                {lockedPricePerShareNum
-                  ? shortBigNumber(vaultData.lockedPricePerShare, 6, 6)
-                  : 'No value'}
-              </div>
-            </div>
-            <div className={styles.item}>
-              <div className={styles.title}>
-                {vaultData.state === VaultState.Active &&
-                  `Start bid (${currency})`}
-                {vaultData.state === VaultState.AuctionLive &&
-                  `Current bid (${currency})`}
-                {(vaultData.state === VaultState.AuctionFinished ||
-                  vaultData.state === VaultState.Archived) &&
-                  `Winning bid (${currency})`}
-              </div>
-              <div className={styles.value}>
-                {vaultData.state === VaultState.Active ? startBid : winBid}
-              </div>
-            </div>
-          </div>
+          <MainInfo
+            vaultData={vaultData}
+            fractionsSupplyNum={fractionsSupplyNum}
+            lockedPricePerShareNum={lockedPricePerShareNum}
+            startBid={startBid}
+            winBid={winBid}
+          />
         )}
       </div>
     </div>
