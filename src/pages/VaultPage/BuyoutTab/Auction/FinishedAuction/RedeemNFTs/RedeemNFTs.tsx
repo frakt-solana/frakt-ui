@@ -1,9 +1,13 @@
 import classNames from 'classnames/bind';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import Button from '../../../../../../components/Button';
 import { useAuction } from '../../../../../../contexts/auction';
-import { VaultData, VaultState } from '../../../../../../contexts/fraktion';
+import {
+  useFraktion,
+  VaultData,
+  VaultState,
+} from '../../../../../../contexts/fraktion';
 import { getButtonText } from './helpers';
 import styles from './styles.module.scss';
 
@@ -13,6 +17,7 @@ interface RedeemNFTsProps {
 }
 
 export const RedeemNFTs: FC<RedeemNFTsProps> = ({ vaultData, className }) => {
+  const { isPolling, startPolling, stopPolling } = useFraktion();
   const { unlockVaultAndRedeemNfts } = useAuction();
 
   const { safetyBoxes, tokenTypeCount } = vaultData;
@@ -30,6 +35,14 @@ export const RedeemNFTs: FC<RedeemNFTsProps> = ({ vaultData, className }) => {
   const redeemNFTValueHandler = () => {
     unlockVaultAndRedeemNfts({ vaultInfo: vaultData });
   };
+
+  useEffect(() => {
+    isPolling && stopPolling();
+    return () => {
+      !isPolling && startPolling();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={classNames(styles.redeemBlock, className)}>

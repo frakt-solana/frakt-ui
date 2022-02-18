@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 
@@ -34,13 +34,29 @@ const MarketSellPage = (): JSX.Element => {
   const { depositNftToCommunityPool } = useNftPools();
 
   const { pool, whitelistedMintsDictionary } = useNftPool(poolPubkey);
+  const { connected } = useWallet();
+
   const {
     nfts: rawNfts,
-    loading: userNftsLoading,
+    loading: userTokensLoading,
+    nftsLoading,
+    fetchUserNfts,
+    rawUserTokensByMint,
     removeTokenOptimistic,
   } = useUserTokens();
 
-  const { connected } = useWallet();
+  useEffect(() => {
+    if (
+      connected &&
+      !userTokensLoading &&
+      !nftsLoading &&
+      Object.keys(rawUserTokensByMint).length
+    ) {
+      fetchUserNfts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, userTokensLoading, nftsLoading]);
+
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
 
@@ -73,6 +89,8 @@ const MarketSellPage = (): JSX.Element => {
   const nfts = useMemo(() => {
     return rawNfts.filter(({ mint }) => !!whitelistedMintsDictionary[mint]);
   }, [rawNfts, whitelistedMintsDictionary]);
+
+  const loading = userTokensLoading || nftsLoading;
 
   return (
     <HeaderStateProvider>
@@ -121,7 +139,7 @@ const MarketSellPage = (): JSX.Element => {
                     </div>
                   </div>
 
-                  {userNftsLoading ? (
+                  {loading ? (
                     <Loader />
                   ) : (
                     <NFTsList

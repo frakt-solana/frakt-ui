@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams, useHistory } from 'react-router';
 
@@ -7,7 +7,7 @@ import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import NFTCheckbox from '../../components/NFTCheckbox';
 import { SearchInput } from '../../components/SearchInput';
-import { useUserTokens, UserNFT } from '../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import Sidebar from './Sidebar';
 import styles from './styles.module.scss';
 import FakeInfinityScroll, {
@@ -26,7 +26,26 @@ const FraktionalizePage = (): JSX.Element => {
   const [search, setSearch] = useState('');
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const { nfts: rawNfts, loading } = useUserTokens();
+  const {
+    nfts: rawNfts,
+    loading: userTokensLoading,
+    nftsLoading: loading,
+    fetchUserNfts,
+    rawUserTokensByMint,
+  } = useUserTokens();
+
+  useEffect(() => {
+    if (
+      connected &&
+      !userTokensLoading &&
+      !loading &&
+      Object.keys(rawUserTokensByMint).length
+    ) {
+      fetchUserNfts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, userTokensLoading, loading]);
+
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
   const history = useHistory();

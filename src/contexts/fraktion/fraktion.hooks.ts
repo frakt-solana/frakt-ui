@@ -55,14 +55,14 @@ export const useFraktionInitialFetch = (): void => {
 };
 
 export const useFraktionPolling = (): void => {
-  const { isPolling, startPolling, stopPolling } = useFraktion();
+  const { startPolling, stopPolling } = useFraktion();
 
   useEffect(() => {
-    !isPolling && startPolling();
+    startPolling();
 
     return () => {
-      isPolling && stopPolling();
+      stopPolling();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPolling]);
+  }, []);
 };

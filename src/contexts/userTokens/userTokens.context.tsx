@@ -1,24 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getAllUserTokens } from 'solana-nft-metadata';
 import { keyBy } from 'lodash';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import {
-  nftsByMint,
   RawUserTokensByMint,
   UserNFT,
-  UserTokensInterface,
-  UseUserTokensInterface,
+  UserTokensValues,
 } from './userTokens.model';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
-const UserTokensContext = React.createContext<UserTokensInterface>({
+export const UserTokensContext = React.createContext<UserTokensValues>({
   nfts: [],
-  nftsByMint: {},
   rawUserTokensByMint: {},
   loading: false,
+  nftsLoading: false,
   removeTokenOptimistic: () => {},
   refetch: () => Promise.resolve(null),
+  fetchUserNfts: () => Promise.resolve(null),
 });
 
 export const UserTokensProvider = ({
@@ -28,16 +27,15 @@ export const UserTokensProvider = ({
 }): JSX.Element => {
   const { connected, publicKey } = useWallet();
   const { connection } = useConnection();
-  const [nfts, setNfts] = useState<UserNFT[]>([]);
-  const [nftsByMint, setNftsByMint] = useState<nftsByMint>({});
   const [rawUserTokensByMint, setRawUserTokensByMint] =
     useState<RawUserTokensByMint>({});
-
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [nftsLoading, setNftsLoading] = useState<boolean>(false);
+  const [nfts, setNfts] = useState<UserNFT[]>([]);
 
   const clearTokens = () => {
     setNfts([]);
-    setNftsByMint({});
     setRawUserTokensByMint({});
     setLoading(false);
   };
@@ -51,19 +49,6 @@ export const UserTokensProvider = ({
 
       const rawUserTokensByMint = keyBy(userTokens, 'mint');
 
-      const mints = Object.keys(rawUserTokensByMint);
-      const arweaveMetadata = await getArweaveMetadataByMint(mints);
-
-      const tokensArray = Object.entries(arweaveMetadata).map(
-        ([mint, metadata]) => ({
-          mint,
-          metadata,
-        }),
-      );
-
-      //TODO fetch nft metadata only by call
-      setNftsByMint(arweaveMetadata);
-      setNfts(tokensArray);
       setRawUserTokensByMint(rawUserTokensByMint);
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -73,24 +58,44 @@ export const UserTokensProvider = ({
     }
   };
 
+  const fetchUserNfts = async () => {
+    if (nfts.length) return;
+    setNftsLoading(true);
+    try {
+      const mints = Object.entries(rawUserTokensByMint)
+        .filter(([, tokenView]) => tokenView.amount === 1)
+        .map(([mint]) => mint);
+
+      const arweaveMetadata = await getArweaveMetadataByMint(mints);
+
+      const tokensArray = Object.entries(arweaveMetadata).map(
+        ([mint, metadata]) => ({
+          mint,
+          metadata,
+        }),
+      );
+
+      setNfts(tokensArray);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setNftsLoading(false);
+    }
+  };
+
   const removeTokenOptimistic = (mints: string[]): void => {
-    const nftEntries = Object.entries(nftsByMint).filter(
-      ([key]) => !mints.includes(key),
-    );
     const patchedRawUserTokensByMint = Object.fromEntries(
       Object.entries(rawUserTokensByMint).filter(
         ([key]) => !mints.includes(key),
       ),
     );
 
-    const patchedNfts = nftEntries.map(([mint, metadata]) => ({
-      mint,
-      metadata,
-    }));
-    const patchedNftsByMint: nftsByMint = Object.fromEntries(nftEntries);
+    const patchedNfts = nfts.filter((nft) => {
+      return !mints.includes(nft.mint);
+    });
 
     setNfts(patchedNfts);
-    setNftsByMint(patchedNftsByMint);
     setRawUserTokensByMint(patchedRawUserTokensByMint);
   };
 
@@ -104,33 +109,15 @@ export const UserTokensProvider = ({
     <UserTokensContext.Provider
       value={{
         nfts,
-        nftsByMint,
         rawUserTokensByMint,
         loading,
         refetch: fetchTokens,
         removeTokenOptimistic,
+        fetchUserNfts,
+        nftsLoading,
       }}
     >
       {children}
     </UserTokensContext.Provider>
   );
-};
-
-export const useUserTokens = (): UseUserTokensInterface => {
-  const {
-    nfts,
-    nftsByMint,
-    rawUserTokensByMint,
-    loading,
-    refetch,
-    removeTokenOptimistic,
-  } = useContext(UserTokensContext);
-  return {
-    nfts,
-    nftsByMint,
-    rawUserTokensByMint,
-    loading,
-    refetch,
-    removeTokenOptimistic,
-  };
 };
