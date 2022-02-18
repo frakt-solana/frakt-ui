@@ -3,23 +3,21 @@ import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
 import React from 'react';
 
-interface IToggleProps {
+interface ToggleProps {
   className?: string;
   disabled?: boolean;
   checked?: boolean;
   value: string;
-  defaultChecked?: boolean;
   label?: string;
-  onChange?: (value: any) => void;
 }
 
-export const ControlledRadio = ({
+export const CustomRadio = ({
   className = '',
   disabled = false,
   checked = false,
   label = null,
   value,
-}: IToggleProps): JSX.Element => (
+}: ToggleProps): JSX.Element => (
   <Radio
     className={classNames(styles.radio, className)}
     disabled={disabled}

@@ -4,16 +4,15 @@ import { Control, Controller } from 'react-hook-form';
 import styles from './styles.module.scss';
 import React from 'react';
 
-interface IToggleProps {
+interface ToggleProps {
   className?: string;
   disabled?: boolean;
   value?: boolean;
-  defaultChecked?: boolean;
   label?: string;
-  onChange?: (value: any) => void;
+  onChange?: (value: boolean) => void;
 }
 
-interface IControlledToggleProps extends IToggleProps {
+interface ControlledToggleProps extends ToggleProps {
   control: Control<any>;
   name: string;
 }
@@ -24,7 +23,7 @@ const CustomCheckbox = ({
   onChange = () => {},
   value = false,
   label = null,
-}: IToggleProps): JSX.Element => (
+}: ToggleProps): JSX.Element => (
   <Checkbox
     className={classNames(styles.checkbox, className)}
     disabled={disabled}
@@ -39,7 +38,7 @@ export const ControlledCheckbox = ({
   control,
   name,
   ...props
-}: IControlledToggleProps): JSX.Element => (
+}: ControlledToggleProps): JSX.Element => (
   <Controller
     control={control}
     name={name}

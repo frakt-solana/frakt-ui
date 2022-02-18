@@ -9,7 +9,19 @@ export const useFraktion = (): FraktionContextType => {
   return context;
 };
 
-export const useAuctionCountdown = (endTime) => {
+interface UseAuctionCountdownReturn {
+  timeLeft: {
+    days: string;
+    hours: string;
+    minutes: string;
+    seconds: string;
+  };
+  leftTimeInSeconds: number;
+}
+
+export const useAuctionCountdown = (
+  endTime: number,
+): UseAuctionCountdownReturn => {
   const intervalIdRef = useRef<ReturnType<typeof setInterval>>(null);
   const [currentTime, setCurrentTime] = useState<moment.Moment>(moment());
 
@@ -33,7 +45,7 @@ export const useAuctionCountdown = (endTime) => {
   }, [timeDifference]);
 
   return {
-    leftTime: {
+    timeLeft: {
       days: formatDateUnit(timeDifference.days()),
       hours: formatDateUnit(timeDifference.hours()),
       minutes: formatDateUnit(timeDifference.minutes()),

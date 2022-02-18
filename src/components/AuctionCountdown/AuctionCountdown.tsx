@@ -1,5 +1,4 @@
-import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import { CountdownIcon } from '../../icons';
@@ -14,7 +13,7 @@ export const AuctionCountdown = ({
   endTime,
   className,
 }: AuctionCountdownProps): JSX.Element => {
-  const { leftTime, leftTimeInSeconds } = useAuctionCountdown(endTime);
+  const { timeLeft, leftTimeInSeconds } = useAuctionCountdown(endTime);
 
   if (leftTimeInSeconds < 0) return null;
 
@@ -24,19 +23,19 @@ export const AuctionCountdown = ({
         <CountdownIcon />
       </li>
       <li className={styles.timeItem}>
-        {leftTime.days}
+        {timeLeft.days}
         <span>Days</span>
       </li>
       <li className={styles.timeItem}>
-        {leftTime.hours}
+        {timeLeft.hours}
         <span>Hours</span>
       </li>
       <li className={styles.timeItem}>
-        {leftTime.minutes}
+        {timeLeft.minutes}
         <span>Minutes</span>
       </li>
       <li className={styles.timeItem}>
-        {leftTime.seconds}
+        {timeLeft.seconds}
         <span>Seconds</span>
       </li>
     </ul>

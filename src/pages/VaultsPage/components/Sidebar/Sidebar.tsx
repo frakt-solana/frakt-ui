@@ -3,14 +3,19 @@ import classNames from 'classnames';
 import React, { FC, useState } from 'react';
 import { Collapse, Radio } from 'antd';
 import { ControlledCheckbox } from '../../../../components/Checkbox/Checkbox';
-import { ControlledRadio } from '../../../../components/CustomRadio/CustomRadio';
-import { Controller } from 'react-hook-form';
+import { CustomRadio } from '../../../../components/CustomRadio';
+import { Control, Controller } from 'react-hook-form';
+import {
+  FormFieldValues,
+  SidebarCheckboxNames,
+  StatusRadioNames,
+} from '../../VaultsPage';
 
 const { Panel } = Collapse;
 
 interface SidebarProps {
   isSidebar: boolean;
-  control: any;
+  control: Control<FormFieldValues>;
   setIsSidebar: (sidebarState: boolean) => void;
 }
 
@@ -22,7 +27,9 @@ export const Sidebar: FC<SidebarProps> = ({
   const showSidebar = () => setIsSidebar(true);
   const hideSidebar = () => setIsSidebar(false);
 
-  const [currentRadio, setCurrentRadio] = useState<string>('showActiveVaults');
+  const [currentRadio, setCurrentRadio] = useState<string>(
+    StatusRadioNames.SHOW_ACTIVE_VAULTS,
+  );
 
   const changeRadio = (event) => {
     setCurrentRadio(event.target.value);
@@ -61,7 +68,7 @@ export const Sidebar: FC<SidebarProps> = ({
                 <li className={styles.sidebarListItem}>
                   <ControlledCheckbox
                     control={control}
-                    name={'showVerifiedVaults'}
+                    name={SidebarCheckboxNames.SHOW_VERIFIED_VAULTS}
                     label={'Verified only'}
                   />
                 </li>
@@ -80,7 +87,7 @@ export const Sidebar: FC<SidebarProps> = ({
                 <li className={styles.sidebarListItem}>
                   <ControlledCheckbox
                     control={control}
-                    name={'showTradableVaults'}
+                    name={SidebarCheckboxNames.SHOW_TRADABLE_VAULTS}
                     label={'Tradable only'}
                   />
                 </li>
@@ -110,29 +117,31 @@ export const Sidebar: FC<SidebarProps> = ({
                         onChange={(e) => onChange(e.target.value)}
                       >
                         <div className={styles.sidebarListItem}>
-                          <ControlledRadio
-                            value={'showActiveVaults'}
+                          <CustomRadio
+                            value={StatusRadioNames.SHOW_ACTIVE_VAULTS}
                             label={'Active'}
                             {...field}
                           />
                         </div>
                         <div className={styles.sidebarListItem}>
-                          <ControlledRadio
-                            value={'showAuctionLiveVaults'}
+                          <CustomRadio
+                            value={StatusRadioNames.SHOW_AUCTION_LIVE_VAULTS}
                             label={'Auction live'}
                             {...field}
                           />
                         </div>
                         <div className={styles.sidebarListItem}>
-                          <ControlledRadio
-                            value={'showAuctionFinishedVaults'}
+                          <CustomRadio
+                            value={
+                              StatusRadioNames.SHOW_AUCTION_FINISHED_VAULTS
+                            }
                             label={'Auction finished'}
                             {...field}
                           />
                         </div>
                         <div className={styles.sidebarListItem}>
-                          <ControlledRadio
-                            value={'showArchivedVaults'}
+                          <CustomRadio
+                            value={StatusRadioNames.SHOW_ARCHIVED_VAULTS}
                             label={'Archived'}
                             {...field}
                           />

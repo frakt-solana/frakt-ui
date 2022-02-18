@@ -1,1 +1,1 @@
-export { ControlledRadio } from './CustomRadio';
+export { CustomRadio } from './CustomRadio';
