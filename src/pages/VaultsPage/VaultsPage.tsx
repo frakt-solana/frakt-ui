@@ -6,10 +6,10 @@ import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
 import {
-  VaultState,
   useFraktion,
   useFraktionInitialFetch,
   useFraktionPolling,
+  VaultState,
 } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
 import { ControlledSelect } from '../../components/Select/Select';
@@ -19,11 +19,7 @@ import { Sidebar } from './components/Sidebar';
 import { VaultsSlider } from './components/VaultsSlider';
 import { FiltersIcon } from '../../icons';
 import { useFeaturedVaultsPublicKeys } from './hooks';
-
-export type SortValue = {
-  label: JSX.Element;
-  value: string;
-};
+import { InputControlsNames, SortValue, StatusRadioNames } from './model';
 
 const SORT_VALUES: SortValue[] = [
   {
@@ -51,32 +47,6 @@ const SORT_VALUES: SortValue[] = [
     value: 'fractionsSupply_asc',
   },
 ];
-
-export enum SidebarCheckboxNames {
-  SHOW_VERIFIED_VAULTS = 'showVerifiedVaults',
-  SHOW_TRADABLE_VAULTS = 'showTradableVaults',
-}
-
-export enum StatusRadioNames {
-  SHOW_ACTIVE_VAULTS = 'showActiveVaults',
-  SHOW_AUCTION_LIVE_VAULTS = 'showAuctionLiveVaults',
-  SHOW_AUCTION_FINISHED_VAULTS = 'showAuctionFinishedVaults',
-  SHOW_ARCHIVED_VAULTS = 'showArchivedVaults',
-}
-
-export enum InputControlsNames {
-  SHOW_VAULTS_STATUS = 'showVaultsStatus',
-  SHOW_VERIFIED_VAULTS = 'showVerifiedVaults',
-  SHOW_TRADABLE_VAULTS = 'showTradableVaults',
-  SORT = 'sort',
-}
-
-export type FormFieldValues = {
-  [InputControlsNames.SHOW_VAULTS_STATUS]: StatusRadioNames;
-  [InputControlsNames.SHOW_VERIFIED_VAULTS]: boolean;
-  [InputControlsNames.SHOW_TRADABLE_VAULTS]: boolean;
-  [InputControlsNames.SORT]: SortValue;
-};
 
 const VaultsPage = (): JSX.Element => {
   const { control, watch } = useForm({

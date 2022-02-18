@@ -9,7 +9,7 @@ import {
   FormFieldValues,
   SidebarCheckboxNames,
   StatusRadioNames,
-} from '../../VaultsPage';
+} from '../../model';
 
 const { Panel } = Collapse;
 
