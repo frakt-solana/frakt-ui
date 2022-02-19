@@ -31,12 +31,10 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
             prevEl: prevBtn.current,
             nextEl: nextBtn.current,
           }}
-          loop={true}
-          loopAdditionalSlides={1}
           spaceBetween={25}
           speed={1000}
           scrollbar={{ draggable: true }}
-          // autoplay={{ delay: 5000, disableOnInteraction: false }}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
         >
           <SwiperSlide>
             <PoolCard />
@@ -54,10 +52,12 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
         <div
           ref={prevBtn}
           className={`${styles.sliderNavPrev} sliderNavPrev`}
+          onClick={() => null}
         />
         <div
           ref={nextBtn}
           className={`${styles.sliderNavNext} sliderNavNext`}
+          onClick={() => null}
         />
       </div>
     </div>
