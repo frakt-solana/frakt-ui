@@ -11,6 +11,8 @@ import {
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { FullPotentialSection } from './sections/FullPotentialSection';
+import { OurTokens } from './sections/OurTokens';
+import { TeamSection } from './sections/TeamSection';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -51,6 +53,8 @@ const HomePage = (): JSX.Element => {
         </section>
         <Statistics />
         <FullPotentialSection />
+        <OurTokens />
+        <TeamSection />
         {/*<WhyNeedsSection className={styles.whyNeeds} />*/}
         {/*<ProcessSection className={styles.howItWorks} />*/}
         {/*<Ecosystem />*/}

@@ -31,3 +31,4 @@ export { InfoIcon } from './InfoIcon';
 export { SwapMarketIcon } from './SwapMarketIcon';
 export { FiltersIcon } from './FiltersIcon';
 export { FraktLogoIcon } from './FraktLogoIcon';
+export { BehanceIcon } from './BehanceIcon';
