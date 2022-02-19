@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
-import { FraktionalizationInfoIcon } from '../../../../../icons';
 import { BlockContent } from '../BlockContent';
 import { Slider } from './Slider';
+import { FraktionalizationInfoIcon } from '../../../svg';
 
 interface FraktionalizationBlockProps {
   className?: string;

@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
-import { LandingInfoIcon, SolanaIcon } from '../../../../../icons';
 import { BlockContent } from '../BlockContent';
 import imageOne from '../../../images/landing1.png';
 import imageTwo from '../../../images/landing2.png';
+import { SolanaIcon } from '../../../../../icons';
+import { LandingInfoIcon } from '../../../svg';
 
 interface LendingBlockProps {
   className?: string;

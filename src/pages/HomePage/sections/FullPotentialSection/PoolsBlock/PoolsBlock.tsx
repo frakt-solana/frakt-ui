@@ -1,11 +1,11 @@
 import React, { FC, useRef } from 'react';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
-import { PoolsInfoIcon } from '../../../../../icons';
 import { BlockContent } from '../BlockContent';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Autoplay, Scrollbar } from 'swiper';
 import { PoolCard } from './PoolCard';
+import { PoolsInfoIcon } from '../../../svg';
 
 SwiperCore.use([Navigation, Autoplay, Scrollbar]);
 

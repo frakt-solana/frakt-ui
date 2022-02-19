@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import classNames from 'classnames';
 import styles from './styles.module.scss';
+import { BlockContent } from '../BlockContent';
 import {
   PercentIcon100,
   PercentIcon30,
   PercentIcon50,
   YieldInfoIcon,
-} from '../../../../../icons';
-import { BlockContent } from '../BlockContent';
+} from '../../../svg';
 
 interface YieldBlockProps {
   className?: string;
