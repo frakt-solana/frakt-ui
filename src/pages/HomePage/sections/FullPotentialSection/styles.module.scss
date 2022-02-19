@@ -13,6 +13,9 @@
   padding: 40px;
   max-width: 1208px;
   margin-bottom: 60px;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
 
   &:last-of-type {
     margin-bottom: 0;

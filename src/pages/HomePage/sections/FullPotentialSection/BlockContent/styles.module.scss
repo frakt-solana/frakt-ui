@@ -1,5 +1,10 @@
 .wrapper {
   max-width: 440px;
+
+  .buttonDisabled {
+    background-color: var(--accent-shadow-color);
+    pointer-events: none;
+  }
 }
 
 .title {
@@ -11,9 +16,4 @@
 .text {
   font: var(--font-text-2);
   margin-bottom: 20px;
-}
-
-.buttonDisabled {
-  background-color: var(--accent-shadow-color);
-  pointer-events: none;
 }

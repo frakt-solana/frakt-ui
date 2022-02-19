@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import styles from './styles.module.scss';
 import { FraktionalizationInfoIcon } from '../../../../../icons';
 import { BlockContent } from '../BlockContent';
+import { Slider } from './Slider';
 
 interface FraktionalizationBlockProps {
   className?: string;
@@ -13,6 +14,7 @@ export const FraktionalizationBlock: FC<FraktionalizationBlockProps> = ({
 }) => {
   return (
     <div className={classNames(className, styles.block)}>
+      <Slider />
       <BlockContent
         title={'Fraktionalization'}
         icon={<FraktionalizationInfoIcon />}
