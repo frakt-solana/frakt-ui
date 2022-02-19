@@ -1,0 +1,51 @@
+.imagesWrapper {
+  max-width: 615px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.image {
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+.imageTwo {
+  margin-left: -25%;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    z-index: -1;
+    position: absolute;
+    width: 120px;
+    content: '';
+    display: block;
+    left: -100px;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(270deg, #000000 0%, #000000 0.01%, rgba(0, 0, 0, 0) 100%);
+  }
+}
+
+.infoWrapper {
+  position: absolute;
+  padding: 20px;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 136px;
+  font-size: 40px;
+  font-weight: 600;
+  text-align: right;
+  background: linear-gradient(0deg, #000000 -11.4%, #000000 -11.38%, rgba(0, 0, 0, 0) 118.38%);
+
+  svg {
+    margin-left: 15px;
+    margin-right: 8px;
+    width: 28px;
+  }
+}
