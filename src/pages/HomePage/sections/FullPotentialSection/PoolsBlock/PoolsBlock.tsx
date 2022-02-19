@@ -33,9 +33,10 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
           }}
           loop={true}
           loopAdditionalSlides={1}
-          spaceBetween={0}
+          spaceBetween={25}
           speed={1000}
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          scrollbar={{ draggable: true }}
+          // autoplay={{ delay: 5000, disableOnInteraction: false }}
         >
           <SwiperSlide>
             <PoolCard />
