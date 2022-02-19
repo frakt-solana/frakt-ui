@@ -18,7 +18,7 @@ export const AuctionInfo: FC<AuctionInfoProps> = ({
 }) => {
   const auctionStartTime = vaultData?.auction?.auction?.startedAt || 0;
   const auctionEndingTime = vaultData?.auction?.auction?.endingAt || 0;
-  const today = Date.now();
+  const today = Date.now() / 1000;
 
   const sinceTime = today - auctionStartTime;
   const allTime = auctionEndingTime - auctionStartTime;
