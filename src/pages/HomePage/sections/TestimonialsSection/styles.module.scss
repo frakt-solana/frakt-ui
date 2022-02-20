@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.infoWrapper {
+  max-width: 665px;
+}
+
+.title {
+  font: var(--font-title-2);
+  margin-bottom: 100px;
+}
+
+.infoText {
+  max-width: 655px;
+}
+
+.textParagraph {
+  font: var(--font-text-2);
+  margin-bottom: 30px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}

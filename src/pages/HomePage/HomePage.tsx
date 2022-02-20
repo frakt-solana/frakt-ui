@@ -13,6 +13,7 @@ import { PATHS } from '../../constants';
 import { FullPotentialSection } from './sections/FullPotentialSection';
 import { OurTokens } from './sections/OurTokens';
 import { TeamSection } from './sections/TeamSection';
+import { TestimonialsSection } from './sections/TestimonialsSection';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -54,13 +55,8 @@ const HomePage = (): JSX.Element => {
         <Statistics />
         <FullPotentialSection />
         <OurTokens />
+        <TestimonialsSection />
         <TeamSection />
-        {/*<WhyNeedsSection className={styles.whyNeeds} />*/}
-        {/*<ProcessSection className={styles.howItWorks} />*/}
-        {/*<Ecosystem />*/}
-        {/*<Roadmap />*/}
-        {/*<Partners />*/}
-        {/*<FAQSection />*/}
       </main>
       <footer className={styles.footer}>
         <p>Fraktion</p>
