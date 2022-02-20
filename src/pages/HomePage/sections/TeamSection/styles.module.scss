@@ -36,22 +36,9 @@
     grid-template-columns: repeat(auto-fill, minmax(40%, 48%));
   }
 }
+
 .teamItem {
   border: var(--border-gray-1);
-
-  //@media screen and (max-width: 1023px) {
-  //  max-width: 240px;
-  //  width: calc(25% - 8px);
-  //}
-  //
-  //@media screen and (max-width: 850px) {
-  //  max-width: 260px;
-  //  width: calc(33% - 8px);
-  //}
-  //
-  //@media screen and (max-width: 550px) {
-  //  width: calc(50% - 5px);
-  //}
 }
 
 .teamPhoto {

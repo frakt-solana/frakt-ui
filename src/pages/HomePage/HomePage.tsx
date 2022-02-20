@@ -2,12 +2,7 @@ import { Helmet } from 'react-helmet';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import styles from './styles.module.scss';
 import Statistics from './sections/Statistics/Statistics';
-import {
-  ArrowRightTop,
-  DiscordIcon,
-  FraktLogoIcon,
-  TwitterIcon,
-} from '../../icons';
+import { ArrowRightTop, FraktLogoIcon } from '../../icons';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { FullPotentialSection } from './sections/FullPotentialSection';
@@ -15,6 +10,7 @@ import { OurTokens } from './sections/OurTokens';
 import { TeamSection } from './sections/TeamSection';
 import { TestimonialsSection } from './sections/TestimonialsSection';
 import Partners from './sections/Partners';
+import { Footer } from './sections/Footer';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -59,26 +55,27 @@ const HomePage = (): JSX.Element => {
         <TestimonialsSection />
         <Partners />
         <TeamSection />
+        <Footer />
       </main>
-      <footer className={styles.footer}>
-        <p>Fraktion</p>
-        <div className={styles.socialLinks}>
-          <a
-            href="https://twitter.com/fraktion_art"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <TwitterIcon width={32} />
-          </a>
-          <a
-            href="https://discord.gg/frakt"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <DiscordIcon width={32} />
-          </a>
-        </div>
-      </footer>
+      {/*<footer className={styles.footer}>*/}
+      {/*  <p>Fraktion</p>*/}
+      {/*  <div className={styles.socialLinks}>*/}
+      {/*    <a*/}
+      {/*      href="https://twitter.com/fraktion_art"*/}
+      {/*      target="_blank"*/}
+      {/*      rel="noopener noreferrer"*/}
+      {/*    >*/}
+      {/*      <TwitterIcon width={32} />*/}
+      {/*    </a>*/}
+      {/*    <a*/}
+      {/*      href="https://discord.gg/frakt"*/}
+      {/*      target="_blank"*/}
+      {/*      rel="noopener noreferrer"*/}
+      {/*    >*/}
+      {/*      <DiscordIcon width={32} />*/}
+      {/*    </a>*/}
+      {/*  </div>*/}
+      {/*</footer>*/}
     </AppLayout>
   );
 };

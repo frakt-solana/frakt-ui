@@ -7,3 +7,4 @@ export { PercentIcon50 } from './PercentIcon50';
 export { PercentIcon100 } from './PercentIcon100';
 export { TokensBg } from './TokensBg';
 export { PortalIcon } from './PortalIcon';
+export { FooterLogo } from './FooterLogo';
