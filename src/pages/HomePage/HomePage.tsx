@@ -14,6 +14,7 @@ import { FullPotentialSection } from './sections/FullPotentialSection';
 import { OurTokens } from './sections/OurTokens';
 import { TeamSection } from './sections/TeamSection';
 import { TestimonialsSection } from './sections/TestimonialsSection';
+import Partners from './sections/Partners';
 
 const HomePage = (): JSX.Element => {
   return (
@@ -56,6 +57,7 @@ const HomePage = (): JSX.Element => {
         <FullPotentialSection />
         <OurTokens />
         <TestimonialsSection />
+        <Partners />
         <TeamSection />
       </main>
       <footer className={styles.footer}>
