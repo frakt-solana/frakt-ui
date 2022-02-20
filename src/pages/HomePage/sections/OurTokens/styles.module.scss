@@ -1,0 +1,59 @@
+.wrapper {
+  display: flex;
+  gap: 40px;
+}
+
+.title {
+  font: var(--font-title-2);
+  text-align: center;
+  margin-bottom: 100px;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  padding: 29px;
+  border: var(--border-gray-1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  border-bottom: 20px solid var(--green-color);
+  background: linear-gradient(360deg, rgba(131, 214, 164, 0.3) 0%, rgba(131, 214, 164, 0) 50%);
+}
+
+.titleCard {
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--green-color);
+  margin-bottom: 30px;
+}
+
+.cardBlue {
+  border-bottom-color: var(--accent-color-1);
+  background: linear-gradient(360deg, rgba(93, 95, 239, 0.3) 0%, rgba(93, 95, 239, 0) 73.85%);
+
+  .titleCard {
+    color: var(--accent-color-1);
+  }
+}
+
+.infoList {
+  max-width: 290px;
+  font: var(--font-text-2);
+}
+
+.infoItem {
+  margin-bottom: 20px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.cardBg {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
