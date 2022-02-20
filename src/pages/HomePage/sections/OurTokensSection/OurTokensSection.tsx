@@ -2,10 +2,22 @@ import React, { FC } from 'react';
 import styles from './styles.module.scss';
 import { PortalIcon, TokensBg } from '../../svg';
 import classNames from 'classnames';
+import { OUR_TOKENS_ID } from '../../constants';
 
-export const OurTokens: FC = () => {
+interface OurTokensSectionProps {
+  className?: string;
+  navRef?: { current: HTMLParagraphElement };
+}
+
+export const OurTokensSection: FC<OurTokensSectionProps> = ({
+  className,
+  navRef,
+}) => {
   return (
-    <section className={`section`}>
+    <section className={`section ${className}`}>
+      <p className="itemForIntersectionMenu" id={OUR_TOKENS_ID} ref={navRef}>
+        Our tokens
+      </p>
       <div className={`container`}>
         <h2 className={styles.title}>Our tokens</h2>
         <div className={styles.wrapper}>

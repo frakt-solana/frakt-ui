@@ -1,7 +1,18 @@
-.root {
-  border-bottom: 1px solid var(--gray-color-3);
-  font-family: var(--font-family-oxanium);
+.header {
+  width: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
   background: var(--black-color);
+  transition: top .2s ease-out;
+  z-index: 90;
+  font-family: var(--font-family-oxanium);
+  border-bottom: var(--border-gray-1);
+}
+
+.hasCustomHeader {
+  border-bottom: none;
 }
 
 .link {

@@ -35,6 +35,7 @@ h5 {
 
 .section {
   padding-top: 200px;
+  position: relative;
 
   @media screen and (max-width: 767px) {
     padding-top: 150px;
@@ -212,6 +213,18 @@ h5 {
   90% {
     transform: translate(-2%, 2%)
   }
+}
+
+.itemForIntersectionMenu {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  max-height: 100vh;
+  height: 100vh;
+  top: 10px;
+  left: 0;
+  font-size: 1px;
+  width: 1px;
 }
 
 .link-with-arrow {

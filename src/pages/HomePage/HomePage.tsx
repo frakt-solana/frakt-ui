@@ -6,15 +6,51 @@ import { ArrowRightTop, FraktLogoIcon } from '../../icons';
 import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { FullPotentialSection } from './sections/FullPotentialSection';
-import { OurTokens } from './sections/OurTokens';
+import { OurTokensSection } from './sections/OurTokensSection';
 import { TeamSection } from './sections/TeamSection';
 import { TestimonialsSection } from './sections/TestimonialsSection';
 import Partners from './sections/Partners';
 import { Footer } from './sections/Footer';
+import { CustomHeader } from './CustomHeader';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 
 const HomePage = (): JSX.Element => {
+  const [menuLinksData, setMenuLinksData] = useState<
+    { sectionRef: { current: HTMLParagraphElement } }[]
+  >([]);
+  const [activeLink, setActiveLink] = useState<string>('');
+
+  const sectionRef1 = useRef<HTMLParagraphElement>();
+  const sectionRef2 = useRef<HTMLParagraphElement>();
+  const sectionRef3 = useRef<HTMLParagraphElement>();
+  const sectionRef4 = useRef<HTMLParagraphElement>();
+  const sectionRef5 = useRef<HTMLParagraphElement>();
+
+  useEffect(() => {
+    setMenuLinksData([
+      { sectionRef: sectionRef1 },
+      { sectionRef: sectionRef2 },
+      { sectionRef: sectionRef3 },
+      { sectionRef: sectionRef4 },
+      { sectionRef: sectionRef5 },
+    ]);
+  }, [sectionRef1, sectionRef2, sectionRef3, sectionRef4, sectionRef5]);
+
+  const intersectionCallback = (currentItemText: string) => {
+    currentItemText !== activeLink && setActiveLink(currentItemText);
+  };
+
+  useIntersectionObserver(null, menuLinksData, intersectionCallback);
+
+  const customHeaderWithLinks: FC = () => {
+    return (
+      <CustomHeader menuLinksData={menuLinksData} activeLink={activeLink} />
+    );
+  };
+
   return (
-    <AppLayout>
+    <AppLayout CustomHeader={customHeaderWithLinks}>
       <Helmet>
         <title>FRAKTION ART</title>
       </Helmet>
@@ -50,32 +86,13 @@ const HomePage = (): JSX.Element => {
           </div>
         </section>
         <Statistics />
-        <FullPotentialSection />
-        <OurTokens />
+        <FullPotentialSection navRef={sectionRef1} />
+        <OurTokensSection navRef={sectionRef2} />
         <TestimonialsSection />
-        <Partners />
-        <TeamSection />
-        <Footer />
+        <Partners navRef={sectionRef3} />
+        <TeamSection navRef={sectionRef4} />
+        <Footer navRef={sectionRef5} />
       </main>
-      {/*<footer className={styles.footer}>*/}
-      {/*  <p>Fraktion</p>*/}
-      {/*  <div className={styles.socialLinks}>*/}
-      {/*    <a*/}
-      {/*      href="https://twitter.com/fraktion_art"*/}
-      {/*      target="_blank"*/}
-      {/*      rel="noopener noreferrer"*/}
-      {/*    >*/}
-      {/*      <TwitterIcon width={32} />*/}
-      {/*    </a>*/}
-      {/*    <a*/}
-      {/*      href="https://discord.gg/frakt"*/}
-      {/*      target="_blank"*/}
-      {/*      rel="noopener noreferrer"*/}
-      {/*    >*/}
-      {/*      <DiscordIcon width={32} />*/}
-      {/*    </a>*/}
-      {/*  </div>*/}
-      {/*</footer>*/}
     </AppLayout>
   );
 };

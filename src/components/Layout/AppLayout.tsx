@@ -1,22 +1,24 @@
 import Header from '../Header';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { useHeaderState } from '../../contexts/HeaderState';
 
 interface AppLayoutProps {
+  CustomHeader?: FC;
   children: JSX.Element[] | JSX.Element;
   className?: string;
   contentClassName?: string;
 }
 
-export const AppLayout = ({
+export const AppLayout: FC<AppLayoutProps> = ({
+  CustomHeader,
   children,
   className = '',
   contentClassName = '',
-}: AppLayoutProps): JSX.Element => {
+}) => {
   const { visible, setVisible } = useWalletModal();
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
@@ -50,6 +52,7 @@ export const AppLayout = ({
         className={classNames(styles.header, {
           [styles.headerHide]: isHeaderHidden,
         })}
+        CustomHeader={CustomHeader}
       />
       <div
         onScroll={onContentScroll}

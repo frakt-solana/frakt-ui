@@ -12,10 +12,30 @@ import {
   MediumIcon,
   TwitterIcon,
 } from '../../../../icons';
+import classNames from 'classnames';
+import {
+  CONTACT_SECTION_ID,
+  OUR_PRODUCT_ID,
+  OUR_TOKENS_ID,
+  TEAM_SECTION_ID,
+  TECHNICAL_PARTNERS_ID,
+} from '../../constants';
 
-export const Footer: FC = () => {
+interface FooterProps {
+  className?: string;
+  navRef?: { current: HTMLParagraphElement };
+}
+
+export const Footer: FC<FooterProps> = ({ className, navRef }) => {
   return (
-    <footer className={styles.footer}>
+    <footer className={classNames(styles.footer, className)}>
+      <p
+        className="itemForIntersectionMenu"
+        id={CONTACT_SECTION_ID}
+        ref={navRef}
+      >
+        Contact us
+      </p>
       <div className={`container ${styles.container}`}>
         <p className={styles.logo}>FRAKT</p>
         <div className={styles.navWrapper}>
@@ -48,27 +68,27 @@ export const Footer: FC = () => {
           <h5 className={styles.navTitle}>FRAKTION</h5>
           <ul className={styles.navList}>
             <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${'WHAT_IS_FRAKT_SECTION_ID'}`}>
+              <AnchorLink smooth to={`#${OUR_PRODUCT_ID}`}>
                 Our products
               </AnchorLink>
             </li>
             <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${'ECOSYSTEM_SECTION_ID'}`}>
+              <AnchorLink smooth to={`#${OUR_TOKENS_ID}`}>
                 Our tokens
               </AnchorLink>
             </li>
             <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${'TEAM_SECTION_ID'}`}>
+              <AnchorLink smooth to={`#${TECHNICAL_PARTNERS_ID}`}>
                 Technical partners
               </AnchorLink>
             </li>
             <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${'FAQ_SECTION_ID'}`}>
+              <AnchorLink smooth to={`#${TEAM_SECTION_ID}`}>
                 Team
               </AnchorLink>
             </li>
             <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${'FAQ_SECTION_ID'}`}>
+              <AnchorLink smooth to={`#${CONTACT_SECTION_ID}`}>
                 Contact us
               </AnchorLink>
             </li>

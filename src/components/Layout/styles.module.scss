@@ -6,16 +6,14 @@
 }
 
 .header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 2;
-  transition: top .2s ease-out;
-}
+  &.headerHide {
+    top: -50px;
+    transition: top .3s ease-in;
 
-.headerHide {
-  top: -50px;
-  transition: top .2s ease-in;
+    @media screen and (max-width: 500px) {
+      top: -36px;
+    }
+  }
 }
 
 .content {

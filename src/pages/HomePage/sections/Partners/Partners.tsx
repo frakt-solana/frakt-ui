@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
 import exchange from './images/exchange.svg';
@@ -7,14 +7,23 @@ import magicEden from './images/magicEden.svg';
 import radium from './images/radium.svg';
 import serum from './images/serum.svg';
 import solsea from './images/solsea.svg';
+import { TECHNICAL_PARTNERS_ID } from '../../constants';
 
-interface EcosystemProps {
+interface PartnersProps {
   className?: string;
+  navRef?: { current: HTMLParagraphElement };
 }
 
-const Partners = ({ className }: EcosystemProps): JSX.Element => {
+const Partners: FC<PartnersProps> = ({ className, navRef }) => {
   return (
     <section className={classNames('section', styles.section, className)}>
+      <p
+        className="itemForIntersectionMenu"
+        id={TECHNICAL_PARTNERS_ID}
+        ref={navRef}
+      >
+        Technical partners
+      </p>
       <div className={`container`}>
         <h2 className={styles.title}>Technical Partners</h2>
         <p className={styles.subtitle}>Technical Partners</p>
