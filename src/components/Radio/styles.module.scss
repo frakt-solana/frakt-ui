@@ -1,0 +1,29 @@
+.radio {
+  :global {
+    .ant-radio {
+      + span {
+        padding-left: 5px;
+      }
+
+      .ant-radio-inner {
+        width: 18px;
+        height: 18px;
+        border: var(--border-gray-1);
+      }
+    }
+
+    .ant-radio-inner::after {
+      top: 4px;
+      left: 4px;
+      background-color: var(--white-color);
+    }
+
+    .ant-radio-wrapper:hover .ant-radio-inner,
+    .ant-radio-checked .ant-radio-inner,
+    .ant-radio:hover .ant-radio-inner,
+    .ant-radio-input:focus + .ant-radio-inner {
+      border-color: var(--accent-color-1);
+      background-color: var(--accent-shadow-color);
+    }
+  }
+}

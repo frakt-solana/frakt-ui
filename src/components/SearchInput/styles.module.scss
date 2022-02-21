@@ -1,5 +1,6 @@
 html body .input {
-  padding: 0 0 4px;
+  height: 28px;
+  padding: 0;
 
   &,
   &:not(.ant-input-affix-wrapper-disabled):hover,
@@ -29,15 +30,15 @@ html body .input {
     }
   }
   input {
-    font: var(--font-subtitle);
+    font-size: 18px;
   }
 }
 
 .search {
   svg {
-    font-size: 24px;
+    font-size: 15px;
     transition: color var(--transition-1);
     color: var(--gray-color-3);
-    margin-right: 6px;
+    margin-right: 5px;
   }
 }

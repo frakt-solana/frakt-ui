@@ -9,7 +9,6 @@ import { ArrowDownSmallIcon } from '../../icons';
 import {
   useFraktion,
   useFraktionInitialFetch,
-  useFraktionPolling,
   VaultState,
 } from '../../contexts/fraktion';
 import { useDebounce } from '../../hooks';
@@ -66,7 +65,6 @@ const CollectionPage: FC = () => {
   const { collectionName } = useParams<{ collectionName: string }>();
   const { vaults, loading } = useFraktion();
   useFraktionInitialFetch();
-  useFraktionPolling();
 
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultsByCollectionName(vaults);

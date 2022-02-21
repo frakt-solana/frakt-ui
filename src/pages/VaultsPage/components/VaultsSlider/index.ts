@@ -1,0 +1,1 @@
+export { VaultsSlider } from './VaultsSlider';

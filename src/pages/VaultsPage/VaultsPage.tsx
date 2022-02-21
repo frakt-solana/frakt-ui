@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -6,18 +6,23 @@ import styles from './styles.module.scss';
 import { SearchInput } from '../../components/SearchInput';
 import { useDebounce } from '../../hooks';
 import {
-  VaultState,
   useFraktion,
   useFraktionInitialFetch,
   useFraktionPolling,
+  VaultState,
 } from '../../contexts/fraktion';
 import { useForm } from 'react-hook-form';
-import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { ControlledSelect } from '../../components/Select/Select';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { VaultsList } from '../../components/VaultsList';
+import { Sidebar } from './components/Sidebar';
+import { VaultsSlider } from './components/VaultsSlider';
+import { FiltersIcon } from '../../icons';
+import { useFeaturedVaultsPublicKeys } from './hooks';
+import { InputControlsNames, SortValue, StatusRadioNames } from './model';
+import { Loader } from '../../components/Loader';
 
-const SORT_VALUES = [
+const SORT_VALUES: SortValue[] = [
   {
     label: <span>Newest</span>,
     value: 'createdAt_desc',
@@ -47,28 +52,27 @@ const SORT_VALUES = [
 const VaultsPage = (): JSX.Element => {
   const { control, watch } = useForm({
     defaultValues: {
-      showActiveVaults: true,
-      showAuctionLiveVaults: false,
-      showAuctionFinishedVaults: false,
-      showArchivedVaults: false,
-      showVerifiedVaults: true,
-      showTradableVaults: false,
-      sort: SORT_VALUES[0],
+      [InputControlsNames.SHOW_VAULTS_STATUS]: StatusRadioNames.SHOW_ALL_VAULTS,
+      [InputControlsNames.SHOW_VERIFIED_VAULTS]: true,
+      [InputControlsNames.SHOW_TRADABLE_VAULTS]: false,
+      [InputControlsNames.SORT]: SORT_VALUES[0],
     },
   });
-  const showActiveVaults = watch('showActiveVaults');
-  const showAuctionLiveVaults = watch('showAuctionLiveVaults');
-  const showAuctionFinishedVaults = watch('showAuctionFinishedVaults');
-  const showVerifiedVaults = watch('showVerifiedVaults');
-  const showArchivedVaults = watch('showArchivedVaults');
-  const showTradableVaults = watch('showTradableVaults');
-  const sort = watch('sort');
+
+  const showVaultsStatus = watch(InputControlsNames.SHOW_VAULTS_STATUS);
+  const showVerifiedVaults = watch(InputControlsNames.SHOW_VERIFIED_VAULTS);
+  const showTradableVaults = watch(InputControlsNames.SHOW_TRADABLE_VAULTS);
+  const sort = watch(InputControlsNames.SORT);
+
+  const [isSidebar, setIsSidebar] = useState<boolean>(false);
 
   const { loading, vaults: rawVaults } = useFraktion();
   useFraktionInitialFetch();
   useFraktionPolling();
 
   const [searchString, setSearchString] = useState<string>('');
+
+  const { featuredVaultsPublicKeys } = useFeaturedVaultsPublicKeys();
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
@@ -78,120 +82,160 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     return rawVaults
       .filter(({ state, hasMarket, safetyBoxes, isVerified }) => {
-        const nftsName =
-          safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
-
         //? Filter out unfinished vaults
         if (state === VaultState.Inactive) return false;
 
-        const removeActiveVaults =
-          !showActiveVaults && state === VaultState.Active;
-        const removeLiveVaults =
-          !showAuctionLiveVaults && state === VaultState.AuctionLive;
-        const removeFinishedVaults =
-          !showAuctionFinishedVaults && state === VaultState.AuctionFinished;
-        const removeArchivedVaults =
-          !showArchivedVaults && state === VaultState.Archived;
+        const nftsNames =
+          safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
 
-        if (removeActiveVaults) return false;
+        const showAllVaults =
+          showVaultsStatus === StatusRadioNames.SHOW_ALL_VAULTS;
+        const showActiveVaults =
+          showVaultsStatus === StatusRadioNames.SHOW_ACTIVE_VAULTS;
+        const showAuctionLiveVaults =
+          showVaultsStatus === StatusRadioNames.SHOW_AUCTION_LIVE_VAULTS;
+        const showAuctionFinishedVaults =
+          showVaultsStatus === StatusRadioNames.SHOW_AUCTION_FINISHED_VAULTS;
+        const showArchivedVaults =
+          showVaultsStatus === StatusRadioNames.SHOW_ARCHIVED_VAULTS;
 
-        if (removeLiveVaults) return false;
+        const removeBecauseActive =
+          !showActiveVaults && state === VaultState.Active && !showAllVaults;
+        const removeBecauseLive =
+          !showAuctionLiveVaults &&
+          state === VaultState.AuctionLive &&
+          !showAllVaults;
+        const removeBecauseFinished =
+          !showAuctionFinishedVaults &&
+          state === VaultState.AuctionFinished &&
+          !showAllVaults;
+        const removeBecauseArchived =
+          !showArchivedVaults &&
+          state === VaultState.Archived &&
+          !showAllVaults;
 
-        if (removeFinishedVaults) return false;
-
-        if (removeArchivedVaults) return false;
+        if (
+          removeBecauseActive ||
+          removeBecauseLive ||
+          removeBecauseFinished ||
+          removeBecauseArchived
+        )
+          return false;
 
         if (showTradableVaults && !hasMarket) return false;
 
         if (showVerifiedVaults && !isVerified) return false;
 
-        return nftsName.some((name) => name.includes(searchString));
+        return nftsNames.some((name) => name.includes(searchString));
       })
-      .sort((a, b) => {
+      .sort((vaultA, vaultB) => {
         if (sortField === 'createdAt') {
-          if (sortOrder === 'asc') return a.createdAt - b.createdAt;
-          return b.createdAt - a.createdAt;
+          if (sortOrder === 'asc') return vaultA.createdAt - vaultB.createdAt;
+          return vaultB.createdAt - vaultA.createdAt;
+        } else {
+          if (sortOrder === 'asc')
+            return vaultA[sortField].cmp(vaultB[sortField]);
+          return vaultB[sortField].cmp(vaultA[sortField]);
         }
-        if (sortOrder === 'asc') return a[sortField].cmp(b[sortField]);
-        return b[sortField].cmp(a[sortField]);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     searchString,
     rawVaults,
-    showActiveVaults,
-    showAuctionLiveVaults,
-    showAuctionFinishedVaults,
-    showArchivedVaults,
+    showVaultsStatus,
     showVerifiedVaults,
     showTradableVaults,
     sort,
   ]);
 
+  const featuredVaults = useMemo(() => {
+    if (
+      featuredVaultsPublicKeys.length &&
+      showVaultsStatus === StatusRadioNames.SHOW_ALL_VAULTS &&
+      !searchString
+    ) {
+      return vaults.filter((vault) =>
+        featuredVaultsPublicKeys.some((key) => key === vault.vaultPubkey),
+      );
+    }
+    return [];
+  }, [vaults, featuredVaultsPublicKeys, showVaultsStatus, searchString]);
+
+  const liveAuctionVaults = useMemo(() => {
+    if (
+      vaults.length &&
+      showVaultsStatus === StatusRadioNames.SHOW_ALL_VAULTS &&
+      !searchString
+    ) {
+      return vaults.filter(({ state }) => state === VaultState.AuctionLive);
+    }
+    return [];
+  }, [vaults, showVaultsStatus, searchString]);
+
   return (
     <AppLayout>
       <Container component="main" className={styles.content}>
-        <h1 className={styles.title}>Vaults</h1>
-        <h2 className={styles.subtitle}>
-          Create, buy and sell fraktions of NFT
-        </h2>
-        <SearchInput
-          size="large"
-          onChange={(e) => searchItems(e.target.value || '')}
-          className={styles.search}
-          placeholder="Search by vault name"
-        />
-        <div className={styles.filtersWrapper}>
-          <div className={styles.filters}>
-            <ControlledToggle
-              control={control}
-              name="showActiveVaults"
-              label="Active"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showAuctionLiveVaults"
-              label="Auction live"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showAuctionFinishedVaults"
-              label="Auction finished"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showArchivedVaults"
-              label="Archived"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showVerifiedVaults"
-              label="Verified"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showTradableVaults"
-              label="Tradable"
-              className={styles.filter}
-            />
-          </div>
-          <div>
-            <ControlledSelect
-              className={styles.sortingSelect}
-              valueContainerClassName={styles.sortingSelectValueContainer}
-              label="Sort by"
-              control={control}
-              name="sort"
-              options={SORT_VALUES}
-            />
+        <div className={styles.wrapper}>
+          <Sidebar
+            isSidebar={isSidebar}
+            control={control}
+            setIsSidebar={setIsSidebar}
+          />
+          <div className={styles.contentWrapper}>
+            <h2 className={styles.title}>Vaults</h2>
+            <p className={styles.subtitle}>
+              Create, buy and sell fraktions of NFTs
+            </p>
+            <div className={styles.searchSortWrapper}>
+              <p className={styles.searchWrapper}>
+                <SearchInput
+                  onChange={(event) => searchItems(event.target.value || '')}
+                  className={styles.search}
+                  placeholder="Search by curator, collection or asset"
+                />
+              </p>
+              <p
+                className={styles.filtersIconWrapper}
+                onClick={() => setIsSidebar(true)}
+              >
+                Filters
+                <FiltersIcon />
+              </p>
+              <div className={styles.sortWrapper}>
+                <ControlledSelect
+                  className={styles.sortingSelect}
+                  valueContainerClassName={styles.sortingSelectValueContainer}
+                  label="Sort by"
+                  control={control}
+                  name="sort"
+                  options={SORT_VALUES}
+                />
+              </div>
+            </div>
+            {!!featuredVaults.length && (
+              <VaultsSlider
+                className={styles.sliderFeatured}
+                vaults={featuredVaults}
+                title="Featured vaults"
+                isLoading={loading}
+              />
+            )}
+            {!!liveAuctionVaults.length && (
+              <VaultsSlider
+                className={styles.sliderFeatured}
+                vaults={liveAuctionVaults}
+                title="Live auctions"
+                isLoading={loading}
+                isAuction
+              />
+            )}
+            {!loading ? (
+              <VaultsList vaults={vaults} isLoading={loading} />
+            ) : (
+              <Loader size="large" />
+            )}
           </div>
         </div>
-        <VaultsList vaults={vaults} isLoading={loading} />
       </Container>
     </AppLayout>
   );
