@@ -1,9 +1,9 @@
-import { Radio } from 'antd';
+import { Radio as RadioAntd } from 'antd';
 import classNames from 'classnames/bind';
-import styles from './styles.module.scss';
-import React from 'react';
 
-interface ToggleProps {
+import styles from './styles.module.scss';
+
+interface RadioProps {
   className?: string;
   disabled?: boolean;
   checked?: boolean;
@@ -11,19 +11,19 @@ interface ToggleProps {
   label?: string;
 }
 
-export const CustomRadio = ({
+export const Radio = ({
   className = '',
   disabled = false,
   checked = false,
   label = null,
   value,
-}: ToggleProps): JSX.Element => (
-  <Radio
+}: RadioProps): JSX.Element => (
+  <RadioAntd
     className={classNames(styles.radio, className)}
     disabled={disabled}
     checked={checked}
     value={value}
   >
     {label}
-  </Radio>
+  </RadioAntd>
 );

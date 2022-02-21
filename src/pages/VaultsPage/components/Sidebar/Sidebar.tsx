@@ -1,11 +1,11 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
-import { Collapse, Radio, RadioChangeEvent } from 'antd';
+import { Collapse, Radio as RadioAntd, RadioChangeEvent } from 'antd';
 
 import styles from './styles.module.scss';
-import CustomCheckbox from '../../../../components/Checkbox/Checkbox';
-import { CustomRadio } from '../../../../components/CustomRadio';
+import { Checkbox } from '../../../../components/Checkbox/Checkbox';
+import { Radio } from '../../../../components/Radio';
 import {
   FormFieldValues,
   SidebarCheckboxNames,
@@ -71,9 +71,7 @@ export const Sidebar: FC<SidebarProps> = ({
                     control={control}
                     name={SidebarCheckboxNames.SHOW_VERIFIED_VAULTS}
                     render={({ field: { ref, ...field } }) => {
-                      return (
-                        <CustomCheckbox {...field} label={'Verified only'} />
-                      );
+                      return <Checkbox {...field} label={'Verified only'} />;
                     }}
                   />
                 </li>
@@ -94,9 +92,7 @@ export const Sidebar: FC<SidebarProps> = ({
                     control={control}
                     name={SidebarCheckboxNames.SHOW_TRADABLE_VAULTS}
                     render={({ field: { ref, ...field } }) => {
-                      return (
-                        <CustomCheckbox {...field} label={'Tradable only'} />
-                      );
+                      return <Checkbox {...field} label={'Tradable only'} />;
                     }}
                   />
                 </li>
@@ -111,7 +107,7 @@ export const Sidebar: FC<SidebarProps> = ({
             className={styles.collapse}
           >
             <Panel header="Status" key="1" className={styles.collapseHeader}>
-              <Radio.Group
+              <RadioAntd.Group
                 className={styles.sidebarList}
                 onChange={changeRadio}
                 value={currentRadio}
@@ -120,27 +116,27 @@ export const Sidebar: FC<SidebarProps> = ({
                   <Controller
                     control={control}
                     name={'showVaultsStatus'}
-                    render={({ field: { onChange, value, ...field } }) => (
-                      <Radio.Group
+                    render={({ field: { onChange, value, ref, ...field } }) => (
+                      <RadioAntd.Group
                         value={value}
                         onChange={(e) => onChange(e.target.value)}
                       >
                         <div className={styles.sidebarListItem}>
-                          <CustomRadio
+                          <Radio
                             value={StatusRadioNames.SHOW_ACTIVE_VAULTS}
                             label={'Active'}
                             {...field}
                           />
                         </div>
                         <div className={styles.sidebarListItem}>
-                          <CustomRadio
+                          <Radio
                             value={StatusRadioNames.SHOW_AUCTION_LIVE_VAULTS}
                             label={'Auction live'}
                             {...field}
                           />
                         </div>
                         <div className={styles.sidebarListItem}>
-                          <CustomRadio
+                          <Radio
                             value={
                               StatusRadioNames.SHOW_AUCTION_FINISHED_VAULTS
                             }
@@ -149,17 +145,17 @@ export const Sidebar: FC<SidebarProps> = ({
                           />
                         </div>
                         <div className={styles.sidebarListItem}>
-                          <CustomRadio
+                          <Radio
                             value={StatusRadioNames.SHOW_ARCHIVED_VAULTS}
                             label={'Archived'}
                             {...field}
                           />
                         </div>
-                      </Radio.Group>
+                      </RadioAntd.Group>
                     )}
                   />
                 </div>
-              </Radio.Group>
+              </RadioAntd.Group>
             </Panel>
           </Collapse>
         </div>
