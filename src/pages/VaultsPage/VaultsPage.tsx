@@ -181,9 +181,10 @@ const VaultsPage = (): JSX.Element => {
             setIsSidebar={setIsSidebar}
           />
           <div className={styles.contentWrapper}>
-            <h2 className={styles.title}>
+            <h2 className={styles.title}>Vaults</h2>
+            <p className={styles.subtitle}>
               Create, buy and sell fraktions of NFTs
-            </h2>
+            </p>
             <div className={styles.searchSortWrapper}>
               <p className={styles.searchWrapper}>
                 <SearchInput

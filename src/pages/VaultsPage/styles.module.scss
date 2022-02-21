@@ -1,7 +1,3 @@
-.content {
-  padding-bottom: 64px;
-}
-
 .wrapper {
   display: flex;
   position: relative;
@@ -12,6 +8,19 @@
   padding-left: 20px;
   flex-grow: 1;
   width: calc(100% - 215px);
+  position: relative;
+  padding-bottom: 60px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 100%;
+    top: -50px;
+    left: -1px;
+    background-color: var(--color-gray-4);
+  }
 
   @media screen and (max-width: 767px) {
     padding-top: 50px;
@@ -40,11 +49,16 @@
 
 .title {
   font: var(--font-title-2);
-  margin-bottom: 32px;
+  margin-bottom: 8px;
 
   @media screen and (max-width: 450px) {
     margin-bottom: 15px;
   }
+}
+
+.subtitle {
+  margin-bottom: 32px;
+  font: var(--font-text-2);
 }
 
 .searchSortWrapper {

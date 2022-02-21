@@ -32,6 +32,7 @@ export const VaultsList: FC<VaultsListProps> = ({
         isLoading={isLoading}
         wrapperClassName={styles.list}
         emptyMessage="No vaults found"
+        loaderWrapperClassName={styles.loaderWrapper}
       >
         {vaults.map((vault) => (
           <NavLink
