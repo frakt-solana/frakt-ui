@@ -59,7 +59,6 @@ export const AppLayout: FC<AppLayoutProps> = ({
         id="app-content"
         className={classNames(styles.content, contentClassName)}
       >
-        {visible && <WalletContent />}
         {children}
       </div>
     </div>

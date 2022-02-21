@@ -11,6 +11,8 @@ import NavigationLink from './NavigationLink';
 import { useWallet } from '@solana/wallet-adapter-react';
 import ConnectButton from '../ConnectButton';
 import ConnectedButton from '../ConnectedButton';
+import WalletContent from '../WalletContent';
+import { useWalletModal } from '../../contexts/WalletModal';
 
 interface HeaderProps {
   className?: string;
@@ -19,6 +21,7 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
   const { connected } = useWallet();
+  const { visible } = useWalletModal();
 
   return (
     <header
@@ -26,6 +29,7 @@ const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
         [styles.hasCustomHeader]: CustomHeader,
       })}
     >
+      {visible && <WalletContent />}
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           Fraktion

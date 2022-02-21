@@ -107,8 +107,68 @@
   }
 }
 
+.moreArrowIcon {
+  margin-left: 11px;
+}
+
 .navigation {
   display: flex;
+
+  :global {
+    .ant-btn.ant-dropdown-trigger {
+      border: none;
+      padding: 0 16px;
+      font: var(--font-text-3);
+
+      &:hover {
+        color: var(--white-color);
+      }
+    }
+    .ant-dropdown {
+      background-color: var(--black-color);
+      padding: 20px 0;
+      border: var(--border-gray-1);
+
+      &::before {
+        content: "";
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-left: var(--border-gray-1);
+        border-top: var(--border-gray-1);
+        background-color: var(--black-color);
+        transform: rotate(45deg);
+        position: absolute;
+        left: 127px;
+        top: -11px;
+        z-index: 1;
+      }
+
+      li {
+        margin-bottom: 10px;
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+
+        a {
+          padding-left: 20px;
+          padding-right: 20px;
+          color: var(--white-color);
+          font: var(--font-text-3);
+
+          &:hover {
+            color: var(--white-color);
+            background-color: var(--color-gray-7);
+          }
+
+          svg {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
 
   &:last-of-type {
     align-self: stretch;
