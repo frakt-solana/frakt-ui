@@ -24,13 +24,15 @@ import { NFTsList } from '../../components/NFTsList';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../utils/cacher/nftPools/nftPools.helpers';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
-import { publicKey, struct, u64 } from '@raydium-io/raydium-sdk';
+import { publicKey, struct, u64, u8 } from '@raydium-io/raydium-sdk';
 
 export const LOTTERY_TICKET_ACCOUNT_LAYOUT = struct([
+  u64('anchor_start'),
   publicKey('community_pool'),
   publicKey('ticket_holder'),
   publicKey('winning_safety_box'),
   u64('lottery_ticket_state'),
+  u8('anchor_end'),
 ]);
 
 const useLotteryTicketSubscription = () => {
@@ -41,23 +43,25 @@ const useLotteryTicketSubscription = () => {
 
   const subscribe = (
     lotteryTicketPublicKey: PublicKey,
-    callback = () => {},
+    callback: (value: string) => void,
   ) => {
     subscriptionId.current = connection.onAccountChange(
       lotteryTicketPublicKey,
       (lotteryTicketAccountEncoded) => {
-        LOTTERY_TICKET_ACCOUNT_LAYOUT.decode(lotteryTicketAccountEncoded.data);
+        const x = LOTTERY_TICKET_ACCOUNT_LAYOUT.decode(
+          lotteryTicketAccountEncoded.data,
+        );
 
-        // console.log({
-        //   community_pool: x.community_pool.toBase58(),
-        //   ticket_holder: x.ticket_holder.toBase58(),
-        //   winning_safety_box: x.winning_safety_box.toBase58(),
-        //   lottery_ticket_state: x.lottery_ticket_state,
-        // });
+        console.log({
+          community_pool: x.community_pool.toBase58(),
+          ticket_holder: x.ticket_holder.toBase58(),
+          winning_safety_box: x.winning_safety_box.toBase58(),
+          lottery_ticket_state: x.lottery_ticket_state,
+        });
 
         //TODO lotteryTicketAccountEncoded check
 
-        callback();
+        callback(x.winning_safety_box.toBase58());
         // unsubscribe()
       },
     );
@@ -112,7 +116,13 @@ const MarketBuyPage = (): JSX.Element => {
     const lotteryTicketPubkey = await getLotteryTicket({ pool });
 
     // eslint-disable-next-line no-console
-    subscribe(lotteryTicketPubkey, () => console.log('Account changed'));
+    subscribe(lotteryTicketPubkey, (saferyBoxPublicKey: string) =>
+      console.log(
+        pool.safetyBoxes.find(
+          ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
+        ),
+      ),
+    );
     // //? Run roulette
     // //? subscribe to changes
     // // eslint-disable-next-line no-console
