@@ -101,12 +101,12 @@ const Pool: FC<PoolInterface> = ({
           <div className={styles.totalValue}>
             <p className={styles.title}>Total liquidity</p>
             <p className={styles.value}>
-              $ {formatNumberWithSpaceSeparator(poolStats.liquidity)}
+              $ {formatNumberWithSpaceSeparator(poolStats?.liquidity || 0)}
             </p>
           </div>
           <div className={styles.totalValue}>
             <p className={styles.title}>Apy</p>
-            <p className={styles.value}>{poolStats.apy}%</p>
+            <p className={styles.value}>{poolStats?.apy || 0}%</p>
           </div>
         </div>
 
