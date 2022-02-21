@@ -41,8 +41,6 @@ export const AuctionInfo: FC<AuctionInfoProps> = ({
                 <p className={styles.timeItem}>{timeLeft.hours}h</p>
                 <span className={styles.timeDelim}>:</span>
                 <p className={styles.timeItem}>{timeLeft.minutes}m</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.seconds}s</p>
               </div>
             ) : (
               'No value'
