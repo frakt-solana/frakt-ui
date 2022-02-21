@@ -7,7 +7,13 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Loader } from '../../components/Loader';
-import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
+import {
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+  VaultData,
+  VaultState,
+} from '../../contexts/fraktion';
 import { InfoTable } from './InfoTable/InfoTable';
 import styles from './styles.module.scss';
 import { BuyoutTab } from './BuyoutTab';
@@ -28,6 +34,9 @@ const VaultPage: FC = () => {
   const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
+
   const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
     CollectionData[]
   >([]);
@@ -124,73 +133,96 @@ const VaultPage: FC = () => {
           </div>
         )}
         {!loading && !!vaultData && (
-          <div className={styles.content}>
-            <div className={styles.col}>
-              <NFTDoubleSlider
-                vaultData={vaultData}
-                safetyBoxes={vaultData?.safetyBoxes}
-                onSlideThumbClick={onSlideThumbClick}
-                currentSlideData={currentSlideData}
-              />
-              <DetailsHeader
-                className={styles.detailsHeaderMobile}
-                vaultData={vaultData}
-                vaultTitleData={vaultTitleData}
-              />
-            </div>
-            <div className={styles.details}>
-              <DetailsHeader
-                className={styles.detailsHeaderDesc}
-                vaultData={vaultData}
-                vaultTitleData={vaultTitleData}
-              />
-              {vaultData.state === VaultState.Inactive &&
-                !!vaultData.safetyBoxes.length && (
-                  <RedeemNftsFromUnfinishedVault vaultData={vaultData} />
-                )}
-              {vaultData.state === VaultState.Inactive && (
-                <div className={styles.btnItem}>
-                  <NavigationLink to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}>
-                    Add NFTs and launch vault
-                  </NavigationLink>
-                </div>
-              )}
-              {vaultData && (
-                <InfoTable
-                  vaultInfo={vaultData}
-                  marketId={vaultMarket?.address}
+          <>
+            <div className={styles.content}>
+              <div className={styles.col}>
+                <NFTDoubleSlider
+                  vaultData={vaultData}
+                  safetyBoxes={vaultData?.safetyBoxes}
+                  onSlideThumbClick={onSlideThumbClick}
+                  currentSlideData={currentSlideData}
                 />
-              )}
-              {/* //? Show tabs if vault active or bought */}
-              {(vaultData.state === VaultState.Active ||
-                vaultData.state === VaultState.AuctionFinished ||
-                vaultData.state === VaultState.AuctionLive) && (
-                <>
-                  <Tabs tab={tab} setTab={setTab} />
-                  <div className={styles.tabContent}>
-                    {tab === 'trade' && (
-                      <TradeTab
-                        vaultInfo={vaultData}
-                        tokerName={vaultTitleData.symbol}
-                        vaultMarketAddress={vaultMarket?.address}
-                      />
-                    )}
-                    {tab === 'swap' && (
-                      <SwapTab
-                        vaultMarketAddress={vaultMarket?.address}
-                        fractionMint={vaultData.fractionMint}
-                        vaultLockedPrice={vaultData.lockedPricePerShare}
-                      />
-                    )}
-                    {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}
+                <DetailsHeader
+                  className={styles.detailsHeaderMobile}
+                  vaultData={vaultData}
+                  vaultTitleData={vaultTitleData}
+                />
+              </div>
+              <div className={styles.details}>
+                <DetailsHeader
+                  className={styles.detailsHeaderDesc}
+                  vaultData={vaultData}
+                  vaultTitleData={vaultTitleData}
+                />
+                {vaultData.state === VaultState.Inactive &&
+                  !!vaultData.safetyBoxes.length && (
+                    <RedeemNftsFromUnfinishedVault vaultData={vaultData} />
+                  )}
+                {vaultData.state === VaultState.Inactive && (
+                  <div className={styles.btnItem}>
+                    <NavigationLink
+                      to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}
+                    >
+                      Add NFTs and launch vault
+                    </NavigationLink>
                   </div>
-                </>
-              )}
-              {vaultData.state === VaultState.Archived && (
-                <div className={styles.detailsPlaceholder} />
-              )}
+                )}
+                {vaultData && (
+                  <InfoTable
+                    vaultInfo={vaultData}
+                    marketId={vaultMarket?.address}
+                  />
+                )}
+                {/* //? Show tabs if vault active or bought */}
+                {(vaultData.state === VaultState.Active ||
+                  vaultData.state === VaultState.AuctionFinished ||
+                  vaultData.state === VaultState.AuctionLive) && (
+                  <>
+                    <Tabs tab={tab} setTab={setTab} />
+                    <div className={styles.tabContent}>
+                      {tab === 'trade' && (
+                        <TradeTab
+                          vaultInfo={vaultData}
+                          tokerName={vaultTitleData.symbol}
+                          vaultMarketAddress={vaultMarket?.address}
+                        />
+                      )}
+                      {tab === 'swap' && (
+                        <SwapTab
+                          vaultMarketAddress={vaultMarket?.address}
+                          fractionMint={vaultData.fractionMint}
+                          vaultLockedPrice={vaultData.lockedPricePerShare}
+                        />
+                      )}
+                      {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}
+                    </div>
+                  </>
+                )}
+                {vaultData.state === VaultState.Archived && (
+                  <div className={styles.detailsPlaceholder} />
+                )}
+              </div>
             </div>
-          </div>
+            <section id="allNftList" className={styles.allNfts}>
+              <h4 className={styles.nftsTitle}>
+                <span>{vaultData?.safetyBoxes.length}</span>
+                NFTs inside the vault
+                {wallet.publicKey?.toBase58() === vaultData?.authority &&
+                  vaultData?.realState === VaultState.Active && (
+                    <NavLink
+                      to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}
+                      className={styles.addNftsLink}
+                    >
+                      <Button>Add NFTs</Button>
+                    </NavLink>
+                  )}
+              </h4>
+              <NFTList
+                safetyBoxes={vaultData?.safetyBoxes}
+                nftCollections={allNftsCollectionInfo}
+              />
+            </section>
+          </>
         )}
         {!loading && (
           <section id="allNftList" className={styles.allNfts}>

@@ -1,0 +1,244 @@
+.sidebar {
+  max-width: 214px;
+  width: 100%;
+  background-color: var(--black-color);
+  border-right: var(--border-gray-1);
+  transition: transform .2s ease-in;
+  z-index: 9;
+  padding-bottom: 50px;
+  height: calc(100vh - 50px);
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  @media screen and (max-width: 700px) {
+    max-width: 230px;
+    padding-left: 15px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translateX(calc(-100% + 45px));
+    height: 100vh;
+    overflow: auto;
+    padding-top: 110px;
+  }
+
+  @media screen and (max-width: 500px) {
+    padding-top: 80px;
+  }
+}
+
+.sidebarVisible {
+  transform: translateX(0);
+}
+
+.overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  transition: width .2s ease-in;
+  z-index: 8;
+}
+
+.overlayVisible {
+  @media screen and (max-width: 700px) {
+    width: 100vw;
+  }
+}
+
+.sidebarItem {
+  padding-right: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: var(--border-gray-1);
+
+  @media screen and (max-width: 700px) {
+    padding-right: 15px;
+  }
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+
+  &:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.sidebarTitle {
+  font: var(--font-text-5);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+
+  span {
+    text-transform: lowercase;
+  }
+}
+
+.sidebarSubtitle {
+  font: var(--font-text-5);
+  color: var(--color-gray-4);
+  text-transform: uppercase;
+}
+
+.sidebarList {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: var(--color-gray-7);
+}
+
+.sidebarListBorder {
+  margin-top: 10px;
+  border-radius: 10px;
+  border: var(--border-gray-1);
+  overflow: hidden;
+}
+
+.sidebarListItem,
+.sidebarActivityListItem {
+  border-bottom: var(--border-gray-1);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.sidebarListItem:first-of-type {
+  padding-top: 0;
+}
+
+.sidebarActivityListItem {
+  padding: 9px;
+  justify-content: space-between;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.sidebarItemNum {
+  margin-right: 5px;
+}
+
+.sidebarItemImg {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  margin-right: 5px;
+  background-color: var(--color-gray-4);
+}
+
+.sidebarItemData {
+  margin-left: auto;
+}
+
+.sidebarItemName {
+  margin-right: 10px;
+  font: var(--font-text-5);
+  font-weight: 400;
+}
+
+.typeLabel {
+  font-family: var(--font-family-inter);
+  font-size: 10px;
+  font-weight: bold;
+  width: 38px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: var(--border-gray-1);
+  color: var(--color-gray-4);
+  flex-shrink: 0;
+}
+
+.sell {
+  background: linear-gradient(90deg, rgba(255, 102, 102, 0.36) 0%, rgba(255, 102, 102, 0) 93.75%);
+
+  .typeLabel {
+    border-color: var(--red-error-color);
+    color: var(--red-error-color);
+  }
+}
+
+.buy {
+  background: linear-gradient(90deg, rgba(131, 214, 164, 0.36) 0%, rgba(131, 214, 164, 0) 93.75%);
+
+  .typeLabel {
+    border-color: var(--green-color);
+    color: var(--green-color);
+  }
+}
+
+.swap {
+  background: linear-gradient(90deg, rgba(62, 158, 248, 0.36) 0%, rgba(62, 158, 248, 0) 93.75%);
+
+  .typeLabel {
+    border-color: var(--border-btn-color-1);
+    color: var(--border-btn-color-1);
+  }
+}
+
+.swapItems {
+  display: flex;
+  flex-direction: column;
+
+  svg {
+    margin: 7px auto;
+  }
+}
+
+.seeMoreLink {
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--white-color);
+  position: relative;
+  overflow: hidden;
+  margin-top: 11px;
+
+  svg {
+    width: 9px;
+    height: 9px;
+    margin-left: 10px;
+  }
+
+  &::after {
+    position: absolute;
+    content: "";
+    display: block;
+    width: 100%;
+    bottom: 0;
+    left: -100%;
+    height: 1px;
+    background-color: var(--white-color);
+    transition: left 0.2s ease-in;
+  }
+
+  &:hover {
+    color: var(--white-color);
+
+    &::after {
+      left: 0;
+    }
+  }
+}

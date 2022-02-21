@@ -11,7 +11,13 @@ import BN from 'bn.js';
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { PATHS } from '../../constants';
-import { useFraktion, VaultData, VaultState } from '../../contexts/fraktion';
+import {
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+  VaultData,
+  VaultState,
+} from '../../contexts/fraktion';
 import { shortenAddress } from '../../utils/solanaUtils';
 import styles from './styles.module.scss';
 import { useTokenListContext } from '../../contexts/TokenList';
@@ -35,6 +41,8 @@ const WalletPage = (): JSX.Element => {
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
   const { vaults, loading: vaultsLoading } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
   const { connected, publicKey: connectedWalletPubkey } = useWallet();
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);

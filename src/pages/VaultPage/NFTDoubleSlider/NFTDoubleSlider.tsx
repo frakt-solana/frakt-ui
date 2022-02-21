@@ -1,4 +1,4 @@
-import React, { FC, MouseEventHandler, useEffect, useState } from 'react';
+import { FC, MouseEventHandler, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, {

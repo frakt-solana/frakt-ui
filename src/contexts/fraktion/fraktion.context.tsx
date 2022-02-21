@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import {
@@ -6,10 +6,9 @@ import {
   FraktionContextType,
   VaultData,
 } from './fraktion.model';
-import { getMarkets } from '../../utils/markets';
 import { usePolling } from '../../hooks';
-import { getVaults } from './fraktion';
 import { addNFTsToVault, createMarket, createVault } from './transactions';
+import { Cacher } from '../../utils/cacher';
 
 export const FraktionContext = React.createContext<FraktionContextType>({
   loading: false,
@@ -42,8 +41,9 @@ export const FraktionProvider = ({
   const fetchData: fetchDataFunction = async () => {
     try {
       setLoading(true);
-      const markets = await getMarkets();
-      const vaultsData = await getVaults(markets);
+      const markets = await Cacher.getMarkets();
+      const vaultsData = await Cacher.getVaults();
+      markets;
 
       setVaultsMarkets(markets);
       setVaults(vaultsData);
@@ -58,8 +58,9 @@ export const FraktionProvider = ({
 
   const silentFetchData: fetchDataFunction = async () => {
     try {
-      const markets = await getMarkets();
-      const vaultsData = await getVaults(markets);
+      const markets = await Cacher.getMarkets();
+      const vaultsData = await Cacher.getVaults();
+      markets;
       setVaultsMarkets(markets);
       setVaults(vaultsData);
     } catch {} //eslint-disable-line
@@ -80,19 +81,6 @@ export const FraktionProvider = ({
       }, []),
     );
   };
-
-  useEffect(() => {
-    if (connection) {
-      fetchData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection]);
-
-  useEffect(() => {
-    startPolling();
-    return () => isPolling && stopPolling();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <FraktionContext.Provider

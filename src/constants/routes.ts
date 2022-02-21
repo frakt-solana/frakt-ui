@@ -12,6 +12,12 @@ import {
   FraktionalizePage,
   CollectionsPage,
   CollectionPage,
+  MarketPage,
+  MarketBuyPage,
+  MarketSellPage,
+  MarketSwapPage,
+  MarketInfoPage,
+  MarketTestPage,
 } from '../pages';
 
 interface Route {
@@ -21,6 +27,11 @@ interface Route {
 }
 
 export const routes: Route[] = [
+  {
+    exact: true,
+    path: PATHS.TEST,
+    component: MarketTestPage,
+  },
   {
     exact: true,
     path: PATHS.ROOT,
@@ -35,6 +46,31 @@ export const routes: Route[] = [
     exact: true,
     path: `${PATHS.VAULT}${PATHS.VAULT_PUBKEY}`,
     component: VaultPage,
+  },
+  {
+    exact: true,
+    path: PATHS.MARKET,
+    component: MarketPage,
+  },
+  {
+    exact: true,
+    path: PATHS.MARKET_BUY,
+    component: MarketBuyPage,
+  },
+  {
+    exact: true,
+    path: PATHS.MARKET_SELL,
+    component: MarketSellPage,
+  },
+  {
+    exact: true,
+    path: PATHS.MARKET_SWAP,
+    component: MarketSwapPage,
+  },
+  {
+    exact: true,
+    path: PATHS.MARKET_INFO,
+    component: MarketInfoPage,
   },
   {
     exact: true,

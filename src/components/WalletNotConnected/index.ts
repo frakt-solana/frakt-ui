@@ -1,0 +1,1 @@
+export { WalletNotConnected } from './WalletNotConnected';

@@ -10,62 +10,84 @@
   outline: none;
   border: none;
   cursor: pointer;
-  padding: 0 15px;
+  padding: 0 16px;
 
   &:hover {
     text-decoration: none;
     color: var(--white-color);
   }
 }
+.profileWrapper {
+  height: 100%;
+  .walletBtn {
+    padding: 0 20px;
+    cursor: pointer;
+    background: none;
+    outline: none;
+    border: none;
+    height: 100%;
+    font-size: 18px;
 
-.walletBtn {
-  padding: 0 20px;
-  cursor: pointer;
-  background: none;
-  outline: none;
-  border: none;
-  min-width: 168px;
+    @media screen and (max-width: 767px) {
+      font-size: 14px;
+      padding: 0 15px;
+    }
 
-  &_connected {
-    background: var(--gray-color-7);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+    @media screen and (max-width: 500px) {
+      font-size: 10px;
+      padding: 0 10px;
+    }
 
-  &__icon {
-    width: 16px;
-    height: 16px;
-    fill: var(--white-color);
+    &.walletConnectedBtn {
+      background: var(--gray-color-7);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: color .2s ease-in, background-color .2s ease-in;
+
+      &:hover {
+        background-color: var(--gray-color-4);
+        color: var(--black-color);
+
+        svg {
+          fill: var(--black-color);
+        }
+      }
+    }
+
+    &__icon {
+      width: 16px;
+      height: 16px;
+      fill: var(--white-color);
+      transition: fill .2s ease-in;
+    }
   }
 }
 
 .container {
   display: flex;
   justify-content: space-between;
-  height: 88px;
+  height: 50px;
   align-items: center;
+
+  @media screen and (max-width: 500px) {
+    height: 36px;
+  }
 }
 
 .logo {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--white-color);
   height: 100%;
   display: flex;
   align-items: center;
-  margin-right: 62px;
+  margin-right: 10px;
   position: relative;
 
-  &::after {
-    position: absolute;
-    content: 'BETA';
-    color: var(--accent-color-1);
-    font-size: 16px;
-    font-weight: 900;
-    right: -16px;
-    top: 18px;
+  @media screen and (max-width: 500px) {
+    font-size: 15px;
   }
 
   &:hover {
@@ -97,7 +119,13 @@
   }
 
   &_left {
-    flex-grow: 1;
+    margin-left: auto;
+    margin-right: 16px;
+
+    @media screen and (max-width: 1023px) {
+      margin-left: 0;
+      margin-right: 0;
+    }
   }
 
   &__exchangeSoon {
@@ -121,8 +149,46 @@
   }
 }
 
+.buttons {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+
+  @media screen and (max-width: 1023px) {
+    margin-left: auto;
+    margin-right: 15px;
+  }
+}
+
 .bgAccent {
   background: var(--accent-color-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media screen and (max-width: 767px) {
+    font-size: 14px;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 10px;
+  }
+
+  a {
+    padding-left: 20px;
+    padding-right: 20px;
+
+    @media screen and (max-width: 767px) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    @media screen and (max-width: 500px) {
+      padding-left: 10px;
+      padding-right: 10px;
+      text-transform: uppercase;
+    }
+  }
 }
 
 .mobileMenuItem {

@@ -3,7 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
 import { ArrowRightIcon } from '../../icons';
-import { useWalletModal } from '../../contexts/WalletModal/walletModal.context';
+import { useWalletModal } from '../../contexts/WalletModal';
 
 export const ConnectWalletModal = ({
   title,

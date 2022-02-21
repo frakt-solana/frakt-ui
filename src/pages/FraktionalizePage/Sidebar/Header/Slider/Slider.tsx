@@ -1,7 +1,8 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styles from './styles.module.scss';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Scrollbar } from 'swiper';
+
 import { UserNFT } from '../../../../../contexts/userTokens';
 
 SwiperCore.use([Navigation, Scrollbar]);

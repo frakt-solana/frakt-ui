@@ -6,7 +6,7 @@
 body {
   background: var(--black-color);
   color: var(--white-color);
-  font: var(--font-body-small);
+  font: var(--font-text-3);
 }
 
 h1,
@@ -31,4 +31,13 @@ h5 {
       color: var(--white-color);
     }
   }
+}
+
+.container {
+  max-width: 1430px;
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
 }

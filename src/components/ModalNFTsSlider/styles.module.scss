@@ -1,0 +1,202 @@
+.modal {
+  padding-top: 100px !important;
+
+  :global {
+    .ant-modal-content {
+      background-color: transparent;
+      box-shadow: none;
+    }
+
+    .ant-modal-body {
+      padding: 0;
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    width: 343px !important; //there is no way to avoid !important
+    padding-top: 70px !important;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 270px !important; //there is no way to avoid !important
+  }
+}
+
+:global {
+  .ant-modal-wrap {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(16px);
+  }
+}
+
+.closeModalSection {
+  height: 43px;
+  padding-left: 16px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--gray-color-3);
+  background: var(--black-color);
+  border-radius: 30px;
+  position: absolute;
+  top: -70px;
+  right: 0;
+
+  @media screen and (max-width: 1023px) {
+    top: -60px;
+  }
+
+  @media screen and (max-width: 550px) {
+    top: -55px;
+    height: 35px;
+    padding-left: 10px;
+  }
+}
+
+.slideNumber {
+  font: var(--font-btn-mid);
+  margin-right: 16px;
+  margin-top: 5px;
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+  }
+}
+
+.closeModalIcon {
+  height: 43px;
+  width: 43px;
+  border: 1px solid var(--gray-color-3);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: -1px;
+  cursor: pointer;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border: 1px solid var(--white-color);
+  }
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.closeIcon {
+  width: 23px;
+
+  @media screen and (max-width: 470px) {
+    width: 15px;
+  }
+}
+
+.sliderWrapper {
+  padding: 24px;
+  background-color: var(--black-color);
+  border: 1px solid var(--gray-color-3);
+
+  @media screen and (max-width: 1023px) {
+    max-width: 343px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+  }
+
+  :global {
+    .swiper-button-disabled {
+      &::after {
+        color: var(--gray-color-3);
+      }
+
+      &:hover {
+        background-color: var(--black-color);
+      }
+    }
+  }
+}
+
+.sliderNavPrev,
+.sliderNavNext {
+  height: 56px;
+  width: 56px;
+  position: absolute;
+  top: calc(50% - 28px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--gray-color-3);
+  background-color: var(--black-color);
+  z-index: 9;
+  cursor: pointer;
+  transition: var(--transition-1);
+
+  &:hover {
+    background-color: var(--gray-color-5);
+  }
+
+  &::after {
+    font-size: 14px;
+    font-family: swiper-icons;
+    text-transform: none !important;
+    letter-spacing: 0;
+    text-transform: none;
+    font-variant: initial;
+    line-height: 1;
+  }
+
+  @media screen and (max-width: 1023px) {
+    position: fixed;
+  }
+
+  @media screen and (max-width: 550px) {
+    width: 30px;
+    height: 30px;
+
+    &::after {
+      font-size: 12px;
+    }
+  }
+
+  @media screen and (max-width: 370px) {
+    display: none;
+  }
+}
+
+.sliderNavPrev {
+  left: -80px;
+
+  &::after {
+    content: 'prev';
+  }
+
+  @media screen and (max-width: 1023px) {
+    left: calc(50% - 255px);
+  }
+
+  @media screen and (max-width: 550px) {
+    left: calc(50% - 175px);
+  }
+}
+
+.sliderNavNext {
+  right: -80px;
+
+  &::after {
+    content: 'next';
+  }
+
+  @media screen and (max-width: 1023px) {
+    right: calc(50% - 255px);
+  }
+
+  @media screen and (max-width: 550px) {
+    right: calc(50% - 175px);
+  }
+}
+
+.nftInfoLabel {
+  text-transform: uppercase;
+}

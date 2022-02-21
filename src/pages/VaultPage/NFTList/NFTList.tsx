@@ -1,23 +1,22 @@
-import { FC, useState } from 'react';
-import SwiperCore, {
-  FreeMode,
-  Lazy,
-  Navigation,
-  Scrollbar,
-  Thumbs,
-} from 'swiper';
-
-import styles from './styles.module.scss';
-import { SafetyBoxWithMetadata } from '../../../contexts/fraktion';
+import { FC } from 'react';
+import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
+import { keyBy, Dictionary } from 'lodash';
 import classNames from 'classnames';
-import { shortenAddress } from '../../../utils/solanaUtils';
+
+import { SafetyBoxWithMetadata } from '../../../contexts/fraktion';
 import { CollectionData } from '../../../utils/collections';
+import {
+  ModalNFTsSlider,
+  useModalNFTsSlider,
+} from '../../../components/ModalNFTsSlider';
+import { safetyBoxWithNftMetadataToUserNFT } from '../../../contexts/fraktion/fraktion.helpers';
+import styles from './styles.module.scss';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../components/FakeInfinityScroll';
-import { NFTsSliderModal } from '../../../components/NFTsSliderModal';
+import { NFTCard } from '../NFTCard';
 
-SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar, Lazy]);
+SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
 const MAX_SAFETY_BOXES_LENGTH = 20;
 
@@ -32,28 +31,33 @@ export const NFTList: FC<NFTListProps> = ({
   nftCollections,
   className,
 }) => {
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [currentSlide, setCurrentSlide] = useState<number>(1);
-  const [swiper, setSwiper] = useState(null);
   const { itemsToShow, next } = useFakeInfinityScroll(9);
 
-  const [slidesToShow, setSlidesToShow] = useState<SafetyBoxWithMetadata[]>([]);
+  const {
+    isModalVisible,
+    setIsModalVisible,
+    currentSlide,
+    onSliderNavClick,
+    setSwiper,
+    openOnCertainSlide,
+  } = useModalNFTsSlider();
 
-  const slideTo = (index) => {
-    if (swiper) swiper.slideTo(index);
-  };
+  const nfts = safetyBoxes.map(safetyBoxWithNftMetadataToUserNFT);
 
-  const onNftItemClick = (index) => () => {
-    setCurrentSlide(index);
-    if (safetyBoxes.length >= MAX_SAFETY_BOXES_LENGTH) {
-      setSlidesToShow([safetyBoxes[index]]);
-      setIsModalVisible(true);
-    } else {
-      setSlidesToShow(safetyBoxes);
-      setIsModalVisible(true);
-      slideTo(index);
-    }
-  };
+  const collectionByName = keyBy(nftCollections, 'collectionName');
+  const collectionByNftMint: Dictionary<CollectionData> = safetyBoxes.reduce(
+    (acc, safetyBox) => {
+      const { nftMint, nftCollectionName } = safetyBox;
+
+      const collection = collectionByName[nftCollectionName];
+      if (collection) {
+        return { ...acc, [nftMint]: collection };
+      }
+
+      return acc;
+    },
+    {},
+  );
 
   return (
     <div className={styles.wrapper}>
@@ -64,33 +68,20 @@ export const NFTList: FC<NFTListProps> = ({
         wrapperClassName={classNames(styles.nftList, className)}
         emptyMessage="No NFTs found"
       >
-        {safetyBoxes.map((nft, index) => (
-          <div
-            className={styles.nftListItem}
-            key={nft.nftMint}
-            onClick={onNftItemClick(index)}
-          >
-            <div
-              style={{ backgroundImage: `url(${nft.nftImage})` }}
-              className={styles.nftImage}
-            />
-            <div className={styles.nftInfoBlock}>
-              <h5 className={styles.nftTitle}>{nft.nftName}</h5>
-              <span className={styles.nftInfoLabel}>NFT MINT</span>
-              <span className={styles.nftInfoItem}>
-                {shortenAddress(nft.nftMint)}
-              </span>
-            </div>
-          </div>
+        {safetyBoxes.map((safetyBox, index) => (
+          <NFTCard
+            key={safetyBox.nftMint}
+            safetyBox={safetyBox}
+            onClick={() => openOnCertainSlide(index)}
+          />
         ))}
       </FakeInfinityScroll>
-      <NFTsSliderModal
+      <ModalNFTsSlider
         isModalVisible={isModalVisible}
-        safetyBoxes={safetyBoxes}
-        slidesToShow={slidesToShow}
-        nftCollections={nftCollections}
         currentSlide={currentSlide}
-        setCurrentSlide={setCurrentSlide}
+        nfts={nfts}
+        collectionByNftMint={collectionByNftMint}
+        onSliderNavClick={onSliderNavClick}
         setIsModalVisible={setIsModalVisible}
         setSwiper={setSwiper}
       />

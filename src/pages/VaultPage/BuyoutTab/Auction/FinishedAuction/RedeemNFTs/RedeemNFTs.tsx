@@ -37,8 +37,10 @@ export const RedeemNFTs: FC<RedeemNFTsProps> = ({ vaultData, className }) => {
   };
 
   useEffect(() => {
-    stopPolling();
-    return () => !isPolling && startPolling();
+    isPolling && stopPolling();
+    return () => {
+      !isPolling && startPolling();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

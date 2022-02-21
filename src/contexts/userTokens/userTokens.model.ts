@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import { TokenView } from 'solana-nft-metadata';
 
 import { ArweaveMetadata } from '../../utils';
@@ -8,33 +7,16 @@ export interface UserNFT {
   metadata: ArweaveMetadata;
 }
 
-export interface nftsByMint {
-  [key: string]: ArweaveMetadata;
-}
-
 export interface RawUserTokensByMint {
   [mint: string]: TokenView;
 }
 
-export interface UserTokensInterface {
+export interface UserTokensValues {
   nfts: UserNFT[];
-  nftsByMint: nftsByMint;
   rawUserTokensByMint: RawUserTokensByMint;
   loading: boolean;
-  frktBalance: BN;
+  nftsLoading: boolean;
+  fetchUserNfts: () => Promise<void>;
   refetch: () => Promise<void>;
   removeTokenOptimistic: (mints: string[]) => void;
-}
-
-export interface UseUserTokensInterface {
-  nfts: UserNFT[];
-  nftsByMint: nftsByMint;
-  rawUserTokensByMint: RawUserTokensByMint;
-  loading: boolean;
-  refetch: () => Promise<void>;
-  removeTokenOptimistic: (tokenMint: string[]) => void;
-}
-
-export interface UseFrktBalanceInterface {
-  balance: BN;
 }

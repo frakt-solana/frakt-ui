@@ -1,0 +1,10 @@
+.poolsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 20px;
+
+  @media screen and (max-width: 550px) {
+    gap: 20px;
+  }
+}

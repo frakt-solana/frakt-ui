@@ -1,39 +1,13 @@
 import { notify } from '../index';
 import { NotifyType } from '../solanaUtils';
 
-const DEPRECATED_MARKETS = [
+export const DEPRECATED_MARKETS = [
   'EQ5XjC1neq4FbqLUaeHLx48CTougsPYdsGgti4KqEFUT',
   'dvQF6YNQvQ2dQkMyt3rW7ibypCkHJDgVAJvZz6A6gZx',
   'HngbFS7vMUeEm3JHYHJLwEuitdeKXv8oe27skwwsiYK',
 ];
 
-const APP_MARKETS_URL = process.env.REACT_APP_MARKETS_URL;
 const REGISTRAR_MARKET_URL = process.env.REACT_APP_REGISTRAR_MARKET_URL;
-
-export const getMarkets = async (): Promise<
-  Array<{
-    address: string;
-    baseMint: string;
-    programId: string;
-  }>
-> => {
-  try {
-    const res = await fetch(APP_MARKETS_URL);
-    const { fraktionMarkets } = await res.json();
-    return fraktionMarkets
-      .map((market) => {
-        return {
-          address: market.ownAddress,
-          baseMint: market.baseMint,
-          programId: '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin',
-        };
-      })
-      .filter((market) => !DEPRECATED_MARKETS.includes(market.address));
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-  }
-};
 
 export const registerMarket = async (
   tickerName: string,
