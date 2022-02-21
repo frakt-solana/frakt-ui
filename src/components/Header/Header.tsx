@@ -28,7 +28,9 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
         <AppNavigation />
         <ul className={styles.buttons}>
           <li className={styles.bgAccent}>
-            <NavigationLink to={PATHS.FRAKTIONALIZE}>Fraktion</NavigationLink>
+            <NavigationLink to={PATHS.FRAKTIONALIZE}>
+              Fraktionalize
+            </NavigationLink>
           </li>
           <li>
             <div className={styles.profileWrapper}>
