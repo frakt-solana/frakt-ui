@@ -84,7 +84,9 @@ const Pool: FC<PoolInterface> = ({
   return (
     <div className={styles.pool}>
       <div className={styles.header}>
-        {fusionPoolInfo && <div className={styles.awarder}>Awarded</div>}
+        {fusionPoolInfo?.mainRouter && (
+          <div className={styles.awarder}>Awarded</div>
+        )}
       </div>
       <div className={styles.poolCard} onClick={onPoolCardClick}>
         <div className={styles.tokenInfo}>

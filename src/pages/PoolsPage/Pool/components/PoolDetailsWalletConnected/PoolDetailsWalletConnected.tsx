@@ -38,8 +38,9 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
           poolConfig={poolConfig}
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
+          fusionPoolInfo={fusionPoolInfo}
         />
-        {fusionPoolInfo && (
+        {fusionPoolInfo.stakeAccount && (
           <Rewards
             baseToken={tokenInfo}
             poolConfig={poolConfig}

@@ -193,25 +193,22 @@ const getFusionDataMap = (
     secondaryStakeAccounts,
   } = allProgramAccounts;
 
-  const getRouterByMint = (lpMint: string): MainRouterView => {
-    return mainRouters.find(
-      ({ tokenMintOutput }) => tokenMintOutput === lpMint,
-    );
+  const getRouterByMint = (lpMint: string) => {
+    return mainRouters.find(({ tokenMintInput }) => tokenMintInput === lpMint);
   };
 
   const routerInfoByMint = lpMints.reduce((routerInfoMap, lpMint) => {
     const router = getRouterByMint(lpMint);
-
     routerInfoMap.set(lpMint, router);
     return routerInfoMap;
   }, new Map<string, MainRouterView>());
 
   const secondaryRewardByMint = lpMints.reduce(
     (secondaryRewardInfoMap, lpMint) => {
-      const { mainRouterPubkey } = getRouterByMint(lpMint);
+      const router = getRouterByMint(lpMint);
 
       const secondaryReward = secondaryRewards.filter(
-        ({ routerPubkey }) => routerPubkey === mainRouterPubkey,
+        ({ routerPubkey }) => routerPubkey === router?.mainRouterPubkey,
       );
 
       secondaryRewardInfoMap.set(lpMint, secondaryReward);
@@ -221,10 +218,10 @@ const getFusionDataMap = (
   );
 
   const stakeAccountsByMint = lpMints.reduce((stakeAccountInfoMap, lpMint) => {
-    const { mainRouterPubkey } = getRouterByMint(lpMint);
+    const router = getRouterByMint(lpMint);
 
     const stakeAccount = stakeAccounts
-      .filter(({ routerPubkey }) => routerPubkey === mainRouterPubkey)
+      .filter(({ routerPubkey }) => routerPubkey === router?.mainRouterPubkey)
       .find(({ isStaked }) => isStaked);
 
     stakeAccountInfoMap.set(lpMint, stakeAccount);

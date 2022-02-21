@@ -12,7 +12,6 @@ import Pool from './Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
-import { poolsDataTest, raydiumPoolInfoTest } from './testPoolData';
 
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
@@ -28,8 +27,6 @@ const PoolsPage: FC = () => {
     fusionPoolInfoMap,
     poolsStatsByMarketId,
   } = usePoolsPage();
-
-  console.log(fusionPoolInfoMap);
 
   return (
     <AppLayout>
@@ -74,21 +71,19 @@ const PoolsPage: FC = () => {
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
-          isLoading={!fusionPoolInfoMap.size}
+          isLoading={loading}
           emptyMessage={'No Liquidity pool found'}
         >
-          {poolsDataTest.map(({ poolData, poolStatsTest }) => (
+          {poolsData.map((poolData) => (
             <Pool
               key={poolData.tokenInfo.address}
               poolData={poolData}
-              raydiumPoolInfo={raydiumPoolInfoTest}
-              // raydiumPoolInfo={raydiumPoolsInfoMap.get(
-              //   poolData.tokenInfo.address,
-              // )}
-              // poolStats={poolsStatsByMarketId.get(
-              //   poolData.poolConfig.marketId.toBase58(),
-              // )}
-              poolStats={poolStatsTest}
+              raydiumPoolInfo={raydiumPoolsInfoMap.get(
+                poolData.tokenInfo.address,
+              )}
+              poolStats={poolsStatsByMarketId.get(
+                poolData.poolConfig.marketId.toBase58(),
+              )}
               isOpen={activePoolTokenAddress === poolData.tokenInfo.address}
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)

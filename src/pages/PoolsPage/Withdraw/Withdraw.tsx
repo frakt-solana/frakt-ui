@@ -22,7 +22,7 @@ interface WithdrawInterface {
   baseToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
-  programAccount?: FusionPoolInfo;
+  fusionPoolInfo: FusionPoolInfo;
   lpTokenAccountInfo: AccountInfoParsed;
 }
 
@@ -30,7 +30,7 @@ const Withdraw: FC<WithdrawInterface> = ({
   baseToken,
   poolConfig,
   raydiumPoolInfo,
-  programAccount,
+  fusionPoolInfo,
   lpTokenAccountInfo,
 }) => {
   const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
@@ -45,8 +45,8 @@ const Withdraw: FC<WithdrawInterface> = ({
   );
 
   const onSubmitHandler = async (): Promise<void> => {
-    if (programAccount) {
-      const { mainRouter, stakeAccount } = programAccount;
+    if (fusionPoolInfo) {
+      const { mainRouter, stakeAccount } = fusionPoolInfo;
 
       const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
       const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
