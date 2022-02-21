@@ -2,7 +2,6 @@ import Header from '../Header';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import { FC, useEffect, useState } from 'react';
-import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { useHeaderState } from '../../contexts/HeaderState';
 

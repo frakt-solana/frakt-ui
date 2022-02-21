@@ -43,6 +43,14 @@
   font-weight: 600;
   color: var(--green-color);
   margin-bottom: 30px;
+
+  @media screen and (max-width: 767px) {
+    font-size: 32px;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 25px;
+  }
 }
 
 .cardBlue {

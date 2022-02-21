@@ -5,7 +5,6 @@ import { formatNumber, shortenAddress } from '../../utils/solanaUtils';
 import { ArrowRightTop, SolanaIcon, UserIcon } from '../../icons';
 import { useNativeAccount } from '../../utils/accounts';
 import styles from './styles.module.scss';
-import NavigationLink from '../Header/NavigationLink';
 import { PATHS } from '../../constants';
 import React from 'react';
 import { NavLink } from 'react-router-dom';

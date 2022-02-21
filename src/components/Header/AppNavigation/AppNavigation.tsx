@@ -3,16 +3,15 @@ import styles from '../styles.module.scss';
 import classNames from 'classnames/bind';
 import { PATHS } from '../../../constants';
 import NavigationLink from '../NavigationLink';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { Button, Dropdown } from 'antd';
 import {
-  TwitterIcon,
-  GitHubIcon,
-  DiscordIcon,
   ArrowDownBtn,
-  MediumIcon,
-  DocsIcon,
   CoinGeckoIcon,
+  DiscordIcon,
+  DocsIcon,
+  GitHubIcon,
+  MediumIcon,
+  TwitterIcon,
 } from '../../../icons';
 import { NavLink } from 'react-router-dom';
 
@@ -71,8 +70,6 @@ const dropdownMenu = (
 );
 
 export const AppNavigation: FC<AppNavigation> = ({ className }) => {
-  const { connected, publicKey } = useWallet();
-
   return (
     <ul
       className={classNames(
