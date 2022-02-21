@@ -4,6 +4,7 @@ import { VaultData } from '../../contexts/fraktion';
 import { DEPRECATED_MARKETS } from '../markets';
 import { NftPoolData } from './nftPools';
 import { parseRawNftPools } from './nftPools/nftPools.helpers';
+import { getVerifiedVaultsByFraktTeam } from './vaults';
 
 const CACHER_URL = process.env.REACT_APP_BFF_URL;
 export const IS_BFF_ENABLED = !!CACHER_URL;
@@ -25,8 +26,13 @@ class API {
     const res = await fetch(`${CACHER_URL}/vaults`);
     const vaults = await res.json();
 
+    const additionalVerifiedVaults = await getVerifiedVaultsByFraktTeam();
+
     return vaults.map((vault: VaultData) => ({
       ...vault,
+      isVerified:
+        vault.isVerified ||
+        additionalVerifiedVaults.includes[vault.vaultPubkey],
       auction: {
         auction: {
           ...vault.auction.auction,

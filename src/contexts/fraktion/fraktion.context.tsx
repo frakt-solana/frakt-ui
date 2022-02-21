@@ -43,7 +43,6 @@ export const FraktionProvider = ({
       setLoading(true);
       const markets = await Cacher.getMarkets();
       const vaultsData = await Cacher.getVaults();
-      markets;
 
       setVaultsMarkets(markets);
       setVaults(vaultsData);
@@ -60,7 +59,7 @@ export const FraktionProvider = ({
     try {
       const markets = await Cacher.getMarkets();
       const vaultsData = await Cacher.getVaults();
-      markets;
+
       setVaultsMarkets(markets);
       setVaults(vaultsData);
     } catch {} //eslint-disable-line
