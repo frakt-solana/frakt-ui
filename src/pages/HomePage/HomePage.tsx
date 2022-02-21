@@ -81,7 +81,7 @@ const HomePage = (): JSX.Element => {
               </div>
             </div>
             <div className={styles.mainBg}>
-              <FraktLogoIcon />
+              <FraktLogoIcon className={styles.mainImage} />
             </div>
           </div>
         </section>

@@ -1,5 +1,4 @@
 .firstSectionBg {
-  min-height: calc(100vh - 50px);
   position: relative;
   background: url('./images/blueBg.png') no-repeat left bottom / 70% 120%,
   url('./images/blueBgSmall.png') no-repeat right top;
@@ -11,25 +10,22 @@
 }
 
 .container {
-  height: calc(100vh - 110px);
+  min-height: calc(100vh - 50px);
+  padding: 100px 0;
   display: flex;
   align-items: center;
   position: relative;
   justify-content: space-between;
+  gap: 30px;
+
+  @media screen and (max-width: 1100px) {
+    flex-direction: column;
+    padding-bottom: 200px;
+  }
 }
 
 .titleWrapper {
   max-width: 800px;
-  //margin-top: 10vh;
-
-  @media screen and (max-width: 1023px) {
-    max-width: 730px;
-  }
-
-  @media screen and (max-width: 900px) {
-    max-width: none;
-    width: 100%;
-  }
 }
 
 .mainTitle {
@@ -38,18 +34,12 @@
   text-transform: uppercase;
   white-space: nowrap;
 
-  @media screen and (max-width: 900px) {
-    max-width: 500px;
+  @media screen and (max-width: 1100px) {
+    font-size: 120px;
   }
 
   @media screen and (max-width: 767px) {
-    max-width: 400px;
-    font-size: 55px;
-  }
-
-  @media screen and (max-width: 500px) {
-    font-size: 40px;
-    max-width: 300px;
+    font-size: 16vw;
   }
 }
 
@@ -58,22 +48,30 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 50px;
+  gap: 30px;
 
   &::before {
     content: '';
-    width: 12%;
     height: 1px;
     flex-shrink: 0;
     background-color: var(--white-color);
     margin-bottom: 80px;
+
+    @media screen and (max-width: 1100px) {
+     flex-grow: 1;
+    }
   }
 
   @media screen and (max-width: 900px) {
     &::before {
       width: auto;
       flex-grow: 1;
-      margin-right: 30px;
     }
+  }
+
+  @media screen and (max-width: 757px) {
+    gap: 10px;
+    margin-top: 30px;
   }
 }
 
@@ -83,8 +81,8 @@
   flex-shrink: 0;
   font: var(--font-text-1);
 
-  @media screen and (max-width: 1023px) {
-    font-size: 24px;
+  @media screen and (max-width: 1100px) {
+    max-width: 355px;
   }
 
   @media screen and (max-width: 900px) {
@@ -100,7 +98,7 @@
 .subtitle {
   font: var(--font-text-1);
 
-  @media screen and (max-width: 1023px) {
+  @media screen and (max-width: 1100px) {
     font-size: 24px;
   }
 
@@ -136,6 +134,25 @@
       }
     }
   }
+
+  @media screen and (max-width: 550px) {
+    margin-top: 20px;
+
+    a {
+      font-size: 15px;
+    }
+  }
+}
+
+.mainBg {
+
+  @media screen and (max-width: 1100px) {
+    order: -1;
+  }
+}
+
+.mainImage {
+  max-width: 100%;
 }
 
 
