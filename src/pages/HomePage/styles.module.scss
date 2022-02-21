@@ -22,6 +22,10 @@
     flex-direction: column;
     padding-bottom: 200px;
   }
+
+  @media screen and (max-width: 767px) {
+    padding-bottom: 150px;
+  }
 }
 
 .titleWrapper {
