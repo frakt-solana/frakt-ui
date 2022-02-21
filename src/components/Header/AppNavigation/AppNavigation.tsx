@@ -23,10 +23,13 @@ interface AppNavigation {
 const dropdownMenu = (
   <ul className={styles.dropdownMenu}>
     <li>
-      <NavLink to={PATHS.COLLECTIONS}>Collections</NavLink>
+      <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
+        Collections
+      </NavLink>
     </li>
     <li>
       <a
+        className={styles.dropdownLink}
         href={process.env.REACT_APP_DEX_URL}
         target="_blank"
         rel="noopener noreferrer"
@@ -94,6 +97,7 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
         <NavigationLink to={PATHS.YIELD}>Yield</NavigationLink>
       </li>
       <li id={'myDrop'}>
+        <div className={styles.mobileDropdown}>{dropdownMenu}</div>
         <Dropdown
           overlay={dropdownMenu}
           placement={'bottomRight'}

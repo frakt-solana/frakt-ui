@@ -17,10 +17,10 @@
   justify-content: center;
   align-items: center;
   height: 43px;
-  min-width: 550px;
+  min-width: 650px;
 
   @media screen and (max-width: 550px) {
-    min-width: 450px;
+    min-width: 530px;
     height: 39px;
   }
 }
