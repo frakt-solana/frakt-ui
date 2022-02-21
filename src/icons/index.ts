@@ -35,3 +35,4 @@ export { BehanceIcon } from './BehanceIcon';
 export { DocsIcon } from './DocsIcon';
 export { MediumIcon } from './MediumIcon';
 export { CoinGeckoIcon } from './CoinGeckoIcon';
+export { UserIcon } from './UserIcon';

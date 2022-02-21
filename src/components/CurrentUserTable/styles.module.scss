@@ -54,3 +54,30 @@
 .name {
   margin-right: 20px;
 }
+
+.userWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  .myCollectionLink {
+    color: var(--accent-color-1);
+    margin-top: 3px;
+
+    &::after {
+      background-color: var(--accent-color-1);
+    }
+
+    &:hover {
+      color: var(--accent-color-1);
+    }
+
+    svg path {
+      fill: var(--accent-color-1);
+    }
+  }
+}
+
+.userInfo {
+  margin-left: 10px;
+}

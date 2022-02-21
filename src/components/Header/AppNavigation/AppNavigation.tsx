@@ -105,18 +105,6 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
           </Button>
         </Dropdown>
       </li>
-      {connected && (
-        <li>
-          <NavigationLink
-            to={`${PATHS.WALLET}/${publicKey.toString()}`}
-            isActive={(_, location) =>
-              location?.pathname?.includes(publicKey.toString()) || false
-            }
-          >
-            My collection
-          </NavigationLink>
-        </li>
-      )}
     </ul>
   );
 };
