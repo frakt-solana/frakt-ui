@@ -8,6 +8,7 @@ import { Checkbox } from '../../../../components/Checkbox/Checkbox';
 import { Radio } from '../../../../components/Radio';
 import {
   FormFieldValues,
+  InputControlsNames,
   SidebarCheckboxNames,
   StatusRadioNames,
 } from '../../model';
@@ -57,12 +58,12 @@ export const Sidebar: FC<SidebarProps> = ({
         <div className={styles.filterList}>
           <Collapse
             collapsible="header"
-            defaultActiveKey={['1']}
+            defaultActiveKey={[InputControlsNames.SHOW_VERIFIED_VAULTS]}
             className={styles.collapse}
           >
             <Panel
-              header="verification"
-              key="1"
+              header="Verification"
+              key={InputControlsNames.SHOW_VERIFIED_VAULTS}
               className={styles.collapseHeader}
             >
               <ul className={styles.sidebarList}>
@@ -70,9 +71,9 @@ export const Sidebar: FC<SidebarProps> = ({
                   <Controller
                     control={control}
                     name={SidebarCheckboxNames.SHOW_VERIFIED_VAULTS}
-                    render={({ field: { ref, ...field } }) => {
-                      return <Checkbox {...field} label={'Verified only'} />;
-                    }}
+                    render={({ field: { ref, ...field } }) => (
+                      <Checkbox {...field} label="Verified only" />
+                    )}
                   />
                 </li>
               </ul>
@@ -82,18 +83,22 @@ export const Sidebar: FC<SidebarProps> = ({
         <div className={styles.filterList}>
           <Collapse
             collapsible="header"
-            defaultActiveKey={['1']}
+            defaultActiveKey={[InputControlsNames.SHOW_TRADABLE_VAULTS]}
             className={styles.collapse}
           >
-            <Panel header="tradable" key="1" className={styles.collapseHeader}>
+            <Panel
+              header="Tradable"
+              key={InputControlsNames.SHOW_TRADABLE_VAULTS}
+              className={styles.collapseHeader}
+            >
               <ul className={styles.sidebarList}>
                 <li className={styles.sidebarListItem}>
                   <Controller
                     control={control}
                     name={SidebarCheckboxNames.SHOW_TRADABLE_VAULTS}
-                    render={({ field: { ref, ...field } }) => {
-                      return <Checkbox {...field} label={'Tradable only'} />;
-                    }}
+                    render={({ field: { ref, ...field } }) => (
+                      <Checkbox {...field} label="Tradable only" />
+                    )}
                   />
                 </li>
               </ul>
@@ -103,10 +108,14 @@ export const Sidebar: FC<SidebarProps> = ({
         <div className={styles.filterList}>
           <Collapse
             collapsible="header"
-            defaultActiveKey={['1']}
+            defaultActiveKey={[InputControlsNames.SHOW_VAULTS_STATUS]}
             className={styles.collapse}
           >
-            <Panel header="Status" key="1" className={styles.collapseHeader}>
+            <Panel
+              header="Status"
+              key={InputControlsNames.SHOW_VAULTS_STATUS}
+              className={styles.collapseHeader}
+            >
               <RadioAntd.Group
                 className={styles.sidebarList}
                 onChange={changeRadio}
@@ -115,42 +124,17 @@ export const Sidebar: FC<SidebarProps> = ({
                 <div className={styles.sidebarList}>
                   <Controller
                     control={control}
-                    name={'showVaultsStatus'}
+                    name={InputControlsNames.SHOW_VAULTS_STATUS}
                     render={({ field: { onChange, value, ref, ...field } }) => (
                       <RadioAntd.Group
                         value={value}
                         onChange={(e) => onChange(e.target.value)}
                       >
-                        <div className={styles.sidebarListItem}>
-                          <Radio
-                            value={StatusRadioNames.SHOW_ACTIVE_VAULTS}
-                            label={'Active'}
-                            {...field}
-                          />
-                        </div>
-                        <div className={styles.sidebarListItem}>
-                          <Radio
-                            value={StatusRadioNames.SHOW_AUCTION_LIVE_VAULTS}
-                            label={'Auction live'}
-                            {...field}
-                          />
-                        </div>
-                        <div className={styles.sidebarListItem}>
-                          <Radio
-                            value={
-                              StatusRadioNames.SHOW_AUCTION_FINISHED_VAULTS
-                            }
-                            label={'Auction finished'}
-                            {...field}
-                          />
-                        </div>
-                        <div className={styles.sidebarListItem}>
-                          <Radio
-                            value={StatusRadioNames.SHOW_ARCHIVED_VAULTS}
-                            label={'Archived'}
-                            {...field}
-                          />
-                        </div>
+                        {STATUS_VALUES.map(({ name, value }) => (
+                          <div className={styles.sidebarListItem} key={value}>
+                            <Radio value={value} label={name} {...field} />
+                          </div>
+                        ))}
                       </RadioAntd.Group>
                     )}
                   />
@@ -163,3 +147,26 @@ export const Sidebar: FC<SidebarProps> = ({
     </>
   );
 };
+
+const STATUS_VALUES = [
+  {
+    name: 'All',
+    value: StatusRadioNames.SHOW_ALL_VAULTS,
+  },
+  {
+    name: 'Active',
+    value: StatusRadioNames.SHOW_ACTIVE_VAULTS,
+  },
+  {
+    name: 'Auction live',
+    value: StatusRadioNames.SHOW_AUCTION_LIVE_VAULTS,
+  },
+  {
+    name: 'Auction finished',
+    value: StatusRadioNames.SHOW_AUCTION_FINISHED_VAULTS,
+  },
+  {
+    name: 'Archived',
+    value: StatusRadioNames.SHOW_ARCHIVED_VAULTS,
+  },
+];

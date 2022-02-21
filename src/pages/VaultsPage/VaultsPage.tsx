@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -51,20 +51,19 @@ const SORT_VALUES: SortValue[] = [
 const VaultsPage = (): JSX.Element => {
   const { control, watch } = useForm({
     defaultValues: {
-      [InputControlsNames.SHOW_VAULTS_STATUS]:
-        StatusRadioNames.SHOW_ACTIVE_VAULTS,
+      [InputControlsNames.SHOW_VAULTS_STATUS]: StatusRadioNames.SHOW_ALL_VAULTS,
       [InputControlsNames.SHOW_VERIFIED_VAULTS]: false,
       [InputControlsNames.SHOW_TRADABLE_VAULTS]: false,
-      sort: SORT_VALUES[0],
+      [InputControlsNames.SORT]: SORT_VALUES[0],
     },
   });
 
-  const showVaultsStatus = watch('showVaultsStatus');
-  const showVerifiedVaults = watch('showVerifiedVaults');
-  const showTradableVaults = watch('showTradableVaults');
-  const sort = watch('sort');
+  const showVaultsStatus = watch(InputControlsNames.SHOW_VAULTS_STATUS);
+  const showVerifiedVaults = watch(InputControlsNames.SHOW_VERIFIED_VAULTS);
+  const showTradableVaults = watch(InputControlsNames.SHOW_TRADABLE_VAULTS);
+  const sort = watch(InputControlsNames.SORT);
+
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
-  const [isFilterTouched, setIsFilterTouched] = useState<boolean>(false);
 
   const { loading, vaults: rawVaults } = useFraktion();
   useFraktionInitialFetch();
@@ -74,15 +73,6 @@ const VaultsPage = (): JSX.Element => {
 
   const { featuredVaultsPublicKeys } = useFeaturedVaultsPublicKeys();
 
-  useEffect(() => {
-    if (
-      showVaultsStatus !== StatusRadioNames.SHOW_ACTIVE_VAULTS ||
-      searchString !== ''
-    ) {
-      setIsFilterTouched(true);
-    }
-  }, [showVaultsStatus, searchString]);
-
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
@@ -91,9 +81,14 @@ const VaultsPage = (): JSX.Element => {
     const [sortField, sortOrder] = sort.value.split('_');
     return rawVaults
       .filter(({ state, hasMarket, safetyBoxes, isVerified }) => {
-        const nftsName =
+        //? Filter out unfinished vaults
+        if (state === VaultState.Inactive) return false;
+
+        const nftsNames =
           safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
 
+        const showAllVaults =
+          showVaultsStatus === StatusRadioNames.SHOW_ALL_VAULTS;
         const showActiveVaults =
           showVaultsStatus === StatusRadioNames.SHOW_ACTIVE_VAULTS;
         const showAuctionLiveVaults =
@@ -103,39 +98,44 @@ const VaultsPage = (): JSX.Element => {
         const showArchivedVaults =
           showVaultsStatus === StatusRadioNames.SHOW_ARCHIVED_VAULTS;
 
-        //? Filter out unfinished vaults
-        if (state === VaultState.Inactive) return false;
+        const removeBecauseActive =
+          !showActiveVaults && state === VaultState.Active && !showAllVaults;
+        const removeBecauseLive =
+          !showAuctionLiveVaults &&
+          state === VaultState.AuctionLive &&
+          !showAllVaults;
+        const removeBecauseFinished =
+          !showAuctionFinishedVaults &&
+          state === VaultState.AuctionFinished &&
+          !showAllVaults;
+        const removeBecauseArchived =
+          !showArchivedVaults &&
+          state === VaultState.Archived &&
+          !showAllVaults;
 
-        const removeActiveVaults =
-          !showActiveVaults && state === VaultState.Active;
-        const removeLiveVaults =
-          !showAuctionLiveVaults && state === VaultState.AuctionLive;
-        const removeFinishedVaults =
-          !showAuctionFinishedVaults && state === VaultState.AuctionFinished;
-        const removeArchivedVaults =
-          !showArchivedVaults && state === VaultState.Archived;
-
-        if (removeActiveVaults) return false;
-
-        if (removeLiveVaults) return false;
-
-        if (removeFinishedVaults) return false;
-
-        if (removeArchivedVaults) return false;
+        if (
+          removeBecauseActive ||
+          removeBecauseLive ||
+          removeBecauseFinished ||
+          removeBecauseArchived
+        )
+          return false;
 
         if (showTradableVaults && !hasMarket) return false;
 
         if (showVerifiedVaults && !isVerified) return false;
 
-        return nftsName.some((name) => name.includes(searchString));
+        return nftsNames.some((name) => name.includes(searchString));
       })
-      .sort((a, b) => {
+      .sort((vaultA, vaultB) => {
         if (sortField === 'createdAt') {
-          if (sortOrder === 'asc') return a.createdAt - b.createdAt;
-          return b.createdAt - a.createdAt;
+          if (sortOrder === 'asc') return vaultA.createdAt - vaultB.createdAt;
+          return vaultB.createdAt - vaultA.createdAt;
+        } else {
+          if (sortOrder === 'asc')
+            return vaultA[sortField].cmp(vaultB[sortField]);
+          return vaultB[sortField].cmp(vaultA[sortField]);
         }
-        if (sortOrder === 'asc') return a[sortField].cmp(b[sortField]);
-        return b[sortField].cmp(a[sortField]);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -148,20 +148,28 @@ const VaultsPage = (): JSX.Element => {
   ]);
 
   const featuredVaults = useMemo(() => {
-    if (rawVaults.length && featuredVaultsPublicKeys.length) {
-      return rawVaults.filter((vault) =>
+    if (
+      featuredVaultsPublicKeys.length &&
+      showVaultsStatus === StatusRadioNames.SHOW_ALL_VAULTS &&
+      !searchString
+    ) {
+      return vaults.filter((vault) =>
         featuredVaultsPublicKeys.some((key) => key === vault.vaultPubkey),
       );
     }
     return [];
-  }, [rawVaults, featuredVaultsPublicKeys]);
+  }, [vaults, featuredVaultsPublicKeys, showVaultsStatus, searchString]);
 
   const liveAuctionVaults = useMemo(() => {
-    if (vaults.length) {
-      return rawVaults.filter(({ state }) => state === VaultState.AuctionLive);
+    if (
+      vaults.length &&
+      showVaultsStatus === StatusRadioNames.SHOW_ALL_VAULTS &&
+      !searchString
+    ) {
+      return vaults.filter(({ state }) => state === VaultState.AuctionLive);
     }
     return [];
-  }, [rawVaults, vaults.length]);
+  }, [vaults, showVaultsStatus, searchString]);
 
   return (
     <AppLayout>
@@ -179,7 +187,7 @@ const VaultsPage = (): JSX.Element => {
             <div className={styles.searchSortWrapper}>
               <p className={styles.searchWrapper}>
                 <SearchInput
-                  onChange={(e) => searchItems(e.target.value || '')}
+                  onChange={(event) => searchItems(event.target.value || '')}
                   className={styles.search}
                   placeholder="Search by curator, collection or asset"
                 />
@@ -202,19 +210,19 @@ const VaultsPage = (): JSX.Element => {
                 />
               </div>
             </div>
-            {!!featuredVaults.length && !isFilterTouched && (
+            {!!featuredVaults.length && (
               <VaultsSlider
                 className={styles.sliderFeatured}
                 vaults={featuredVaults}
-                title={'Featured vaults'}
+                title="Featured vaults"
                 isLoading={loading}
               />
             )}
-            {!!liveAuctionVaults.length && !isFilterTouched && (
+            {!!liveAuctionVaults.length && (
               <VaultsSlider
                 className={styles.sliderFeatured}
                 vaults={liveAuctionVaults}
-                title={'Live auction'}
+                title="Live auctions"
                 isLoading={loading}
                 isAuction
               />

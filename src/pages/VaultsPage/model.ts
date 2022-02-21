@@ -9,6 +9,7 @@ export enum SidebarCheckboxNames {
 }
 
 export enum StatusRadioNames {
+  SHOW_ALL_VAULTS = 'showAllVaults',
   SHOW_ACTIVE_VAULTS = 'showActiveVaults',
   SHOW_AUCTION_LIVE_VAULTS = 'showAuctionLiveVaults',
   SHOW_AUCTION_FINISHED_VAULTS = 'showAuctionFinishedVaults',
