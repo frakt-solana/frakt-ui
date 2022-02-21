@@ -21,12 +21,14 @@ export const LendingBlock: FC<LendingBlockProps> = ({ className }) => {
         <div className={classNames(styles.image, styles.imageTwo)}>
           <img src={imageTwo} alt="" />
           <div className={styles.infoWrapper}>
-            <p className={styles.infoTitle}>TYR-1281</p>
-            <p className={styles.infoPrice}>
-              100
-              <SolanaIcon />
-              SOL
-            </p>
+            <div>
+              <p className={styles.infoTitle}>TYR-1281</p>
+              <p className={styles.infoPrice}>
+                100
+                <SolanaIcon />
+                SOL
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -261,20 +261,25 @@ h5 {
 }
 
 .common-accent-btn {
-    max-width: 234px;
-    padding: 0 20px;
-    flex-grow: 1;
-    height: 48px;
-    background-color: var(--accent-color-1);
-    color: var(--white-color);
-    font: var(--font-text-3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color var(--transition-1);
+  max-width: 234px;
+  padding: 0 20px;
+  flex-grow: 1;
+  height: 48px;
+  background-color: var(--accent-color-1);
+  color: var(--white-color);
+  font: var(--font-text-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-1);
 
-    &:hover {
-      background-color: var(--accent-color-2);
-      color: var(--white-color);
-    }
+  @media screen and (max-width: 767px) {
+    height: 40px;
+    font-size: 15px;
+  }
+
+  &:hover {
+    background-color: var(--accent-color-2);
+    color: var(--white-color);
+  }
 }

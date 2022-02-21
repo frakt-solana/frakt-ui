@@ -41,11 +41,42 @@
   font-size: 40px;
   font-weight: 600;
   text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   background: linear-gradient(0deg, #000000 -11.4%, #000000 -11.38%, rgba(0, 0, 0, 0) 118.38%);
+
+  @media screen and (max-width: 767px) {
+    font-size: 30px;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 20px;
+    height: 40%;
+  }
+
+  @media screen and (max-width: 400px) {
+    font-size: 14px;
+  }
 
   svg {
     margin-left: 15px;
     margin-right: 8px;
     width: 28px;
+
+    @media screen and (max-width: 767px) {
+      width: 22px;
+      margin-left: 10px;
+    }
+
+    @media screen and (max-width: 500px) {
+      width: 15px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    @media screen and (max-width: 400px) {
+      width: 11px;
+    }
   }
 }

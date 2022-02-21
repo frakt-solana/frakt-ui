@@ -9,11 +9,6 @@ import { SLIDER_DATA } from './slidersData';
 
 SwiperCore.use([FreeMode, Navigation, Pagination, Autoplay]);
 
-// const THUMBS_SLIDER_BREAKPOINTS = {
-//   240: { slidesPerView: 2.5, spaceBetween: 50 },
-//   550: { slidesPerView: 1.5 },
-// };
-
 export const Slider: FC = () => {
   return (
     <div className={styles.sliderWrapper}>

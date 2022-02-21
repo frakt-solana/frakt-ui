@@ -26,7 +26,13 @@ export const FullPotentialSection: FC<FullPotentialSectionProps> = ({
         <FraktionalizationBlock className={styles.block} />
         <PoolsBlock className={classNames(styles.block, styles.blockRight)} />
         <LendingBlock className={styles.block} />
-        <YieldBlock className={classNames(styles.block, styles.blockRight)} />
+        <YieldBlock
+          className={classNames(
+            styles.block,
+            styles.blockRight,
+            styles.blockBg,
+          )}
+        />
       </div>
     </section>
   );
