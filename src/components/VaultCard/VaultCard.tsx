@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 
 import Badge, {
@@ -8,18 +8,20 @@ import Badge, {
 } from '../Badge';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { decimalBNToString, shortBigNumber } from '../../utils';
-import fraktionConfig from '../../contexts/fraktion/config';
 import { useTokensMap } from '../../contexts/TokenList';
 import { getOwnerAvatar, useNameServiceInfo } from '../../utils/nameService';
-import { Bid, VaultData, VaultState } from '../../contexts/fraktion';
+import { Bid, VaultData } from '../../contexts/fraktion';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
+import { MainInfo } from './MainInfo';
+import { AuctionInfo } from './AuctionInfo';
 
 export interface VaultCardProps {
   vaultData: VaultData;
+  isAuction?: boolean;
 }
 
-export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
+export const VaultCard: FC<VaultCardProps> = ({ vaultData, isAuction }) => {
   const tokensMap = useTokensMap();
   const { connection } = useConnection();
   const [vaultTitleData, setVaultTitleData] = useState<{
@@ -30,8 +32,6 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
 
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
-  const currency =
-    vaultData.priceMint === fraktionConfig.SOL_TOKEN_PUBKEY ? 'SOL' : 'FRKT';
 
   const safetyBoxes = vaultData?.safetyBoxes || [];
 
@@ -76,7 +76,6 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
   const onImageMouseLeave = () => () => {
     setImageHoverIndex(0);
   };
-
   return (
     <div className={styles.cardContainer}>
       <div className={styles.card}>
@@ -150,38 +149,22 @@ export const VaultCard = ({ vaultData }: VaultCardProps): JSX.Element => {
             {nameServiceInfo.domain || shortenAddress(vaultData.authority)}
           </div>
         </div>
-        <div className={styles.stats}>
-          <div className={styles.item}>
-            <div className={styles.title}>Total supply</div>
-            <div className={styles.value}>
-              {fractionsSupplyNum
-                ? shortBigNumber(vaultData.fractionsSupply, 1, 3)
-                : 'No value'}
-            </div>
-          </div>
-          <div className={styles.item}>
-            <div className={styles.title}>Fraktion price ({currency})</div>
-            <div className={styles.value}>
-              {lockedPricePerShareNum
-                ? shortBigNumber(vaultData.lockedPricePerShare, 6, 6)
-                : 'No value'}
-            </div>
-          </div>
-          <div className={styles.item}>
-            <div className={styles.title}>
-              {vaultData.state === VaultState.Active &&
-                `Start bid (${currency})`}
-              {vaultData.state === VaultState.AuctionLive &&
-                `Current bid (${currency})`}
-              {(vaultData.state === VaultState.AuctionFinished ||
-                vaultData.state === VaultState.Archived) &&
-                `Winning bid (${currency})`}
-            </div>
-            <div className={styles.value}>
-              {vaultData.state === VaultState.Active ? startBid : winBid}
-            </div>
-          </div>
-        </div>
+        {isAuction ? (
+          <AuctionInfo
+            vaultData={vaultData}
+            fractionsSupplyNum={fractionsSupplyNum}
+            lockedPricePerShareNum={lockedPricePerShareNum}
+            winBid={winBid}
+          />
+        ) : (
+          <MainInfo
+            vaultData={vaultData}
+            fractionsSupplyNum={fractionsSupplyNum}
+            lockedPricePerShareNum={lockedPricePerShareNum}
+            startBid={startBid}
+            winBid={winBid}
+          />
+        )}
       </div>
     </div>
   );

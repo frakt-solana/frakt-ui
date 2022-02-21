@@ -1,8 +1,8 @@
-import moment from 'moment';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import { CountdownIcon } from '../../icons';
+import { useAuctionCountdown } from '../../contexts/fraktion';
 
 interface AuctionCountdownProps {
   endTime: number;
@@ -13,28 +13,9 @@ export const AuctionCountdown = ({
   endTime,
   className,
 }: AuctionCountdownProps): JSX.Element => {
-  const intervalIdRef = useRef<ReturnType<typeof setInterval>>(null);
-  const [currentTime, setCurrentTime] = useState<moment.Moment>(moment());
+  const { timeLeft, leftTimeInSeconds } = useAuctionCountdown(endTime);
 
-  const endTimeMoment = moment.unix(endTime);
-  const timeDifference = moment.duration(endTimeMoment.diff(currentTime));
-  const formatDateUnit = (value: number): string => {
-    return value < 10 ? `0${value}` : `${value}`;
-  };
-
-  useEffect(() => {
-    intervalIdRef.current = setInterval(() => {
-      setCurrentTime(moment());
-    }, 1000);
-
-    return () => clearInterval(intervalIdRef.current);
-  }, []);
-
-  useEffect(() => {
-    timeDifference.asSeconds() < 0 && clearInterval(intervalIdRef.current);
-  }, [timeDifference]);
-
-  if (timeDifference.asSeconds() < 0) return null;
+  if (leftTimeInSeconds < 0) return null;
 
   return (
     <ul className={classNames(className, styles.countdown)}>
@@ -42,19 +23,19 @@ export const AuctionCountdown = ({
         <CountdownIcon />
       </li>
       <li className={styles.timeItem}>
-        {formatDateUnit(timeDifference.days())}
+        {timeLeft.days}
         <span>Days</span>
       </li>
       <li className={styles.timeItem}>
-        {formatDateUnit(timeDifference.hours())}
+        {timeLeft.hours}
         <span>Hours</span>
       </li>
       <li className={styles.timeItem}>
-        {formatDateUnit(timeDifference.minutes())}
+        {timeLeft.minutes}
         <span>Minutes</span>
       </li>
       <li className={styles.timeItem}>
-        {formatDateUnit(timeDifference.seconds())}
+        {timeLeft.seconds}
         <span>Seconds</span>
       </li>
     </ul>
