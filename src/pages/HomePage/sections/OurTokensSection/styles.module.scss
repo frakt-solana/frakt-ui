@@ -1,6 +1,11 @@
 .wrapper {
   display: flex;
   gap: 40px;
+
+  @media screen and (max-width: 767px) {
+    gap: 30px;
+    flex-direction: column;
+  }
 }
 
 .title {
@@ -17,9 +22,20 @@
   border-radius: 10px;
   display: flex;
   align-items: center;
+  flex-grow: 1;
+  max-width: 680px;
   gap: 30px;
   border-bottom: 20px solid var(--green-color);
   background: linear-gradient(360deg, rgba(131, 214, 164, 0.3) 0%, rgba(131, 214, 164, 0) 50%);
+
+  @media screen and (max-width: 1150px) {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding: 25px;
+  }
 }
 
 .titleCard {
@@ -38,9 +54,21 @@
   }
 }
 
+.portalIcon {
+  max-width: 100%;
+}
+
 .infoList {
   max-width: 290px;
   font: var(--font-text-2);
+
+  @media screen and (max-width: 1150px) {
+    max-width: none;
+  }
+
+  @media screen and (max-width: 900px) {
+    font-size: 24px;
+  }
 }
 
 .infoItem {

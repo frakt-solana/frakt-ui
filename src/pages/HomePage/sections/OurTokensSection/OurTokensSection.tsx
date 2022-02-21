@@ -23,7 +23,7 @@ export const OurTokensSection: FC<OurTokensSectionProps> = ({
         <div className={styles.wrapper}>
           <div className={classNames(styles.card, styles.cardGreen)}>
             <div className={styles.portalWrapper}>
-              <PortalIcon />
+              <PortalIcon className={styles.portalIcon} />
             </div>
             <div className={styles.infoWrapper}>
               <h4 className={styles.titleCard}>$FRKT</h4>
@@ -40,7 +40,7 @@ export const OurTokensSection: FC<OurTokensSectionProps> = ({
           </div>
           <div className={classNames(styles.card, styles.cardBlue)}>
             <div className={styles.portalWrapper}>
-              <PortalIcon />
+              <PortalIcon className={styles.portalIcon} />
             </div>
             <div className={styles.infoWrapper}>
               <h4 className={styles.titleCard}>$FRKX</h4>
