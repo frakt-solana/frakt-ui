@@ -3,7 +3,6 @@ import classNames from 'classnames';
 
 import Header from '../Header';
 import styles from './styles.module.scss';
-import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { HeaderStateProvider, useHeaderState } from './headerState';
 

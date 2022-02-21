@@ -25,6 +25,14 @@
   @media screen and (max-width: 767px) {
     margin-top: 20px;
   }
+
+  @media screen and (max-width: 500px) {
+    font-size: 32px;
+  }
+
+  @media screen and (max-width: 400px) {
+    font-size: 25px;
+  }
 }
 
 .text {

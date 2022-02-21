@@ -16,9 +16,10 @@
   justify-content: space-between;
   gap: 40px;
 
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 800px) {
     margin-right: 90px;
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 }
 
@@ -32,10 +33,19 @@
   @media screen and (max-width: 1400px) {
     font-size: 5vw;
   }
+
+  @media screen and (max-width: 800px) {
+    width: 100%;
+    font-size: 46px;
+  }
 }
 
 .navWrapper {
   flex-shrink: 0;
+
+  @media screen and (max-width: 800px) {
+      margin-right: auto;
+  }
 }
 
 .contacts {
@@ -99,6 +109,10 @@
 .contactsInfo {
   display: flex;
   gap: 30px;
+
+  @media screen and (max-width: 1023px) {
+    flex-wrap: wrap;
+  }
 }
 
 .docsTitle,

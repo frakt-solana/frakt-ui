@@ -9,12 +9,12 @@ import serum from './images/serum.svg';
 import solsea from './images/solsea.svg';
 import { TECHNICAL_PARTNERS_ID } from '../../constants';
 
-interface PartnersProps {
+interface PartnersSectionProps {
   className?: string;
   navRef?: { current: HTMLParagraphElement };
 }
 
-const Partners: FC<PartnersProps> = ({ className, navRef }) => {
+const PartnersSection: FC<PartnersSectionProps> = ({ className, navRef }) => {
   return (
     <section className={classNames('section', styles.section, className)}>
       <p
@@ -40,4 +40,4 @@ const Partners: FC<PartnersProps> = ({ className, navRef }) => {
   );
 };
 
-export default Partners;
+export default PartnersSection;
