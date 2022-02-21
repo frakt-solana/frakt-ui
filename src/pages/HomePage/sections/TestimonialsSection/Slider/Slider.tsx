@@ -2,16 +2,20 @@ import React, { FC, useRef } from 'react';
 import styles from './styles.module.scss';
 
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import SwiperCore, { Autoplay, Navigation, Scrollbar, Grid } from 'swiper';
+import SwiperCore, { Navigation, Scrollbar, Grid } from 'swiper';
 import { SLIDER_DATA } from './slidersData';
 import { TestimonialCard } from './TestimonialCard';
 
-SwiperCore.use([Navigation, Autoplay, Scrollbar, Grid]);
+SwiperCore.use([Navigation, Scrollbar, Grid]);
 
-// const THUMBS_SLIDER_BREAKPOINTS = {
-//   240: { slidesPerView: 2.5, spaceBetween: 50 },
-//   550: { slidesPerView: 1.5 },
-// };
+const THUMBS_SLIDER_BREAKPOINTS = {
+  240: { slidesPerView: 1.4, spaceBetween: 15 },
+  400: { slidesPerView: 1.5, spaceBetween: 15 },
+  701: { slidesPerView: 1.8, spaceBetween: 30 },
+  900: { slidesPerView: 2 },
+  980: { slidesPerView: 2.3 },
+  1201: { slidesPerView: 1.6 },
+};
 
 export const Slider: FC = () => {
   const prevBtn = useRef<HTMLDivElement>(null);
@@ -20,7 +24,6 @@ export const Slider: FC = () => {
   return (
     <div className={styles.sliderWrapper}>
       <Swiper
-        slidesPerView={1.6}
         className={styles.slider}
         navigation={{
           prevEl: prevBtn.current,
@@ -29,12 +32,12 @@ export const Slider: FC = () => {
         spaceBetween={30}
         speed={1000}
         scrollbar={{ draggable: true }}
-        autoplay={{ delay: 5000 }}
         grid={{ rows: 1 }}
+        breakpoints={THUMBS_SLIDER_BREAKPOINTS}
       >
         {SLIDER_DATA.map((slide) => (
           <SwiperSlide
-            key={slide.name1 && slide.imageSrc2}
+            key={slide.name1 && slide.imageSrc1}
             className={styles.slide}
           >
             <TestimonialCard

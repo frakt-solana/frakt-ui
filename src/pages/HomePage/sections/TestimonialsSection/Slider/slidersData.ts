@@ -1,12 +1,6 @@
-import testimonialImage1 from '../../../images/team/teamPhotoAdrian.jpg';
-import testimonialImage2 from '../../../images/team/teamPhotoEgor.jpg';
-import testimonialImage3 from '../../../images/team/teamPhotoPhil.jpg';
-import testimonialImage4 from '../../../images/team/teamPhotoTim.jpg';
-import testimonialImage5 from '../../../images/team/teamPhotoRoman.jpg';
-import testimonialImage6 from '../../../images/team/teamPhotoVedamire.jpg';
-import testimonialImage7 from '../../../images/team/teamPhotoViktor.jpg';
-import testimonialImage8 from '../../../images/team/teamPhotoVlad2.jpg';
-import testimonialImage9 from '../../../images/team/teamPhotoVlad.jpg';
+import testimonialImageUser from '../../../images/testimonials/userIcon.svg';
+import testimonialImage1 from '../../../images/testimonials/testy1.png';
+import testimonialImage3 from '../../../images/testimonials/testy3.png';
 
 interface SlidersDataItem {
   imageSrc1: string;
@@ -22,57 +16,31 @@ interface SlidersDataItem {
 export const SLIDER_DATA: SlidersDataItem[] = [
   {
     imageSrc1: testimonialImage1,
-    imageSrc2: testimonialImage2,
-    name1: 'Adrian',
-    name2: 'Egor Biden',
-    organisation1: 'cryptorussia',
-    organisation2: 'cryptorussia',
+    imageSrc2: testimonialImageUser,
+    name1: 'r0b0',
+    name2: 'Ravage',
+    organisation1: 'BackDAO',
+    organisation2: 'Dino Kingz',
     text1:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
+      'We fractionalized NFTs to offer them to our DAO members, we went on to base our entire Backistan economy and the issuance of $BACK on the fraktionalization of a basket containing no less than 766 NFTs.\n' +
+      '\n' +
+      'Throughout the implementation of the Frakt developed solutions we have received tremendous support from the team.',
     text2:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
+      'FRAKT  allowed Dino Kingz vision to come true.\n' +
+      '\n' +
+      'Dino DAO wanted to have a token backed by SOL NFTs instead of a LP/USD. We had a vision to create ETF Style vault where our DAO members can become shareholders and by fractionalising our DAO holdings on FRAKT, this generated a token which allows our community to become shareholders of the DAO vault by receiving the token \n' +
+      '\n' +
+      "FRAKT's Fraktionalisation protocol and it’s basket feature  made the whole process of adding NFTs, Fractionalising NFTs and generating  tokens very easy. Anyone without any dev experience can follow their guide and fraktionalize their NFTs for any purpose in less than couple minutes",
   },
   {
     imageSrc1: testimonialImage3,
-    imageSrc2: testimonialImage4,
-    name1: 'Phil Biden',
-    name2: 'Tim Biden',
-    organisation1: 'cryptorussia',
-    organisation2: 'cryptorussia',
-    text1:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-    text2:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-  },
-  {
-    imageSrc1: testimonialImage5,
-    imageSrc2: testimonialImage6,
-    name1: 'Roman Biden',
-    name2: 'Viktor Biden',
-    organisation1: 'cryptorussia',
-    organisation2: 'cryptorussia',
-    text1:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-    text2:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-  },
-  {
-    imageSrc1: testimonialImage7,
-    imageSrc2: testimonialImage8,
-    name1: 'Vlad Biden',
-    name2: 'Vedamir Biden',
-    organisation1: 'cryptorussia',
-    organisation2: 'cryptorussia',
-    text1:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-    text2:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
-  },
-  {
-    imageSrc1: testimonialImage9,
-    name1: 'Vlad Biden',
-    organisation1: 'cryptorussia',
-    text1:
-      'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
+    // imageSrc2: testimonialImage4,
+    name1: 'G',
+    // name2: 'Tim Biden',
+    organisation1: '@Crypt0xG',
+    // organisation2: 'cryptorussia',
+    text1: 'The process was smooth and straightforward',
+    // text2:
+    // 'Your task is not just to do something new, your task is to take a fundamentally new step. bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla',
   },
 ];

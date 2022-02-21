@@ -2,6 +2,11 @@
   max-width: 50%;
   position: relative;
 
+  @media screen and (max-width: 1200px) {
+    max-width: 100%;
+    width: 100%;
+  }
+
   .slider {
     padding-bottom: 35px;
   }
@@ -19,6 +24,10 @@
     border-color: var(--gray-color-3);
     z-index: 4;
     top: calc(50% - 45px);
+
+    @media screen and (max-width: 700px) {
+      top: calc(50% - 32px);
+    }
   }
 
   &::before,
@@ -30,6 +39,10 @@
     bottom: 35px;
     position: absolute;
     z-index: 2;
+
+    @media screen and (max-width: 767px) {
+      width: 32px;
+    }
   }
 
   &::before {
@@ -68,6 +81,10 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 30px;
+
+  @media screen and (max-width: 700px) {
+    gap: 15px;
+  }
 }
 
 .card {
@@ -77,6 +94,16 @@
   background-color: var(--color-gray-7);
   height: 295px;
   overflow: hidden;
+
+  @media screen and (max-width: 767px) {
+    padding: 20px;
+    height: 225px;
+  }
+
+  @media screen and (max-width: 500px) {
+    padding: 10px;
+    height: 133px;
+  }
 }
 
 .header {
@@ -93,15 +120,29 @@
   align-items: center;
   justify-content: center;
   margin-right: 20px;
+
+  @media screen and (max-width: 767px) {
+    width: 38px;
+    height: 38px;
+  }
+
+  @media screen and (max-width: 500px) {
+    margin-right: 10px;
+  }
 }
 
 .photo {
   max-width: 100%;
+  width: 100%;
 }
 
 .name {
   font: var(--font-text-2);
   margin-bottom: 10px;
+
+  @media screen and (max-width: 500px) {
+    margin-bottom: 0;
+  }
 }
 
 .organisation {
@@ -112,9 +153,24 @@
 .text {
   margin-top: 30px;
   font: var(--font-text-3);
-  max-height: 125px;
+  max-height: 115px;
   overflow: auto;
   padding-right: 20px;
+
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+    max-height: 75px;
+  }
+
+  @media screen and (max-width: 500px) {
+    margin-top: 10px;
+    max-height: 65px;
+    font-size: 13px;
+  }
+
+  @media screen and (max-width: 400px) {
+    font-size: 10px;
+  }
 
   &::-webkit-scrollbar {
     width: 1px;
