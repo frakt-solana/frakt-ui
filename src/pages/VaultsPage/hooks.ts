@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-const FEATURED_VAULTS_ADDRESS = `https://raw.githubusercontent.com/frakt-solana/verified-mints/main/featured-vaults.json`;
+const FEATURED_VAULTS_ADDRESS =
+  process.env.REACT_APP_FEATURED_VAULTS_BY_FRAKT_TEAM_URL;
 
 export const useFeaturedVaultsPublicKeys = (): {
   featuredVaultsPublicKeys: string[];
