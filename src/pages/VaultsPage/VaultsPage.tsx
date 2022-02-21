@@ -20,6 +20,7 @@ import { VaultsSlider } from './components/VaultsSlider';
 import { FiltersIcon } from '../../icons';
 import { useFeaturedVaultsPublicKeys } from './hooks';
 import { InputControlsNames, SortValue, StatusRadioNames } from './model';
+import { Loader } from '../../components/Loader';
 
 const SORT_VALUES: SortValue[] = [
   {
@@ -52,7 +53,7 @@ const VaultsPage = (): JSX.Element => {
   const { control, watch } = useForm({
     defaultValues: {
       [InputControlsNames.SHOW_VAULTS_STATUS]: StatusRadioNames.SHOW_ALL_VAULTS,
-      [InputControlsNames.SHOW_VERIFIED_VAULTS]: false,
+      [InputControlsNames.SHOW_VERIFIED_VAULTS]: true,
       [InputControlsNames.SHOW_TRADABLE_VAULTS]: false,
       [InputControlsNames.SORT]: SORT_VALUES[0],
     },
@@ -228,7 +229,11 @@ const VaultsPage = (): JSX.Element => {
                 isAuction
               />
             )}
-            <VaultsList vaults={vaults} isLoading={loading} />
+            {!loading ? (
+              <VaultsList vaults={vaults} isLoading={loading} />
+            ) : (
+              <Loader size="large" />
+            )}
           </div>
         </div>
       </Container>

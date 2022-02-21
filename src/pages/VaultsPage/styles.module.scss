@@ -12,7 +12,7 @@
   padding-bottom: 60px;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     display: block;
     width: 1px;
@@ -20,6 +20,10 @@
     top: -50px;
     left: -1px;
     background-color: var(--color-gray-4);
+
+    @media screen and (max-width: 700px) {
+      content: unset;
+    }
   }
 
   @media screen and (max-width: 767px) {
@@ -100,7 +104,7 @@
   }
 }
 
-.vaultsAmount  {
+.vaultsAmount {
   margin-left: auto;
   margin-right: 20px;
   white-space: nowrap;
