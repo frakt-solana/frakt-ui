@@ -9,7 +9,6 @@ import { Sidebar } from './components/Sidebar';
 import { NFTsList } from '../../components/NFTsList';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderSell } from './components/HeaderSell';
-import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { SellingModal } from './components/SellingModal';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../../components/WalletNotConnected';
@@ -93,68 +92,66 @@ const MarketSellPage = (): JSX.Element => {
   const loading = userTokensLoading || nftsLoading;
 
   return (
-    <HeaderStateProvider>
-      <AppLayout className={styles.layout}>
-        <div className={styles.modalWrapper}>
-          <SellingModal
-            nft={selectedNft}
-            onDeselect={onDeselect}
-            onSubmit={onSell}
-          />
-        </div>
-        <div className="container">
-          <Helmet>
-            <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
-          </Helmet>
-          <div className={styles.wrapper}>
-            <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
+    <AppLayout className={styles.layout}>
+      <div className={styles.modalWrapper}>
+        <SellingModal
+          nft={selectedNft}
+          onDeselect={onDeselect}
+          onSubmit={onSell}
+        />
+      </div>
+      <div className="container">
+        <Helmet>
+          <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
+        </Helmet>
+        <div className={styles.wrapper}>
+          <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
-            <div className={styles.content}>
-              <HeaderSell poolPublicKey={poolPubkey} />
+          <div className={styles.content}>
+            <HeaderSell poolPublicKey={poolPubkey} />
 
-              {!connected ? (
-                <WalletNotConnected />
-              ) : (
-                <>
-                  <div className={styles.itemsSortWrapper}>
-                    <p
-                      className={styles.filtersIconWrapper}
-                      onClick={() => setIsSidebar(true)}
-                    >
-                      Filters
-                      <FiltersIcon />
-                    </p>
-                    <div className={styles.itemsAmount}>355 items</div>
-                    <div className={styles.sortWrapper}>
-                      <ControlledSelect
-                        className={styles.sortingSelect}
-                        valueContainerClassName={
-                          styles.sortingSelectValueContainer
-                        }
-                        label="Sort by"
-                        control={control}
-                        name="sort"
-                        options={SORT_VALUES}
-                      />
-                    </div>
-                  </div>
-
-                  {loading ? (
-                    <Loader />
-                  ) : (
-                    <NFTsList
-                      onCardClick={onSelect}
-                      nfts={nfts}
-                      selectedNft={selectedNft}
+            {!connected ? (
+              <WalletNotConnected />
+            ) : (
+              <>
+                <div className={styles.itemsSortWrapper}>
+                  <p
+                    className={styles.filtersIconWrapper}
+                    onClick={() => setIsSidebar(true)}
+                  >
+                    Filters
+                    <FiltersIcon />
+                  </p>
+                  <div className={styles.itemsAmount}>355 items</div>
+                  <div className={styles.sortWrapper}>
+                    <ControlledSelect
+                      className={styles.sortingSelect}
+                      valueContainerClassName={
+                        styles.sortingSelectValueContainer
+                      }
+                      label="Sort by"
+                      control={control}
+                      name="sort"
+                      options={SORT_VALUES}
                     />
-                  )}
-                </>
-              )}
-            </div>
+                  </div>
+                </div>
+
+                {loading ? (
+                  <Loader />
+                ) : (
+                  <NFTsList
+                    onCardClick={onSelect}
+                    nfts={nfts}
+                    selectedNft={selectedNft}
+                  />
+                )}
+              </>
+            )}
           </div>
         </div>
-      </AppLayout>
-    </HeaderStateProvider>
+      </div>
+    </AppLayout>
   );
 };
 
