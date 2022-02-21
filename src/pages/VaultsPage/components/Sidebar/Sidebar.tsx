@@ -1,10 +1,11 @@
-import styles from './styles.module.scss';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
-import React, { FC, useState } from 'react';
-import { Collapse, Radio } from 'antd';
+import { Control, Controller } from 'react-hook-form';
+import { Collapse, Radio, RadioChangeEvent } from 'antd';
+
+import styles from './styles.module.scss';
 import CustomCheckbox from '../../../../components/Checkbox/Checkbox';
 import { CustomRadio } from '../../../../components/CustomRadio';
-import { Control, Controller } from 'react-hook-form';
 import {
   FormFieldValues,
   SidebarCheckboxNames,
@@ -31,7 +32,7 @@ export const Sidebar: FC<SidebarProps> = ({
     StatusRadioNames.SHOW_ACTIVE_VAULTS,
   );
 
-  const changeRadio = (event) => {
+  const changeRadio = (event: RadioChangeEvent) => {
     setCurrentRadio(event.target.value);
   };
 
