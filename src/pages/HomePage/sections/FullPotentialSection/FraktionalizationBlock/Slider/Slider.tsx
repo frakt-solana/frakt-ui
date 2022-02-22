@@ -2,9 +2,8 @@ import React, { FC } from 'react';
 import styles from './styles.module.scss';
 
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import SwiperCore, { FreeMode, Navigation, Pagination, Autoplay } from 'swiper';
+import SwiperCore, { Autoplay, FreeMode, Navigation, Pagination } from 'swiper';
 import { NavLink } from 'react-router-dom';
-import classNames from 'classnames/bind';
 import { SLIDER_DATA } from './slidersData';
 import { PATHS } from '../../../../../../constants';
 import VaultCard from '../../../../../../components/VaultCard';

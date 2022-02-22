@@ -21,22 +21,6 @@
     }
   }
 
-  @media screen and (max-width: 1200px) {
-    width: calc(33.33% - 17px);
-  }
-
-  @media screen and (max-width: 900px) {
-    width: calc(50% - 13px);
-  }
-
-  @media screen and (max-width: 550px) {
-    width: calc(50% - 10px);
-  }
-
-  @media screen and (max-width: 370px) {
-    width: 100%;
-  }
-
   &::after {
     content: '';
     position: absolute;

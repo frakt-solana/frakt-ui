@@ -13,6 +13,13 @@ interface PoolsBlockProps {
   className?: string;
 }
 
+const SLIDER_BREAKPOINTS = {
+  240: { slidesPerView: 1.2, spaceBetween: 16 },
+  340: { slidesPerView: 1.5, spaceBetween: 16 },
+  370: { slidesPerView: 2, spaceBetween: 25 },
+  500: { slidesPerView: 2.5 },
+};
+
 export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
   const prevBtn = useRef<HTMLDivElement>(null);
   const nextBtn = useRef<HTMLDivElement>(null);
@@ -22,16 +29,16 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
         title={'Pools'}
         icon={<PoolsInfoIcon />}
         text={'Instantly buy, sell and swap NFTs'}
+        disabled
       />
       <div className={styles.sliderWrapper}>
         <Swiper
-          slidesPerView={2.5}
+          breakpoints={SLIDER_BREAKPOINTS}
           className={styles.slider}
           navigation={{
             prevEl: prevBtn.current,
             nextEl: nextBtn.current,
           }}
-          spaceBetween={25}
           speed={1000}
           scrollbar={{ draggable: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
