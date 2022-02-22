@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import styles from './styles.module.scss';
-import { PoolCard } from '../PoolCard';
+import { PoolCard } from '../../../../components/PoolCard';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../../components/FakeInfinityScroll';

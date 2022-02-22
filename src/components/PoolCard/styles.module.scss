@@ -1,12 +1,13 @@
 .poolCard {
   max-width: 300px;
   flex-shrink: 1;
-  width: calc(25% - 19px);
   position: relative;
   background-color: var(--black-color);
   border: 1px solid var(--color-gray-03);
   color: var(--white-color);
   transition: border-color 0.1s ease-in;
+  margin-bottom: 10px;
+  margin-right: 10px;
 
   &:hover {
     border-color: var(--accent-color-1);
@@ -18,22 +19,6 @@
     }
   }
 
-  @media screen and (max-width: 1200px) {
-    width: calc(33.33% - 17px);
-  }
-
-  @media screen and (max-width: 900px) {
-    width: calc(50% - 13px);
-  }
-
-  @media screen and (max-width: 550px) {
-    width: calc(50% - 10px);
-  }
-
-  @media screen and (max-width: 370px) {
-    width: 100%;
-  }
-
   &::after {
     content: '';
     position: absolute;
@@ -43,6 +28,7 @@
     right: -10px;
     bottom: -10px;
     border: 1px solid var(--color-gray-03);
+    background-color: var(--black-color);
     transition: border-color 0.1s ease-in;
     z-index: -1;
 

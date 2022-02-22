@@ -17,7 +17,7 @@ const SLIDER_BREAKPOINTS = {
   240: { slidesPerView: 1.2, spaceBetween: 16 },
   340: { slidesPerView: 1.5, spaceBetween: 16 },
   370: { slidesPerView: 2, spaceBetween: 25 },
-  500: { slidesPerView: 2.5 },
+  500: { slidesPerView: 2.5, spaceBetween: 25 },
 };
 
 export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {

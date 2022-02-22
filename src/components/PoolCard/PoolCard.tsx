@@ -4,10 +4,10 @@ import { FC } from 'react';
 import {
   NftPoolData,
   SafetyDepositBoxState,
-} from '../../../../utils/cacher/nftPools';
+} from '../../utils/cacher/nftPools';
 import styles from './styles.module.scss';
-import { PATHS } from '../../../../constants';
-import { SolanaIcon } from '../../../../icons';
+import { PATHS } from '../../constants';
+import { SolanaIcon } from '../../icons';
 
 interface PoolCardProps {
   pool: NftPoolData;
