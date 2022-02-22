@@ -6,6 +6,8 @@ import SwiperCore, { FreeMode, Navigation, Pagination, Autoplay } from 'swiper';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import { SLIDER_DATA } from './slidersData';
+import { PATHS } from '../../../../../../constants';
+import VaultCard from '../../../../../../components/VaultCard';
 
 SwiperCore.use([FreeMode, Navigation, Pagination, Autoplay]);
 
@@ -22,49 +24,14 @@ export const Slider: FC = () => {
         loopAdditionalSlides={1}
         spaceBetween={0}
         speed={1000}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        autoplay={{ delay: 5000 }}
       >
         {SLIDER_DATA.map((slide) => (
-          <SwiperSlide
-            key={slide.imagesSrc || slide.videosSrc}
-            className={styles.slide}
-          >
+          <SwiperSlide key={slide.vaultPubkey} className={styles.slide}>
             <div className={styles.slideContent}>
-              <NavLink to={slide.url} className={styles.visualWrapper}>
-                {slide.imagesSrc && (
-                  <img
-                    className={styles.slideImage}
-                    src={slide.imagesSrc}
-                    alt={slide.name}
-                  />
-                )}
-                {slide.videosSrc && (
-                  <video
-                    autoPlay
-                    muted
-                    loop
-                    height="100%"
-                    width="100%"
-                    className={styles.slideVideo}
-                  >
-                    <source src={slide.videosSrc} type="video/mp4" />
-                  </video>
-                )}
-                <p className={classNames(styles.label, styles[slide.label])}>
-                  {slide.label}
-                </p>
+              <NavLink to={PATHS.VAULTS} className={styles.visualWrapper}>
+                <VaultCard vaultData={slide} />
               </NavLink>
-              <div className={styles.content}>
-                <p className={styles.slideName}>{slide.name}</p>
-                <a
-                  href={slide.artistLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={styles.slideArtist}
-                >
-                  {slide.artist}
-                </a>
-              </div>
             </div>
           </SwiperSlide>
         ))}

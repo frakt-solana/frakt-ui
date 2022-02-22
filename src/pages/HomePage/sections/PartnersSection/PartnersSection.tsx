@@ -22,7 +22,7 @@ const PartnersSection: FC<PartnersSectionProps> = ({ className, navRef }) => {
         id={TECHNICAL_PARTNERS_ID}
         ref={navRef}
       >
-        Technical partners
+        Backers
       </p>
       <div className={`container`}>
         <h2 className={styles.title}>Technical Partners</h2>
