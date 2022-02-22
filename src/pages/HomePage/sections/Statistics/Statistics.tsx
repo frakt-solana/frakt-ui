@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 import { useEffect, useRef, useState } from 'react';
+import useOnScreen from '../../../../hooks/useOnScreen';
 
 interface Statistic {
   lockedNFTs: number;
@@ -37,15 +38,6 @@ const Statistics = (): JSX.Element => {
     duration: 2,
     separator: ',',
   });
-  const issuedTokensRef = useRef(null);
-  const { update: updateIssuedTokensCount } = useCountUp({
-    ref: issuedTokensRef,
-    start: 0,
-    end: 0,
-    startOnMount: false,
-    duration: 2,
-    separator: ',',
-  });
   const tvlRef = useRef(null);
   const { update: updateTvlCount } = useCountUp({
     ref: tvlRef,
@@ -58,14 +50,18 @@ const Statistics = (): JSX.Element => {
     prefix: '$',
   });
 
+  const isLockedNFTRef = useOnScreen(lockedNFTRef);
+  const isTvlRefVisible = useOnScreen(tvlRef);
+
   useEffect(() => {
-    if (!isLoading) {
-      updateLockedNFTCount(statistic?.lockedNFTs || 0);
-      updateIssuedTokensCount(statistic?.issuedTokens || 0);
+    if (!isLoading && isTvlRefVisible) {
       updateTvlCount(statistic?.TVL * price || 0);
     }
+    if (!isLoading && isLockedNFTRef) {
+      updateLockedNFTCount(statistic?.lockedNFTs || 0);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [isLoading, isTvlRefVisible, isLockedNFTRef]);
 
   useEffect(() => {
     const promises = [
