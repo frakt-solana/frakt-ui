@@ -125,17 +125,18 @@ export const useDeposit = (
     }
   };
 
-  const subscribeUserTokenBalance = useCallback(async () => {
+  const subscribeUserTokenBalance = async (): Promise<void> => {
     const tokenAmount = await getUserTokenAmountByMint();
+
     if (tokenAmount) {
       const { mainRouter } = fusionPoolInfo;
 
-      stakeLiquidity({
+      await stakeLiquidity({
         amount: new BN(Number(tokenAmount)),
         router: mainRouter,
       });
     }
-  }, [getUserTokenAmountByMint]);
+  };
 
   useEffect(() => {
     setValue(

@@ -1,8 +1,10 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import BN from 'bn.js';
-import { Controller } from 'react-hook-form';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { Controller } from 'react-hook-form';
+import { PublicKey } from '@solana/web3.js';
 
 import { InputControlsNames, useDeposit } from './hooks';
 import Checkbox from '../CustomCheckbox';
@@ -50,10 +52,34 @@ const DepositModal: FC<DepositModalProps> = ({
   } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo);
 
   const { addRaydiumLiquidity } = useLiquidityPools();
+  const { connection } = useConnection();
+  const wallet = useWallet();
+
+  const subscriptionId = useRef<number>();
+
+  const subscribe = (tokenAccountPubkey: PublicKey) => {
+    subscriptionId.current = connection.onAccountChange(
+      tokenAccountPubkey,
+      () => subscribeUserTokenBalance(),
+    );
+  };
+
+  const unsubscribe = () => {
+    if (subscriptionId.current) {
+      connection.removeAccountChangeListener(subscriptionId.current);
+      subscriptionId.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connection, wallet]);
 
   const onSubmitHandler = async () => {
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
+    const tokenMint = fusionPoolInfo.mainRouter.tokenMintInput;
 
     await addRaydiumLiquidity({
       baseToken: tokenInfo,
@@ -64,7 +90,7 @@ const DepositModal: FC<DepositModalProps> = ({
       fixedSide: liquiditySide,
     });
 
-    await subscribeUserTokenBalance();
+    subscribe(new PublicKey(tokenMint));
 
     setVisible(false);
   };
