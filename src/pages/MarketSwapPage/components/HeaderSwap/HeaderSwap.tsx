@@ -1,21 +1,22 @@
 import { FC } from 'react';
+import classNames from 'classnames';
+
 import styles from './styles.module.scss';
 import { MarketNavigation } from '../../../../components/MarketNavigation';
-import { useHeaderState } from '../../../../contexts/HeaderState';
-import classNames from 'classnames';
 import { SolanaIcon } from '../../../../icons';
+import { useHeaderState } from '../../../../components/Layout/headerState';
 
 interface HeaderSwapProps {
   poolPublicKey: string;
 }
 
 export const HeaderSwap: FC<HeaderSwapProps> = ({ poolPublicKey }) => {
-  const { headerVisible } = useHeaderState();
+  const { isHeaderHidden } = useHeaderState();
   return (
     <div
       className={classNames({
         [styles.positionWrapper]: true,
-        [styles.headerHidden]: !headerVisible,
+        [styles.headerHidden]: isHeaderHidden,
       })}
     >
       <div className={`container ${styles.container}`}>

@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
+import classNames from 'classnames';
+
 import styles from './styles.module.scss';
 import { QuestionIcon } from '../../../../icons';
 import { BuyRandomNft } from './BuyRandomNft';
 import { MarketNavigation } from '../../../../components/MarketNavigation';
-import { useHeaderState } from '../../../../contexts/HeaderState';
-import classNames from 'classnames';
+import { useHeaderState } from '../../../../components/Layout/headerState';
 
 const tempBgImage =
   'https://aacsdzhn52gnk67swxcahjyrwtcpaykzbsletupsuur7dupnqzsa.arweave.net/AAUh5O3ujNV78rXEA6cRtMTwYVkMlknR8qUj8dHthmQ';
@@ -15,12 +16,12 @@ interface HeaderBuyProps {
 }
 
 export const HeaderBuy: FC<HeaderBuyProps> = ({ poolPublicKey, onBuy }) => {
-  const { headerVisible } = useHeaderState();
+  const { isHeaderHidden } = useHeaderState();
   return (
     <div
       className={classNames({
         [styles.positionWrapper]: true,
-        [styles.headerHidden]: !headerVisible,
+        [styles.headerHidden]: isHeaderHidden,
       })}
     >
       <div className={`container ${styles.container}`}>

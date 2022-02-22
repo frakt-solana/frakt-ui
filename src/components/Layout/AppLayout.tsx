@@ -1,43 +1,25 @@
+import { FC, useEffect } from 'react';
+import classNames from 'classnames';
+
 import Header from '../Header';
 import styles from './styles.module.scss';
-import classNames from 'classnames';
-import { useEffect, useState } from 'react';
 import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { useHeaderState } from '../../contexts/HeaderState';
+import { HeaderStateProvider, useHeaderState } from './headerState';
 
-interface AppLayoutProps {
+interface LayoutProps {
   children: JSX.Element[] | JSX.Element;
   className?: string;
   contentClassName?: string;
 }
 
-export const AppLayout = ({
+const Layout: FC<LayoutProps> = ({
   children,
   className = '',
   contentClassName = '',
-}: AppLayoutProps): JSX.Element => {
+}) => {
   const { visible, setVisible } = useWalletModal();
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
-  const [scrollTop, setScrollTop] = useState(0);
-  const [prevOffsetTop, setPrevOffsetTop] = useState(0);
-  const { setHeaderVisible } = useHeaderState();
-
-  const onContentScroll = (event) => {
-    const offset = event.target.scrollTop;
-
-    if (offset > scrollTop) setPrevOffsetTop(offset);
-    if (offset < prevOffsetTop) setScrollTop(offset);
-
-    if (offset > 200 && offset > prevOffsetTop) {
-      setHeaderVisible(!isHeaderHidden);
-      setIsHeaderHidden(true);
-    }
-    if (offset + 100 < prevOffsetTop) {
-      setHeaderVisible(!isHeaderHidden);
-      setIsHeaderHidden(false);
-    }
-  };
+  const { isHeaderHidden, onContentScroll } = useHeaderState();
 
   useEffect(() => {
     visible && setVisible(false);
@@ -62,3 +44,9 @@ export const AppLayout = ({
     </div>
   );
 };
+
+export const AppLayout: FC<LayoutProps> = ({ children, ...props }) => (
+  <HeaderStateProvider>
+    <Layout {...props}>{children}</Layout>
+  </HeaderStateProvider>
+);

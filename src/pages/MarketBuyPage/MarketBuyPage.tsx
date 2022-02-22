@@ -10,7 +10,6 @@ import { ControlledSelect } from '../../components/Select/Select';
 import { Sidebar } from './components/Sidebar';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
-import { HeaderStateProvider } from '../../contexts/HeaderState';
 import { usePublicKeyParam } from '../../hooks';
 import {
   useNftPool,
@@ -130,44 +129,42 @@ const MarketBuyPage = (): JSX.Element => {
   };
 
   return (
-    <HeaderStateProvider>
-      <AppLayout className={styles.layout}>
-        <div className="container">
-          <Helmet>
-            <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
-          </Helmet>
-          <div className={styles.wrapper}>
-            <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
+    <AppLayout className={styles.layout}>
+      <div className="container">
+        <Helmet>
+          <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
+        </Helmet>
+        <div className={styles.wrapper}>
+          <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
 
-            <div className={styles.content}>
-              <HeaderBuy poolPublicKey={poolPubkey} onBuy={onBuy} />
+          <div className={styles.content}>
+            <HeaderBuy poolPublicKey={poolPubkey} onBuy={onBuy} />
 
-              <div className={styles.itemsSortWrapper}>
-                <p
-                  className={styles.filtersIconWrapper}
-                  onClick={() => setIsSidebar(true)}
-                >
-                  Filters
-                  <FiltersIcon />
-                </p>
-                <div className={styles.itemsAmount}>355 items</div>
-                <div className={styles.sortWrapper}>
-                  <ControlledSelect
-                    className={styles.sortingSelect}
-                    valueContainerClassName={styles.sortingSelectValueContainer}
-                    label="Sort by"
-                    control={control}
-                    name="sort"
-                    options={SORT_VALUES}
-                  />
-                </div>
+            <div className={styles.itemsSortWrapper}>
+              <p
+                className={styles.filtersIconWrapper}
+                onClick={() => setIsSidebar(true)}
+              >
+                Filters
+                <FiltersIcon />
+              </p>
+              <div className={styles.itemsAmount}>355 items</div>
+              <div className={styles.sortWrapper}>
+                <ControlledSelect
+                  className={styles.sortingSelect}
+                  valueContainerClassName={styles.sortingSelectValueContainer}
+                  label="Sort by"
+                  control={control}
+                  name="sort"
+                  options={SORT_VALUES}
+                />
               </div>
-              {poolLoading ? <Loader /> : <NFTsList nfts={nfts} />}
             </div>
+            {poolLoading ? <Loader /> : <NFTsList nfts={nfts} />}
           </div>
         </div>
-      </AppLayout>
-    </HeaderStateProvider>
+      </div>
+    </AppLayout>
   );
 };
 

@@ -51,9 +51,9 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
   };
 
   useEffect(() => {
-    !loading && vaults.length && getCollectionItems();
+    !loading && getCollectionItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, vaults]);
+  }, [loading]);
 
   return (
     <CollectionsContext.Provider
