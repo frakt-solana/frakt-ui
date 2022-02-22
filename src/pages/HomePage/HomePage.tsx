@@ -85,7 +85,7 @@ const HomePage = (): JSX.Element => {
             </div>
           </div>
         </section>
-        {/*<Statistics />*/}
+        <Statistics />
         <FullPotentialSection navRef={sectionRef1} />
         <OurTokensSection navRef={sectionRef2} />
         <TestimonialsSection />
