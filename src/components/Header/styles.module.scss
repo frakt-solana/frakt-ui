@@ -153,7 +153,7 @@
       padding: 20px 0;
       border: var(--border-gray-1);
 
-      &::before {
+      &::after {
         content: "";
         display: block;
         width: 20px;

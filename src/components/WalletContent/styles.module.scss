@@ -2,13 +2,9 @@
   position: fixed;
   left: 0;
   right: 0;
-  top: 50px;
+  top: 0;
   bottom: 0;
   z-index: 91;
-
-  @media screen and (max-width: 500px) {
-    top: 36px;
-  }
 }
 
 .overlay {
@@ -27,7 +23,7 @@
   display: grid;
   grid-template-columns: repeat(3, 104px);
   position: absolute;
-  top: 14px;
+  top: 64px;
   right: 0;
   background-color: var(--black-color);
 
@@ -48,6 +44,10 @@
 
   @media screen and (max-width: 1200px) {
     right: 15px;
+  }
+
+  @media screen and (max-width: 500px) {
+    top: 50px;
   }
 
   @media screen and (max-width: 340px) {

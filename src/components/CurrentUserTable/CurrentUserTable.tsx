@@ -23,15 +23,6 @@ const CurrentUserTable = ({
     return null;
   }
 
-  const getAddress = () => {
-    const valueStr = shortenAddress(`${publicKey || ''}`);
-    return (
-      <div className={styles.row}>
-        <span>Address</span> {valueStr}
-      </div>
-    );
-  };
-
   const getBalanceValue = () => {
     const valueStr = `${formatNumber.format(
       (account?.lamports || 0) / LAMPORTS_PER_SOL,
@@ -62,7 +53,6 @@ const CurrentUserTable = ({
           </NavLink>
         </div>
       </div>
-      {getAddress()}
       {getBalanceValue()}
       <button onClick={disconnect} className={styles.disconnectButton}>
         Disconnect wallet
