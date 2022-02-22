@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import BN from 'bn.js';
 import { Controller } from 'react-hook-form';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
@@ -46,9 +46,10 @@ const DepositModal: FC<DepositModalProps> = ({
     baseValue,
     quoteValue,
     liquiditySide,
-  } = useDeposit(tokenInfo, poolConfig);
+    subscribeUserTokenBalance,
+  } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo);
 
-  const { addRaydiumLiquidity, stakeLiquidity } = useLiquidityPools();
+  const { addRaydiumLiquidity } = useLiquidityPools();
 
   const onSubmitHandler = async () => {
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
@@ -63,14 +64,8 @@ const DepositModal: FC<DepositModalProps> = ({
       fixedSide: liquiditySide,
     });
 
-    if (fusionPoolInfo) {
-      const { mainRouter } = fusionPoolInfo;
+    await subscribeUserTokenBalance();
 
-      await stakeLiquidity({
-        amount: new BN(1e6),
-        router: mainRouter,
-      });
-    }
     setVisible(false);
   };
 

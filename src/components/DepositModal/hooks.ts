@@ -1,16 +1,21 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import BN from 'bn.js';
+import { PublicKey } from '@solana/web3.js';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
 
 import {
   calculateTotalDeposit,
+  getTokenAccount,
   useCurrentSolanaPrice,
+  useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
 import { getOutputAmount } from '../SwapForm/helpers';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
+import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
 
 export enum InputControlsNames {
   QUOTE_VALUE = 'quoteValue',
@@ -31,6 +36,7 @@ export type FormFieldValues = {
 export const useDeposit = (
   quoteToken: TokenInfo,
   poolConfig: LiquidityPoolKeysV4,
+  fusionPoolInfo: FusionPoolInfo,
 ): {
   formControl: Control<FormFieldValues>;
   totalValue: string;
@@ -41,11 +47,14 @@ export const useDeposit = (
   baseValue: string;
   currentSolanaPriceUSD: number;
   liquiditySide: LiquiditySide | null;
+  getUserTokenAmountByMint: () => Promise<number>;
+  subscribeUserTokenBalance: () => void;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
-
-  const { connected } = useWallet();
+  const { connection } = useConnection();
+  const wallet = useWallet();
+  const { stakeLiquidity } = useLiquidityPools();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -103,6 +112,31 @@ export const useDeposit = (
     setValue(InputControlsNames.LIQUIDITY_SIDE, value);
   };
 
+  const getUserTokenAmountByMint = async (): Promise<number> => {
+    if (fusionPoolInfo.mainRouter) {
+      const tokenAccount = await getTokenAccount({
+        tokenMint: new PublicKey(fusionPoolInfo.mainRouter.tokenMintInput),
+        owner: wallet.publicKey,
+        connection,
+      });
+
+      const tokenAmount = tokenAccount.accountInfo.amount.toNumber();
+      return tokenAmount;
+    }
+  };
+
+  const subscribeUserTokenBalance = useCallback(async () => {
+    const tokenAmount = await getUserTokenAmountByMint();
+    if (tokenAmount) {
+      const { mainRouter } = fusionPoolInfo;
+
+      stakeLiquidity({
+        amount: new BN(Number(tokenAmount)),
+        router: mainRouter,
+      });
+    }
+  }, [getUserTokenAmountByMint]);
+
   useEffect(() => {
     setValue(
       InputControlsNames.TOTAL_VALUE,
@@ -111,7 +145,7 @@ export const useDeposit = (
   }, [baseValue, quoteValue, currentSolanaPriceUSD, setValue]);
 
   const isDepositBtnEnabled =
-    poolInfo && connected && isVerified && Number(baseValue) > 0;
+    poolInfo && wallet.connected && isVerified && Number(baseValue) > 0;
 
   return {
     formControl: control,
@@ -123,5 +157,7 @@ export const useDeposit = (
     baseValue,
     currentSolanaPriceUSD,
     liquiditySide,
+    getUserTokenAmountByMint,
+    subscribeUserTokenBalance,
   };
 };
