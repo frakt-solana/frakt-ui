@@ -20,6 +20,8 @@ import {
   TEAM_SECTION_ID,
   TECHNICAL_PARTNERS_ID,
 } from '../../constants';
+import { PATHS } from '../../../../constants';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface FooterProps {
   className?: string;
@@ -27,6 +29,8 @@ interface FooterProps {
 }
 
 export const Footer: FC<FooterProps> = ({ className, navRef }) => {
+  const { connected } = useWallet();
+
   return (
     <footer className={classNames(styles.footer, className)}>
       <p
@@ -42,25 +46,27 @@ export const Footer: FC<FooterProps> = ({ className, navRef }) => {
           <h5 className={styles.navTitle}>Ecosystem</h5>
           <ul className={styles.navList}>
             <li className={styles.navItem}>
-              <NavLink to={'URLS.COLLECTION'}>Market</NavLink>
+              <NavLink to={PATHS.MARKET}>Market</NavLink>
             </li>
             <li className={styles.navItem}>
-              <NavLink to={'URLS.RARITY'}>Vaults</NavLink>
+              <NavLink to={PATHS.VAULTS}>Vaults</NavLink>
             </li>
             <li className={styles.navItem}>
-              <NavLink to={'URLS.STAKE'}>Swap</NavLink>
+              <NavLink to={PATHS.SWAP}>Swap</NavLink>
             </li>
             <li className={styles.navItem}>
-              <NavLink to={'URLS.MARKETPLACE'}>Trade</NavLink>
+              <NavLink to={process.env.REACT_APP_DEX_URL}>Trade</NavLink>
             </li>
             <li className={styles.navItem}>
-              <NavLink to={'URLS.MARKETPLACE'}>Collections</NavLink>
+              <NavLink to={PATHS.COLLECTIONS}>Collections</NavLink>
             </li>
+            {connected && (
+              <li className={styles.navItem}>
+                <NavLink to={PATHS.WALLET}>My collection</NavLink>
+              </li>
+            )}
             <li className={styles.navItem}>
-              <NavLink to={'URLS.MARKETPLACE'}>My collection</NavLink>
-            </li>
-            <li className={styles.navItem}>
-              <NavLink to={'URLS.MARKETPLACE'}>Yield</NavLink>
+              <NavLink to={PATHS.YIELD}>Yield</NavLink>
             </li>
           </ul>
         </div>
@@ -102,7 +108,7 @@ export const Footer: FC<FooterProps> = ({ className, navRef }) => {
               <ul className={styles.socialNavs}>
                 <li className={styles.socialItem}>
                   <a
-                    href="http://discord.gg/frakt"
+                    href="https://medium.com/@frakt_nft"
                     className={styles.socialLink}
                     target="_blank"
                     rel="noreferrer"
@@ -112,7 +118,7 @@ export const Footer: FC<FooterProps> = ({ className, navRef }) => {
                 </li>
                 <li className={styles.socialItem}>
                   <a
-                    href="https://twitter.com/FraktArt"
+                    href="https://docs.frakt.xyz/"
                     className={styles.socialLink}
                     target="_blank"
                     rel="noreferrer"
@@ -137,7 +143,7 @@ export const Footer: FC<FooterProps> = ({ className, navRef }) => {
               <ul className={styles.socialNavs}>
                 <li className={styles.socialItem}>
                   <a
-                    href="http://discord.gg/frakt"
+                    href="https://discord.gg/frakt"
                     className={styles.socialLink}
                     target="_blank"
                     rel="noreferrer"

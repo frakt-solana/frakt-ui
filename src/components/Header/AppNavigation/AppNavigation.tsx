@@ -37,32 +37,62 @@ const dropdownMenu = (
       </a>
     </li>
     <li className={styles.dropdownItem}>
-      <a href="" className={styles.dropdownLink}>
+      <a
+        href=""
+        target="_blank"
+        rel="noreferrer"
+        className={styles.dropdownLink}
+      >
         <TwitterIcon width={24} /> Twitter
       </a>
     </li>
     <li className={styles.dropdownItem}>
-      <a href="" className={styles.dropdownLink}>
+      <a
+        href="https://discord.gg/frakt"
+        target="_blank"
+        rel="noreferrer"
+        className={styles.dropdownLink}
+      >
         <DiscordIcon width={24} /> Discord
       </a>
     </li>
     <li className={styles.dropdownItem}>
-      <a href="" className={styles.dropdownLink}>
+      <a
+        href=""
+        target="_blank"
+        rel="noreferrer"
+        className={styles.dropdownLink}
+      >
         <GitHubIcon width={24} /> GitHub
       </a>
     </li>
     <li className={styles.dropdownItem}>
-      <a href="" className={styles.dropdownLink}>
+      <a
+        href="https://medium.com/@frakt_nft"
+        target="_blank"
+        rel="noreferrer"
+        className={styles.dropdownLink}
+      >
         <MediumIcon width={24} /> Medium
       </a>
     </li>
     <li className={styles.dropdownItem}>
-      <a href="" className={styles.dropdownLink}>
+      <a
+        href="https://docs.frakt.xyz/"
+        target="_blank"
+        rel="noreferrer"
+        className={styles.dropdownLink}
+      >
         <DocsIcon width={24} /> Docs
       </a>
     </li>
     <li className={styles.dropdownItem}>
-      <a href="" className={styles.dropdownLink}>
+      <a
+        href=""
+        target="_blank"
+        rel="noreferrer"
+        className={styles.dropdownLink}
+      >
         <CoinGeckoIcon width={24} /> CoinGecko
       </a>
     </li>
