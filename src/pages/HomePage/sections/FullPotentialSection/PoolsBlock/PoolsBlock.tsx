@@ -4,8 +4,9 @@ import styles from './styles.module.scss';
 import { BlockContent } from '../BlockContent';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Autoplay, Scrollbar } from 'swiper';
-import { PoolCard } from './PoolCard';
 import { PoolsInfoIcon } from '../../../svg';
+import { POOLS_DATA } from './poolsData';
+import { PoolCard } from '../../../../../components/PoolCard';
 
 SwiperCore.use([Navigation, Autoplay, Scrollbar]);
 
@@ -43,18 +44,11 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
           scrollbar={{ draggable: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
         >
-          <SwiperSlide>
-            <PoolCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <PoolCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <PoolCard />
-          </SwiperSlide>
-          <SwiperSlide>
-            <PoolCard />
-          </SwiperSlide>
+          {POOLS_DATA.map((pool) => (
+            <SwiperSlide key={pool.publicKey.toString()}>
+              <PoolCard pool={pool} />
+            </SwiperSlide>
+          ))}
         </Swiper>
         <div
           ref={prevBtn}
