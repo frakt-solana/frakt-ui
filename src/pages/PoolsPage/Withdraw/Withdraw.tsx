@@ -51,10 +51,10 @@ const Withdraw: FC<WithdrawInterface> = ({
       const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
       const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
-      await unstakeLiquidity({
-        router: mainRouter,
-        stakeAccount,
-      });
+      // await unstakeLiquidity({
+      //   router: mainRouter,
+      //   stakeAccount,
+      // });
 
       await removeRaydiumLiquidity({
         baseToken,

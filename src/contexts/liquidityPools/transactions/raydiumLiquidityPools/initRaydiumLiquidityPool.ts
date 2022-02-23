@@ -130,6 +130,7 @@ export const rawInitRaydiumLiquidityPool = async ({
         lpTokenAccount: lpAta,
         payer: wallet.publicKey,
       },
+      startTime: Date.now(),
     }),
   );
 

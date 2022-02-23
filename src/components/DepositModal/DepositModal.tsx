@@ -1,5 +1,5 @@
-import { FC, useEffect, useRef } from 'react';
 import BN from 'bn.js';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -54,13 +54,17 @@ const DepositModal: FC<DepositModalProps> = ({
   const { addRaydiumLiquidity } = useLiquidityPools();
   const { connection } = useConnection();
   const wallet = useWallet();
+  const [accountInfo, setAccountInfo] = useState(null);
 
+  //TODO move to useTokenUser
   const subscriptionId = useRef<number>();
 
   const subscribe = (tokenAccountPubkey: PublicKey) => {
+    if (tokenAccountPubkey === accountInfo?.publicKey) return;
+    setAccountInfo(tokenAccountPubkey);
     subscriptionId.current = connection.onAccountChange(
       tokenAccountPubkey,
-      () => subscribeUserTokenBalance(),
+      subscribeUserTokenBalance,
     );
   };
 

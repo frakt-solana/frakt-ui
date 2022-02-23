@@ -157,24 +157,37 @@ export const calcTotalForCreateLiquidity = (
 
 export const calcLiquidityRewards = (
   mainRouter: MainRouterView,
-  stakeAccount: StakeAccountView,
+  stakeAccount: StakeAccountView[],
 ): string => {
   const check_date = min(
     new BN(Math.floor(Date.now() / 1000)),
     mainRouter.endTime,
   );
 
-  const reward =
+  const rewardSum = stakeAccount.map((account) => [
     ((mainRouter.cumulative.toNumber() +
       mainRouter.apr.toNumber() *
         (check_date.toNumber() - mainRouter.lastTime.toNumber()) -
-      stakeAccount.stakedAtCumulative.toNumber()) *
-      stakeAccount.amount.toNumber()) /
-    1e4 /
-    mainRouter.decimalsInput.toNumber() /
-    mainRouter.decimalsOutput.toNumber();
+      account.stakedAtCumulative.toNumber()) *
+      account.amount.toNumber()) /
+      1e4 /
+      mainRouter.decimalsInput.toNumber() /
+      mainRouter.decimalsOutput.toNumber(),
+  ]);
 
-  return reward.toFixed(2);
+  console.log(rewardSum);
+
+  // const reward =
+  //   ((mainRouter.cumulative.toNumber() +
+  //     mainRouter.apr.toNumber() *
+  //       (check_date.toNumber() - mainRouter.lastTime.toNumber()) -
+  //     stakeAccount.stakedAtCumulative.toNumber()) *
+  //     stakeAccount.amount.toNumber()) /
+  //   1e4 /
+  //   mainRouter.decimalsInput.toNumber() /
+  //   mainRouter.decimalsOutput.toNumber();
+
+  return '0';
 };
 
 export const caclLiquiditySecondRewars = (
@@ -182,7 +195,7 @@ export const caclLiquiditySecondRewars = (
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
   mainRouter: MainRouterView,
-): number => {
+): string | number => {
   if (secondaryReward && secondaryStakeAccount) {
     const calculation =
       ((Math.floor(Date.now() / 1000) -
@@ -191,7 +204,7 @@ export const caclLiquiditySecondRewars = (
         stakeAccount.amount.toNumber()) /
       mainRouter.decimalsInput.toNumber() /
       secondaryReward.decimalsOutput.toNumber();
-    return calculation;
+    return calculation.toFixed(5);
   } else {
     const calculation =
       ((Math.floor(Date.now() / 1000) -
@@ -201,6 +214,6 @@ export const caclLiquiditySecondRewars = (
       mainRouter.decimalsInput.toNumber() /
       secondaryReward.decimalsOutput.toNumber();
 
-    return calculation;
+    return calculation.toFixed(5);
   }
 };

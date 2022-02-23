@@ -222,11 +222,11 @@ const getFusionDataMap = (
 
     const stakeAccount = stakeAccounts
       .filter(({ routerPubkey }) => routerPubkey === router?.mainRouterPubkey)
-      .find(({ isStaked }) => isStaked);
+      .filter(({ isStaked }) => isStaked);
 
     stakeAccountInfoMap.set(lpMint, stakeAccount);
     return stakeAccountInfoMap;
-  }, new Map<string, StakeAccountView>());
+  }, new Map<string, StakeAccountView[]>());
 
   return {
     routerInfoByMint,

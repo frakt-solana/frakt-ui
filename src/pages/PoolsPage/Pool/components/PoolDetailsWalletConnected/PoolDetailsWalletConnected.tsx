@@ -31,6 +31,8 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
   }) => {
     const { tokenInfo, poolConfig } = poolData;
 
+    console.log(fusionPoolInfo);
+
     return (
       <div className={className}>
         <Withdraw
