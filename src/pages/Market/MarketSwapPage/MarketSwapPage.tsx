@@ -2,7 +2,6 @@ import { FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import styles from './styles.module.scss';
-import { Sidebar } from './components/Sidebar';
 import { AppLayout } from '../../../components/Layout/AppLayout';
 import { HeaderSwap } from './components/HeaderSwap';
 import { SwappingModal } from './components/SwappingModal';
@@ -11,6 +10,7 @@ import { WalletNotConnected } from '../../../components/WalletNotConnected';
 import { useParams } from 'react-router-dom';
 import { usePublicKeyParam } from '../../../hooks';
 import { useNftPoolsInitialFetch } from '../../../contexts/nftPools';
+import { Sidebar } from '../components/Sidebar';
 
 export const MarketSwapPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -58,7 +58,11 @@ export const MarketSwapPage: FC = () => {
           <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
         </Helmet>
         <div className={styles.wrapper}>
-          <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
+          <Sidebar
+            isSidebar={isSidebar}
+            setIsSidebar={setIsSidebar}
+            setSearch={(value) => value}
+          />
 
           <div className={styles.content}>
             <HeaderSwap poolPublicKey={poolPubkey} />

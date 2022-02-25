@@ -3,7 +3,6 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { PublicKey } from '@solana/web3.js';
 
-import { Sidebar } from './components/Sidebar';
 import { AppLayout } from '../../../components/Layout/AppLayout';
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
@@ -21,6 +20,7 @@ import { MarketNFTsList, SORT_VALUES } from '../components/MarketNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
 import { useNFTsFiltering } from '../hooks';
+import { Sidebar } from '../components/Sidebar';
 
 export const MarketSellPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -81,7 +81,7 @@ export const MarketSellPage: FC = () => {
 
   const loading = userTokensLoading || nftsLoading;
 
-  const { control, nfts } = useNFTsFiltering(rawNFTs);
+  const { control, nfts, setSearch } = useNFTsFiltering(rawNFTs);
 
   return (
     <AppLayout className={styles.layout}>
@@ -97,7 +97,11 @@ export const MarketSellPage: FC = () => {
           <title>Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana</title>
         </Helmet>
         <div className={styles.wrapper}>
-          <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
+          <Sidebar
+            isSidebar={isSidebar}
+            setIsSidebar={setIsSidebar}
+            setSearch={setSearch}
+          />
 
           <div className={styles.content}>
             <HeaderSell poolPublicKey={poolPubkey} />

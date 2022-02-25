@@ -1,17 +1,18 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 
 import { UserNFTWithCollection } from '../../contexts/userTokens';
+import { useDebounce } from '../../hooks';
 import { SORT_VALUES } from './components/MarketNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
-
   nfts: UserNFTWithCollection[];
+  setSearch: (value?: string) => void;
 };
 
 export const useNFTsFiltering: UseNFTsFiltering = (nfts) => {
@@ -21,26 +22,38 @@ export const useNFTsFiltering: UseNFTsFiltering = (nfts) => {
     },
   });
 
+  const [searchString, setSearchString] = useState<string>('');
+
+  const searchDebounced = useDebounce((search: string) => {
+    setSearchString(search.toUpperCase());
+  }, 300);
+
   const sort = watch(FilterFormInputsNames.SORT);
 
   const filteredNfts = useMemo(() => {
     if (nfts.length) {
       const [sortField, sortOrder] = sort.value.split('_');
 
-      return [...nfts].sort((nftA, nftB) => {
-        if (sortField === 'name') {
-          if (sortOrder === 'asc')
-            return nftA?.metadata?.name?.localeCompare(nftB?.metadata?.name);
-          return nftB?.metadata?.name?.localeCompare(nftA?.metadata?.name);
-        }
-        return 0;
-      });
+      return nfts
+        .filter((nft) => {
+          const nftName = nft?.metadata?.name?.toUpperCase() || '';
+
+          return nftName.includes(searchString);
+        })
+        .sort((nftA, nftB) => {
+          if (sortField === 'name') {
+            if (sortOrder === 'asc')
+              return nftA?.metadata?.name?.localeCompare(nftB?.metadata?.name);
+            return nftB?.metadata?.name?.localeCompare(nftA?.metadata?.name);
+          }
+          return 0;
+        });
     }
 
     return [];
-  }, [nfts, sort]);
+  }, [nfts, sort, searchString]);
 
-  return { control, nfts: filteredNfts };
+  return { control, nfts: filteredNfts, setSearch: searchDebounced };
 };
 
 type SubscribeOnLotteryTicketChanges = (

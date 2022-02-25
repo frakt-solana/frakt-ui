@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 
 import styles from './styles.module.scss';
-import { Sidebar } from './components/Sidebar';
+import { Sidebar } from '../components/Sidebar';
 import { AppLayout } from '../../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
 import { usePublicKeyParam } from '../../../hooks';
@@ -42,7 +42,7 @@ export const MarketBuyPage: FC = () => {
     return [];
   }, [pool]);
 
-  const { control, nfts } = useNFTsFiltering(rawNFTs);
+  const { control, nfts, setSearch } = useNFTsFiltering(rawNFTs);
 
   const { subscribe } = useLotteryTicketSubscription();
 
@@ -75,7 +75,11 @@ export const MarketBuyPage: FC = () => {
             <Loader size="large" />
           ) : (
             <>
-              <Sidebar isSidebar={isSidebar} setIsSidebar={setIsSidebar} />
+              <Sidebar
+                isSidebar={isSidebar}
+                setIsSidebar={setIsSidebar}
+                setSearch={setSearch}
+              />
               <div className={styles.content}>
                 <HeaderBuy poolPublicKey={poolPubkey} onBuy={onBuy} />
                 <MarketNFTsList

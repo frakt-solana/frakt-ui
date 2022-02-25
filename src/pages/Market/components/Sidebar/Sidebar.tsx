@@ -1,20 +1,18 @@
-import styles from './styles.module.scss';
+import { FC } from 'react';
 import classNames from 'classnames';
-import React, { FC } from 'react';
-import { Checkbox, Collapse, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+
+import styles from './Sidebar.module.scss';
+import { Checkbox, Collapse, Input } from 'antd';
 
 const { Panel } = Collapse;
 
 const tempItemBg =
-  'https://www.arweave.net/XGRiGbmNIqTN_feJAlXwuT-W0--mRv-gCx74_2fvK30';
+  'https://www.arweave.net/TUCIGroXreLVvKxdBhSBG_pq8jEyl_IWXyEIwR8Ue5Y';
 
 const COLLECTIONS_IN_POOL_DATA = [
-  { name: 'monkeys', items: 123 },
-  { name: 'cryptopunk', items: 123 },
-  { name: 'monkeys', items: 123 },
-  { name: 'monkeys', items: 123 },
-  { name: 'monkeys', items: 123 },
+  { name: 'PLSTTY', items: 2 },
+  { name: 'Moments', items: 5 },
 ];
 
 const FILTERS_DATA = [
@@ -28,9 +26,14 @@ const shortName = (name: string, maxLength: number) =>
 interface SidebarProps {
   setIsSidebar: (sidebarState: boolean) => void;
   isSidebar: boolean;
+  setSearch: (value: string) => void;
 }
 
-export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
+export const Sidebar: FC<SidebarProps> = ({
+  isSidebar,
+  setIsSidebar,
+  setSearch,
+}) => {
   const showSidebar = () => setIsSidebar(true);
   const hideSidebar = () => setIsSidebar(false);
 
@@ -56,6 +59,7 @@ export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
           className={styles.searchInput}
           placeholder="Search for ID"
           prefix={<SearchOutlined className={styles.searchIcon} />}
+          onChange={(event) => setSearch(event?.currentTarget?.value || '')}
         />
         <div className={styles.sidebarItem}>
           <h6 className={styles.sidebarTitle}>
@@ -82,7 +86,7 @@ export const Sidebar: FC<SidebarProps> = ({ isSidebar, setIsSidebar }) => {
               />
               <div className={styles.chosenInfo}>
                 <p className={styles.chosenName}>Cryptopunks</p>
-                <p className={styles.chosenItemsAmount}>{385} items</p>
+                <p className={styles.chosenItemsAmount}>{2} items</p>
               </div>
             </div>
             <div className={styles.chosenFilter}>
