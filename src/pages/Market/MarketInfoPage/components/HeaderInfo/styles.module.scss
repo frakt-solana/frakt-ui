@@ -1,37 +1,16 @@
-.header {}
-
-.wrapper {
-  display: flex;
-  align-items: center;
-  background-color: var(--color-gray-7);
-  max-width: 100%;
-  flex-grow: 1;
-  pointer-events: auto;
-  padding: 20px;
-
-  @media screen and (max-width: 1100px) {
-    padding: 30px;
-  }
-
-  @media screen and (max-width: 700px) {
-    padding: 20px 15px;
-  }
-}
-
-.headerWrapper {
-  display: flex;
-  align-items: center;
+.header {
   width: 100%;
-  transition: padding .3s ease-in;
 
-  @media screen and (max-width: 767px) {
-    flex-wrap: wrap;
+  &::before {
+    content: unset;
   }
 }
 
 .titleWrapper {
+  padding: 20px 0 20px 20px;
+  height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   font: var(--font-text-1);
   text-transform: uppercase;
   margin-right: auto;
@@ -67,7 +46,6 @@
 }
 
 .marketNavigation {
-
   @media screen and (max-width: 767px) {
     margin-bottom: 20px;
     width: 100%;

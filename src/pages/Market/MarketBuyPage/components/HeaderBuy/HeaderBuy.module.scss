@@ -1,108 +1,17 @@
-.positionWrapper {
-  position: fixed;
-  top: 50px;
-  height: 0;
-  left: 0;
-  right: 0;
-  z-index: 7;
-  transition: top 0.2s ease-out;
-
-  @media screen and (max-width: 1439px) {
-    right: 10px;
-  }
-
-  @media screen and (max-width: 1024px) {
-    right: 0;
-  }
-
-  .container {
-    @media screen and (max-width: 700px) {
-      padding: 0;
-
-      &::before {
-        display: none;
-      }
-    }
-  }
-
-  @media screen and (max-width: 500px) {
-    top: 37px;
-  }
-}
-
-.headerHidden {
-  top: 0;
-  transition: top 0.2s ease-in;
-
-  @media screen and (max-width: 1400px) {
-    top: -103px;
-
-    .randomWrapper {
-      padding-bottom: 0;
-    }
-  }
-
-  @media screen and (max-width: 1400px) {
-    top: -93px;
-
-    .randomWrapper {
-      padding-bottom: 10px;
-    }
-  }
-
-  @media screen and (max-width: 767px) {
-    top: -73px;
-  }
-
-  @media screen and (max-width: 373px) {
-    top: -103px;
-  }
-}
-
-.container {
-  display: flex;
-  pointer-events: none;
-
-  &::before {
-    display: block;
-    content: '';
-    width: 229px;
-    flex-shrink: 0;
-    height: 0;
-
-    @media screen and (max-width: 1439px) {
-      width: 234px;
-    }
-
-    @media screen and (max-width: 700px) {
-      width: 45px;
-    }
-  }
-}
-
-.wrapper {
-  display: flex;
-  align-items: center;
-  background-color: var(--color-gray-7);
-  max-width: 100%;
-  flex-grow: 1;
-  pointer-events: auto;
-}
-
 .randomWrapper {
   display: flex;
   align-items: center;
-  width: 100%;
-  transition: padding 0.3s ease-in;
+  // width: 100%;
+  // transition: padding 0.3s ease-in;
 
-  @media screen and (max-width: 1400px) {
-    flex-wrap: wrap;
-    padding: 30px;
-  }
+  // @media screen and (max-width: 1400px) {
+  //   flex-wrap: wrap;
+  //   padding: 30px;
+  // }
 
-  @media screen and (max-width: 767px) {
-    padding: 20px 15px;
-  }
+  // @media screen and (max-width: 767px) {
+  //   padding: 20px 15px;
+  // }
 }
 
 .questionWrapper {
@@ -410,6 +319,8 @@
 
 .option {
   font-size: 18px;
+  display: flex;
+  align-items: center;
 
   @media screen and (max-width: 767px) {
     font-size: 15px;
@@ -456,10 +367,12 @@
   font-size: 10px;
   font-weight: bold;
   margin-top: 10px;
+  min-height: 13px;
 }
 
 .buySettings {
   flex-grow: 1;
+  min-width: 221px;
 }
 
 .buyButton {
@@ -478,6 +391,11 @@
 
   @media screen and (max-width: 920px) {
     width: auto;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 

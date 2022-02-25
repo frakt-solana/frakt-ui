@@ -1,59 +1,87 @@
-import { FC } from 'react';
-import classNames from 'classnames';
+import { FC, useEffect } from 'react';
 
 import styles from './HeaderBuy.module.scss';
 import { QuestionIcon } from '../../../../../icons';
-import { BuyRandomNft } from './BuyRandomNft';
-import { MarketNavigation } from '../../../components/MarketNavigation';
-import { useHeaderState } from '../../../../../components/Layout/headerState';
+import { BuyRandomNftForm } from './BuyRandomNftForm';
 import {
   NftPoolData,
   SafetyDepositBoxState,
 } from '../../../../../utils/cacher/nftPools';
+import { useLotteryTicketSubscription } from '../../../hooks';
+import { useNftPools } from '../../../../../contexts/nftPools';
+import { useUserSplAccount } from '../../../../../utils/accounts';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { MarketHeaderInner } from '../../../components/MarketHeaderInner';
 
 interface HeaderBuyProps {
   pool: NftPoolData;
-  poolPublicKey: string;
-  onBuy: () => void;
 }
 
-export const HeaderBuy: FC<HeaderBuyProps> = ({
-  pool,
-  poolPublicKey,
-  onBuy,
-}) => {
-  const { isHeaderHidden } = useHeaderState();
+const POOL_TOKEN_DECIMALS = 6;
+
+const useNftPoolTokenBalance = (pool) => {
+  const { connected } = useWallet();
+
+  const { accountInfo, subscribe: splTokenSubscribe } = useUserSplAccount();
+
+  useEffect(() => {
+    connected && splTokenSubscribe(pool.fractionMint);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected]);
+
+  const balance = accountInfo
+    ? accountInfo?.accountInfo?.amount?.toNumber() / 10 ** POOL_TOKEN_DECIMALS
+    : 0;
+
+  return {
+    balance,
+  };
+};
+
+export const HeaderBuy: FC<HeaderBuyProps> = ({ pool }) => {
+  const { balance } = useNftPoolTokenBalance(pool);
+  const poolTokenAvailable = balance >= 1;
+
+  const { getLotteryTicket } = useNftPools();
+  const { subscribe } = useLotteryTicketSubscription();
+
+  const onBuy = async () => {
+    const lotteryTicketPubkey = await getLotteryTicket({ pool });
+
+    subscribe(lotteryTicketPubkey, (saferyBoxPublicKey: string) =>
+      // eslint-disable-next-line no-console
+      console.log(
+        pool.safetyBoxes.find(
+          ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
+        ),
+      ),
+    );
+    // //? Run roulette
+    // //? subscribe to changes
+    // // eslint-disable-next-line no-console
+    // console.log(lotteryTicketPubkey?.toBase58());
+  };
 
   const poolImage = pool.safetyBoxes.filter(
     ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
   )?.[0]?.nftImage;
 
   return (
-    <div
-      className={classNames({
-        [styles.positionWrapper]: true,
-        [styles.headerHidden]: isHeaderHidden,
-      })}
-    >
-      <div className={`container ${styles.container}`}>
-        <div className={styles.wrapper}>
-          <div className={styles.randomWrapper}>
-            <div className={styles.questionWrapper}>
-              <img
-                src={poolImage}
-                alt="Pool image"
-                className={styles.poolBgImage}
-              />
-              <QuestionIcon className={styles.questionIcon} />
-            </div>
-            <BuyRandomNft onBuy={onBuy} />
-            <MarketNavigation
-              className={styles.marketNavigation}
-              poolPublicKey={poolPublicKey}
-            />
-          </div>
+    <MarketHeaderInner poolPublicKey={pool.publicKey.toBase58()}>
+      <div className={styles.randomWrapper}>
+        <div className={styles.questionWrapper}>
+          <img
+            src={poolImage}
+            alt="Pool image"
+            className={styles.poolBgImage}
+          />
+          <QuestionIcon className={styles.questionIcon} />
         </div>
+        <BuyRandomNftForm
+          poolTokenAvailable={poolTokenAvailable}
+          onBuy={onBuy}
+        />
       </div>
-    </div>
+    </MarketHeaderInner>
   );
 };

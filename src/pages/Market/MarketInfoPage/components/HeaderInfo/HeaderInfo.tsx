@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import styles from './styles.module.scss';
-import { MarketNavigation } from '../../../components/MarketNavigation';
+import { MarketHeaderInner } from '../../../components/MarketHeaderInner';
 
 interface HeaderInfoProps {
   poolPublicKey: string;
@@ -9,19 +9,11 @@ interface HeaderInfoProps {
 
 export const HeaderInfo: FC<HeaderInfoProps> = ({ poolPublicKey }) => {
   return (
-    <div className={styles.header}>
-      <div className={styles.wrapper}>
-        <div className={styles.headerWrapper}>
-          <div className={styles.titleWrapper}>
-            <div className={styles.poolImage} />
-            <h2 className={styles.title}>PUNKS</h2>
-          </div>
-          <MarketNavigation
-            className={styles.marketNavigation}
-            poolPublicKey={poolPublicKey}
-          />
-        </div>
+    <MarketHeaderInner poolPublicKey={poolPublicKey} className={styles.header}>
+      <div className={styles.titleWrapper}>
+        <div className={styles.poolImage} />
+        <h2 className={styles.title}>TOKEN</h2>
       </div>
-    </div>
+    </MarketHeaderInner>
   );
 };

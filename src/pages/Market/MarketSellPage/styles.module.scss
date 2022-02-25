@@ -21,7 +21,7 @@
   padding-bottom: 50px;
   padding-left: 20px;
   width: 100%;
-  padding-top: 85px;
+  padding-top: 105px;
   position: relative;
 
   &::before {
@@ -39,24 +39,36 @@
     }
   }
 
-  @media screen and (max-width: 1100px) {
-    padding-top: 180px;
+  @media screen and (max-width: 1400px) {
+    padding-top: 240px;
+  }
+
+  @media screen and (max-width: 1050px) {
+    padding-top: 190px;
+  }
+
+  @media screen and (max-width: 920px) {
+    padding-top: 240px;
   }
 
   @media screen and (max-width: 767px) {
-    padding-top: 160px;
+    padding-top: 200px;
   }
 
   @media screen and (max-width: 700px) {
     padding-left: 0;
-    padding-top: 130px;
+    padding-top: 150px;
+  }
+
+  @media screen and (max-width: 550px) {
+    padding-top: 200px;
   }
 
   @media screen and (max-width: 500px) {
-    padding-top: 120px;
+    padding-top: 190px;
   }
 
   @media screen and (max-width: 373px) {
-    padding-top: 170px;
+    padding-top: 240px;
   }
 }

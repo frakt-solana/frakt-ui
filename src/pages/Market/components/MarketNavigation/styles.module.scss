@@ -3,6 +3,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 5px;
+  padding: 20px 20px 0 0;
 
   li:last-of-type svg {
     width: 18px;
@@ -19,9 +20,9 @@
   align-items: center;
   font: var(--font-text-3);
   color: var(--white-color);
-  transition: opacity .1s ease-in;
+  transition: opacity 0.1s ease-in;
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     font-size: 14px;
     height: 38px;
 
@@ -31,7 +32,7 @@
   }
 
   &:hover {
-    opacity: .5;
+    opacity: 0.5;
     color: var(--white-color);
   }
 }

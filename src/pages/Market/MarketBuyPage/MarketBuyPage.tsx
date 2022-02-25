@@ -9,7 +9,6 @@ import { HeaderBuy } from './components/HeaderBuy';
 import { usePublicKeyParam } from '../../../hooks';
 import {
   useNftPool,
-  useNftPools,
   useNftPoolsInitialFetch,
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
@@ -17,14 +16,12 @@ import { Loader } from '../../../components/Loader';
 import { UserNFTWithCollection } from '../../../contexts/userTokens';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import { MarketNFTsList, SORT_VALUES } from '../components/MarketNFTsList';
-import { useLotteryTicketSubscription, useNFTsFiltering } from '../hooks';
+import { useNFTsFiltering } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 
 export const MarketBuyPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
   usePublicKeyParam(poolPubkey);
-
-  const { getLotteryTicket } = useNftPools();
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
 
@@ -44,25 +41,6 @@ export const MarketBuyPage: FC = () => {
 
   const { control, nfts, setSearch } = useNFTsFiltering(rawNFTs);
 
-  const { subscribe } = useLotteryTicketSubscription();
-
-  const onBuy = async () => {
-    const lotteryTicketPubkey = await getLotteryTicket({ pool });
-
-    subscribe(lotteryTicketPubkey, (saferyBoxPublicKey: string) =>
-      // eslint-disable-next-line no-console
-      console.log(
-        pool.safetyBoxes.find(
-          ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
-        ),
-      ),
-    );
-    // //? Run roulette
-    // //? subscribe to changes
-    // // eslint-disable-next-line no-console
-    // console.log(lotteryTicketPubkey?.toBase58());
-  };
-
   return (
     <AppLayout className={styles.layout}>
       <div className="container">
@@ -81,11 +59,7 @@ export const MarketBuyPage: FC = () => {
                 setSearch={setSearch}
               />
               <div className={styles.content}>
-                <HeaderBuy
-                  pool={pool}
-                  poolPublicKey={poolPubkey}
-                  onBuy={onBuy}
-                />
+                <HeaderBuy pool={pool} />
                 <MarketNFTsList
                   nfts={nfts}
                   setIsSidebar={setIsSidebar}
