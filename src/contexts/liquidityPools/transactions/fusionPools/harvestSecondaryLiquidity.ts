@@ -27,7 +27,6 @@ export interface HarvestSecondaryLiquidityTransactionRawParams
 
 export const rowHarvestSecondaryLiquidity = async ({
   router,
-  stakeAccount,
   connection,
   wallet,
   secondaryReward,
@@ -36,6 +35,15 @@ export const rowHarvestSecondaryLiquidity = async ({
     ({ tokenMint }) => new PublicKey(tokenMint),
   );
 
+  console.log({
+    PROGRAM: new PublicKey(FUSION_PROGRAM_PUBKEY),
+    PROVIDER: new Provider(connection, wallet, null),
+    WALLET: wallet.publicKey,
+    INPUT: new PublicKey(router.tokenMintInput).toBase58(),
+    OUTPUT: new PublicKey(router.tokenMintOutput).toBase58(),
+    rewardsTokenMint,
+  });
+
   await harvestSecondaryReward(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
@@ -43,7 +51,6 @@ export const rowHarvestSecondaryLiquidity = async ({
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
     rewardsTokenMint,
-    new PublicKey(stakeAccount.stakeAccountPubkey),
     async (transaction) => {
       await signAndConfirmTransaction({
         transaction,

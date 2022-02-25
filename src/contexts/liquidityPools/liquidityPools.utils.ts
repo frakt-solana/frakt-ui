@@ -157,37 +157,24 @@ export const calcTotalForCreateLiquidity = (
 
 export const calcLiquidityRewards = (
   mainRouter: MainRouterView,
-  stakeAccount: StakeAccountView[],
-): string => {
+  stakeAccount: StakeAccountView,
+): string | number => {
   const check_date = min(
     new BN(Math.floor(Date.now() / 1000)),
     mainRouter.endTime,
   );
 
-  const rewardSum = stakeAccount.map((account) => [
+  const reward =
     ((mainRouter.cumulative.toNumber() +
       mainRouter.apr.toNumber() *
         (check_date.toNumber() - mainRouter.lastTime.toNumber()) -
-      account.stakedAtCumulative.toNumber()) *
-      account.amount.toNumber()) /
-      1e4 /
-      mainRouter.decimalsInput.toNumber() /
-      mainRouter.decimalsOutput.toNumber(),
-  ]);
+      stakeAccount.stakedAtCumulative.toNumber()) *
+      stakeAccount.amount.toNumber()) /
+    1e4 /
+    mainRouter.decimalsInput.toNumber() /
+    mainRouter.decimalsOutput.toNumber();
 
-  console.log(rewardSum);
-
-  // const reward =
-  //   ((mainRouter.cumulative.toNumber() +
-  //     mainRouter.apr.toNumber() *
-  //       (check_date.toNumber() - mainRouter.lastTime.toNumber()) -
-  //     stakeAccount.stakedAtCumulative.toNumber()) *
-  //     stakeAccount.amount.toNumber()) /
-  //   1e4 /
-  //   mainRouter.decimalsInput.toNumber() /
-  //   mainRouter.decimalsOutput.toNumber();
-
-  return '0';
+  return reward;
 };
 
 export const caclLiquiditySecondRewars = (

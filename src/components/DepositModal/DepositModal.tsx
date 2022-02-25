@@ -51,7 +51,7 @@ const DepositModal: FC<DepositModalProps> = ({
     subscribeUserTokenBalance,
   } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo);
 
-  const { addRaydiumLiquidity } = useLiquidityPools();
+  const { addRaydiumLiquidity, stakeLiquidity } = useLiquidityPools();
   const { connection } = useConnection();
   const wallet = useWallet();
   const [accountInfo, setAccountInfo] = useState(null);
@@ -84,17 +84,23 @@ const DepositModal: FC<DepositModalProps> = ({
     const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
     const tokenMint = fusionPoolInfo.mainRouter.tokenMintInput;
+    const { mainRouter } = fusionPoolInfo;
 
-    await addRaydiumLiquidity({
-      baseToken: tokenInfo,
-      baseAmount,
-      quoteToken: SOL_TOKEN,
-      quoteAmount,
-      poolConfig,
-      fixedSide: liquiditySide,
+    // await addRaydiumLiquidity({
+    //   baseToken: tokenInfo,
+    //   baseAmount,
+    //   quoteToken: SOL_TOKEN,
+    //   quoteAmount,
+    //   poolConfig,
+    //   fixedSide: liquiditySide,
+    // });
+
+    await stakeLiquidity({
+      amount: new BN(1e6),
+      router: mainRouter,
     });
 
-    subscribe(new PublicKey(tokenMint));
+    // subscribe(new PublicKey(tokenMint));
 
     setVisible(false);
   };
@@ -179,7 +185,7 @@ const DepositModal: FC<DepositModalProps> = ({
         <Button
           className={styles.depositBtn}
           type="alternative"
-          disabled={!isDepositBtnEnabled}
+          // disabled={!isDepositBtnEnabled}
           onClick={onSubmitHandler}
         >
           Deposit

@@ -27,6 +27,14 @@ export const rawStakeLiquidity = async ({
   connection,
   wallet,
 }: StakeLiquidityTransactionRawParams): Promise<void> => {
+  console.log({
+    ProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
+    Provider: new Provider(connection, wallet, null),
+    WALLET: wallet.publicKey.toBase58(),
+    TOKENINPUT: new PublicKey(router.tokenMintInput).toBase58(),
+    TOKENOUTPUT: new PublicKey(router.tokenMintOutput).toBase58(),
+    AMOUNT: amount.toNumber(),
+  });
   await stakeInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),

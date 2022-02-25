@@ -25,7 +25,6 @@ export interface HarvestLiquidityTransactionRawParams
 
 export const rowHarvestLiquidity = async ({
   router,
-  stakeAccount,
   connection,
   wallet,
 }: HarvestLiquidityTransactionRawParams): Promise<void> => {
@@ -35,7 +34,6 @@ export const rowHarvestLiquidity = async ({
     wallet.publicKey,
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
-    new PublicKey(stakeAccount.stakeAccountPubkey),
     async (transaction) => {
       await signAndConfirmTransaction({
         transaction,

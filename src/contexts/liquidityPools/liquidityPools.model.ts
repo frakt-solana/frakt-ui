@@ -96,7 +96,7 @@ export interface FusionPoolsInfo {
 
 export interface FusionPoolInfo {
   mainRouter: MainRouterView;
-  stakeAccount: StakeAccountView[];
+  stakeAccount: StakeAccountView;
   secondaryReward: SecondaryRewardView[];
   secondaryStakeAccount: SecondStakeAccountView;
 }

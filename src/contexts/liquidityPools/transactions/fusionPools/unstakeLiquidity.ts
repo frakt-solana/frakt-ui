@@ -16,7 +16,7 @@ import {
 
 export interface UnstakeLiquidityTransactionParams {
   router: MainRouterView;
-  stakeAccount: StakeAccountView;
+  // stakeAccount: StakeAccountView;
 }
 
 export interface UnstakeLiquidityTransactionRawParams
@@ -25,7 +25,6 @@ export interface UnstakeLiquidityTransactionRawParams
 
 export const rawUnstakeLiquidity = async ({
   router,
-  stakeAccount,
   connection,
   wallet,
 }: UnstakeLiquidityTransactionRawParams): Promise<void> => {
@@ -35,7 +34,6 @@ export const rawUnstakeLiquidity = async ({
     wallet.publicKey,
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
-    new PublicKey(stakeAccount.stakeAccountPubkey),
     async (transaction) => {
       await signAndConfirmTransaction({
         transaction,

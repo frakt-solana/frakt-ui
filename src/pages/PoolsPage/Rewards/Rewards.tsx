@@ -43,7 +43,7 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, fusionPoolInfo }) => {
             {calcLiquidityRewards(mainRouter, stakeAccount)}{' '}
             <span>{SOL_TOKEN.symbol}</span>
           </p>
-          {/* <div>
+          <div>
             <div className={styles.rewardInfo}>
               {secondaryReward.map((secondaryReward) => (
                 <span key={secondaryReward.tokenMint}>
@@ -59,7 +59,7 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, fusionPoolInfo }) => {
                 </span>
               ))}
             </div>
-          </div> */}
+          </div>
         </div>
         <Button
           type="tertiary"

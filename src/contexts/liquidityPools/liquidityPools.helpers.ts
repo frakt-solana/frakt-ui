@@ -28,6 +28,7 @@ import {
 import {
   MainRouterView,
   SecondaryRewardView,
+  SecondStakeAccountView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 
@@ -179,6 +180,8 @@ export const fetchProgramAccounts = async ({
     connection,
   );
 
+  console.log(allProgramAccounts);
+
   return allProgramAccounts;
 };
 
@@ -222,11 +225,25 @@ const getFusionDataMap = (
 
     const stakeAccount = stakeAccounts
       .filter(({ routerPubkey }) => routerPubkey === router?.mainRouterPubkey)
-      .filter(({ isStaked }) => isStaked);
+      .find(({ isStaked }) => isStaked);
 
     stakeAccountInfoMap.set(lpMint, stakeAccount);
     return stakeAccountInfoMap;
-  }, new Map<string, StakeAccountView[]>());
+  }, new Map<string, StakeAccountView>());
+
+  // const secondaryStakeAccountsByMint = lpMints.reduce(
+  //   (secondaryStakeAccountInfoMap, lpMint) => {
+  //     const secondaryStakeAccount = stakeAccounts.find(
+  //       ({ stakeAccountPubkey }) =>
+  //         stakeAccountPubkey === secondaryStakeAccount.stakeAccount,
+  //     );
+
+  //     secondaryStakeAccountInfoMap.set(lpMint, secondaryStakeAccount);
+  //     console.log(secondaryStakeAccountInfoMap);
+  //     return secondaryStakeAccountInfoMap;
+  //   },
+  //   new Map<string, SecondStakeAccountView>(),
+  // );
 
   return {
     routerInfoByMint,
@@ -254,6 +271,7 @@ export const fetchFusionPoolInfo = (
       secondaryReward: secondaryRewardByMint.get(lpMint),
       secondaryStakeAccount: secondaryStakeAccounts[0],
     });
+    console.log(fusionPoolInfo);
     return fusionPoolInfo;
   }, new Map<string, FusionPoolInfo>());
 };
