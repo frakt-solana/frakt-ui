@@ -7,7 +7,7 @@ import { AppLayout } from '../../../components/Layout/AppLayout';
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletNotConnected } from '../../../components/WalletNotConnected';
+import { WalletNotConnected } from '../components/WalletNotConnected';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import styles from './styles.module.scss';
 import {
@@ -20,7 +20,7 @@ import { MarketNFTsList, SORT_VALUES } from '../components/MarketNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
 import { useNFTsFiltering } from '../hooks';
-import { Sidebar } from '../components/Sidebar';
+import { SidebarInner } from '../components/SidebarInner';
 
 export const MarketSellPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -97,7 +97,7 @@ export const MarketSellPage: FC = () => {
           <title>Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana</title>
         </Helmet>
         <div className={styles.wrapper}>
-          <Sidebar
+          <SidebarInner
             isSidebar={isSidebar}
             setIsSidebar={setIsSidebar}
             setSearch={setSearch}

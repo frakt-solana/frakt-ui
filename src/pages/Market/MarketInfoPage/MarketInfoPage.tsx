@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import styles from './styles.module.scss';
 import { AppLayout } from '../../../components/Layout/AppLayout';
-import { WalletNotConnected } from '../../../components/WalletNotConnected';
+import { WalletNotConnected } from '../components/WalletNotConnected';
 import { HeaderInfo } from './components/HeaderInfo';
 import { SolanaIcon } from '../../../icons';
 import { POOL_HISTORY_DATA } from './tempData';

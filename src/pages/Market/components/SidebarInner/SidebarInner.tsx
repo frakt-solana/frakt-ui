@@ -2,34 +2,34 @@ import { FC } from 'react';
 import classNames from 'classnames';
 import { SearchOutlined } from '@ant-design/icons';
 
-import styles from './Sidebar.module.scss';
-import { Checkbox, Collapse, Input } from 'antd';
+import styles from './SidebarInner.module.scss';
+import { /*Checkbox, Collapse, */ Input } from 'antd';
 
-const { Panel } = Collapse;
+// const { Panel } = Collapse;
 
-const tempItemBg =
-  'https://www.arweave.net/TUCIGroXreLVvKxdBhSBG_pq8jEyl_IWXyEIwR8Ue5Y';
+// const tempItemBg =
+//   'https://www.arweave.net/TUCIGroXreLVvKxdBhSBG_pq8jEyl_IWXyEIwR8Ue5Y';
 
-const COLLECTIONS_IN_POOL_DATA = [
-  { name: 'PLSTTY', items: 2 },
-  { name: 'Moments', items: 5 },
-];
+// const COLLECTIONS_IN_POOL_DATA = [
+//   { name: 'PLSTTY', items: 2 },
+//   { name: 'Moments', items: 5 },
+// ];
 
-const FILTERS_DATA = [
-  { name: 'Famale', items: 123 },
-  { name: 'Male', items: 123 },
-];
+// const FILTERS_DATA = [
+//   { name: 'Famale', items: 123 },
+//   { name: 'Male', items: 123 },
+// ];
 
-const shortName = (name: string, maxLength: number) =>
-  name.length > maxLength ? `${name.slice(0, maxLength - 2)} ...` : name;
+// const shortName = (name: string, maxLength: number) =>
+//   name.length > maxLength ? `${name.slice(0, maxLength - 2)} ...` : name;
 
-interface SidebarProps {
+interface SidebarInnerProps {
   setIsSidebar: (sidebarState: boolean) => void;
   isSidebar: boolean;
   setSearch: (value: string) => void;
 }
 
-export const Sidebar: FC<SidebarProps> = ({
+export const SidebarInner: FC<SidebarInnerProps> = ({
   isSidebar,
   setIsSidebar,
   setSearch,
@@ -61,7 +61,8 @@ export const Sidebar: FC<SidebarProps> = ({
           prefix={<SearchOutlined className={styles.searchIcon} />}
           onChange={(event) => setSearch(event?.currentTarget?.value || '')}
         />
-        <div className={styles.sidebarItem}>
+        {/* //TODO Step filters here */}
+        {/* <div className={styles.sidebarItem}>
           <h6 className={styles.sidebarTitle}>
             <span>collections in pool</span>
             <span>385</span>
@@ -115,7 +116,7 @@ export const Sidebar: FC<SidebarProps> = ({
               </Collapse>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

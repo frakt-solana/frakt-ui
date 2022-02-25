@@ -1,22 +1,33 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 
-import styles from './styles.module.scss';
+import styles from './HeaderBuy.module.scss';
 import { QuestionIcon } from '../../../../../icons';
 import { BuyRandomNft } from './BuyRandomNft';
 import { MarketNavigation } from '../../../components/MarketNavigation';
 import { useHeaderState } from '../../../../../components/Layout/headerState';
-
-const tempBgImage =
-  'https://aacsdzhn52gnk67swxcahjyrwtcpaykzbsletupsuur7dupnqzsa.arweave.net/AAUh5O3ujNV78rXEA6cRtMTwYVkMlknR8qUj8dHthmQ';
+import {
+  NftPoolData,
+  SafetyDepositBoxState,
+} from '../../../../../utils/cacher/nftPools';
 
 interface HeaderBuyProps {
+  pool: NftPoolData;
   poolPublicKey: string;
   onBuy: () => void;
 }
 
-export const HeaderBuy: FC<HeaderBuyProps> = ({ poolPublicKey, onBuy }) => {
+export const HeaderBuy: FC<HeaderBuyProps> = ({
+  pool,
+  poolPublicKey,
+  onBuy,
+}) => {
   const { isHeaderHidden } = useHeaderState();
+
+  const poolImage = pool.safetyBoxes.filter(
+    ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
+  )?.[0]?.nftImage;
+
   return (
     <div
       className={classNames({
@@ -29,7 +40,7 @@ export const HeaderBuy: FC<HeaderBuyProps> = ({ poolPublicKey, onBuy }) => {
           <div className={styles.randomWrapper}>
             <div className={styles.questionWrapper}>
               <img
-                src={tempBgImage}
+                src={poolImage}
                 alt="Pool image"
                 className={styles.poolBgImage}
               />

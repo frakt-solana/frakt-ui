@@ -1,7 +1,7 @@
 import { FC, useRef, useState } from 'react';
 import classNames from 'classnames';
 
-import styles from './styles.module.scss';
+import styles from './HeaderBuy.module.scss';
 import SettingsIcon from '../../../../../icons/SettingsIcon';
 import { Select } from 'antd';
 import { ArrowDownBtn, SolanaIcon } from '../../../../../icons';
@@ -77,7 +77,7 @@ export const BuyRandomNft: FC<BuyRandomNftProps> = ({ onBuy }) => {
         </p>
       </div>
       <button className={styles.buyButton} onClick={onBuy}>
-        Buy random NFT
+        Buy random
       </button>
     </div>
   );

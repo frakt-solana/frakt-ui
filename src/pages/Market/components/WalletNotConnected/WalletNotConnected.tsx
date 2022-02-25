@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
-import styles from './styles.module.scss';
-import { useWalletModal } from '../../contexts/WalletModal';
+import { FC } from 'react';
+
+import styles from './WalletNotConnected.module.scss';
+import { useWalletModal } from '../../../../contexts/WalletModal';
 
 interface WalletNotConnectedProps {
   className?: string;

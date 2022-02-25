@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 
 import styles from './styles.module.scss';
-import { Sidebar } from '../components/Sidebar';
+import { SidebarInner } from '../components/SidebarInner';
 import { AppLayout } from '../../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
 import { usePublicKeyParam } from '../../../hooks';
@@ -71,17 +71,21 @@ export const MarketBuyPage: FC = () => {
         </Helmet>
 
         <div className={styles.wrapper}>
-          {poolLoading ? (
+          {poolLoading || !pool ? (
             <Loader size="large" />
           ) : (
             <>
-              <Sidebar
+              <SidebarInner
                 isSidebar={isSidebar}
                 setIsSidebar={setIsSidebar}
                 setSearch={setSearch}
               />
               <div className={styles.content}>
-                <HeaderBuy poolPublicKey={poolPubkey} onBuy={onBuy} />
+                <HeaderBuy
+                  pool={pool}
+                  poolPublicKey={poolPubkey}
+                  onBuy={onBuy}
+                />
                 <MarketNFTsList
                   nfts={nfts}
                   setIsSidebar={setIsSidebar}

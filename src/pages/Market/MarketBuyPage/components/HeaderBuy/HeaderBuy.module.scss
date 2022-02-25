@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   z-index: 7;
-  transition: top .2s ease-out;
+  transition: top 0.2s ease-out;
 
   @media screen and (max-width: 1439px) {
     right: 10px;
@@ -32,7 +32,7 @@
 
 .headerHidden {
   top: 0;
-  transition: top .2s ease-in;
+  transition: top 0.2s ease-in;
 
   @media screen and (max-width: 1400px) {
     top: -103px;
@@ -93,7 +93,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  transition: padding .3s ease-in;
+  transition: padding 0.3s ease-in;
 
   @media screen and (max-width: 1400px) {
     flex-wrap: wrap;
@@ -124,7 +124,7 @@
     top: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
   }
 }
@@ -202,7 +202,7 @@
   position: relative;
   background-color: var(--color-gray-4);
   cursor: pointer;
-  transition: background-color .1s ease-in;
+  transition: background-color 0.1s ease-in;
 
   &:hover {
     background-color: var(--color-gray-3);
@@ -263,7 +263,7 @@
     }
 
     &::before {
-      content: "";
+      content: '';
       display: block;
       width: 20px;
       height: 20px;
@@ -317,12 +317,11 @@
   left: -13px;
   position: absolute;
   z-index: 5;
-  transition: transform .2s ease-in;
+  transition: transform 0.2s ease-in;
   transform: scale(0);
 
-
   &::before {
-    content: "";
+    content: '';
     display: block;
     width: 20px;
     height: 20px;
@@ -359,7 +358,7 @@
   border-right: var(--border-gray-1);
   background-color: var(--color-gray-7);
   cursor: pointer;
-  transition: background-color .1s ease-in;
+  transition: background-color 0.1s ease-in;
 
   &:hover {
     background-color: var(--color-gray-4);
@@ -379,7 +378,6 @@
 }
 
 .select {
-
   &:global {
     &.ant-select:not(.ant-select-customize-input) .ant-select-selector {
       border: none;
@@ -391,7 +389,8 @@
       }
     }
 
-    &.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    &.ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+      .ant-select-selector {
       box-shadow: none;
     }
 
@@ -481,7 +480,6 @@
     width: auto;
   }
 }
-
 
 .marketNavigation {
   margin-bottom: 26px;
