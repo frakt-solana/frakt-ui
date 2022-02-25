@@ -25,7 +25,15 @@ export const SellingModal: FC<BuyingModalProps> = ({
 
   const settingsRef = useRef();
 
-  const toggleSlippageModal = () => setIsSlippageVisible(!isSlippageVisible);
+  const toggleSlippageModal = () => {
+    if (isSlippageVisible && !isModalDown) return;
+    setIsSlippageVisible(!isSlippageVisible);
+  };
+
+  const toggleModalDown = () => {
+    if (isSlippageVisible && !isModalDown) return;
+    setIsModalDown(!isModalDown);
+  };
 
   return (
     <div
@@ -35,20 +43,20 @@ export const SellingModal: FC<BuyingModalProps> = ({
         [styles.modalDown]: isModalDown && !!nft,
       })}
     >
-      <div
-        className={styles.header}
-        onClick={() => setIsModalDown(!isModalDown)}
-      >
-        <p className={styles.title}>
-          You&apos;re selling{!!nft && <span>1</span>}
-        </p>
+      <div className={styles.header} onClick={toggleModalDown}>
+        <p className={styles.title}>You&apos;re selling</p>
         <div
           className={classNames({
             [styles.slippageWrapper]: true,
             [styles.slippageVisible]: isSlippageVisible,
           })}
         >
-          <SettingsIcon onClick={toggleSlippageModal} />
+          <SettingsIcon
+            onClick={(event) => {
+              toggleSlippageModal();
+              event?.stopPropagation();
+            }}
+          />
           <div
             className={styles.slippageOverlay}
             onClick={() => setIsSlippageVisible(false)}
@@ -92,7 +100,7 @@ export const SellingModal: FC<BuyingModalProps> = ({
       </ul>
       <div className={styles.currencyWrapper}>
         <p className={styles.totalText}>Total</p>
-        <p className={styles.totalAmount}>{0.002124}</p>
+        <p className={styles.totalAmount}>{14.84}</p>
         <div className={styles.separator} />
         <div className={styles.selectWrapper} ref={settingsRef}>
           <Select

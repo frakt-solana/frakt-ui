@@ -10,7 +10,7 @@ interface HeaderSwapProps {
 export const HeaderSwap: FC<HeaderSwapProps> = ({ poolPublicKey }) => {
   return (
     <MarketHeaderInner poolPublicKey={poolPublicKey}>
-      <HeaderSellInfo />
+      <HeaderSellInfo solanaPrice={0.3} tokenPrice={0.02} />
     </MarketHeaderInner>
   );
 };

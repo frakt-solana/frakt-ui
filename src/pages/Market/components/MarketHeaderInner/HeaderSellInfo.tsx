@@ -3,15 +3,23 @@ import { FC } from 'react';
 import { SolanaIcon } from '../../../../icons';
 import styles from './MarketHeaderInner.module.scss';
 
-export const HeaderSellInfo: FC = () => {
+interface HeaderSellInfoProps {
+  solanaPrice: number;
+  tokenPrice: number;
+}
+
+export const HeaderSellInfo: FC<HeaderSellInfoProps> = ({
+  solanaPrice,
+  tokenPrice,
+}) => {
   return (
     <div className={styles.sellInfoWrapper}>
       <p className={styles.sellInfoItem}>
-        {0.002124} <SolanaIcon /> SOL
+        {solanaPrice} <SolanaIcon /> SOL
       </p>
       <div className={styles.separator} />
       <p className={styles.sellInfoItem}>
-        {0.002124}
+        {tokenPrice}
         <span
           className={styles.infoImage}
           style={{ backgroundImage: `url(${'/'})` }}
