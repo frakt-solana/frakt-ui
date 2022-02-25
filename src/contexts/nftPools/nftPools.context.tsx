@@ -5,7 +5,11 @@ import { usePolling } from '../../hooks';
 import { FetchDataFunc, NftPoolsContextValues } from './nftPools.model';
 import { Cacher } from '../../utils/cacher';
 import { NftPoolData } from '../../utils/cacher/nftPools';
-import { depositNftToCommunityPool, getLotteryTicket } from './transactions';
+import {
+  depositNftToCommunityPool,
+  getLotteryTicket,
+  swapNft,
+} from './transactions';
 
 export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   pools: [],
@@ -17,6 +21,7 @@ export const NftPoolsContext = React.createContext<NftPoolsContextValues>({
   stopPolling: () => {},
   depositNftToCommunityPool: () => Promise.resolve(null),
   getLotteryTicket: () => Promise.resolve(null),
+  swapNft: () => Promise.resolve(null),
 });
 
 export const NftPoolsProvider = ({
@@ -73,6 +78,7 @@ export const NftPoolsProvider = ({
           wallet,
         }),
         getLotteryTicket: getLotteryTicket({ connection, wallet }),
+        swapNft: swapNft({ connection, wallet }),
       }}
     >
       {children}

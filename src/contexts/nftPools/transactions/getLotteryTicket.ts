@@ -23,7 +23,7 @@ export interface GetLotteryTicketRawParams
   extends GetLotteryTicketParams,
     WalletAndConnection {}
 
-const rawGetLotteryTicket = async ({
+export const rawGetLotteryTicket = async ({
   connection,
   wallet,
   pool,

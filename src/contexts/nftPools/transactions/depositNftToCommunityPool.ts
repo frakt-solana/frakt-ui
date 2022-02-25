@@ -26,7 +26,7 @@ export interface DepositNftToCommunityPoolRawParams
   extends DepositNftToCommunityPoolParams,
     WalletAndConnection {}
 
-const rawDepositNftToCommunityPool = async ({
+export const rawDepositNftToCommunityPool = async ({
   connection,
   wallet,
   pool,

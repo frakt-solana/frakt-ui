@@ -35,14 +35,11 @@ export const SellingModal: FC<BuyingModalProps> = ({
         [styles.modalDown]: isModalDown && !!nft,
       })}
     >
-      {/* <div className={styles.closeModal} onClick={() => setIsModalDown(true)}>
-        <CloseModalIcon width={20} />
-      </div> */}
-      <div className={styles.header}>
-        <p
-          className={styles.title}
-          onClick={() => setIsModalDown(!isModalDown)}
-        >
+      <div
+        className={styles.header}
+        onClick={() => setIsModalDown(!isModalDown)}
+      >
+        <p className={styles.title}>
           You&apos;re selling{!!nft && <span>1</span>}
         </p>
         <div

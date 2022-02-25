@@ -1,1 +1,0 @@
-export { SwappingModal } from './SwappingModal';
