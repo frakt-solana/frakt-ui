@@ -11,8 +11,7 @@ import {
   useFraktionPolling,
   VaultState,
 } from '../../contexts/fraktion';
-import { useForm } from 'react-hook-form';
-import { ControlledSelect } from '../../components/Select/Select';
+import { Controller, useForm } from 'react-hook-form';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { VaultsList } from '../../components/VaultsList';
 import { Sidebar } from './components/Sidebar';
@@ -21,6 +20,7 @@ import { FiltersIcon } from '../../icons';
 import { useFeaturedVaultsPublicKeys } from './hooks';
 import { InputControlsNames, SortValue, StatusRadioNames } from './model';
 import { Loader } from '../../components/Loader';
+import { Select } from '../../components/Select';
 
 const SORT_VALUES: SortValue[] = [
   {
@@ -202,13 +202,21 @@ const VaultsPage = (): JSX.Element => {
                 <FiltersIcon />
               </p>
               <div className={styles.sortWrapper}>
-                <ControlledSelect
-                  className={styles.sortingSelect}
-                  valueContainerClassName={styles.sortingSelectValueContainer}
-                  label="Sort by"
+                <Controller
                   control={control}
                   name="sort"
-                  options={SORT_VALUES}
+                  render={({ field: { ref, ...field } }) => (
+                    <Select
+                      className={styles.sortingSelect}
+                      valueContainerClassName={
+                        styles.sortingSelectValueContainer
+                      }
+                      label="Sort by"
+                      name="sort"
+                      options={SORT_VALUES}
+                      {...field}
+                    />
+                  )}
                 />
               </div>
             </div>

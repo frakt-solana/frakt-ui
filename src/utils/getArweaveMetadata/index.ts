@@ -46,3 +46,5 @@ export const getArweaveMetadataByMint = async (
 
   return metadataByMint as MetadataByMint;
 };
+
+export * from './arweave.model';

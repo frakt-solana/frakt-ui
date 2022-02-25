@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { Container } from '../../components/Layout';
@@ -13,7 +13,7 @@ import {
 } from '../../contexts/fraktion';
 import { useDebounce } from '../../hooks';
 import { SearchInput } from '../../components/SearchInput';
-import { ControlledSelect } from '../../components/Select/Select';
+import { Select } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { mapVaultsByCollectionName } from '../../utils/collections';
 import { VaultsList } from '../../components/VaultsList';
@@ -200,13 +200,19 @@ const CollectionPage: FC = () => {
             )}
           </div>
           <div>
-            <ControlledSelect
-              className={styles.sortingSelect}
-              valueContainerClassName={styles.sortingSelectValueContainer}
-              label="Sort by"
+            <Controller
               control={control}
               name="sort"
-              options={SORT_VALUES}
+              render={({ field: { ref, ...field } }) => (
+                <Select
+                  className={styles.sortingSelect}
+                  valueContainerClassName={styles.sortingSelectValueContainer}
+                  label="Sort by"
+                  name="sort"
+                  options={SORT_VALUES}
+                  {...field}
+                />
+              )}
             />
           </div>
         </div>

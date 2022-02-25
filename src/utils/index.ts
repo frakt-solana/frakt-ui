@@ -117,36 +117,6 @@ export const getTokenBalanceValue = (amountBN: BN, decimals: number): string =>
     (amountBN?.toNumber() || 0) / Math.pow(10, decimals),
   )}`;
 
-export interface ArweaveAttribute {
-  trait_type: string;
-  value: number | string;
-}
-
-interface NFTCreator {
-  address: string;
-  share: number;
-}
-
-interface NFTFile {
-  type: string;
-  uri: string;
-}
-
-export interface ArweaveMetadata {
-  name: string;
-  symbol: string;
-  description: string;
-  seller_fee_basis_points?: number;
-  image: string;
-  animation_url?: string;
-  external_url?: string;
-  attributes: ArweaveAttribute[];
-  properties?: {
-    creators?: NFTCreator[];
-    files?: NFTFile[];
-  };
-}
-
 export const copyToClipboard = (value: string): void => {
   navigator.clipboard.writeText(value);
   notify({
@@ -200,3 +170,6 @@ export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
         });
     }
   };
+
+export const pluralize = (count: number, noun: string, suffix = 's'): string =>
+  `${count} ${noun}${count !== 1 ? suffix : ''}`;

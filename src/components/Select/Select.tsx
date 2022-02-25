@@ -1,26 +1,20 @@
-import React from 'react';
 import ReactSelect from 'react-select';
-import styles from './styles.module.scss';
 import classNames from 'classnames';
-import { Control, Controller } from 'react-hook-form';
 
-interface Options {
-  label: any;
-  value: any;
+import styles from './styles.module.scss';
+
+interface Option {
+  label: JSX.Element | string;
+  value: unknown;
 }
 
 interface SelectProps {
-  options: Options[];
+  options: Option[];
   className?: string;
   valueContainerClassName?: string;
   onChange?: () => void;
-  value?: Options;
+  value?: Option;
   label?: string;
-}
-
-interface ControlledSelectProps extends SelectProps {
-  control: Control<any>;
-  name: string;
 }
 
 export const Select = ({
@@ -52,15 +46,3 @@ export const Select = ({
     />
   );
 };
-
-export const ControlledSelect = ({
-  control,
-  name,
-  ...props
-}: ControlledSelectProps): JSX.Element => (
-  <Controller
-    control={control}
-    name={name}
-    render={({ field: { ref, ...field } }) => <Select {...props} {...field} />}
-  />
-);

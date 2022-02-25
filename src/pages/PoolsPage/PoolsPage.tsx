@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { ControlledSelect } from '../../components/Select/Select';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { SearchInput } from '../../components/SearchInput';
@@ -12,6 +11,8 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
+import { Select } from '../../components/Select';
+import { Controller } from 'react-hook-form';
 
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
@@ -56,13 +57,19 @@ const PoolsPage: FC = () => {
               label="Awarded only"
               className={styles.filter}
             /> */}
-            <ControlledSelect
-              valueContainerClassName={styles.sortingSelectContainer}
-              className={styles.sortingSelect}
+            <Controller
               control={formControl}
               name={InputControlsNames.SORT}
-              label="Sort by"
-              options={SORT_VALUES}
+              render={({ field: { ref, ...field } }) => (
+                <Select
+                  valueContainerClassName={styles.sortingSelectContainer}
+                  className={styles.sortingSelect}
+                  label="Sort by"
+                  name={InputControlsNames.SORT}
+                  options={SORT_VALUES}
+                  {...field}
+                />
+              )}
             />
           </div>
         </div>

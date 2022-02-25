@@ -8,9 +8,11 @@ export { default as FraktionalizePage } from './FraktionalizePage';
 export { default as CollectionsPage } from './CollectionsPage';
 export { default as CollectionPage } from './CollectionPage';
 export { default as PoolsPage } from './PoolsPage';
-export { default as MarketPage } from '../pages/MarketPage';
-export { default as MarketBuyPage } from '../pages/MarketBuyPage';
-export { default as MarketSellPage } from '../pages/MarketSellPage';
-export { default as MarketSwapPage } from '../pages/MarketSwapPage';
-export { default as MarketInfoPage } from '../pages/MarketInfoPage';
-export { default as MarketTestPage } from './MarketTestPage';
+export {
+  MarketPage,
+  MarketBuyPage,
+  MarketSellPage,
+  MarketSwapPage,
+  MarketInfoPage,
+  MarketTestPage,
+} from './Market';
