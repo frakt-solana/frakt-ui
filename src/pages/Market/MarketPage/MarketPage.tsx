@@ -49,7 +49,10 @@ export const MarketPage: FC = () => {
           <Sidebar />
 
           <div className={styles.content}>
-            <h2 className={styles.title}>Buy, sell, and swap NFTs instantly</h2>
+            <h1 className={styles.title}>Pools</h1>
+            <h2 className={styles.subtitle}>
+              Buy, sell, and swap NFTs instantly
+            </h2>
 
             <div className={styles.searchWrapper}>
               <Input
