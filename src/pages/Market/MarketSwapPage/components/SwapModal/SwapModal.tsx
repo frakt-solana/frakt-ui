@@ -1,19 +1,34 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
-import {
-  CloseModalIcon,
-  QuestionIcon,
-  SwapMarketIcon,
-} from '../../../../../icons';
+import { SwapMarketIcon } from '../../../../../icons';
 import classNames from 'classnames';
 import { UserNFTWithCollection } from '../../../../../contexts/userTokens';
-import Button from '../../../../../components/Button';
+import {
+  CurrencySelector,
+  ItemContent,
+  ItemContentProps,
+  ModalHeader,
+  SubmitButton,
+} from '../../../components/ModalParts';
+import { useNativeAccount } from '../../../../../utils/accounts';
+import { LAMPORTS_PER_SOL } from '../../../../../utils/solanaUtils';
 
 interface SwapModalProps {
   nft?: UserNFTWithCollection;
   onDeselect?: () => void;
   onSubmit: () => void;
   randomPoolImage?: string;
+  poolTokenAvailable: boolean;
+}
+
+enum Token {
+  SOL = 'sol',
+  POOL_TOKEN = 'poolToken',
+}
+
+enum Price {
+  SOL = 0.3,
+  POOL_TOKEN = 0.02,
 }
 
 export const SwapModal: FC<SwapModalProps> = ({
@@ -21,8 +36,32 @@ export const SwapModal: FC<SwapModalProps> = ({
   onDeselect,
   onSubmit,
   randomPoolImage,
+  poolTokenAvailable,
 }) => {
+  const { account } = useNativeAccount();
+
+  const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
+
   const [isModalDown, setIsModalDown] = useState<boolean>(false);
+
+  const [token, setToken] = useState<Token>(Token.SOL);
+
+  useEffect(() => {
+    poolTokenAvailable && setToken(Token.POOL_TOKEN);
+  }, [poolTokenAvailable]);
+
+  const isSolTokenSelected = token === Token.SOL;
+
+  const slippageText =
+    token === Token.SOL
+      ? `* Max total (with slippage) = ${(Price.SOL * 0.98).toFixed(3)} SOL`
+      : '';
+
+  const isBtnDisabled =
+    (!isSolTokenSelected && !poolTokenAvailable) ||
+    (isSolTokenSelected && solBalance < Price.SOL);
+
+  const price = isSolTokenSelected ? Price.SOL : Price.POOL_TOKEN;
 
   return (
     <div
@@ -37,6 +76,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         image={nft?.metadata.image}
         onHeaderClick={() => setIsModalDown(!isModalDown)}
         onDeselect={onDeselect}
+        setSlippage={isSolTokenSelected && !isModalDown && ((num) => num)}
       />
 
       <div className={styles.separator}>
@@ -49,27 +89,28 @@ export const SwapModal: FC<SwapModalProps> = ({
         randomPoolImage={randomPoolImage}
       />
 
-      <div className={styles.swapBtnWrapper}>
-        <Button
-          type="alternative"
-          className={styles.swapBtn}
-          onClick={onSubmit}
-        >
-          Swap
-        </Button>
-      </div>
+      <CurrencySelector
+        token={token}
+        setToken={setToken}
+        price={price.toFixed(3)}
+        slippageText={slippageText}
+        label="Fee"
+      />
+
+      <SubmitButton
+        text="Swap"
+        onClick={onSubmit}
+        wrapperClassName={styles.swapBtnWrapper}
+        disabled={isBtnDisabled}
+      />
     </div>
   );
 };
 
-interface SwapModalItemProps {
+interface SwapModalItemProps extends ItemContentProps {
   headerText?: string;
-  name?: string;
-  collectionName?: string;
-  image?: string;
   onHeaderClick?: () => void;
-  onDeselect?: () => void;
-  randomPoolImage?: string;
+  setSlippage?: (num: number) => void;
 }
 
 const SwapModalItem: FC<SwapModalItemProps> = ({
@@ -80,45 +121,24 @@ const SwapModalItem: FC<SwapModalItemProps> = ({
   onHeaderClick = () => {},
   onDeselect,
   randomPoolImage,
+  setSlippage,
 }) => {
   return (
     <div className={styles.item}>
-      <div className={styles.itemHeader} onClick={onHeaderClick}>
-        {headerText}
-      </div>
-      <div className={styles.itemContent}>
-        <div className={styles.itemInfo}>
-          {randomPoolImage ? (
-            <div
-              className={styles.questionImg}
-              style={{ backgroundImage: `url(${randomPoolImage})` }}
-            >
-              <QuestionIcon
-                className={styles.questionIcon}
-                width={25}
-                height={44}
-              />
-            </div>
-          ) : (
-            <div
-              className={styles.itemImg}
-              style={{ backgroundImage: `url(${image})` }}
-            />
-          )}
+      <ModalHeader
+        onHeaderClick={onHeaderClick}
+        headerText={headerText}
+        setSlippage={setSlippage}
+      />
 
-          <div className={styles.itemText}>
-            <p className={styles.itemName}>{name}</p>
-            {collectionName && (
-              <p className={styles.itemCollection}>{collectionName}</p>
-            )}
-          </div>
-          {onDeselect && (
-            <div className={styles.itemDeselectWrapper} onClick={onDeselect}>
-              <CloseModalIcon className={styles.itemDeselect} />
-            </div>
-          )}
-        </div>
-      </div>
+      <ItemContent
+        className={styles.itemContent}
+        name={name}
+        image={image}
+        collectionName={collectionName}
+        onDeselect={onDeselect}
+        randomPoolImage={randomPoolImage}
+      />
     </div>
   );
 };

@@ -16,7 +16,7 @@ import {
 } from '../../../contexts/nftPools';
 import { SidebarInner } from '../components/SidebarInner';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
-import { useNFTsFiltering } from '../hooks';
+import { useNftPoolTokenBalance, useNFTsFiltering } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { Loader } from '../../../components/Loader';
 import { SwapModal } from './components/SwapModal';
@@ -90,6 +90,9 @@ export const MarketSwapPage: FC = () => {
 
   const { control, nfts, setSearch } = useNFTsFiltering(rawNFTs);
 
+  const { balance } = useNftPoolTokenBalance(pool);
+  const poolTokenAvailable = balance >= 1;
+
   return (
     <AppLayout className={styles.layout}>
       <div className="container">
@@ -113,6 +116,7 @@ export const MarketSwapPage: FC = () => {
                   onDeselect={onDeselect}
                   onSubmit={onSwap}
                   randomPoolImage={poolImage}
+                  poolTokenAvailable={poolTokenAvailable}
                 />
               </div>
               <div className={styles.content}>

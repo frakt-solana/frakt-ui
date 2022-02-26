@@ -19,7 +19,7 @@ import { usePublicKeyParam } from '../../../hooks';
 import { MarketNFTsList, SORT_VALUES } from '../components/MarketNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
-import { useNFTsFiltering } from '../hooks';
+import { useNftPoolTokenBalance, useNFTsFiltering } from '../hooks';
 import { SidebarInner } from '../components/SidebarInner';
 
 export const MarketSellPage: FC = () => {
@@ -83,6 +83,9 @@ export const MarketSellPage: FC = () => {
 
   const { control, nfts, setSearch } = useNFTsFiltering(rawNFTs);
 
+  const { balance } = useNftPoolTokenBalance(pool);
+  const poolTokenAvailable = balance >= 1;
+
   return (
     <AppLayout className={styles.layout}>
       <div className={styles.modalWrapper}>
@@ -90,6 +93,7 @@ export const MarketSellPage: FC = () => {
           nft={selectedNft}
           onDeselect={onDeselect}
           onSubmit={onSell}
+          poolTokenAvailable={poolTokenAvailable}
         />
       </div>
       <div className="container">

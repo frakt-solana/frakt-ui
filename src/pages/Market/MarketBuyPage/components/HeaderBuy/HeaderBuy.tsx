@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 import styles from './HeaderBuy.module.scss';
 import { QuestionIcon } from '../../../../../icons';
@@ -7,36 +7,17 @@ import {
   NftPoolData,
   SafetyDepositBoxState,
 } from '../../../../../utils/cacher/nftPools';
-import { useLotteryTicketSubscription } from '../../../hooks';
+import {
+  useLotteryTicketSubscription,
+  useNftPoolTokenBalance,
+} from '../../../hooks';
 import { useNftPools } from '../../../../../contexts/nftPools';
-import { useUserSplAccount } from '../../../../../utils/accounts';
-import { useWallet } from '@solana/wallet-adapter-react';
+
 import { MarketHeaderInner } from '../../../components/MarketHeaderInner';
 
 interface HeaderBuyProps {
   pool: NftPoolData;
 }
-
-const POOL_TOKEN_DECIMALS = 6;
-
-const useNftPoolTokenBalance = (pool) => {
-  const { connected } = useWallet();
-
-  const { accountInfo, subscribe: splTokenSubscribe } = useUserSplAccount();
-
-  useEffect(() => {
-    connected && splTokenSubscribe(pool.fractionMint);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected]);
-
-  const balance = accountInfo
-    ? accountInfo?.accountInfo?.amount?.toNumber() / 10 ** POOL_TOKEN_DECIMALS
-    : 0;
-
-  return {
-    balance,
-  };
-};
 
 export const HeaderBuy: FC<HeaderBuyProps> = ({ pool }) => {
   const { balance } = useNftPoolTokenBalance(pool);

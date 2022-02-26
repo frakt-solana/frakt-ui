@@ -1,39 +1,64 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import classNames from 'classnames';
-import { Select } from 'antd';
 
-import { UserNFT } from '../../../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../../../contexts/userTokens';
 import styles from './styles.module.scss';
-import SettingsIcon from '../../../../../icons/SettingsIcon';
-import { ArrowDownBtn, CloseModalIcon, SolanaIcon } from '../../../../../icons';
-
-const { Option } = Select;
+import { useNativeAccount } from '../../../../../utils/accounts';
+import { LAMPORTS_PER_SOL } from '../../../../../utils/solanaUtils';
+import {
+  CurrencySelector,
+  ItemContent,
+  ModalHeader,
+  SubmitButton,
+} from '../../../components/ModalParts';
 
 interface BuyingModalProps {
   onSubmit: () => void;
   onDeselect?: (nft: any) => void;
-  nft: UserNFT;
+  nft: UserNFTWithCollection;
+  poolTokenAvailable: boolean;
+}
+
+enum Token {
+  SOL = 'sol',
+  POOL_TOKEN = 'poolToken',
+}
+
+enum Price {
+  SOL = 14.84,
+  POOL_TOKEN = 0.98,
 }
 
 export const SellingModal: FC<BuyingModalProps> = ({
   onDeselect,
   nft,
   onSubmit,
+  poolTokenAvailable,
 }) => {
-  const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
+  const { account } = useNativeAccount();
+
+  const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
+
   const [isModalDown, setIsModalDown] = useState<boolean>(false);
 
-  const settingsRef = useRef();
+  const [token, setToken] = useState<Token>(Token.SOL);
 
-  const toggleSlippageModal = () => {
-    if (isSlippageVisible && !isModalDown) return;
-    setIsSlippageVisible(!isSlippageVisible);
-  };
+  const isSolTokenSelected = token === Token.SOL;
 
   const toggleModalDown = () => {
-    if (isSlippageVisible && !isModalDown) return;
     setIsModalDown(!isModalDown);
   };
+
+  const slippageText =
+    token === Token.SOL
+      ? `* Max total (with slippage) = ${(Price.SOL * 0.98).toFixed(3)} SOL`
+      : '';
+
+  const isBtnDisabled =
+    (!isSolTokenSelected && !poolTokenAvailable) ||
+    (isSolTokenSelected && solBalance < Price.SOL);
+
+  const price = isSolTokenSelected ? Price.SOL : Price.POOL_TOKEN;
 
   return (
     <div
@@ -43,90 +68,32 @@ export const SellingModal: FC<BuyingModalProps> = ({
         [styles.modalDown]: isModalDown && !!nft,
       })}
     >
-      <div className={styles.header} onClick={toggleModalDown}>
-        <p className={styles.title}>You&apos;re selling</p>
-        <div
-          className={classNames({
-            [styles.slippageWrapper]: true,
-            [styles.slippageVisible]: isSlippageVisible,
-          })}
-        >
-          <SettingsIcon
-            onClick={(event) => {
-              toggleSlippageModal();
-              event?.stopPropagation();
-            }}
-          />
-          <div
-            className={styles.slippageOverlay}
-            onClick={() => setIsSlippageVisible(false)}
-          />
-          <div className={styles.slippageBlock}>
-            <p className={styles.slippageTitle}>Slippage tolerance</p>
-            <ul className={styles.slippageList}>
-              <li className={styles.slippageItem}>1%</li>
-              <li className={styles.slippageItem}>5%</li>
-              <li className={styles.slippageItem}>10%</li>
-              <li className={styles.slippageItem}>
-                <input
-                  type="text"
-                  className={styles.slippageInput}
-                  placeholder="0.0%"
-                />
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <ul className={styles.selectedList}>
-        {!!nft && (
-          <li className={styles.selectedItem}>
-            <div
-              className={styles.itemImg}
-              style={{ backgroundImage: `url(${nft.metadata.image})` }}
-            />
-            <div className={styles.itemInfo}>
-              <p className={styles.itemId}>{nft.metadata.name}</p>
-              {/* <p className={styles.collectionName}>{nft.collectionName}</p> */}
-            </div>
-            <div
-              className={styles.closeWrapper}
-              onClick={() => onDeselect(nft)}
-            >
-              <CloseModalIcon />
-            </div>
-          </li>
-        )}
-      </ul>
-      <div className={styles.currencyWrapper}>
-        <p className={styles.totalText}>Total</p>
-        <p className={styles.totalAmount}>{14.84}</p>
-        <div className={styles.separator} />
-        <div className={styles.selectWrapper} ref={settingsRef}>
-          <Select
-            defaultValue={'SOL'}
-            className={styles.select}
-            suffixIcon={<ArrowDownBtn />}
-            dropdownClassName={styles.dropdown}
-            getPopupContainer={() => settingsRef.current}
-          >
-            <Option value="TOKEN" className={styles.option}>
-              <div className={styles.tokenIcon} />
-              <span className={styles.tokenText}>{`TOKEN`}</span>
-            </Option>
-            <Option value="SOL" className={styles.option}>
-              <SolanaIcon />
-              <span className={styles.tokenText}>SOL</span>
-            </Option>
-          </Select>
-        </div>
-      </div>
-      <p className={styles.slippageInfo}>
-        * Max total (with slippage) = {0.002124} SOL
-      </p>
-      <button className={styles.buyButton} onClick={onSubmit}>
-        Sell for {'SOL'}
-      </button>
+      <ModalHeader
+        onHeaderClick={toggleModalDown}
+        headerText="You're selling"
+        setSlippage={isSolTokenSelected && !isModalDown && ((num) => num)}
+      />
+
+      <ItemContent
+        className={styles.itemContent}
+        name={nft?.metadata.name}
+        image={nft?.metadata.image}
+        collectionName={nft?.collectionName}
+        onDeselect={() => onDeselect(nft)}
+      />
+
+      <CurrencySelector
+        token={token}
+        setToken={setToken}
+        price={price.toFixed(3)}
+        slippageText={slippageText}
+      />
+
+      <SubmitButton
+        text="Sell for SOL"
+        onClick={onSubmit}
+        disabled={isBtnDisabled}
+      />
     </div>
   );
 };

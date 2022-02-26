@@ -1,3 +1,4 @@
+import { NftPoolData } from './../../utils/cacher/nftPools/nftPools.model';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -5,6 +6,7 @@ import { Control, useForm } from 'react-hook-form';
 
 import { UserNFTWithCollection } from '../../contexts/userTokens';
 import { useDebounce } from '../../hooks';
+import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/MarketNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
@@ -117,3 +119,28 @@ export const useLotteryTicketSubscription: UseLotteryTicketSubscription =
       unsubscribe,
     };
   };
+
+const POOL_TOKEN_DECIMALS = 6;
+
+export const useNftPoolTokenBalance = (
+  pool: NftPoolData,
+): {
+  balance: number;
+} => {
+  const { connected } = useWallet();
+
+  const { accountInfo, subscribe: splTokenSubscribe } = useUserSplAccount();
+
+  useEffect(() => {
+    connected && splTokenSubscribe(pool.fractionMint);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected]);
+
+  const balance = accountInfo
+    ? accountInfo?.accountInfo?.amount?.toNumber() / 10 ** POOL_TOKEN_DECIMALS
+    : 0;
+
+  return {
+    balance,
+  };
+};
