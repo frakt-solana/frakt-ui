@@ -7,7 +7,7 @@ import {
   SafetyDepositBoxState,
 } from '../../../../../utils/cacher/nftPools';
 import styles from './styles.module.scss';
-import { createMarketPoolLink, MARKET_TABS } from '../../../../../constants';
+import { createPoolLink, POOL_TABS } from '../../../../../constants';
 import { SolanaIcon } from '../../../../../icons';
 import { pluralize } from '../../../../../utils';
 
@@ -44,7 +44,7 @@ export const PoolCard: FC<PoolCardProps> = ({ pool }) => {
 
   return (
     <NavLink
-      to={createMarketPoolLink(MARKET_TABS.BUY, publicKey.toBase58())}
+      to={createPoolLink(POOL_TABS.BUY, publicKey.toBase58())}
       className={styles.poolCardWrapper}
     >
       <div className={styles.poolCard}>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styles from '../styles.module.scss';
 import classNames from 'classnames/bind';
 import { PATHS } from '../../../constants';
@@ -24,7 +24,7 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
         <NavigationLink to={PATHS.TEST}>Test</NavigationLink>
       </li>
       <li>
-        <NavigationLink to={PATHS.MARKET}>Market</NavigationLink>
+        <NavigationLink to={PATHS.POOLS}>Pools</NavigationLink>
       </li>
       <li>
         <NavigationLink to={PATHS.VAULTS}>Vaults</NavigationLink>
