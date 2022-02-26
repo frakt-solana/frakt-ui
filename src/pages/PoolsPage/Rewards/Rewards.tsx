@@ -55,7 +55,7 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, fusionPoolInfo }) => {
                       mainRouter,
                     )}
                   </span>{' '}
-                  <span>{baseToken.symbol}</span>
+                  <span>UNKNOW</span>
                 </span>
               ))}
             </div>

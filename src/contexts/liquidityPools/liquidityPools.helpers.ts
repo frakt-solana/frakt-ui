@@ -231,25 +231,25 @@ const getFusionDataMap = (
     return stakeAccountInfoMap;
   }, new Map<string, StakeAccountView>());
 
-  // const secondaryStakeAccountsByMint = lpMints.reduce(
-  //   (secondaryStakeAccountInfoMap, lpMint) => {
-  //     const secondaryStakeAccount = stakeAccounts.find(
-  //       ({ stakeAccountPubkey }) =>
-  //         stakeAccountPubkey === secondaryStakeAccount.stakeAccount,
-  //     );
+  const secondaryStakeAccountsByMint = lpMints.reduce(
+    (secondaryStakeAccountInfoMap, lpMint) => {
+      const secondaryStakeAccount = secondaryStakeAccounts.find(
+        ({ stakeAccount }) =>
+          stakeAccount === stakeAccountsByMint.get(lpMint)?.stakeAccountPubkey,
+      );
 
-  //     secondaryStakeAccountInfoMap.set(lpMint, secondaryStakeAccount);
-  //     console.log(secondaryStakeAccountInfoMap);
-  //     return secondaryStakeAccountInfoMap;
-  //   },
-  //   new Map<string, SecondStakeAccountView>(),
-  // );
+      secondaryStakeAccountInfoMap.set(lpMint, secondaryStakeAccount);
+      return secondaryStakeAccountInfoMap;
+    },
+    new Map<string, SecondStakeAccountView>(),
+  );
 
   return {
     routerInfoByMint,
     secondaryRewardByMint,
     stakeAccountsByMint,
     secondaryStakeAccounts,
+    secondaryStakeAccountsByMint,
   };
 };
 
@@ -261,7 +261,7 @@ export const fetchFusionPoolInfo = (
     routerInfoByMint,
     secondaryRewardByMint,
     stakeAccountsByMint,
-    secondaryStakeAccounts,
+    secondaryStakeAccountsByMint,
   } = getFusionDataMap(allProgramAccounts, lpMints);
 
   return lpMints.reduce((fusionPoolInfo, lpMint) => {
@@ -269,7 +269,7 @@ export const fetchFusionPoolInfo = (
       mainRouter: routerInfoByMint.get(lpMint),
       stakeAccount: stakeAccountsByMint.get(lpMint),
       secondaryReward: secondaryRewardByMint.get(lpMint),
-      secondaryStakeAccount: secondaryStakeAccounts[0],
+      secondaryStakeAccount: secondaryStakeAccountsByMint.get(lpMint),
     });
     console.log(fusionPoolInfo);
     return fusionPoolInfo;

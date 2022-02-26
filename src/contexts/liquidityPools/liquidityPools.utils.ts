@@ -161,20 +161,22 @@ export const calcLiquidityRewards = (
 ): string | number => {
   const check_date = min(
     new BN(Math.floor(Date.now() / 1000)),
-    mainRouter.endTime,
+    new BN(mainRouter.endTime),
   );
 
   const reward =
-    ((mainRouter.cumulative.toNumber() +
-      mainRouter.apr.toNumber() *
-        (check_date.toNumber() - mainRouter.lastTime.toNumber()) -
-      stakeAccount.stakedAtCumulative.toNumber()) *
-      stakeAccount.amount.toNumber()) /
-    1e4 /
-    mainRouter.decimalsInput.toNumber() /
-    mainRouter.decimalsOutput.toNumber();
+    ((Number(mainRouter.cumulative) +
+      Number(mainRouter.apr) *
+        (check_date.toNumber() - Number(mainRouter.lastTime)) -
+      Number(stakeAccount.stakedAtCumulative)) *
+      Number(stakeAccount.amount)) /
+    (1e10 / Number(mainRouter.decimalsInput)) /
+    Number(mainRouter.decimalsInput) /
+    Number(mainRouter.decimalsOutput);
+  console.log(check_date);
+  console.log(mainRouter);
 
-  return reward;
+  return reward.toFixed(5);
 };
 
 export const caclLiquiditySecondRewars = (
@@ -183,23 +185,44 @@ export const caclLiquiditySecondRewars = (
   secondaryStakeAccount: SecondStakeAccountView,
   mainRouter: MainRouterView,
 ): string | number => {
+  let check_date: BN;
+
+  if (Number(stakeAccount.stakeEnd) > 0) {
+    const check_date1 = min(
+      new BN(Math.floor(Date.now() / 1000)),
+      new BN(stakeAccount.stakeEnd),
+    );
+    check_date = min(check_date1, new BN(secondaryReward.endTime));
+  } else {
+    check_date = min(
+      new BN(Math.floor(Date.now() / 1000)),
+      new BN(secondaryReward.endTime),
+    );
+  }
+
   if (secondaryReward && secondaryStakeAccount) {
     const calculation =
-      ((Math.floor(Date.now() / 1000) -
-        secondaryStakeAccount.lastHarvestedAt.toNumber()) *
-        secondaryReward.tokensPerSecondPerPoint.toNumber() *
-        stakeAccount.amount.toNumber()) /
-      mainRouter.decimalsInput.toNumber() /
-      secondaryReward.decimalsOutput.toNumber();
+      ((check_date.toNumber() -
+        max(
+          new BN(secondaryStakeAccount.lastHarvestedAt),
+          new BN(stakeAccount.stakedAt),
+        ).toNumber()) *
+        Number(secondaryReward.tokensPerSecondPerPoint) *
+        Number(stakeAccount.amount)) /
+      Number(mainRouter.decimalsInput) /
+      Number(secondaryReward.decimalsOutput);
     return calculation.toFixed(5);
   } else {
     const calculation =
-      ((Math.floor(Date.now() / 1000) -
-        max(secondaryReward.startTime, stakeAccount.stakedAt).toNumber()) *
-        secondaryReward.tokensPerSecondPerPoint.toNumber() *
-        stakeAccount.amount.toNumber()) /
-      mainRouter.decimalsInput.toNumber() /
-      secondaryReward.decimalsOutput.toNumber();
+      ((check_date.toNumber() -
+        max(
+          new BN(secondaryReward.startTime),
+          new BN(stakeAccount.stakedAt),
+        ).toNumber()) *
+        Number(secondaryReward.tokensPerSecondPerPoint) *
+        Number(stakeAccount.amount)) /
+      Number(mainRouter.decimalsInput) /
+      Number(secondaryReward.decimalsOutput);
 
     return calculation.toFixed(5);
   }
