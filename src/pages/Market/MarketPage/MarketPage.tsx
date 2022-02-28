@@ -35,7 +35,7 @@ export const MarketPage: FC = () => {
     return rawPools.filter(
       ({ state, publicKey }) =>
         state === CommunityPoolState.ACTIVE &&
-        publicKey.toBase58() === 'BoC5dJVZtPk6MVtDsXpeqPmLrAiQJmCrc7MwnyuaSn5e',
+        publicKey.toBase58() === '4wL5ftfJV6HxC5QoYc2C6jUAdDAVQM8tX7JkWRouUAB8',
     );
   }, [rawPools]);
 

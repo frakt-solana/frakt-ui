@@ -132,7 +132,7 @@ export const useNftPoolTokenBalance = (
   const { accountInfo, subscribe: splTokenSubscribe } = useUserSplAccount();
 
   useEffect(() => {
-    connected && splTokenSubscribe(pool.fractionMint);
+    connected && splTokenSubscribe(pool?.fractionMint);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected]);
 

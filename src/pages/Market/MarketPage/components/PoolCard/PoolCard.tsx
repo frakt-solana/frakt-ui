@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { FC, useMemo } from 'react';
-import { groupBy } from 'lodash';
+import { FC /* useMemo */ } from 'react';
+// import { groupBy } from 'lodash';
 
 import {
   NftPoolData,
@@ -15,22 +15,22 @@ interface PoolCardProps {
   pool: NftPoolData;
 }
 
-const MOCK_TOKEN_NAME = 'TODO';
+const MOCK_TOKEN_NAME = 'POOL';
 
-const MOCK_PRICE = 3.12;
+const MOCK_PRICE = 15.143;
 
 export const PoolCard: FC<PoolCardProps> = ({ pool }) => {
   const { publicKey, safetyBoxes } = pool;
 
-  const safetyBoxesByCollectionName = useMemo(() => {
-    return groupBy(
-      pool.safetyBoxes.filter(({ nftCollectionName }) => nftCollectionName),
-      'nftCollectionName',
-    );
-  }, [pool]);
+  // const safetyBoxesByCollectionName = useMemo(() => {
+  //   return groupBy(
+  //     pool.safetyBoxes.filter(({ nftCollectionName }) => nftCollectionName),
+  //     'nftCollectionName',
+  //   );
+  // }, [pool]);
 
-  const collectionsAmount =
-    Object.keys(safetyBoxesByCollectionName)?.length || 0;
+  const collectionsAmount = 4;
+  // Object.keys(safetyBoxesByCollectionName)?.length || 0;
 
   const nftsAmount = safetyBoxes.length;
 

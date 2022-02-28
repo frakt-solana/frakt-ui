@@ -103,7 +103,7 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
         onClick={onBuy}
         disabled={isBtnDisabled}
       >
-        Buy random
+        Buy
       </button>
     </div>
   );
