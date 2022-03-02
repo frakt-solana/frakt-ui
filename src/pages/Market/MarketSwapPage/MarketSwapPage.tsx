@@ -16,12 +16,19 @@ import {
 } from '../../../contexts/nftPools';
 import { SidebarInner } from '../components/SidebarInner';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
-import { useNftPoolTokenBalance, useNFTsFiltering } from '../hooks';
+import {
+  useLotteryTicketSubscription,
+  useNftPoolTokenBalance,
+  useNFTsFiltering,
+} from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { Loader } from '../../../components/Loader';
 import { SwapModal } from './components/SwapModal';
 import { SafetyDepositBoxState } from '../../../utils/cacher/nftPools';
 import { PublicKey } from '@solana/web3.js';
+import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
+import { getNftImagesForLottery } from '../MarketBuyPage';
+import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 
 export const MarketSwapPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -36,10 +43,21 @@ export const MarketSwapPage: FC = () => {
   } = useNftPool(poolPubkey);
   const { connected } = useWallet();
   const { swapNft } = useNftPools();
+  const { subscribe } = useLotteryTicketSubscription();
 
   const poolImage = pool?.safetyBoxes.filter(
     ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
   )?.[0]?.nftImage;
+
+  const poolNfts = useMemo(() => {
+    if (pool) {
+      return pool.safetyBoxes.map((safetyBox) => ({
+        ...safetyDepositBoxWithNftMetadataToUserNFT(safetyBox),
+        collectionName: safetyBox?.nftCollectionName || '',
+      }));
+    }
+    return [];
+  }, [pool]);
 
   const {
     nfts: rawNfts,
@@ -71,8 +89,17 @@ export const MarketSwapPage: FC = () => {
   const onDeselect = () => {
     setSelectedNft(null);
   };
-  const onSwap = () => {
-    swapNft({
+
+  const {
+    isLotteryModalVisible,
+    setIsLotteryModalVisible,
+    prizeImg,
+    setPrizeImg,
+    openLotteryModal,
+  } = useLotteryModal();
+
+  const onSwap = async () => {
+    const lotteryTicketPubkey = await swapNft({
       pool,
       nftMint: new PublicKey(selectedNft?.mint),
       afterDepositNftTransaction: () => {
@@ -80,6 +107,21 @@ export const MarketSwapPage: FC = () => {
         onDeselect();
       },
     });
+    openLotteryModal();
+
+    lotteryTicketPubkey &&
+      subscribe(lotteryTicketPubkey, (saferyBoxPublicKey) => {
+        if (saferyBoxPublicKey === '11111111111111111111111111111111') {
+          return;
+        }
+
+        const nftImage =
+          pool.safetyBoxes.find(
+            ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
+          )?.nftImage || '';
+
+        setPrizeImg(nftImage);
+      });
   };
 
   const rawNFTs = useMemo(() => {
@@ -139,6 +181,14 @@ export const MarketSwapPage: FC = () => {
           )}
         </div>
       </div>
+      {isLotteryModalVisible && (
+        <LotteryModal
+          setIsVisible={setIsLotteryModalVisible}
+          prizeImg={prizeImg}
+          setPrizeImg={setPrizeImg}
+          nftImages={getNftImagesForLottery(poolNfts)}
+        />
+      )}
     </AppLayout>
   );
 };

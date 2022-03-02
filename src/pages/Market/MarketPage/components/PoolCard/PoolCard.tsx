@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { FC /* useMemo */ } from 'react';
-// import { groupBy } from 'lodash';
 
 import {
   NftPoolData,

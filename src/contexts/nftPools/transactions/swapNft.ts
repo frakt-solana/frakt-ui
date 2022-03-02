@@ -46,7 +46,6 @@ const rawSwapNft = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawSwapNft, {
-  onSuccessMessage: 'NFT swapped successfully',
   onErrorMessage: 'NFT swap failed',
 });
 

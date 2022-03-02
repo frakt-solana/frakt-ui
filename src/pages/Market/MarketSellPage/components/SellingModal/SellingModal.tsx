@@ -89,11 +89,7 @@ export const SellingModal: FC<BuyingModalProps> = ({
         slippageText={slippageText}
       />
 
-      <SubmitButton
-        text="Sell for SOL"
-        onClick={onSubmit}
-        disabled={isBtnDisabled}
-      />
+      <SubmitButton text="Sell" onClick={onSubmit} disabled={isBtnDisabled} />
     </div>
   );
 };

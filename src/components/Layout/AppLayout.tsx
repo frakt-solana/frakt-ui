@@ -27,7 +27,7 @@ const Layout: FC<LayoutProps> = ({
   }, [location]);
 
   return (
-    <div className={className}>
+    <div className={classNames(styles.layout, className)}>
       <Header
         className={classNames(styles.header, {
           [styles.headerHide]: isHeaderHidden,

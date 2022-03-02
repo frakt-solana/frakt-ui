@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
+import { shuffle } from 'lodash';
 
 import styles from './styles.module.scss';
 import { SidebarInner } from '../components/SidebarInner';
@@ -19,6 +19,21 @@ import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/
 import { MarketNFTsList, SORT_VALUES } from '../components/MarketNFTsList';
 import { useLotteryTicketSubscription, useNFTsFiltering } from '../hooks';
 import { FilterFormInputsNames } from '../model';
+import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
+
+export const getNftImagesForLottery = (
+  nfts: UserNFTWithCollection[],
+): string[] => {
+  const ARRAY_SIZE = 20;
+
+  const shuffled = shuffle(nfts.map(({ metadata }) => metadata.image));
+
+  if (shuffled.length >= ARRAY_SIZE) {
+    return shuffled.slice(0, ARRAY_SIZE);
+  }
+
+  return shuffled;
+};
 
 export const MarketBuyPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -45,27 +60,36 @@ export const MarketBuyPage: FC = () => {
   const { getLotteryTicket } = useNftPools();
   const { subscribe } = useLotteryTicketSubscription();
 
+  const {
+    isLotteryModalVisible,
+    setIsLotteryModalVisible,
+    prizeImg,
+    setPrizeImg,
+    openLotteryModal,
+  } = useLotteryModal();
+
   const onBuy = async () => {
     const lotteryTicketPubkey = await getLotteryTicket({ pool });
+    openLotteryModal();
 
     lotteryTicketPubkey &&
       subscribe(lotteryTicketPubkey, (saferyBoxPublicKey) => {
-        // eslint-disable-next-line no-console
-        console.log(saferyBoxPublicKey, '!');
+        if (saferyBoxPublicKey === '11111111111111111111111111111111') {
+          return;
+        }
+
+        const nftImage =
+          pool.safetyBoxes.find(
+            ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
+          )?.nftImage || '';
+
+        setPrizeImg(nftImage);
       });
-    // //? Run roulette
-    // //? subscribe to changes
-    // // eslint-disable-next-line no-console
-    // console.log(lotteryTicketPubkey?.toBase58());
   };
 
   return (
     <AppLayout className={styles.layout}>
       <div className="container">
-        <Helmet>
-          <title>Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana</title>
-        </Helmet>
-
         <div className={styles.wrapper}>
           {poolLoading || !pool ? (
             <Loader size="large" />
@@ -90,6 +114,14 @@ export const MarketBuyPage: FC = () => {
           )}
         </div>
       </div>
+      {isLotteryModalVisible && (
+        <LotteryModal
+          setIsVisible={setIsLotteryModalVisible}
+          prizeImg={prizeImg}
+          setPrizeImg={setPrizeImg}
+          nftImages={getNftImagesForLottery(nfts)}
+        />
+      )}
     </AppLayout>
   );
 };

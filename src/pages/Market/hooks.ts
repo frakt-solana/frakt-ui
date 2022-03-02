@@ -82,22 +82,11 @@ export const useLotteryTicketSubscription: UseLotteryTicketSubscription =
       subscriptionId.current = connection.onAccountChange(
         lotteryTicketPublicKey,
         (lotteryTicketAccountEncoded) => {
-          const x = LOTTERY_TICKET_ACCOUNT_LAYOUT.decode(
+          const account = LOTTERY_TICKET_ACCOUNT_LAYOUT.decode(
             lotteryTicketAccountEncoded.data,
           );
 
-          // eslint-disable-next-line no-console
-          console.log({
-            community_pool: x.community_pool.toBase58(),
-            ticket_holder: x.ticket_holder.toBase58(),
-            winning_safety_box: x.winning_safety_box.toBase58(),
-            lottery_ticket_state: x.lottery_ticket_state,
-          });
-
-          //TODO lotteryTicketAccountEncoded check
-
-          callback(x.winning_safety_box.toBase58());
-          // unsubscribe()
+          callback(account.winning_safety_box.toBase58());
         },
       );
     };

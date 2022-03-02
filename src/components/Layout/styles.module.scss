@@ -1,3 +1,5 @@
+// .layout {}
+
 .container {
   max-width: 1430px;
   padding-left: 15px;
@@ -10,12 +12,12 @@
   top: 0;
   width: 100%;
   z-index: 2;
-  transition: top .2s ease-out;
+  transition: top 0.2s ease-out;
 }
 
 .headerHide {
   top: -50px;
-  transition: top .2s ease-in;
+  transition: top 0.2s ease-in;
 }
 
 .content {
