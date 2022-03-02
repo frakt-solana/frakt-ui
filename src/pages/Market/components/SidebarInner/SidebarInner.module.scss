@@ -4,10 +4,10 @@
   width: 100%;
   background-color: var(--black-color);
   border-right: var(--border-gray-1);
-  transition: transform .2s ease-in;
+  transition: transform 0.2s ease-in;
   z-index: 9;
   padding-bottom: 50px;
-  height: calc(100vh - 50px);
+  height: calc(100vh - var(--header-height));
   position: sticky;
   top: 0;
   align-self: flex-start;
@@ -57,7 +57,7 @@
   height: 100vh;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(16px);
-  transition: width .2s ease-in;
+  transition: width 0.2s ease-in;
   z-index: 8;
 }
 
@@ -187,7 +187,7 @@
 
   &::after {
     position: absolute;
-    content: "";
+    content: '';
     display: block;
     width: 100%;
     bottom: 0;
@@ -222,7 +222,9 @@
       border: none;
       border-radius: 0;
 
-      > .ant-collapse-item .ant-collapse-header-collapsible-only .ant-collapse-header-text {
+      > .ant-collapse-item
+        .ant-collapse-header-collapsible-only
+        .ant-collapse-header-text {
         display: block;
       }
     }
@@ -248,7 +250,10 @@
       padding: 10px;
     }
 
-    .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+    .ant-collapse
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow {
       position: absolute;
       right: 0;
       top: 13px;

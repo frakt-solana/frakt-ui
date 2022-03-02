@@ -2,6 +2,7 @@
   border-bottom: 1px solid var(--gray-color-3);
   font-family: var(--font-family-oxanium);
   background: var(--black-color);
+  height: var(--header-height);
 }
 
 .link {
@@ -43,7 +44,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: color .2s ease-in, background-color .2s ease-in;
+      transition: color 0.2s ease-in, background-color 0.2s ease-in;
 
       &:hover {
         background-color: var(--gray-color-4);
@@ -59,7 +60,7 @@
       width: 16px;
       height: 16px;
       fill: var(--white-color);
-      transition: fill .2s ease-in;
+      transition: fill 0.2s ease-in;
     }
   }
 }

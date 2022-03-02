@@ -7,12 +7,12 @@
   --accent-color-3: #7879f1;
   --accent-shadow-color: rgba(93, 95, 239, 0.3);
   --yellow-color: #b5d307;
-  --yellow-color-hover: #BFD34C;
-  --green-color: #83D6A4;
-  --darken-green-color: #4B9B6B;
+  --yellow-color-hover: #bfd34c;
+  --green-color: #83d6a4;
+  --darken-green-color: #4b9b6b;
   --red-color: #f83e3e;
-  --red-error-color: #FF6666;
-  --pink-color: #FF837B;
+  --red-error-color: #ff6666;
+  --pink-color: #ff837b;
   --bg-btn-color-1: rgba(62, 158, 248, 0.3);
   --border-btn-color-1: #3e9ef8;
 
@@ -70,8 +70,6 @@
 
   --font-link: 700 18px var(--font-family-inter);
 
-
-
   --font-title-1: 900 120px var(--font-family-inter);
   --font-title-2: 600 48px var(--font-family-oxanium);
   --font-text-1: 400 32px var(--font-family-oxanium);
@@ -104,4 +102,6 @@
     --font-text-1: 400 18px var(--font-family-oxanium);
     --font-text-2: 400 15px var(--font-family-oxanium);
   }
+
+  --header-height: 50px;
 }

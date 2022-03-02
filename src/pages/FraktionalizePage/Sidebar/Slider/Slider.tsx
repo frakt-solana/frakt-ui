@@ -2,15 +2,14 @@ import { FC } from 'react';
 import styles from './styles.module.scss';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Scrollbar } from 'swiper';
+import classNames from 'classnames/bind';
 
-import { UserNFT } from '../../../../../contexts/userTokens';
+import { UserNFT } from '../../../../contexts/userTokens';
 
 SwiperCore.use([Navigation, Scrollbar]);
 
 const sliderBreakpoints = {
-  250: { slidesPerView: 3 },
-  320: { slidesPerView: 3.6 },
-  1450: { slidesPerView: 4 },
+  250: { slidesPerView: 4 },
 };
 
 interface SliderProps {
@@ -20,12 +19,18 @@ interface SliderProps {
     nftImage: string;
     nftMint: string;
   }[];
+  className?: string;
 }
 
-export const Slider: FC<SliderProps> = ({ lockedNFT, onDeselect, nfts }) => {
+export const Slider: FC<SliderProps> = ({
+  lockedNFT,
+  onDeselect,
+  nfts,
+  className,
+}) => {
   return (
     <Swiper
-      className={styles.nftSlider}
+      className={classNames(styles.nftSlider, className)}
       spaceBetween={18}
       breakpoints={sliderBreakpoints}
       navigation={true}

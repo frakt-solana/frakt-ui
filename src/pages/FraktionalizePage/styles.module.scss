@@ -8,10 +8,10 @@
 }
 
 .contentReducer {
-  width: 75%;
+  padding-right: 395px;
 
-  @media screen and (max-width: 1300px){
-    width: 100%;
+  @media screen and (max-width: 1023px) {
+    padding-right: 0;
   }
 }
 
@@ -35,15 +35,7 @@
 
 .artsList {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 32px;
   align-items: stretch;
-
-  @media screen and (max-width: 1023px){
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media screen and (max-width: 767px){
-    grid-template-columns: repeat(1, 1fr);
-  }
 }

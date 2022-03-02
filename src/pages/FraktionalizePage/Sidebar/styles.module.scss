@@ -1,138 +1,108 @@
 .sidebarWrapper {
   position: fixed;
-  top: 88px;
-  right: 10px;
-  width: 100%;
-  max-width: 425px;
+  top: 0;
+  right: 10px; //scroll width
+  height: 100%;
+  width: 25%;
+  min-width: 375px;
+  background-color: red;
   background-color: var(--black-color);
+  border-left: 1px solid var(--gray-color-6);
   z-index: 2;
-  transform: translateX(425px);
-  transition: transform var(--transition-1), opacity var(--transition-1);
-  display: flex;
-  flex-direction: column;
+  transform: translateX(calc(100% + 10px));
+  transition: transform var(--transition-1), opacity var(--transition-1),
+    padding-top var(--transition-1);
+  padding-top: var(--header-height);
 
-  @media screen and (max-width: 1450px) {
-    max-width: 370px;
-  }
-
-  @media screen and (max-width: 1300px) {
-    transform: translateY(100%);
-    max-width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(16px);
-    display: flex;
-    top: 0;
-  }
-
-  @media screen and (max-width: 1024px) {
-    right: 0;
-  }
-}
-
-.overflow {
-  display: none;
-
-  @media screen and (max-width: 1300px) {
-    position: absolute;
-    display: block;
-    min-height: 100vh;
-    width: 100%;
-    left: 0;
-    top: 0;
-  }
-}
-
-.visible {
-  transform: translateX(0);
-  opacity: 1;
-
-  .sidebar {
+  &.visible {
+    transform: translateX(0);
     opacity: 1;
+
+    .sidebar {
+      opacity: 1;
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding-top: calc(var(--header-height));
+    transform: translateY(calc(100%));
+    right: 0;
+
+    &.visible.collapsed {
+      transform: translateY(calc(100% - 90px));
+      padding-top: 0;
+    }
   }
 }
 
-@media screen and (max-width: 1300px) {
-  .sidebarWrapper {
-    transform: translateY(100%);
-  }
-  .mobileSidebar {
-    transform: translateY(0);
-  }
+.headerHidden {
+  padding-top: 0;
 }
 
-
-.mobileSidebar .selectedVaults {
-  top: 88px;
+.collapsed {
+  @media screen and (max-width: 1279px) {
+    transform: translateY(calc(100%));
+  }
 }
 
 .sidebar {
-  overflow-y: auto;
-  background-color: var(--black-color);
+  overflow: auto;
   transition: transform var(--transition-1), opacity var(--transition-1);
-  height: calc(100vh - 88px);
-  border-top: 1px solid var(--gray-color-6);
-  border-left: 1px solid var(--gray-color-6);
+  height: 100%;
   opacity: 0;
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 9;
 
-  @media screen and (max-width: 1300px) {
-    max-width: 370px;
-    margin-left: auto;
-    margin-top: 88px;
-  }
-
   @media screen and (max-width: 375px) {
     max-width: none;
     width: 100%;
   }
 }
 
+.nftsAmount {
+  font: var(--font-subtitle-2);
+  padding: 24px 24px 12px;
+
+  @media screen and (max-width: 1023px) {
+    height: 90px;
+    padding: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color-1);
+    cursor: pointer;
+  }
+}
+
 .separator {
-  width: 100%;
-  height: 1px;
-  margin-top: 32px;
-  background-color: var(--gray-color-3);
-}
-
-.toggle {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px 0;
-}
-
-.toggle_wrapper {
   padding: 0 24px;
   margin-bottom: 32px;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: var(--gray-color-3);
+  }
 }
 
-.selectedVaults {
-  position: absolute;
-  width: 100%;
-  max-width: 370px;
-  z-index: 10;
-  right: 0;
-  top: -90px;
+.backDrop {
   display: none;
-  border: 1px solid var(--gray-color-6);
-  background-color: var(--accent-color-1);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+}
 
-  p {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 80px;
-    font-size: 25px;
-  }
-
-  @media screen and (max-width: 1300px) {
+.backDropVisible {
+  @media screen and (max-width: 1023px) {
     display: block;
-  }
-
-  @media screen and (max-width: 375px) {
-    max-width: none;
   }
 }

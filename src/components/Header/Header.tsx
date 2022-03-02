@@ -1,14 +1,13 @@
 import classNames from 'classnames/bind';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { NavLink } from 'react-router-dom';
 
 import styles from './styles.module.scss';
 import { Container } from '../Layout';
-import React from 'react';
 import { AppNavigation } from './AppNavigation';
 import BurgerMenu from '../BurgerMenu';
-import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import NavigationLink from './NavigationLink';
-import { useWallet } from '@solana/wallet-adapter-react';
 import ConnectButton from '../ConnectButton';
 import ConnectedButton from '../ConnectedButton';
 
