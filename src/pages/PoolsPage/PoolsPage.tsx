@@ -37,7 +37,6 @@ const PoolsPage: FC = () => {
         </h2>
         <div className={styles.sortWrapper}>
           <SearchInput
-            size="large"
             onChange={(e) => searchItems(e.target.value || '')}
             className={styles.search}
             placeholder="Filter by symbol"

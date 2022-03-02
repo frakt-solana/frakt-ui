@@ -5,7 +5,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { ArrowDownSmallIcon } from '../../icons';
+import { ArrowDownSmallIcon, FiltersIcon } from '../../icons';
 import {
   useFraktion,
   useFraktionInitialFetch,
@@ -14,11 +14,12 @@ import {
 import { useDebounce } from '../../hooks';
 import { SearchInput } from '../../components/SearchInput';
 import { Select } from '../../components/Select/Select';
-import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { mapVaultsByCollectionName } from '../../utils/collections';
 import { VaultsList } from '../../components/VaultsList';
 import { CollectionBanner } from './CollectionBanner';
 import styles from './styles.module.scss';
+import { Sidebar } from '../VaultsPage/components/Sidebar';
+import { InputControlsNames, StatusRadioNames } from '../VaultsPage/model';
 
 const SORT_VALUES = [
   {
@@ -42,26 +43,21 @@ const SORT_VALUES = [
 const CollectionPage: FC = () => {
   const { control, watch } = useForm({
     defaultValues: {
-      showActiveVaults: true,
-      showAuctionLiveVaults: true,
-      showAuctionFinishedVaults: true,
-      showArchivedVaults: false,
-      showMyVaults: false,
-      showTradableVaults: false,
-      sort: SORT_VALUES[0],
+      [InputControlsNames.SHOW_VAULTS_STATUS]: StatusRadioNames.SHOW_ALL_VAULTS,
+      [InputControlsNames.SHOW_VERIFIED_VAULTS]: true,
+      [InputControlsNames.SHOW_TRADABLE_VAULTS]: false,
+      [InputControlsNames.SORT]: SORT_VALUES[0],
     },
   });
 
-  const sort = watch('sort');
-  const showActiveVaults = watch('showActiveVaults');
-  const showAuctionLiveVaults = watch('showAuctionLiveVaults');
-  const showAuctionFinishedVaults = watch('showAuctionFinishedVaults');
-  const showArchivedVaults = watch('showArchivedVaults');
-  const showMyVaults = watch('showMyVaults');
-  const showTradableVaults = watch('showTradableVaults');
+  const showVaultsStatus = watch(InputControlsNames.SHOW_VAULTS_STATUS);
+  const showVerifiedVaults = watch(InputControlsNames.SHOW_VERIFIED_VAULTS);
+  const showTradableVaults = watch(InputControlsNames.SHOW_TRADABLE_VAULTS);
+  const sort = watch(InputControlsNames.SORT);
 
   const { connected, publicKey } = useWallet();
   const [searchString, setSearchString] = useState<string>('');
+  const [isSidebar, setIsSidebar] = useState<boolean>(false);
   const { collectionName } = useParams<{ collectionName: string }>();
   const { vaults, loading } = useFraktion();
   useFraktionInitialFetch();
@@ -80,46 +76,51 @@ const CollectionPage: FC = () => {
 
     if (filteredVaults) {
       return filteredVaults
-        .filter(
-          (
-            { state, authority, hasMarket, safetyBoxes, vaultPubkey },
-            index,
-            self,
-          ) => {
-            const nftsName =
-              safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
-            if (state === VaultState.Inactive) return false;
+        .filter(({ state, hasMarket, safetyBoxes, isVerified }) => {
+          const nftsName =
+            safetyBoxes?.map((nft) => nft.nftName.toUpperCase()) || [];
+          if (state === VaultState.Inactive) return false;
 
-            if (connected && showMyVaults && authority !== publicKey.toString())
-              return false;
+          const showAllVaults =
+            showVaultsStatus === StatusRadioNames.SHOW_ALL_VAULTS;
+          const showActiveVaults =
+            showVaultsStatus === StatusRadioNames.SHOW_ACTIVE_VAULTS;
+          const showAuctionLiveVaults =
+            showVaultsStatus === StatusRadioNames.SHOW_AUCTION_LIVE_VAULTS;
+          const showAuctionFinishedVaults =
+            showVaultsStatus === StatusRadioNames.SHOW_AUCTION_FINISHED_VAULTS;
+          const showArchivedVaults =
+            showVaultsStatus === StatusRadioNames.SHOW_ARCHIVED_VAULTS;
 
-            const removeActiveVaults =
-              !showActiveVaults && state === VaultState.Active;
-            const removeLiveVaults =
-              !showAuctionLiveVaults && state === VaultState.AuctionLive;
-            const removeFinishedVaults =
-              !showAuctionFinishedVaults &&
-              state === VaultState.AuctionFinished;
-            const removeArchivedVaults =
-              !showArchivedVaults && state === VaultState.Archived;
+          const removeBecauseActive =
+            !showActiveVaults && state === VaultState.Active && !showAllVaults;
+          const removeBecauseLive =
+            !showAuctionLiveVaults &&
+            state === VaultState.AuctionLive &&
+            !showAllVaults;
+          const removeBecauseFinished =
+            !showAuctionFinishedVaults &&
+            state === VaultState.AuctionFinished &&
+            !showAllVaults;
+          const removeBecauseArchived =
+            !showArchivedVaults &&
+            state === VaultState.Archived &&
+            !showAllVaults;
 
-            if (removeActiveVaults) return false;
+          if (
+            removeBecauseActive ||
+            removeBecauseLive ||
+            removeBecauseFinished ||
+            removeBecauseArchived
+          )
+            return false;
 
-            if (removeLiveVaults) return false;
+          if (showTradableVaults && !hasMarket) return false;
 
-            if (removeFinishedVaults) return false;
+          if (showVerifiedVaults && !isVerified) return false;
 
-            if (removeArchivedVaults) return false;
-
-            if (showTradableVaults && !hasMarket) return false;
-
-            if (
-              index ===
-              self.findIndex((vault) => vault.vaultPubkey === vaultPubkey)
-            )
-              return nftsName.some((name) => name.includes(searchString));
-          },
-        )
+          return nftsName.some((name) => name.includes(searchString));
+        })
         .sort((a, b) => {
           if (sortField === 'collectionName') {
             if (sortOrder === 'desc') {
@@ -138,12 +139,9 @@ const CollectionPage: FC = () => {
     vaultsByCollectionName,
     sort,
     searchString,
-    showActiveVaults,
-    showAuctionLiveVaults,
-    showAuctionFinishedVaults,
-    showArchivedVaults,
-    showMyVaults,
     showTradableVaults,
+    showVerifiedVaults,
+    showVaultsStatus,
     connected,
     publicKey,
   ]);
@@ -151,72 +149,47 @@ const CollectionPage: FC = () => {
   return (
     <AppLayout>
       <CollectionBanner collectionName={collectionName} />
-      <Container component="main" className={styles.container}>
-        <SearchInput
-          size="large"
-          onChange={(e) => searchItems(e.target.value || '')}
-          className={styles.search}
-          placeholder="Search by vault name"
+      <Container component="main" className={styles.wrapper}>
+        <Sidebar
+          isSidebar={isSidebar}
+          control={control}
+          setIsSidebar={setIsSidebar}
         />
-        <div className={styles.filtersWrapper}>
-          <div className={styles.filters}>
-            <ControlledToggle
-              control={control}
-              name="showActiveVaults"
-              label="Active"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showAuctionLiveVaults"
-              label="Auction live"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showAuctionFinishedVaults"
-              label="Auction finished"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showArchivedVaults"
-              label="Archived"
-              className={styles.filter}
-            />
-            <ControlledToggle
-              control={control}
-              name="showTradableVaults"
-              label="Tradable"
-              className={styles.filter}
-            />
-            {connected && (
-              <ControlledToggle
-                control={control}
-                name="showMyVaults"
-                label="My Vaults"
-                className={styles.filter}
+        <div className={styles.contentWrapper}>
+          <div className={styles.searchSortWrapper}>
+            <p className={styles.searchWrapper}>
+              <SearchInput
+                onChange={(e) => searchItems(e.target.value || '')}
+                className={styles.search}
+                placeholder="Search by vault name"
               />
-            )}
+            </p>
+            <p
+              className={styles.filtersIconWrapper}
+              onClick={() => setIsSidebar(true)}
+            >
+              Filters
+              <FiltersIcon />
+            </p>
+            <div className={styles.sortWrapper}>
+              <Controller
+                control={control}
+                name="sort"
+                render={({ field: { ref, ...field } }) => (
+                  <Select
+                    className={styles.sortingSelect}
+                    valueContainerClassName={styles.sortingSelectValueContainer}
+                    label="Sort by"
+                    name="sort"
+                    options={SORT_VALUES}
+                    {...field}
+                  />
+                )}
+              />
+            </div>
           </div>
-          <div>
-            <Controller
-              control={control}
-              name="sort"
-              render={({ field: { ref, ...field } }) => (
-                <Select
-                  className={styles.sortingSelect}
-                  valueContainerClassName={styles.sortingSelectValueContainer}
-                  label="Sort by"
-                  name="sort"
-                  options={SORT_VALUES}
-                  {...field}
-                />
-              )}
-            />
-          </div>
+          <VaultsList vaults={userVaults || []} isLoading={loading} />
         </div>
-        <VaultsList vaults={userVaults || []} isLoading={loading} />
       </Container>
     </AppLayout>
   );

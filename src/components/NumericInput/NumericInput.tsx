@@ -40,6 +40,7 @@ const NumericInput = React.forwardRef(
       const { value } = event.target;
 
       if (positiveOnly && value?.[0] === '-') return;
+      if (value[0] === '0') return;
       if (integerOnly && value?.split('').includes('.')) return;
       if (maxLength && value.length > maxLength) return;
 

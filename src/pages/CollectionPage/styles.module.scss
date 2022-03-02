@@ -1,19 +1,93 @@
-.image {
-  height: 300px;
-  width: 100%;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.container {
+.wrapper {
+  display: flex;
   position: relative;
-  padding-top: 30px;
-  padding-bottom: 64px;
 }
 
-.search {
-  margin-bottom: 18px;
+.contentWrapper {
+  padding-top: 64px;
+  padding-left: 20px;
+  flex-grow: 1;
+  width: calc(100% - 215px);
+  position: relative;
+  padding-bottom: 60px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 100%;
+    top: -50px;
+    left: -1px;
+    background-color: var(--color-gray-4);
+
+    @media screen and (max-width: 700px) {
+      content: unset;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-top: 50px;
+  }
+
+  @media screen and (max-width: 700px) {
+    padding-left: 0;
+    padding-top: 30px;
+  }
+}
+
+.filtersIconWrapper {
+  color: var(--accent-color-1);
+  font-size: 15px;
+  display: none;
+  margin-right: auto;
+
+  @media screen and (max-width: 700px) {
+    display: block;
+  }
+
+  svg {
+    margin-left: 8px;
+  }
+}
+
+.searchSortWrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+
+  @media screen and (max-width: 450px) {
+    margin-bottom: 35px;
+  }
+
+  .search {
+    min-width: 330px;
+    width: auto;
+    padding: 0;
+
+    > input {
+      font: var(--font-text-3);
+    }
+
+    @media screen and (max-width: 800px) {
+      margin-bottom: 30px;
+    }
+
+    @media screen and (max-width: 450px) {
+      width: 100%;
+
+      > input {
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+.searchWrapper {
+  @media screen and (max-width: 800px) {
+    width: 100%;
+  }
 }
 
 .arrowUp,
@@ -33,6 +107,12 @@
   min-width: 270px;
 }
 
+.sortingSelect {
+  @media screen and (max-width: 450px) {
+    font-size: 15px;
+  }
+}
+
 .sortingSelectValueContainer {
   svg {
     position: relative;
@@ -43,27 +123,10 @@
   }
 }
 
-.filtersWrapper {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 35px;
-  gap: 120px;
+.sortWrapper {
+  margin-left: auto;
 
-  @media screen and (max-width: 550px) {
-    flex-wrap: wrap;
-    gap: 30px;
-    grid-gap: 24px;
-    margin-top: 24px;
-
-    .filters {
-      order: 1;
-    }
+  @media screen and (max-width: 800px) {
+    margin-left: 0;
   }
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 12px 36px;
-  flex-wrap: wrap;
 }
