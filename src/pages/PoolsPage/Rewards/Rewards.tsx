@@ -1,9 +1,9 @@
 import { FC } from 'react';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { SecondaryRewardView } from '@frakters/frkt-multiple-reward/lib/accounts';
 
 import Button from '../../../components/Button';
-import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
 import {
   caclLiquiditySecondRewars,
@@ -12,6 +12,7 @@ import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
+import { useTokenListContext } from '../../../contexts/TokenList';
 
 interface RewardsInterface {
   baseToken: TokenInfo;
@@ -20,19 +21,37 @@ interface RewardsInterface {
   fusionPoolInfo: FusionPoolInfo;
 }
 
-const Rewards: FC<RewardsInterface> = ({ baseToken, fusionPoolInfo }) => {
-  const { harvestLiquidity, harvestSecondaryLiquidity } = useLiquidityPools();
+interface secondaryRewardWithTokenInfo extends SecondaryRewardView {
+  tokenInfo: TokenInfo[];
+}
+
+const Rewards: FC<RewardsInterface> = ({ fusionPoolInfo }) => {
+  const { harvestLiquidity } = useLiquidityPools();
   const { mainRouter, stakeAccount, secondaryReward, secondaryStakeAccount } =
     fusionPoolInfo;
 
+  const { tokensList } = useTokenListContext();
+
   const onSubmitHandler = async () => {
-    await harvestLiquidity({ router: mainRouter, stakeAccount });
-    await harvestSecondaryLiquidity({
+    await harvestLiquidity({
       router: mainRouter,
       stakeAccount,
       secondaryReward,
     });
   };
+
+  const secondaryRewardInfoByMint = secondaryReward.reduce((acc, reward) => {
+    const tokenListSymbol = tokensList.filter(
+      ({ address }) => address === reward.tokenMint,
+    );
+    acc.push({ ...reward, tokenInfo: tokenListSymbol });
+
+    return acc;
+  }, [] as secondaryRewardWithTokenInfo[]);
+
+  const rewardInfoByMint = tokensList.filter(
+    ({ address }) => address === stakeAccount.tokenMintOutput,
+  );
 
   return (
     <div className={styles.rewards}>
@@ -41,24 +60,22 @@ const Rewards: FC<RewardsInterface> = ({ baseToken, fusionPoolInfo }) => {
         <div className={styles.info}>
           <p>
             {calcLiquidityRewards(mainRouter, stakeAccount)}{' '}
-            <span>{SOL_TOKEN.symbol}</span>
+            <span>{rewardInfoByMint[0]?.symbol}</span>
           </p>
-          <div>
-            <div className={styles.rewardInfo}>
-              {secondaryReward.map((secondaryReward) => (
-                <span key={secondaryReward.tokenMint}>
-                  <span>
-                    {caclLiquiditySecondRewars(
-                      stakeAccount,
-                      secondaryReward,
-                      secondaryStakeAccount,
-                      mainRouter,
-                    )}
-                  </span>{' '}
-                  <span>UNKNOW</span>
-                </span>
-              ))}
-            </div>
+          <div className={styles.rewardInfo}>
+            {secondaryRewardInfoByMint.map((reward) => (
+              <span key={reward.tokenMint}>
+                <span>
+                  {caclLiquiditySecondRewars(
+                    stakeAccount,
+                    reward,
+                    secondaryStakeAccount,
+                    mainRouter,
+                  )}
+                </span>{' '}
+                <span>{reward.tokenInfo[0].symbol} </span>
+              </span>
+            ))}
           </div>
         </div>
         <Button

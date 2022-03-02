@@ -34,7 +34,6 @@ export interface LiquidityPoolsContextValues {
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
   harvestLiquidity: (params: any) => Promise<void>;
-  harvestSecondaryLiquidity: (params: any) => Promise<void>;
   stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,

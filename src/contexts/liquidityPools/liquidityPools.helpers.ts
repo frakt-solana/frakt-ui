@@ -271,7 +271,7 @@ export const fetchFusionPoolInfo = (
       secondaryReward: secondaryRewardByMint.get(lpMint),
       secondaryStakeAccount: secondaryStakeAccountsByMint.get(lpMint),
     });
-    console.log(fusionPoolInfo);
+
     return fusionPoolInfo;
   }, new Map<string, FusionPoolInfo>());
 };

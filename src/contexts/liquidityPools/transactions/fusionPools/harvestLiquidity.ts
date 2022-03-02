@@ -1,10 +1,13 @@
-import { harvestInFusion } from '@frakters/frkt-multiple-reward';
+import {
+  harvestInFusion,
+  harvestSecondaryReward,
+} from '@frakters/frkt-multiple-reward';
 import {
   MainRouterView,
-  StakeAccountView,
+  SecondaryRewardView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 import { Provider } from '@project-serum/anchor';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 
 import { wrapAsyncWithTryCatch } from '../../../../utils';
 import {
@@ -16,7 +19,7 @@ import { FUSION_PROGRAM_PUBKEY } from './constants';
 
 export interface HarvestLiquidityTransactionParams {
   router: MainRouterView;
-  stakeAccount: StakeAccountView;
+  secondaryReward: SecondaryRewardView[];
 }
 
 export interface HarvestLiquidityTransactionRawParams
@@ -27,21 +30,40 @@ export const rowHarvestLiquidity = async ({
   router,
   connection,
   wallet,
-}: HarvestLiquidityTransactionRawParams): Promise<void> => {
-  await harvestInFusion(
+  secondaryReward,
+}: HarvestLiquidityTransactionRawParams): Promise<any> => {
+  const transaction = new Transaction();
+
+  const harvestInstruction = await harvestInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
-    async (transaction) => {
-      await signAndConfirmTransaction({
-        transaction,
-        connection,
-        wallet,
-      });
-    },
   );
+
+  transaction.add(harvestInstruction);
+
+  const rewardsTokenMint = secondaryReward.map(
+    ({ tokenMint }) => new PublicKey(tokenMint),
+  );
+
+  const secondaryHarvestInstruction = await harvestSecondaryReward(
+    new PublicKey(FUSION_PROGRAM_PUBKEY),
+    new Provider(connection, wallet, null),
+    wallet.publicKey,
+    new PublicKey(router.tokenMintInput),
+    new PublicKey(router.tokenMintOutput),
+    rewardsTokenMint,
+  );
+
+  transaction.add(...secondaryHarvestInstruction);
+
+  await signAndConfirmTransaction({
+    transaction,
+    connection,
+    wallet,
+  });
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowHarvestLiquidity, {

@@ -173,8 +173,6 @@ export const calcLiquidityRewards = (
     (1e10 / Number(mainRouter.decimalsInput)) /
     Number(mainRouter.decimalsInput) /
     Number(mainRouter.decimalsOutput);
-  console.log(check_date);
-  console.log(mainRouter);
 
   return reward.toFixed(5);
 };

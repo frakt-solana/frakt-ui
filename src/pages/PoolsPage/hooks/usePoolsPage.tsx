@@ -16,7 +16,6 @@ import {
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../styles.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
-import { poolConfigsTest } from '../testPoolsInfo';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -115,12 +114,12 @@ export const usePoolsPage = (): {
   }, [rawPoolsData]);
 
   useEffect(() => {
-    // if (rawPoolsData.length) {
-    const lpMints = poolConfigsTest.map((poolConfig) =>
-      poolConfig.lpMint.toBase58(),
-    );
-    fetchFusionPoolsInfo(lpMints);
-    // }
+    if (rawPoolsData.length) {
+      const lpMints = rawPoolsData.map(({ poolConfig }) =>
+        poolConfig.lpMint.toBase58(),
+      );
+      fetchFusionPoolsInfo(lpMints);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawPoolsData]);
 

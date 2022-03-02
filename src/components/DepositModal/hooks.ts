@@ -130,7 +130,7 @@ export const useDeposit = (
 
     if (tokenAmount) {
       const { mainRouter } = fusionPoolInfo;
-
+      console.log(tokenAmount);
       await stakeLiquidity({
         amount: new BN(Number(tokenAmount)),
         router: mainRouter,

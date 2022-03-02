@@ -40,21 +40,26 @@ const Withdraw: FC<WithdrawInterface> = ({
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
 
-  const balance = String(
-    lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0,
-  );
+  const balance =
+    lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0;
+
+  const stakedBalance =
+    Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
 
   const onSubmitHandler = async (): Promise<void> => {
     if (fusionPoolInfo) {
-      const { mainRouter, stakeAccount } = fusionPoolInfo;
+      const { mainRouter, secondaryReward } = fusionPoolInfo;
 
       const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
       const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
-      await unstakeLiquidity({
-        router: mainRouter,
-        // stakeAccount,
-      });
+      if (stakedBalance) {
+        await unstakeLiquidity({
+          router: mainRouter,
+          secondaryReward,
+          amount: baseAmount,
+        });
+      }
 
       await removeRaydiumLiquidity({
         baseToken,
@@ -71,7 +76,11 @@ const Withdraw: FC<WithdrawInterface> = ({
     <div className={styles.withdraw}>
       <div className={styles.header}>
         <p className={styles.title}>Withdraw</p>
-        <p className={styles.balance}>Balance: {balance}</p>
+        {stakedBalance ? (
+          <p className={styles.balance}>Staked balance: {stakedBalance}</p>
+        ) : (
+          <p className={styles.balance}>Balance: {balance}</p>
+        )}
       </div>
       <div className={styles.footer}>
         <TokenFieldWithBalance
@@ -81,13 +90,13 @@ const Withdraw: FC<WithdrawInterface> = ({
           style={{ width: '100%' }}
           showMaxButton
           lpTokenSymbol={baseToken.symbol}
-          lpBalance={balance}
+          lpBalance={stakedBalance ? stakedBalance : balance}
         />
         <Button
           type="tertiary"
           className={styles.rewardBtn}
           onClick={onSubmitHandler}
-          disabled={!parseFloat(balance) || !parseFloat(withdrawValue)}
+          disabled={!parseFloat(withdrawValue)}
         >
           Confirm
         </Button>

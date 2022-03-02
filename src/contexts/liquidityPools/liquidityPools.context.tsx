@@ -19,7 +19,6 @@ import {
   LiquidityPoolsProviderType,
   PoolDataByMint,
 } from './liquidityPools.model';
-import { harvestSecondaryLiquidity } from './transactions/fusionPools';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
@@ -31,7 +30,6 @@ export const LiquidityPoolsContext =
     addRaydiumLiquidity: () => Promise.resolve(null),
     removeRaydiumLiquidity: () => Promise.resolve(null),
     harvestLiquidity: () => Promise.resolve(null),
-    harvestSecondaryLiquidity: () => Promise.resolve(null),
     stakeLiquidity: () => Promise.resolve(null),
     unstakeLiquidity: () => Promise.resolve(null),
   });
@@ -92,10 +90,6 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
           wallet,
         }),
         harvestLiquidity: harvestLiquidity({
-          connection,
-          wallet,
-        }),
-        harvestSecondaryLiquidity: harvestSecondaryLiquidity({
           connection,
           wallet,
         }),

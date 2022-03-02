@@ -1,7 +1,7 @@
 import { MainRouterView } from '@frakters/frkt-multiple-reward/lib/accounts';
 import { stakeInFusion } from '@frakters/frkt-multiple-reward';
 import { Provider } from '@project-serum/anchor';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import BN from 'bn.js';
 
 import { wrapAsyncWithTryCatch } from '../../../../utils';
@@ -21,35 +21,30 @@ export interface StakeLiquidityTransactionRawParams
   extends StakeLiquidityTransactionParams,
     WalletAndConnection {}
 
-export const rawStakeLiquidity = async ({
+const rawStakeLiquidity = async ({
   amount,
   router,
   connection,
   wallet,
 }: StakeLiquidityTransactionRawParams): Promise<void> => {
-  console.log({
-    ProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
-    Provider: new Provider(connection, wallet, null),
-    WALLET: wallet.publicKey.toBase58(),
-    TOKENINPUT: new PublicKey(router.tokenMintInput).toBase58(),
-    TOKENOUTPUT: new PublicKey(router.tokenMintOutput).toBase58(),
-    AMOUNT: amount.toNumber(),
-  });
-  await stakeInFusion(
+  const transaction = new Transaction();
+
+  const instruction = await stakeInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
     amount,
-    async (transaction) => {
-      await signAndConfirmTransaction({
-        transaction,
-        connection,
-        wallet,
-      });
-    },
   );
+
+  transaction.add(instruction);
+
+  await signAndConfirmTransaction({
+    transaction,
+    connection,
+    wallet,
+  });
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawStakeLiquidity, {
