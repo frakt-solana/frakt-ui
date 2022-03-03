@@ -20,7 +20,6 @@
   }
 
   :global {
-
     .swiper {
       padding-bottom: 45px;
 
@@ -139,34 +138,34 @@
   &:global {
     &.swiper-slide {
       transition: all 1s ease-in;
-      transform: scale(.7) translateX(370px);
+      transform: scale(0.7) translateX(370px);
 
       @media screen and (max-width: 1200px) {
-        transform: scale(.7) translateX(400px);
+        transform: scale(0.7) translateX(400px);
       }
 
       @media screen and (max-width: 650px) {
-        transform: scale(.7) translateX(370px);
+        transform: scale(0.7) translateX(370px);
       }
 
       @media screen and (max-width: 550px) {
-        transform: scale(.7) translateX(310px);
+        transform: scale(0.7) translateX(310px);
       }
 
       @media screen and (max-width: 500px) {
-        transform: scale(.7) translateX(270px);
+        transform: scale(0.7) translateX(270px);
       }
 
       @media screen and (max-width: 450px) {
-        transform: scale(.7) translateX(250px);
+        transform: scale(0.7) translateX(250px);
       }
 
       @media screen and (max-width: 400px) {
-        transform: scale(.7) translateX(230px);
+        transform: scale(0.7) translateX(230px);
       }
 
       @media screen and (max-width: 350px) {
-        transform: scale(.7) translateX(210px);
+        transform: scale(0.7) translateX(210px);
       }
 
       &.swiper-slide-active {
@@ -230,6 +229,12 @@
   position: relative;
   background-color: var(--black-color);
 
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: block;
+
   @media screen and (max-width: 550px) {
     width: 290px;
   }
@@ -245,14 +250,6 @@
   @media screen and (max-width: 400px) {
     width: 160px;
   }
-}
-
-.visualWrapper {
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  display: block;
 }
 
 .slideImage {

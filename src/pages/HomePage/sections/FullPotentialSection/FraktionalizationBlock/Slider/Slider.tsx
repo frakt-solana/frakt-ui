@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
-import styles from './styles.module.scss';
-
+import { FC } from 'react';
+import { NavLink } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Autoplay, FreeMode, Navigation, Pagination } from 'swiper';
-import { NavLink } from 'react-router-dom';
+
+import styles from './Slider.module.scss';
 import { SLIDER_DATA } from './slidersData';
 import { PATHS } from '../../../../../../constants';
-import VaultCard from '../../../../../../components/VaultCard';
+import { MockVaultCard } from './MockVaultCard';
 
 SwiperCore.use([FreeMode, Navigation, Pagination, Autoplay]);
 
@@ -23,17 +23,35 @@ export const Slider: FC = () => {
         loopAdditionalSlides={1}
         spaceBetween={0}
         speed={1000}
-        autoplay={{ delay: 5000 }}
       >
-        {SLIDER_DATA.map((slide) => (
-          <SwiperSlide key={slide.vaultPubkey} className={styles.slide}>
-            <div className={styles.slideContent}>
-              <NavLink to={PATHS.VAULTS} className={styles.visualWrapper}>
-                <VaultCard vaultData={slide} />
+        {SLIDER_DATA.map(
+          (
+            {
+              nftsAmount,
+              title,
+              totalSupply,
+              fraktionPrice,
+              startBid,
+              images,
+              owner,
+            },
+            idx,
+          ) => (
+            <SwiperSlide key={idx} className={styles.slide}>
+              <NavLink to={PATHS.VAULTS} className={styles.slideContent}>
+                <MockVaultCard
+                  nftsAmount={nftsAmount}
+                  title={title}
+                  totalSupply={totalSupply}
+                  fraktionPrice={fraktionPrice}
+                  startBid={startBid}
+                  images={images}
+                  owner={owner}
+                />
               </NavLink>
-            </div>
-          </SwiperSlide>
-        ))}
+            </SwiperSlide>
+          ),
+        )}
       </Swiper>
     </div>
   );

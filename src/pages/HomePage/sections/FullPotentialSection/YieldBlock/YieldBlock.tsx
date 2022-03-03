@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
-import classNames from 'classnames';
-import styles from './styles.module.scss';
+import { FC } from 'react';
+import classNames from 'classnames/bind';
+
+import styles from './YieldBlock.module.scss';
 import { BlockContent } from '../BlockContent';
 import {
   PercentIcon100,
@@ -8,6 +9,7 @@ import {
   PercentIcon50,
   YieldInfoIcon,
 } from '../../../svg';
+import { PATHS } from '../../../../../constants';
 
 interface YieldBlockProps {
   className?: string;
@@ -22,6 +24,7 @@ export const YieldBlock: FC<YieldBlockProps> = ({ className }) => {
         text={
           'Provide NFTs or liquidity to protocol and to the NFT pools & vaults and reap the rewards'
         }
+        to={PATHS.YIELD}
       />
       <div className={styles.percentsWrapper}>
         <PercentIcon100 className={styles.percent100} />

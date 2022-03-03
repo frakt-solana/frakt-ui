@@ -1,15 +1,12 @@
+.root {
+  margin-bottom: 200px;
+}
+
 .title {
   font: var(--font-title-2);
   text-align: center;
-  max-width: 665px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 100px;
-
-  @media screen and (max-width: 767px) {
-    max-width: 470px;
-    margin-bottom: 50px;
-  }
+  max-width: 655px;
+  margin: 0 auto 100px;
 }
 
 .block {

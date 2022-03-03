@@ -36,7 +36,6 @@ const LANDING_LIST = [
   { to: `#${OUR_TOKENS_ID}`, label: 'Our tokens' },
   { to: `#${TECHNICAL_PARTNERS_ID}`, label: 'Technical partners' },
   { to: `#${TEAM_SECTION_ID}`, label: 'Team' },
-  { to: `#${CONTACT_SECTION_ID}`, label: 'Contact us' },
 ];
 
 const DOCS_LIST = [

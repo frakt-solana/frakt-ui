@@ -35,7 +35,6 @@ export const LendingBlock: FC<LendingBlockProps> = ({ className }) => {
       <BlockContent
         title={'Lending & Borrowing'}
         icon={<LandingInfoIcon />}
-        disabled
         text={
           'Get instant loans against NFTs. Get money for Solana NFTs and return them back anytime'
         }

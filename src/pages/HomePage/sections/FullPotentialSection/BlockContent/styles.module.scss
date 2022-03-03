@@ -40,7 +40,11 @@
   margin-bottom: 20px;
 }
 
-.button {
+.btn {
+  padding: 12px 95px;
+  font: var(--font-text-3);
+  color: var(--white-color);
+
   @media screen and (max-width: 1200px) {
     margin-left: auto;
     margin-right: auto;

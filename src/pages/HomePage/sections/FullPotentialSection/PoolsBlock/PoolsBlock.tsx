@@ -1,12 +1,13 @@
-import React, { FC, useRef } from 'react';
+import { FC, useRef } from 'react';
 import classNames from 'classnames';
+import SwiperCore, { Navigation, Autoplay, Scrollbar } from 'swiper';
+
 import styles from './styles.module.scss';
 import { BlockContent } from '../BlockContent';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
-import SwiperCore, { Navigation, Autoplay, Scrollbar } from 'swiper';
 import { PoolsInfoIcon } from '../../../svg';
+import { MockPoolCard } from './MockPoolCard';
 import { POOLS_DATA } from './poolsData';
-import { PoolCard } from '../../../../../components/PoolCard';
 
 SwiperCore.use([Navigation, Autoplay, Scrollbar]);
 
@@ -30,7 +31,6 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
         title={'Pools'}
         icon={<PoolsInfoIcon />}
         text={'Instantly buy, sell and swap NFTs'}
-        disabled
       />
       <div className={styles.sliderWrapper}>
         <Swiper
@@ -42,11 +42,10 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
           }}
           speed={1000}
           scrollbar={{ draggable: true }}
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
         >
-          {POOLS_DATA.map((pool) => (
-            <SwiperSlide key={pool.publicKey.toString()}>
-              <PoolCard pool={pool} />
+          {POOLS_DATA.map((props, idx) => (
+            <SwiperSlide key={idx}>
+              <MockPoolCard {...props} />
             </SwiperSlide>
           ))}
         </Swiper>
