@@ -1,8 +1,19 @@
-.root {
-  border-bottom: 1px solid var(--gray-color-3);
-  font-family: var(--font-family-oxanium);
+.header {
+  width: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
   background: var(--black-color);
   height: var(--header-height);
+  transition: top .2s ease-out;
+  z-index: 90;
+  font-family: var(--font-family-oxanium);
+  border-bottom: var(--border-gray-1);
+}
+
+.hasCustomHeader {
+  border-bottom: none;
 }
 
 .link {
@@ -18,8 +29,10 @@
     color: var(--white-color);
   }
 }
+
 .profileWrapper {
   height: 100%;
+
   .walletBtn {
     padding: 0 20px;
     cursor: pointer;
@@ -97,8 +110,97 @@
   }
 }
 
+.moreArrowIcon {
+  margin-left: 11px;
+}
+
+.mobileDropdown {
+  display: none;
+
+  @media screen and (max-width: 1023px) {
+    display: block;
+
+    .dropdownLink {
+      color: var(--white-color);
+      background: none;
+      outline: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 16px;
+
+      svg {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
 .navigation {
   display: flex;
+
+  :global {
+    .ant-btn.ant-dropdown-trigger {
+      border: none;
+      padding: 0 16px;
+      font: var(--font-text-3);
+
+      &:hover {
+        color: var(--white-color);
+      }
+    }
+
+    .ant-dropdown {
+      background-color: var(--black-color);
+      padding: 20px 0;
+      border: var(--border-gray-1);
+
+      &::after {
+        content: "";
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-left: var(--border-gray-1);
+        border-top: var(--border-gray-1);
+        background-color: var(--black-color);
+        transform: rotate(45deg);
+        position: absolute;
+        left: 127px;
+        top: -11px;
+        z-index: 1;
+      }
+
+      li {
+        margin-bottom: 10px;
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+
+        a {
+          padding-left: 20px;
+          padding-right: 20px;
+          color: var(--white-color);
+          font: var(--font-text-3);
+
+          &:hover {
+            color: var(--white-color);
+            background-color: var(--color-gray-7);
+          }
+
+          svg {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+
+    @media screen and (max-width: 1023px) {
+      .ant-btn.ant-dropdown-trigger,
+      .ant-dropdown {
+        display: none;
+      }
+    }
+  }
 
   &:last-of-type {
     align-self: stretch;
@@ -148,6 +250,7 @@
   @media screen and (max-width: 1023px) {
     display: none;
   }
+
 }
 
 .buttons {

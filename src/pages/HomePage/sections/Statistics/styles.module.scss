@@ -1,41 +1,52 @@
 .statistics {
   text-align: center;
-  background-color: var(--accent-color-1);
   margin-bottom: 64px;
 }
 
 .statisticsContainer {
   display: flex;
   justify-content: space-between;
+  gap: 30px;
 
   @media screen and (max-width: 767px) {
     flex-wrap: wrap;
+    gap: 0;
   }
 }
 
 .value {
   text-align: center;
   display: block;
-  font: var(--font-btn-large);
+  font-size: 90px;
   font-weight: 600;
   padding-top: 6px;
   color: var(--white-color);
+
+  @media screen and (max-width: 1400px) {
+    font-size: 6vw;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 10vw;
+  }
 }
 
 .title {
   text-align: center;
   display: block;
-  font-size: 18px;
+  font: var(--font-text-1);
   color: var(--white-color);
 }
 
 .stat {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 104px;
+  padding: 20px;
   width: 100%;
-  border-right: 1px solid var(--black-color);
+  border-top: 5px solid var(--accent-color-1);
+  background: linear-gradient(180deg, rgba(93, 95, 239, 0.7) 0%, rgba(93, 95, 239, 0) 100%);
 
   &:last-child {
     border-right: none;

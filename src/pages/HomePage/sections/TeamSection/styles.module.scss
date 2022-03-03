@@ -1,0 +1,75 @@
+.teamTitle {
+  font: var(--font-title-2);
+  margin-bottom: 100px;
+  text-align: center;
+
+  @media screen and (max-width: 767px) {
+    margin-bottom: 50px;
+  }
+}
+
+.teamList {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fill, minmax(10%, 15%));
+  gap: 23px;
+
+  @media screen and (max-width: 1400px) {
+    grid-template-columns: repeat(auto-fill, minmax(12%, 18%));
+    gap: 15px;
+  }
+
+  @media screen and (max-width: 1150px) {
+    grid-template-columns: repeat(auto-fill, minmax(15%, 22%));
+  }
+
+  @media screen and (max-width: 900px) {
+    grid-template-columns: repeat(auto-fill, minmax(20%, 30%));
+    gap: 10px;
+  }
+
+  @media screen and (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(35%, 45%));
+  }
+
+  @media screen and (max-width: 500px) {
+    grid-template-columns: repeat(auto-fill, minmax(40%, 48%));
+  }
+}
+
+.teamItem {
+  border: var(--border-gray-1);
+}
+
+.teamPhoto {
+  width: 100%;
+  z-index: 1;
+  display: block;
+}
+
+.teamInfo {
+  padding: 20px;
+}
+
+.teamName {
+  font: var(--font-text-2);
+  margin-bottom: 10px;
+}
+
+.teamPosition {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  span {
+    font: var(--font-text-3);
+
+    @media screen and (max-width: 650px) {
+      font-size: 15px;
+    }
+  }
+
+  a:hover {
+    opacity: 0.7;
+  }
+}

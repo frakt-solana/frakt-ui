@@ -1,0 +1,275 @@
+.sliderWrapper {
+  max-width: 50%;
+
+  @media screen and (max-width: 1200px) {
+    max-width: 600px;
+  }
+
+  @media screen and (max-width: 650px) {
+    max-width: 550px;
+  }
+
+  @media screen and (max-width: 550px) {
+    max-width: 490px;
+  }
+
+  @media screen and (max-width: 500px) {
+    max-width: calc(100% + 60px);
+    margin-left: -30px;
+    margin-right: -30px;
+  }
+
+  :global {
+
+    .swiper {
+      padding-bottom: 45px;
+
+      @media screen and (max-width: 500px) {
+        padding-bottom: 35px;
+      }
+
+      .swiper-pagination-fraction,
+      .swiper-pagination-custom,
+      .swiper-horizontal > .swiper-pagination-bullets,
+      .swiper-pagination-bullets.swiper-pagination-horizontal {
+        bottom: 0;
+        width: 360px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 16px;
+        border: var(--border-gray-1);
+        background-color: var(--black-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @media screen and (max-width: 550px) {
+          width: 300px;
+        }
+
+        @media screen and (max-width: 500px) {
+          width: 250px;
+          padding: 11px;
+        }
+
+        @media screen and (max-width: 450px) {
+          width: 200px;
+        }
+
+        @media screen and (max-width: 400px) {
+          width: 170px;
+        }
+      }
+
+      .swiper-pagination-bullet {
+        height: 3px;
+        max-width: 105px;
+        flex-grow: 1;
+        background-color: var(--color-gray-7);
+        border-radius: 0;
+        opacity: 1;
+        transition: background-color 1s ease-out;
+
+        &.swiper-pagination-bullet-active {
+          transition: background-color 1s ease-in;
+          background-color: var(--white-color);
+        }
+      }
+
+      .swiper-button-prev,
+      .swiper-button-next {
+        width: 56px;
+        height: 56px;
+        border: 1px solid var(--color-gray-03);
+        background-color: var(--black-color);
+
+        @media screen and (max-width: 550px) {
+          width: 30px;
+          height: 30px;
+        }
+
+        &:hover {
+          background-color: var(--color-gray-7);
+        }
+
+        &::after {
+          font-size: 10px;
+          color: var(--white-color);
+        }
+      }
+
+      .swiper-button-prev.swiper-button-disabled,
+      .swiper-button-next.swiper-button-disabled {
+        opacity: 1;
+        pointer-events: unset;
+
+        &:hover {
+          background-color: var(--black-color);
+        }
+
+        &::after {
+          color: var(--color-gray-3);
+        }
+      }
+    }
+  }
+}
+
+.slide {
+  width: 360px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+
+  @media screen and (max-width: 550px) {
+    width: 300px;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 250px;
+  }
+
+  @media screen and (max-width: 450px) {
+    width: 200px;
+  }
+
+  @media screen and (max-width: 400px) {
+    width: 170px;
+  }
+
+  &:global {
+    &.swiper-slide {
+      transition: all 1s ease-in;
+      transform: scale(.7) translateX(370px);
+
+      @media screen and (max-width: 1200px) {
+        transform: scale(.7) translateX(400px);
+      }
+
+      @media screen and (max-width: 650px) {
+        transform: scale(.7) translateX(370px);
+      }
+
+      @media screen and (max-width: 550px) {
+        transform: scale(.7) translateX(310px);
+      }
+
+      @media screen and (max-width: 500px) {
+        transform: scale(.7) translateX(270px);
+      }
+
+      @media screen and (max-width: 450px) {
+        transform: scale(.7) translateX(250px);
+      }
+
+      @media screen and (max-width: 400px) {
+        transform: scale(.7) translateX(230px);
+      }
+
+      @media screen and (max-width: 350px) {
+        transform: scale(.7) translateX(210px);
+      }
+
+      &.swiper-slide-active {
+        transform: scale(1) translateX(260px);
+        margin-left: -255px;
+        margin-right: -255px;
+        z-index: 1;
+
+        > div::after {
+          opacity: 0;
+        }
+
+        @media screen and (max-width: 1200px) {
+          transform: scale(1) translateX(275px);
+          margin-left: -260px;
+          margin-right: -280px;
+        }
+
+        @media screen and (max-width: 650px) {
+          transform: scale(1) translateX(255px);
+          margin-left: -250px;
+          margin-right: -250px;
+        }
+
+        @media screen and (max-width: 550px) {
+          transform: scale(1) translateX(225px);
+          margin-left: -210px;
+          margin-right: -210px;
+        }
+
+        @media screen and (max-width: 500px) {
+          transform: scale(1) translateX(190px);
+          margin-left: -170px;
+          margin-right: -180px;
+        }
+
+        @media screen and (max-width: 450px) {
+          transform: scale(1) translateX(180px);
+          margin-left: -150px;
+          margin-right: -160px;
+        }
+
+        @media screen and (max-width: 400px) {
+          transform: scale(1) translateX(160px);
+          margin-left: -120px;
+          margin-right: -160px;
+        }
+
+        @media screen and (max-width: 350px) {
+          transform: scale(1) translateX(140px);
+          margin-left: -120px;
+          margin-right: -140px;
+        }
+      }
+    }
+  }
+}
+
+.slideContent {
+  width: 350px;
+  position: relative;
+  background-color: var(--black-color);
+
+  @media screen and (max-width: 550px) {
+    width: 290px;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 240px;
+  }
+
+  @media screen and (max-width: 450px) {
+    width: 190px;
+  }
+
+  @media screen and (max-width: 400px) {
+    width: 160px;
+  }
+}
+
+.visualWrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: block;
+}
+
+.slideImage {
+  max-width: 100%;
+}
+
+.slideArtist {
+  color: var(--white-color);
+  font-size: 14px;
+  font-weight: 700;
+  border-bottom: var(--border-white-1);
+
+  @media screen and (max-width: 500px) {
+    font-size: 10px;
+  }
+
+  &:hover {
+    color: var(--white-color);
+  }
+}

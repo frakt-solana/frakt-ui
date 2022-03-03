@@ -2,8 +2,8 @@ import { useCountUp } from 'react-countup';
 import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
-import { Container } from '../../../../components/Layout';
 import { useEffect, useRef, useState } from 'react';
+import useOnScreen from '../../../../hooks/useOnScreen';
 
 interface Statistic {
   lockedNFTs: number;
@@ -38,15 +38,6 @@ const Statistics = (): JSX.Element => {
     duration: 2,
     separator: ',',
   });
-  const issuedTokensRef = useRef(null);
-  const { update: updateIssuedTokensCount } = useCountUp({
-    ref: issuedTokensRef,
-    start: 0,
-    end: 0,
-    startOnMount: false,
-    duration: 2,
-    separator: ',',
-  });
   const tvlRef = useRef(null);
   const { update: updateTvlCount } = useCountUp({
     ref: tvlRef,
@@ -59,14 +50,18 @@ const Statistics = (): JSX.Element => {
     prefix: '$',
   });
 
+  const isLockedNFTRef = useOnScreen(lockedNFTRef);
+  const isTvlRefVisible = useOnScreen(tvlRef);
+
   useEffect(() => {
-    if (!isLoading) {
-      updateLockedNFTCount(statistic?.lockedNFTs || 0);
-      updateIssuedTokensCount(statistic?.issuedTokens || 0);
+    if (!isLoading && isTvlRefVisible) {
       updateTvlCount(statistic?.TVL * price || 0);
     }
+    if (!isLoading && isLockedNFTRef) {
+      updateLockedNFTCount(statistic?.lockedNFTs || 0);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading]);
+  }, [isLoading, isTvlRefVisible, isLockedNFTRef]);
 
   useEffect(() => {
     const promises = [
@@ -78,9 +73,8 @@ const Statistics = (): JSX.Element => {
 
   return (
     <div className={classNames([styles.statistics])}>
-      <Container component="div" className={styles.statisticsContainer}>
+      <div className={`${styles.statisticsContainer} container`}>
         <div className={styles.stat}>
-          <span className={styles.title}>NFTs Locked in Vaults</span>
           <span className={styles.value}>
             <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
             <span
@@ -88,19 +82,9 @@ const Statistics = (): JSX.Element => {
               style={{ display: isLoading ? 'none' : 'inline' }}
             />
           </span>
+          <span className={styles.title}>NFTs locked</span>
         </div>
         <div className={styles.stat}>
-          <span className={styles.title}>Issued Tokens</span>
-          <span className={styles.value}>
-            <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
-            <span
-              ref={issuedTokensRef}
-              style={{ display: isLoading ? 'none' : 'inline' }}
-            />
-          </span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.title}>Total Value Locked</span>
           <span className={styles.value}>
             <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
             <span
@@ -108,8 +92,9 @@ const Statistics = (): JSX.Element => {
               style={{ display: isLoading ? 'none' : 'inline' }}
             />
           </span>
+          <span className={styles.title}>Total Value Locked</span>
         </div>
-      </Container>
+      </div>
     </div>
   );
 };

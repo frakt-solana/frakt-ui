@@ -26,8 +26,10 @@
       height: 100%;
       position: absolute;
       border: 1px solid var(--gray-color-6);
+      background-color: var(--black-color);
       top: 10px;
       left: 10px;
+      z-index: -1;
     }
 
     display: flex;

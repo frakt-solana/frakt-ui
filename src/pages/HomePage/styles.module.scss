@@ -1,92 +1,169 @@
-.container {
-  padding-top: 64px;
-  padding-bottom: 64px;
+.firstSectionBg {
+  position: relative;
+  background: url('./images/blueBg.png') no-repeat left bottom / 70% 120%,
+  url('./images/blueBgSmall.png') no-repeat right top;
+  overflow: unset;
 
-  &_up {
-    padding-bottom: 0;
+  @media screen and (max-width: 1023px) {
+    background-size: 100% 120%;
   }
 }
 
-.title {
-  font: 300 96px var(--font-family-oxanium);
-  margin-bottom: 24px;
-  text-transform: uppercase;
+.container {
+  min-height: calc(100vh - 50px);
+  padding: 100px 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: space-between;
+  gap: 30px;
 
-  b {
-    font-weight: 900;
+  @media screen and (max-width: 1100px) {
+    flex-direction: column;
+    padding-bottom: 200px;
   }
 
-  @media screen and (max-width: 560px) {
+  @media screen and (max-width: 767px) {
+    padding-bottom: 150px;
+  }
+}
+
+.titleWrapper {
+  max-width: 800px;
+}
+
+.mainTitle {
+  font: var(--font-title-1);
+  color: var(--white-color);
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  @media screen and (max-width: 1100px) {
+    font-size: 120px;
+  }
+
+  @media screen and (max-width: 767px) {
     font-size: 16vw;
   }
 }
 
-.subtitle {
-  font: 300 28px var(--font-family-oxanium);
-  text-transform: uppercase;
-  color: var(--white-color);
-  margin-bottom: 24px;
-
-  b {
-    font-weight: 900;
-  }
-}
-
-.launchingSoon {
-  font: var(--font-subtitle-2);
-  margin-bottom: 64px;
-  display: inline-block;
-  border-bottom: 2px solid var(--accent-color-3);
-
-  &,
-  &:hover {
-    color: var(--accent-color-3);
-  }
-}
-
-.separator {
-  width: 100%;
-  height: 1px;
-  background-color: var(--gray-color-3);
-  margin-bottom: 64px;
-}
-
-.separatorDouble {
-  width: 100%;
-  height: 16px;
-  border-top: 1px solid var(--gray-color-3);
-  border-bottom: 1px solid var(--gray-color-3);
-  margin-bottom: 64px;
-}
-
-.whyNeeds,
-.howItWorks {
-  margin-bottom: 64px;
-}
-
-.footer {
-  padding: 64px 15px;
+.subtitleWrapper {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  border-top: 1px solid var(--gray-color-3);
+  justify-content: space-between;
+  margin-top: 50px;
+  gap: 30px;
 
-  p {
-    text-transform: uppercase;
-    font: 600 24px var(--font-family-oxanium);
-    margin-bottom: 12px;
+  &::before {
+    content: '';
+    height: 1px;
+    flex-shrink: 0;
+    background-color: var(--white-color);
+    margin-bottom: 80px;
+
+    @media screen and (max-width: 1100px) {
+     flex-grow: 1;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    &::before {
+      width: auto;
+      flex-grow: 1;
+    }
+  }
+
+  @media screen and (max-width: 757px) {
+    gap: 10px;
+    margin-top: 30px;
   }
 }
 
-.socialLinks {
-  display: flex;
-  gap: 12px;
+.subtitleContent {
+  width: 84%;
+  max-width: 553px;
+  flex-shrink: 0;
+  font: var(--font-text-1);
 
-  a {
-    transition: opacity var(--transition-1);
+  @media screen and (max-width: 1100px) {
+    max-width: 355px;
+  }
+
+  @media screen and (max-width: 900px) {
+    max-width: 300px;
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: 250px;
+    flex-grow: 1;
+  }
+}
+
+.subtitle {
+  font: var(--font-text-1);
+
+  @media screen and (max-width: 1100px) {
+    font-size: 24px;
+  }
+
+  @media screen and (max-width: 900px) {
+    font-size: 20px;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 18px;
+  }
+}
+
+.subtitleNav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-top: 30px;
+
+  .docsLink {
+    color: var(--accent-color-1);
+
+    &::after {
+      background-color: var(--accent-color-1);
+    }
+
     &:hover {
-      opacity: 0.6;
+      color: var(--accent-color-1);
+    }
+
+    svg {
+      path {
+        fill: var(--accent-color-1);
+      }
+    }
+  }
+
+  @media screen and (max-width: 550px) {
+    margin-top: 20px;
+
+    a {
+      font-size: 15px;
     }
   }
 }
+
+.mainBg {
+
+  @media screen and (max-width: 1100px) {
+    order: -1;
+  }
+}
+
+.mainImage {
+  max-width: 100%;
+
+  @media screen and (max-width: 1100px) {
+    max-width: 85%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+
