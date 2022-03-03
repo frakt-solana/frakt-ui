@@ -2,6 +2,7 @@
   display: flex;
   gap: 30px;
   align-items: center;
+  margin-bottom: 200px;
 
   @media screen and (max-width: 1200px) {
     flex-direction: column;
@@ -19,7 +20,7 @@
 
 .title {
   font: var(--font-title-2);
-  margin-bottom: 100px;
+  margin-bottom: 80px;
 
   @media screen and (max-width: 767px) {
     margin-bottom: 50px;

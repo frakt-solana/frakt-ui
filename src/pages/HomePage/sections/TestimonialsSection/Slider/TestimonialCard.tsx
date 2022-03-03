@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import styles from './styles.module.scss';
+import { FC } from 'react';
+import styles from './Slider.module.scss';
 
 interface TestimonialCardProps {
   imageSrc: string;

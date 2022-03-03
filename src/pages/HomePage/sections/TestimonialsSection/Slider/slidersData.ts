@@ -1,6 +1,6 @@
-import testimonialImageUser from '../../../images/testimonials/userIcon.svg';
-import testimonialImage1 from '../../../images/testimonials/testy1.png';
-import testimonialImage3 from '../../../images/testimonials/testy3.png';
+import testimonialImageUser from './assets/userIcon.svg';
+import testimonialImage1 from './assets/testy1.png';
+import testimonialImage3 from './assets/testy3.png';
 
 interface SlidersDataItem {
   imageSrc1: string;

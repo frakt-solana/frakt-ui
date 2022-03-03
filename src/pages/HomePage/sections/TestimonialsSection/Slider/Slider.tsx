@@ -1,10 +1,10 @@
-import React, { FC, useRef } from 'react';
-import styles from './styles.module.scss';
-
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import { FC, useRef } from 'react';
 import SwiperCore, { Navigation, Scrollbar, Grid } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+
 import { SLIDER_DATA } from './slidersData';
 import { TestimonialCard } from './TestimonialCard';
+import styles from './Slider.module.scss';
 
 SwiperCore.use([Navigation, Scrollbar, Grid]);
 
