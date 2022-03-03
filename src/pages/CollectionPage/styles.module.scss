@@ -17,7 +17,7 @@
     display: block;
     width: 1px;
     height: 100%;
-    top: -50px;
+    top: 0px;
     left: -1px;
     background-color: var(--color-gray-4);
 
@@ -110,6 +110,9 @@
 .sortingSelect {
   @media screen and (max-width: 450px) {
     font-size: 15px;
+  }
+  @media screen and (max-width: 801px) {
+    min-width: 100%;
   }
 }
 

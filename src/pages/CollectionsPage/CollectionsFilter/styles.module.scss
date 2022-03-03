@@ -1,9 +1,13 @@
 .wrapper {
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .search {
   margin-bottom: 18px;
+  max-width: 375px;
 }
 
 .sortingSelect {

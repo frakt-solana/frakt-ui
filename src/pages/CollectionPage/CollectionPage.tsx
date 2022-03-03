@@ -1,7 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -55,7 +54,6 @@ const CollectionPage: FC = () => {
   const showTradableVaults = watch(InputControlsNames.SHOW_TRADABLE_VAULTS);
   const sort = watch(InputControlsNames.SORT);
 
-  const { connected, publicKey } = useWallet();
   const [searchString, setSearchString] = useState<string>('');
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
   const { collectionName } = useParams<{ collectionName: string }>();
@@ -142,8 +140,6 @@ const CollectionPage: FC = () => {
     showTradableVaults,
     showVerifiedVaults,
     showVaultsStatus,
-    connected,
-    publicKey,
   ]);
 
   return (
