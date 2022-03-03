@@ -1,12 +1,12 @@
-.title {
-  font: var(--font-title-2);
-  margin-bottom: 30px;
-  text-align: center;
+.root {
+  margin-bottom: 200px;
 }
 
-.subtitle {
+.title {
+  font: var(--font-title-2);
   text-align: center;
-  font: var(--font-text-1);
+  max-width: 655px;
+  margin: 0 auto 100px;
 }
 
 .brands {
