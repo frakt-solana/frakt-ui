@@ -1,10 +1,11 @@
 import { FC } from 'react';
-import styles from './styles.module.scss';
-
+import { useWallet } from '@solana/wallet-adapter-react';
 import { HashLink as AnchorLink } from 'react-router-hash-link';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames/bind';
+
+import styles from './styles.module.scss';
 import {
-  ArrowRightTop,
   CoinGeckoIcon,
   DiscordIcon,
   DocsIcon,
@@ -12,7 +13,6 @@ import {
   MediumIcon,
   TwitterIcon,
 } from '../../../../icons';
-import classNames from 'classnames';
 import {
   CONTACT_SECTION_ID,
   OUR_PRODUCT_ID,
@@ -21,7 +21,7 @@ import {
   TECHNICAL_PARTNERS_ID,
 } from '../../constants';
 import { PATHS } from '../../../../constants';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 
 interface FooterProps {
   className?: string;
@@ -172,9 +172,11 @@ export const Footer: FC<FooterProps> = ({ className, navRef }) => {
                   </a>
                 </li>
               </ul>
-              <a href="mailto:hello@frakt.art" className={`link-with-arrow`}>
-                hello@frakt.art <ArrowRightTop />
-              </a>
+              <LinkWithArrow
+                externalLink
+                to="mailto:hello@frakt.art"
+                label="hello@frakt.art"
+              />
             </div>
           </div>
         </div>

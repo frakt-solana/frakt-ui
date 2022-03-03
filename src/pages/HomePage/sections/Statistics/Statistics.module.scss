@@ -1,9 +1,5 @@
-.statistics {
-  text-align: center;
-  margin-bottom: 64px;
-}
-
-.statisticsContainer {
+.root {
+  margin-bottom: 200px;
   display: flex;
   justify-content: space-between;
   gap: 30px;
@@ -46,7 +42,11 @@
   padding: 20px;
   width: 100%;
   border-top: 5px solid var(--accent-color-1);
-  background: linear-gradient(180deg, rgba(93, 95, 239, 0.7) 0%, rgba(93, 95, 239, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(93, 95, 239, 0.7) 0%,
+    rgba(93, 95, 239, 0) 100%
+  );
 
   &:last-child {
     border-right: none;

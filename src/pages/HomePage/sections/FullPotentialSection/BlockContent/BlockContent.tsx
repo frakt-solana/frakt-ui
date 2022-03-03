@@ -28,19 +28,12 @@ export const BlockContent: FC<BlockContentProps> = ({
       {disabled ? (
         <NavLink
           to={buttonTo}
-          className={classNames(
-            styles.button,
-            styles.buttonDisabled,
-            'common-accent-btn',
-          )}
+          className={classNames(styles.button, styles.buttonDisabled)}
         >
           Soon
         </NavLink>
       ) : (
-        <NavLink
-          to={buttonTo}
-          className={classNames(styles.button, 'common-accent-btn')}
-        >
+        <NavLink to={buttonTo} className={classNames(styles.button)}>
           Try it out
         </NavLink>
       )}

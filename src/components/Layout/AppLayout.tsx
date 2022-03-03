@@ -42,6 +42,7 @@ export const Layout: FC<LayoutProps> = ({
       >
         {children}
       </div>
+      <div className={styles.noise} />
     </div>
   );
 };

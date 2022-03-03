@@ -30,3 +30,99 @@
   overflow-y: auto;
   scrollbar-gutter: stable;
 }
+
+.noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    height: 300%;
+    width: 300%;
+    background: url('./assets/noise.png');
+    pointer-events: none;
+    display: block;
+    opacity: 0.7;
+    animation: grain 2s steps(10) infinite;
+    will-change: transform;
+  }
+}
+
+@keyframes grain {
+  0%,
+  to {
+    transform: translate(0);
+  }
+  10% {
+    transform: translate(-5%, -10%);
+  }
+  20% {
+    transform: translate(-15%, 5%);
+  }
+  30% {
+    transform: translate(7%, -25%);
+  }
+  40% {
+    transform: translate(21%, 25%);
+  }
+  50% {
+    transform: translate(-25%, 10%);
+  }
+  60% {
+    transform: translate(15%, 5%);
+  }
+  70% {
+    transform: translateY(15%);
+  }
+  80% {
+    transform: translate(25%, 35%);
+  }
+  90% {
+    transform: translate(-10%, 10%);
+  }
+}
+
+@keyframes grain2 {
+  0%,
+  to {
+    transform: translate(0);
+  }
+  10% {
+    transform: translate(-1%, -2%);
+  }
+  20% {
+    transform: translate(-3%, 1%);
+  }
+  30% {
+    transform: translate(3%, -5%);
+  }
+  40% {
+    transform: translate(5%, 5%);
+  }
+  50% {
+    transform: translate(-5%, 2%);
+  }
+  60% {
+    transform: translate(3%, 1%);
+  }
+  70% {
+    transform: translateY(5%);
+  }
+  80% {
+    transform: translate(5%, 7%);
+  }
+  90% {
+    transform: translate(-2%, 2%);
+  }
+}

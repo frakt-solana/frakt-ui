@@ -2,12 +2,12 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { formatNumber, shortenAddress } from '../../utils/solanaUtils';
-import { ArrowRightTop, SolanaIcon, UserIcon } from '../../icons';
+import { SolanaIcon, UserIcon } from '../../icons';
 import { useNativeAccount } from '../../utils/accounts';
 import styles from './styles.module.scss';
 import { PATHS } from '../../constants';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { LinkWithArrow } from '../LinkWithArrow';
 
 interface CurrentUserTableProps {
   className?: string;
@@ -42,15 +42,11 @@ const CurrentUserTable = ({
           <p className={styles.userKey}>
             {shortenAddress(`${publicKey || ''}`)}
           </p>
-          <NavLink
-            className={`link-with-arrow ${styles.myCollectionLink}`}
+          <LinkWithArrow
             to={`${PATHS.WALLET}/${publicKey.toString()}`}
-          >
-            <span>
-              My collection
-              <ArrowRightTop />
-            </span>
-          </NavLink>
+            label="My collection"
+            className={styles.myCollectionLink}
+          />
         </div>
       </div>
       {getBalanceValue()}

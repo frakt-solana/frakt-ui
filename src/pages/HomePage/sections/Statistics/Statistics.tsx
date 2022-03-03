@@ -1,9 +1,9 @@
 import { useCountUp } from 'react-countup';
-import classNames from 'classnames/bind';
+import { FC, useEffect, useRef, useState } from 'react';
 
-import styles from './styles.module.scss';
-import { useEffect, useRef, useState } from 'react';
+import styles from './Statistics.module.scss';
 import { useOnScreen } from '../../../../hooks';
+import { Container } from '../../../../components/Layout';
 
 interface Statistic {
   lockedNFTs: number;
@@ -24,7 +24,7 @@ const getStatistic = (): Promise<Statistic> =>
     (res) => res.json() as Promise<Statistic>,
   );
 
-const Statistics = (): JSX.Element => {
+const Statistics: FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [statistic, setStatistic] = useState<Statistic | null>(null);
   const [price, setPrice] = useState(1);
@@ -72,30 +72,28 @@ const Statistics = (): JSX.Element => {
   }, []);
 
   return (
-    <div className={classNames([styles.statistics])}>
-      <div className={`${styles.statisticsContainer} container`}>
-        <div className={styles.stat}>
-          <span className={styles.value}>
-            <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
-            <span
-              ref={lockedNFTRef}
-              style={{ display: isLoading ? 'none' : 'inline' }}
-            />
-          </span>
-          <span className={styles.title}>NFTs locked</span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.value}>
-            <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
-            <span
-              ref={tvlRef}
-              style={{ display: isLoading ? 'none' : 'inline' }}
-            />
-          </span>
-          <span className={styles.title}>Total Value Locked</span>
-        </div>
+    <Container component="section" className={styles.root}>
+      <div className={styles.stat}>
+        <span className={styles.value}>
+          <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
+          <span
+            ref={lockedNFTRef}
+            style={{ display: isLoading ? 'none' : 'inline' }}
+          />
+        </span>
+        <span className={styles.title}>NFTs locked</span>
       </div>
-    </div>
+      <div className={styles.stat}>
+        <span className={styles.value}>
+          <span style={{ display: isLoading ? 'inline' : 'none' }}>---</span>
+          <span
+            ref={tvlRef}
+            style={{ display: isLoading ? 'none' : 'inline' }}
+          />
+        </span>
+        <span className={styles.title}>Total Value Locked</span>
+      </div>
+    </Container>
   );
 };
 

@@ -1,11 +1,10 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import { routes } from './constants/routes';
-import React from 'react';
 
 export const Router = (): JSX.Element => {
   return (
     <BrowserRouter>
-      <div className="noise" />
       <Switch>
         {routes.map(({ exact, path, component: Component }, index) => (
           <Route
