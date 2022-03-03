@@ -34,10 +34,12 @@ class API {
         vault.isVerified ||
         additionalVerifiedVaults.includes[vault.vaultPubkey],
       auction: {
-        auction: {
-          ...vault.auction.auction,
-          tickSize: new BN(vault.auction.auction?.tickSize, 16),
-        },
+        auction: vault.auction.auction
+          ? {
+              ...vault.auction.auction,
+              tickSize: new BN(vault.auction.auction?.tickSize, 16),
+            }
+          : {},
         bids: vault.auction.bids.map((bid) => ({
           ...bid,
           bidAmountPerShare: new BN(bid.bidAmountPerShare, 16),
