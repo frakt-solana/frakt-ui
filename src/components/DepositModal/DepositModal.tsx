@@ -51,7 +51,7 @@ const DepositModal: FC<DepositModalProps> = ({
     subscribeUserTokenBalance,
   } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo);
 
-  const { addRaydiumLiquidity, stakeLiquidity } = useLiquidityPools();
+  const { addRaydiumLiquidity } = useLiquidityPools();
   const { connection } = useConnection();
   const wallet = useWallet();
   const [accountInfo, setAccountInfo] = useState(null);

@@ -28,8 +28,6 @@ const PoolsPage: FC = () => {
     poolsStatsByMarketId,
   } = usePoolsPage();
 
-  console.log(poolsData);
-
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>

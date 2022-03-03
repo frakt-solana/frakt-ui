@@ -33,7 +33,8 @@ const Withdraw: FC<WithdrawInterface> = ({
   fusionPoolInfo,
   lpTokenAccountInfo,
 }) => {
-  const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
+  const { removeRaydiumLiquidity, unstakeLiquidity, stakeLiquidity } =
+    useLiquidityPools();
 
   const [withdrawValue, setWithdrawValue] = useState<string>('');
 
@@ -72,15 +73,37 @@ const Withdraw: FC<WithdrawInterface> = ({
     }
   };
 
+  const onStakeHandler = async (): Promise<void> => {
+    if (fusionPoolInfo) {
+      const { mainRouter } = fusionPoolInfo;
+
+      await stakeLiquidity({
+        amount: lpTokenAccountInfo?.accountInfo?.amount,
+        router: mainRouter,
+      });
+    }
+  };
+
   return (
     <div className={styles.withdraw}>
       <div className={styles.header}>
         <p className={styles.title}>Withdraw</p>
-        {stakedBalance ? (
-          <p className={styles.balance}>Staked balance: {stakedBalance}</p>
-        ) : (
-          <p className={styles.balance}>Balance: {balance}</p>
-        )}
+        <div className={styles.balanceWrap}>
+          {!!balance && (
+            <Button
+              className={styles.stakeBtn}
+              type="alternative"
+              onClick={onStakeHandler}
+            >
+              stake
+            </Button>
+          )}
+          {stakedBalance ? (
+            <p className={styles.balance}>Staked balance: {stakedBalance}</p>
+          ) : (
+            <p className={styles.balance}>Balance: {balance}</p>
+          )}
+        </div>
       </div>
       <div className={styles.footer}>
         <TokenFieldWithBalance
