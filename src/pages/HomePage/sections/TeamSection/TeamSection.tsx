@@ -1,16 +1,18 @@
-import React, { FC } from 'react';
-import styles from './styles.module.scss';
-import teamPhotoTim from '../../images/team/teamPhotoTim.jpg';
-import teamPhotoVedamir from '../../images/team/teamPhotoVedamire.jpg';
-import teamPhotoVlad from '../../images/team/teamPhotoVlad.jpg';
-import teamPhotoPhil from '../../images/team/teamPhotoPhil.jpg';
-import teamPhotoViktor from '../../images/team/teamPhotoViktor.jpg';
-import teamPhotoRoman from '../../images/team/teamPhotoRoman.jpg';
-import teamPhotoAdrian from '../../images/team/teamPhotoAdrian.jpg';
-import teamPhotoEgor from '../../images/team/teamPhotoEgor.jpg';
-import teamPhotoVlad2 from '../../images/team/teamPhotoVlad2.jpg';
+import { FC } from 'react';
+
+import styles from './TeamSection.module.scss';
+import teamPhotoTim from './assets/teamPhotoTim.jpg';
+import teamPhotoVedamir from './assets/teamPhotoVedamire.jpg';
+import teamPhotoVlad from './assets/teamPhotoVlad.jpg';
+import teamPhotoPhil from './assets/teamPhotoPhil.jpg';
+import teamPhotoViktor from './assets/teamPhotoViktor.jpg';
+import teamPhotoRoman from './assets/teamPhotoRoman.jpg';
+import teamPhotoAdrian from './assets/teamPhotoAdrian.jpg';
+import teamPhotoEgor from './assets/teamPhotoEgor.jpg';
+import teamPhotoVlad2 from './assets/teamPhotoVlad2.jpg';
 import { BehanceIcon, GitHubIcon, TwitterIcon } from '../../../../icons';
 import { TEAM_SECTION_ID } from '../../constants';
+import { Container } from '../../../../components/Layout';
 
 const MEMBERS = [
   {
@@ -130,31 +132,24 @@ const MEMBERS = [
 export const TeamSection: FC<{ navRef?: { current: HTMLParagraphElement } }> =
   ({ navRef }) => {
     return (
-      <section className={`section ${styles.team}`}>
-        <p
-          className="itemForIntersectionMenu"
-          id={TEAM_SECTION_ID}
-          ref={navRef}
-        >
-          Team
-        </p>
-        <div className={`container ${styles.teamContainer}`}>
-          <h2 className={styles.teamTitle}>Meet the team</h2>
-          <ul className={styles.teamList}>
-            {MEMBERS.map(({ name, photoUrl, position, socialLink }, idx) => (
-              <li key={idx} className={styles.teamItem}>
-                <img src={photoUrl} alt={name} className={styles.teamPhoto} />
-                <div className={styles.teamInfo}>
-                  <p className={styles.teamName}>{name}</p>
-                  <div className={styles.teamPosition}>
-                    {position}
-                    {socialLink}
-                  </div>
+      <Container component="section" className={styles.root}>
+        <h2 className={styles.title} ref={navRef} id={TEAM_SECTION_ID}>
+          Meet the team
+        </h2>
+        <ul className={styles.teamList}>
+          {MEMBERS.map(({ name, photoUrl, position, socialLink }, idx) => (
+            <li key={idx} className={styles.teamItem}>
+              <img src={photoUrl} alt={name} className={styles.teamPhoto} />
+              <div className={styles.teamInfo}>
+                <p className={styles.teamName}>{name}</p>
+                <div className={styles.teamPosition}>
+                  {position}
+                  {socialLink}
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </Container>
     );
   };

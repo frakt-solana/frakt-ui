@@ -1,11 +1,12 @@
-.teamTitle {
-  font: var(--font-title-2);
-  margin-bottom: 100px;
-  text-align: center;
+.root {
+  margin-bottom: 200px;
+}
 
-  @media screen and (max-width: 767px) {
-    margin-bottom: 50px;
-  }
+.title {
+  font: var(--font-title-2);
+  text-align: center;
+  max-width: 655px;
+  margin: 0 auto 100px;
 }
 
 .teamList {
