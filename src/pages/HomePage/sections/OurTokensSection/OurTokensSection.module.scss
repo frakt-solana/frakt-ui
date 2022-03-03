@@ -1,3 +1,14 @@
+.root {
+  margin-bottom: 200px;
+}
+
+.title {
+  font: var(--font-title-2);
+  text-align: center;
+  max-width: 655px;
+  margin: 0 auto 100px;
+}
+
 .wrapper {
   display: flex;
   gap: 40px;
@@ -8,16 +19,11 @@
   }
 }
 
-.title {
-  font: var(--font-title-2);
-  text-align: center;
-  margin-bottom: 100px;
-}
-
 .card {
+  min-height: 392px;
   position: relative;
   overflow: hidden;
-  padding: 29px;
+  padding: 30px;
   border: var(--border-gray-1);
   border-radius: 10px;
   display: flex;
@@ -26,44 +32,53 @@
   max-width: 680px;
   gap: 30px;
   border-bottom: 20px solid var(--green-color);
-  background: linear-gradient(360deg, rgba(131, 214, 164, 0.3) 0%, rgba(131, 214, 164, 0) 50%);
+  background: linear-gradient(
+    360deg,
+    rgba(131, 214, 164, 0.3) 0%,
+    rgba(131, 214, 164, 0) 50%
+  );
 
-  @media screen and (max-width: 1150px) {
+  @media screen and (max-width: 1279px) {
     flex-direction: column;
     text-align: center;
+    max-width: unset;
+    flex-grow: unset;
+    width: 100%;
   }
 
   @media screen and (max-width: 767px) {
     padding: 25px;
+    min-height: 340px;
   }
 }
 
 .titleCard {
-  font-size: 40px;
-  font-weight: 600;
+  font: var(--font-title-2);
+  flex: 1;
+  max-width: 280px;
   color: var(--green-color);
   margin-bottom: 30px;
 
-  @media screen and (max-width: 767px) {
-    font-size: 32px;
-  }
-
-  @media screen and (max-width: 500px) {
-    font-size: 25px;
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    text-align: center;
+    max-width: unset;
+    flex: unset;
+    margin-bottom: 0;
   }
 }
 
 .cardBlue {
   border-bottom-color: var(--accent-color-1);
-  background: linear-gradient(360deg, rgba(93, 95, 239, 0.3) 0%, rgba(93, 95, 239, 0) 73.85%);
+  background: linear-gradient(
+    360deg,
+    rgba(93, 95, 239, 0.3) 0%,
+    rgba(93, 95, 239, 0) 73.85%
+  );
 
   .titleCard {
     color: var(--accent-color-1);
   }
-}
-
-.portalIcon {
-  max-width: 100%;
 }
 
 .infoList {
@@ -72,10 +87,6 @@
 
   @media screen and (max-width: 1150px) {
     max-width: none;
-  }
-
-  @media screen and (max-width: 900px) {
-    font-size: 24px;
   }
 }
 

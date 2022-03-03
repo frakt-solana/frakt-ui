@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
-import styles from './styles.module.scss';
+import { FC } from 'react';
 import { HashLink as AnchorLink } from 'react-router-hash-link';
+
+import styles from './styles.module.scss';
 import classNames from 'classnames';
 
 interface CustomHeaderProps {
