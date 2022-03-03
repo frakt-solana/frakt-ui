@@ -11,6 +11,7 @@ import { SolanaIcon } from '../../../icons';
 import { POOL_HISTORY_DATA } from './tempData';
 import { HistoryListItem } from './components/HistoryListItem';
 import { usePublicKeyParam } from '../../../hooks';
+import { Container } from '../../../components/Layout';
 
 export const MarketInfoPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -20,7 +21,7 @@ export const MarketInfoPage = (): JSX.Element => {
 
   return (
     <AppLayout className={styles.layout}>
-      <div className="container">
+      <Container>
         <Helmet>
           <title>{`Market/Info | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
         </Helmet>
@@ -110,7 +111,7 @@ export const MarketInfoPage = (): JSX.Element => {
             </div>
           </>
         )}
-      </div>
+      </Container>
     </AppLayout>
   );
 };

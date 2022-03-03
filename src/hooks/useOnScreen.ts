@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export default function useOnScreen(ref: { current: HTMLElement }): boolean {
+export const useOnScreen = (ref: { current: HTMLElement }): boolean => {
   const [isIntersecting, setIntersecting] = useState(false);
 
   const observer = new IntersectionObserver(([entry]) =>
@@ -17,4 +17,4 @@ export default function useOnScreen(ref: { current: HTMLElement }): boolean {
   }, [ref]);
 
   return isIntersecting;
-}
+};

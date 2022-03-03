@@ -1,9 +1,10 @@
+import { FC, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { NavLink } from 'react-router-dom';
+
 import { AppLayout } from '../../components/Layout/AppLayout';
-import styles from './styles.module.scss';
 import Statistics from './sections/Statistics/Statistics';
 import { ArrowRightTop, FraktLogoIcon } from '../../icons';
-import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import { FullPotentialSection } from './sections/FullPotentialSection';
 import { OurTokensSection } from './sections/OurTokensSection';
@@ -12,13 +13,11 @@ import { TestimonialsSection } from './sections/TestimonialsSection';
 import PartnersSection from './sections/PartnersSection';
 import { Footer } from './sections/Footer';
 import { CustomHeader } from './CustomHeader';
-import React, { FC, useEffect, useRef, useState } from 'react';
-import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { useIntersectionObserver } from '../../hooks';
+import styles from './HomePage.module.scss';
+import { Container } from '../../components/Layout';
 
 const HomePage = (): JSX.Element => {
-  const [menuLinksData, setMenuLinksData] = useState<
-    { sectionRef: { current: HTMLParagraphElement } }[]
-  >([]);
   const [activeLink, setActiveLink] = useState<string>('');
 
   const sectionRef1 = useRef<HTMLParagraphElement>();
@@ -27,15 +26,13 @@ const HomePage = (): JSX.Element => {
   const sectionRef4 = useRef<HTMLParagraphElement>();
   const sectionRef5 = useRef<HTMLParagraphElement>();
 
-  useEffect(() => {
-    setMenuLinksData([
-      { sectionRef: sectionRef1 },
-      { sectionRef: sectionRef2 },
-      { sectionRef: sectionRef3 },
-      { sectionRef: sectionRef4 },
-      { sectionRef: sectionRef5 },
-    ]);
-  }, [sectionRef1, sectionRef2, sectionRef3, sectionRef4, sectionRef5]);
+  const menuLinksData = [
+    { sectionRef: sectionRef1 },
+    { sectionRef: sectionRef2 },
+    { sectionRef: sectionRef3 },
+    { sectionRef: sectionRef4 },
+    { sectionRef: sectionRef5 },
+  ];
 
   const intersectionCallback = (currentItemText: string) => {
     currentItemText !== activeLink && setActiveLink(currentItemText);
@@ -56,7 +53,7 @@ const HomePage = (): JSX.Element => {
       </Helmet>
       <main>
         <section className={styles.firstSectionBg}>
-          <div className={`${styles.container} container`}>
+          <Container component="div" className={styles.container}>
             <div className={styles.titleWrapper}>
               <h1 className={styles.mainTitle}> NFT x DeFi </h1>
               <div className={styles.subtitleWrapper}>
@@ -83,7 +80,7 @@ const HomePage = (): JSX.Element => {
             <div className={styles.mainBg}>
               <FraktLogoIcon className={styles.mainImage} />
             </div>
-          </div>
+          </Container>
         </section>
         <Statistics />
         <FullPotentialSection navRef={sectionRef1} />

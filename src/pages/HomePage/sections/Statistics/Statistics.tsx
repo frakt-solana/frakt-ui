@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 import { useEffect, useRef, useState } from 'react';
-import useOnScreen from '../../../../hooks/useOnScreen';
+import { useOnScreen } from '../../../../hooks';
 
 interface Statistic {
   lockedNFTs: number;

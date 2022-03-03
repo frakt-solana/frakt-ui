@@ -29,6 +29,7 @@ import { PublicKey } from '@solana/web3.js';
 import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
 import { getNftImagesForLottery } from '../MarketBuyPage';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
+import { Container } from '../../../components/Layout';
 
 export const MarketSwapPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -137,7 +138,7 @@ export const MarketSwapPage: FC = () => {
 
   return (
     <AppLayout className={styles.layout}>
-      <div className="container">
+      <Container>
         <Helmet>
           <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
         </Helmet>
@@ -180,7 +181,7 @@ export const MarketSwapPage: FC = () => {
             </>
           )}
         </div>
-      </div>
+      </Container>
       {isLotteryModalVisible && (
         <LotteryModal
           setIsVisible={setIsLotteryModalVisible}

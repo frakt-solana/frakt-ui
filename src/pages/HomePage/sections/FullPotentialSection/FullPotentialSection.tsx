@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import styles from './styles.module.scss';
 import { FraktionalizationBlock } from './FraktionalizationBlock';
 import { PoolsBlock } from './PoolsBlock';
@@ -6,6 +6,7 @@ import { LendingBlock } from './LendingBlock';
 import { YieldBlock } from './YieldBlock';
 import classNames from 'classnames';
 import { OUR_PRODUCT_ID } from '../../constants';
+import { Container } from '../../../../components/Layout';
 
 interface FullPotentialSectionProps {
   className?: string;
@@ -21,7 +22,7 @@ export const FullPotentialSection: FC<FullPotentialSectionProps> = ({
       <p className="itemForIntersectionMenu" id={OUR_PRODUCT_ID} ref={navRef}>
         Our products
       </p>
-      <div className="container">
+      <Container>
         <h2 className={styles.title}>Unlock the full potential of your NFTs</h2>
         <FraktionalizationBlock className={styles.block} />
         <PoolsBlock className={classNames(styles.block, styles.blockRight)} />
@@ -33,7 +34,7 @@ export const FullPotentialSection: FC<FullPotentialSectionProps> = ({
             styles.blockBg,
           )}
         />
-      </div>
+      </Container>
     </section>
   );
 };

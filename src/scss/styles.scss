@@ -33,24 +33,6 @@ h5 {
   }
 }
 
-.section {
-  padding-top: 200px;
-  position: relative;
-
-  @media screen and (max-width: 767px) {
-    padding-top: 150px;
-  }
-}
-
-.container {
-  max-width: 1430px;
-  width: 100%;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .sliderNavPrev,
 .sliderNavNext {
   height: 56px;
@@ -117,7 +99,7 @@ h5 {
   right: -80px;
 
   &::after {
-    content: "next";
+    content: 'next';
   }
 }
 
@@ -132,7 +114,6 @@ h5 {
   overflow: hidden;
   pointer-events: none;
 
-
   &:before {
     content: '';
     position: absolute;
@@ -140,78 +121,80 @@ h5 {
     left: -100%;
     height: 300%;
     width: 300%;
-    background: url("../images/noise.png");
+    background: url('../images/noise.png');
     pointer-events: none;
     display: block;
-    opacity: .7;
+    opacity: 0.7;
     animation: grain 2s steps(10) infinite;
     will-change: transform;
   }
 }
 
 @keyframes grain {
-  0%, to {
-    transform: translate(0)
+  0%,
+  to {
+    transform: translate(0);
   }
   10% {
-    transform: translate(-5%, -10%)
+    transform: translate(-5%, -10%);
   }
   20% {
-    transform: translate(-15%, 5%)
+    transform: translate(-15%, 5%);
   }
   30% {
-    transform: translate(7%, -25%)
+    transform: translate(7%, -25%);
   }
   40% {
-    transform: translate(21%, 25%)
+    transform: translate(21%, 25%);
   }
   50% {
-    transform: translate(-25%, 10%)
+    transform: translate(-25%, 10%);
   }
   60% {
-    transform: translate(15%, 5%)
+    transform: translate(15%, 5%);
   }
   70% {
-    transform: translateY(15%)
+    transform: translateY(15%);
   }
   80% {
-    transform: translate(25%, 35%)
+    transform: translate(25%, 35%);
   }
   90% {
-    transform: translate(-10%, 10%)
+    transform: translate(-10%, 10%);
   }
 }
 
 @keyframes grain2 {
-  0%, to {
-    transform: translate(0)
+  0%,
+  to {
+    transform: translate(0);
   }
   10% {
-    transform: translate(-1%, -2%)
+    transform: translate(-1%, -2%);
   }
   20% {
-    transform: translate(-3%, 1%)
+    transform: translate(-3%, 1%);
   }
   30% {
-    transform: translate(3%, -5%)
+    transform: translate(3%, -5%);
   }
   40% {
-    transform: translate(5%, 5%)
+    transform: translate(5%, 5%);
   }
   50% {
-    transform: translate(-5%, 2%)
+    transform: translate(-5%, 2%);
   }
   60% {
-    transform: translate(3%, 1%)
+    transform: translate(3%, 1%);
   }
   70% {
-    transform: translateY(5%)
+    transform: translateY(5%);
   }
   80% {
-    transform: translate(5%, 7%)
+    transform: translate(5%, 7%);
   }
   90% {
-    transform: translate(-2%, 2%)
+    transform: translate(-2%, 2%);
   }
 }
 
@@ -237,14 +220,14 @@ h5 {
 
   &::after {
     position: absolute;
-    content: "";
+    content: '';
     display: block;
     width: 100%;
     bottom: 0;
     left: -100%;
     height: 1px;
     background-color: var(--white-color);
-    transition: left .2s ease-in;
+    transition: left 0.2s ease-in;
   }
 
   &:hover {

@@ -17,6 +17,7 @@ import {
 import styles from './styles.module.scss';
 import { Loader } from '../../../components/Loader';
 import { CommunityPoolState } from '../../../utils/cacher/nftPools';
+import { Container } from '../../../components/Layout';
 
 export const MarketPage: FC = () => {
   const { control /* watch */ } = useForm({
@@ -41,7 +42,7 @@ export const MarketPage: FC = () => {
 
   return (
     <AppLayout className={styles.layout}>
-      <div className="container">
+      <Container>
         <Helmet>
           <title>{`Market | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
         </Helmet>
@@ -82,7 +83,7 @@ export const MarketPage: FC = () => {
             {loading ? <Loader size="large" /> : <PoolsList pools={pools} />}
           </div>
         </div>
-      </div>
+      </Container>
     </AppLayout>
   );
 };

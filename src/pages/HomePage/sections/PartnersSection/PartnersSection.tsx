@@ -16,7 +16,7 @@ interface PartnersSectionProps {
 
 const PartnersSection: FC<PartnersSectionProps> = ({ className, navRef }) => {
   return (
-    <section className={classNames('section', styles.section, className)}>
+    <section className={classNames(styles.section, className)}>
       <p
         className="itemForIntersectionMenu"
         id={TECHNICAL_PARTNERS_ID}

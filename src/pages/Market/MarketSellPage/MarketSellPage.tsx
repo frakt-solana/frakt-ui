@@ -21,6 +21,7 @@ import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
 import { useNftPoolTokenBalance, useNFTsFiltering } from '../hooks';
 import { SidebarInner } from '../components/SidebarInner';
+import { Container } from '../../../components/Layout';
 
 export const MarketSellPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -96,7 +97,7 @@ export const MarketSellPage: FC = () => {
           poolTokenAvailable={poolTokenAvailable}
         />
       </div>
-      <div className="container">
+      <Container>
         <Helmet>
           <title>Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana</title>
         </Helmet>
@@ -127,7 +128,7 @@ export const MarketSellPage: FC = () => {
             {connected && loading && <Loader size="large" />}
           </div>
         </div>
-      </div>
+      </Container>
     </AppLayout>
   );
 };

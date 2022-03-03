@@ -20,6 +20,7 @@ import { MarketNFTsList, SORT_VALUES } from '../components/MarketNFTsList';
 import { useLotteryTicketSubscription, useNFTsFiltering } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
+import { Container } from '../../../components/Layout';
 
 export const getNftImagesForLottery = (
   nfts: UserNFTWithCollection[],
@@ -89,7 +90,7 @@ export const MarketBuyPage: FC = () => {
 
   return (
     <AppLayout className={styles.layout}>
-      <div className="container">
+      <Container component="div">
         <div className={styles.wrapper}>
           {poolLoading || !pool ? (
             <Loader size="large" />
@@ -113,7 +114,7 @@ export const MarketBuyPage: FC = () => {
             </>
           )}
         </div>
-      </div>
+      </Container>
       {isLotteryModalVisible && (
         <LotteryModal
           setIsVisible={setIsLotteryModalVisible}
