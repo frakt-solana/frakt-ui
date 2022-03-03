@@ -1,10 +1,8 @@
 import { FC } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { HashLink as AnchorLink } from 'react-router-hash-link';
 import { NavLink } from 'react-router-dom';
-import classNames from 'classnames/bind';
 
-import styles from './styles.module.scss';
+import styles from './Footer.module.scss';
 import {
   CoinGeckoIcon,
   DiscordIcon,
@@ -22,165 +20,113 @@ import {
 } from '../../constants';
 import { PATHS } from '../../../../constants';
 import { LinkWithArrow } from '../../../../components/LinkWithArrow';
+import { Container } from '../../../../components/Layout';
+
+const ECOSYSTEM_LIST = [
+  { path: PATHS.POOLS, label: 'Pools' },
+  { path: PATHS.VAULTS, label: 'Vaults' },
+  { path: PATHS.SWAP, label: 'Swap' },
+  { path: process.env.REACT_APP_DEX_URL, label: 'Trade' },
+  { path: PATHS.COLLECTIONS, label: 'Collections' },
+  { path: PATHS.YIELD, label: 'Yield' },
+];
+
+const LANDING_LIST = [
+  { to: `#${OUR_PRODUCT_ID}`, label: 'Our products' },
+  { to: `#${OUR_TOKENS_ID}`, label: 'Our tokens' },
+  { to: `#${TECHNICAL_PARTNERS_ID}`, label: 'Technical partners' },
+  { to: `#${TEAM_SECTION_ID}`, label: 'Team' },
+  { to: `#${CONTACT_SECTION_ID}`, label: 'Contact us' },
+];
+
+const DOCS_LIST = [
+  { to: 'https://medium.com/@frakt_nft', icon: MediumIcon },
+  { to: 'https://docs.frakt.xyz/', icon: DocsIcon },
+  { to: 'https://github.com/frakt-solana', icon: CoinGeckoIcon },
+];
+
+const SOCIALS_LIST = [
+  { to: 'https://discord.gg/frakt', icon: DiscordIcon },
+  { to: 'https://twitter.com/FraktArt', icon: TwitterIcon },
+  { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
+];
 
 interface FooterProps {
-  className?: string;
   navRef?: { current: HTMLParagraphElement };
 }
 
-export const Footer: FC<FooterProps> = ({ className, navRef }) => {
-  const { connected } = useWallet();
-
+export const Footer: FC<FooterProps> = ({ navRef }) => {
   return (
-    <footer className={classNames(styles.footer, className)}>
-      <p
-        className="itemForIntersectionMenu"
-        id={CONTACT_SECTION_ID}
-        ref={navRef}
-      >
-        Contact us
+    <Container component="section" className={styles.root}>
+      <p className={styles.logo} id={CONTACT_SECTION_ID} ref={navRef}>
+        FRAKT
       </p>
-      <div className={`container ${styles.container}`}>
-        <p className={styles.logo}>FRAKT</p>
-        <div className={styles.navWrapper}>
-          <h5 className={styles.navTitle}>Ecosystem</h5>
-          <ul className={styles.navList}>
-            <li className={styles.navItem}>
-              <NavLink to={PATHS.POOLS}>Pools</NavLink>
+      <div className={styles.navWrapper}>
+        <h5 className={styles.navTitle}>Ecosystem</h5>
+        <ul className={styles.navList}>
+          {ECOSYSTEM_LIST.map(({ path, label }, idx) => (
+            <li key={idx} className={styles.navItem}>
+              <NavLink to={path}>{label}</NavLink>
             </li>
-            <li className={styles.navItem}>
-              <NavLink to={PATHS.VAULTS}>Vaults</NavLink>
-            </li>
-            <li className={styles.navItem}>
-              <NavLink to={PATHS.SWAP}>Swap</NavLink>
-            </li>
-            <li className={styles.navItem}>
-              <NavLink to={process.env.REACT_APP_DEX_URL}>Trade</NavLink>
-            </li>
-            <li className={styles.navItem}>
-              <NavLink to={PATHS.COLLECTIONS}>Collections</NavLink>
-            </li>
-            {connected && (
-              <li className={styles.navItem}>
-                <NavLink to={PATHS.WALLET}>My collection</NavLink>
-              </li>
-            )}
-            <li className={styles.navItem}>
-              <NavLink to={PATHS.YIELD}>Yield</NavLink>
-            </li>
-          </ul>
-        </div>
-        <div className={styles.navWrapper}>
-          <h5 className={styles.navTitle}>FRAKTION</h5>
-          <ul className={styles.navList}>
-            <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${OUR_PRODUCT_ID}`}>
-                Our products
+          ))}
+        </ul>
+      </div>
+      <div className={styles.navWrapper}>
+        <h5 className={styles.navTitle}>FRAKTION</h5>
+        <ul className={styles.navList}>
+          {LANDING_LIST.map(({ to, label }, idx) => (
+            <li className={styles.navItem} key={idx}>
+              <AnchorLink smooth to={to}>
+                {label}
               </AnchorLink>
             </li>
-            <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${OUR_TOKENS_ID}`}>
-                Our tokens
-              </AnchorLink>
-            </li>
-            <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${TECHNICAL_PARTNERS_ID}`}>
-                Technical partners
-              </AnchorLink>
-            </li>
-            <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${TEAM_SECTION_ID}`}>
-                Team
-              </AnchorLink>
-            </li>
-            <li className={styles.navItem}>
-              <AnchorLink smooth to={`#${CONTACT_SECTION_ID}`}>
-                Contact us
-              </AnchorLink>
-            </li>
-          </ul>
-        </div>
-        <div className={styles.contacts}>
-          <h5 className={styles.navTitle}>Resources</h5>
-          <div className={styles.contactsInfo}>
-            <div className={styles.docs}>
-              <p className={styles.docsTitle}>documentation</p>
-              <ul className={styles.socialNavs}>
-                <li className={styles.socialItem}>
+          ))}
+        </ul>
+      </div>
+      <div className={styles.contacts}>
+        <h5 className={styles.navTitle}>Resources</h5>
+        <div className={styles.contactsInfo}>
+          <div className={styles.docs}>
+            <p className={styles.docsTitle}>documentation</p>
+            <ul className={styles.socialNavs}>
+              {DOCS_LIST.map(({ to, icon: Icon }, idx) => (
+                <li className={styles.socialItem} key={idx}>
                   <a
-                    href="https://medium.com/@frakt_nft"
+                    href={to}
                     className={styles.socialLink}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <MediumIcon />
+                    <Icon />
                   </a>
                 </li>
-                <li className={styles.socialItem}>
+              ))}
+            </ul>
+          </div>
+          <div className={styles.contact}>
+            <p className={styles.contactTitle}>Contact us</p>
+            <ul className={styles.socialNavs}>
+              {SOCIALS_LIST.map(({ to, icon: Icon }, idx) => (
+                <li className={styles.socialItem} key={idx}>
                   <a
-                    href="https://docs.frakt.xyz/"
+                    href={to}
                     className={styles.socialLink}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <DocsIcon />
+                    <Icon />
                   </a>
                 </li>
-                <li className={styles.socialItem}>
-                  <a
-                    href="https://github.com/frakt-solana"
-                    className={styles.socialLink}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <CoinGeckoIcon />
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className={styles.contact}>
-              <p className={styles.contactTitle}>Contact us</p>
-              <ul className={styles.socialNavs}>
-                <li className={styles.socialItem}>
-                  <a
-                    href="https://discord.gg/frakt"
-                    className={styles.socialLink}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <DiscordIcon />
-                  </a>
-                </li>
-                <li className={styles.socialItem}>
-                  <a
-                    href="https://twitter.com/FraktArt"
-                    className={styles.socialLink}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <TwitterIcon />
-                  </a>
-                </li>
-                <li className={styles.socialItem}>
-                  <a
-                    href="https://github.com/frakt-solana"
-                    className={styles.socialLink}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <GitHubIcon />
-                  </a>
-                </li>
-              </ul>
-              <LinkWithArrow
-                externalLink
-                to="mailto:hello@frakt.art"
-                label="hello@frakt.art"
-              />
-            </div>
+              ))}
+            </ul>
+            <LinkWithArrow
+              externalLink
+              to="mailto:hello@frakt.art"
+              label="hello@frakt.art"
+            />
           </div>
         </div>
       </div>
-    </footer>
+    </Container>
   );
 };
