@@ -17,7 +17,7 @@ export const TestimonialsSection: FC = () => {
             they&apos;re here to stay.
           </p>
           <p className={styles.textParagraph}>
-            FRAKTION&apos;s vision is to supercharge the use cases built around
+            FRAKT&apos;s vision is to supercharge the use cases built around
             NFTs by making them more liquid.
           </p>
           <p className={styles.textParagraph}>

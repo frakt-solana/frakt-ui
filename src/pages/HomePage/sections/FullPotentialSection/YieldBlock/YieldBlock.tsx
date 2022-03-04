@@ -21,9 +21,7 @@ export const YieldBlock: FC<YieldBlockProps> = ({ className }) => {
       <BlockContent
         title={'Yield'}
         icon={<YieldInfoIcon />}
-        text={
-          'Provide NFTs or liquidity to protocol and to the NFT pools & vaults and reap the rewards'
-        }
+        text={'Provide NFTs or liquidity to protocol and reap the rewards'}
         to={PATHS.YIELD}
       />
       <div className={styles.percentsWrapper}>

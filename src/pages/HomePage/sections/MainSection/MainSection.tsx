@@ -14,12 +14,12 @@ export const MainSection: FC = () => {
         NFT<span>x</span>DEFI
       </h1>
       <h2 className={styles.subtitle}>
-        Buy, sell, earn yield and get instant liquidity out of your NFTs. Oh,
-        and get rewarded in process!
+        Buy, sell, earn yield and get instant liquidity out of your NFTs. <br />{' '}
+        Oh, and get rewarded in process!
       </h2>
       <NavLink to={PATHS.VAULTS}>
         <Button className={styles.btn} type="alternative">
-          Try it out
+          Try it out!
         </Button>
       </NavLink>
       <LinkWithArrow

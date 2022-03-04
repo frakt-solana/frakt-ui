@@ -30,7 +30,9 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
       <BlockContent
         title={'Pools'}
         icon={<PoolsInfoIcon />}
-        text={'Instantly buy, sell and swap NFTs'}
+        text={
+          'Instantly buy, sell and swap NFTs, or use pool tokens to generate passive income'
+        }
       />
       <div className={styles.sliderWrapper}>
         <Swiper

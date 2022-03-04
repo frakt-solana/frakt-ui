@@ -17,18 +17,6 @@ export const OurTokensSection: FC<OurTokensSectionProps> = ({ navRef }) => {
         Our tokens
       </h3>
       <div className={styles.wrapper}>
-        <div className={classNames(styles.card, styles.cardGreen)}>
-          <h4 className={styles.titleCard}>$FRKT</h4>
-          <div className={styles.infoWrapper}>
-            <ul className={styles.infoList}>
-              <li className={styles.infoItem}>NFTs</li>
-              <li className={styles.infoItem}>Community activities</li>
-              <li className={styles.infoItem}>Reward token for FRKX stakers</li>
-              <li className={styles.infoItem}>Governance</li>
-            </ul>
-          </div>
-          <TokensBg className={styles.cardBg} />
-        </div>
         <div className={classNames(styles.card, styles.cardBlue)}>
           <h4 className={styles.titleCard}>$FRKX</h4>
           <div className={styles.infoWrapper}>
@@ -40,6 +28,18 @@ export const OurTokensSection: FC<OurTokensSectionProps> = ({ navRef }) => {
             </ul>
           </div>
           <TokensBg className={styles.cardBg} fill={'#5D5FEF'} />
+        </div>
+        <div className={classNames(styles.card, styles.cardGreen)}>
+          <h4 className={styles.titleCard}>$FRKT</h4>
+          <div className={styles.infoWrapper}>
+            <ul className={styles.infoList}>
+              <li className={styles.infoItem}>Governance on DAO revenue</li>
+              <li className={styles.infoItem}>NFTs</li>
+              <li className={styles.infoItem}>Community activities</li>
+              {/* <li className={styles.infoItem}>Reward token for FRKX stakers</li> */}
+            </ul>
+          </div>
+          <TokensBg className={styles.cardBg} />
         </div>
       </div>
     </Container>

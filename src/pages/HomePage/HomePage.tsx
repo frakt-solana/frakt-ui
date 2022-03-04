@@ -39,7 +39,7 @@ const HomePage = (): JSX.Element => {
       <FullPotentialSection navRef={sectionRef1} />
       <OurTokensSection navRef={sectionRef2} />
       <TestimonialsSection />
-      <PartnersSection navRef={sectionRef3} />
+      {/* <PartnersSection navRef={sectionRef3} /> */}
       <TeamSection navRef={sectionRef4} />
       <Footer navRef={sectionRef5} />
     </AppLayout>

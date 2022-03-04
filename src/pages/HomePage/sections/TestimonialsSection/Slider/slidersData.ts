@@ -1,6 +1,7 @@
 import testimonialImageUser from './assets/userIcon.svg';
 import testimonialImage1 from './assets/testy1.png';
 import testimonialImage3 from './assets/testy3.png';
+import dino from './assets/dino.jpg';
 
 interface SlidersDataItem {
   imageSrc1: string;
@@ -16,7 +17,7 @@ interface SlidersDataItem {
 export const SLIDER_DATA: SlidersDataItem[] = [
   {
     imageSrc1: testimonialImage1,
-    imageSrc2: testimonialImageUser,
+    imageSrc2: dino,
     name1: 'r0b0',
     name2: 'Ravage',
     organisation1: 'BackDAO',
@@ -34,7 +35,7 @@ export const SLIDER_DATA: SlidersDataItem[] = [
   },
   {
     imageSrc1: testimonialImage3,
-    // imageSrc2: testimonialImage4,
+    // imageSrc2: dino,
     name1: 'G',
     // name2: 'Tim Biden',
     organisation1: '@Crypt0xG',
