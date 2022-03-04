@@ -11,15 +11,15 @@
   margin-bottom: 10px;
   display: block;
 
-  &:hover {
-    border-color: var(--accent-color-1);
-    color: var(--white-color);
+  // &:hover {
+  //   border-color: var(--accent-color-1);
+  //   color: var(--white-color);
 
-    &::after {
-      border-color: var(--accent-color-1);
-      opacity: 0.5;
-    }
-  }
+  //   &::after {
+  //     border-color: var(--accent-color-1);
+  //     opacity: 0.5;
+  //   }
+  // }
 
   &::after {
     content: '';
