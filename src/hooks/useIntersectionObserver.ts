@@ -7,7 +7,7 @@ interface ChildrenRefs {
 export const useIntersectionObserver = (
   parentRef?: { current: HTMLParagraphElement },
   childrenRefs?: ChildrenRefs[],
-  callback?: (currentItemId: string) => void,
+  callback?: (element: Element) => void,
 ): void => {
   const observer = useRef<IntersectionObserver>();
 
@@ -21,7 +21,7 @@ export const useIntersectionObserver = (
     observer.current = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          callback && callback(entry.target.textContent);
+          callback && callback(entry.target);
         }
       });
     }, options);

@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useRef } from 'react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import Statistics from './sections/Statistics/Statistics';
@@ -9,12 +9,9 @@ import { TestimonialsSection } from './sections/TestimonialsSection';
 import PartnersSection from './sections/PartnersSection';
 import { Footer } from './sections/Footer';
 import { CustomHeader } from './CustomHeader';
-import { useIntersectionObserver } from '../../hooks';
 import { MainSection } from './sections/MainSection';
 
 const HomePage = (): JSX.Element => {
-  const [activeLink, setActiveLink] = useState<string>('');
-
   const sectionRef1 = useRef<HTMLParagraphElement>();
   const sectionRef2 = useRef<HTMLParagraphElement>();
   const sectionRef3 = useRef<HTMLParagraphElement>();
@@ -31,16 +28,8 @@ const HomePage = (): JSX.Element => {
     ];
   }, [sectionRef1, sectionRef2, sectionRef3, sectionRef4, sectionRef5]);
 
-  const intersectionCallback = (currentItemText: string) => {
-    currentItemText !== activeLink && setActiveLink(currentItemText);
-  };
-
-  useIntersectionObserver(null, menuLinksData, intersectionCallback);
-
   const customHeaderWithLinks: FC = () => {
-    return (
-      <CustomHeader menuLinksData={menuLinksData} activeLink={activeLink} />
-    );
+    return <CustomHeader menuLinksData={menuLinksData} />;
   };
 
   return (
