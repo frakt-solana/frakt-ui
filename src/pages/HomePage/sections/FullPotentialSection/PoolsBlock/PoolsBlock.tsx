@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import SwiperCore, { Navigation, Autoplay, Scrollbar } from 'swiper';
 
@@ -23,8 +23,6 @@ const SLIDER_BREAKPOINTS = {
 };
 
 export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
-  const prevBtn = useRef<HTMLDivElement>(null);
-  const nextBtn = useRef<HTMLDivElement>(null);
   return (
     <div className={classNames(className, styles.block)}>
       <BlockContent
@@ -38,11 +36,8 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
         <Swiper
           breakpoints={SLIDER_BREAKPOINTS}
           className={styles.slider}
-          navigation={{
-            prevEl: prevBtn.current,
-            nextEl: nextBtn.current,
-          }}
           speed={1000}
+          navigation
           scrollbar={{ draggable: true }}
         >
           {POOLS_DATA.map((props, idx) => (
@@ -51,16 +46,6 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <div
-          ref={prevBtn}
-          className={`${styles.sliderNavPrev} sliderNavPrev`}
-          onClick={() => null}
-        />
-        <div
-          ref={nextBtn}
-          className={`${styles.sliderNavNext} sliderNavNext`}
-          onClick={() => null}
-        />
       </div>
     </div>
   );

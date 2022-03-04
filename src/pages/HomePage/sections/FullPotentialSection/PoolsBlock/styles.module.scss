@@ -2,19 +2,6 @@
   max-width: 722px;
   width: 100%;
   position: relative;
-
-  .sliderNavPrev {
-    left: 0;
-  }
-
-  .sliderNavNext {
-    right: 0;
-  }
-
-  .sliderNavPrev,
-  .sliderNavNext {
-    border-color: var(--gray-color-3);
-  }
 }
 
 .slider {
@@ -35,6 +22,42 @@
     .swiper-scrollbar-drag {
       background-color: #fff;
       height: 5px;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--color-gray-03);
+      background-color: var(--black-color);
+
+      @media screen and (max-width: 550px) {
+        width: 30px;
+        height: 30px;
+      }
+
+      &:hover {
+        background-color: var(--color-gray-7);
+      }
+
+      &::after {
+        font-size: 10px;
+        color: var(--white-color);
+      }
+    }
+
+    .swiper-button-prev.swiper-button-disabled,
+    .swiper-button-next.swiper-button-disabled {
+      opacity: 1;
+      pointer-events: unset;
+
+      &:hover {
+        background-color: var(--black-color);
+      }
+
+      &::after {
+        color: var(--color-gray-3);
+      }
     }
   }
 

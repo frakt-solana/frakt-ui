@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC } from 'react';
 import SwiperCore, { Navigation, Scrollbar, Grid } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 
@@ -18,17 +18,15 @@ const THUMBS_SLIDER_BREAKPOINTS = {
 };
 
 export const Slider: FC = () => {
-  const prevBtn = useRef<HTMLDivElement>(null);
-  const nextBtn = useRef<HTMLDivElement>(null);
-
   return (
     <div className={styles.sliderWrapper}>
       <Swiper
         className={styles.slider}
-        navigation={{
-          prevEl: prevBtn.current,
-          nextEl: nextBtn.current,
-        }}
+        navigation
+        // navigation={{
+        //   prevEl: prevBtn.current,
+        //   nextEl: nextBtn.current,
+        // }}
         spaceBetween={30}
         speed={1000}
         scrollbar={{ draggable: true }}
@@ -57,16 +55,6 @@ export const Slider: FC = () => {
           </SwiperSlide>
         ))}
       </Swiper>
-      <div
-        ref={prevBtn}
-        className={`${styles.sliderNavPrev} sliderNavPrev`}
-        onClick={() => null}
-      />
-      <div
-        ref={nextBtn}
-        className={`${styles.sliderNavNext} sliderNavNext`}
-        onClick={() => null}
-      />
     </div>
   );
 };
