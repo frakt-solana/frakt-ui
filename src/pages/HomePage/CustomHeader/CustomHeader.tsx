@@ -9,7 +9,7 @@ import {
   OUR_PRODUCT_ID,
   OUR_TOKENS_ID,
   TEAM_SECTION_ID,
-  TECHNICAL_PARTNERS_ID,
+  // TECHNICAL_PARTNERS_ID,
 } from '../constants';
 
 interface CustomHeaderProps {
@@ -19,7 +19,7 @@ interface CustomHeaderProps {
 const LINKS = [
   { id: OUR_PRODUCT_ID, label: 'Our products' },
   { id: OUR_TOKENS_ID, label: 'Our tokens' },
-  { id: TECHNICAL_PARTNERS_ID, label: 'Backers' },
+  // { id: TECHNICAL_PARTNERS_ID, label: 'Backers' },
   { id: TEAM_SECTION_ID, label: 'Team' },
   { id: CONTACT_SECTION_ID, label: 'Contact us' },
 ];

@@ -1,4 +1,4 @@
-import testimonialImageUser from './assets/userIcon.svg';
+// import testimonialImageUser from './assets/userIcon.svg';
 import testimonialImage1 from './assets/testy1.png';
 import testimonialImage3 from './assets/testy3.png';
 import dino from './assets/dino.jpg';

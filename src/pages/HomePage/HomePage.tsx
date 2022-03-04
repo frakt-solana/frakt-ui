@@ -6,7 +6,7 @@ import { FullPotentialSection } from './sections/FullPotentialSection';
 import { OurTokensSection } from './sections/OurTokensSection';
 import { TeamSection } from './sections/TeamSection';
 import { TestimonialsSection } from './sections/TestimonialsSection';
-import PartnersSection from './sections/PartnersSection';
+// import PartnersSection from './sections/PartnersSection';
 import { Footer } from './sections/Footer';
 import { CustomHeader } from './CustomHeader';
 import { MainSection } from './sections/MainSection';
