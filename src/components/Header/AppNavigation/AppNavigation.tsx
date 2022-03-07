@@ -1,17 +1,115 @@
-import React, { FC } from 'react';
-import styles from '../styles.module.scss';
+import { FC } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Dropdown } from 'antd';
 import classNames from 'classnames/bind';
+
+import styles from './AppNavigation.module.scss';
 import { PATHS } from '../../../constants';
 import NavigationLink from '../NavigationLink';
-import { useWallet } from '@solana/wallet-adapter-react';
+import {
+  ArrowDownBtn,
+  CoinGeckoIcon,
+  DiscordIcon,
+  DocsIcon,
+  GitHubIcon,
+  MediumIcon,
+  TwitterIcon,
+} from '../../../icons';
 
-interface AppNavigation {
+interface AppNavigationProps {
   className?: string;
 }
 
-export const AppNavigation: FC<AppNavigation> = ({ className }) => {
-  const { connected, publicKey } = useWallet();
+const DROPDOWN_EXTERNAL_LINKS = [
+  {
+    label: 'Twitter',
+    href: '',
+    icon: TwitterIcon,
+  },
+  {
+    label: 'Discord',
+    href: 'https://discord.gg/frakt',
+    icon: DiscordIcon,
+  },
+  {
+    label: 'GitHub',
+    href: '',
+    icon: GitHubIcon,
+  },
+  {
+    label: 'Medium',
+    href: 'https://medium.com/@frakt_nft',
+    icon: MediumIcon,
+  },
+  {
+    label: 'Docs',
+    href: 'https://docs.frakt.xyz/',
+    icon: DocsIcon,
+  },
+  {
+    label: 'CoinGecko',
+    href: '',
+    icon: CoinGeckoIcon,
+  },
+];
 
+const dropdownMenu = (
+  <ul>
+    <li>
+      <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
+        Collections
+      </NavLink>
+    </li>
+    <li>
+      <a
+        className={styles.dropdownLink}
+        href={process.env.REACT_APP_DEX_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Trade
+      </a>
+    </li>
+    {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
+      <li key={idx}>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.dropdownLink}
+        >
+          <Icon width={24} />
+          {label}
+        </a>
+      </li>
+    ))}
+  </ul>
+);
+
+const NAVIGATION_LINKS = [
+  {
+    to: PATHS.TEST,
+    label: 'Test',
+  },
+  {
+    to: PATHS.POOLS,
+    label: 'Pools',
+  },
+  {
+    to: PATHS.VAULTS,
+    label: 'Vaults',
+  },
+  {
+    to: PATHS.SWAP,
+    label: 'Swap',
+  },
+  {
+    to: PATHS.YIELD,
+    label: 'Yield',
+  },
+];
+
+export const AppNavigation: FC<AppNavigationProps> = ({ className }) => {
   return (
     <ul
       className={classNames(
@@ -20,46 +118,24 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
         className,
       )}
     >
-      <li>
-        <NavigationLink to={PATHS.TEST}>Test</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.MARKET}>Market</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.VAULTS}>Vaults</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.SWAP}>Swap</NavigationLink>
-      </li>
-      <li>
-        <a
-          className={styles.link}
-          href={process.env.REACT_APP_DEX_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Trade
-        </a>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.COLLECTIONS}>Collections</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.YIELD}>Yield</NavigationLink>
-      </li>
-      {connected && (
-        <li>
-          <NavigationLink
-            to={`${PATHS.WALLET}/${publicKey.toString()}`}
-            isActive={(_, location) =>
-              location?.pathname?.includes(publicKey.toString()) || false
-            }
-          >
-            My collection
-          </NavigationLink>
+      {NAVIGATION_LINKS.map(({ label, to }, idx) => (
+        <li key={idx} className={styles.navigationItem}>
+          <NavigationLink to={to}>{label}</NavigationLink>
         </li>
-      )}
+      ))}
+      <li id="menu-dropdown" className={styles.navigationItem}>
+        <div className={styles.mobileDropdown}>{dropdownMenu}</div>
+        <Dropdown
+          overlay={dropdownMenu}
+          placement="bottomRight"
+          getPopupContainer={() => document.getElementById('menu-dropdown')}
+          overlayClassName={styles.dropdown}
+        >
+          <div className={styles.dropdownTrigger}>
+            More <ArrowDownBtn className={styles.moreArrowIcon} />
+          </div>
+        </Dropdown>
+      </li>
     </ul>
   );
 };

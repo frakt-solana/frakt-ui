@@ -185,14 +185,14 @@ export const parseRawNftPools = (
       ({ safetyBoxState }) => safetyBoxState !== SafetyDepositBoxState.EMPTY,
     );
 
-  const safetyDepositBoxWithNftMetadata = getSafetyDepositBoxWithNftMetadata(
+  const safetyDepositBoxesWithNftMetadata = getSafetyDepositBoxWithNftMetadata(
     safetyDepositBoxes,
     rawNftsMetadata,
   );
 
   const safetyDepositBoxesWithMetadataByCommunityPool: Dictionary<
     SafetyDepositBoxWithNftMetadata[]
-  > = groupBy(safetyDepositBoxWithNftMetadata, 'communityPool');
+  > = groupBy(safetyDepositBoxesWithNftMetadata, 'communityPool');
 
   return communityPools.map((communityPool) => {
     const publicKeyString = communityPool.publicKey.toBase58();
@@ -202,7 +202,10 @@ export const parseRawNftPools = (
       lotteryTickets: lotteryTicketsByCommunityPool[publicKeyString] || [],
       poolWhitelist: poolWhitelistsByCommunityPool[publicKeyString] || [],
       safetyBoxes:
-        safetyDepositBoxesWithMetadataByCommunityPool[publicKeyString] || [],
+        safetyDepositBoxesWithMetadataByCommunityPool[publicKeyString]?.sort(
+          (safetyBoxA, safetyBoxB) =>
+            safetyBoxB.nftImage.localeCompare(safetyBoxA.nftImage),
+        ) || [],
     };
   });
 };

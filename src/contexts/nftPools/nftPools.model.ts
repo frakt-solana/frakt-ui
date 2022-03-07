@@ -5,6 +5,7 @@ import { NftPoolData } from '../../utils/cacher/nftPools';
 import {
   DepositNftToCommunityPoolParams,
   GetLotteryTicketParams,
+  SwapNftParams,
 } from './transactions';
 
 export type FetchDataFunc = () => Promise<void>;
@@ -21,6 +22,7 @@ export type NftPoolsContextValues = {
     params: DepositNftToCommunityPoolParams,
   ) => Promise<void>;
   getLotteryTicket: (params: GetLotteryTicketParams) => Promise<PublicKey>;
+  swapNft: (params: SwapNftParams) => Promise<PublicKey>;
 };
 
 export type UseNftPool = (poolPubkey: string) => {

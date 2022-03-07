@@ -1,10 +1,14 @@
 import { TokenView } from 'solana-nft-metadata';
 
-import { ArweaveMetadata } from '../../utils';
+import { ArweaveMetadata } from '../../utils/getArweaveMetadata';
 
 export interface UserNFT {
   mint: string;
   metadata: ArweaveMetadata;
+}
+
+export interface UserNFTWithCollection extends UserNFT {
+  collectionName?: string;
 }
 
 export interface RawUserTokensByMint {

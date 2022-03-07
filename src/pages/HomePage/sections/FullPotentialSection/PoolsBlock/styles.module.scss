@@ -1,0 +1,94 @@
+.sliderWrapper {
+  max-width: 722px;
+  width: 100%;
+  position: relative;
+}
+
+.slider {
+  position: relative;
+
+  :global {
+    .swiper-scrollbar {
+      width: calc(100% - 10px);
+      height: 5px;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      background-color: var(--gray-color-3);
+      z-index: 9;
+      cursor: pointer;
+    }
+
+    .swiper-scrollbar-drag {
+      background-color: #fff;
+      height: 5px;
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--color-gray-03);
+      background-color: var(--black-color);
+
+      @media screen and (max-width: 550px) {
+        width: 30px;
+        height: 30px;
+      }
+
+      &:hover {
+        background-color: var(--color-gray-7);
+      }
+
+      &::after {
+        font-size: 10px;
+        color: var(--white-color);
+      }
+    }
+
+    .swiper-button-prev.swiper-button-disabled,
+    .swiper-button-next.swiper-button-disabled {
+      opacity: 1;
+      pointer-events: unset;
+
+      &:hover {
+        background-color: var(--black-color);
+      }
+
+      &::after {
+        color: var(--color-gray-3);
+      }
+    }
+  }
+
+  &:global {
+    &.swiper {
+      padding-bottom: 25px;
+    }
+  }
+
+  &::before,
+  &::after {
+    top: 0;
+    bottom: 25px;
+    display: block;
+    content: '';
+    position: absolute;
+    width: 57px;
+    z-index: 3;
+
+    @media screen and (max-width: 700px) {
+      width: 35px;
+    }
+  }
+
+  &::before {
+    background: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+    left: 0;
+  }
+
+  &::after {
+    background: linear-gradient(270deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+    right: 0;
+  }
+}

@@ -1,25 +1,25 @@
-export const MARKET = '/market';
+export const POOLS = '/pools';
 
-export enum MARKET_TABS {
+export enum POOL_TABS {
   BUY = 'buy',
   SELL = 'sell',
   SWAP = 'swap',
   INFO = 'info',
 }
 
-export const createMarketPoolLink = (
-  tab = MARKET_TABS.BUY,
+export const createPoolLink = (
+  tab = POOL_TABS.BUY,
   poolPubkey = ':poolPubkey',
-): string => `${MARKET}/${poolPubkey}/${tab}`;
+): string => `${POOLS}/${poolPubkey}/${tab}`;
 
 export const PATHS = {
   ROOT: '/',
   SWAP: '/swap',
-  MARKET,
-  MARKET_BUY: createMarketPoolLink(MARKET_TABS.BUY),
-  MARKET_SELL: createMarketPoolLink(MARKET_TABS.SELL),
-  MARKET_SWAP: createMarketPoolLink(MARKET_TABS.SWAP),
-  MARKET_INFO: createMarketPoolLink(MARKET_TABS.INFO),
+  POOLS,
+  POOL_BUY: createPoolLink(POOL_TABS.BUY),
+  POOL_SELL: createPoolLink(POOL_TABS.SELL),
+  POOL_SWAP: createPoolLink(POOL_TABS.SWAP),
+  POOL_INFO: createPoolLink(POOL_TABS.INFO),
   VAULTS: '/vaults',
   VAULT: '/vault',
   FRAKTIONALIZE: '/fraktionalize',

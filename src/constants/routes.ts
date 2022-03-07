@@ -49,27 +49,27 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: PATHS.MARKET,
+    path: PATHS.POOLS,
     component: MarketPage,
   },
   {
     exact: true,
-    path: PATHS.MARKET_BUY,
+    path: PATHS.POOL_BUY,
     component: MarketBuyPage,
   },
   {
     exact: true,
-    path: PATHS.MARKET_SELL,
+    path: PATHS.POOL_SELL,
     component: MarketSellPage,
   },
   {
     exact: true,
-    path: PATHS.MARKET_SWAP,
+    path: PATHS.POOL_SWAP,
     component: MarketSwapPage,
   },
   {
     exact: true,
-    path: PATHS.MARKET_INFO,
+    path: PATHS.POOL_INFO,
     component: MarketInfoPage,
   },
   {

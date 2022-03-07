@@ -1,0 +1,104 @@
+.nftSlider {
+  width: 100%;
+  padding: 24px 24px 20px;
+  min-height: calc(69px + 24px + 20px);
+
+  &::after,
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 17px;
+    height: 100%;
+    z-index: 5;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  &::after {
+    height: calc(100% - 24px);
+    width: 25px;
+    right: 0;
+    background: linear-gradient(270deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  :global {
+    .swiper-slide-thumb-active {
+      div {
+        border: 1px solid var(--accent-color-1);
+      }
+    }
+
+    .swiper-button-prev {
+      left: 20px;
+      &::after {
+        font-size: 14px;
+        color: var(--white-color);
+        font-weight: 700;
+      }
+    }
+
+    .swiper-button-next {
+      right: 20px;
+      &::after {
+        font-size: 14px;
+        color: var(--white-color);
+        font-weight: 700;
+      }
+    }
+
+    .swiper-button-disabled {
+      color: var(--gray-color-3);
+    }
+
+    .swiper-scrollbar {
+      width: calc(100% - 24px - 24px);
+      margin: 0 24px;
+      height: 5px;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      background-color: var(--gray-color-3);
+      z-index: 9;
+      cursor: pointer;
+    }
+
+    .swiper-scrollbar-drag {
+      background-color: #fff;
+      height: 5px;
+    }
+  }
+}
+
+.image {
+  width: 69px;
+  height: 69px;
+  background-color: var(--gray-color-7);
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.removeBtn {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--gray-color-3);
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--black-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  z-index: 9;
+
+  &::before {
+    content: '-';
+  }
+}

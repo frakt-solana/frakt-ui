@@ -1,0 +1,106 @@
+.root {
+  margin-bottom: 200px;
+}
+
+.title {
+  font: var(--font-title-2);
+  text-align: center;
+  max-width: 655px;
+  margin: 0 auto 100px;
+}
+
+.wrapper {
+  display: flex;
+  gap: 40px;
+
+  @media screen and (max-width: 767px) {
+    gap: 30px;
+    flex-direction: column;
+  }
+}
+
+.card {
+  min-height: 392px;
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+  border: var(--border-gray-1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  max-width: 680px;
+  gap: 30px;
+  border-bottom: 20px solid var(--green-color);
+  background: linear-gradient(
+    360deg,
+    rgba(131, 214, 164, 0.3) 0%,
+    rgba(131, 214, 164, 0) 50%
+  );
+
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    text-align: center;
+    max-width: unset;
+    flex-grow: unset;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding: 25px;
+    min-height: 340px;
+  }
+}
+
+.titleCard {
+  font: var(--font-title-2);
+  flex: 1;
+  max-width: 280px;
+  color: var(--green-color);
+  margin-bottom: 30px;
+
+  @media screen and (max-width: 1279px) {
+    flex-direction: column;
+    text-align: center;
+    max-width: unset;
+    flex: unset;
+    margin-bottom: 0;
+  }
+}
+
+.cardBlue {
+  border-bottom-color: var(--accent-color-1);
+  background: linear-gradient(
+    360deg,
+    rgba(93, 95, 239, 0.3) 0%,
+    rgba(93, 95, 239, 0) 73.85%
+  );
+
+  .titleCard {
+    color: var(--accent-color-1);
+  }
+}
+
+.infoList {
+  max-width: 290px;
+  font: var(--font-text-2);
+
+  @media screen and (max-width: 1150px) {
+    max-width: none;
+  }
+}
+
+.infoItem {
+  margin-bottom: 20px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.cardBg {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}

@@ -1,0 +1,63 @@
+.root {
+  position: relative;
+  background: url('./assets/blueBg.png') no-repeat left bottom / 70% 120%,
+    url('./assets/blueBgSmall.png') no-repeat right top;
+  overflow: unset;
+  @media screen and (max-width: 1023px) {
+    background-size: 100% 120%;
+  }
+
+  height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font: 900 144px var(--font-family-inter);
+
+  @media screen and (max-width: 1023px) {
+    font: 900 80px var(--font-family-inter);
+  }
+  @media screen and (max-width: 767px) {
+    font: 900 60px var(--font-family-inter);
+  }
+
+  margin-bottom: 12px;
+  text-align: center;
+  span {
+    margin: 0 20px;
+  }
+}
+
+.subtitle {
+  font: var(--font-text-1);
+  text-align: center;
+  max-width: 1120px;
+  margin-bottom: 24px;
+}
+
+.btn {
+  padding: 12px 80px;
+  margin-bottom: 20px;
+  font: var(--font-text-3);
+}
+
+.docsLink {
+  color: var(--accent-color-1);
+
+  &::after {
+    background-color: var(--accent-color-1);
+  }
+
+  &:hover {
+    color: var(--accent-color-1);
+  }
+
+  svg {
+    path {
+      fill: var(--accent-color-1);
+    }
+  }
+}

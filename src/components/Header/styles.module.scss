@@ -1,7 +1,19 @@
-.root {
-  border-bottom: 1px solid var(--gray-color-3);
-  font-family: var(--font-family-oxanium);
+.header {
+  width: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
   background: var(--black-color);
+  height: var(--header-height);
+  transition: top 0.2s ease-out;
+  z-index: 90;
+  font-family: var(--font-family-oxanium);
+  border-bottom: var(--border-gray-1);
+}
+
+.hasCustomHeader {
+  border-bottom: none;
 }
 
 .link {
@@ -17,8 +29,10 @@
     color: var(--white-color);
   }
 }
+
 .profileWrapper {
   height: 100%;
+
   .walletBtn {
     padding: 0 20px;
     cursor: pointer;
@@ -43,7 +57,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: color .2s ease-in, background-color .2s ease-in;
+      transition: color 0.2s ease-in, background-color 0.2s ease-in;
 
       &:hover {
         background-color: var(--gray-color-4);
@@ -59,7 +73,7 @@
       width: 16px;
       height: 16px;
       fill: var(--white-color);
-      transition: fill .2s ease-in;
+      transition: fill 0.2s ease-in;
     }
   }
 }
@@ -76,7 +90,7 @@
 }
 
 .logo {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--white-color);
@@ -93,59 +107,6 @@
   &:hover {
     text-decoration: none;
     color: var(--font-btn-small);
-  }
-}
-
-.navigation {
-  display: flex;
-
-  &:last-of-type {
-    align-self: stretch;
-  }
-
-  li {
-    height: 100%;
-
-    a,
-    button {
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-
-    &:last-child {
-      padding-right: 0;
-    }
-  }
-
-  &_left {
-    margin-left: auto;
-    margin-right: 16px;
-
-    @media screen and (max-width: 1023px) {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
-  &__exchangeSoon {
-    pointer-events: none;
-    opacity: 0.5;
-    position: relative;
-
-    &::after {
-      position: absolute;
-      content: 'SOON';
-      color: var(--accent-color-1);
-      font-size: 12px;
-      font-weight: 900;
-      right: 4px;
-      top: 28px;
-    }
-  }
-
-  @media screen and (max-width: 1023px) {
-    display: none;
   }
 }
 
@@ -189,10 +150,6 @@
       text-transform: uppercase;
     }
   }
-}
-
-.mobileMenuItem {
-  width: 50%;
 }
 
 .activeLink {
@@ -300,79 +257,5 @@ body .walletInfo {
     top: 88px;
     width: 100%;
     border-bottom: 1px solid var(--gray-color-3);
-  }
-}
-
-.mobileMenuWrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 88px;
-}
-
-.logoWrapper {
-  height: 88px;
-  padding-left: 15px;
-  display: flex;
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  background-color: #000000;
-}
-
-.navMobile {
-  &:first-of-type {
-    display: flex;
-    flex-wrap: wrap;
-    //margin-top: 40px;
-    li {
-      height: 88px;
-      width: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &.mobileHeaderButton {
-        background: var(--gray-color-7);
-      }
-
-      &.connectedCardInfo {
-        height: auto;
-        width: 100%;
-        padding: 30px 15px;
-        background: var(--white-color);
-        margin-bottom: 10px;
-      }
-    }
-
-    .connectedBtn {
-      width: 100%;
-      order: 1;
-    }
-  }
-}
-
-.mobileMenu {
-  padding: 15px;
-
-  li {
-    a {
-      font-size: 32px;
-      padding: 15px 0;
-      display: block;
-      border-bottom: 1px solid var(--gray-color-3);
-    }
-
-    &:first-of-type a {
-      border-top: 1px solid var(--gray-color-3);
-    }
   }
 }

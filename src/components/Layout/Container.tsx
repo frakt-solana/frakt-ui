@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import styles from './styles.module.scss';
 
 interface ContainerProps {
-  component: string;
+  component?: string;
   className?: string;
   children: JSX.Element[] | JSX.Element;
 }

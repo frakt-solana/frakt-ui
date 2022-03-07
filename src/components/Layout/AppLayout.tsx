@@ -3,17 +3,18 @@ import classNames from 'classnames';
 
 import Header from '../Header';
 import styles from './styles.module.scss';
-import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { HeaderStateProvider, useHeaderState } from './headerState';
 
 interface LayoutProps {
+  CustomHeader?: FC;
   children: JSX.Element[] | JSX.Element;
   className?: string;
   contentClassName?: string;
 }
 
-const Layout: FC<LayoutProps> = ({
+export const Layout: FC<LayoutProps> = ({
+  CustomHeader,
   children,
   className = '',
   contentClassName = '',
@@ -27,20 +28,21 @@ const Layout: FC<LayoutProps> = ({
   }, [location]);
 
   return (
-    <div className={className}>
+    <div className={classNames(styles.layout, className)}>
       <Header
         className={classNames(styles.header, {
           [styles.headerHide]: isHeaderHidden,
         })}
+        CustomHeader={CustomHeader}
       />
       <div
         onScroll={onContentScroll}
         id="app-content"
         className={classNames(styles.content, contentClassName)}
       >
-        {visible && <WalletContent />}
         {children}
       </div>
+      <div className={styles.noise} />
     </div>
   );
 };

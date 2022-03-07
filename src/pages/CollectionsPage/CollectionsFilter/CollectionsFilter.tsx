@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { Control } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
 import { SearchInput } from '../../../components/SearchInput';
-import { ControlledSelect } from '../../../components/Select/Select';
+import { Select } from '../../../components/Select/Select';
 import styles from './styles.module.scss';
 
 interface SortValue {
@@ -32,13 +32,19 @@ export const CollectionsFilter: FC<CollectionsFilterProps> = ({
       />
       <div className={styles.filtersWrapper}>
         <div>
-          <ControlledSelect
-            className={styles.sortingSelect}
-            valueContainerClassName={styles.sortingSelectValueContainer}
-            label="Sort by"
+          <Controller
             control={sortControl}
             name="sort"
-            options={sortVaules}
+            render={({ field: { ref, ...field } }) => (
+              <Select
+                className={styles.sortingSelect}
+                valueContainerClassName={styles.sortingSelectValueContainer}
+                label="Sort by"
+                name="sort"
+                options={sortVaules}
+                {...field}
+              />
+            )}
           />
         </div>
       </div>

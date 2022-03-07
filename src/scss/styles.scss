@@ -33,15 +33,6 @@ h5 {
   }
 }
 
-.container {
-  max-width: 1430px;
-  width: 100%;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .sliderNavPrev,
 .sliderNavNext {
   height: 56px;
@@ -108,6 +99,18 @@ h5 {
   right: -80px;
 
   &::after {
-    content: "next";
+    content: 'next';
   }
+}
+
+.itemForIntersectionMenu {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  max-height: 100vh;
+  height: 100vh;
+  top: 10px;
+  left: 0;
+  font-size: 1px;
+  width: 1px;
 }

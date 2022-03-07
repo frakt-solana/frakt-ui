@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import { routes } from './constants/routes';
 
 export const Router = (): JSX.Element => {

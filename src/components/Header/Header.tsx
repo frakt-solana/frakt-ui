@@ -1,29 +1,38 @@
 import classNames from 'classnames/bind';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { NavLink } from 'react-router-dom';
 
 import styles from './styles.module.scss';
 import { Container } from '../Layout';
-import React from 'react';
+import { FC } from 'react';
 import { AppNavigation } from './AppNavigation';
 import BurgerMenu from '../BurgerMenu';
-import { NavLink } from 'react-router-dom';
 import { PATHS } from '../../constants';
 import NavigationLink from './NavigationLink';
-import { useWallet } from '@solana/wallet-adapter-react';
 import ConnectButton from '../ConnectButton';
 import ConnectedButton from '../ConnectedButton';
+import WalletContent from '../WalletContent';
+import { useWalletModal } from '../../contexts/WalletModal';
 
 interface HeaderProps {
   className?: string;
+  CustomHeader?: FC;
 }
 
-const Header = ({ className }: HeaderProps): JSX.Element => {
+const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
   const { connected } = useWallet();
+  const { visible } = useWalletModal();
 
   return (
-    <header className={classNames([styles.root, className])}>
+    <header
+      className={classNames(styles.root, styles.header, className, {
+        [styles.hasCustomHeader]: CustomHeader,
+      })}
+    >
+      {visible && <WalletContent />}
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={PATHS.ROOT}>
-          Fraktion
+          Frakt
         </NavLink>
         <AppNavigation />
         <ul className={styles.buttons}>
@@ -49,6 +58,7 @@ const Header = ({ className }: HeaderProps): JSX.Element => {
         </ul>
         <BurgerMenu />
       </Container>
+      {CustomHeader && <CustomHeader />}
     </header>
   );
 };

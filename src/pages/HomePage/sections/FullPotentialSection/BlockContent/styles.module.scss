@@ -1,0 +1,52 @@
+.wrapper {
+  max-width: 440px;
+
+  .buttonDisabled {
+    background-color: var(--accent-shadow-color);
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 1200px) {
+    max-width: 100%;
+    text-align: center;
+    order: -1;
+  }
+}
+
+.title {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  font-size: 40px;
+
+  @media screen and (max-width: 1200px) {
+    margin-top: 30px;
+  }
+
+  @media screen and (max-width: 767px) {
+    margin-top: 20px;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 32px;
+  }
+
+  @media screen and (max-width: 400px) {
+    font-size: 25px;
+  }
+}
+
+.text {
+  font: var(--font-text-2);
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 12px 95px;
+  font: var(--font-text-3);
+  color: var(--white-color);
+
+  @media screen and (max-width: 1200px) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

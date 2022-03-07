@@ -1,80 +1,47 @@
-import { Helmet } from 'react-helmet';
-import { Container } from '../../components/Layout';
+import { FC, useMemo, useRef } from 'react';
+
 import { AppLayout } from '../../components/Layout/AppLayout';
-import WhyNeedsSection from './sections/WhyNeedsSection';
-import ProcessSection from './sections/ProcessSection';
-import FAQSection from './sections/FAQSection';
-import styles from './styles.module.scss';
 import Statistics from './sections/Statistics/Statistics';
-import Ecosystem from './sections/Ecosystem';
-import Partners from './sections/Partners';
-import { DiscordIcon, TwitterIcon } from '../../icons';
-import Roadmap from './sections/Roadmap';
-import classNames from 'classnames/bind';
+import { FullPotentialSection } from './sections/FullPotentialSection';
+import { OurTokensSection } from './sections/OurTokensSection';
+import { TeamSection } from './sections/TeamSection';
+import { TestimonialsSection } from './sections/TestimonialsSection';
+// import PartnersSection from './sections/PartnersSection';
+import { Footer } from './sections/Footer';
+import { CustomHeader } from './CustomHeader';
+import { MainSection } from './sections/MainSection';
 
 const HomePage = (): JSX.Element => {
+  const sectionRef1 = useRef<HTMLParagraphElement>();
+  const sectionRef2 = useRef<HTMLParagraphElement>();
+  const sectionRef3 = useRef<HTMLParagraphElement>();
+  const sectionRef4 = useRef<HTMLParagraphElement>();
+  const sectionRef5 = useRef<HTMLParagraphElement>();
+
+  const menuLinksData = useMemo(() => {
+    return [
+      { sectionRef: sectionRef1 },
+      { sectionRef: sectionRef2 },
+      { sectionRef: sectionRef3 },
+      { sectionRef: sectionRef4 },
+      { sectionRef: sectionRef5 },
+    ];
+  }, [sectionRef1, sectionRef2, sectionRef3, sectionRef4, sectionRef5]);
+
+  const customHeaderWithLinks: FC = () => {
+    return <CustomHeader menuLinksData={menuLinksData} />;
+  };
+
   return (
-    <AppLayout>
-      <Helmet>
-        <title>FRAKTION ART</title>
-      </Helmet>
-      <main>
-        <Container
-          component="div"
-          className={classNames(styles.container, styles.container_up)}
-        >
-          <h1 className={styles.title}>
-            Unlocking liquidity
-            <br />
-            one <b>fraktion</b> at time
-          </h1>
-          <h2 className={styles.subtitle}>
-            Create, buy and sell <b>fraktions</b> of NFTs
-          </h2>
-          <a
-            href="https://docs.fraktion.art"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.launchingSoon}
-          >
-            Read docs
-          </a>
-          {/* <div className={styles.separatorDouble} /> */}
-        </Container>
-        <Statistics />
-        <Container component="div" className={styles.container}>
-          <WhyNeedsSection className={styles.whyNeeds} />
-          <div className={styles.separator} />
-          <ProcessSection className={styles.howItWorks} />
-          <div className={styles.separator} />
-          <Ecosystem />
-          <div className={styles.separator} />
-          <Roadmap />
-          <div className={styles.separator} />
-          <Partners />
-          <div className={styles.separator} />
-          <FAQSection />
-        </Container>
-      </main>
-      <footer className={styles.footer}>
-        <p>Fraktion</p>
-        <div className={styles.socialLinks}>
-          <a
-            href="https://twitter.com/fraktion_art"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <TwitterIcon width={32} />
-          </a>
-          <a
-            href="https://discord.gg/frakt"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <DiscordIcon width={32} />
-          </a>
-        </div>
-      </footer>
+    <AppLayout CustomHeader={customHeaderWithLinks}>
+      <MainSection />
+      <Statistics />
+      <FullPotentialSection navRef={sectionRef1} />
+      <OurTokensSection navRef={sectionRef2} />
+      <TestimonialsSection />
+      {/* <PartnersSection navRef={sectionRef3} /> */}
+      <TeamSection navRef={sectionRef4} />
+      <Footer navRef={sectionRef5} />
     </AppLayout>
   );
 };
