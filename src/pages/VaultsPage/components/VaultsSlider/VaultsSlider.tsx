@@ -71,7 +71,6 @@ export const VaultsSlider: FC<VaultsSliderProps> = ({
           prevEl: prevBtn.current,
           nextEl: nextBtn.current,
         }}
-        autoplay={{ delay: 3000 }}
         speed={1000}
       >
         {vaults.map((vault) => (
