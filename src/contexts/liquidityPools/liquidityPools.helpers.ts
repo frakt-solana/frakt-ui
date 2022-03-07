@@ -188,6 +188,7 @@ export const fetchProgramAccounts = async ({
 const getFusionDataMap = (
   allProgramAccounts: FusionPoolsInfo,
   lpMints: string[],
+  owner: string,
 ) => {
   const {
     secondaryRewards,
@@ -224,6 +225,7 @@ const getFusionDataMap = (
     const router = getRouterByMint(lpMint);
 
     const stakeAccount = stakeAccounts
+      .filter(({ stakeOwner }) => stakeOwner === owner)
       .filter(({ routerPubkey }) => routerPubkey === router?.mainRouterPubkey)
       .find(({ isStaked }) => isStaked);
 
@@ -233,10 +235,13 @@ const getFusionDataMap = (
 
   const secondaryStakeAccountsByMint = lpMints.reduce(
     (secondaryStakeAccountInfoMap, lpMint) => {
-      const secondaryStakeAccount = secondaryStakeAccounts.find(
-        ({ stakeAccount }) =>
-          stakeAccount === stakeAccountsByMint.get(lpMint)?.stakeAccountPubkey,
-      );
+      const secondaryStakeAccount = secondaryStakeAccounts
+        .filter(({ rewardOwner }) => rewardOwner === owner)
+        .find(
+          ({ stakeAccount }) =>
+            stakeAccount ===
+            stakeAccountsByMint.get(lpMint)?.stakeAccountPubkey,
+        );
 
       secondaryStakeAccountInfoMap.set(lpMint, secondaryStakeAccount);
       return secondaryStakeAccountInfoMap;
@@ -256,13 +261,14 @@ const getFusionDataMap = (
 export const fetchFusionPoolInfo = (
   allProgramAccounts: FusionPoolsInfo,
   lpMints: string[],
+  owner: string,
 ): FusionPoolInfoByMint => {
   const {
     routerInfoByMint,
     secondaryRewardByMint,
     stakeAccountsByMint,
     secondaryStakeAccountsByMint,
-  } = getFusionDataMap(allProgramAccounts, lpMints);
+  } = getFusionDataMap(allProgramAccounts, lpMints, owner);
 
   return lpMints.reduce((fusionPoolInfo, lpMint) => {
     fusionPoolInfo.set(lpMint, {
