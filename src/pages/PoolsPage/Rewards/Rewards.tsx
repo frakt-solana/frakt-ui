@@ -13,7 +13,10 @@ import {
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import { AccountInfoParsed } from '../../../utils/accounts';
+import {
+  AccountInfoParsed,
+  getTokenAccountBalance,
+} from '../../../utils/accounts';
 
 interface RewardsInterface {
   baseToken: TokenInfo;
@@ -39,10 +42,9 @@ const Rewards: FC<RewardsInterface> = ({
     fusionPoolInfo;
   const { lpDecimals } = raydiumPoolInfo;
 
-  const balance =
-    lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0;
+  const balance = getTokenAccountBalance(lpTokenAccountInfo, lpDecimals);
 
-  const onSubmitHandler = async () => {
+  const onSubmitHandler = async (): Promise<void> => {
     await harvestLiquidity({
       router: mainRouter,
       stakeAccount,
@@ -51,14 +53,10 @@ const Rewards: FC<RewardsInterface> = ({
   };
 
   const onStakeHandler = async (): Promise<void> => {
-    if (fusionPoolInfo) {
-      const { mainRouter } = fusionPoolInfo;
-
-      await stakeLiquidity({
-        amount: lpTokenAccountInfo?.accountInfo?.amount,
-        router: mainRouter,
-      });
-    }
+    await stakeLiquidity({
+      amount: lpTokenAccountInfo?.accountInfo?.amount,
+      router: mainRouter,
+    });
   };
 
   const secondaryRewardInfoByMint = secondaryReward.reduce((acc, reward) => {

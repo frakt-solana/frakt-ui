@@ -8,15 +8,18 @@ import {
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { TokenFieldWithBalance } from '../../../components/TokenField';
-import { SOL_TOKEN } from '../../../utils';
+import {
+  AccountInfoParsed,
+  getTokenAccountBalance,
+} from '../../../utils/accounts';
 import Button from '../../../components/Button';
+import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
 import {
   FusionPoolInfo,
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
-import { AccountInfoParsed } from '../../../utils/accounts';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
@@ -33,18 +36,16 @@ const Withdraw: FC<WithdrawInterface> = ({
   fusionPoolInfo,
   lpTokenAccountInfo,
 }) => {
-  const { removeRaydiumLiquidity, unstakeLiquidity, stakeLiquidity } =
-    useLiquidityPools();
+  const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
 
   const [withdrawValue, setWithdrawValue] = useState<string>('');
 
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
 
-  const balance =
-    lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0;
+  const balance = getTokenAccountBalance(lpTokenAccountInfo, lpDecimals);
 
-  const stakedBalance =
+  const stakedBalance: number =
     Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
 
   const onSubmitHandler = async (): Promise<void> => {
@@ -78,7 +79,7 @@ const Withdraw: FC<WithdrawInterface> = ({
       <div className={styles.header}>
         <p className={styles.title}>Withdraw</p>
         <div className={styles.balanceWrap}>
-          {stakedBalance ? (
+          {stakedBalance && fusionPoolInfo.stakeAccount ? (
             <p className={styles.balance}>Staked balance: {stakedBalance}</p>
           ) : (
             <p className={styles.balance}>Balance: {balance}</p>

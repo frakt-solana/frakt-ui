@@ -90,8 +90,9 @@ export const useLazyFusionPools = (): {
   fusionPoolInfoMap: FusionPoolInfoByMint;
   fetchFusionPoolsInfo: (lpMints: string[]) => Promise<void>;
 } => {
-  const { connection } = useConnection();
   const wallet = useWallet();
+  const { connection } = useConnection();
+
   const [loading, setLoading] = useState<boolean>(true);
   const [fusionPoolInfoMap, setFusionPoolInfoMap] =
     useState<FusionPoolInfoByMint>(new Map());
@@ -102,6 +103,8 @@ export const useLazyFusionPools = (): {
         vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
         connection,
       });
+
+      console.log(allProgramAccounts);
 
       const fusionPoolInfoMap = fetchFusionPoolInfo(
         allProgramAccounts,
