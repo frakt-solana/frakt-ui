@@ -44,7 +44,7 @@ const CollectionPage: FC = () => {
     defaultValues: {
       [InputControlsNames.SHOW_VAULTS_STATUS]:
         StatusRadioNames.SHOW_ACTIVE_VAULTS,
-      [InputControlsNames.SHOW_VERIFIED_VAULTS]: true,
+      [InputControlsNames.SHOW_VERIFIED_VAULTS]: false,
       [InputControlsNames.SHOW_TRADABLE_VAULTS]: false,
       [InputControlsNames.SORT]: SORT_VALUES[0],
     },
