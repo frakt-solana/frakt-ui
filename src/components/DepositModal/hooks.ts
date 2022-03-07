@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import BN from 'bn.js';
 import { PublicKey } from '@solana/web3.js';
 import { Control, useForm } from 'react-hook-form';
@@ -130,7 +130,7 @@ export const useDeposit = (
 
     if (tokenAmount) {
       const { mainRouter } = fusionPoolInfo;
-      console.log(tokenAmount);
+
       await stakeLiquidity({
         amount: new BN(Number(tokenAmount)),
         router: mainRouter,

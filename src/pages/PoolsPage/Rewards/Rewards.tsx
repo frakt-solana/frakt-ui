@@ -13,24 +13,34 @@ import {
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
 import { useTokenListContext } from '../../../contexts/TokenList';
+import { AccountInfoParsed } from '../../../utils/accounts';
 
 interface RewardsInterface {
   baseToken: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
   fusionPoolInfo: FusionPoolInfo;
+  lpTokenAccountInfo: AccountInfoParsed;
 }
 
 interface secondaryRewardWithTokenInfo extends SecondaryRewardView {
   tokenInfo: TokenInfo[];
 }
 
-const Rewards: FC<RewardsInterface> = ({ fusionPoolInfo }) => {
-  const { harvestLiquidity } = useLiquidityPools();
+const Rewards: FC<RewardsInterface> = ({
+  fusionPoolInfo,
+  lpTokenAccountInfo,
+  raydiumPoolInfo,
+}) => {
+  const { harvestLiquidity, stakeLiquidity } = useLiquidityPools();
+  const { tokensList } = useTokenListContext();
+
   const { mainRouter, stakeAccount, secondaryReward, secondaryStakeAccount } =
     fusionPoolInfo;
+  const { lpDecimals } = raydiumPoolInfo;
 
-  const { tokensList } = useTokenListContext();
+  const balance =
+    lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0;
 
   const onSubmitHandler = async () => {
     await harvestLiquidity({
@@ -38,6 +48,17 @@ const Rewards: FC<RewardsInterface> = ({ fusionPoolInfo }) => {
       stakeAccount,
       secondaryReward,
     });
+  };
+
+  const onStakeHandler = async (): Promise<void> => {
+    if (fusionPoolInfo) {
+      const { mainRouter } = fusionPoolInfo;
+
+      await stakeLiquidity({
+        amount: lpTokenAccountInfo?.accountInfo?.amount,
+        router: mainRouter,
+      });
+    }
   };
 
   const secondaryRewardInfoByMint = secondaryReward.reduce((acc, reward) => {
@@ -78,13 +99,24 @@ const Rewards: FC<RewardsInterface> = ({ fusionPoolInfo }) => {
             ))}
           </div>
         </div>
-        <Button
-          type="tertiary"
-          className={styles.harvestBtn}
-          onClick={onSubmitHandler}
-        >
-          Harvest
-        </Button>
+        <div className={styles.wrapperBtn}>
+          {!!balance && (
+            <Button
+              className={styles.stakeBtn}
+              type="tertiary"
+              onClick={onStakeHandler}
+            >
+              stake
+            </Button>
+          )}
+          <Button
+            type="tertiary"
+            className={styles.harvestBtn}
+            onClick={onSubmitHandler}
+          >
+            Harvest
+          </Button>
+        </div>
       </div>
     </div>
   );

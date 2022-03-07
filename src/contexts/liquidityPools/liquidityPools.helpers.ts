@@ -180,8 +180,6 @@ export const fetchProgramAccounts = async ({
     connection,
   );
 
-  console.log(allProgramAccounts);
-
   return allProgramAccounts;
 };
 

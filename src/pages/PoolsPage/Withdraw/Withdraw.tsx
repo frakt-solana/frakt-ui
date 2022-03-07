@@ -73,31 +73,11 @@ const Withdraw: FC<WithdrawInterface> = ({
     }
   };
 
-  const onStakeHandler = async (): Promise<void> => {
-    if (fusionPoolInfo) {
-      const { mainRouter } = fusionPoolInfo;
-
-      await stakeLiquidity({
-        amount: lpTokenAccountInfo?.accountInfo?.amount,
-        router: mainRouter,
-      });
-    }
-  };
-
   return (
     <div className={styles.withdraw}>
       <div className={styles.header}>
         <p className={styles.title}>Withdraw</p>
         <div className={styles.balanceWrap}>
-          {!!balance && (
-            <Button
-              className={styles.stakeBtn}
-              type="alternative"
-              onClick={onStakeHandler}
-            >
-              stake
-            </Button>
-          )}
           {stakedBalance ? (
             <p className={styles.balance}>Staked balance: {stakedBalance}</p>
           ) : (

@@ -8,7 +8,6 @@ import {
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { fetchProgramAccounts } from '../..';
 
 import { wrapAsyncWithTryCatch } from '../../../../utils';
 import {

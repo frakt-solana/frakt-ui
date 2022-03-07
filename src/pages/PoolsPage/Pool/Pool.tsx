@@ -43,7 +43,11 @@ const Pool: FC<PoolInterface> = ({
   const { tokenInfo, poolConfig } = poolData;
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const { fetchFusionPoolsInfo } = useLazyFusionPools();
+  const { fetchFusionPoolsInfo, fusionPoolInfoMap } = useLazyFusionPools();
+
+  const fetchFusionPoolInfo = fusionPoolInfoMap.get(
+    poolData.poolConfig.lpMint.toBase58(),
+  );
 
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
@@ -126,7 +130,7 @@ const Pool: FC<PoolInterface> = ({
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
           className={styles.poolDetails}
-          fusionPoolInfo={fusionPoolInfo}
+          fusionPoolInfo={fetchFusionPoolInfo || fusionPoolInfo}
         />
       )}
       {isOpen && !connected && (
@@ -141,7 +145,7 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
-        fusionPoolInfo={fusionPoolInfo}
+        fusionPoolInfo={fetchFusionPoolInfo || fusionPoolInfo}
         poolStats={poolStats}
       />
     </div>

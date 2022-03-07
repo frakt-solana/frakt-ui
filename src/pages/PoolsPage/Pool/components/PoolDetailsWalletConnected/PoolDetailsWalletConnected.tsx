@@ -46,6 +46,7 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
             poolConfig={poolConfig}
             raydiumPoolInfo={raydiumPoolInfo}
             fusionPoolInfo={fusionPoolInfo}
+            lpTokenAccountInfo={lpTokenAccountInfo}
           />
         )}
         <Button
