@@ -1,9 +1,11 @@
 import { FC } from 'react';
-import styles from '../styles.module.scss';
+import { NavLink } from 'react-router-dom';
+import { Dropdown } from 'antd';
 import classNames from 'classnames/bind';
+
+import styles from './AppNavigation.module.scss';
 import { PATHS } from '../../../constants';
 import NavigationLink from '../NavigationLink';
-import { Button, Dropdown } from 'antd';
 import {
   ArrowDownBtn,
   CoinGeckoIcon,
@@ -13,14 +15,46 @@ import {
   MediumIcon,
   TwitterIcon,
 } from '../../../icons';
-import { NavLink } from 'react-router-dom';
 
-interface AppNavigation {
+interface AppNavigationProps {
   className?: string;
 }
 
+const DROPDOWN_EXTERNAL_LINKS = [
+  {
+    label: 'Twitter',
+    href: '',
+    icon: TwitterIcon,
+  },
+  {
+    label: 'Discord',
+    href: 'https://discord.gg/frakt',
+    icon: DiscordIcon,
+  },
+  {
+    label: 'GitHub',
+    href: '',
+    icon: GitHubIcon,
+  },
+  {
+    label: 'Medium',
+    href: 'https://medium.com/@frakt_nft',
+    icon: MediumIcon,
+  },
+  {
+    label: 'Docs',
+    href: 'https://docs.frakt.xyz/',
+    icon: DocsIcon,
+  },
+  {
+    label: 'CoinGecko',
+    href: '',
+    icon: CoinGeckoIcon,
+  },
+];
+
 const dropdownMenu = (
-  <ul className={styles.dropdownMenu}>
+  <ul>
     <li>
       <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
         Collections
@@ -36,70 +70,46 @@ const dropdownMenu = (
         Trade
       </a>
     </li>
-    <li className={styles.dropdownItem}>
-      <a
-        href=""
-        target="_blank"
-        rel="noreferrer"
-        className={styles.dropdownLink}
-      >
-        <TwitterIcon width={24} /> Twitter
-      </a>
-    </li>
-    <li className={styles.dropdownItem}>
-      <a
-        href="https://discord.gg/frakt"
-        target="_blank"
-        rel="noreferrer"
-        className={styles.dropdownLink}
-      >
-        <DiscordIcon width={24} /> Discord
-      </a>
-    </li>
-    <li className={styles.dropdownItem}>
-      <a
-        href=""
-        target="_blank"
-        rel="noreferrer"
-        className={styles.dropdownLink}
-      >
-        <GitHubIcon width={24} /> GitHub
-      </a>
-    </li>
-    <li className={styles.dropdownItem}>
-      <a
-        href="https://medium.com/@frakt_nft"
-        target="_blank"
-        rel="noreferrer"
-        className={styles.dropdownLink}
-      >
-        <MediumIcon width={24} /> Medium
-      </a>
-    </li>
-    <li className={styles.dropdownItem}>
-      <a
-        href="https://docs.frakt.xyz/"
-        target="_blank"
-        rel="noreferrer"
-        className={styles.dropdownLink}
-      >
-        <DocsIcon width={24} /> Docs
-      </a>
-    </li>
-    <li className={styles.dropdownItem}>
-      <a
-        href=""
-        target="_blank"
-        rel="noreferrer"
-        className={styles.dropdownLink}
-      >
-        <CoinGeckoIcon width={24} /> CoinGecko
-      </a>
-    </li>
+    {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
+      <li key={idx}>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.dropdownLink}
+        >
+          <Icon width={24} />
+          {label}
+        </a>
+      </li>
+    ))}
   </ul>
 );
 
-export const AppNavigation: FC<AppNavigation> = ({ className }) => {
+const NAVIGATION_LINKS = [
+  {
+    to: PATHS.TEST,
+    label: 'Test',
+  },
+  {
+    to: PATHS.POOLS,
+    label: 'Pools',
+  },
+  {
+    to: PATHS.VAULTS,
+    label: 'Vaults',
+  },
+  {
+    to: PATHS.SWAP,
+    label: 'Swap',
+  },
+  {
+    to: PATHS.YIELD,
+    label: 'Yield',
+  },
+];
+
+export const AppNavigation: FC<AppNavigationProps> = ({ className }) => {
   return (
     <ul
       className={classNames(
@@ -108,32 +118,22 @@ export const AppNavigation: FC<AppNavigation> = ({ className }) => {
         className,
       )}
     >
-      <li>
-        <NavigationLink to={PATHS.TEST}>Test</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.POOLS}>Pools</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.VAULTS}>Vaults</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.SWAP}>Swap</NavigationLink>
-      </li>
-      <li>
-        <NavigationLink to={PATHS.YIELD}>Yield</NavigationLink>
-      </li>
-      <li id={'myDrop'}>
+      {NAVIGATION_LINKS.map(({ label, to }, idx) => (
+        <li key={idx} className={styles.navigationItem}>
+          <NavigationLink to={to}>{label}</NavigationLink>
+        </li>
+      ))}
+      <li id="menu-dropdown" className={styles.navigationItem}>
         <div className={styles.mobileDropdown}>{dropdownMenu}</div>
         <Dropdown
           overlay={dropdownMenu}
-          placement={'bottomRight'}
-          className={styles.dropdown}
-          getPopupContainer={() => document.getElementById('myDrop')}
+          placement="bottomRight"
+          getPopupContainer={() => document.getElementById('menu-dropdown')}
+          overlayClassName={styles.dropdown}
         >
-          <Button>
+          <div className={styles.dropdownTrigger}>
             More <ArrowDownBtn className={styles.moreArrowIcon} />
-          </Button>
+          </div>
         </Dropdown>
       </li>
     </ul>

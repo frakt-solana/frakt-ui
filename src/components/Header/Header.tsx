@@ -32,7 +32,7 @@ const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
       {visible && <WalletContent />}
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={PATHS.ROOT}>
-          Fraktion
+          Frakt
         </NavLink>
         <AppNavigation />
         <ul className={styles.buttons}>

@@ -6,7 +6,7 @@
   top: 0;
   background: var(--black-color);
   height: var(--header-height);
-  transition: top .2s ease-out;
+  transition: top 0.2s ease-out;
   z-index: 90;
   font-family: var(--font-family-oxanium);
   border-bottom: var(--border-gray-1);
@@ -90,7 +90,7 @@
 }
 
 .logo {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--white-color);
@@ -108,149 +108,6 @@
     text-decoration: none;
     color: var(--font-btn-small);
   }
-}
-
-.moreArrowIcon {
-  margin-left: 11px;
-}
-
-.mobileDropdown {
-  display: none;
-
-  @media screen and (max-width: 1023px) {
-    display: block;
-
-    .dropdownLink {
-      color: var(--white-color);
-      background: none;
-      outline: none;
-      border: none;
-      cursor: pointer;
-      padding: 0 16px;
-
-      svg {
-        margin-right: 10px;
-      }
-    }
-  }
-}
-
-.navigation {
-  display: flex;
-
-  :global {
-    .ant-btn.ant-dropdown-trigger {
-      border: none;
-      padding: 0 16px;
-      font: var(--font-text-3);
-
-      &:hover {
-        color: var(--white-color);
-      }
-    }
-
-    .ant-dropdown {
-      background-color: var(--black-color);
-      padding: 20px 0;
-      border: var(--border-gray-1);
-
-      &::after {
-        content: "";
-        display: block;
-        width: 20px;
-        height: 20px;
-        border-left: var(--border-gray-1);
-        border-top: var(--border-gray-1);
-        background-color: var(--black-color);
-        transform: rotate(45deg);
-        position: absolute;
-        left: 127px;
-        top: -11px;
-        z-index: 1;
-      }
-
-      li {
-        margin-bottom: 10px;
-
-        &:last-of-type {
-          margin-bottom: 0;
-        }
-
-        a {
-          padding-left: 20px;
-          padding-right: 20px;
-          color: var(--white-color);
-          font: var(--font-text-3);
-
-          &:hover {
-            color: var(--white-color);
-            background-color: var(--color-gray-7);
-          }
-
-          svg {
-            margin-right: 5px;
-          }
-        }
-      }
-    }
-
-    @media screen and (max-width: 1023px) {
-      .ant-btn.ant-dropdown-trigger,
-      .ant-dropdown {
-        display: none;
-      }
-    }
-  }
-
-  &:last-of-type {
-    align-self: stretch;
-  }
-
-  li {
-    height: 100%;
-
-    a,
-    button {
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-
-    &:last-child {
-      padding-right: 0;
-    }
-  }
-
-  &_left {
-    margin-left: auto;
-    margin-right: 16px;
-
-    @media screen and (max-width: 1023px) {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
-  &__exchangeSoon {
-    pointer-events: none;
-    opacity: 0.5;
-    position: relative;
-
-    &::after {
-      position: absolute;
-      content: 'SOON';
-      color: var(--accent-color-1);
-      font-size: 12px;
-      font-weight: 900;
-      right: 4px;
-      top: 28px;
-    }
-  }
-
-  @media screen and (max-width: 1023px) {
-    display: none;
-  }
-
 }
 
 .buttons {
@@ -293,10 +150,6 @@
       text-transform: uppercase;
     }
   }
-}
-
-.mobileMenuItem {
-  width: 50%;
 }
 
 .activeLink {
@@ -404,79 +257,5 @@ body .walletInfo {
     top: 88px;
     width: 100%;
     border-bottom: 1px solid var(--gray-color-3);
-  }
-}
-
-.mobileMenuWrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 88px;
-}
-
-.logoWrapper {
-  height: 88px;
-  padding-left: 15px;
-  display: flex;
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  background-color: #000000;
-}
-
-.navMobile {
-  &:first-of-type {
-    display: flex;
-    flex-wrap: wrap;
-    //margin-top: 40px;
-    li {
-      height: 88px;
-      width: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &.mobileHeaderButton {
-        background: var(--gray-color-7);
-      }
-
-      &.connectedCardInfo {
-        height: auto;
-        width: 100%;
-        padding: 30px 15px;
-        background: var(--white-color);
-        margin-bottom: 10px;
-      }
-    }
-
-    .connectedBtn {
-      width: 100%;
-      order: 1;
-    }
-  }
-}
-
-.mobileMenu {
-  padding: 15px;
-
-  li {
-    a {
-      font-size: 32px;
-      padding: 15px 0;
-      display: block;
-      border-bottom: 1px solid var(--gray-color-3);
-    }
-
-    &:first-of-type a {
-      border-top: 1px solid var(--gray-color-3);
-    }
   }
 }
