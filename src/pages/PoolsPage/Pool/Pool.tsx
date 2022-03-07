@@ -6,7 +6,6 @@ import { useWalletModal } from '../../../contexts/WalletModal';
 import { useUserSplAccount } from '../../../utils/accounts';
 import DepositModal from '../../../components/DepositModal';
 import { ChevronDownIcon } from '../../../icons';
-import { usePolling } from '../../../hooks';
 import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
 import {
@@ -14,13 +13,14 @@ import {
   PoolData,
   FusionPoolInfo,
   RaydiumPoolInfo,
-  useLazyFusionPools,
 } from '../../../contexts/liquidityPools';
 import { PoolStats } from '../hooks';
 import {
   PoolDetailsWalletConnected,
   PoolDetailsWalletDisconnected,
 } from './components';
+import { PoolCardHeader } from './components/PoolCardHeader';
+import { usePollPoolCard } from '../hooks/usePollPoolCard';
 interface PoolInterface {
   poolData: PoolData;
   raydiumPoolInfo: RaydiumPoolInfo;
@@ -29,8 +29,6 @@ interface PoolInterface {
   onPoolCardClick?: () => void;
   fusionPoolInfo: FusionPoolInfo;
 }
-
-const POOL_INFO_POLLING_INTERVAL = 10_000;
 
 const Pool: FC<PoolInterface> = ({
   isOpen,
@@ -43,39 +41,19 @@ const Pool: FC<PoolInterface> = ({
   const { tokenInfo, poolConfig } = poolData;
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-  const { fetchFusionPoolsInfo, fusionPoolInfoMap } = useLazyFusionPools();
-
-  const fusionPoolInfoArray = fusionPoolInfoMap.get(
-    poolData.poolConfig.lpMint.toBase58(),
-  );
-
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
 
+  const { fusionPoolInfoMap } = usePollPoolCard(poolConfig, isOpen);
   const {
     accountInfo: lpTokenAccountInfo,
     subscribe,
     unsubscribe,
   } = useUserSplAccount();
 
-  const poll = async () => {
-    await fetchFusionPoolsInfo([poolData.poolConfig.lpMint.toBase58()]);
-  };
-
-  const { isPolling, startPolling, stopPolling } = usePolling(
-    poll,
-    POOL_INFO_POLLING_INTERVAL,
+  const fusionPoolInfoByMint = fusionPoolInfoMap.get(
+    poolConfig.lpMint.toBase58(),
   );
-
-  useEffect(() => {
-    if (isOpen && !isPolling && connected) {
-      startPolling();
-    } else {
-      stopPolling();
-    }
-    return () => stopPolling();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, connected]);
 
   useEffect(() => {
     if (isOpen && connected) {
@@ -87,11 +65,7 @@ const Pool: FC<PoolInterface> = ({
 
   return (
     <div className={styles.pool}>
-      <div className={styles.header}>
-        {fusionPoolInfo?.mainRouter && (
-          <div className={styles.awarder}>Awarded</div>
-        )}
-      </div>
+      <PoolCardHeader isAwarded={!!fusionPoolInfo?.mainRouter} />
       <div className={styles.poolCard} onClick={onPoolCardClick}>
         <div className={styles.tokenInfo}>
           <div>
@@ -130,7 +104,7 @@ const Pool: FC<PoolInterface> = ({
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
           className={styles.poolDetails}
-          fusionPoolInfo={fusionPoolInfoArray || fusionPoolInfo}
+          fusionPoolInfo={fusionPoolInfoByMint || fusionPoolInfo}
         />
       )}
       {isOpen && !connected && (
@@ -145,7 +119,7 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
-        fusionPoolInfo={fusionPoolInfoArray || fusionPoolInfo}
+        fusionPoolInfo={fusionPoolInfoByMint || fusionPoolInfo}
         poolStats={poolStats}
       />
     </div>

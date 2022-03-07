@@ -1,0 +1,15 @@
+.header {
+  border-bottom: 1px solid var(--gray-color-3);
+  padding: 10px 20px;
+  min-height: 47px;
+}
+
+.awarder {
+  border: 1px solid rgba(181, 211, 7, 0.3);
+  color: #b5d307;
+  padding: 6px 8px;
+  font: var(--font-smallest);
+  font-family: var(--font-family-inter);
+  text-transform: uppercase;
+  width: 70px;
+}

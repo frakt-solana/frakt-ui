@@ -99,3 +99,7 @@ export interface FusionPoolInfo {
   secondaryReward: SecondaryRewardView[];
   secondaryStakeAccount: SecondStakeAccountView;
 }
+
+export interface secondaryRewardWithTokenInfo extends SecondaryRewardView {
+  tokenInfo: TokenInfo[];
+}

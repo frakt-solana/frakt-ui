@@ -5,7 +5,7 @@ import {
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 import BN, { max, min } from 'bn.js';
-import { RaydiumPoolInfo } from './liquidityPools.model';
+import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
 
 export const calculateTVL = (
   poolInfo: RaydiumPoolInfo,
@@ -225,3 +225,9 @@ export const caclLiquiditySecondRewars = (
     return calculation.toFixed(5);
   }
 };
+
+export const getStakedBalance = (
+  fusionPoolInfo: FusionPoolInfo,
+  lpDecimals: number,
+): number =>
+  Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;

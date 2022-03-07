@@ -24,6 +24,7 @@ import {
   RaydiumPoolInfoMap,
   FusionPoolInfoByMint,
   FusionPoolInfo,
+  secondaryRewardWithTokenInfo,
 } from './liquidityPools.model';
 import {
   MainRouterView,
@@ -279,3 +280,23 @@ export const fetchFusionPoolInfo = (
     return fusionPoolInfo;
   }, new Map<string, FusionPoolInfo>());
 };
+
+export const getTokenInfoBySecondaryReward = (
+  secondaryReward: SecondaryRewardView[],
+  tokensList: TokenInfo[],
+): secondaryRewardWithTokenInfo[] => {
+  return secondaryReward.reduce((acc, reward) => {
+    const tokenListSymbol = tokensList.filter(
+      ({ address }) => address === reward.tokenMint,
+    );
+    acc.push({ ...reward, tokenInfo: tokenListSymbol });
+
+    return acc;
+  }, [] as secondaryRewardWithTokenInfo[]);
+};
+
+export const getTokenInfoByReward = (
+  stakeAccount: StakeAccountView,
+  tokensList: TokenInfo[],
+): TokenInfo[] =>
+  tokensList.filter(({ address }) => address === stakeAccount.tokenMintOutput);

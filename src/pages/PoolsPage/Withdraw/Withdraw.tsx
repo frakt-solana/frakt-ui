@@ -17,6 +17,7 @@ import { SOL_TOKEN } from '../../../utils';
 import styles from './styles.module.scss';
 import {
   FusionPoolInfo,
+  getStakedBalance,
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
@@ -37,16 +38,13 @@ const Withdraw: FC<WithdrawInterface> = ({
   lpTokenAccountInfo,
 }) => {
   const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
-
   const [withdrawValue, setWithdrawValue] = useState<string>('');
 
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
 
   const balance = getTokenAccountBalance(lpTokenAccountInfo, lpDecimals);
-
-  const stakedBalance: number =
-    Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
+  const stakedBalance = getStakedBalance(fusionPoolInfo, lpDecimals);
 
   const onSubmitHandler = async (): Promise<void> => {
     if (fusionPoolInfo) {

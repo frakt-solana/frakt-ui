@@ -104,8 +104,6 @@ export const useLazyFusionPools = (): {
         connection,
       });
 
-      console.log(allProgramAccounts);
-
       const fusionPoolInfoMap = fetchFusionPoolInfo(
         allProgramAccounts,
         lpMints,
