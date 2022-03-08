@@ -1,1 +1,0 @@
-export { NFTsSliderModal } from './NFTsSliderModal';

@@ -1,12 +1,9 @@
 .wrapper {
   padding-bottom: 100px;
-  margin-right: -10px;
 }
 
 .nftList {
   margin-top: 50px;
-  padding-right: 10px;
-  padding-bottom: 20px;
 
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
