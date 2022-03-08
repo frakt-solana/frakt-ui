@@ -26,7 +26,6 @@
     "community-pools-client-library-v2": "^1.0.7",
     "fraktionalizer-client-library": "^2.3.0",
     "immutable-tuple": "^0.4.10",
-    "latest": "^0.2.0",
     "moment": "^2.29.1",
     "rc-tooltip": "^5.1.1",
     "react": "^16.13.1",
