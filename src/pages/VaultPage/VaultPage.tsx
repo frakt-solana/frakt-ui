@@ -224,27 +224,6 @@ const VaultPage: FC = () => {
             </section>
           </>
         )}
-        {!loading && (
-          <section id="allNftList" className={styles.allNfts}>
-            <h4 className={styles.nftsTitle}>
-              <span>{vaultData?.safetyBoxes.length}</span>
-              NFTs inside the vault
-              {wallet.publicKey?.toBase58() === vaultData?.authority &&
-                vaultData?.realState === VaultState.Active && (
-                  <NavLink
-                    to={`${PATHS.FRAKTIONALIZE}/${vaultPubkey}`}
-                    className={styles.addNftsLink}
-                  >
-                    <Button>Add NFTs</Button>
-                  </NavLink>
-                )}
-            </h4>
-            <NFTList
-              safetyBoxes={vaultData?.safetyBoxes}
-              nftCollections={allNftsCollectionInfo}
-            />
-          </section>
-        )}
       </Container>
     </AppLayout>
   );
