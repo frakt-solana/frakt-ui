@@ -8,20 +8,23 @@ interface LoadingModalProps {
   visible: boolean;
   title?: string;
   subtitle?: string;
+  onCancel?: () => void;
 }
 
 export const LoadingModal: FC<LoadingModalProps> = ({
   visible,
   title = 'Please approve all transactions',
   subtitle = '',
+  onCancel,
 }) => {
   return (
     <Modal
       visible={visible}
       style={modalPosition}
-      closable={false}
+      closable={!!onCancel}
       maskClosable={false}
       width={560}
+      onCancel={onCancel}
     >
       <div className={styles.content}>
         <Loader size="large" />

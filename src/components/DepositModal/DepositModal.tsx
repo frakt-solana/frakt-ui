@@ -49,6 +49,7 @@ const DepositModal: FC<DepositModalProps> = ({
     quoteValue,
     loadingModalVisible,
     onSubmit,
+    closeLoadingModal,
   } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo, lpTokenAccountInfo);
 
   const onSubmitHandler = () => {
@@ -144,7 +145,10 @@ const DepositModal: FC<DepositModalProps> = ({
           </Button>
         </div>
       </Modal>
-      <LoadingModal visible={loadingModalVisible} />
+      <LoadingModal
+        visible={loadingModalVisible}
+        onCancel={closeLoadingModal}
+      />
     </>
   );
 };
