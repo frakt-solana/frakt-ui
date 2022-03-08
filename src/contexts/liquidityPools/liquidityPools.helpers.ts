@@ -257,7 +257,7 @@ const getFusionDataMap = (
   };
 };
 
-export const fetchFusionPoolInfo = (
+export const mapFusionPoolInfo = (
   allProgramAccounts: FusionPoolsInfo,
   lpMints: string[],
   owner: string,

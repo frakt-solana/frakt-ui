@@ -3,7 +3,7 @@ import { Control, useForm } from 'react-hook-form';
 import BN from 'bn.js';
 
 import { ArrowDownSmallIcon } from '../../../icons';
-import { useDebounce } from '../../../hooks';
+import { useDebounce, usePolling } from '../../../hooks';
 import {
   useLiquidityPools,
   compareNumbers,
@@ -16,6 +16,8 @@ import {
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../styles.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
+import { POOL_INFO_POLLING_INTERVAL } from '../constants';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -47,6 +49,7 @@ export const usePoolsPage = (): {
   userLpBalanceByMint: LpBalanceByMint;
   fusionPoolInfoMap: FusionPoolInfoByMint;
   poolsStatsByMarketId: PoolsStatsByMarketId;
+  isFusionPoolsPolling: boolean;
 } => {
   const { control, watch } = useForm({
     defaultValues: {
@@ -55,6 +58,7 @@ export const usePoolsPage = (): {
       [InputControlsNames.SORT]: SORT_VALUES[0],
     },
   });
+  const { connected } = useWallet();
   const { rawUserTokensByMint, loading: userTokensLoading } = useUserTokens();
   const {
     poolsStatsByMarketId,
@@ -208,6 +212,29 @@ export const usePoolsPage = (): {
     }
   };
 
+  const pollFusionPoolsInfo = async (): Promise<void> => {
+    const lpMints = rawPoolsData.map(({ poolConfig }) =>
+      poolConfig.lpMint.toBase58(),
+    );
+    await fetchFusionPoolsInfo(lpMints);
+  };
+
+  const {
+    isPolling: isFusionPoolsPolling,
+    startPolling: startFusionPoolsPolling,
+    stopPolling: stopFusionPoolsPolling,
+  } = usePolling(pollFusionPoolsInfo, POOL_INFO_POLLING_INTERVAL);
+
+  useEffect(() => {
+    if (activePoolTokenAddress && connected && !isFusionPoolsPolling) {
+      startFusionPoolsPolling();
+    } else {
+      stopFusionPoolsPolling();
+    }
+    return () => stopFusionPoolsPolling();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePoolTokenAddress, connected]);
+
   return {
     formControl: control,
     loading,
@@ -219,6 +246,7 @@ export const usePoolsPage = (): {
     userLpBalanceByMint,
     fusionPoolInfoMap,
     poolsStatsByMarketId,
+    isFusionPoolsPolling,
   };
 };
 

@@ -71,7 +71,7 @@ const Rewards: FC<RewardsInterface> = ({
           <p className={styles.title}>Pending rewards</p>
           <div className={styles.rewardInfo}>
             <p>
-              {calcLiquidityRewards(mainRouter, stakeAccount)}{' '}
+              {calcLiquidityRewards(mainRouter, stakeAccount)?.toFixed(5)}{' '}
               <span>{rewardInfoByMint[0]?.symbol}</span>
             </p>
             {secondaryRewardInfoByMint.map((reward) => (
@@ -82,7 +82,7 @@ const Rewards: FC<RewardsInterface> = ({
                     reward,
                     secondaryStakeAccount,
                     mainRouter,
-                  )}
+                  )?.toFixed(5)}
                 </span>{' '}
                 <span>{reward.tokenInfo[0].symbol}</span>
               </span>
@@ -99,13 +99,18 @@ const Rewards: FC<RewardsInterface> = ({
               stake
             </Button>
           )}
-          <Button
-            type="tertiary"
-            className={styles.harvestBtn}
-            onClick={onHarvestLiquidity}
-          >
-            Harvest
-          </Button>
+          {!!calcLiquidityRewards(
+            fusionPoolInfo.mainRouter,
+            fusionPoolInfo.stakeAccount,
+          ) && (
+            <Button
+              type="tertiary"
+              className={styles.harvestBtn}
+              onClick={onHarvestLiquidity}
+            >
+              Harvest
+            </Button>
+          )}
         </div>
       </div>
     </div>

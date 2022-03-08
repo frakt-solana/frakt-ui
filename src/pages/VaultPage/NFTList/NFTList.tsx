@@ -18,8 +18,6 @@ import { NFTCard } from '../NFTCard';
 
 SwiperCore.use([FreeMode, Navigation, Thumbs, Scrollbar]);
 
-const MAX_SAFETY_BOXES_LENGTH = 20;
-
 interface NFTListProps {
   safetyBoxes?: SafetyBoxWithMetadata[];
   nftCollections: CollectionData[];

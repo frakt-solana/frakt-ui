@@ -5,7 +5,7 @@ import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
-  fetchFusionPoolInfo,
+  mapFusionPoolInfo,
   fetchProgramAccounts,
   fetchRaydiumPoolsInfoMap,
   fetchSolanaPriceUSD,
@@ -104,7 +104,7 @@ export const useLazyFusionPools = (): {
         connection,
       });
 
-      const fusionPoolInfoMap = fetchFusionPoolInfo(
+      const fusionPoolInfoMap = mapFusionPoolInfo(
         allProgramAccounts,
         lpMints,
         wallet?.publicKey?.toBase58(),

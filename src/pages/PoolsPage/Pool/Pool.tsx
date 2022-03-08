@@ -20,7 +20,7 @@ import {
   PoolDetailsWalletDisconnected,
 } from './components';
 import { PoolCardHeader } from './components/PoolCardHeader';
-import { usePollPoolCard } from '../hooks/usePollPoolCard';
+
 interface PoolInterface {
   poolData: PoolData;
   raydiumPoolInfo: RaydiumPoolInfo;
@@ -44,16 +44,11 @@ const Pool: FC<PoolInterface> = ({
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
 
-  const { fusionPoolInfoMap } = usePollPoolCard(poolConfig, isOpen);
   const {
     accountInfo: lpTokenAccountInfo,
     subscribe,
     unsubscribe,
   } = useUserSplAccount();
-
-  const fusionPoolInfoByMint = fusionPoolInfoMap.get(
-    poolConfig.lpMint.toBase58(),
-  );
 
   useEffect(() => {
     if (isOpen && connected) {
@@ -104,7 +99,7 @@ const Pool: FC<PoolInterface> = ({
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
           className={styles.poolDetails}
-          fusionPoolInfo={fusionPoolInfoByMint || fusionPoolInfo}
+          fusionPoolInfo={fusionPoolInfo}
         />
       )}
       {isOpen && !connected && (
@@ -119,8 +114,9 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
-        fusionPoolInfo={fusionPoolInfoByMint || fusionPoolInfo}
+        fusionPoolInfo={fusionPoolInfo}
         poolStats={poolStats}
+        lpTokenAccountInfo={lpTokenAccountInfo}
       />
     </div>
   );

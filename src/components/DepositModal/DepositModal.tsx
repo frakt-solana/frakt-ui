@@ -1,10 +1,7 @@
-import BN from 'bn.js';
-import { FC, useEffect, useRef, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { FC } from 'react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Controller } from 'react-hook-form';
-import { PublicKey } from '@solana/web3.js';
 
 import { InputControlsNames, useDeposit } from './hooks';
 import Checkbox from '../CustomCheckbox';
@@ -16,9 +13,10 @@ import Button from '../Button';
 import {
   FusionPoolInfo,
   formatNumberToCurrency,
-  useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { PoolStats } from '../../pages/PoolsPage/hooks/useLazyPoolsStats';
+import { LoadingModal } from '../LoadingModal';
+import { AccountInfoParsed } from '../../utils/accounts';
 
 interface DepositModalProps {
   visible: boolean;
@@ -28,6 +26,7 @@ interface DepositModalProps {
   poolConfig: LiquidityPoolKeysV4;
   fusionPoolInfo: FusionPoolInfo;
   poolStats: PoolStats;
+  lpTokenAccountInfo: AccountInfoParsed;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
@@ -38,6 +37,7 @@ const DepositModal: FC<DepositModalProps> = ({
   poolConfig,
   fusionPoolInfo,
   poolStats,
+  lpTokenAccountInfo,
 }) => {
   const {
     formControl,
@@ -47,144 +47,105 @@ const DepositModal: FC<DepositModalProps> = ({
     handleBlur,
     baseValue,
     quoteValue,
-    liquiditySide,
-    subscribeUserTokenBalance,
-  } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo);
+    loadingModalVisible,
+    onSubmit,
+  } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo, lpTokenAccountInfo);
 
-  const { addRaydiumLiquidity } = useLiquidityPools();
-  const { connection } = useConnection();
-  const wallet = useWallet();
-  const [accountInfo, setAccountInfo] = useState(null);
-
-  const subscriptionId = useRef<number>();
-
-  const subscribe = (tokenAccountPubkey: PublicKey) => {
-    if (tokenAccountPubkey === accountInfo?.publicKey) return;
-    setAccountInfo(tokenAccountPubkey);
-    subscriptionId.current = connection.onAccountChange(
-      tokenAccountPubkey,
-      subscribeUserTokenBalance,
-    );
-  };
-
-  const unsubscribe = () => {
-    if (subscriptionId.current) {
-      connection.removeAccountChangeListener(subscriptionId.current);
-      subscriptionId.current = null;
-    }
-  };
-
-  useEffect(() => {
-    return () => unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connection, wallet]);
-
-  const onSubmitHandler = async () => {
-    const baseAmount = new BN(Number(baseValue) * 10 ** tokenInfo.decimals);
-    const quoteAmount = new BN(Number(quoteValue) * 1e9);
-    const tokenMint = fusionPoolInfo.mainRouter.tokenMintInput;
-
-    await addRaydiumLiquidity({
-      baseToken: tokenInfo,
-      baseAmount,
-      quoteToken: SOL_TOKEN,
-      quoteAmount,
-      poolConfig,
-      fixedSide: liquiditySide,
-    });
-
-    subscribe(new PublicKey(tokenMint));
-
+  const onSubmitHandler = () => {
     setVisible(false);
+    onSubmit();
   };
 
   return (
-    <Modal
-      visible={visible}
-      centered
-      onCancel={onCancel}
-      title="Deposit Liquidity"
-      width={500}
-      className={styles.modal}
-    >
-      <div className={styles.container}>
-        <div className={styles.inputWrapper}>
-          <div className={styles.token}>
-            <img src={SOL_TOKEN.logoURI} className={styles.tokenIcon} />
-            <p className={styles.tokenName}>{SOL_TOKEN.symbol}</p>
+    <>
+      <Modal
+        visible={visible}
+        centered
+        onCancel={onCancel}
+        title="Deposit Liquidity"
+        width={500}
+        className={styles.modal}
+      >
+        <div className={styles.container}>
+          <div className={styles.inputWrapper}>
+            <div className={styles.token}>
+              <img src={SOL_TOKEN.logoURI} className={styles.tokenIcon} />
+              <p className={styles.tokenName}>{SOL_TOKEN.symbol}</p>
+            </div>
+            <NumericInput
+              className={styles.input}
+              value={quoteValue}
+              onChange={(value) =>
+                handleChange(value, InputControlsNames.QUOTE_VALUE)
+              }
+              onBlur={() => handleBlur('a')}
+            />
           </div>
-          <NumericInput
-            className={styles.input}
-            value={quoteValue}
-            onChange={(value) =>
-              handleChange(value, InputControlsNames.QUOTE_VALUE)
-            }
-            onBlur={() => handleBlur('a')}
-          />
-        </div>
-        <div className={styles.inputWrapper}>
-          <div className={styles.token}>
-            <img src={tokenInfo.logoURI} className={styles.tokenIcon} />
-            <p className={styles.tokenName}>{tokenInfo.symbol}</p>
+          <div className={styles.inputWrapper}>
+            <div className={styles.token}>
+              <img src={tokenInfo.logoURI} className={styles.tokenIcon} />
+              <p className={styles.tokenName}>{tokenInfo.symbol}</p>
+            </div>
+            <NumericInput
+              className={styles.input}
+              value={baseValue}
+              onChange={(value) =>
+                handleChange(value, InputControlsNames.BASE_VALUE)
+              }
+              onBlur={() => handleBlur('b')}
+            />
           </div>
-          <NumericInput
-            className={styles.input}
-            value={baseValue}
-            onChange={(value) =>
-              handleChange(value, InputControlsNames.BASE_VALUE)
-            }
-            onBlur={() => handleBlur('b')}
-          />
-        </div>
-        <div className={styles.totalLine}>
-          <p className={styles.title}>Total</p>
-          <div className={styles.line} />
-        </div>
-        <div className={styles.totalInputWrapper}>
-          <div className={styles.totalValue}>
-            {formatNumberToCurrency(parseFloat(totalValue))}
+          <div className={styles.totalLine}>
+            <p className={styles.title}>Total</p>
+            <div className={styles.line} />
           </div>
-        </div>
-        <p className={styles.subtitle}>Estimated earnings from fees (7d)</p>
-        <div className={styles.depositContent}>
-          <div className={styles.depositInfo}>
-            <p className={styles.value}>
-              {formatNumberToCurrency(
-                parseFloat(totalValue) * (poolStats?.apy / 100) || 0,
-              )}{' '}
-              <span>/ month</span>
+          <div className={styles.totalInputWrapper}>
+            <div className={styles.totalValue}>
+              {formatNumberToCurrency(parseFloat(totalValue))}
+            </div>
+          </div>
+          <p className={styles.subtitle}>Estimated earnings from fees (7d)</p>
+          <div className={styles.depositContent}>
+            <div className={styles.depositInfo}>
+              <p className={styles.value}>
+                {formatNumberToCurrency(
+                  parseFloat(totalValue) * (poolStats?.apy / 100) || 0,
+                )}{' '}
+                <span>/ month</span>
+              </p>
+              <p className={styles.value}>
+                {poolStats?.apy || 0}% <span>/ apy</span>
+              </p>
+            </div>
+            {/* <p className={styles.link}>After staking</p> */}
+          </div>
+          <div className={styles.verify}>
+            <Controller
+              control={formControl}
+              name={InputControlsNames.IS_VERIFIED}
+              render={({ field }) => <Checkbox {...field} />}
+            />
+            <p className={styles.text}>
+              I verify that I have read the{' '}
+              <a href="#" target="_blank" rel="noopener noreferrer">
+                Fraktion Pools Guide
+              </a>{' '}
+              and understand the risks of providing liquidity, including
+              impermanent loss.
             </p>
-            <p className={styles.value}>
-              {poolStats?.apy || 0}% <span>/ apy</span>
-            </p>
           </div>
-          {/* <p className={styles.link}>After staking</p> */}
+          <Button
+            className={styles.depositBtn}
+            type="alternative"
+            disabled={!isDepositBtnEnabled}
+            onClick={onSubmitHandler}
+          >
+            Deposit
+          </Button>
         </div>
-        <div className={styles.verify}>
-          <Controller
-            control={formControl}
-            name={InputControlsNames.IS_VERIFIED}
-            render={({ field }) => <Checkbox {...field} />}
-          />
-          <p className={styles.text}>
-            I verify that I have read the{' '}
-            <a href="#" target="_blank" rel="noopener noreferrer">
-              Fraktion Pools Guide
-            </a>{' '}
-            and understand the risks of providing liquidity, including
-            impermanent loss.
-          </p>
-        </div>
-        <Button
-          className={styles.depositBtn}
-          type="alternative"
-          disabled={!isDepositBtnEnabled}
-          onClick={onSubmitHandler}
-        >
-          Deposit
-        </Button>
-      </div>
-    </Modal>
+      </Modal>
+      <LoadingModal visible={loadingModalVisible} />
+    </>
   );
 };
 

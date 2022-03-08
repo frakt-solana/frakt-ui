@@ -126,7 +126,7 @@ export const calculateTotalDeposit = (
   baseTokenAmount: string,
   quoteTokenAmount: string,
   currentSolanaPriceUSD: number,
-): string => {
+): number => {
   const allQuoteTokenPriceUSD: number =
     Number(baseTokenAmount) * currentSolanaPriceUSD;
 
@@ -137,7 +137,7 @@ export const calculateTotalDeposit = (
   const allBaseTokenPriceUSD: number =
     baseTokenPriceUSD * Number(quoteTokenAmount);
 
-  return String(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
+  return allBaseTokenPriceUSD + allQuoteTokenPriceUSD;
 };
 
 export const calcTotalForCreateLiquidity = (
@@ -158,7 +158,9 @@ export const calcTotalForCreateLiquidity = (
 export const calcLiquidityRewards = (
   mainRouter: MainRouterView,
   stakeAccount: StakeAccountView,
-): string | number => {
+): number => {
+  if (!mainRouter || !stakeAccount) return 0;
+
   const check_date = min(
     new BN(Math.floor(Date.now() / 1000)),
     new BN(mainRouter.endTime),
@@ -174,7 +176,7 @@ export const calcLiquidityRewards = (
     Number(mainRouter.decimalsInput) /
     Number(mainRouter.decimalsOutput);
 
-  return reward.toFixed(5);
+  return reward;
 };
 
 export const caclLiquiditySecondRewars = (
@@ -182,7 +184,15 @@ export const caclLiquiditySecondRewars = (
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
   mainRouter: MainRouterView,
-): string | number => {
+): number => {
+  if (
+    !stakeAccount ||
+    !secondaryReward ||
+    !secondaryStakeAccount ||
+    !mainRouter
+  )
+    return 0;
+
   let check_date: BN;
 
   if (Number(stakeAccount.stakeEnd) > 0) {
@@ -209,7 +219,7 @@ export const caclLiquiditySecondRewars = (
         Number(stakeAccount.amount)) /
       Number(mainRouter.decimalsInput) /
       Number(secondaryReward.decimalsOutput);
-    return calculation.toFixed(5);
+    return calculation;
   } else {
     const calculation =
       ((check_date.toNumber() -
@@ -222,7 +232,7 @@ export const caclLiquiditySecondRewars = (
       Number(mainRouter.decimalsInput) /
       Number(secondaryReward.decimalsOutput);
 
-    return calculation.toFixed(5);
+    return calculation;
   }
 };
 
