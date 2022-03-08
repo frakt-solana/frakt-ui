@@ -10,6 +10,6 @@ export const VerifiedBadge = (): JSX.Element => (
       styles.labelVerified,
     )}
   >
-    <DoneIcon /> Verified
+    <DoneIcon /> <span>Verified</span>
   </div>
 );

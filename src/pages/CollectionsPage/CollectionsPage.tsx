@@ -156,6 +156,7 @@ const CollectionsPage: FC = () => {
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
+        <h1 className={styles.title}>Collections</h1>
         <CollectionsFilter
           searchItems={searchItems}
           sortVaules={SORT_VALUES}

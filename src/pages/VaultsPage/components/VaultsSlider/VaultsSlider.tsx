@@ -1,12 +1,13 @@
-import React, { FC, useRef, useState } from 'react';
-import styles from './styles.module.scss';
-import { VaultData } from '../../../../contexts/fraktion';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import { FC, useRef, useState } from 'react';
 import SwiperCore, { Navigation, Autoplay } from 'swiper';
-import classNames from 'classnames';
-import VaultCard from '../../../../components/VaultCard';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames/bind';
+
+import { VaultData } from '../../../../contexts/fraktion';
+import VaultCard from '../../../../components/VaultCard';
 import { PATHS } from '../../../../constants';
+import styles from './VaultsSlider.module.scss';
 
 SwiperCore.use([Navigation, Autoplay]);
 
@@ -41,6 +42,7 @@ export const VaultsSlider: FC<VaultsSliderProps> = ({
 }) => {
   const prevBtn = useRef<HTMLDivElement>(null);
   const nextBtn = useRef<HTMLDivElement>(null);
+  const [, forceUpdate] = useState();
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
 
   if (isLoading) return null;
@@ -54,34 +56,41 @@ export const VaultsSlider: FC<VaultsSliderProps> = ({
       <h3 className={styles.sliderTitle}>
         {title}
         <div
-          ref={prevBtn}
-          className={classNames(styles.sliderNavPrev, 'sliderNavPrev')}
+          ref={(element) => {
+            prevBtn.current = element;
+            forceUpdate(null);
+          }}
+          className={styles.sliderNavPrev}
         />
         <div
-          ref={nextBtn}
-          className={classNames(styles.sliderNavNext, 'sliderNavNext')}
+          ref={(element) => {
+            nextBtn.current = element;
+            forceUpdate(null);
+          }}
+          className={styles.sliderNavNext}
         />
       </h3>
-      <Swiper
-        className={styles.slider}
-        breakpoints={SLIDER_BREAKPOINTS}
-        onRealIndexChange={(swiper) => setCurrentSlideIndex(swiper.realIndex)}
-        spaceBetween={24}
-        navigation={{
-          prevEl: prevBtn.current,
-          nextEl: nextBtn.current,
-        }}
-        autoplay={{ delay: 3000 }}
-        speed={1000}
-      >
-        {vaults.map((vault) => (
-          <SwiperSlide key={vault.vaultPubkey}>
-            <NavLink to={`${PATHS.VAULT}/${vault.vaultPubkey}`}>
-              <VaultCard vaultData={vault} isAuction={isAuction} />
-            </NavLink>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {!!(prevBtn.current && prevBtn.current) && (
+        <Swiper
+          className={styles.slider}
+          breakpoints={SLIDER_BREAKPOINTS}
+          onRealIndexChange={(swiper) => setCurrentSlideIndex(swiper.realIndex)}
+          spaceBetween={24}
+          navigation={{
+            prevEl: prevBtn.current,
+            nextEl: nextBtn.current,
+          }}
+          speed={1000}
+        >
+          {vaults.map((vault) => (
+            <SwiperSlide key={vault.vaultPubkey}>
+              <NavLink to={`${PATHS.VAULT}/${vault.vaultPubkey}`}>
+                <VaultCard vaultData={vault} isAuction={isAuction} />
+              </NavLink>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
 import { Collapse, Radio as RadioAntd, RadioChangeEvent } from 'antd';
 
-import styles from './styles.module.scss';
+import styles from './Sidebar.module.scss';
 import { Checkbox } from '../../../../components/Checkbox/Checkbox';
 import { Radio } from '../../../../components/Radio';
 import {

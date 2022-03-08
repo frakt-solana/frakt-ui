@@ -17,16 +17,6 @@
     width: 0;
   }
 
-  :global {
-    .ant-input-affix-wrapper {
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      padding-left: 1px;
-      border-bottom: 1px solid var(--color-gray-03);
-    }
-  }
-
   @media screen and (max-width: 700px) {
     max-width: 230px;
     padding-left: 15px;
@@ -215,6 +205,8 @@ li.sidebarListItem:first-of-type {
         .ant-collapse-header-collapsible-only
         .ant-collapse-header-text {
         display: block;
+        position: relative;
+        z-index: 1;
       }
     }
 
@@ -246,6 +238,7 @@ li.sidebarListItem:first-of-type {
       position: absolute;
       right: 0;
       top: 13px;
+      z-index: 0;
 
       svg {
         transform: rotate(-90deg);

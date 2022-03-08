@@ -25,7 +25,6 @@ export const CollectionsFilter: FC<CollectionsFilterProps> = ({
   return (
     <div className={styles.wrapper}>
       <SearchInput
-        size="large"
         onChange={(event) => searchItems(event.target.value || '')}
         className={styles.search}
         placeholder="Search by collection name"

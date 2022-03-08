@@ -12,12 +12,6 @@
       padding-top: 13px;
       text-align: center;
     }
-    .ant-modal-content {
-      border-radius: 10px;
-    }
-    .ant-modal-header {
-      border-radius: 10px;
-    }
   }
 }
 
@@ -28,7 +22,7 @@
 
 .input {
   font: var(--font-input) !important;
-  
+
   &::placeholder {
     color: var(--white-color) !important;
   }

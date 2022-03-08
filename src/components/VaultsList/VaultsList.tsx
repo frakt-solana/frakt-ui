@@ -7,7 +7,7 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../FakeInfinityScroll';
 import VaultCard from '../VaultCard';
-import styles from './styles.module.scss';
+import styles from './VaultsList.module.scss';
 
 interface VaultsListProps {
   vaults: VaultData[];
@@ -37,7 +37,6 @@ export const VaultsList: FC<VaultsListProps> = ({
         {vaults.map((vault) => (
           <NavLink
             key={vault.vaultPubkey}
-            className={styles.item}
             to={`${PATHS.VAULT}/${vault.vaultPubkey}`}
           >
             <VaultCard vaultData={vault} />

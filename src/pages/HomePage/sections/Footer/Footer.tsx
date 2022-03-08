@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 import styles from './Footer.module.scss';
 import {
-  CoinGeckoIcon,
+  // CoinGeckoIcon,
   DiscordIcon,
   DocsIcon,
   GitHubIcon,
@@ -16,7 +16,7 @@ import {
   OUR_PRODUCT_ID,
   OUR_TOKENS_ID,
   TEAM_SECTION_ID,
-  TECHNICAL_PARTNERS_ID,
+  // TECHNICAL_PARTNERS_ID,
 } from '../../constants';
 import { PATHS } from '../../../../constants';
 import { LinkWithArrow } from '../../../../components/LinkWithArrow';
@@ -34,14 +34,14 @@ const ECOSYSTEM_LIST = [
 const LANDING_LIST = [
   { to: `#${OUR_PRODUCT_ID}`, label: 'Our products' },
   { to: `#${OUR_TOKENS_ID}`, label: 'Our tokens' },
-  { to: `#${TECHNICAL_PARTNERS_ID}`, label: 'Technical partners' },
+  // { to: `#${TECHNICAL_PARTNERS_ID}`, label: 'Technical partners' },
   { to: `#${TEAM_SECTION_ID}`, label: 'Team' },
 ];
 
 const DOCS_LIST = [
   { to: 'https://medium.com/@frakt_nft', icon: MediumIcon },
   { to: 'https://docs.frakt.xyz/', icon: DocsIcon },
-  { to: 'https://github.com/frakt-solana', icon: CoinGeckoIcon },
+  // { to: 'https://github.com/frakt-solana', icon: CoinGeckoIcon },
 ];
 
 const SOCIALS_LIST = [
@@ -71,7 +71,7 @@ export const Footer: FC<FooterProps> = ({ navRef }) => {
         </ul>
       </div>
       <div className={styles.navWrapper}>
-        <h5 className={styles.navTitle}>FRAKTION</h5>
+        <h5 className={styles.navTitle}>FRAKT</h5>
         <ul className={styles.navList}>
           {LANDING_LIST.map(({ to, label }, idx) => (
             <li className={styles.navItem} key={idx}>

@@ -8,7 +8,7 @@ import { PATHS } from '../../../constants';
 import NavigationLink from '../NavigationLink';
 import {
   ArrowDownBtn,
-  CoinGeckoIcon,
+  // CoinGeckoIcon,
   DiscordIcon,
   DocsIcon,
   GitHubIcon,
@@ -23,7 +23,7 @@ interface AppNavigationProps {
 const DROPDOWN_EXTERNAL_LINKS = [
   {
     label: 'Twitter',
-    href: '',
+    href: 'https://twitter.com/FraktArt',
     icon: TwitterIcon,
   },
   {
@@ -33,7 +33,7 @@ const DROPDOWN_EXTERNAL_LINKS = [
   },
   {
     label: 'GitHub',
-    href: '',
+    href: 'https://github.com/frakt-solana',
     icon: GitHubIcon,
   },
   {
@@ -46,11 +46,11 @@ const DROPDOWN_EXTERNAL_LINKS = [
     href: 'https://docs.frakt.xyz/',
     icon: DocsIcon,
   },
-  {
-    label: 'CoinGecko',
-    href: '',
-    icon: CoinGeckoIcon,
-  },
+  // {
+  //   label: 'CoinGecko',
+  //   href: '',
+  //   icon: CoinGeckoIcon,
+  // },
 ];
 
 const dropdownMenu = (
@@ -63,7 +63,7 @@ const dropdownMenu = (
     <li>
       <a
         className={styles.dropdownLink}
-        href={process.env.REACT_APP_DEX_URL}
+        href={process.env.DEX_URL}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -87,14 +87,14 @@ const dropdownMenu = (
 );
 
 const NAVIGATION_LINKS = [
-  {
-    to: PATHS.TEST,
-    label: 'Test',
-  },
-  {
-    to: PATHS.POOLS,
-    label: 'Pools',
-  },
+  // {
+  //   to: PATHS.TEST,
+  //   label: 'Test',
+  // },
+  // {
+  //   to: PATHS.POOLS,
+  //   label: 'Pools',
+  // },
   {
     to: PATHS.VAULTS,
     label: 'Vaults',
