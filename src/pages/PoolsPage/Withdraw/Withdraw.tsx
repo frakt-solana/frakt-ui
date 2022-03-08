@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import BN from 'bn.js';
 import {
   LiquidityPoolKeysV4,
@@ -21,6 +21,10 @@ import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
+import {
+  LoadingModal,
+  useLoadingModal,
+} from '../../../components/LoadingModal';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
@@ -45,6 +49,15 @@ const Withdraw: FC<WithdrawInterface> = ({
 
   const balance = getTokenAccountBalance(lpTokenAccountInfo, lpDecimals);
   const stakedBalance = getStakedBalance(fusionPoolInfo, lpDecimals);
+  const lpTokenAmountOnSubmit = useRef<string>(null);
+
+  const [withdrawAmount, setWithdrawAmount] = useState<TokenAmount>();
+
+  const {
+    visible: loadingModalVisible,
+    open: openLoadingModal,
+    close: closeLoadingModal,
+  } = useLoadingModal();
 
   const onSubmitHandler = async (): Promise<void> => {
     if (fusionPoolInfo) {
@@ -52,6 +65,12 @@ const Withdraw: FC<WithdrawInterface> = ({
 
       const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
       const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
+
+      setWithdrawAmount(amount);
+      openLoadingModal();
+
+      lpTokenAmountOnSubmit.current =
+        lpTokenAccountInfo?.accountInfo?.amount?.toString() || '0';
 
       if (stakedBalance) {
         await unstakeLiquidity({
@@ -61,16 +80,30 @@ const Withdraw: FC<WithdrawInterface> = ({
         });
       }
 
-      await removeRaydiumLiquidity({
-        baseToken,
-        quoteToken: SOL_TOKEN,
-        amount,
-        poolConfig,
-      });
-
       setWithdrawValue('');
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      const tokenAmount = lpTokenAccountInfo?.accountInfo?.amount?.toString();
+
+      if (
+        !!lpTokenAmountOnSubmit.current &&
+        tokenAmount !== lpTokenAmountOnSubmit.current
+      ) {
+        await removeRaydiumLiquidity({
+          baseToken,
+          quoteToken: SOL_TOKEN,
+          amount: withdrawAmount,
+          poolConfig,
+        });
+        lpTokenAmountOnSubmit.current = null;
+        closeLoadingModal();
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lpTokenAccountInfo]);
 
   return (
     <div className={styles.withdraw}>
@@ -103,6 +136,10 @@ const Withdraw: FC<WithdrawInterface> = ({
           Confirm
         </Button>
       </div>
+      <LoadingModal
+        visible={loadingModalVisible}
+        onCancel={closeLoadingModal}
+      />
     </div>
   );
 };
