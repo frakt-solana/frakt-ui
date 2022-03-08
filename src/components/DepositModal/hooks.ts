@@ -113,11 +113,20 @@ export const useDeposit = (
     setValue(InputControlsNames.LIQUIDITY_SIDE, value);
   };
 
+  const { addRaydiumLiquidity } = useLiquidityPools();
+  const { stakeLiquidity } = useLiquidityPools();
+  const lpTokenAmountOnSubmit = useRef<string>(null);
+
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
-    close: closeLoadingModal,
+    close: closeLoadingModalRaw,
   } = useLoadingModal();
+
+  const closeLoadingModal = () => {
+    lpTokenAmountOnSubmit.current && (lpTokenAmountOnSubmit.current = null);
+    closeLoadingModalRaw();
+  };
 
   useEffect(() => {
     setValue(
@@ -132,10 +141,6 @@ export const useDeposit = (
 
   const isDepositBtnEnabled =
     poolInfo && wallet.connected && isVerified && Number(baseValue) > 0;
-
-  const { addRaydiumLiquidity } = useLiquidityPools();
-  const { stakeLiquidity } = useLiquidityPools();
-  const lpTokenAmountOnSubmit = useRef<string>(null);
 
   const onSubmit = async () => {
     const baseAmount = new BN(Number(baseValue) * 10 ** quoteToken.decimals);

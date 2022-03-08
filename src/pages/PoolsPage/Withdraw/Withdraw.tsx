@@ -113,7 +113,7 @@ const Withdraw: FC<WithdrawInterface> = ({
           {stakedBalance && fusionPoolInfo.stakeAccount ? (
             <p className={styles.balance}>Staked balance: {stakedBalance}</p>
           ) : (
-            <p className={styles.balance}>Balance: {balance}</p>
+            <p className={styles.balance}>Wallet balance: {balance}</p>
           )}
         </div>
       </div>

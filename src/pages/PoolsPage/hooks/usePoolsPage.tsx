@@ -73,7 +73,11 @@ export const usePoolsPage = (): {
   const { poolDataByMint, loading: poolDataByMintLoading } =
     useLiquidityPools();
 
-  const { fusionPoolInfoMap, fetchFusionPoolsInfo } = useLazyFusionPools();
+  const {
+    fusionPoolInfoMap,
+    loading: fusionPoolInfoMapLoading,
+    fetchFusionPoolsInfo,
+  } = useLazyFusionPools();
 
   const rawPoolsData = useMemo(() => {
     return poolDataByMint.size ? Array.from(poolDataByMint.values()) : [];
@@ -145,7 +149,8 @@ export const usePoolsPage = (): {
     if (
       !rawPoolsData.length ||
       !raydiumPoolsInfoMap.size ||
-      !poolsStatsByMarketId.size
+      !poolsStatsByMarketId.size ||
+      fusionPoolInfoMapLoading
     ) {
       return [];
     }
@@ -154,19 +159,21 @@ export const usePoolsPage = (): {
 
     return rawPoolsData
       .filter(({ tokenInfo, poolConfig }) => {
-        if (showAwardedOnly) {
+        const fusionPoolInfo = fusionPoolInfoMap.get(
+          poolConfig.lpMint.toBase58(),
+        );
+
+        const isAwarded = !!fusionPoolInfo?.mainRouter;
+
+        const userStakesInPool =
+          !!userLpBalanceByMint.has(poolConfig.lpMint.toBase58()) ||
+          fusionPoolInfo?.stakeAccount;
+
+        const removeBecauseNotAwarded = showAwardedOnly && !isAwarded;
+        const removeBecauseUserDoesntStake = showStaked && !userStakesInPool;
+
+        if (removeBecauseNotAwarded || removeBecauseUserDoesntStake)
           return false;
-        }
-
-        if (showStaked) {
-          const userStakesInPool = userLpBalanceByMint.has(
-            poolConfig.lpMint.toBase58(),
-          );
-
-          if (!userStakesInPool) {
-            return false;
-          }
-        }
 
         return tokenInfo.symbol.toUpperCase().includes(searchString);
       })
@@ -197,6 +204,8 @@ export const usePoolsPage = (): {
     showStaked,
     poolsStatsByMarketId,
     raydiumPoolsInfoMap,
+    fusionPoolInfoMap,
+    fusionPoolInfoMapLoading,
     userLpBalanceByMint,
   ]);
 
