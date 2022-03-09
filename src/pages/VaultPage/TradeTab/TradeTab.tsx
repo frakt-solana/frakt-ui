@@ -24,7 +24,7 @@ export const TradeTab = ({
       <Trade marketAddress={vaultMarketAddress} />
       <p className={styles.tradeLink}>
         <a
-          href={`${process.env.REACT_APP_DEX_URL}/#/market/${vaultMarketAddress}`}
+          href={`${process.env.DEX_URL}/#/market/${vaultMarketAddress}`}
           target="_blank"
           rel="noopener noreferrer"
         >

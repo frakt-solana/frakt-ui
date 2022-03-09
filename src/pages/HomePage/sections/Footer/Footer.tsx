@@ -26,7 +26,7 @@ const ECOSYSTEM_LIST = [
   { path: PATHS.POOLS, label: 'Pools' },
   { path: PATHS.VAULTS, label: 'Vaults' },
   { path: PATHS.SWAP, label: 'Swap' },
-  { path: process.env.REACT_APP_DEX_URL, label: 'Trade' },
+  { path: process.env.DEX_URL, label: 'Trade' },
   { path: PATHS.COLLECTIONS, label: 'Collections' },
   { path: PATHS.YIELD, label: 'Yield' },
 ];

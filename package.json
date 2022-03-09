@@ -11,9 +11,8 @@
     "@project-serum/serum": "^0.13.60",
     "@project-serum/sol-wallet-adapter": "^0.2.5",
     "@raydium-io/raydium-sdk": "^1.0.1-beta.28",
-    "@solana/spl-name-service": "^0.1.3",
     "@solana/spl-token": "0.1.8",
-    "@solana/spl-token-registry": "^0.2.287",
+    "@solana/spl-token-registry": "^0.2.2791",
     "@solana/wallet-adapter-base": "^0.7.0",
     "@solana/wallet-adapter-react": "^0.13.1",
     "@solana/wallet-adapter-wallets": "^0.11.3",
@@ -28,9 +27,9 @@
     "immutable-tuple": "^0.4.10",
     "moment": "^2.29.1",
     "rc-tooltip": "^5.1.1",
-    "react": "^16.13.1",
+    "react": "^17.0.2",
     "react-countup": "^6.1.0",
-    "react-dom": "^16.13.1",
+    "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.19.5",
     "react-infinite-scroll-component": "^6.1.0",
@@ -46,14 +45,15 @@
   },
   "scripts": {
     "start": "npm run devnet",
-    "devnet": "cross-env NODE_ENV=dev craco start",
-    "mainnet": "cross-env NODE_ENV=prod craco start",
-    "build": "cross-env NODE_ENV=prod craco build",
-    "build:devnet": "cross-env NODE_ENV=dev craco build",
+    "devnet": "cross-env NODE_ENV=development craco start",
+    "mainnet": "cross-env craco start",
+    "build": "cross-env craco build",
+    "build:devnet": "cross-env NODE_ENV=development craco build",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier-eslint --write $PWD/'**/*.{ts,tsx}'",
     "lint-staged": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "analyze": "cross-env INTERACTIVE_ANALYZE=1 npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -87,6 +87,8 @@
     "@types/react-helmet": "^6.1.2",
     "@types/react-router-dom": "^5.3.0",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.0.0",
+    "dotenv-webpack": "^7.1.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.26.0",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -95,7 +97,8 @@
     "prettier": "^2.4.1",
     "prettier-eslint": "^13.0.0",
     "prettier-eslint-cli": "^5.0.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "webpack-bundle-analyzer": "^4.5.0"
   },
   "resolutions": {
     "**/@typescript-eslint/eslint-plugin": "^4.1.1",

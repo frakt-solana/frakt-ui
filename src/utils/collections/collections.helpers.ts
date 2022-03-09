@@ -5,7 +5,7 @@ import {
   PromiseFulfilledResult,
 } from './collections.model';
 
-const EXCHANGE_COLLECTION_INFO_API = process.env.REACT_APP_COLLECTION_URL;
+const EXCHANGE_COLLECTION_INFO_API = process.env.COLLECTION_URL;
 
 export const mapVaultsByCollectionName = (
   vaults: VaultData[],

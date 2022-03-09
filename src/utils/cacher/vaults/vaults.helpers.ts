@@ -1,5 +1,5 @@
 const VERIFIED_VAULTS_BY_FRAKT_TEAM_URL =
-  process.env.REACT_APP_VERIFIED_VAULTS_BY_FRAKT_TEAM_URL;
+  process.env.VERIFIED_VAULTS_BY_FRAKT_TEAM_URL;
 
 export const getVerifiedVaultsByFraktTeam = async (): Promise<string[]> => {
   try {

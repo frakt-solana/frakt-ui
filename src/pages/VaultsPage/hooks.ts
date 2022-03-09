@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const FEATURED_VAULTS_ADDRESS =
-  process.env.REACT_APP_FEATURED_VAULTS_BY_FRAKT_TEAM_URL;
+const FEATURED_VAULTS_ADDRESS = process.env.FEATURED_VAULTS_BY_FRAKT_TEAM_URL;
 
 export const useFeaturedVaultsPublicKeys = (): {
   featuredVaultsPublicKeys: string[];

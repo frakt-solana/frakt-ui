@@ -1,7 +1,7 @@
 import { notify } from '../index';
 import { NotifyType } from '../solanaUtils';
 
-const REGISTRAR_TOKEN_URL = process.env.REACT_APP_REGISTRAR_TOKEN_URL;
+const REGISTRAR_TOKEN_URL = process.env.REGISTRAR_TOKEN_URL;
 
 export const registerToken = async (
   tickerName: string,
