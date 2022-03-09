@@ -1,4 +1,4 @@
-import { FC, forwardRef } from 'react';
+import { FC } from 'react';
 import { Checkbox as CheckboxAnt } from 'antd';
 import classNames from 'classnames';
 
@@ -11,17 +11,19 @@ interface CheckboxInterface {
   value?: boolean;
 }
 
-const Checkbox: FC<CheckboxInterface> = forwardRef(
-  ({ className, onChange = () => {}, value }) => {
-    return (
-      <CheckboxAnt
-        onClick={() => onChange(!value)}
-        checked={value}
-        className={classNames(styles.checkbox, className)}
-      />
-    );
-  },
-);
+const Checkbox: FC<CheckboxInterface> = ({
+  className,
+  onChange = () => {},
+  value,
+}) => {
+  return (
+    <CheckboxAnt
+      onClick={() => onChange(!value)}
+      checked={value}
+      className={classNames(styles.checkbox, className)}
+    />
+  );
+};
 
 export default Checkbox;
 
