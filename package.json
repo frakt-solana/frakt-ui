@@ -47,13 +47,13 @@
     "start": "npm run devnet",
     "devnet": "cross-env NODE_ENV=development craco start",
     "mainnet": "cross-env craco start",
-    "build": "cross-env craco build",
-    "build:devnet": "cross-env NODE_ENV=development craco build",
+    "build": "cross-env GENERATE_SOURCEMAP=false craco build",
+    "build:devnet": "cross-env GENERATE_SOURCEMAP=false NODE_ENV=development craco build",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier-eslint --write $PWD/'**/*.{ts,tsx}'",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
-    "analyze": "cross-env INTERACTIVE_ANALYZE=1 npm run build"
+    "analyze": "cross-env INTERACTIVE_ANALYZE=1 GENERATE_SOURCEMAP=false npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"

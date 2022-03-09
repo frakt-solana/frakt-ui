@@ -20,7 +20,6 @@ module.exports = () => {
   return {
     webpack: {
       plugins,
-      devtool: !isProduction ? 'cheap-module-source-map' : null,
     },
   };
 };
