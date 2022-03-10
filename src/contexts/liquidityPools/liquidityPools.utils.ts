@@ -1,4 +1,11 @@
-import { RaydiumPoolInfo } from './liquidityPools.model';
+import {
+  MainRouterView,
+  SecondaryRewardView,
+  SecondStakeAccountView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
+import BN, { max, min } from 'bn.js';
+import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
 
 export const calculateTVL = (
   poolInfo: RaydiumPoolInfo,
@@ -119,7 +126,7 @@ export const calculateTotalDeposit = (
   baseTokenAmount: string,
   quoteTokenAmount: string,
   currentSolanaPriceUSD: number,
-): string => {
+): number => {
   const allQuoteTokenPriceUSD: number =
     Number(baseTokenAmount) * currentSolanaPriceUSD;
 
@@ -130,7 +137,7 @@ export const calculateTotalDeposit = (
   const allBaseTokenPriceUSD: number =
     baseTokenPriceUSD * Number(quoteTokenAmount);
 
-  return String(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
+  return allBaseTokenPriceUSD + allQuoteTokenPriceUSD;
 };
 
 export const calcTotalForCreateLiquidity = (
@@ -147,3 +154,90 @@ export const calcTotalForCreateLiquidity = (
 
   return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };
+
+export const calcLiquidityRewards = (
+  mainRouter: MainRouterView,
+  stakeAccount: StakeAccountView,
+): number => {
+  if (!mainRouter || !stakeAccount) return 0;
+
+  const check_date = min(
+    new BN(Math.floor(Date.now() / 1000)),
+    new BN(mainRouter.endTime),
+  );
+
+  const reward =
+    ((Number(mainRouter.cumulative) +
+      Number(mainRouter.apr) *
+        (check_date.toNumber() - Number(mainRouter.lastTime)) -
+      Number(stakeAccount.stakedAtCumulative)) *
+      Number(stakeAccount.amount)) /
+    (1e10 / Number(mainRouter.decimalsInput)) /
+    Number(mainRouter.decimalsInput) /
+    Number(mainRouter.decimalsOutput);
+
+  return reward;
+};
+
+export const caclLiquiditySecondRewars = (
+  stakeAccount: StakeAccountView,
+  secondaryReward: SecondaryRewardView,
+  secondaryStakeAccount: SecondStakeAccountView,
+  mainRouter: MainRouterView,
+): number => {
+  if (
+    !stakeAccount ||
+    !secondaryReward ||
+    !secondaryStakeAccount ||
+    !mainRouter
+  )
+    return 0;
+
+  let check_date: BN;
+
+  if (Number(stakeAccount.stakeEnd) > 0) {
+    const check_date1 = min(
+      new BN(Math.floor(Date.now() / 1000)),
+      new BN(stakeAccount.stakeEnd),
+    );
+    check_date = min(check_date1, new BN(secondaryReward.endTime));
+  } else {
+    check_date = min(
+      new BN(Math.floor(Date.now() / 1000)),
+      new BN(secondaryReward.endTime),
+    );
+  }
+
+  if (secondaryReward && secondaryStakeAccount) {
+    const calculation =
+      ((check_date.toNumber() -
+        max(
+          new BN(secondaryStakeAccount.lastHarvestedAt),
+          new BN(stakeAccount.stakedAt),
+        ).toNumber()) *
+        Number(secondaryReward.tokensPerSecondPerPoint) *
+        Number(stakeAccount.amount)) /
+      Number(mainRouter.decimalsInput) /
+      Number(secondaryReward.decimalsOutput);
+    return calculation;
+  } else {
+    const calculation =
+      ((check_date.toNumber() -
+        max(
+          new BN(secondaryReward.startTime),
+          new BN(stakeAccount.stakedAt),
+        ).toNumber()) *
+        Number(secondaryReward.tokensPerSecondPerPoint) *
+        Number(stakeAccount.amount)) /
+      Number(mainRouter.decimalsInput) /
+      Number(secondaryReward.decimalsOutput);
+
+    return calculation;
+  }
+};
+
+export const getStakedBalance = (
+  fusionPoolInfo: FusionPoolInfo,
+  lpDecimals: number,
+): number =>
+  Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;

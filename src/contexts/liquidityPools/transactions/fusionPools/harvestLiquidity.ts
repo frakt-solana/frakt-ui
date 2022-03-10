@@ -1,5 +1,13 @@
-import { harvestInFusion, Router, Stake } from '@frakters/fusion-pool';
-import { PublicKey } from '@solana/web3.js';
+import {
+  harvestInFusion,
+  harvestSecondaryReward,
+} from '@frakters/frkt-multiple-reward';
+import {
+  MainRouterView,
+  SecondaryRewardView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
+import { Provider } from '@project-serum/anchor';
+import { PublicKey, Transaction } from '@solana/web3.js';
 
 import { wrapAsyncWithTryCatch } from '../../../../utils';
 import {
@@ -10,8 +18,8 @@ import {
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 
 export interface HarvestLiquidityTransactionParams {
-  router: Router;
-  stakeAccount: Stake;
+  router: MainRouterView;
+  secondaryReward: SecondaryRewardView[];
 }
 
 export interface HarvestLiquidityTransactionRawParams
@@ -20,28 +28,42 @@ export interface HarvestLiquidityTransactionRawParams
 
 export const rowHarvestLiquidity = async ({
   router,
-  stakeAccount,
   connection,
   wallet,
-}: HarvestLiquidityTransactionRawParams): Promise<void> => {
-  await harvestInFusion(
-    wallet.publicKey,
-    connection,
+  secondaryReward,
+}: HarvestLiquidityTransactionRawParams): Promise<any> => {
+  const transaction = new Transaction();
+
+  const harvestInstruction = await harvestInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new PublicKey(router.token_mint_input),
-    new PublicKey(router.token_mint_output),
-    new PublicKey(router.routerPubkey),
-    [new PublicKey(stakeAccount.stakePubkey)],
-    new PublicKey(router.pool_config_input),
-    new PublicKey(router.pool_config_output),
-    async (transaction) => {
-      await signAndConfirmTransaction({
-        transaction,
-        connection,
-        wallet,
-      });
-    },
+    new Provider(connection, wallet, null),
+    wallet.publicKey,
+    new PublicKey(router.tokenMintInput),
+    new PublicKey(router.tokenMintOutput),
   );
+
+  transaction.add(harvestInstruction);
+
+  const rewardsTokenMint = secondaryReward.map(
+    ({ tokenMint }) => new PublicKey(tokenMint),
+  );
+
+  const secondaryHarvestInstruction = await harvestSecondaryReward(
+    new PublicKey(FUSION_PROGRAM_PUBKEY),
+    new Provider(connection, wallet, null),
+    wallet.publicKey,
+    new PublicKey(router.tokenMintInput),
+    new PublicKey(router.tokenMintOutput),
+    rewardsTokenMint,
+  );
+
+  transaction.add(...secondaryHarvestInstruction);
+
+  await signAndConfirmTransaction({
+    transaction,
+    connection,
+    wallet,
+  });
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowHarvestLiquidity, {

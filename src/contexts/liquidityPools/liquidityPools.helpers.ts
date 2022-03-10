@@ -1,5 +1,4 @@
-import { getAllProgramAccounts } from '@frakters/fusion-pool';
-
+import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 import {
   CurrencyAmount,
   Liquidity,
@@ -10,21 +9,29 @@ import {
   TokenAmount,
   WSOL,
 } from '@raydium-io/raydium-sdk';
+import BN from 'bn.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection, PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
 
 import { SOL_TOKEN } from '../../utils';
-
 import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
 import {
   FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
-  ProgramAccountsData,
+  FusionPoolsInfo,
   RaydiumPoolInfo,
   RaydiumPoolInfoMap,
+  FusionPoolInfoByMint,
+  FusionPoolInfo,
+  secondaryRewardWithTokenInfo,
 } from './liquidityPools.model';
+import {
+  MainRouterView,
+  SecondaryRewardView,
+  SecondStakeAccountView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
   connection,
@@ -168,7 +175,7 @@ export const fetchProgramAccounts = async ({
 }: {
   vaultProgramId: PublicKey;
   connection: Connection;
-}): Promise<ProgramAccountsData> => {
+}): Promise<FusionPoolsInfo> => {
   const allProgramAccounts = await getAllProgramAccounts(
     vaultProgramId,
     connection,
@@ -176,3 +183,120 @@ export const fetchProgramAccounts = async ({
 
   return allProgramAccounts;
 };
+
+const getFusionDataMap = (
+  allProgramAccounts: FusionPoolsInfo,
+  lpMints: string[],
+  owner: string,
+) => {
+  const {
+    secondaryRewards,
+    stakeAccounts,
+    mainRouters,
+    secondaryStakeAccounts,
+  } = allProgramAccounts;
+
+  const getRouterByMint = (lpMint: string) => {
+    return mainRouters.find(({ tokenMintInput }) => tokenMintInput === lpMint);
+  };
+
+  const routerInfoByMint = lpMints.reduce((routerInfoMap, lpMint) => {
+    const router = getRouterByMint(lpMint);
+    routerInfoMap.set(lpMint, router);
+    return routerInfoMap;
+  }, new Map<string, MainRouterView>());
+
+  const secondaryRewardByMint = lpMints.reduce(
+    (secondaryRewardInfoMap, lpMint) => {
+      const router = getRouterByMint(lpMint);
+
+      const secondaryReward = secondaryRewards.filter(
+        ({ routerPubkey }) => routerPubkey === router?.mainRouterPubkey,
+      );
+
+      secondaryRewardInfoMap.set(lpMint, secondaryReward);
+      return secondaryRewardInfoMap;
+    },
+    new Map<string, SecondaryRewardView[]>(),
+  );
+
+  const stakeAccountsByMint = lpMints.reduce((stakeAccountInfoMap, lpMint) => {
+    const router = getRouterByMint(lpMint);
+
+    const stakeAccount = stakeAccounts
+      .filter(({ stakeOwner }) => stakeOwner === owner)
+      .filter(({ routerPubkey }) => routerPubkey === router?.mainRouterPubkey)
+      .find(({ isStaked }) => isStaked);
+
+    stakeAccountInfoMap.set(lpMint, stakeAccount);
+    return stakeAccountInfoMap;
+  }, new Map<string, StakeAccountView>());
+
+  const secondaryStakeAccountsByMint = lpMints.reduce(
+    (secondaryStakeAccountInfoMap, lpMint) => {
+      const secondaryStakeAccount = secondaryStakeAccounts
+        .filter(({ rewardOwner }) => rewardOwner === owner)
+        .find(
+          ({ stakeAccount }) =>
+            stakeAccount ===
+            stakeAccountsByMint.get(lpMint)?.stakeAccountPubkey,
+        );
+
+      secondaryStakeAccountInfoMap.set(lpMint, secondaryStakeAccount);
+      return secondaryStakeAccountInfoMap;
+    },
+    new Map<string, SecondStakeAccountView>(),
+  );
+
+  return {
+    routerInfoByMint,
+    secondaryRewardByMint,
+    stakeAccountsByMint,
+    secondaryStakeAccounts,
+    secondaryStakeAccountsByMint,
+  };
+};
+
+export const mapFusionPoolInfo = (
+  allProgramAccounts: FusionPoolsInfo,
+  lpMints: string[],
+  owner: string,
+): FusionPoolInfoByMint => {
+  const {
+    routerInfoByMint,
+    secondaryRewardByMint,
+    stakeAccountsByMint,
+    secondaryStakeAccountsByMint,
+  } = getFusionDataMap(allProgramAccounts, lpMints, owner);
+
+  return lpMints.reduce((fusionPoolInfo, lpMint) => {
+    fusionPoolInfo.set(lpMint, {
+      mainRouter: routerInfoByMint.get(lpMint),
+      stakeAccount: stakeAccountsByMint.get(lpMint),
+      secondaryReward: secondaryRewardByMint.get(lpMint),
+      secondaryStakeAccount: secondaryStakeAccountsByMint.get(lpMint),
+    });
+
+    return fusionPoolInfo;
+  }, new Map<string, FusionPoolInfo>());
+};
+
+export const getTokenInfoBySecondaryReward = (
+  secondaryReward: SecondaryRewardView[],
+  tokensList: TokenInfo[],
+): secondaryRewardWithTokenInfo[] => {
+  return secondaryReward.reduce((acc, reward) => {
+    const tokenListSymbol = tokensList.filter(
+      ({ address }) => address === reward.tokenMint,
+    );
+    acc.push({ ...reward, tokenInfo: tokenListSymbol });
+
+    return acc;
+  }, [] as secondaryRewardWithTokenInfo[]);
+};
+
+export const getTokenInfoByReward = (
+  stakeAccount: StakeAccountView,
+  tokensList: TokenInfo[],
+): TokenInfo[] =>
+  tokensList.filter(({ address }) => address === stakeAccount.tokenMintOutput);

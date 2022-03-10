@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import BN from 'bn.js';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -7,10 +8,14 @@ import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
 import {
   calculateTotalDeposit,
   useCurrentSolanaPrice,
+  useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
 import { getOutputAmount } from '../SwapForm/helpers';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
+import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
+import { useLoadingModal } from '../LoadingModal';
+import { AccountInfoParsed } from '../../utils/accounts';
 
 export enum InputControlsNames {
   QUOTE_VALUE = 'quoteValue',
@@ -31,6 +36,8 @@ export type FormFieldValues = {
 export const useDeposit = (
   quoteToken: TokenInfo,
   poolConfig: LiquidityPoolKeysV4,
+  fusionPoolInfo: FusionPoolInfo,
+  lpTokenAccountInfo: AccountInfoParsed,
 ): {
   formControl: Control<FormFieldValues>;
   totalValue: string;
@@ -41,11 +48,14 @@ export const useDeposit = (
   baseValue: string;
   currentSolanaPriceUSD: number;
   liquiditySide: LiquiditySide | null;
+  loadingModalVisible: boolean;
+  openLoadingModal: () => void;
+  closeLoadingModal: () => void;
+  onSubmit: () => Promise<void>;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
-
-  const { connected } = useWallet();
+  const wallet = useWallet();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -103,15 +113,72 @@ export const useDeposit = (
     setValue(InputControlsNames.LIQUIDITY_SIDE, value);
   };
 
+  const { addRaydiumLiquidity } = useLiquidityPools();
+  const { stakeLiquidity } = useLiquidityPools();
+  const lpTokenAmountOnSubmit = useRef<string>(null);
+
+  const {
+    visible: loadingModalVisible,
+    open: openLoadingModal,
+    close: closeLoadingModalRaw,
+  } = useLoadingModal();
+
+  const closeLoadingModal = () => {
+    lpTokenAmountOnSubmit.current && (lpTokenAmountOnSubmit.current = null);
+    closeLoadingModalRaw();
+  };
+
   useEffect(() => {
     setValue(
       InputControlsNames.TOTAL_VALUE,
-      calculateTotalDeposit(quoteValue, baseValue, currentSolanaPriceUSD),
+      calculateTotalDeposit(
+        quoteValue,
+        baseValue,
+        currentSolanaPriceUSD,
+      )?.toString(),
     );
   }, [baseValue, quoteValue, currentSolanaPriceUSD, setValue]);
 
   const isDepositBtnEnabled =
-    poolInfo && connected && isVerified && Number(baseValue) > 0;
+    poolInfo && wallet.connected && isVerified && Number(baseValue) > 0;
+
+  const onSubmit = async () => {
+    const baseAmount = new BN(Number(baseValue) * 10 ** quoteToken.decimals);
+    const quoteAmount = new BN(Number(quoteValue) * 1e9);
+
+    openLoadingModal();
+
+    lpTokenAmountOnSubmit.current =
+      lpTokenAccountInfo?.accountInfo?.amount?.toString() || '0';
+
+    await addRaydiumLiquidity({
+      baseToken: quoteToken,
+      baseAmount,
+      quoteToken: SOL_TOKEN,
+      quoteAmount,
+      poolConfig,
+      fixedSide: liquiditySide,
+    });
+  };
+
+  useEffect(() => {
+    (async () => {
+      const tokenAmount = lpTokenAccountInfo?.accountInfo?.amount?.toString();
+
+      if (
+        !!lpTokenAmountOnSubmit.current &&
+        tokenAmount !== lpTokenAmountOnSubmit.current
+      ) {
+        await stakeLiquidity({
+          amount: new BN(Number(tokenAmount)),
+          router: fusionPoolInfo.mainRouter,
+        });
+        lpTokenAmountOnSubmit.current = null;
+        closeLoadingModal();
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lpTokenAccountInfo]);
 
   return {
     formControl: control,
@@ -123,5 +190,9 @@ export const useDeposit = (
     baseValue,
     currentSolanaPriceUSD,
     liquiditySide,
+    loadingModalVisible,
+    openLoadingModal,
+    closeLoadingModal,
+    onSubmit,
   };
 };

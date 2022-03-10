@@ -3,9 +3,11 @@ import Button from '../../../../../components/Button';
 
 import {
   PoolData,
+  FusionPoolInfo,
   RaydiumPoolInfo,
 } from '../../../../../contexts/liquidityPools';
 import { AccountInfoParsed } from '../../../../../utils/accounts';
+import Rewards from '../../../Rewards';
 import Withdraw from '../../../Withdraw';
 import styles from './styles.module.scss';
 
@@ -15,6 +17,7 @@ interface PoolDetailsWalletConnectedProps {
   raydiumPoolInfo: RaydiumPoolInfo;
   lpTokenAccountInfo?: AccountInfoParsed;
   className?: string;
+  fusionPoolInfo: FusionPoolInfo;
 }
 
 export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
@@ -24,6 +27,7 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
     raydiumPoolInfo,
     lpTokenAccountInfo,
     className,
+    fusionPoolInfo,
   }) => {
     const { tokenInfo, poolConfig } = poolData;
 
@@ -34,12 +38,17 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
           poolConfig={poolConfig}
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
+          fusionPoolInfo={fusionPoolInfo}
         />
-        {/* <Rewards
-                baseToken={tokenInfo}
-                poolConfig={poolConfig}
-                raydiumPoolInfo={raydiumPoolInfo}
-              /> */}
+        {fusionPoolInfo?.stakeAccount && (
+          <Rewards
+            baseToken={tokenInfo}
+            poolConfig={poolConfig}
+            raydiumPoolInfo={raydiumPoolInfo}
+            fusionPoolInfo={fusionPoolInfo}
+            lpTokenAccountInfo={lpTokenAccountInfo}
+          />
+        )}
         <Button
           onClick={() => setDepositModalVisible(true)}
           className={styles.depositBtn}

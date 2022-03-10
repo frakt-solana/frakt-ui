@@ -2,22 +2,24 @@ import { FC, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
-import DepositModal from '../../../components/DepositModal';
 import { useWalletModal } from '../../../contexts/WalletModal';
+import { useUserSplAccount } from '../../../utils/accounts';
+import DepositModal from '../../../components/DepositModal';
 import { ChevronDownIcon } from '../../../icons';
-import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../../utils';
+import styles from './styles.module.scss';
 import {
   formatNumberWithSpaceSeparator,
   PoolData,
+  FusionPoolInfo,
   RaydiumPoolInfo,
 } from '../../../contexts/liquidityPools';
 import { PoolStats } from '../hooks';
-import { useUserSplAccount } from '../../../utils/accounts';
 import {
   PoolDetailsWalletConnected,
   PoolDetailsWalletDisconnected,
 } from './components';
+import { PoolCardHeader } from './components/PoolCardHeader';
 
 interface PoolInterface {
   poolData: PoolData;
@@ -25,6 +27,7 @@ interface PoolInterface {
   poolStats: PoolStats;
   isOpen: boolean;
   onPoolCardClick?: () => void;
+  fusionPoolInfo: FusionPoolInfo;
 }
 
 const Pool: FC<PoolInterface> = ({
@@ -33,11 +36,11 @@ const Pool: FC<PoolInterface> = ({
   raydiumPoolInfo,
   onPoolCardClick = () => {},
   poolStats,
+  fusionPoolInfo,
 }) => {
   const { tokenInfo, poolConfig } = poolData;
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
-
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
 
@@ -57,9 +60,7 @@ const Pool: FC<PoolInterface> = ({
 
   return (
     <div className={styles.pool}>
-      <div className={styles.header}>
-        {/* <div className={styles.awarder}>Awarded</div> */}
-      </div>
+      <PoolCardHeader isAwarded={!!fusionPoolInfo?.mainRouter} />
       <div className={styles.poolCard} onClick={onPoolCardClick}>
         <div className={styles.tokenInfo}>
           <div>
@@ -98,6 +99,7 @@ const Pool: FC<PoolInterface> = ({
           raydiumPoolInfo={raydiumPoolInfo}
           lpTokenAccountInfo={lpTokenAccountInfo}
           className={styles.poolDetails}
+          fusionPoolInfo={fusionPoolInfo}
         />
       )}
       {isOpen && !connected && (
@@ -112,7 +114,9 @@ const Pool: FC<PoolInterface> = ({
         onCancel={() => setDepositModalVisible(false)}
         tokenInfo={tokenInfo}
         poolConfig={poolConfig}
+        fusionPoolInfo={fusionPoolInfo}
         poolStats={poolStats}
+        lpTokenAccountInfo={lpTokenAccountInfo}
       />
     </div>
   );

@@ -11,6 +11,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import BN from 'bn.js';
+import moment from 'moment';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -130,6 +131,7 @@ export const rawInitRaydiumLiquidityPool = async ({
         lpTokenAccount: lpAta,
         payer: wallet.publicKey,
       },
+      startTime: moment.now(),
     }),
   );
 
