@@ -51,12 +51,12 @@ const PoolsPage: FC = () => {
                 className={styles.filter}
               />
             )}
-            <ControlledToggle
+            {/* <ControlledToggle
               control={formControl}
               name={InputControlsNames.SHOW_AWARDED_ONLY}
               label="Awarded only"
               className={styles.filter}
-            />
+            /> */}
             <Controller
               control={formControl}
               name={InputControlsNames.SORT}

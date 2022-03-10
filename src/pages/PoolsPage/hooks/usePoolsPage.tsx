@@ -80,7 +80,11 @@ export const usePoolsPage = (): {
   } = useLazyFusionPools();
 
   const rawPoolsData = useMemo(() => {
-    return poolDataByMint.size ? Array.from(poolDataByMint.values()) : [];
+    return poolDataByMint.size
+      ? Array.from(poolDataByMint.values()).filter(
+          ({ tokenInfo }) => tokenInfo.address !== process.env.FRKT_MINT,
+        ) //? Filter out SOL/FRKT pool
+      : [];
   }, [poolDataByMint]);
 
   const searchItems = useDebounce((search: string) => {
