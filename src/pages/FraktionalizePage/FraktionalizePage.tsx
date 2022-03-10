@@ -135,7 +135,6 @@ const FraktionalizePage = (): JSX.Element => {
           <h4 className={styles.title}>Select your NFT(s)</h4>
           <SearchInput
             value={search}
-            size="large"
             onChange={(e) => {
               setSearch(e.target.value || '');
               searchItems(e.target.value || '');
