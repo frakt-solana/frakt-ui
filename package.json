@@ -48,7 +48,7 @@
     "devnet": "cross-env NETWORK=devnet craco start",
     "mainnet": "cross-env NETWORK=mainnet craco start",
     "build": "cross-env NETWORK=mainnet GENERATE_SOURCEMAP=false craco build",
-    "build:devnet": "cross-env GENERATE_SOURCEMAP=false NETWORK=devnet craco build",
+    "build:devnet": "cross-env NETWORK=devnet GENERATE_SOURCEMAP=false craco build",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier-eslint --write $PWD/'**/*.{ts,tsx}'",
     "lint-staged": "lint-staged",
