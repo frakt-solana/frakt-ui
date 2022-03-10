@@ -45,15 +45,15 @@
   },
   "scripts": {
     "start": "npm run devnet",
-    "devnet": "cross-env NODE_ENV=development craco start",
-    "mainnet": "cross-env craco start",
-    "build": "cross-env GENERATE_SOURCEMAP=false craco build",
-    "build:devnet": "cross-env GENERATE_SOURCEMAP=false NODE_ENV=development craco build",
+    "devnet": "cross-env NETWORK=devnet craco start",
+    "mainnet": "cross-env NETWORK=mainnet craco start",
+    "build": "cross-env NETWORK=mainnet GENERATE_SOURCEMAP=false craco build",
+    "build:devnet": "cross-env GENERATE_SOURCEMAP=false NETWORK=devnet craco build",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier-eslint --write $PWD/'**/*.{ts,tsx}'",
     "lint-staged": "lint-staged",
     "prepare": "husky install",
-    "analyze": "cross-env INTERACTIVE_ANALYZE=1 GENERATE_SOURCEMAP=false npm run build"
+    "analyze": "cross-env ANALYZE=1 GENERATE_SOURCEMAP=false npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -2,19 +2,22 @@ const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const Dotenv = require('dotenv-webpack');
 
-module.exports = () => {
-  const isProduction = process.env.NODE_ENV !== 'development';
-  const analyzerMode = process.env.INTERACTIVE_ANALYZE ? 'server' : 'json';
+module.exports = ({ env }) => {
+  console.log(env);
+
+  const isMainnet = process.env.NETWORK === 'mainnet';
+  const isBuild = env !== 'development';
+  const analyze = process.env.ANALYZE && isBuild;
 
   const plugins = [
     new Dotenv({
       safe: true,
-      path: isProduction ? './.env.prod' : './.env.dev',
+      path: isMainnet ? './.env.prod' : './.env.dev',
     }),
   ];
 
-  if (isProduction) {
-    plugins.push(new BundleAnalyzerPlugin({ analyzerMode }));
+  if (analyze) {
+    plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server' }));
   }
 
   return {
