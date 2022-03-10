@@ -60,7 +60,7 @@ export const rawDepositNftToCommunityPool = async ({
       metadataInfo,
     },
     {
-      programId: new PublicKey(process.env.REACT_APP_COMMUNITY_POOLS_PUBKEY),
+      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
       userPubkey: wallet.publicKey,
       provider: new Provider(connection, wallet, null),
       sendTxn: async (transaction, signers) => {

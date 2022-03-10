@@ -6,11 +6,11 @@ import { NftPoolData } from './nftPools';
 import { parseRawNftPools } from './nftPools/nftPools.helpers';
 import { getVerifiedVaultsByFraktTeam } from './vaults';
 
-const CACHER_URL = process.env.REACT_APP_BFF_URL;
+const CACHER_URL = process.env.BFF_URL;
 export const IS_BFF_ENABLED = !!CACHER_URL;
 
 const REACT_APP_SERUM_MARKET_PROGRAM_PUBKEY =
-  process.env.REACT_APP_SERUM_MARKET_PROGRAM_PUBKEY;
+  process.env.SERUM_MARKET_PROGRAM_PUBKEY;
 
 /*
    It's a simple DAL, when cacher works on production, will create more complex DAL from this class.

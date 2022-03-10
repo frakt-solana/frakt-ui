@@ -7,7 +7,7 @@ export const DEPRECATED_MARKETS = [
   'HngbFS7vMUeEm3JHYHJLwEuitdeKXv8oe27skwwsiYK',
 ];
 
-const REGISTRAR_MARKET_URL = process.env.REACT_APP_REGISTRAR_MARKET_URL;
+const REGISTRAR_MARKET_URL = process.env.REGISTRAR_MARKET_URL;
 
 export const registerMarket = async (
   tickerName: string,

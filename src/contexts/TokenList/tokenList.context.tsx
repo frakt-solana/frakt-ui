@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import { TokenListContextInterface } from './tokenList.model';
 import {
@@ -15,6 +15,13 @@ export const TokenListContext = React.createContext<TokenListContextInterface>({
   loading: true,
 });
 
+//? Don't use TokenListProvider because it's binded with json with 3MB+ size
+const getSolanaTokens = async (): Promise<TokenInfo[]> => {
+  const res = await (await fetch(process.env.SOLANA_TOKENS_LIST)).json();
+
+  return res?.tokens?.filter(({ chainId }) => chainId === 101) || [];
+};
+
 export const TokenListContextProvider = ({
   children = null,
 }: {
@@ -27,9 +34,7 @@ export const TokenListContextProvider = ({
   useEffect(() => {
     Promise.all([
       fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL).then((res) => res.json()),
-      new TokenListProvider()
-        .resolve()
-        .then((tokens) => tokens.filterByClusterSlug('mainnet-beta').getList()),
+      getSolanaTokens(),
     ])
       .then(([fraktList, solanaList]) => {
         setTokensList([...fraktList, ...solanaList]);
