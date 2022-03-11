@@ -29,11 +29,14 @@ export const useBorrowForm = (): {
   onConfirmModalCancel: () => void;
   formControl: Control<FormFieldValues>;
   onSubmit: () => void;
+  onContinue: () => void;
   form: FormInstance<FormValues>;
   returnPeriod: SortValue;
   ltvValues: SortValue;
+  txnModalVisible: boolean;
 } => {
   const [visible, setVisible] = useState<boolean>(false);
+  const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
   const [form] = Form.useForm<FormValues>();
   const { control, watch } = useForm({
     defaultValues: {
@@ -49,8 +52,12 @@ export const useBorrowForm = (): {
     setVisible(false);
   };
 
-  const onSubmit = (): void => {
+  const onContinue = (): void => {
     setVisible(true);
+  };
+
+  const onSubmit = (): void => {
+    setTxnModalVisible(true);
   };
 
   return {
@@ -61,6 +68,8 @@ export const useBorrowForm = (): {
     formControl: control,
     onSubmit,
     form,
+    txnModalVisible,
+    onContinue,
   };
 };
 

@@ -14,6 +14,7 @@ import {
   SelectControlsNames,
   useBorrowForm,
 } from './hooks';
+import FraktionalizeTransactionModal from '../../../components/FraktionalizeTransactionModal';
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
@@ -28,6 +29,8 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     visible,
     returnPeriod,
     ltvValues,
+    txnModalVisible,
+    onContinue,
   } = useBorrowForm();
 
   return (
@@ -99,7 +102,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
       </div>
       <div className={styles.continueBtnContainer}>
         <Button
-          onClick={onSubmit}
+          onClick={onContinue}
           type="alternative"
           className={styles.continueBtn}
         >
@@ -112,6 +115,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
         nftName={selectedNft[0].metadata.name}
         returnPeriod={returnPeriod.value}
         ltvPrice={ltvValues.value}
+        onSubmit={onSubmit}
+      />
+      <FraktionalizeTransactionModal
+        visible={txnModalVisible}
+        onCancel={onConfirmModalCancel}
+        tickerName="tickerName"
       />
     </>
   );
