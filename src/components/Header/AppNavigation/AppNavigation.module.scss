@@ -60,3 +60,16 @@
     }
   }
 }
+
+.dropdownLink {
+  color: var(--white-color);
+  background: none;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 16px;
+
+  svg {
+    margin-right: 10px;
+  }
+}

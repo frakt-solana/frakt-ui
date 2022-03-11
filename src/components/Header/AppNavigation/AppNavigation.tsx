@@ -18,16 +18,28 @@ interface AppNavigationProps {
 export const dropdownMenuMore = (
   <ul>
     <li>
-      <NavLink to={PATHS.COLLECTIONS}>Collections</NavLink>
+      <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
+        Collections
+      </NavLink>
     </li>
     <li>
-      <a href={process.env.DEX_URL} target="_blank" rel="noopener noreferrer">
+      <a
+        className={styles.dropdownLink}
+        href={process.env.DEX_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Trade
       </a>
     </li>
     {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
       <li key={idx}>
-        <a href={href} target="_blank" rel="noopener noreferrer">
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.dropdownLink}
+        >
           <Icon width={24} />
           {label}
         </a>
