@@ -1,14 +1,17 @@
-import classNames from 'classnames/bind';
+import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
 
 import styles from './styles.module.scss';
 import { Container } from '../Layout';
-import { FC } from 'react';
-import { AppNavigation } from './AppNavigation';
+import {
+  AppNavigation,
+  dropdownMenuDoStuff,
+  dropdownMenuMore,
+} from './AppNavigation';
 import BurgerMenu from '../BurgerMenu';
 import { PATHS } from '../../constants';
-import NavigationLink from './NavigationLink';
 import ConnectButton from '../ConnectButton';
 import ConnectedButton from '../ConnectedButton';
 import WalletContent from '../WalletContent';
@@ -34,12 +37,12 @@ const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           Frakt
         </NavLink>
-        <AppNavigation />
+        <AppNavigation title="More">{dropdownMenuMore}</AppNavigation>
         <ul className={styles.buttons}>
           <li className={styles.bgAccent}>
-            <NavigationLink to={PATHS.FRAKTIONALIZE}>
-              Fraktionalize
-            </NavigationLink>
+            <AppNavigation title="Do stuff" withoutLinks>
+              {dropdownMenuDoStuff}
+            </AppNavigation>
           </li>
           <li>
             <div className={styles.profileWrapper}>

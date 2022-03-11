@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import styles from './styles.module.scss';
-import { AppNavigation } from '../Header/AppNavigation';
+import { AppNavigation, dropdownMenuMore } from '../Header/AppNavigation';
 
 interface BurgerMenuProps {
   className?: string;
@@ -29,7 +29,9 @@ const BurgerMenu = ({ className = '' }: BurgerMenuProps): JSX.Element => {
       >
         <div onClick={closeMenu} className={`${styles.menuOverlay}`} />
         <div className={styles.menuContent} onClick={closeMenu}>
-          <AppNavigation className={styles.navigation} />
+          <AppNavigation title="More" className={styles.navigation}>
+            {dropdownMenuMore}
+          </AppNavigation>
         </div>
       </div>
     </>

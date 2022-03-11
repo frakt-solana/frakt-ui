@@ -1,7 +1,8 @@
-import React from 'react';
-import classNames from 'classnames/bind';
+import React, { FC } from 'react';
+import classNames from 'classnames';
 
 import styles from './styles.module.scss';
+import { SOL_TOKEN } from '../../utils';
 
 interface NFTCheckboxInterface {
   className?: string;
@@ -9,15 +10,19 @@ interface NFTCheckboxInterface {
   imageUrl?: string;
   name: string;
   onClick?: () => void;
+  isBorrow?: boolean;
+  ltvPrice?: string;
 }
 
-const NFTCheckbox = ({
+const NFTCheckbox: FC<NFTCheckboxInterface> = ({
   className,
   selected = false,
   imageUrl,
   name,
   onClick,
-}: NFTCheckboxInterface): JSX.Element => {
+  isBorrow,
+  ltvPrice,
+}) => {
   return (
     <div className={styles.wrapper}>
       <div
@@ -34,6 +39,18 @@ const NFTCheckbox = ({
         />
         <div className={styles.root__content}>
           <p className={styles.root__title}>{name}</p>
+          {isBorrow && (
+            <div className={styles.ltvWrapper}>
+              <p className={styles.ltvTitle}>LTV</p>
+              <div className={styles.ltvContent}>
+                <p className={styles.ltvText}>{ltvPrice}</p>
+                <div className={styles.tokenInfo}>
+                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
+                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
+                </div>
+              </div>
+            </div>
+          )}
           <div className={styles.root__checkboxWrapper}>
             <span className={styles.root__checkbox}>
               {selected ? 'Selected' : 'Select'}

@@ -1,83 +1,33 @@
-import { FC } from 'react';
+import { FC, ReactElement } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Dropdown } from 'antd';
-import classNames from 'classnames/bind';
+import classNames from 'classnames';
 
+import { DROPDOWN_EXTERNAL_LINKS, NAVIGATION_LINKS } from './constants';
 import styles from './AppNavigation.module.scss';
-import { PATHS } from '../../../constants';
 import NavigationLink from '../NavigationLink';
-import {
-  ArrowDownBtn,
-  // CoinGeckoIcon,
-  DiscordIcon,
-  DocsIcon,
-  GitHubIcon,
-  MediumIcon,
-  TwitterIcon,
-} from '../../../icons';
+import { PATHS } from '../../../constants';
+import { Dropdown } from '../../Dropdown';
 
 interface AppNavigationProps {
   className?: string;
+  title: string;
+  withoutLinks?: boolean;
+  children: ReactElement;
 }
 
-const DROPDOWN_EXTERNAL_LINKS = [
-  {
-    label: 'Twitter',
-    href: 'https://twitter.com/FraktArt',
-    icon: TwitterIcon,
-  },
-  {
-    label: 'Discord',
-    href: 'https://discord.gg/frakt',
-    icon: DiscordIcon,
-  },
-  {
-    label: 'GitHub',
-    href: 'https://github.com/frakt-solana',
-    icon: GitHubIcon,
-  },
-  {
-    label: 'Medium',
-    href: 'https://medium.com/@frakt_nft',
-    icon: MediumIcon,
-  },
-  {
-    label: 'Docs',
-    href: 'https://docs.frakt.xyz/',
-    icon: DocsIcon,
-  },
-  // {
-  //   label: 'CoinGecko',
-  //   href: '',
-  //   icon: CoinGeckoIcon,
-  // },
-];
-
-const dropdownMenu = (
+export const dropdownMenuMore = (
   <ul>
     <li>
-      <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
-        Collections
-      </NavLink>
+      <NavLink to={PATHS.COLLECTIONS}>Collections</NavLink>
     </li>
     <li>
-      <a
-        className={styles.dropdownLink}
-        href={process.env.DEX_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href={process.env.DEX_URL} target="_blank" rel="noopener noreferrer">
         Trade
       </a>
     </li>
     {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
       <li key={idx}>
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.dropdownLink}
-        >
+        <a href={href} target="_blank" rel="noopener noreferrer">
           <Icon width={24} />
           {label}
         </a>
@@ -86,30 +36,35 @@ const dropdownMenu = (
   </ul>
 );
 
-const NAVIGATION_LINKS = [
-  {
-    to: PATHS.TEST,
-    label: 'Test',
-  },
-  {
-    to: PATHS.POOLS,
-    label: 'Pools',
-  },
-  {
-    to: PATHS.VAULTS,
-    label: 'Vaults',
-  },
-  {
-    to: PATHS.SWAP,
-    label: 'Swap',
-  },
-  {
-    to: PATHS.YIELD,
-    label: 'Yield',
-  },
-];
+export const dropdownMenuDoStuff = (
+  <ul className={styles.list}>
+    <li className={styles.linkList}>
+      <NavLink className={styles.link} to={PATHS.FRAKTIONALIZE}>
+        <div className={styles.content}>
+          <p className={styles.title}>Create Vault</p>
+          <p className={styles.subtitle}>
+            fraktionalize single or multiple NFTs
+          </p>
+        </div>
+      </NavLink>
+    </li>
+    <li className={styles.linkList}>
+      <NavLink className={styles.link} to={PATHS.BORROW}>
+        <div className={styles.content}>
+          <p className={styles.title}>Borrow</p>
+          <p className={styles.subtitle}>take loan using NFT as collateral</p>
+        </div>
+      </NavLink>
+    </li>
+  </ul>
+);
 
-export const AppNavigation: FC<AppNavigationProps> = ({ className }) => {
+export const AppNavigation: FC<AppNavigationProps> = ({
+  className,
+  title,
+  withoutLinks,
+  children,
+}) => {
   return (
     <ul
       className={classNames(
@@ -118,24 +73,13 @@ export const AppNavigation: FC<AppNavigationProps> = ({ className }) => {
         className,
       )}
     >
-      {NAVIGATION_LINKS.map(({ label, to }, idx) => (
-        <li key={idx} className={styles.navigationItem}>
-          <NavigationLink to={to}>{label}</NavigationLink>
-        </li>
-      ))}
-      <li id="menu-dropdown" className={styles.navigationItem}>
-        <div className={styles.mobileDropdown}>{dropdownMenu}</div>
-        <Dropdown
-          overlay={dropdownMenu}
-          placement="bottomRight"
-          getPopupContainer={() => document.getElementById('menu-dropdown')}
-          overlayClassName={styles.dropdown}
-        >
-          <div className={styles.dropdownTrigger}>
-            More <ArrowDownBtn className={styles.moreArrowIcon} />
-          </div>
-        </Dropdown>
-      </li>
+      {!withoutLinks &&
+        NAVIGATION_LINKS.map(({ label, to }, idx) => (
+          <li key={idx} className={styles.navigationItem}>
+            <NavigationLink to={to}>{label}</NavigationLink>
+          </li>
+        ))}
+      <Dropdown title={title} dropdownMenu={children} />
     </ul>
   );
 };

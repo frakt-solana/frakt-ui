@@ -1,57 +1,37 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams, useHistory } from 'react-router';
 
-import Button from '../../components/Button';
-import { Container } from '../../components/Layout';
-import { AppLayout } from '../../components/Layout/AppLayout';
-import NFTCheckbox from '../../components/NFTCheckbox';
+import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
+import { useSelectLayout } from '../../components/SelectLayout/hooks';
+import { SelectLayout } from '../../components/SelectLayout';
+import { useWalletModal } from '../../contexts/WalletModal';
 import { SearchInput } from '../../components/SearchInput';
-import { UserNFT, useUserTokens } from '../../contexts/userTokens';
-import Sidebar from './Sidebar';
+import NFTCheckbox from '../../components/NFTCheckbox';
+import Button from '../../components/Button';
 import styles from './styles.module.scss';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
-import { useDebounce } from '../../hooks';
-import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
-import { useWalletModal } from '../../contexts/WalletModal';
 import {
   FraktionalizeTxnData,
   useFraktionalizeTransactionModal,
 } from './hooks';
 import { PATHS } from '../../constants';
+import DetailsForm from './Sidebar/DetailsForm';
+import { useSidebar } from './Sidebar/hooks';
+import { UserNFT } from '../../contexts/userTokens';
+import { DetailsFormDisabled } from './Sidebar/DetailsForm/DetailsFormDisabled';
 
-const FraktionalizePage = (): JSX.Element => {
+const FraktionalizePage: FC = () => {
   const [search, setSearch] = useState('');
   const { connected } = useWallet();
+  const history = useHistory();
   const { setVisible } = useWalletModal();
-  const {
-    nfts: rawNfts,
-    loading: userTokensLoading,
-    nftsLoading: loading,
-    fetchUserNfts,
-    rawUserTokensByMint,
-  } = useUserTokens();
-
-  useEffect(() => {
-    if (
-      connected &&
-      !userTokensLoading &&
-      !loading &&
-      Object.keys(rawUserTokensByMint).length
-    ) {
-      fetchUserNfts();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, loading]);
-
+  const { itemsToShow, next } = useFakeInfinityScroll(15);
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
-  const history = useHistory();
 
-  const [searchString, setSearchString] = useState<string>('');
-  const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
   const {
     visible: txnModalVisible,
     open: openTxnModal,
@@ -62,26 +42,21 @@ const FraktionalizePage = (): JSX.Element => {
     tickerName,
     addNftsToActiveVault,
   } = useFraktionalizeTransactionModal();
-  const { itemsToShow, next, setItemsToShow } = useFakeInfinityScroll(15);
 
-  const searchItems = useDebounce((search: string) => {
-    setItemsToShow(15);
-    setSearchString(search.toUpperCase());
-  }, 300);
+  const {
+    onDeselect,
+    onCardClick,
+    selectedNfts,
+    setSelectedNfts,
+    nfts,
+    searchItems,
+    loading,
+  } = useSelectLayout();
 
-  const onDeselect = (nft: UserNFT) => {
-    setSelectedNfts(
-      selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
-    );
-  };
-
-  const onCardClick = (nft: UserNFT): void => {
-    selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
-      ? setSelectedNfts(
-          selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
-        )
-      : setSelectedNfts([...selectedNfts, nft]);
-  };
+  const { currentVault, lockedNfts, isVaultActive } = useSidebar(
+    currentVaultPubkey,
+    nfts,
+  );
 
   const onContinueClick = ({
     newNfts = [],
@@ -106,75 +81,107 @@ const FraktionalizePage = (): JSX.Element => {
     });
   };
 
-  const nfts = useMemo(() => {
-    return rawNfts.filter(({ metadata }) =>
-      metadata?.name.toUpperCase().includes(searchString),
-    );
-  }, [searchString, rawNfts]);
-
   const onTransactionModalCancel = () => {
     closeTxnModal();
     setTxnModalState('loading');
   };
+
   return (
-    <AppLayout className={styles.positionRelative}>
-      <Sidebar
-        currentVaultPubkey={currentVaultPubkey}
-        nfts={selectedNfts}
-        onDeselect={onDeselect}
-        onContinueClick={onContinueClick}
-        addNftsToActiveVault={(params) =>
-          addNftsToActiveVault(params).then(() => {
-            setSelectedNfts([]);
-            history.push(PATHS.FRAKTIONALIZE);
-          })
-        }
-      />
-      <Container component="main" className={styles.contentWrapper}>
-        <div id="content-reducer" className={styles.contentReducer}>
-          <h4 className={styles.title}>Select your NFT(s)</h4>
-          <SearchInput
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value || '');
-              searchItems(e.target.value || '');
+    <SelectLayout
+      currentVaultPubkey={currentVaultPubkey}
+      selectedNfts={selectedNfts}
+      onDeselect={onDeselect}
+      sidebarForm={
+        !isVaultActive ? (
+          <DetailsForm
+            onSubmit={({ ticker, pricePerFraktion, supply, vaultName }) => {
+              const transformedLockedNfts: UserNFT[] = lockedNfts.map(
+                ({
+                  nftImage,
+                  nftAttributes,
+                  nftMint,
+                  nftDescription,
+                  nftName,
+                }) => {
+                  return {
+                    mint: nftMint,
+                    metadata: {
+                      name: nftName,
+                      symbol: '',
+                      description: nftDescription,
+                      image: nftImage,
+                      animation_url: '',
+                      external_url: '',
+                      attributes: nftAttributes,
+                      properties: null,
+                    },
+                  } as UserNFT;
+                },
+              );
+
+              onContinueClick({
+                newNfts: nfts,
+                lockedNfts: transformedLockedNfts,
+                tickerName: ticker,
+                pricePerFraction: pricePerFraktion,
+                fractionsAmount: Number(supply),
+                vaultName,
+                vault: currentVault,
+              });
             }}
-            className={styles.search}
-            placeholder="Search by NFT name"
           />
-          {!connected ? (
-            <Button
-              type="secondary"
-              className={styles.connectBtn}
-              onClick={() => setVisible(true)}
-            >
-              Connect wallet
-            </Button>
-          ) : (
-            <FakeInfinityScroll
-              itemsToShow={itemsToShow}
-              next={next}
-              isLoading={loading}
-              wrapperClassName={styles.artsList}
-              emptyMessage="No suitable NFTs found"
-            >
-              {nfts.map((nft) => (
-                <NFTCheckbox
-                  key={nft.mint}
-                  onClick={() => onCardClick(nft)}
-                  imageUrl={nft.metadata.image}
-                  name={nft.metadata.name}
-                  selected={
-                    !!selectedNfts.find(
-                      (selectedNft) => selectedNft?.mint === nft.mint,
-                    )
-                  }
-                />
-              ))}
-            </FakeInfinityScroll>
-          )}
-        </div>
-      </Container>
+        ) : (
+          <DetailsFormDisabled
+            vaultData={currentVault}
+            continueBtnDisabled={!nfts.length}
+            onSubmit={() =>
+              addNftsToActiveVault({ vaultData: currentVault, nfts })
+            }
+          />
+        )
+      }
+    >
+      <h4 className={styles.title}>Select your NFT(s)</h4>
+      <SearchInput
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value || '');
+          searchItems(e.target.value || '');
+        }}
+        className={styles.search}
+        placeholder="Search by NFT name"
+      />
+      {!connected ? (
+        <Button
+          type="secondary"
+          className={styles.connectBtn}
+          onClick={() => setVisible(true)}
+        >
+          Connect wallet
+        </Button>
+      ) : (
+        <FakeInfinityScroll
+          itemsToShow={itemsToShow}
+          next={next}
+          isLoading={loading}
+          wrapperClassName={styles.artsList}
+          emptyMessage="No suitable NFTs found"
+        >
+          {nfts.map((nft) => (
+            <NFTCheckbox
+              key={nft.mint}
+              onClick={() => onCardClick(nft)}
+              imageUrl={nft.metadata.image}
+              name={nft.metadata.name}
+              selected={
+                !!selectedNfts.find(
+                  (selectedNft) => selectedNft?.mint === nft.mint,
+                )
+              }
+            />
+          ))}
+        </FakeInfinityScroll>
+      )}
       <FraktionalizeTransactionModal
         visible={txnModalVisible}
         onCancel={onTransactionModalCancel}
@@ -182,7 +189,7 @@ const FraktionalizePage = (): JSX.Element => {
         fractionsMintAddress={fractionTokenMint}
         state={txnModalState}
       />
-    </AppLayout>
+    </SelectLayout>
   );
 };
 

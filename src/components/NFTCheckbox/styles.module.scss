@@ -82,3 +82,41 @@
     }
   }
 }
+
+.ltvWrapper {
+  padding: 24px 24px 0;
+}
+
+.ltvContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ltvTitle {
+  color: var(--color-gray-4);
+  font: var(--font-text-7);
+  margin-bottom: 10px;
+}
+
+.ltvText {
+  color: var(--white-color);
+  font: var(--font-text-3);
+}
+
+.ltvImage {
+  width: 23px;
+  height: 24px;
+}
+
+.tokenInfo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ltvPrice {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

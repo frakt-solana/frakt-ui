@@ -8,6 +8,7 @@ export { default as FraktionalizePage } from './FraktionalizePage';
 export { default as CollectionsPage } from './CollectionsPage';
 export { default as CollectionPage } from './CollectionPage';
 export { default as PoolsPage } from './PoolsPage';
+export { default as BorrowPage } from './BorrowPage';
 export {
   MarketPage,
   MarketBuyPage,

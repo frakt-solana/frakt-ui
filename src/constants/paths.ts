@@ -32,4 +32,5 @@ export const PATHS = {
   COLLECTION_NAME: '/:collectionName',
   YIELD: '/yield',
   TEST: '/market_test',
+  BORROW: '/borrow',
 };
