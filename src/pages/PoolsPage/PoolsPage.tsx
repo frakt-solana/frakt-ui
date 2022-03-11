@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { Controller } from 'react-hook-form';
 
+import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { SearchInput } from '../../components/SearchInput';
@@ -10,9 +12,7 @@ import Pool from './Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
-import { SORT_VALUES, InputControlsNames, usePoolsPage } from './hooks';
 import { Select } from '../../components/Select';
-import { Controller } from 'react-hook-form';
 
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
@@ -25,6 +25,7 @@ const PoolsPage: FC = () => {
     searchItems,
     activePoolTokenAddress,
     onPoolCardClick,
+    fusionPoolInfoMap,
     poolsStatsByMarketId,
   } = usePoolsPage();
 
@@ -93,6 +94,9 @@ const PoolsPage: FC = () => {
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)
               }
+              fusionPoolInfo={fusionPoolInfoMap.get(
+                poolData.poolConfig.lpMint.toBase58(),
+              )}
             />
           ))}
         </FakeInfinityScroll>

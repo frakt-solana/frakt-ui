@@ -1,17 +1,19 @@
-import { Router, stakeInFusion } from '@frakters/fusion-pool';
-import { PublicKey } from '@solana/web3.js';
+import { MainRouterView } from '@frakters/frkt-multiple-reward/lib/accounts';
+import { stakeInFusion } from '@frakters/frkt-multiple-reward';
+import { Provider } from '@project-serum/anchor';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import BN from 'bn.js';
-import { wrapAsyncWithTryCatch } from '../../../../utils';
 
+import { wrapAsyncWithTryCatch } from '../../../../utils';
+import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import { FUSION_PROGRAM_PUBKEY } from './constants';
 
 export interface StakeLiquidityTransactionParams {
-  router: Router;
+  router: MainRouterView;
   amount: BN;
 }
 
@@ -19,33 +21,36 @@ export interface StakeLiquidityTransactionRawParams
   extends StakeLiquidityTransactionParams,
     WalletAndConnection {}
 
-export const rawStakeLiquidity = async ({
+const rawStakeLiquidity = async ({
   amount,
   router,
   connection,
   wallet,
 }: StakeLiquidityTransactionRawParams): Promise<void> => {
-  await stakeInFusion(
-    wallet.publicKey,
-    connection,
+  const transaction = new Transaction();
+
+  const instruction = await stakeInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new PublicKey(router.token_mint_input),
-    new PublicKey(router.token_mint_output),
+    new Provider(connection, wallet, null),
+    wallet.publicKey,
+    new PublicKey(router.tokenMintInput),
+    new PublicKey(router.tokenMintOutput),
     amount,
-    new PublicKey(router.routerPubkey),
-    new PublicKey(router.pool_config_input),
-    new PublicKey(router.pool_config_output),
-    async (transaction) => {
-      await signAndConfirmTransaction({
-        transaction,
-        connection,
-        wallet,
-      });
-    },
   );
+
+  transaction.add(instruction);
+
+  await signAndConfirmTransaction({
+    transaction,
+    connection,
+    wallet,
+  });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawStakeLiquidity, {});
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawStakeLiquidity, {
+  onSuccessMessage: 'Liquidity deposit successfully',
+  onErrorMessage: 'Transaction Failed',
+});
 
 export const stakeLiquidity = createTransactionFuncFromRaw(
   wrappedAsyncWithTryCatch,

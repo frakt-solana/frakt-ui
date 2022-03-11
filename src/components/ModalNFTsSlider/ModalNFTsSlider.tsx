@@ -84,16 +84,20 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
             </SwiperSlide>
           ))}
         </Swiper>
-        <div
-          ref={prevBtn}
-          className={styles.sliderNavPrev}
-          onClick={onSliderNavClick}
-        />
-        <div
-          ref={nextBtn}
-          className={styles.sliderNavNext}
-          onClick={onSliderNavClick}
-        />
+        {nfts.length > 1 && (
+          <>
+            <div
+              ref={prevBtn}
+              className={styles.sliderNavPrev}
+              onClick={onSliderNavClick}
+            />
+            <div
+              ref={nextBtn}
+              className={styles.sliderNavNext}
+              onClick={onSliderNavClick}
+            />
+          </>
+        )}
       </div>
     </Modal>
   );

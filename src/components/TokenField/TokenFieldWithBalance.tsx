@@ -43,7 +43,7 @@ const getMintBalanceMap = (
 interface TokenFieldWithBalanceProps extends TokenFieldProps {
   showMaxButton?: boolean;
   lpTokenSymbol?: string;
-  lpBalance?: string;
+  lpBalance?: number;
 }
 
 export const TokenFieldWithBalance = ({
@@ -72,7 +72,7 @@ export const TokenFieldWithBalance = ({
   const balance = balances[currentToken?.address] || 0;
 
   const onUseMaxButtonClick = () => {
-    lpBalance ? onValueChange(lpBalance) : onValueChange(balance);
+    lpBalance ? onValueChange(String(lpBalance)) : onValueChange(balance);
   };
 
   return (

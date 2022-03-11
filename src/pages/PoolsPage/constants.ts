@@ -1,0 +1,1 @@
+export const POOL_INFO_POLLING_INTERVAL = 10_000;

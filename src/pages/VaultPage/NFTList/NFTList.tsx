@@ -10,7 +10,7 @@ import {
   useModalNFTsSlider,
 } from '../../../components/ModalNFTsSlider';
 import { safetyBoxWithNftMetadataToUserNFT } from '../../../contexts/fraktion/fraktion.helpers';
-import styles from './styles.module.scss';
+import styles from './NFTList.module.scss';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../components/FakeInfinityScroll';
@@ -71,6 +71,7 @@ export const NFTList: FC<NFTListProps> = ({
             key={safetyBox.nftMint}
             safetyBox={safetyBox}
             onClick={() => openOnCertainSlide(index)}
+            className={styles.nftCard}
           />
         ))}
       </FakeInfinityScroll>

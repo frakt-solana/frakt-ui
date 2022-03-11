@@ -3,17 +3,21 @@ import { Control, useForm } from 'react-hook-form';
 import BN from 'bn.js';
 
 import { ArrowDownSmallIcon } from '../../../icons';
-import { useDebounce } from '../../../hooks';
+import { useDebounce, usePolling } from '../../../hooks';
 import {
   useLiquidityPools,
   compareNumbers,
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
+  useLazyFusionPools,
+  FusionPoolInfoByMint,
 } from '../../../contexts/liquidityPools';
-import styles from '../styles.module.scss';
 import { useUserTokens } from '../../../contexts/userTokens';
+import styles from '../styles.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
+import { POOL_INFO_POLLING_INTERVAL } from '../constants';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -43,7 +47,9 @@ export const usePoolsPage = (): {
   activePoolTokenAddress: string | null;
   onPoolCardClick: (tokenAddress: string) => void;
   userLpBalanceByMint: LpBalanceByMint;
+  fusionPoolInfoMap: FusionPoolInfoByMint;
   poolsStatsByMarketId: PoolsStatsByMarketId;
+  isFusionPoolsPolling: boolean;
 } => {
   const { control, watch } = useForm({
     defaultValues: {
@@ -52,6 +58,7 @@ export const usePoolsPage = (): {
       [InputControlsNames.SORT]: SORT_VALUES[0],
     },
   });
+  const { connected } = useWallet();
   const { rawUserTokensByMint, loading: userTokensLoading } = useUserTokens();
   const {
     poolsStatsByMarketId,
@@ -66,8 +73,18 @@ export const usePoolsPage = (): {
   const { poolDataByMint, loading: poolDataByMintLoading } =
     useLiquidityPools();
 
+  const {
+    fusionPoolInfoMap,
+    loading: fusionPoolInfoMapLoading,
+    fetchFusionPoolsInfo,
+  } = useLazyFusionPools();
+
   const rawPoolsData = useMemo(() => {
-    return poolDataByMint.size ? Array.from(poolDataByMint.values()) : [];
+    return poolDataByMint.size
+      ? Array.from(poolDataByMint.values()).filter(
+          ({ tokenInfo }) => tokenInfo.address !== process.env.FRKT_MINT,
+        ) //? Filter out SOL/FRKT pool
+      : [];
   }, [poolDataByMint]);
 
   const searchItems = useDebounce((search: string) => {
@@ -108,6 +125,16 @@ export const usePoolsPage = (): {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawPoolsData]);
 
+  useEffect(() => {
+    if (rawPoolsData.length) {
+      const lpMints = rawPoolsData.map(({ poolConfig }) =>
+        poolConfig.lpMint.toBase58(),
+      );
+      fetchFusionPoolsInfo(lpMints);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawPoolsData]);
+
   const loading =
     poolsInfoMapLoading || poolDataByMintLoading || poolsStatsLoading;
 
@@ -126,7 +153,8 @@ export const usePoolsPage = (): {
     if (
       !rawPoolsData.length ||
       !raydiumPoolsInfoMap.size ||
-      !poolsStatsByMarketId.size
+      !poolsStatsByMarketId.size ||
+      fusionPoolInfoMapLoading
     ) {
       return [];
     }
@@ -135,19 +163,21 @@ export const usePoolsPage = (): {
 
     return rawPoolsData
       .filter(({ tokenInfo, poolConfig }) => {
-        if (showAwardedOnly) {
+        const fusionPoolInfo = fusionPoolInfoMap.get(
+          poolConfig.lpMint.toBase58(),
+        );
+
+        const isAwarded = !!fusionPoolInfo?.mainRouter;
+
+        const userStakesInPool =
+          !!userLpBalanceByMint.has(poolConfig.lpMint.toBase58()) ||
+          fusionPoolInfo?.stakeAccount;
+
+        const removeBecauseNotAwarded = showAwardedOnly && !isAwarded;
+        const removeBecauseUserDoesntStake = showStaked && !userStakesInPool;
+
+        if (removeBecauseNotAwarded || removeBecauseUserDoesntStake)
           return false;
-        }
-
-        if (showStaked) {
-          const userStakesInPool = userLpBalanceByMint.has(
-            poolConfig.lpMint.toBase58(),
-          );
-
-          if (!userStakesInPool) {
-            return false;
-          }
-        }
 
         return tokenInfo.symbol.toUpperCase().includes(searchString);
       })
@@ -178,6 +208,8 @@ export const usePoolsPage = (): {
     showStaked,
     poolsStatsByMarketId,
     raydiumPoolsInfoMap,
+    fusionPoolInfoMap,
+    fusionPoolInfoMapLoading,
     userLpBalanceByMint,
   ]);
 
@@ -193,6 +225,29 @@ export const usePoolsPage = (): {
     }
   };
 
+  const pollFusionPoolsInfo = async (): Promise<void> => {
+    const lpMints = rawPoolsData.map(({ poolConfig }) =>
+      poolConfig.lpMint.toBase58(),
+    );
+    await fetchFusionPoolsInfo(lpMints);
+  };
+
+  const {
+    isPolling: isFusionPoolsPolling,
+    startPolling: startFusionPoolsPolling,
+    stopPolling: stopFusionPoolsPolling,
+  } = usePolling(pollFusionPoolsInfo, POOL_INFO_POLLING_INTERVAL);
+
+  useEffect(() => {
+    if (activePoolTokenAddress && connected && !isFusionPoolsPolling) {
+      startFusionPoolsPolling();
+    } else {
+      stopFusionPoolsPolling();
+    }
+    return () => stopFusionPoolsPolling();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePoolTokenAddress, connected]);
+
   return {
     formControl: control,
     loading,
@@ -202,7 +257,9 @@ export const usePoolsPage = (): {
     activePoolTokenAddress,
     onPoolCardClick,
     userLpBalanceByMint,
+    fusionPoolInfoMap,
     poolsStatsByMarketId,
+    isFusionPoolsPolling,
   };
 };
 

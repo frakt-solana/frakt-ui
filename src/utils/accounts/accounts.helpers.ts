@@ -42,3 +42,9 @@ export const getTokenAccount = async ({
 
   return parseTokenAccount({ tokenAccountPubkey, tokenAccountEncoded });
 };
+
+export const getTokenAccountBalance = (
+  lpTokenAccountInfo: AccountInfoParsed,
+  lpDecimals: number,
+): number =>
+  lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0;

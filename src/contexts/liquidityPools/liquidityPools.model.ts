@@ -3,19 +3,23 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
-import { Config, Router, Stake } from '@frakters/fusion-pool';
 
 import {
-  HarvestLiquidityTransactionParams,
   StakeLiquidityTransactionParams,
   UnstakeLiquidityTransactionParams,
 } from './transactions/fusionPools';
 import {
   AddLiquidityTransactionParams,
-  CreateLiquidityTransactionParams,
   RemoveLiquidityTransactionParams,
   SwapTransactionParams,
 } from './transactions/raydiumLiquidityPools';
+import {
+  MainPoolConfigView,
+  MainRouterView,
+  SecondStakeAccountView,
+  SecondaryRewardView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
@@ -24,16 +28,12 @@ export interface LiquidityPoolsContextValues {
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
   raydiumSwap: (params: SwapTransactionParams) => Promise<void>;
-  createRaydiumLiquidityPool: (
-    params: CreateLiquidityTransactionParams,
-  ) => Promise<void>;
+  createRaydiumLiquidityPool: (params: any) => Promise<void>;
   addRaydiumLiquidity: (params: AddLiquidityTransactionParams) => Promise<void>;
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
   ) => Promise<void>;
-  harvestLiquidity: (
-    params: HarvestLiquidityTransactionParams,
-  ) => Promise<void>;
+  harvestLiquidity: (params: any) => Promise<void>;
   stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,
@@ -60,12 +60,11 @@ export type RaydiumPoolInfoMap = Map<string, RaydiumPoolInfo>;
 
 export type PoolDataByMint = Map<string, PoolData>;
 
+export type FusionPoolInfoByMint = Map<string, FusionPoolInfo>;
+
 export interface PoolData {
   tokenInfo: TokenInfo;
   poolConfig: LiquidityPoolKeysV4;
-  fushionConfig?: Config;
-  router?: Router;
-  fushionStakeAccounts?: Stake;
 }
 
 export type FetchPoolDataByMint = ({
@@ -86,14 +85,21 @@ export interface RaydiumPoolInfo {
   lpSupply: BN;
 }
 
-export interface ProgramAccountsData {
-  configs: Config[];
-  routers: Router[];
-  stakeAccounts: Stake[];
+export interface FusionPoolsInfo {
+  mainPoolConfigs: MainPoolConfigView[];
+  mainRouters: MainRouterView[];
+  secondaryStakeAccounts: SecondStakeAccountView[];
+  secondaryRewards: SecondaryRewardView[];
+  stakeAccounts: StakeAccountView[];
 }
 
-export interface ProgramAccountData {
-  config?: Config;
-  router: Router;
-  stakeAccount: Stake;
+export interface FusionPoolInfo {
+  mainRouter: MainRouterView;
+  stakeAccount: StakeAccountView;
+  secondaryReward: SecondaryRewardView[];
+  secondaryStakeAccount: SecondStakeAccountView;
+}
+
+export interface secondaryRewardWithTokenInfo extends SecondaryRewardView {
+  tokenInfo: TokenInfo[];
 }
