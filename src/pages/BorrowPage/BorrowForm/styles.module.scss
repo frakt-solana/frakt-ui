@@ -77,6 +77,25 @@
     color: var(--white-color);
     font: var(--font-text-3);
   }
+  :global {
+    .custom-select__menu {
+      margin-top: 20px;
+      &::before {
+        content: '';
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-left: var(--border-gray-1);
+        border-top: var(--border-gray-1);
+        background-color: var(--black-color);
+        transform: rotate(45deg);
+        position: absolute;
+        right: 30%;
+        top: -11px;
+        z-index: 1;
+      }
+    }
+  }
 }
 
 .tokenInfo {
