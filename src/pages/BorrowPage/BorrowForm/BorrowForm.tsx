@@ -62,9 +62,6 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                   render={({ field: { ref, ...field } }) => (
                     <Select
                       className={styles.select}
-                      valueContainerClassName={
-                        styles.sortingSelectValueContainer
-                      }
                       name={SelectControlsNames.LTV_VALUES}
                       options={LTV_VALUES}
                       {...field}
@@ -86,9 +83,6 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                   render={({ field: { ref, ...field } }) => (
                     <Select
                       className={styles.select}
-                      valueContainerClassName={
-                        styles.sortingSelectValueContainer
-                      }
                       name={SelectControlsNames.RETURN_PERIOD_VALUES}
                       options={RETURN_PERIOD_VALUES}
                       {...field}
