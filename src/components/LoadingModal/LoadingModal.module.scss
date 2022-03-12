@@ -7,9 +7,7 @@
 }
 
 .infoTitle {
-  font-weight: 600;
-  font-size: 48px;
-  line-height: 1.25em;
+  font: var(--font-title-2);
 
   @media screen and (max-width: 450px) {
     font-size: 35px;
@@ -17,9 +15,15 @@
 }
 
 .infoSubtitle {
-  font-size: 18px;
-  line-height: 24px;
+  font: var(--font-text-3);
   opacity: 0.5;
   text-align: left;
-  margin-bottom: 160px;
+}
+
+.modal {
+  :global {
+    .ant-modal-body {
+      padding-bottom: 160px;
+    }
+  }
 }

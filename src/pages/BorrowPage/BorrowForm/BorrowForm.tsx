@@ -14,7 +14,7 @@ import {
   SelectControlsNames,
   useBorrowForm,
 } from './hooks';
-import FraktionalizeTransactionModal from '../../../components/FraktionalizeTransactionModal';
+import { LoadingModal } from '../../../components/LoadingModal';
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
@@ -31,6 +31,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     ltvValues,
     txnModalVisible,
     onContinue,
+    onTxnModalCancel,
   } = useBorrowForm();
 
   return (
@@ -117,10 +118,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
         ltvPrice={ltvValues.value}
         onSubmit={onSubmit}
       />
-      <FraktionalizeTransactionModal
+      <LoadingModal
+        subtitle="In order to transfer the NFT/s approval is needed."
         visible={txnModalVisible}
-        onCancel={onConfirmModalCancel}
-        tickerName="tickerName"
+        onCancel={onTxnModalCancel}
+        className={styles.modal}
+        loaderSize="small"
       />
     </>
   );

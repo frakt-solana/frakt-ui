@@ -110,3 +110,12 @@
   height: 23px;
   width: 23px;
 }
+
+.modal {
+  :global {
+    .ant-modal-body {
+      padding-top: 60px;
+      padding-bottom: 30px;
+    }
+  }
+}

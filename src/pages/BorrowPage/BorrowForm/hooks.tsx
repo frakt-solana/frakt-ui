@@ -34,6 +34,7 @@ export const useBorrowForm = (): {
   returnPeriod: SortValue;
   ltvValues: SortValue;
   txnModalVisible: boolean;
+  onTxnModalCancel: () => void;
 } => {
   const [visible, setVisible] = useState<boolean>(false);
   const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
@@ -60,6 +61,10 @@ export const useBorrowForm = (): {
     setTxnModalVisible(true);
   };
 
+  const onTxnModalCancel = (): void => {
+    setTxnModalVisible(false);
+  };
+
   return {
     visible,
     returnPeriod,
@@ -70,6 +75,7 @@ export const useBorrowForm = (): {
     form,
     txnModalVisible,
     onContinue,
+    onTxnModalCancel,
   };
 };
 
