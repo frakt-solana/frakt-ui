@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
@@ -22,9 +21,6 @@ export const MarketInfoPage = (): JSX.Element => {
   return (
     <AppLayout className={styles.layout}>
       <Container>
-        <Helmet>
-          <title>{`Market/Info | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
-        </Helmet>
         <HeaderInfo poolPublicKey={poolPubkey} />
         {!connected ? (
           <WalletNotConnected className={styles.notConnected} />

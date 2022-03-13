@@ -1,6 +1,5 @@
 import { useParams } from 'react-router';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { PublicKey } from '@solana/web3.js';
 
 import { AppLayout } from '../../../components/Layout/AppLayout';
@@ -98,9 +97,6 @@ export const MarketSellPage: FC = () => {
         />
       </div>
       <Container>
-        <Helmet>
-          <title>Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana</title>
-        </Helmet>
         <div className={styles.wrapper}>
           <SidebarInner
             isSidebar={isSidebar}
