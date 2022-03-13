@@ -42,6 +42,41 @@
   border: var(--border-gray-1);
 }
 
+.careersItem {
+  border: var(--border-gray-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.careersHeader {
+  font: var(--font-title-2);
+  text-align: center;
+}
+
+.hiring {
+  text-align: center;
+}
+
+.positionsLink {
+  color: var(--accent-color-1);
+
+  &::after {
+    background-color: var(--accent-color-1);
+  }
+
+  &:hover {
+    color: var(--accent-color-1);
+  }
+
+  svg {
+    path {
+      fill: var(--accent-color-1);
+    }
+  }
+}
+
 .teamPhoto {
   width: 100%;
   z-index: 1;

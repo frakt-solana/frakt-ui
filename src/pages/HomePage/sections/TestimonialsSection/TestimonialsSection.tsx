@@ -1,8 +1,8 @@
 import { FC } from 'react';
 
 import styles from './TestimonialsSection.module.scss';
-import { Slider } from './Slider';
 import { Container } from '../../../../components/Layout';
+import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 
 export const TestimonialsSection: FC = () => {
   return (
@@ -14,20 +14,28 @@ export const TestimonialsSection: FC = () => {
         <div className={styles.infoText}>
           <p className={styles.textParagraph}>
             NFTs have taken the world by surprise and one thing is for sure —
-            they&apos;re here to stay.
+            they&apos;re here to stay. FRAKT&apos;s vision is to bootstrap
+            infrastructure around NFTs by making them more liquid and bring NFT
+            users full access to DeFi products just like with fungible tokens.
           </p>
+
           <p className={styles.textParagraph}>
-            FRAKT&apos;s vision is to supercharge the use cases built around
-            NFTs by making them more liquid.
+            <LinkWithArrow
+              externalLink
+              to="https://discord.gg/frakt"
+              label="Join our Discord to get more involved, find alpha and benefit the most!"
+              className={styles.docsLink}
+            />
           </p>
-          <p className={styles.textParagraph}>
+
+          {/* <p className={styles.textParagraph}>
             With liquid NFTs, there are no limits to what&apos;s possible: yield
             generation, community empowerment, instant trading & swapping of
             NFTs, collaterized lending... your imagination is the limit!
-          </p>
+          </p> */}
         </div>
       </div>
-      <Slider />
+      {/* <Slider /> */}
     </Container>
   );
 };
