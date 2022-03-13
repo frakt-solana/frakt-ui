@@ -1,5 +1,4 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 
 import styles from './styles.module.scss';
 import { AppLayout } from '../../../components/Layout/AppLayout';
@@ -139,10 +138,6 @@ export const MarketSwapPage: FC = () => {
   return (
     <AppLayout className={styles.layout}>
       <Container>
-        <Helmet>
-          <title>{`Market/Buy-NFT | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
-        </Helmet>
-
         <div className={styles.wrapper}>
           {poolLoading || !pool ? (
             <Loader size="large" />
