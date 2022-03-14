@@ -2,8 +2,8 @@ import { PublicKey } from '@solana/web3.js';
 import {
   depositNftToCommunityPool as depositNftToCommunityPoolTxn,
   Provider,
-} from 'community-pools-client-library-v2';
-import { deriveMetadataPubkeyFromMint } from 'community-pools-client-library-v2/lib/utils/utils';
+} from '@frakters/community-pools-client-library-v2';
+import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
 
 import { NftPoolData } from './../../../utils/cacher/nftPools';
 import {
@@ -58,6 +58,16 @@ export const rawDepositNftToCommunityPool = async ({
       nftUserTokenAccount,
       fractionMint: pool.fractionMint,
       metadataInfo,
+      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion: new PublicKey(
+        'C56Dq4P8kYpzt984PNBgQPb4v7vDdTaMNtucNYz9iSzT',
+      ),
+      leaderboardProgramId: new PublicKey(
+        process.env.LEADERBOARD_PROGRAM_PUBKEY,
+      ),
+      replaceTokenMintInput: new PublicKey(
+        'C56Dq4P8kYpzt984PNBgQPb4v7vDdTaMNtucNYz9iSzT',
+      ),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
