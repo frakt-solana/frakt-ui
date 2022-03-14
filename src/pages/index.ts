@@ -10,10 +10,10 @@ export { default as CollectionPage } from './CollectionPage';
 export { default as PoolsPage } from './PoolsPage';
 export { default as BorrowPage } from './BorrowPage';
 export {
-  MarketPage,
-  MarketBuyPage,
-  MarketSellPage,
-  MarketSwapPage,
-  MarketInfoPage,
-  MarketTestPage,
-} from './Market';
+  NFTPoolsPage,
+  NFTPoolBuyPage,
+  NFTPoolSellPage,
+  NFTPoolSwapPage,
+  NFTPoolInfoPage,
+  NFTPoolsTestPage,
+} from './NFTPools';
