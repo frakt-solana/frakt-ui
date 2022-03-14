@@ -3,7 +3,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
 import Button from '../../../components/Button';
-import styles from './styles.module.scss';
+import styles from './Rewards.module.scss';
 import {
   caclLiquiditySecondRewars,
   calcLiquidityRewards,

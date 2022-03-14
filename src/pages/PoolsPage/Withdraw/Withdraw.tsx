@@ -14,7 +14,7 @@ import {
 } from '../../../utils/accounts';
 import Button from '../../../components/Button';
 import { SOL_TOKEN } from '../../../utils';
-import styles from './styles.module.scss';
+import styles from './Withdraw.module.scss';
 import {
   FusionPoolInfo,
   getStakedBalance,

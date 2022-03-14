@@ -7,7 +7,7 @@ import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { SearchInput } from '../../components/SearchInput';
 import { Container } from '../../components/Layout';
-import styles from './styles.module.scss';
+import styles from './PoolsPage.module.scss';
 import Pool from './Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import Button from '../../../../../components/Button';
-import styles from './styles.module.scss';
+import styles from './PoolDetailsWalletDisconnected.module.scss';
 
 interface PoolDetailsWalletDisconnectedProps {
   setWalletModalVisible: (walletModalVisible: boolean) => void;
