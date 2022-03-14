@@ -1,22 +1,12 @@
 .randomWrapper {
   display: flex;
   align-items: center;
-  // width: 100%;
-  // transition: padding 0.3s ease-in;
-
-  // @media screen and (max-width: 1400px) {
-  //   flex-wrap: wrap;
-  //   padding: 30px;
-  // }
-
-  // @media screen and (max-width: 767px) {
-  //   padding: 20px 15px;
-  // }
 }
 
 .questionWrapper {
   width: 106px;
   border: var(--border-gray-1);
+  border-top: none;
   overflow: hidden;
   position: relative;
   margin-right: 20px;

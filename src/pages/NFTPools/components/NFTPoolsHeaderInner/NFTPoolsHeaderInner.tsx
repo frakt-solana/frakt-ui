@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { FC, ReactNode } from 'react';
+import { Container } from '../../../../components/Layout';
 
-import { useHeaderState } from '../../../../components/Layout/headerState';
 import { NFTPoolsNavigation } from '../NFTPoolsNavigation';
 import styles from './NFTPoolsHeaderInner.module.scss';
 
@@ -16,21 +16,12 @@ export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
   poolPublicKey,
   className,
 }) => {
-  const { isHeaderHidden } = useHeaderState();
-
   return (
-    <div
-      className={classNames({
-        [styles.positionWrapper]: true,
-        [styles.headerHidden]: isHeaderHidden,
-      })}
-    >
-      <div className={classNames('container', styles.container, className)}>
-        <div className={styles.wrapper}>
-          {children}
-          <NFTPoolsNavigation poolPublicKey={poolPublicKey} />
-        </div>
+    <Container className={classNames(styles.container, className)}>
+      <div className={styles.header}>
+        {children}
+        <NFTPoolsNavigation poolPublicKey={poolPublicKey} />
       </div>
-    </div>
+    </Container>
   );
 };
