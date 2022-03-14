@@ -47,9 +47,6 @@ export const rawGetLotteryTicket = async ({
       leaderboardProgramId: new PublicKey(
         process.env.LEADERBOARD_PROGRAM_PUBKEY,
       ),
-      replaceTokenMintInput: new PublicKey(
-        'C56Dq4P8kYpzt984PNBgQPb4v7vDdTaMNtucNYz9iSzT',
-      ),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
