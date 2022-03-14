@@ -13,7 +13,6 @@ import teamPhotoVlad2 from './assets/teamPhotoVlad2.jpg';
 import { BehanceIcon, GitHubIcon, TwitterIcon } from '../../../../icons';
 import { TEAM_SECTION_ID } from '../../constants';
 import { Container } from '../../../../components/Layout';
-import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 
 const MEMBERS = [
   {
@@ -77,7 +76,7 @@ const MEMBERS = [
   {
     name: 'Adrian',
     photoUrl: teamPhotoAdrian,
-    position: <span>Community</span>,
+    position: <span>Partnerships</span>,
     socialLink: (
       <a href="https://twitter.com/0x1dad" rel="noreferrer" target="_blank">
         <TwitterIcon width={24} />
@@ -150,16 +149,6 @@ export const TeamSection: FC<{ navRef?: { current: HTMLParagraphElement } }> =
               </div>
             </li>
           ))}
-          <li key="careers" className={styles.careersItem}>
-            <h5 className={styles.careersHeader}>You?</h5>
-            <p className={styles.hiring}>We are hiring!</p>
-            <LinkWithArrow
-              externalLink
-              to="https://jobs.solana.com/companies/frakt?q=frakt#content"
-              label="Check positions"
-              className={styles.positionsLink}
-            />
-          </li>
         </ul>
       </Container>
     );
