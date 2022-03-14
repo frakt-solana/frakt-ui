@@ -1,0 +1,1 @@
+export { NFTPoolsHeaderInner } from './NFTPoolsHeaderInner';

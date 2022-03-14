@@ -12,12 +12,12 @@ import {
   FraktionalizePage,
   CollectionsPage,
   CollectionPage,
-  MarketPage,
-  MarketBuyPage,
-  MarketSellPage,
-  MarketSwapPage,
-  MarketInfoPage,
-  MarketTestPage,
+  NFTPoolsPage,
+  NFTPoolBuyPage,
+  NFTPoolSellPage,
+  NFTPoolSwapPage,
+  NFTPoolInfoPage,
+  NFTPoolsTestPage,
 } from '../pages';
 
 interface Route {
@@ -30,7 +30,7 @@ export const routes: Route[] = [
   {
     exact: true,
     path: PATHS.TEST,
-    component: MarketTestPage,
+    component: NFTPoolsTestPage,
   },
   {
     exact: true,
@@ -50,27 +50,27 @@ export const routes: Route[] = [
   {
     exact: true,
     path: PATHS.POOLS,
-    component: MarketPage,
+    component: NFTPoolsPage,
   },
   {
     exact: true,
     path: PATHS.POOL_BUY,
-    component: MarketBuyPage,
+    component: NFTPoolBuyPage,
   },
   {
     exact: true,
     path: PATHS.POOL_SELL,
-    component: MarketSellPage,
+    component: NFTPoolSellPage,
   },
   {
     exact: true,
     path: PATHS.POOL_SWAP,
-    component: MarketSwapPage,
+    component: NFTPoolSwapPage,
   },
   {
     exact: true,
     path: PATHS.POOL_INFO,
-    component: MarketInfoPage,
+    component: NFTPoolInfoPage,
   },
   {
     exact: true,
