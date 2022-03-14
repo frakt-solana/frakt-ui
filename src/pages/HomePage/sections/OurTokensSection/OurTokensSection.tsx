@@ -21,10 +21,10 @@ export const OurTokensSection: FC<OurTokensSectionProps> = ({ navRef }) => {
           <h4 className={styles.titleCard}>$FRKX</h4>
           <div className={styles.infoWrapper}>
             <ul className={styles.infoList}>
+            <li className={styles.infoItem}>Protocol utility token</li>
               <li className={styles.infoItem}>Reduced fees</li>
-              <li className={styles.infoItem}>Trading rewards</li>
-              <li className={styles.infoItem}>Referrals rewards</li>
-              <li className={styles.infoItem}>Lending rewards</li>
+              <li className={styles.infoItem}>Trading, Borrowing and Referral rewards</li>
+              <li className={styles.infoItem}>Deflationary via buybacks and burns</li>
             </ul>
           </div>
           <TokensBg className={styles.cardBg} fill={'#5D5FEF'} />
@@ -34,8 +34,8 @@ export const OurTokensSection: FC<OurTokensSectionProps> = ({ navRef }) => {
           <div className={styles.infoWrapper}>
             <ul className={styles.infoList}>
               <li className={styles.infoItem}>Governance on DAO revenue</li>
-              <li className={styles.infoItem}>NFTs</li>
               <li className={styles.infoItem}>Community activities</li>
+              <li className={styles.infoItem}>Deflationary via recurring burn mechanisms</li>
               {/* <li className={styles.infoItem}>Reward token for FRKX stakers</li> */}
             </ul>
           </div>
