@@ -12,7 +12,7 @@ export const MainSection: FC = () => {
     <div className={styles.bg}>
       <Container component="section" className={styles.root}>
         <h1 className={styles.title}>
-          NFT<span>x</span>DEFI
+          DEFI<span>x</span>NFT
         </h1>
         <h2 className={styles.subtitle}>
           Buy, sell, earn yield and get instant liquidity out of your NFTs.{' '}

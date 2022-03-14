@@ -76,7 +76,7 @@ const MEMBERS = [
   {
     name: 'Adrian',
     photoUrl: teamPhotoAdrian,
-    position: <span>Community</span>,
+    position: <span>Partnerships</span>,
     socialLink: (
       <a href="https://twitter.com/0x1dad" rel="noreferrer" target="_blank">
         <TwitterIcon width={24} />

@@ -1,5 +1,4 @@
 import { FC, useMemo } from 'react';
-import { Helmet } from 'react-helmet';
 import { Controller, useForm } from 'react-hook-form';
 import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
@@ -43,9 +42,6 @@ export const MarketPage: FC = () => {
   return (
     <AppLayout className={styles.layout}>
       <Container>
-        <Helmet>
-          <title>{`Market | FRAKT: A NFT-DeFi ecosystem on Solana`}</title>
-        </Helmet>
         <div className={styles.wrapper}>
           <Sidebar />
 

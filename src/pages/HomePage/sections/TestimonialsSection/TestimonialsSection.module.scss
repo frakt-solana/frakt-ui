@@ -10,11 +10,23 @@
   }
 }
 
-.infoWrapper {
-  max-width: 665px;
+.docsLink {
+  color: var(--accent-color-1);
+  // width: 100%;
+  // justify-content: center;
 
-  @media screen and (max-width: 1200px) {
-    max-width: none;
+  &::after {
+    background-color: var(--accent-color-1);
+  }
+
+  &:hover {
+    color: var(--accent-color-1);
+  }
+
+  svg {
+    path {
+      fill: var(--accent-color-1);
+    }
   }
 }
 
@@ -24,14 +36,6 @@
 
   @media screen and (max-width: 767px) {
     margin-bottom: 50px;
-  }
-}
-
-.infoText {
-  max-width: 655px;
-
-  @media screen and (max-width: 1200px) {
-    max-width: none;
   }
 }
 
