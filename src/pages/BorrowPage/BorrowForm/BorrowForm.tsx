@@ -3,7 +3,6 @@ import { Controller } from 'react-hook-form';
 import { Form } from 'antd';
 
 import { LoadingModal } from '../../../components/LoadingModal';
-import ConfirmModal from '../../../components/ConfirmModal';
 import { UserNFT } from '../../../contexts/userTokens';
 import { Select } from '../../../components/Select';
 import Button from '../../../components/Button';
@@ -16,6 +15,7 @@ import {
   LTV_VALUES,
   RETURN_PERIOD_VALUES,
 } from './index';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
@@ -26,12 +26,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     form,
     onSubmit,
     formControl,
-    onConfirmModalCancel,
-    visible,
+    confirmModalVisible,
+    closeConfirmModalRaw,
+    openConfirmModal,
     returnPeriod,
     ltvValues,
     txnModalVisible,
-    onContinue,
     onTxnModalCancel,
   } = useBorrowForm();
 
@@ -98,7 +98,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
       </div>
       <div className={styles.continueBtnContainer}>
         <Button
-          onClick={onContinue}
+          onClick={openConfirmModal}
           type="alternative"
           className={styles.continueBtn}
         >
@@ -106,8 +106,8 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
         </Button>
       </div>
       <ConfirmModal
-        visible={visible}
-        onCancel={onConfirmModalCancel}
+        visible={confirmModalVisible}
+        onCancel={closeConfirmModalRaw}
         onSubmit={onSubmit}
         subtitle={` You are about to use your ${selectedNft[0].metadata.name} as collateral in ${ltvValues.value} SOL
         loan that you claim to return in ${returnPeriod.value} days. Want to proceed?`}

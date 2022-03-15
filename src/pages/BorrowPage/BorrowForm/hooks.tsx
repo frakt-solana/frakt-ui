@@ -3,6 +3,7 @@ import { Form, FormInstance } from 'antd';
 import { Control, useForm } from 'react-hook-form';
 
 import { SortValue } from '../../VaultsPage/model';
+import { useConfirmModal } from '../../../components/ConfirmModal';
 
 interface FormValues {
   LTV: string;
@@ -25,18 +26,17 @@ export type FormFieldValues = {
 };
 
 export const useBorrowForm = (): {
-  visible: boolean;
-  onConfirmModalCancel: () => void;
+  confirmModalVisible: boolean;
+  closeConfirmModalRaw: () => void;
   formControl: Control<FormFieldValues>;
   onSubmit: () => void;
-  onContinue: () => void;
+  openConfirmModal: () => void;
   form: FormInstance<FormValues>;
   returnPeriod: SortValue;
   ltvValues: SortValue;
   txnModalVisible: boolean;
   onTxnModalCancel: () => void;
 } => {
-  const [visible, setVisible] = useState<boolean>(false);
   const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
   const [form] = Form.useForm<FormValues>();
   const { control, watch } = useForm({
@@ -46,16 +46,14 @@ export const useBorrowForm = (): {
     },
   });
 
+  const {
+    visible: confirmModalVisible,
+    open: openConfirmModal,
+    close: closeConfirmModalRaw,
+  } = useConfirmModal();
+
   const returnPeriod = watch(SelectControlsNames.RETURN_PERIOD_VALUES);
   const ltvValues = watch(SelectControlsNames.LTV_VALUES);
-
-  const onConfirmModalCancel = (): void => {
-    setVisible(false);
-  };
-
-  const onContinue = (): void => {
-    setVisible(true);
-  };
 
   const onSubmit = (): void => {
     setTxnModalVisible(true);
@@ -66,15 +64,15 @@ export const useBorrowForm = (): {
   };
 
   return {
-    visible,
+    confirmModalVisible,
     returnPeriod,
     ltvValues,
-    onConfirmModalCancel,
+    closeConfirmModalRaw,
     formControl: control,
     onSubmit,
     form,
     txnModalVisible,
-    onContinue,
+    openConfirmModal,
     onTxnModalCancel,
   };
 };
