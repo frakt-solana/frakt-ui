@@ -1,9 +1,9 @@
 import { FC } from 'react';
 
-import Sidebar from '../../pages/FraktionalizePage/Sidebar';
+import Sidebar from './components/Sidebar';
 import { UserNFT } from '../../contexts/userTokens';
 import { AppLayout } from '../Layout/AppLayout';
-import styles from './styles.module.scss';
+import styles from './SelectLayout.module.scss';
 import { Container } from '../Layout';
 
 interface SelectLayoutProps {
@@ -26,9 +26,8 @@ export const SelectLayout: FC<SelectLayoutProps> = ({
         currentVaultPubkey={currentVaultPubkey}
         nfts={selectedNfts}
         onDeselect={onDeselect}
-      >
-        {sidebarForm}
-      </Sidebar>
+        sidebarForm={sidebarForm}
+      />
       <Container component="main" className={styles.contentWrapper}>
         <div id="content-reducer" className={styles.contentReducer}>
           {children}

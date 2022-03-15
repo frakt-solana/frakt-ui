@@ -1,24 +1,27 @@
 import { FC } from 'react';
-import Button from '../Button';
-import { Modal } from '../Modal';
+
 import styles from './styles.module.scss';
+import { Modal } from '../Modal';
+import Button from '../Button';
 
 interface ConfirmModalProps {
   visible: boolean;
   onCancel: () => void;
   onSubmit: () => void;
-  nftName?: string;
-  returnPeriod?: string;
-  ltvPrice?: string;
+  title?: string;
+  subtitle: string;
+  btnAgree?: string;
+  btnCancel?: string;
 }
 
 const ConfirmModal: FC<ConfirmModalProps> = ({
   visible,
   onCancel,
-  nftName,
-  returnPeriod,
-  ltvPrice,
+  title = 'Please confirm',
+  subtitle,
   onSubmit,
+  btnAgree = 'I agree',
+  btnCancel = 'Cancel',
 }) => {
   return (
     <Modal
@@ -29,17 +32,14 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
       width={500}
     >
       <div className={styles.content}>
-        <h2 className={styles.title}>Please confirm</h2>
-        <p className={styles.subtitle}>
-          You are about to use your {nftName} as collateral in {ltvPrice} SOL
-          loan that you claim to return in {returnPeriod} days. Want to proceed?
-        </p>
+        <h2 className={styles.title}>{title}</h2>
+        <p className={styles.subtitle}>{subtitle}</p>
         <div className={styles.btnWrapper}>
           <Button className={styles.btn} type="alternative" onClick={onSubmit}>
-            I agree
+            {btnAgree}
           </Button>
           <Button className={styles.btn} type="tertiary" onClick={onCancel}>
-            Cancel
+            {btnCancel}
           </Button>
         </div>
       </div>

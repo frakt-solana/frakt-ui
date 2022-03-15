@@ -2,19 +2,20 @@ import { FC } from 'react';
 import { Controller } from 'react-hook-form';
 import { Form } from 'antd';
 
+import { LoadingModal } from '../../../components/LoadingModal';
 import ConfirmModal from '../../../components/ConfirmModal';
 import { UserNFT } from '../../../contexts/userTokens';
 import { Select } from '../../../components/Select';
 import Button from '../../../components/Button';
 import { SOL_TOKEN } from '../../../utils';
-import styles from './styles.module.scss';
+import styles from './BorrowForm.module.scss';
+
 import {
+  useBorrowForm,
+  SelectControlsNames,
   LTV_VALUES,
   RETURN_PERIOD_VALUES,
-  SelectControlsNames,
-  useBorrowForm,
-} from './hooks';
-import { LoadingModal } from '../../../components/LoadingModal';
+} from './index';
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
@@ -38,7 +39,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     <>
       <div className={styles.details}>
         <Form form={form} autoComplete="off">
-          <p className={styles.detailsTitle}>Lending settings</p>
+          <p className={styles.detailsTitle}>Borrow settings</p>
           <div className={styles.fieldWrapper}>
             <Form.Item name={SelectControlsNames.LTV_VALUES} validateFirst>
               <div className={styles.formContent}>
@@ -107,17 +108,15 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
       <ConfirmModal
         visible={visible}
         onCancel={onConfirmModalCancel}
-        nftName={selectedNft[0].metadata.name}
-        returnPeriod={returnPeriod.value}
-        ltvPrice={ltvValues.value}
         onSubmit={onSubmit}
+        subtitle={` You are about to use your ${selectedNft[0].metadata.name} as collateral in ${ltvValues.value} SOL
+        loan that you claim to return in ${returnPeriod.value} days. Want to proceed?`}
       />
       <LoadingModal
         subtitle="In order to transfer the NFT/s approval is needed."
         visible={txnModalVisible}
         onCancel={onTxnModalCancel}
         className={styles.modal}
-        loaderSize="small"
       />
     </>
   );

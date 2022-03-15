@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useHeaderState } from '../../../components/Layout/headerState';
+import { useHeaderState } from '../../../Layout/headerState';
 import {
   SafetyBoxWithMetadata,
   useFraktion,
   VaultData,
   VaultState,
-} from '../../../contexts/fraktion';
-import { UserNFT } from '../../../contexts/userTokens';
+} from '../../../../contexts/fraktion';
+import { UserNFT } from '../../../../contexts/userTokens';
 
 export const useSidebar = (
   currentVaultPubkey: string,

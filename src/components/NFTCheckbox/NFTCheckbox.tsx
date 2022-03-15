@@ -10,7 +10,6 @@ interface NFTCheckboxInterface {
   imageUrl?: string;
   name: string;
   onClick?: () => void;
-  isBorrow?: boolean;
   ltvPrice?: string;
 }
 
@@ -20,7 +19,6 @@ const NFTCheckbox: FC<NFTCheckboxInterface> = ({
   imageUrl,
   name,
   onClick,
-  isBorrow,
   ltvPrice,
 }) => {
   return (
@@ -39,7 +37,7 @@ const NFTCheckbox: FC<NFTCheckboxInterface> = ({
         />
         <div className={styles.root__content}>
           <p className={styles.root__title}>{name}</p>
-          {isBorrow && (
+          {ltvPrice && (
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>LTV</p>
               <div className={styles.ltvContent}>

@@ -7,8 +7,8 @@ import styles from './styles.module.scss';
 import { Container } from '../Layout';
 import {
   AppNavigation,
-  dropdownMenuDoStuff,
-  dropdownMenuMore,
+  DropdownMenuDoStuff,
+  DropdownMenuMore,
 } from './AppNavigation';
 import BurgerMenu from '../BurgerMenu';
 import { PATHS } from '../../constants';
@@ -37,11 +37,13 @@ const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           Frakt
         </NavLink>
-        <AppNavigation title="More">{dropdownMenuMore}</AppNavigation>
+        <AppNavigation>
+          <DropdownMenuMore />
+        </AppNavigation>
         <ul className={styles.buttons}>
           <li className={styles.bgAccent}>
-            <AppNavigation title="Do stuff" withoutLinks>
-              {dropdownMenuDoStuff}
+            <AppNavigation withoutLinks>
+              <DropdownMenuDoStuff />
             </AppNavigation>
           </li>
           <li>

@@ -3,13 +3,12 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams, useHistory } from 'react-router';
 
 import FraktionalizeTransactionModal from '../../components/FraktionalizeTransactionModal';
-import { useSelectLayout } from '../../components/SelectLayout/hooks';
-import { SelectLayout } from '../../components/SelectLayout';
+import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { SearchInput } from '../../components/SearchInput';
 import NFTCheckbox from '../../components/NFTCheckbox';
+import styles from './FraktionalizePage.module.scss';
 import Button from '../../components/Button';
-import styles from './styles.module.scss';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
@@ -18,10 +17,10 @@ import {
   useFraktionalizeTransactionModal,
 } from './hooks';
 import { PATHS } from '../../constants';
-import DetailsForm from './Sidebar/DetailsForm';
-import { useSidebar } from './Sidebar/hooks';
+import DetailsForm from './DetailsForm';
+import { useSidebar } from '../../components/SelectLayout/components/Sidebar/hooks';
 import { UserNFT } from '../../contexts/userTokens';
-import { DetailsFormDisabled } from './Sidebar/DetailsForm/DetailsFormDisabled';
+import { DetailsFormDisabled } from './DetailsForm/DetailsFormDisabled';
 
 const FraktionalizePage: FC = () => {
   const [search, setSearch] = useState('');

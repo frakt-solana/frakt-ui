@@ -1,23 +1,23 @@
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 
-import { UserNFT } from '../../../contexts/userTokens';
-import styles from './styles.module.scss';
+import { UserNFT } from '../../../../contexts/userTokens';
+import styles from './Sidebar.module.scss';
 import { useSidebar } from './hooks';
-import { Slider } from './Slider';
+import { Slider } from '../Slider';
 
 export interface SidebarProps {
   onDeselect?: (nft: UserNFT) => void;
   currentVaultPubkey?: string;
   nfts: UserNFT[];
-  children: ReactNode;
+  sidebarForm: JSX.Element;
 }
 
 const Sidebar: FC<SidebarProps> = ({
   onDeselect,
   currentVaultPubkey,
   nfts,
-  children,
+  sidebarForm,
 }) => {
   const {
     isSidebarVisible,
@@ -49,7 +49,7 @@ const Sidebar: FC<SidebarProps> = ({
             className={styles.slider}
           />
           <div className={styles.separator} />
-          {isSidebarVisible && children}
+          {isSidebarVisible && sidebarForm}
         </div>
       </div>
       <div

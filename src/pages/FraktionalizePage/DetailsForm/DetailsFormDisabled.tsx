@@ -2,15 +2,15 @@ import React, { useEffect } from 'react';
 import { Form } from 'antd';
 
 import styles from './styles.module.scss';
-import { Input } from '../../../../components/Input';
-import NumericInput from '../../../../components/NumericInput';
-import Button from '../../../../components/Button';
-import { useTokenListContext } from '../../../../contexts/TokenList';
+import { Input } from '../../../components/Input';
+import NumericInput from '../../../components/NumericInput';
+import Button from '../../../components/Button';
+import { useTokenListContext } from '../../../contexts/TokenList';
 import { FraktionPrice } from './FraktionPrice';
 import TokenField, {
   TOKEN_FIELD_CURRENCY,
-} from '../../../../components/TokenField';
-import { VaultData } from '../../../../contexts/fraktion';
+} from '../../../components/TokenField';
+import { VaultData } from '../../../contexts/fraktion';
 
 interface DetailsFormDisabledProps {
   vaultData: VaultData;

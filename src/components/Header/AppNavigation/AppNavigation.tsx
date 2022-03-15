@@ -10,70 +10,78 @@ import { Dropdown } from '../../Dropdown';
 
 interface AppNavigationProps {
   className?: string;
-  title: string;
   withoutLinks?: boolean;
   children: ReactElement;
 }
 
-export const dropdownMenuMore = (
-  <ul>
-    <li>
-      <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
-        Collections
-      </NavLink>
-    </li>
-    <li>
-      <a
-        className={styles.dropdownLink}
-        href={process.env.DEX_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Trade
-      </a>
-    </li>
-    {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
-      <li key={idx}>
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.dropdownLink}
-        >
-          <Icon width={24} />
-          {label}
-        </a>
-      </li>
-    ))}
-  </ul>
-);
+export const DropdownMenuMore: FC = () => {
+  return (
+    <Dropdown title="More">
+      <ul>
+        <li>
+          <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
+            Collections
+          </NavLink>
+        </li>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={process.env.DEX_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Trade
+          </a>
+        </li>
+        {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
+          <li key={idx}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.dropdownLink}
+            >
+              <Icon width={24} />
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Dropdown>
+  );
+};
 
-export const dropdownMenuDoStuff = (
-  <ul className={styles.list}>
-    <li className={styles.linkList}>
-      <NavLink className={styles.link} to={PATHS.FRAKTIONALIZE}>
-        <div className={styles.content}>
-          <p className={styles.title}>Create Vault</p>
-          <p className={styles.subtitle}>
-            fraktionalize single or multiple NFTs
-          </p>
-        </div>
-      </NavLink>
-    </li>
-    <li className={styles.linkList}>
-      <NavLink className={styles.link} to={PATHS.BORROW}>
-        <div className={styles.content}>
-          <p className={styles.title}>Borrow</p>
-          <p className={styles.subtitle}>take loan using NFT as collateral</p>
-        </div>
-      </NavLink>
-    </li>
-  </ul>
-);
+export const DropdownMenuDoStuff: FC = () => {
+  return (
+    <Dropdown title="Do stuff">
+      <ul className={styles.list}>
+        <li className={styles.linkList}>
+          <NavLink className={styles.link} to={PATHS.FRAKTIONALIZE}>
+            <div className={styles.content}>
+              <p className={styles.title}>Create Vault</p>
+              <p className={styles.subtitle}>
+                fraktionalize single or multiple NFTs
+              </p>
+            </div>
+          </NavLink>
+        </li>
+        <li className={styles.linkList}>
+          <NavLink className={styles.link} to={PATHS.BORROW}>
+            <div className={styles.content}>
+              <p className={styles.title}>Borrow</p>
+              <p className={styles.subtitle}>
+                take loan using NFT as collateral
+              </p>
+            </div>
+          </NavLink>
+        </li>
+      </ul>
+    </Dropdown>
+  );
+};
 
 export const AppNavigation: FC<AppNavigationProps> = ({
   className,
-  title,
   withoutLinks,
   children,
 }) => {
@@ -91,7 +99,7 @@ export const AppNavigation: FC<AppNavigationProps> = ({
             <NavigationLink to={to}>{label}</NavigationLink>
           </li>
         ))}
-      <Dropdown title={title} dropdownMenu={children} />
+      {children}
     </ul>
   );
 };

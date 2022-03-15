@@ -2,8 +2,7 @@ import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 
-import { useSelectLayout } from '../../components/SelectLayout/hooks';
-import { SelectLayout } from '../../components/SelectLayout';
+import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { SearchInput } from '../../components/SearchInput';
 import NFTCheckbox from '../../components/NFTCheckbox';
@@ -11,7 +10,7 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import Button from '../../components/Button';
-import styles from './styles.module.scss';
+import styles from './BorrowPage.module.scss';
 import BorrowForm from './BorrowForm';
 
 const BorrowPage: FC = () => {
@@ -75,7 +74,6 @@ const BorrowPage: FC = () => {
               onClick={() => onSelectOneNft(nft)}
               imageUrl={nft.metadata.image}
               name={nft.metadata.name}
-              isBorrow
               selected={activeTokenAddress === nft.mint}
               ltvPrice={'30'}
             />

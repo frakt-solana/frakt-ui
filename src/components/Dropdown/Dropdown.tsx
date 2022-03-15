@@ -1,12 +1,11 @@
 import { FC, ReactElement } from 'react';
 import { Dropdown as AntdDropdown } from 'antd';
 import { ArrowDownBtn } from '../../icons';
-import styles from './styles.module.scss';
-
+import styles from './Dropdown.module.scss';
 interface DropdownProps {
   title: string;
-  dropdownMenu: ReactElement;
   className?: string;
+  children?: ReactElement;
   placement?:
     | 'topLeft'
     | 'topCenter'
@@ -18,17 +17,19 @@ interface DropdownProps {
 
 export const Dropdown: FC<DropdownProps> = ({
   title,
-  dropdownMenu,
   placement = 'bottomRight',
   className,
+  children,
 }) => {
   return (
-    <li id="menu-dropdown" className={styles.navigationItem}>
-      <div className={styles.mobileDropdown}>{dropdownMenu}</div>
+    <li id={`menu-dropdown-${title}`} className={styles.navigationItem}>
+      <div className={styles.mobileDropdown}>{children}</div>
       <AntdDropdown
-        overlay={dropdownMenu}
+        overlay={children}
         placement={placement}
-        getPopupContainer={() => document.getElementById('menu-dropdown')}
+        getPopupContainer={() =>
+          document.getElementById(`menu-dropdown-${title}`)
+        }
         overlayClassName={styles.dropdown}
         className={className}
       >
