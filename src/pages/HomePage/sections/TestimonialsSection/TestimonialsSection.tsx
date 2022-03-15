@@ -22,7 +22,7 @@ export const TestimonialsSection: FC = () => {
           <p className={styles.textParagraph}>
             <LinkWithArrow
               externalLink
-              to="https://discord.gg/frakt"
+              to="https://tinyurl.com/zp3rx6z3"
               label="Join our Discord to get more involved, find alpha and benefit the most!"
               className={styles.docsLink}
             />

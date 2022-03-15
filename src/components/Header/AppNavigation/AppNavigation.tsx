@@ -28,7 +28,7 @@ const DROPDOWN_EXTERNAL_LINKS = [
   },
   {
     label: 'Discord',
-    href: 'https://discord.gg/frakt',
+    href: 'https://tinyurl.com/zp3rx6z3',
     icon: DiscordIcon,
   },
   {
