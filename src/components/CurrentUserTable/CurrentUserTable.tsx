@@ -44,7 +44,7 @@ const CurrentUserTable = ({
           </p>
           <LinkWithArrow
             to={`${PATHS.WALLET}/${publicKey.toString()}`}
-            label="My collection"
+            label="My profile"
             className={styles.myCollectionLink}
           />
         </div>

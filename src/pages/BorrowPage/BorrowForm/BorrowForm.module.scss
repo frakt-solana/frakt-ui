@@ -65,6 +65,16 @@
   }
 }
 
+.activeLine {
+  &::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: #5d5fef;
+  }
+}
+
 .formTitle {
   color: var(--gray-color-3);
   font: var(--font-text-5);

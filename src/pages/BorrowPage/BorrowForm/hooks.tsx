@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Form, FormInstance } from 'antd';
 import { Control, useForm } from 'react-hook-form';
 
@@ -36,8 +36,11 @@ export const useBorrowForm = (): {
   ltvValues: SortValue;
   txnModalVisible: boolean;
   onTxnModalCancel: () => void;
+  activeLine: string;
+  setActiveLine: Dispatch<SetStateAction<string>>;
 } => {
   const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
+  const [activeLine, setActiveLine] = useState<string>('');
   const [form] = Form.useForm<FormValues>();
   const { control, watch } = useForm({
     defaultValues: {
@@ -74,6 +77,8 @@ export const useBorrowForm = (): {
     txnModalVisible,
     openConfirmModal,
     onTxnModalCancel,
+    activeLine,
+    setActiveLine,
   };
 };
 

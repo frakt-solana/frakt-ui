@@ -16,6 +16,7 @@ import {
   RETURN_PERIOD_VALUES,
 } from './index';
 import ConfirmModal from '../../../components/ConfirmModal';
+import classNames from 'classnames';
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
@@ -33,6 +34,8 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     ltvValues,
     txnModalVisible,
     onTxnModalCancel,
+    activeLine,
+    setActiveLine,
   } = useBorrowForm();
 
   return (
@@ -54,7 +57,10 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
           </div>
           <div className={styles.fieldWrapper}>
             <Form.Item name={SelectControlsNames.LTV_VALUES} validateFirst>
-              <div className={styles.formContent}>
+              <div
+                className={styles.formContent}
+                onClick={() => setActiveLine(SelectControlsNames.LTV_VALUES)}
+              >
                 <p className={styles.formTitle}>LTV</p>
                 <Controller
                   control={formControl}
@@ -71,11 +77,22 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                 />
               </div>
             </Form.Item>
-            <div className={styles.line}></div>
+            <div
+              className={classNames(
+                activeLine === SelectControlsNames.LTV_VALUES
+                  ? styles.activeLine
+                  : styles.line,
+              )}
+            />
           </div>
           <div className={styles.fieldWrapperDouble}>
             <Form.Item name={SelectControlsNames.RETURN_PERIOD_VALUES}>
-              <div className={styles.formContent}>
+              <div
+                className={styles.formContent}
+                onClick={() =>
+                  setActiveLine(SelectControlsNames.RETURN_PERIOD_VALUES)
+                }
+              >
                 <p className={styles.formTitle}>Return period</p>
                 <Controller
                   control={formControl}
@@ -92,7 +109,13 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                 />
               </div>
             </Form.Item>
-            <div className={styles.line}></div>
+            <div
+              className={classNames(
+                activeLine === SelectControlsNames.RETURN_PERIOD_VALUES
+                  ? styles.activeLine
+                  : styles.line,
+              )}
+            />
           </div>
         </Form>
       </div>
