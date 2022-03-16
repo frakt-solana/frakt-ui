@@ -4,9 +4,10 @@ import { useConnection } from '@solana/wallet-adapter-react';
 
 import { getOwnerAvatar, useNameServiceInfo } from '../../../utils/nameService';
 import { shortenAddress } from '../../../utils/solanaUtils';
-import { ArrowRightTop, PencilIcon, TwitterIcon2 } from '../../../icons';
+import { PencilIcon, TwitterIcon2 } from '../../../icons';
 import Button from '../../../components/Button';
 import styles from './ProfileCard.module.scss';
+import { LinkWithArrow } from '../../../components/LinkWithArrow';
 
 export const ProfileCard: FC = () => {
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
@@ -45,8 +46,11 @@ export const ProfileCard: FC = () => {
                 : `${shortenAddress(walletPubkey)}`}
             </p>
             <p className={styles.leadearboard}>
-              #56 in Leadearboard
-              <ArrowRightTop className={styles.icon} />
+              <LinkWithArrow
+                to={`/`}
+                label="#56 in Leadearboard"
+                className={styles.myProfileLink}
+              />
             </p>
           </div>
 

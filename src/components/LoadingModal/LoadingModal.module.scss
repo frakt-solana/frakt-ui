@@ -1,13 +1,13 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
   font: var(--font-btn-mid);
   color: var(--white-color);
 }
 
 .infoTitle {
   font: var(--font-title-2);
+  padding-bottom: 15px;
 
   @media screen and (max-width: 450px) {
     font-size: 35px;

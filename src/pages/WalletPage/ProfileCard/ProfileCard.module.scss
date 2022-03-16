@@ -129,9 +129,8 @@
 
 .scrollContent {
   overflow: auto;
-  height: 95px;
+  height: 110px;
   width: 100%;
-  background: linear-gradient(0deg, #191919 0%, rgba(25, 25, 25, 0) 100%);
 
   &::-webkit-scrollbar {
     width: 9px;
@@ -144,33 +143,33 @@
 
 .leadearboard {
   color: var(--accent-color-1);
-  margin-bottom: 3px;
-  font-family: Oxanium;
-  font-size: 14px;
-  font-weight: 400;
   cursor: pointer;
+  margin-bottom: 3px;
   transition: opacity var(--transition-1);
+}
 
-  .icon {
-    width: 8px;
-    height: 8px;
-    margin-left: 6px;
-    margin-bottom: 1px;
-
-    path {
-      fill: var(--accent-color-1);
-    }
-  }
+.myProfileLink {
+  color: var(--accent-color-1);
+  margin-top: 3px;
+  font: var(--font-text-5);
+  font-weight: 400;
 
   &::after {
-    content: '';
-    display: block;
-    width: 100%;
-    background: var(--accent-color-1);
-    height: 1px;
+    background-color: var(--accent-color-1);
   }
 
   &:hover {
-    opacity: 0.7;
+    color: var(--accent-color-1);
+  }
+
+  svg {
+    margin-left: 5px;
+    margin-bottom: 1px;
+    width: 10px;
+    height: 10px;
+  }
+
+  svg path {
+    fill: var(--accent-color-1);
   }
 }
