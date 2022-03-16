@@ -1,18 +1,8 @@
-.layout {
-  @media screen and (max-width: 767px) {
-    padding-top: 38px;
-  }
-}
-
-.notConnected {
-  max-width: 100%;
-}
-
-.wrapper {
+.root {
   display: flex;
   align-items: flex-start;
   gap: 30px;
-  margin-top: 150px;
+  margin-top: 32px;
 
   @media screen and (max-width: 1440px) {
     flex-wrap: wrap;

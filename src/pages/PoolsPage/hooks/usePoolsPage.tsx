@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import BN from 'bn.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { ArrowDownSmallIcon } from '../../../icons';
 import { useDebounce, usePolling } from '../../../hooks';
@@ -14,10 +15,9 @@ import {
   FusionPoolInfoByMint,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
-import styles from '../styles.module.scss';
+import styles from '../PoolsPage.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
 import { POOL_INFO_POLLING_INTERVAL } from '../constants';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 export type LpBalanceByMint = Map<string, BN>;
 

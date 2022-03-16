@@ -9,7 +9,7 @@ import {
 import { AccountInfoParsed } from '../../../../../utils/accounts';
 import Rewards from '../../../Rewards';
 import Withdraw from '../../../Withdraw';
-import styles from './styles.module.scss';
+import styles from './PoolDetailsWalletConnected.module.scss';
 
 interface PoolDetailsWalletConnectedProps {
   setDepositModalVisible: (depositModalVisible: boolean) => void;

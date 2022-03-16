@@ -2,7 +2,6 @@ import { useParams } from 'react-router';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { PublicKey } from '@solana/web3.js';
 
-import { AppLayout } from '../../../components/Layout/AppLayout';
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -19,8 +18,7 @@ import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
 import { useNftPoolTokenBalance, useNFTsFiltering } from '../hooks';
-import { SidebarInner } from '../components/SidebarInner';
-import { Container } from '../../../components/Layout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 
 export const NFTPoolSellPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -55,7 +53,7 @@ export const NFTPoolSellPage: FC = () => {
   }, [connected, userTokensLoading, nftsLoading]);
 
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
-  const [isSidebar, setIsSidebar] = useState<boolean>(false);
+  const [, setIsSidebar] = useState<boolean>(false);
 
   const onSelect = (nft: UserNFT) => {
     setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));
@@ -81,13 +79,28 @@ export const NFTPoolSellPage: FC = () => {
 
   const loading = userTokensLoading || nftsLoading;
 
-  const { control, nfts, setSearch } = useNFTsFiltering(rawNFTs);
+  const { control, nfts } = useNFTsFiltering(rawNFTs);
 
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
 
+  const Header = () => <HeaderSell poolPublicKey={poolPubkey} />;
+
   return (
-    <AppLayout className={styles.layout}>
+    <NFTPoolPageLayout CustomHeader={loading ? null : Header}>
+      {!connected && <WalletNotConnected />}
+      {connected && !loading && (
+        <NFTPoolNFTsList
+          nfts={nfts}
+          setIsSidebar={setIsSidebar}
+          control={control}
+          sortFieldName={FilterFormInputsNames.SORT}
+          sortValues={SORT_VALUES}
+          onCardClick={onSelect}
+          selectedNft={selectedNft}
+        />
+      )}
+      {connected && loading && <Loader size="large" />}
       <div className={styles.modalWrapper}>
         <SellingModal
           nft={selectedNft}
@@ -96,35 +109,6 @@ export const NFTPoolSellPage: FC = () => {
           poolTokenAvailable={poolTokenAvailable}
         />
       </div>
-      <Container>
-        <div className={styles.wrapper}>
-          <SidebarInner
-            isSidebar={isSidebar}
-            setIsSidebar={setIsSidebar}
-            setSearch={setSearch}
-          />
-
-          <div className={styles.content}>
-            <HeaderSell poolPublicKey={poolPubkey} />
-
-            {!connected && <WalletNotConnected />}
-
-            {connected && !loading && (
-              <NFTPoolNFTsList
-                nfts={nfts}
-                setIsSidebar={setIsSidebar}
-                control={control}
-                sortFieldName={FilterFormInputsNames.SORT}
-                sortValues={SORT_VALUES}
-                onCardClick={onSelect}
-                selectedNft={selectedNft}
-              />
-            )}
-
-            {connected && loading && <Loader size="large" />}
-          </div>
-        </div>
-      </Container>
-    </AppLayout>
+    </NFTPoolPageLayout>
   );
 };

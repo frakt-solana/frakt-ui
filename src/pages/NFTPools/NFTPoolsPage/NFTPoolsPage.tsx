@@ -5,7 +5,6 @@ import { SearchOutlined } from '@ant-design/icons';
 
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Select } from '../../../components/Select/Select';
-import { Sidebar } from './components/Sidebar';
 import { PoolsList } from './components/PoolsList';
 import { AppLayout } from '../../../components/Layout/AppLayout';
 import {
@@ -35,50 +34,40 @@ export const NFTPoolsPage: FC = () => {
     return rawPools.filter(
       ({ state, publicKey }) =>
         state === CommunityPoolState.ACTIVE &&
-        publicKey.toBase58() === '4wL5ftfJV6HxC5QoYc2C6jUAdDAVQM8tX7JkWRouUAB8',
+        publicKey.toBase58() === 'Gsyy57YjrRzKiFa6p5T6BBXmoGB3qEo8Q1hewijLRRWm',
     );
   }, [rawPools]);
 
   return (
-    <AppLayout className={styles.layout}>
-      <Container>
-        <div className={styles.wrapper}>
-          <Sidebar />
+    <AppLayout>
+      <Container component="main" className={styles.container}>
+        <h1 className={styles.title}>Pools</h1>
+        <h2 className={styles.subtitle}>Buy, sell, and swap NFTs instantly</h2>
 
-          <div className={styles.content}>
-            <h1 className={styles.title}>Pools</h1>
-            <h2 className={styles.subtitle}>
-              Buy, sell, and swap NFTs instantly
-            </h2>
-
-            <div className={styles.searchWrapper}>
-              <Input
-                className={styles.searchInput}
-                placeholder="Search pools"
-                prefix={<SearchOutlined className={styles.searchIcon} />}
-              />
-              <div className={styles.sortWrapper}>
-                <Controller
-                  control={control}
+        <div className={styles.searchWrapper}>
+          <Input
+            className={styles.searchInput}
+            placeholder="Search pools"
+            prefix={<SearchOutlined className={styles.searchIcon} />}
+          />
+          <div className={styles.sortWrapper}>
+            <Controller
+              control={control}
+              name="sort"
+              render={({ field: { ref, ...field } }) => (
+                <Select
+                  className={styles.sortingSelect}
+                  valueContainerClassName={styles.sortingSelectValueContainer}
+                  label="Sort by"
                   name="sort"
-                  render={({ field: { ref, ...field } }) => (
-                    <Select
-                      className={styles.sortingSelect}
-                      valueContainerClassName={
-                        styles.sortingSelectValueContainer
-                      }
-                      label="Sort by"
-                      name="sort"
-                      options={SORT_VALUES}
-                      {...field}
-                    />
-                  )}
+                  options={SORT_VALUES}
+                  {...field}
                 />
-              </div>
-            </div>
-            {loading ? <Loader size="large" /> : <PoolsList pools={pools} />}
+              )}
+            />
           </div>
         </div>
+        {loading ? <Loader size="large" /> : <PoolsList pools={pools} />}
       </Container>
     </AppLayout>
   );

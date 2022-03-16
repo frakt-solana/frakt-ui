@@ -2,9 +2,6 @@ import { FC, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { shuffle } from 'lodash';
 
-import styles from './NFTPoolBuyPage.module.scss';
-import { SidebarInner } from '../components/SidebarInner';
-import { AppLayout } from '../../../components/Layout/AppLayout';
 import { HeaderBuy } from './components/HeaderBuy';
 import { usePublicKeyParam } from '../../../hooks';
 import {
@@ -20,7 +17,7 @@ import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { useLotteryTicketSubscription, useNFTsFiltering } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
-import { Container } from '../../../components/Layout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 
 export const getNftImagesForLottery = (
   nfts: UserNFTWithCollection[],
@@ -44,7 +41,7 @@ export const NFTPoolBuyPage: FC = () => {
 
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
 
-  const [isSidebar, setIsSidebar] = useState<boolean>(false);
+  const [, setIsSidebar] = useState<boolean>(false);
 
   const rawNFTs: UserNFTWithCollection[] = useMemo(() => {
     if (pool) {
@@ -56,7 +53,7 @@ export const NFTPoolBuyPage: FC = () => {
     return [];
   }, [pool]);
 
-  const { control, nfts, setSearch } = useNFTsFiltering(rawNFTs);
+  const { control, nfts } = useNFTsFiltering(rawNFTs);
 
   const { getLotteryTicket } = useNftPools();
   const { subscribe } = useLotteryTicketSubscription();
@@ -88,33 +85,23 @@ export const NFTPoolBuyPage: FC = () => {
       });
   };
 
+  const loading = poolLoading || !pool;
+
+  const Header = () => <HeaderBuy pool={pool} onBuy={onBuy} />;
+
   return (
-    <AppLayout className={styles.layout}>
-      <Container component="div">
-        <div className={styles.wrapper}>
-          {poolLoading || !pool ? (
-            <Loader size="large" />
-          ) : (
-            <>
-              <SidebarInner
-                isSidebar={isSidebar}
-                setIsSidebar={setIsSidebar}
-                setSearch={setSearch}
-              />
-              <div className={styles.content}>
-                <HeaderBuy pool={pool} onBuy={onBuy} />
-                <NFTPoolNFTsList
-                  nfts={nfts}
-                  setIsSidebar={setIsSidebar}
-                  control={control}
-                  sortFieldName={FilterFormInputsNames.SORT}
-                  sortValues={SORT_VALUES}
-                />
-              </div>
-            </>
-          )}
-        </div>
-      </Container>
+    <NFTPoolPageLayout CustomHeader={loading ? null : Header}>
+      {loading ? (
+        <Loader size="large" />
+      ) : (
+        <NFTPoolNFTsList
+          nfts={nfts}
+          setIsSidebar={setIsSidebar}
+          control={control}
+          sortFieldName={FilterFormInputsNames.SORT}
+          sortValues={SORT_VALUES}
+        />
+      )}
       {isLotteryModalVisible && (
         <LotteryModal
           setIsVisible={setIsLotteryModalVisible}
@@ -123,6 +110,6 @@ export const NFTPoolBuyPage: FC = () => {
           nftImages={getNftImagesForLottery(nfts)}
         />
       )}
-    </AppLayout>
+    </NFTPoolPageLayout>
   );
 };

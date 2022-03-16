@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import {
   getLotteryTicket as getLotteryTicketTxn,
   Provider,
-} from 'community-pools-client-library-v2';
+} from '@frakters/community-pools-client-library-v2';
 
 import { NftPoolData } from './../../../utils/cacher/nftPools';
 import {
@@ -40,6 +40,13 @@ export const rawGetLotteryTicket = async ({
       communityPool: pool.publicKey,
       userFractionsTokenAccount,
       fractionMint: pool.fractionMint,
+      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion: new PublicKey(
+        'C56Dq4P8kYpzt984PNBgQPb4v7vDdTaMNtucNYz9iSzT',
+      ),
+      leaderboardProgramId: new PublicKey(
+        process.env.LEADERBOARD_PROGRAM_PUBKEY,
+      ),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),

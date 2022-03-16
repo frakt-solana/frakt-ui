@@ -7,7 +7,7 @@ import { useUserSplAccount } from '../../../utils/accounts';
 import DepositModal from '../../../components/DepositModal';
 import { ChevronDownIcon } from '../../../icons';
 import { SOL_TOKEN } from '../../../utils';
-import styles from './styles.module.scss';
+import styles from './Pool.module.scss';
 import {
   formatNumberWithSpaceSeparator,
   PoolData,

@@ -1,99 +1,20 @@
-.positionWrapper {
-  position: fixed;
-  top: 50px;
-  height: 0;
-  left: 0;
-  right: 0;
-  z-index: 7;
-  transition: top 0.2s ease-out;
-
-  @media screen and (max-width: 1439px) {
-    right: 10px;
-  }
-
-  @media screen and (max-width: 1024px) {
-    right: 0;
-  }
-
-  .container {
-    @media screen and (max-width: 700px) {
-      padding: 0;
-
-      &::before {
-        display: none;
-      }
-    }
-  }
-
-  @media screen and (max-width: 500px) {
-    top: 37px;
-  }
-}
-
-.headerHidden {
-  top: 0;
-  transition: top 0.2s ease-in;
-
-  @media screen and (max-width: 1400px) {
-    top: -103px;
-
-    .randomWrapper {
-      padding-bottom: 0;
-    }
-  }
-
-  @media screen and (max-width: 1400px) {
-    top: -93px;
-
-    .randomWrapper {
-      padding-bottom: 10px;
-    }
-  }
-
-  @media screen and (max-width: 767px) {
-    top: -73px;
-  }
-
-  @media screen and (max-width: 373px) {
-    top: -103px;
-  }
-}
-
 .container {
   display: flex;
   pointer-events: none;
-  max-width: 1430px;
   width: 100%;
   padding-left: 15px;
   padding-right: 15px;
   margin-left: auto;
   margin-right: auto;
-
-  &::before {
-    display: block;
-    content: '';
-    width: 229px;
-    flex-shrink: 0;
-    height: 0;
-
-    @media screen and (max-width: 1439px) {
-      width: 234px;
-    }
-
-    @media screen and (max-width: 700px) {
-      width: 45px;
-    }
-  }
 }
 
-.wrapper {
+.header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   background-color: var(--color-gray-7);
   width: 100%;
   pointer-events: auto;
-
   min-height: 108px;
 }
 

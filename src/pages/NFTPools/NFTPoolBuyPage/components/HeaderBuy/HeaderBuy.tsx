@@ -20,12 +20,12 @@ export const HeaderBuy: FC<HeaderBuyProps> = ({ pool, onBuy }) => {
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
 
-  const poolImage = pool.safetyBoxes.filter(
+  const poolImage = pool?.safetyBoxes.filter(
     ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
   )?.[0]?.nftImage;
 
   return (
-    <NFTPoolsHeaderInner poolPublicKey={pool.publicKey.toBase58()}>
+    <NFTPoolsHeaderInner poolPublicKey={pool?.publicKey.toBase58()}>
       <div className={styles.randomWrapper}>
         <div className={styles.questionWrapper}>
           <img
