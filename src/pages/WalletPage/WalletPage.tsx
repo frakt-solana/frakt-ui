@@ -7,12 +7,12 @@ import { useWalletPage, WalletTabs } from './hooks';
 import { Container } from '../../components/Layout';
 import VaultCard from '../../components/VaultCard';
 import { Loader } from '../../components/Loader';
-import LoanCard from '../../components/LoanCard';
 import { ProfileCard } from './ProfileCard';
 import { FRKT_TOKEN } from '../../utils';
 import styles from './styles.module.scss';
 import { PATHS } from '../../constants';
 import { TokenCard } from './TokenCard';
+import { LoansList } from './LoansList';
 
 const WalletPage: FC = () => {
   const {
@@ -76,19 +76,7 @@ const WalletPage: FC = () => {
                     <Loader size={'large'} />
                   </div>
                 ) : (
-                  <div className={styles.vaults}>
-                    {!rawNfts.length && (
-                      <p className={styles.emptyMessage}>No loans found</p>
-                    )}
-                    {rawNfts.map((nft) => (
-                      <LoanCard
-                        key={nft.mint}
-                        imageUrl={nft.metadata.image}
-                        name={nft.metadata.name}
-                        ltvPrice={'33'}
-                      />
-                    ))}
-                  </div>
+                  <LoansList nfts={rawNfts} />
                 )}
               </>
             )}

@@ -7,10 +7,10 @@ import Button from '../Button';
 
 interface NFTCheckboxInterface {
   className?: string;
-  selected?: boolean;
   imageUrl?: string;
-  name: string;
+  name?: string;
   ltvPrice?: string;
+  onDetailsClick?: () => void;
 }
 
 const LoanCard: FC<NFTCheckboxInterface> = ({
@@ -18,6 +18,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
   imageUrl,
   name,
   ltvPrice,
+  onDetailsClick,
 }) => {
   const timeLeft = {
     days: '2',
@@ -29,7 +30,13 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
   const timePercent = '40';
 
   return (
-    <div className={styles.wrapper}>
+    <div
+      className={styles.wrapper}
+      onClick={(event) => {
+        onDetailsClick();
+        event.stopPropagation();
+      }}
+    >
       <div className={classNames([styles.root, className])}>
         <div
           className={styles.root__image}

@@ -1,0 +1,15 @@
+.loansList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(280px, 1fr));
+  grid-gap: 24px;
+  gap: 16px;
+  align-items: stretch;
+
+  @media screen and (max-width: 1440px) {
+    grid-template-columns: repeat(2, minmax(158px, 1fr));
+  }
+
+  @media screen and (max-width: 530px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
+}
