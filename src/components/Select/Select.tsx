@@ -2,6 +2,7 @@ import ReactSelect from 'react-select';
 import classNames from 'classnames';
 
 import styles from './styles.module.scss';
+import { FocusEventHandler } from 'react';
 
 interface Option {
   label: JSX.Element | string;
@@ -15,12 +16,14 @@ interface SelectProps {
   onChange?: () => void;
   value?: Option;
   label?: string;
+  onFocus?: FocusEventHandler<HTMLInputElement>;
 }
 
 export const Select = ({
   className = '',
   valueContainerClassName = '',
   label,
+  onFocus,
   ...props
 }: SelectProps): JSX.Element => {
   const ValueContainer = (valueContainerProps: any) => (
@@ -43,6 +46,7 @@ export const Select = ({
       maxMenuHeight={500}
       className={classNames(styles.select, className)}
       classNamePrefix="custom-select"
+      onFocus={onFocus}
     />
   );
 };

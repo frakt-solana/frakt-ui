@@ -25,6 +25,7 @@ const WalletPage: FC = () => {
     nftsLoading,
     vaultsLoading,
   } = useWalletPage();
+
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
@@ -77,7 +78,7 @@ const WalletPage: FC = () => {
                 ) : (
                   <div className={styles.vaults}>
                     {!rawNfts.length && (
-                      <p className={styles.emptyMessage}>No vaults found</p>
+                      <p className={styles.emptyMessage}>No loans found</p>
                     )}
                     {rawNfts.map((nft) => (
                       <LoanCard

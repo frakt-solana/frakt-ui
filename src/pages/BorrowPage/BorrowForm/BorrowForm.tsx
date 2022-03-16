@@ -57,10 +57,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
           </div>
           <div className={styles.fieldWrapper}>
             <Form.Item name={SelectControlsNames.LTV_VALUES} validateFirst>
-              <div
-                className={styles.formContent}
-                onClick={() => setActiveLine(SelectControlsNames.LTV_VALUES)}
-              >
+              <div className={styles.formContent}>
                 <p className={styles.formTitle}>LTV</p>
                 <Controller
                   control={formControl}
@@ -71,6 +68,9 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                       className={styles.select}
                       name={SelectControlsNames.LTV_VALUES}
                       options={LTV_VALUES}
+                      onFocus={() =>
+                        setActiveLine(SelectControlsNames.LTV_VALUES)
+                      }
                       {...field}
                     />
                   )}
@@ -87,12 +87,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
           </div>
           <div className={styles.fieldWrapperDouble}>
             <Form.Item name={SelectControlsNames.RETURN_PERIOD_VALUES}>
-              <div
-                className={styles.formContent}
-                onClick={() =>
-                  setActiveLine(SelectControlsNames.RETURN_PERIOD_VALUES)
-                }
-              >
+              <div className={styles.formContent}>
                 <p className={styles.formTitle}>Return period</p>
                 <Controller
                   control={formControl}
@@ -103,6 +98,9 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                       className={styles.select}
                       name={SelectControlsNames.RETURN_PERIOD_VALUES}
                       options={RETURN_PERIOD_VALUES}
+                      onFocus={() =>
+                        setActiveLine(SelectControlsNames.RETURN_PERIOD_VALUES)
+                      }
                       {...field}
                     />
                   )}
