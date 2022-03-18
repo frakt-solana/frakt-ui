@@ -1,7 +1,5 @@
 import { FC, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Select } from '../../../components/Select/Select';
@@ -16,6 +14,7 @@ import styles from './NFTPoolsPage.module.scss';
 import { Loader } from '../../../components/Loader';
 import { CommunityPoolState } from '../../../utils/cacher/nftPools';
 import { Container } from '../../../components/Layout';
+import { SearchInput } from '../../../components/SearchInput';
 
 export const NFTPoolsPage: FC = () => {
   const { control /* watch */ } = useForm({
@@ -44,10 +43,12 @@ export const NFTPoolsPage: FC = () => {
         <h2 className={styles.subtitle}>Buy, sell, and swap NFTs instantly</h2>
 
         <div className={styles.searchWrapper}>
-          <Input
+          <SearchInput
+            onChange={(event) =>
+              /*searchItems(event.target.value || '')*/ event
+            }
             className={styles.searchInput}
-            placeholder="Search pools"
-            prefix={<SearchOutlined className={styles.searchIcon} />}
+            placeholder="Search by pool name"
           />
           <div className={styles.sortWrapper}>
             <Controller

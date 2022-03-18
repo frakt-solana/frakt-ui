@@ -34,31 +34,14 @@
   @media screen and (max-width: 370px) {
     flex-wrap: wrap;
   }
-
-  :global {
-    .ant-input-affix-wrapper {
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      padding-left: 1px;
-      border-bottom: 1px solid var(--color-gray-03);
-    }
-  }
 }
 
 .searchInput {
-  font: var(--font-text-3);
-  max-width: 280px;
-  outline: none;
+  max-width: 330px;
   margin-right: 20px;
-  flex-shrink: 3;
 
   @media screen and (max-width: 370px) {
     margin-bottom: 20px;
-  }
-
-  &::placeholder {
-    color: var(--color-gray-03);
   }
 }
 
