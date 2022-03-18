@@ -14,11 +14,15 @@ import {
 
 import { getTokenAccount } from '../../../utils/accounts';
 import { wrapAsyncWithTryCatch } from '../../../utils';
+import { UserNFT } from '../../userTokens';
+import {
+  getWhitelistedCreatorsDictionary,
+  isNFTWhitelistedByCreator,
+} from '../nftPools.helpers';
 
 export interface DepositNftToCommunityPoolParams {
   pool: NftPoolData;
-  nftMint: PublicKey;
-  byCreator?: boolean;
+  nft: UserNFT;
   afterTransaction?: () => void;
 }
 
@@ -30,29 +34,35 @@ export const rawDepositNftToCommunityPool = async ({
   connection,
   wallet,
   pool,
-  nftMint,
-  byCreator = false,
+  nft,
   afterTransaction,
 }: DepositNftToCommunityPoolRawParams): Promise<void> => {
   const { publicKey: nftUserTokenAccount } = await getTokenAccount({
-    tokenMint: nftMint,
+    tokenMint: new PublicKey(nft.mint),
     owner: wallet.publicKey,
     connection,
   });
 
-  const metadataInfo = byCreator
-    ? await deriveMetadataPubkeyFromMint(nftMint)
-    : nftMint;
+  const whitelistedCreatorsDictionary = getWhitelistedCreatorsDictionary(pool);
 
-  const poolWhitelist = pool.poolWhitelist.find(
-    ({ whitelistedAddress }) =>
-      whitelistedAddress.toBase58() === nftMint.toBase58(),
-  ); //! Add condition for creator
-  //TODO
+  const whitelistedCreator: string | null = isNFTWhitelistedByCreator(
+    nft,
+    whitelistedCreatorsDictionary,
+  );
+
+  const metadataInfo = whitelistedCreator
+    ? await deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
+    : new PublicKey(nft.mint);
+
+  const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
+    return whitelistedCreator
+      ? whitelistedAddress.toBase58() === whitelistedCreator
+      : whitelistedAddress.toBase58() === nft.mint;
+  });
 
   await depositNftToCommunityPoolTxn(
     {
-      nftMint: nftMint,
+      nftMint: new PublicKey(nft.mint),
       communityPool: pool.publicKey,
       poolWhitelist: poolWhitelist.publicKey,
       nftUserTokenAccount,
@@ -60,7 +70,7 @@ export const rawDepositNftToCommunityPool = async ({
       metadataInfo,
       fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       tokenMintInputFusion: new PublicKey(
-        'C56Dq4P8kYpzt984PNBgQPb4v7vDdTaMNtucNYz9iSzT',
+        'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
       ),
       leaderboardProgramId: new PublicKey(
         process.env.LEADERBOARD_PROGRAM_PUBKEY,

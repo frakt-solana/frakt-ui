@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import styles from './HeaderBuy.module.scss';
 import { QuestionIcon } from '../../../../../icons';
@@ -16,7 +16,7 @@ interface HeaderBuyProps {
   onBuy: () => void;
 }
 
-export const HeaderBuy: FC<HeaderBuyProps> = ({ pool, onBuy }) => {
+const HeaderBuyComponent: FC<HeaderBuyProps> = ({ pool, onBuy }) => {
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
 
@@ -25,7 +25,10 @@ export const HeaderBuy: FC<HeaderBuyProps> = ({ pool, onBuy }) => {
   )?.[0]?.nftImage;
 
   return (
-    <NFTPoolsHeaderInner poolPublicKey={pool?.publicKey.toBase58()}>
+    <NFTPoolsHeaderInner
+      poolPublicKey={pool?.publicKey.toBase58()}
+      className={styles.header}
+    >
       <div className={styles.randomWrapper}>
         <div className={styles.questionWrapper}>
           <img
@@ -43,3 +46,5 @@ export const HeaderBuy: FC<HeaderBuyProps> = ({ pool, onBuy }) => {
     </NFTPoolsHeaderInner>
   );
 };
+
+export const HeaderBuy = React.memo(HeaderBuyComponent);

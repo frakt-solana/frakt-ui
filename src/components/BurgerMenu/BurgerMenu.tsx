@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import styles from './styles.module.scss';
+import styles from './BurgerMenu.module.scss';
 import { AppNavigation } from '../Header/AppNavigation';
 
 interface BurgerMenuProps {

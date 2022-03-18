@@ -7,13 +7,17 @@ import { SolanaIcon } from '../../../icons';
 import { POOL_HISTORY_DATA } from './tempData';
 import { HistoryListItem } from './components/HistoryListItem';
 import { usePublicKeyParam } from '../../../hooks';
-import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
+import {
+  NFTPoolPageLayout,
+  PoolPageType,
+} from '../components/NFTPoolPageLayout';
 import {
   useNftPool,
   useNftPoolsInitialFetch,
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
+import { useCallback } from 'react';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -21,14 +25,22 @@ export const NFTPoolInfoPage = (): JSX.Element => {
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
 
-  const { loading: poolLoading } = useNftPool(poolPubkey);
+  const { pool, loading: poolLoading } = useNftPool(poolPubkey);
 
   const loading = poolLoading;
 
-  const Header = () => <HeaderInfo poolPublicKey={poolPubkey} />;
+  const poolPublicKey = pool?.publicKey?.toBase58();
+  const Header = useCallback(
+    () => <HeaderInfo poolPublicKey={poolPubkey} />,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [poolPublicKey],
+  );
 
   return (
-    <NFTPoolPageLayout CustomHeader={loading ? null : Header}>
+    <NFTPoolPageLayout
+      CustomHeader={loading ? null : Header}
+      pageType={PoolPageType.INFO}
+    >
       {loading ? (
         <Loader size="large" />
       ) : (
@@ -96,8 +108,8 @@ export const NFTPoolInfoPage = (): JSX.Element => {
                   <span>date</span>
                 </div>
               </li>
-              {POOL_HISTORY_DATA.map((item) => (
-                <HistoryListItem key={item.itemId} itemData={item} />
+              {POOL_HISTORY_DATA.map((item, idx) => (
+                <HistoryListItem key={idx} itemData={item} />
               ))}
             </ul>
           </div>

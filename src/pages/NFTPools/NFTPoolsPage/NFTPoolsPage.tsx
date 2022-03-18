@@ -32,9 +32,8 @@ export const NFTPoolsPage: FC = () => {
 
   const pools = useMemo(() => {
     return rawPools.filter(
-      ({ state, publicKey }) =>
-        state === CommunityPoolState.ACTIVE &&
-        publicKey.toBase58() === 'Gsyy57YjrRzKiFa6p5T6BBXmoGB3qEo8Q1hewijLRRWm',
+      ({ state /* publicKey */ }) => state === CommunityPoolState.ACTIVE,
+      // && publicKey.toBase58() === 'Gsyy57YjrRzKiFa6p5T6BBXmoGB3qEo8Q1hewijLRRWm',
     );
   }, [rawPools]);
 

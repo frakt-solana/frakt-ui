@@ -1,1 +1,1 @@
-export { HeaderBuy } from './HeaderBuy';
+export * from './HeaderBuy';

@@ -1,6 +1,5 @@
 import { useParams } from 'react-router';
-import { FC, useEffect, useMemo, useState } from 'react';
-import { PublicKey } from '@solana/web3.js';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
@@ -9,6 +8,7 @@ import { WalletNotConnected } from '../components/WalletNotConnected';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import styles from './NFTPoolSellPage.module.scss';
 import {
+  filterWhitelistedNFTs,
   useNftPool,
   useNftPools,
   useNftPoolsInitialFetch,
@@ -18,7 +18,10 @@ import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
 import { useNftPoolTokenBalance, useNFTsFiltering } from '../hooks';
-import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
+import {
+  NFTPoolPageLayout,
+  PoolPageType,
+} from '../components/NFTPoolPageLayout';
 
 export const NFTPoolSellPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -28,7 +31,12 @@ export const NFTPoolSellPage: FC = () => {
 
   const { depositNftToCommunityPool } = useNftPools();
 
-  const { pool, whitelistedMintsDictionary } = useNftPool(poolPubkey);
+  const {
+    pool,
+    whitelistedMintsDictionary,
+    whitelistedCreatorsDictionary,
+    loading: poolLoading,
+  } = useNftPool(poolPubkey);
   const { connected } = useWallet();
 
   const {
@@ -65,7 +73,7 @@ export const NFTPoolSellPage: FC = () => {
     //TODO Remove NFT from list after successfull selling
     depositNftToCommunityPool({
       pool,
-      nftMint: new PublicKey(selectedNft?.mint),
+      nft: selectedNft,
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
@@ -73,23 +81,35 @@ export const NFTPoolSellPage: FC = () => {
     });
   };
 
-  const rawNFTs = useMemo(() => {
-    return rawNfts.filter(({ mint }) => !!whitelistedMintsDictionary[mint]);
-  }, [rawNfts, whitelistedMintsDictionary]);
+  const whitelistedNFTs = useMemo(() => {
+    return filterWhitelistedNFTs(
+      rawNfts,
+      whitelistedMintsDictionary,
+      whitelistedCreatorsDictionary,
+    );
+  }, [rawNfts, whitelistedMintsDictionary, whitelistedCreatorsDictionary]);
 
-  const loading = userTokensLoading || nftsLoading;
+  const contentLoading = userTokensLoading || nftsLoading;
 
-  const { control, nfts } = useNFTsFiltering(rawNFTs);
+  const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
 
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
 
-  const Header = () => <HeaderSell poolPublicKey={poolPubkey} />;
+  const poolPublicKey = pool?.publicKey?.toBase58();
+  const Header = useCallback(
+    () => <HeaderSell poolPublicKey={poolPubkey} />,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [poolPublicKey],
+  );
 
   return (
-    <NFTPoolPageLayout CustomHeader={loading ? null : Header}>
+    <NFTPoolPageLayout
+      CustomHeader={poolLoading ? null : Header}
+      pageType={PoolPageType.SELL}
+    >
       {!connected && <WalletNotConnected />}
-      {connected && !loading && (
+      {connected && !contentLoading && (
         <NFTPoolNFTsList
           nfts={nfts}
           setIsSidebar={setIsSidebar}
@@ -100,7 +120,7 @@ export const NFTPoolSellPage: FC = () => {
           selectedNft={selectedNft}
         />
       )}
-      {connected && loading && <Loader size="large" />}
+      {connected && contentLoading && <Loader size="large" />}
       <div className={styles.modalWrapper}>
         <SellingModal
           nft={selectedNft}

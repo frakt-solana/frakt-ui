@@ -25,7 +25,7 @@ enum Token {
 }
 
 enum Price {
-  SOL = 14.84,
+  SOL = 0.001,
   POOL_TOKEN = 0.98,
 }
 

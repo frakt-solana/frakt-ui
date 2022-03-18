@@ -1,6 +1,5 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { PublicKey } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import styles from './NFTPoolSwapPage.module.scss';
@@ -9,6 +8,7 @@ import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { WalletNotConnected } from '../components/WalletNotConnected';
 import { usePublicKeyParam } from '../../../hooks';
 import {
+  filterWhitelistedNFTs,
   useNftPool,
   useNftPools,
   useNftPoolsInitialFetch,
@@ -26,7 +26,10 @@ import { SafetyDepositBoxState } from '../../../utils/cacher/nftPools';
 import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
 import { getNftImagesForLottery } from '../NFTPoolBuyPage';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
-import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
+import {
+  NFTPoolPageLayout,
+  PoolPageType,
+} from '../components/NFTPoolPageLayout';
 
 export const NFTPoolSwapPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -37,6 +40,7 @@ export const NFTPoolSwapPage: FC = () => {
   const {
     pool,
     whitelistedMintsDictionary,
+    whitelistedCreatorsDictionary,
     loading: poolLoading,
   } = useNftPool(poolPubkey);
   const { connected } = useWallet();
@@ -99,7 +103,7 @@ export const NFTPoolSwapPage: FC = () => {
   const onSwap = async () => {
     const lotteryTicketPubkey = await swapNft({
       pool,
-      nftMint: new PublicKey(selectedNft?.mint),
+      nft: selectedNft,
       afterDepositNftTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
@@ -122,23 +126,35 @@ export const NFTPoolSwapPage: FC = () => {
       });
   };
 
-  const rawNFTs = useMemo(() => {
-    return rawNfts.filter(({ mint }) => !!whitelistedMintsDictionary[mint]);
-  }, [rawNfts, whitelistedMintsDictionary]);
+  const whitelistedNFTs = useMemo(() => {
+    return filterWhitelistedNFTs(
+      rawNfts,
+      whitelistedMintsDictionary,
+      whitelistedCreatorsDictionary,
+    );
+  }, [rawNfts, whitelistedMintsDictionary, whitelistedCreatorsDictionary]);
 
-  const loading = userTokensLoading || nftsLoading || poolLoading;
+  const contentLoading = userTokensLoading || nftsLoading;
 
-  const { control, nfts } = useNFTsFiltering(rawNFTs);
+  const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
 
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
 
-  const Header = () => <HeaderSwap poolPublicKey={poolPubkey} />;
+  const poolPublicKey = pool?.publicKey?.toBase58();
+  const Header = useCallback(
+    () => <HeaderSwap poolPublicKey={poolPubkey} />,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [poolPublicKey],
+  );
 
   return (
-    <NFTPoolPageLayout CustomHeader={loading ? null : Header}>
+    <NFTPoolPageLayout
+      CustomHeader={poolLoading ? null : Header}
+      pageType={PoolPageType.SWAP}
+    >
       {!connected && <WalletNotConnected />}
-      {connected && !loading && (
+      {connected && !contentLoading && (
         <NFTPoolNFTsList
           nfts={nfts}
           setIsSidebar={setIsSidebar}
@@ -149,7 +165,7 @@ export const NFTPoolSwapPage: FC = () => {
           selectedNft={selectedNft}
         />
       )}
-      {connected && loading && <Loader size="large" />}
+      {connected && contentLoading && <Loader size="large" />}
 
       <div className={styles.modalWrapper}>
         <SwapModal

@@ -1,6 +1,22 @@
+.header {
+  @media screen and (max-width: 767px) {
+    min-height: 218px;
+  }
+}
+
 .randomWrapper {
   display: flex;
   align-items: center;
+
+  @media screen and (max-width: 767px) {
+    padding: 0 15px 20px;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    padding: 0 20px 30px;
+    width: 100%;
+  }
 }
 
 .questionWrapper {
@@ -11,7 +27,7 @@
   position: relative;
   margin-right: 20px;
 
-  @media screen and (max-width: 1050px) {
+  @media screen and (max-width: 1023px) {
     display: none;
   }
 
@@ -46,21 +62,15 @@
   gap: 20px;
   margin-right: auto;
 
-  @media screen and (max-width: 920px) {
-    flex-direction: column;
-    flex-grow: 1;
-  }
-
   @media screen and (max-width: 767px) {
     gap: 10px;
-  }
-
-  @media screen and (max-width: 700px) {
-    flex-direction: row;
-  }
-
-  @media screen and (max-width: 550px) {
     flex-direction: column;
+    margin-right: unset;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    flex-direction: row;
   }
 }
 
@@ -363,29 +373,34 @@
 .buySettings {
   flex-grow: 1;
   min-width: 221px;
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    min-width: unset;
+    width: 300px;
+    padding: 0;
+  }
 }
 
 .buyButton {
   font: var(--font-text-3);
-  width: 222px;
+  width: 180px;
   height: 43px;
   background-color: var(--accent-color-1);
   border: 1px solid var(--accent-color-1);
   cursor: pointer;
-  margin-right: 30px;
   flex-grow: 1;
-
-  @media screen and (max-width: 1400px) {
-    margin-right: 0;
-  }
-
-  @media screen and (max-width: 920px) {
-    width: auto;
-  }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  @media screen and (max-width: 767px) {
+    width: 100%;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    width: 136px;
   }
 }
 

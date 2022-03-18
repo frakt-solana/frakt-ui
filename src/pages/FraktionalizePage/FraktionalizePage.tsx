@@ -116,6 +116,7 @@ const FraktionalizePage = (): JSX.Element => {
     closeTxnModal();
     setTxnModalState('loading');
   };
+
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar

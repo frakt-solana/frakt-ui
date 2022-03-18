@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { shuffle } from 'lodash';
 
@@ -17,7 +17,10 @@ import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { useLotteryTicketSubscription, useNFTsFiltering } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
-import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
+import {
+  NFTPoolPageLayout,
+  PoolPageType,
+} from '../components/NFTPoolPageLayout';
 
 export const getNftImagesForLottery = (
   nfts: UserNFTWithCollection[],
@@ -87,10 +90,18 @@ export const NFTPoolBuyPage: FC = () => {
 
   const loading = poolLoading || !pool;
 
-  const Header = () => <HeaderBuy pool={pool} onBuy={onBuy} />;
+  const poolPublicKey = pool?.publicKey?.toBase58();
+  const Header = useCallback(
+    () => <HeaderBuy pool={pool} onBuy={onBuy} />,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [poolPublicKey],
+  );
 
   return (
-    <NFTPoolPageLayout CustomHeader={loading ? null : Header}>
+    <NFTPoolPageLayout
+      CustomHeader={loading ? null : Header}
+      pageType={PoolPageType.BUY}
+    >
       {loading ? (
         <Loader size="large" />
       ) : (
