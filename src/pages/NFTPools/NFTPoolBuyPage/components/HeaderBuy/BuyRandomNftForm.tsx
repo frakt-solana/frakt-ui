@@ -8,6 +8,8 @@ import SettingsIcon from '../../../../../icons/SettingsIcon';
 import { ArrowDownBtn, SolanaIcon } from '../../../../../icons';
 import { useNativeAccount } from '../../../../../utils/accounts';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { useWalletModal } from '../../../../../contexts/WalletModal';
+import Button from '../../../../../components/Button';
 
 const { Option } = Select;
 
@@ -31,6 +33,7 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
   poolTokenAvailable,
 }) => {
   const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
   const { account } = useNativeAccount();
 
   const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
@@ -53,7 +56,6 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
       : '';
 
   const isBtnDisabled =
-    !connected ||
     (token === Token.POOL_TOKEN && !poolTokenAvailable) ||
     (token === Token.SOL && solBalance < Price.SOL);
 
@@ -98,13 +100,14 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
         </div>
         <p className={styles.slippageInfo}>{slippageText}</p>
       </div>
-      <button
+      <Button
+        type="alternative"
         className={styles.buyButton}
-        onClick={onBuy}
-        disabled={isBtnDisabled}
+        onClick={connected ? onBuy : setVisible}
+        disabled={connected && isBtnDisabled}
       >
-        Buy
-      </button>
+        {connected ? 'Buy' : 'Connect wallet'}
+      </Button>
     </div>
   );
 };

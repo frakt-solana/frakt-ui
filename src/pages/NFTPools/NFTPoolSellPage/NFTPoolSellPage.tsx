@@ -108,7 +108,7 @@ export const NFTPoolSellPage: FC = () => {
       CustomHeader={poolLoading ? null : Header}
       pageType={PoolPageType.SELL}
     >
-      {!connected && <WalletNotConnected />}
+      {!connected && <WalletNotConnected type="sell" />}
       {connected && !contentLoading && (
         <NFTPoolNFTsList
           nfts={nfts}

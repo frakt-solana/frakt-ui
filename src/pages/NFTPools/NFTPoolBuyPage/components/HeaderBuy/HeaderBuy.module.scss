@@ -382,18 +382,13 @@
 }
 
 .buyButton {
-  font: var(--font-text-3);
   width: 180px;
   height: 43px;
-  background-color: var(--accent-color-1);
-  border: 1px solid var(--accent-color-1);
-  cursor: pointer;
+  padding: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-grow: 1;
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 
   @media screen and (max-width: 767px) {
     width: 100%;

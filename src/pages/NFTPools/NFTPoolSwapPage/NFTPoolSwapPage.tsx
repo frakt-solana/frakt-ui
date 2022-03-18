@@ -153,7 +153,7 @@ export const NFTPoolSwapPage: FC = () => {
       CustomHeader={poolLoading ? null : Header}
       pageType={PoolPageType.SWAP}
     >
-      {!connected && <WalletNotConnected />}
+      {!connected && <WalletNotConnected type="swap" />}
       {connected && !contentLoading && (
         <NFTPoolNFTsList
           nfts={nfts}

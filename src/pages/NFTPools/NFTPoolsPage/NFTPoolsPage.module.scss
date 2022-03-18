@@ -29,7 +29,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 32px;
+  padding-top: 32px;
+  margin-bottom: 20px;
 
   @media screen and (max-width: 370px) {
     flex-wrap: wrap;
