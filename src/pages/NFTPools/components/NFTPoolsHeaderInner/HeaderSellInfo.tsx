@@ -5,8 +5,8 @@ import { SolanaIcon } from '../../../../icons';
 import styles from './NFTPoolsHeaderInner.module.scss';
 
 interface HeaderSellInfoProps {
-  solanaPrice: number;
-  tokenPrice: number;
+  solanaPrice: string;
+  tokenPrice: string;
   poolTokenInfo: TokenInfo;
 }
 

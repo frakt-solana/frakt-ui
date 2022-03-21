@@ -16,12 +16,14 @@ interface HeaderBuyProps {
   pool: NftPoolData;
   onBuy: () => void;
   poolTokenInfo: TokenInfo;
+  poolTokenPrice: string;
 }
 
 const HeaderBuyComponent: FC<HeaderBuyProps> = ({
   pool,
   onBuy,
   poolTokenInfo,
+  poolTokenPrice,
 }) => {
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
@@ -48,6 +50,7 @@ const HeaderBuyComponent: FC<HeaderBuyProps> = ({
           poolTokenAvailable={poolTokenAvailable}
           onBuy={onBuy}
           poolTokenInfo={poolTokenInfo}
+          poolTokenPrice={poolTokenPrice}
         />
       </div>
     </NFTPoolsHeaderInner>

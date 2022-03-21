@@ -16,6 +16,8 @@ import { CommunityPoolState } from '../../../utils/cacher/nftPools';
 import { Container } from '../../../components/Layout';
 import { SearchInput } from '../../../components/SearchInput';
 import { useTokenListContext } from '../../../contexts/TokenList';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { usePoolTokensPrices } from '../hooks';
 
 export const NFTPoolsPage: FC = () => {
   const { control /* watch */ } = useForm({
@@ -27,11 +29,33 @@ export const NFTPoolsPage: FC = () => {
   // const sort = watch('sort');
 
   const { pools: rawPools, loading: poolsLoading } = useNftPools();
-  const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
+  const { loading: tokensMapLoading, fraktionTokensMap } =
     useTokenListContext();
 
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
+
+  const poolTokens = useMemo(() => {
+    if (rawPools.length && fraktionTokensMap.size) {
+      return rawPools.reduce((poolTokens: TokenInfo[], pool) => {
+        const poolTokenMint = pool?.fractionMint?.toBase58();
+        const tokenInfo = fraktionTokensMap.get(poolTokenMint);
+
+        if (tokenInfo) {
+          return [...poolTokens, tokenInfo];
+        }
+
+        return poolTokens;
+      }, []);
+    }
+
+    return [];
+  }, [rawPools, fraktionTokensMap]);
+
+  const {
+    priceByTokenMint: poolTokenPriceByTokenMint,
+    loading: pricesLoading,
+  } = usePoolTokensPrices(poolTokens);
 
   const pools = useMemo(() => {
     return rawPools.filter(
@@ -40,7 +64,7 @@ export const NFTPoolsPage: FC = () => {
     );
   }, [rawPools]);
 
-  const loading = tokensMapLoading || poolsLoading;
+  const loading = tokensMapLoading || poolsLoading || pricesLoading;
 
   return (
     <AppLayout>
@@ -76,7 +100,11 @@ export const NFTPoolsPage: FC = () => {
         {loading ? (
           <Loader size="large" />
         ) : (
-          <PoolsList pools={pools} tokensMap={tokensMap} />
+          <PoolsList
+            pools={pools}
+            tokensMap={fraktionTokensMap}
+            poolTokenPriceByTokenMint={poolTokenPriceByTokenMint}
+          />
         )}
       </Container>
     </AppLayout>

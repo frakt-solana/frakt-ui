@@ -17,7 +17,11 @@ import { usePublicKeyParam } from '../../../hooks';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
-import { useNftPoolTokenBalance, useNFTsFiltering } from '../hooks';
+import {
+  useNftPoolTokenBalance,
+  useNFTsFiltering,
+  usePoolTokensPrices,
+} from '../hooks';
 import {
   NFTPoolPageLayout,
   PoolPageType,
@@ -58,6 +62,11 @@ export const NFTPoolSellPage: FC = () => {
     rawUserTokensByMint,
     removeTokenOptimistic,
   } = useUserTokens();
+
+  const {
+    priceByTokenMint: poolTokenPriceByTokenMint,
+    loading: pricesLoading,
+  } = usePoolTokensPrices([poolTokenInfo]);
 
   useEffect(() => {
     if (
@@ -109,42 +118,55 @@ export const NFTPoolSellPage: FC = () => {
 
   const Header = useCallback(
     () => (
-      <HeaderSell poolPublicKey={poolPubkey} poolTokenInfo={poolTokenInfo} />
+      <HeaderSell
+        poolPublicKey={poolPubkey}
+        poolTokenInfo={poolTokenInfo}
+        poolTokenPrice={poolTokenPriceByTokenMint.get(poolTokenInfo?.address)}
+      />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [poolPublicKey],
+    [poolPublicKey, pricesLoading],
   );
 
-  const pageLoading = tokensMapLoading || poolLoading;
+  const pageLoading = tokensMapLoading || poolLoading || pricesLoading;
 
   return (
     <NFTPoolPageLayout
       CustomHeader={pageLoading ? null : Header}
       pageType={PoolPageType.SELL}
     >
-      {!connected && <WalletNotConnected type="sell" />}
-      {connected && !contentLoading && (
-        <NFTPoolNFTsList
-          nfts={nfts}
-          setIsSidebar={setIsSidebar}
-          control={control}
-          sortFieldName={FilterFormInputsNames.SORT}
-          sortValues={SORT_VALUES}
-          onCardClick={onSelect}
-          selectedNft={selectedNft}
-          poolName={poolTokenInfo?.name}
-        />
+      {pageLoading ? (
+        <Loader size="large" />
+      ) : (
+        <>
+          {!connected && <WalletNotConnected type="sell" />}
+          {connected && !contentLoading && (
+            <NFTPoolNFTsList
+              nfts={nfts}
+              setIsSidebar={setIsSidebar}
+              control={control}
+              sortFieldName={FilterFormInputsNames.SORT}
+              sortValues={SORT_VALUES}
+              onCardClick={onSelect}
+              selectedNft={selectedNft}
+              poolName={poolTokenInfo?.name}
+            />
+          )}
+          {connected && contentLoading && <Loader size="large" />}
+          <div className={styles.modalWrapper}>
+            <SellingModal
+              nft={selectedNft}
+              onDeselect={onDeselect}
+              onSubmit={onSell}
+              poolTokenAvailable={poolTokenAvailable}
+              poolTokenInfo={poolTokenInfo}
+              poolTokenPrice={poolTokenPriceByTokenMint.get(
+                poolTokenInfo?.address,
+              )}
+            />
+          </div>
+        </>
       )}
-      {connected && contentLoading && <Loader size="large" />}
-      <div className={styles.modalWrapper}>
-        <SellingModal
-          nft={selectedNft}
-          onDeselect={onDeselect}
-          onSubmit={onSell}
-          poolTokenAvailable={poolTokenAvailable}
-          poolTokenInfo={poolTokenInfo}
-        />
-      </div>
     </NFTPoolPageLayout>
   );
 };

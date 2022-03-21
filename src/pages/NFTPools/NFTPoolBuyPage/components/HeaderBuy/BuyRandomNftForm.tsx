@@ -18,6 +18,7 @@ interface BuyRandomNftFormProps {
   onBuy: () => void;
   poolTokenAvailable: boolean;
   poolTokenInfo: TokenInfo;
+  poolTokenPrice: string;
 }
 
 enum Token {
@@ -34,6 +35,7 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
   onBuy,
   poolTokenAvailable,
   poolTokenInfo,
+  poolTokenPrice,
 }) => {
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
@@ -51,11 +53,13 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
     poolTokenAvailable && setToken(Token.POOL_TOKEN);
   }, [poolTokenAvailable]);
 
-  const price = token === Token.SOL ? Price.SOL : Price.POOL_TOKEN;
+  const price = token === Token.SOL ? parseFloat(poolTokenPrice).toFixed(3) : 1;
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(Price.SOL * 1.02).toFixed(3)} SOL`
+      ? `* Max total (with slippage) = ${(
+          parseFloat(poolTokenPrice) * 1.01
+        ).toFixed(3)} SOL`
       : '';
 
   const isBtnDisabled =

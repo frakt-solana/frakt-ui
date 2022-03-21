@@ -11,9 +11,14 @@ import { TokenInfo } from '@solana/spl-token-registry';
 interface PoolsList {
   pools: NftPoolData[];
   tokensMap: Map<string, TokenInfo>;
+  poolTokenPriceByTokenMint: Map<string, string>;
 }
 
-export const PoolsList: FC<PoolsList> = ({ pools, tokensMap }) => {
+export const PoolsList: FC<PoolsList> = ({
+  pools,
+  tokensMap,
+  poolTokenPriceByTokenMint,
+}) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
 
   return (
@@ -29,6 +34,7 @@ export const PoolsList: FC<PoolsList> = ({ pools, tokensMap }) => {
           key={pool.publicKey.toBase58()}
           pool={pool}
           poolTokenInfo={tokensMap.get(pool?.fractionMint?.toBase58())}
+          price={poolTokenPriceByTokenMint.get(pool?.fractionMint?.toBase58())}
         />
       ))}
     </FakeInfinityScroll>

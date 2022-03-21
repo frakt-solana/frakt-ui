@@ -14,11 +14,10 @@ import { pluralize } from '../../../../../utils';
 interface PoolCardProps {
   pool: NftPoolData;
   poolTokenInfo: TokenInfo;
+  price: string;
 }
 
-const MOCK_PRICE = 15.143;
-
-export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo }) => {
+export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
   const { publicKey, safetyBoxes } = pool;
 
   const nftsAmount = safetyBoxes.length;
@@ -57,7 +56,9 @@ export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo }) => {
           </div>
           <span className={styles.priceLabel}>price</span>
           <div className={styles.priceWrapper}>
-            <span className={styles.poolPrice}>{MOCK_PRICE}</span>
+            <span className={styles.poolPrice}>
+              {parseFloat(price)?.toFixed(2)}
+            </span>
             <SolanaIcon />
             <span className={styles.priceCurrency}>SOL</span>
           </div>

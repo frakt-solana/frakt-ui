@@ -22,6 +22,7 @@ interface SwapModalProps {
   randomPoolImage?: string;
   poolTokenAvailable: boolean;
   poolTokenInfo: TokenInfo;
+  poolTokenPrice: string;
 }
 
 enum Token {
@@ -29,10 +30,7 @@ enum Token {
   POOL_TOKEN = 'poolToken',
 }
 
-enum Price {
-  SOL = 0.3,
-  POOL_TOKEN = 0.02,
-}
+const COMMISSION_PERCENT = 0.02;
 
 export const SwapModal: FC<SwapModalProps> = ({
   nft,
@@ -41,7 +39,10 @@ export const SwapModal: FC<SwapModalProps> = ({
   randomPoolImage,
   poolTokenAvailable,
   poolTokenInfo,
+  poolTokenPrice,
 }) => {
+  const priceSOL = parseFloat(poolTokenPrice) * COMMISSION_PERCENT;
+
   const { account } = useNativeAccount();
 
   const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
@@ -58,14 +59,16 @@ export const SwapModal: FC<SwapModalProps> = ({
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(Price.SOL * 0.98).toFixed(3)} SOL`
+      ? `* Max total (with slippage) = ${(priceSOL * 1.01).toFixed(3)} SOL`
       : '';
 
   const isBtnDisabled =
     (!isSolTokenSelected && !poolTokenAvailable) ||
-    (isSolTokenSelected && solBalance < Price.SOL);
+    (isSolTokenSelected && solBalance < priceSOL);
 
-  const price = isSolTokenSelected ? Price.SOL : Price.POOL_TOKEN;
+  const price = isSolTokenSelected
+    ? priceSOL.toFixed(3)
+    : COMMISSION_PERCENT.toFixed(3);
 
   return (
     <div
@@ -96,7 +99,7 @@ export const SwapModal: FC<SwapModalProps> = ({
       <CurrencySelector
         token={token}
         setToken={setToken}
-        price={price.toFixed(3)}
+        price={price}
         slippageText={slippageText}
         label="Fee"
         poolTokenInfo={poolTokenInfo}

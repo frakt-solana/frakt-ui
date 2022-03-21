@@ -18,6 +18,7 @@ import {
   useLotteryTicketSubscription,
   useNftPoolTokenBalance,
   useNFTsFiltering,
+  usePoolTokensPrices,
 } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { Loader } from '../../../components/Loader';
@@ -80,6 +81,11 @@ export const NFTPoolSwapPage: FC = () => {
     rawUserTokensByMint,
     removeTokenOptimistic,
   } = useUserTokens();
+
+  const {
+    priceByTokenMint: poolTokenPriceByTokenMint,
+    loading: pricesLoading,
+  } = usePoolTokensPrices([poolTokenInfo]);
 
   useEffect(() => {
     if (
@@ -154,51 +160,63 @@ export const NFTPoolSwapPage: FC = () => {
 
   const Header = useCallback(
     () => (
-      <HeaderSwap poolPublicKey={poolPubkey} poolTokenInfo={poolTokenInfo} />
+      <HeaderSwap
+        poolPublicKey={poolPubkey}
+        poolTokenInfo={poolTokenInfo}
+        poolTokenPrice={poolTokenPriceByTokenMint.get(poolTokenInfo?.address)}
+      />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [poolPublicKey],
+    [poolPublicKey, pricesLoading],
   );
 
-  const pageLoading = poolLoading || tokensMapLoading;
+  const pageLoading = poolLoading || tokensMapLoading || pricesLoading;
 
   return (
     <NFTPoolPageLayout
       CustomHeader={pageLoading ? null : Header}
       pageType={PoolPageType.SWAP}
     >
-      {!connected && <WalletNotConnected type="swap" />}
-      {connected && !contentLoading && (
-        <NFTPoolNFTsList
-          nfts={nfts}
-          setIsSidebar={setIsSidebar}
-          control={control}
-          sortFieldName={FilterFormInputsNames.SORT}
-          sortValues={SORT_VALUES}
-          onCardClick={onSelect}
-          selectedNft={selectedNft}
-          poolName={poolTokenInfo?.name}
-        />
-      )}
-      {connected && contentLoading && <Loader size="large" />}
-
-      <div className={styles.modalWrapper}>
-        <SwapModal
-          nft={selectedNft}
-          onDeselect={onDeselect}
-          onSubmit={onSwap}
-          randomPoolImage={poolImage}
-          poolTokenAvailable={poolTokenAvailable}
-          poolTokenInfo={poolTokenInfo}
-        />
-      </div>
-      {isLotteryModalVisible && (
-        <LotteryModal
-          setIsVisible={setIsLotteryModalVisible}
-          prizeImg={prizeImg}
-          setPrizeImg={setPrizeImg}
-          nftImages={getNftImagesForLottery(poolNfts)}
-        />
+      {pageLoading ? (
+        <Loader size="large" />
+      ) : (
+        <>
+          {!connected && <WalletNotConnected type="swap" />}
+          {connected && !contentLoading && (
+            <NFTPoolNFTsList
+              nfts={nfts}
+              setIsSidebar={setIsSidebar}
+              control={control}
+              sortFieldName={FilterFormInputsNames.SORT}
+              sortValues={SORT_VALUES}
+              onCardClick={onSelect}
+              selectedNft={selectedNft}
+              poolName={poolTokenInfo?.name}
+            />
+          )}
+          {connected && contentLoading && <Loader size="large" />}
+          <div className={styles.modalWrapper}>
+            <SwapModal
+              nft={selectedNft}
+              onDeselect={onDeselect}
+              onSubmit={onSwap}
+              randomPoolImage={poolImage}
+              poolTokenAvailable={poolTokenAvailable}
+              poolTokenInfo={poolTokenInfo}
+              poolTokenPrice={poolTokenPriceByTokenMint.get(
+                poolTokenInfo?.address,
+              )}
+            />
+          </div>
+          {isLotteryModalVisible && (
+            <LotteryModal
+              setIsVisible={setIsLotteryModalVisible}
+              prizeImg={prizeImg}
+              setPrizeImg={setPrizeImg}
+              nftImages={getNftImagesForLottery(poolNfts)}
+            />
+          )}
+        </>
       )}
     </NFTPoolPageLayout>
   );

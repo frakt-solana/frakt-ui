@@ -14,7 +14,11 @@ import { Loader } from '../../../components/Loader';
 import { UserNFTWithCollection } from '../../../contexts/userTokens';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
-import { useLotteryTicketSubscription, useNFTsFiltering } from '../hooks';
+import {
+  useLotteryTicketSubscription,
+  useNFTsFiltering,
+  usePoolTokensPrices,
+} from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
 import {
@@ -53,6 +57,11 @@ export const NFTPoolBuyPage: FC = () => {
     return tokensMap.get(pool?.fractionMint?.toBase58());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolPublicKey, tokensMap]);
+
+  const {
+    priceByTokenMint: poolTokenPriceByTokenMint,
+    loading: pricesLoading,
+  } = usePoolTokensPrices([poolTokenInfo]);
 
   const [, setIsSidebar] = useState<boolean>(false);
 
@@ -98,12 +107,19 @@ export const NFTPoolBuyPage: FC = () => {
       });
   };
 
-  const loading = poolLoading || !pool || tokensMapLoading;
+  const loading = poolLoading || !pool || tokensMapLoading || pricesLoading;
 
   const Header = useCallback(
-    () => <HeaderBuy pool={pool} onBuy={onBuy} poolTokenInfo={poolTokenInfo} />,
+    () => (
+      <HeaderBuy
+        pool={pool}
+        onBuy={onBuy}
+        poolTokenInfo={poolTokenInfo}
+        poolTokenPrice={poolTokenPriceByTokenMint.get(poolTokenInfo?.address)}
+      />
+    ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [poolPublicKey],
+    [poolPublicKey, pricesLoading],
   );
 
   return (

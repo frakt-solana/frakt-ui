@@ -7,17 +7,23 @@ import { HeaderSellInfo } from '../../../components/NFTPoolsHeaderInner/HeaderSe
 interface HeaderSwapProps {
   poolPublicKey: string;
   poolTokenInfo: TokenInfo;
+  poolTokenPrice: string;
 }
+
+const COMMISSION_PERCENT = 0.02;
 
 export const HeaderSwap: FC<HeaderSwapProps> = ({
   poolPublicKey,
   poolTokenInfo,
+  poolTokenPrice,
 }) => {
   return (
     <NFTPoolsHeaderInner poolPublicKey={poolPublicKey}>
       <HeaderSellInfo
-        solanaPrice={0.3}
-        tokenPrice={0.02}
+        solanaPrice={(parseFloat(poolTokenPrice) * COMMISSION_PERCENT).toFixed(
+          3,
+        )}
+        tokenPrice={COMMISSION_PERCENT.toFixed(3)}
         poolTokenInfo={poolTokenInfo}
       />
     </NFTPoolsHeaderInner>
