@@ -15,13 +15,14 @@ import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useLazyPoolInfo } from './hooks/useLazyPoolInfo';
 import { useSwapForm } from './hooks/useSwapForm';
-import { ConfirmModal, SwapDifferentPriceContent } from '../Modal/Modal';
+// import { ConfirmModal, SwapDifferentPriceContent } from '../Modal/Modal';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
-const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
+// const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
+// const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const {
@@ -77,14 +78,14 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   };
 
   const swapTokens = () => {
-    if (Number(tokenPriceImpact) > MAX_PERCENT_VALUATION_DIFFERENCE) {
-      return ConfirmModal({
-        title: 'Continue with current price?',
-        content: <SwapDifferentPriceContent />,
-        okText: 'Swap anyway',
-        onOk: handleSwap,
-      });
-    }
+    // if (Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD) {
+    //   return ConfirmModal({
+    //     title: 'Continue with current price?',
+    //     content: <SwapDifferentPriceContent />,
+    //     okText: 'Swap anyway',
+    //     onOk: handleSwap,
+    //   });
+    // }
     handleSwap();
   };
 
@@ -181,7 +182,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
           </span>
         </div>
       )}
-      {tokenPriceImpact && (
+      {/* {tokenPriceImpact && (
         <div className={styles.info}>
           <span className={styles.info__title}>
             <span className={styles.info__titleName}>Valuation difference</span>
@@ -189,6 +190,21 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
               placement="top"
               trigger="hover"
               overlay="Swap price difference from the initial price per fraktion set for buyout"
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </span>
+          <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
+        </div>
+      )} */}
+      {tokenPriceImpact && (
+        <div className={styles.info}>
+          <span className={styles.info__title}>
+            <span className={styles.info__titleName}>Price impact</span>
+            <Tooltip
+              placement="top"
+              trigger="hover"
+              overlay="The difference between the market price and estimated price due to trade size"
             >
               <QuestionCircleOutlined />
             </Tooltip>
