@@ -6,12 +6,14 @@ import { PoolCard } from '../PoolCard';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../../../components/FakeInfinityScroll';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 interface PoolsList {
   pools: NftPoolData[];
+  tokensMap: Map<string, TokenInfo>;
 }
 
-export const PoolsList: FC<PoolsList> = ({ pools }) => {
+export const PoolsList: FC<PoolsList> = ({ pools, tokensMap }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
 
   return (
@@ -23,7 +25,11 @@ export const PoolsList: FC<PoolsList> = ({ pools }) => {
       emptyMessage="No NFT pools found"
     >
       {pools.map((pool) => (
-        <PoolCard key={pool.publicKey.toBase58()} pool={pool} />
+        <PoolCard
+          key={pool.publicKey.toBase58()}
+          pool={pool}
+          poolTokenInfo={tokensMap.get(pool?.fractionMint?.toBase58())}
+        />
       ))}
     </FakeInfinityScroll>
   );

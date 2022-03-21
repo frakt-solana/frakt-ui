@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import { SolanaIcon } from '../../../../icons';
 import styles from './NFTPoolsHeaderInner.module.scss';
@@ -6,11 +7,13 @@ import styles from './NFTPoolsHeaderInner.module.scss';
 interface HeaderSellInfoProps {
   solanaPrice: number;
   tokenPrice: number;
+  poolTokenInfo: TokenInfo;
 }
 
 export const HeaderSellInfo: FC<HeaderSellInfoProps> = ({
   solanaPrice,
   tokenPrice,
+  poolTokenInfo,
 }) => {
   return (
     <div className={styles.sellInfoWrapper}>
@@ -22,9 +25,9 @@ export const HeaderSellInfo: FC<HeaderSellInfoProps> = ({
         {tokenPrice}
         <span
           className={styles.infoImage}
-          style={{ backgroundImage: `url(${'/'})` }}
+          style={{ backgroundImage: `url(${poolTokenInfo?.logoURI})` }}
         />
-        {'TOKEN'}
+        {poolTokenInfo?.symbol}
       </p>
     </div>
   );

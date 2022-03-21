@@ -2,12 +2,13 @@ import { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Select } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 import styles from './HeaderBuy.module.scss';
 import SettingsIcon from '../../../../../icons/SettingsIcon';
 import { ArrowDownBtn, SolanaIcon } from '../../../../../icons';
 import { useNativeAccount } from '../../../../../utils/accounts';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useWalletModal } from '../../../../../contexts/WalletModal';
 import Button from '../../../../../components/Button';
 
@@ -16,6 +17,7 @@ const { Option } = Select;
 interface BuyRandomNftFormProps {
   onBuy: () => void;
   poolTokenAvailable: boolean;
+  poolTokenInfo: TokenInfo;
 }
 
 enum Token {
@@ -31,6 +33,7 @@ enum Price {
 export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
   onBuy,
   poolTokenAvailable,
+  poolTokenInfo,
 }) => {
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
@@ -82,8 +85,15 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
                 onChange={(nextValue) => setToken(nextValue)}
               >
                 <Option value={Token.POOL_TOKEN} className={styles.option}>
-                  <div className={styles.tokenIcon} />
-                  <span className={styles.tokenText}>{`TOKEN`}</span>
+                  <div
+                    className={styles.tokenIcon}
+                    style={{
+                      backgroundImage: `url(${poolTokenInfo?.logoURI})`,
+                    }}
+                  />
+                  <span className={styles.tokenText}>
+                    {poolTokenInfo?.symbol}
+                  </span>
                 </Option>
                 <Option value={Token.SOL} className={styles.option}>
                   <SolanaIcon />

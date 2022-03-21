@@ -355,11 +355,13 @@
 }
 
 .tokenIcon {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   flex-shrink: 0;
   background-color: var(--color-gray-1);
+  background-size: cover;
+  background-position: center;
 }
 
 .slippageInfo {

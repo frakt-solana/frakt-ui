@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -17,7 +18,7 @@ import {
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
-import { useCallback } from 'react';
+import { useTokenListContext } from '../../../contexts/TokenList';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -26,12 +27,22 @@ export const NFTPoolInfoPage = (): JSX.Element => {
   useNftPoolsPolling();
 
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
-
-  const loading = poolLoading;
-
   const poolPublicKey = pool?.publicKey?.toBase58();
+
+  const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
+    useTokenListContext();
+
+  const poolTokenInfo = useMemo(() => {
+    return tokensMap.get(pool?.fractionMint?.toBase58());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [poolPublicKey, tokensMap]);
+
+  const loading = poolLoading || tokensMapLoading;
+
   const Header = useCallback(
-    () => <HeaderInfo poolPublicKey={poolPubkey} />,
+    () => (
+      <HeaderInfo poolPublicKey={poolPubkey} poolTokenInfo={poolTokenInfo} />
+    ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [poolPublicKey],
   );

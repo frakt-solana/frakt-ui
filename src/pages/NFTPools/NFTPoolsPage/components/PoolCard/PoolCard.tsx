@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { FC /* useMemo */ } from 'react';
+import { FC } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import {
   NftPoolData,
@@ -12,24 +13,13 @@ import { pluralize } from '../../../../../utils';
 
 interface PoolCardProps {
   pool: NftPoolData;
+  poolTokenInfo: TokenInfo;
 }
-
-const MOCK_TOKEN_NAME = 'POOL';
 
 const MOCK_PRICE = 15.143;
 
-export const PoolCard: FC<PoolCardProps> = ({ pool }) => {
+export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo }) => {
   const { publicKey, safetyBoxes } = pool;
-
-  // const safetyBoxesByCollectionName = useMemo(() => {
-  //   return groupBy(
-  //     pool.safetyBoxes.filter(({ nftCollectionName }) => nftCollectionName),
-  //     'nftCollectionName',
-  //   );
-  // }, [pool]);
-
-  const collectionsAmount = 4;
-  // Object.keys(safetyBoxesByCollectionName)?.length || 0;
 
   const nftsAmount = safetyBoxes.length;
 
@@ -37,9 +27,8 @@ export const PoolCard: FC<PoolCardProps> = ({ pool }) => {
     ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
   )?.[0]?.nftImage;
 
-  const tokenImage = '';
-
-  const tokenName = MOCK_TOKEN_NAME;
+  const tokenImage = poolTokenInfo?.logoURI || '';
+  const tokenName = poolTokenInfo?.symbol || '';
 
   return (
     <NavLink
@@ -50,9 +39,9 @@ export const PoolCard: FC<PoolCardProps> = ({ pool }) => {
         <div className={styles.poolImgWrapper}>
           <img src={poolImage} alt="Pool card" className={styles.poolImage} />
           <div className={styles.poolShadow}>
-            <p className={styles.poolInfoLabel}>
-              {pluralize(collectionsAmount, 'collection')}
-            </p>
+            {/* <p className={styles.poolInfoLabel}>
+              {pluralize(4, 'collection')}
+            </p> */}
             <p className={styles.poolInfoLabel}>
               {pluralize(nftsAmount, 'item')}
             </p>

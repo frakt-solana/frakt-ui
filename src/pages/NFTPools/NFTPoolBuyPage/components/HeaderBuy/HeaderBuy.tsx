@@ -10,13 +10,19 @@ import {
 import { useNftPoolTokenBalance } from '../../../hooks';
 
 import { NFTPoolsHeaderInner } from '../../../components/NFTPoolsHeaderInner';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 interface HeaderBuyProps {
   pool: NftPoolData;
   onBuy: () => void;
+  poolTokenInfo: TokenInfo;
 }
 
-const HeaderBuyComponent: FC<HeaderBuyProps> = ({ pool, onBuy }) => {
+const HeaderBuyComponent: FC<HeaderBuyProps> = ({
+  pool,
+  onBuy,
+  poolTokenInfo,
+}) => {
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
 
@@ -41,6 +47,7 @@ const HeaderBuyComponent: FC<HeaderBuyProps> = ({ pool, onBuy }) => {
         <BuyRandomNftForm
           poolTokenAvailable={poolTokenAvailable}
           onBuy={onBuy}
+          poolTokenInfo={poolTokenInfo}
         />
       </div>
     </NFTPoolsHeaderInner>

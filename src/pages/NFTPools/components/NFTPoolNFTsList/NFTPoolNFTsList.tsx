@@ -17,6 +17,7 @@ interface MarketNFTsList extends NFTsListProps {
   setIsSidebar: (nextValue: boolean) => void;
   sortFieldName: FilterFormInputsNames;
   sortValues: NftSortValue[];
+  poolName?: string;
 }
 
 export const NFTPoolNFTsList: FC<MarketNFTsList> = ({
@@ -27,10 +28,12 @@ export const NFTPoolNFTsList: FC<MarketNFTsList> = ({
   sortValues,
   onCardClick,
   selectedNft,
+  poolName = '',
 }) => {
   return (
     <div className={styles.marketNFTsList}>
       <div className={styles.itemsSortWrapper}>
+        <p className={styles.poolName}>{poolName}</p>
         <p
           className={styles.filtersIconWrapper}
           onClick={() => setIsSidebar(true)}

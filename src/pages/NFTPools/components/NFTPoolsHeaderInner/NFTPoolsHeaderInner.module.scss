@@ -76,7 +76,6 @@
 .sellInfoItem {
   display: flex;
   align-items: center;
-  text-transform: uppercase;
 
   svg,
   .infoImage {
@@ -86,8 +85,8 @@
 }
 
 .infoImage {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background-color: var(--color-gray-1);
   background-size: cover;

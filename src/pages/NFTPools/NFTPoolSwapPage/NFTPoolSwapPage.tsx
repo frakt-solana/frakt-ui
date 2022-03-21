@@ -30,6 +30,7 @@ import {
   NFTPoolPageLayout,
   PoolPageType,
 } from '../components/NFTPoolPageLayout';
+import { useTokenListContext } from '../../../contexts/TokenList';
 
 export const NFTPoolSwapPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -43,6 +44,16 @@ export const NFTPoolSwapPage: FC = () => {
     whitelistedCreatorsDictionary,
     loading: poolLoading,
   } = useNftPool(poolPubkey);
+
+  const poolPublicKey = pool?.publicKey?.toBase58();
+  const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
+    useTokenListContext();
+
+  const poolTokenInfo = useMemo(() => {
+    return tokensMap.get(pool?.fractionMint?.toBase58());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [poolPublicKey, tokensMap]);
+
   const { connected } = useWallet();
   const { swapNft } = useNftPools();
   const { subscribe } = useLotteryTicketSubscription();
@@ -141,16 +152,19 @@ export const NFTPoolSwapPage: FC = () => {
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
 
-  const poolPublicKey = pool?.publicKey?.toBase58();
   const Header = useCallback(
-    () => <HeaderSwap poolPublicKey={poolPubkey} />,
+    () => (
+      <HeaderSwap poolPublicKey={poolPubkey} poolTokenInfo={poolTokenInfo} />
+    ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [poolPublicKey],
   );
 
+  const pageLoading = poolLoading || tokensMapLoading;
+
   return (
     <NFTPoolPageLayout
-      CustomHeader={poolLoading ? null : Header}
+      CustomHeader={pageLoading ? null : Header}
       pageType={PoolPageType.SWAP}
     >
       {!connected && <WalletNotConnected type="swap" />}
@@ -163,6 +177,7 @@ export const NFTPoolSwapPage: FC = () => {
           sortValues={SORT_VALUES}
           onCardClick={onSelect}
           selectedNft={selectedNft}
+          poolName={poolTokenInfo?.name}
         />
       )}
       {connected && contentLoading && <Loader size="large" />}

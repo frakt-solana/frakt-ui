@@ -15,6 +15,7 @@ import { Loader } from '../../../components/Loader';
 import { CommunityPoolState } from '../../../utils/cacher/nftPools';
 import { Container } from '../../../components/Layout';
 import { SearchInput } from '../../../components/SearchInput';
+import { useTokenListContext } from '../../../contexts/TokenList';
 
 export const NFTPoolsPage: FC = () => {
   const { control /* watch */ } = useForm({
@@ -25,7 +26,10 @@ export const NFTPoolsPage: FC = () => {
 
   // const sort = watch('sort');
 
-  const { pools: rawPools, loading } = useNftPools();
+  const { pools: rawPools, loading: poolsLoading } = useNftPools();
+  const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
+    useTokenListContext();
+
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
 
@@ -35,6 +39,8 @@ export const NFTPoolsPage: FC = () => {
       // && publicKey.toBase58() === 'Gsyy57YjrRzKiFa6p5T6BBXmoGB3qEo8Q1hewijLRRWm',
     );
   }, [rawPools]);
+
+  const loading = tokensMapLoading || poolsLoading;
 
   return (
     <AppLayout>
@@ -67,7 +73,11 @@ export const NFTPoolsPage: FC = () => {
             />
           </div>
         </div>
-        {loading ? <Loader size="large" /> : <PoolsList pools={pools} />}
+        {loading ? (
+          <Loader size="large" />
+        ) : (
+          <PoolsList pools={pools} tokensMap={tokensMap} />
+        )}
       </Container>
     </AppLayout>
   );
