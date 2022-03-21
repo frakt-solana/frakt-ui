@@ -139,14 +139,16 @@ export const useNftPoolTokenBalance = (
   };
 };
 
-type UsePoolTokensPrices = (poolTokensInfo: [TokenInfo]) => {
+type UsePoolTokensPrices = (poolTokensInfo: TokenInfo[]) => {
   loading: boolean;
-  prices: string[];
+  priceByTokenMint: Map<string, string>;
 };
 
 export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [prices, setPrices] = useState<string[]>([]);
+  const [priceByTokenMint, setPriceByTokenMint] = useState<Map<string, string>>(
+    new Map<string, string>(),
+  );
 
   const {
     poolDataByMint,
@@ -166,7 +168,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
 
         const poolsInfo = await fetchRaydiumPoolsInfo(poolConfigs);
 
-        const prices = poolsInfo.map((poolInfo, idx) => {
+        const priceByTokenMint = poolsInfo.reduce((map, poolInfo, idx) => {
           const { amountOut } = getOutputAmount({
             poolKeys: poolConfigs?.[idx],
             poolInfo,
@@ -176,10 +178,10 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
             slippage: new Percent(1, 100),
           });
 
-          return amountOut;
-        });
+          return map.set(poolTokensInfo?.[idx]?.address, amountOut);
+        }, new Map<string, string>());
 
-        setPrices(prices);
+        setPriceByTokenMint(priceByTokenMint);
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -198,6 +200,6 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
 
   return {
     loading: loading || liquidityPoolsLoading,
-    prices,
+    priceByTokenMint,
   };
 };
