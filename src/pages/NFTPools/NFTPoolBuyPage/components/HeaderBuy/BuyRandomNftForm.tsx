@@ -26,17 +26,14 @@ enum Token {
   POOL_TOKEN = 'poolToken',
 }
 
-enum Price {
-  SOL = 15.143,
-  POOL_TOKEN = 1,
-}
-
 export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
   onBuy,
   poolTokenAvailable,
   poolTokenInfo,
   poolTokenPrice,
 }) => {
+  const poolTokenPriceSOL = parseFloat(poolTokenPrice);
+
   const { connected } = useWallet();
   const { setVisible } = useWalletModal();
   const { account } = useNativeAccount();
@@ -53,18 +50,18 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
     poolTokenAvailable && setToken(Token.POOL_TOKEN);
   }, [poolTokenAvailable]);
 
-  const price = token === Token.SOL ? parseFloat(poolTokenPrice).toFixed(3) : 1;
+  const price = token === Token.SOL ? poolTokenPriceSOL.toFixed(3) : '1.000';
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(
-          parseFloat(poolTokenPrice) * 1.01
-        ).toFixed(3)} SOL`
+      ? `* Max total (with slippage) = ${(poolTokenPriceSOL * 1.01).toFixed(
+          3,
+        )} SOL`
       : '';
 
   const isBtnDisabled =
     (token === Token.POOL_TOKEN && !poolTokenAvailable) ||
-    (token === Token.SOL && solBalance < Price.SOL);
+    (token === Token.SOL && solBalance < poolTokenPriceSOL);
 
   return (
     <div className={styles.buyWrapper}>
