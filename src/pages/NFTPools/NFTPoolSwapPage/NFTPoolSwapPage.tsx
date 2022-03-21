@@ -189,6 +189,7 @@ export const NFTPoolSwapPage: FC = () => {
           onSubmit={onSwap}
           randomPoolImage={poolImage}
           poolTokenAvailable={poolTokenAvailable}
+          poolTokenInfo={poolTokenInfo}
         />
       </div>
       {isLotteryModalVisible && (

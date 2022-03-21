@@ -142,6 +142,7 @@ export const NFTPoolSellPage: FC = () => {
           onDeselect={onDeselect}
           onSubmit={onSell}
           poolTokenAvailable={poolTokenAvailable}
+          poolTokenInfo={poolTokenInfo}
         />
       </div>
     </NFTPoolPageLayout>

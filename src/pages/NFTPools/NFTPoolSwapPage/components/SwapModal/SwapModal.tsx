@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import styles from './SwapModal.module.scss';
 import { SwapMarketIcon } from '../../../../../icons';
@@ -20,6 +21,7 @@ interface SwapModalProps {
   onSubmit: () => void;
   randomPoolImage?: string;
   poolTokenAvailable: boolean;
+  poolTokenInfo: TokenInfo;
 }
 
 enum Token {
@@ -38,6 +40,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   onSubmit,
   randomPoolImage,
   poolTokenAvailable,
+  poolTokenInfo,
 }) => {
   const { account } = useNativeAccount();
 
@@ -96,6 +99,7 @@ export const SwapModal: FC<SwapModalProps> = ({
         price={price.toFixed(3)}
         slippageText={slippageText}
         label="Fee"
+        poolTokenInfo={poolTokenInfo}
       />
 
       <SubmitButton

@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import { UserNFTWithCollection } from '../../../../../contexts/userTokens';
 import styles from './SellingModal.module.scss';
@@ -17,6 +18,7 @@ interface BuyingModalProps {
   onDeselect?: (nft: any) => void;
   nft: UserNFTWithCollection;
   poolTokenAvailable: boolean;
+  poolTokenInfo: TokenInfo;
 }
 
 enum Token {
@@ -34,6 +36,7 @@ export const SellingModal: FC<BuyingModalProps> = ({
   nft,
   onSubmit,
   poolTokenAvailable,
+  poolTokenInfo,
 }) => {
   const { account } = useNativeAccount();
 
@@ -87,6 +90,7 @@ export const SellingModal: FC<BuyingModalProps> = ({
         setToken={setToken}
         price={price.toFixed(3)}
         slippageText={slippageText}
+        poolTokenInfo={poolTokenInfo}
       />
 
       <SubmitButton text="Sell" onClick={onSubmit} disabled={isBtnDisabled} />

@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import { Select } from 'antd';
 import { FC, useRef, useState } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import Button from '../../../../components/Button';
 import {
@@ -171,6 +172,7 @@ interface CurrencySelectorProps {
   price: string;
   label?: string;
   slippageText: string;
+  poolTokenInfo: TokenInfo;
 }
 
 export const CurrencySelector: FC<CurrencySelectorProps> = ({
@@ -180,6 +182,7 @@ export const CurrencySelector: FC<CurrencySelectorProps> = ({
   price,
   label = 'Total',
   slippageText,
+  poolTokenInfo,
 }) => {
   const settingsRef = useRef();
 
@@ -199,8 +202,13 @@ export const CurrencySelector: FC<CurrencySelectorProps> = ({
             onChange={(nextValue) => setToken(nextValue)}
           >
             <Option value={Token.POOL_TOKEN} className={styles.option}>
-              <div className={styles.tokenIcon} />
-              <span className={styles.tokenText}>{`TOKEN`}</span>
+              <div
+                className={styles.tokenIcon}
+                style={{
+                  backgroundImage: `url(${poolTokenInfo?.logoURI})`,
+                }}
+              />
+              <span className={styles.tokenText}>{poolTokenInfo?.symbol}</span>
             </Option>
             <Option value={Token.SOL} className={styles.option}>
               <SolanaIcon />
