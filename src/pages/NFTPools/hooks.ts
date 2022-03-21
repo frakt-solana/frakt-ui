@@ -10,6 +10,11 @@ import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
+import { useLiquidityPools } from '../../contexts/liquidityPools';
+import { getOutputAmount } from '../../components/SwapForm';
+import { Percent } from '@raydium-io/raydium-sdk';
+import { SOL_TOKEN } from '../../utils';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -131,5 +136,68 @@ export const useNftPoolTokenBalance = (
 
   return {
     balance,
+  };
+};
+
+type UsePoolTokensPrices = (poolTokensInfo: [TokenInfo]) => {
+  loading: boolean;
+  prices: string[];
+};
+
+export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [prices, setPrices] = useState<string[]>([]);
+
+  const {
+    poolDataByMint,
+    loading: liquidityPoolsLoading,
+    fetchRaydiumPoolsInfo,
+  } = useLiquidityPools();
+
+  const fetchPrices = async () => {
+    try {
+      setLoading(true);
+      const poolsData = poolTokensInfo
+        .map((poolTokenInfo) => poolDataByMint.get(poolTokenInfo?.address))
+        .filter((poolData) => !!poolData);
+
+      if (poolsData.length) {
+        const poolConfigs = poolsData.map(({ poolConfig }) => poolConfig);
+
+        const poolsInfo = await fetchRaydiumPoolsInfo(poolConfigs);
+
+        const prices = poolsInfo.map((poolInfo, idx) => {
+          const { amountOut } = getOutputAmount({
+            poolKeys: poolConfigs?.[idx],
+            poolInfo,
+            payToken: poolTokensInfo?.[idx],
+            payAmount: 1,
+            receiveToken: SOL_TOKEN,
+            slippage: new Percent(1, 100),
+          });
+
+          return amountOut;
+        });
+
+        setPrices(prices);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (poolDataByMint.size) {
+      fetchPrices();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [liquidityPoolsLoading, poolDataByMint]);
+
+  return {
+    loading: loading || liquidityPoolsLoading,
+    prices,
   };
 };
