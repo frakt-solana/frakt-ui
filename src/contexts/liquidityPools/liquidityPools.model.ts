@@ -27,7 +27,7 @@ export interface LiquidityPoolsContextValues {
   fetchRaydiumPoolsInfo: (
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
-  raydiumSwap: (params: SwapTransactionParams) => Promise<void>;
+  raydiumSwap: (params: SwapTransactionParams) => Promise<boolean | void>;
   createRaydiumLiquidityPool: (params: any) => Promise<void>;
   addRaydiumLiquidity: (params: AddLiquidityTransactionParams) => Promise<void>;
   removeRaydiumLiquidity: (

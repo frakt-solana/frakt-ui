@@ -117,7 +117,7 @@ export const useLotteryTicketSubscription: UseLotteryTicketSubscription =
     };
   };
 
-const POOL_TOKEN_DECIMALS = 6;
+const POOL_TOKEN_DECIMALS = 9;
 
 export const useNftPoolTokenBalance = (
   pool: NftPoolData,

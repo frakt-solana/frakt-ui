@@ -34,7 +34,7 @@ export const rawRaydiumSwap = async ({
   poolConfig,
   connection,
   wallet,
-}: SwapTransactionRawParams): Promise<void> => {
+}: SwapTransactionRawParams): Promise<boolean | void> => {
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address].map((mint) =>
@@ -68,6 +68,8 @@ export const rawRaydiumSwap = async ({
     connection,
     wallet,
   });
+
+  return true;
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawRaydiumSwap, {

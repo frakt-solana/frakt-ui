@@ -14,7 +14,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 interface HeaderBuyProps {
   pool: NftPoolData;
-  onBuy: () => void;
+  onBuy: (needSwap?: boolean) => void;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
 }

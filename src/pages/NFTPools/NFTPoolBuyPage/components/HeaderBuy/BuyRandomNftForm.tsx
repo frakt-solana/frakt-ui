@@ -15,7 +15,7 @@ import Button from '../../../../../components/Button';
 const { Option } = Select;
 
 interface BuyRandomNftFormProps {
-  onBuy: () => void;
+  onBuy: (needSwap?: boolean) => void;
   poolTokenAvailable: boolean;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
@@ -114,7 +114,7 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
       <Button
         type="alternative"
         className={styles.buyButton}
-        onClick={connected ? onBuy : setVisible}
+        onClick={connected ? () => onBuy(token === Token.SOL) : setVisible}
         disabled={connected && isBtnDisabled}
       >
         {connected ? 'Buy' : 'Connect wallet'}
