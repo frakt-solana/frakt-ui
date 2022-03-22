@@ -13,13 +13,13 @@ export enum PoolPageType {
 }
 
 interface NFTPoolPageLayout {
-  CustomHeader?: FC;
+  customHeader?: JSX.Element;
   children: JSX.Element[] | JSX.Element;
   pageType?: PoolPageType;
 }
 
 export const NFTPoolPageLayout: FC<NFTPoolPageLayout> = ({
-  CustomHeader,
+  customHeader,
   children,
   pageType = PoolPageType.BUY,
 }) => {
@@ -31,7 +31,7 @@ export const NFTPoolPageLayout: FC<NFTPoolPageLayout> = ({
   };
 
   return (
-    <AppLayout CustomHeader={CustomHeader}>
+    <AppLayout customHeader={customHeader}>
       <Container
         component="main"
         className={classNames(

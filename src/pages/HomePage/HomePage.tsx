@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import Statistics from './sections/Statistics/Statistics';
@@ -28,12 +28,8 @@ const HomePage = (): JSX.Element => {
     ];
   }, [sectionRef1, sectionRef2, sectionRef3, sectionRef4, sectionRef5]);
 
-  const customHeaderWithLinks: FC = () => {
-    return <CustomHeader menuLinksData={menuLinksData} />;
-  };
-
   return (
-    <AppLayout CustomHeader={customHeaderWithLinks}>
+    <AppLayout customHeader={<CustomHeader menuLinksData={menuLinksData} />}>
       <MainSection />
       <Statistics />
       <FullPotentialSection navRef={sectionRef1} />

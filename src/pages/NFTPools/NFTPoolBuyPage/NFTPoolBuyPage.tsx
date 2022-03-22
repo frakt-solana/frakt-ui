@@ -1,6 +1,9 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { shuffle } from 'lodash';
+import BN from 'bn.js';
+import { useConnection } from '@solana/wallet-adapter-react';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import { HeaderBuy } from './components/HeaderBuy';
 import { usePublicKeyParam } from '../../../hooks';
@@ -28,8 +31,7 @@ import {
 } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
-import { useConnection } from '@solana/wallet-adapter-react';
-import { TokenInfo } from '@solana/spl-token-registry';
+
 import { NftPoolData } from '../../../utils/cacher/nftPools';
 import {
   LoadingModal,
@@ -37,7 +39,6 @@ import {
 } from '../../../components/LoadingModal';
 import { getTokenPrice } from '../helpers';
 import { SOL_TOKEN } from '../../../utils';
-import BN from 'bn.js';
 
 export const getNftImagesForLottery = (
   nfts: UserNFTWithCollection[],
@@ -81,7 +82,7 @@ const useNftBuy = ({
   const poolTokenBalanceOnSubmit = useRef<number>();
   const swapNeeded = useRef<boolean>(false);
 
-  const [slippage, setSlippage] = useState<number>();
+  const [slippage, setSlippage] = useState<number>(0.5);
 
   const buyPoolToken = async () => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
@@ -219,30 +220,27 @@ export const NFTPoolBuyPage: FC = () => {
     setPrizeImg,
     loadingModalVisible,
     closeLoadingModal,
-    // slippage,
-    // setSlippage,
+    slippage,
+    setSlippage,
   } = useNftBuy({ pool, poolTokenInfo });
 
   const loading = poolLoading || !pool || tokensMapLoading || pricesLoading;
 
-  const Header = useCallback(
-    () => (
-      <HeaderBuy
-        pool={pool}
-        onBuy={buy}
-        poolTokenInfo={poolTokenInfo}
-        poolTokenPrice={
-          poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.buy
-        }
-      />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [poolPublicKey, pricesLoading],
-  );
-
   return (
     <NFTPoolPageLayout
-      CustomHeader={loading ? null : Header}
+      customHeader={
+        <HeaderBuy
+          pool={pool}
+          onBuy={buy}
+          poolTokenInfo={poolTokenInfo}
+          poolTokenPrice={
+            poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.buy
+          }
+          slippage={slippage}
+          setSlippage={setSlippage}
+          hidden={loading}
+        />
+      }
       pageType={PoolPageType.BUY}
     >
       {loading ? (

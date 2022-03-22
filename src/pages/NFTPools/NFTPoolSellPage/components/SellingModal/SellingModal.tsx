@@ -20,6 +20,8 @@ interface SellingModalProps {
   nft: UserNFTWithCollection;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
+  slippage: number;
+  setSlippage: (nextValue: number) => void;
 }
 
 enum Token {
@@ -33,6 +35,8 @@ export const SellingModal: FC<SellingModalProps> = ({
   onSubmit,
   poolTokenInfo,
   poolTokenPrice,
+  slippage,
+  setSlippage,
 }) => {
   const priceSOL =
     parseFloat(poolTokenPrice) * ((100 - SELL_COMMISSION_PERCENT) / 100);
@@ -53,7 +57,10 @@ export const SellingModal: FC<SellingModalProps> = ({
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(priceSOL * 1.01).toFixed(3)} SOL`
+      ? `* Min total (with slippage) = ${(
+          priceSOL *
+          (1 - slippage / 100)
+        ).toFixed(3)} SOL`
       : '';
 
   const isBtnDisabled = isSolTokenSelected && solBalance < priceSOL;
@@ -73,7 +80,9 @@ export const SellingModal: FC<SellingModalProps> = ({
       <ModalHeader
         onHeaderClick={toggleModalDown}
         headerText="You're selling"
-        setSlippage={isSolTokenSelected && !isModalDown && ((num) => num)}
+        slippage={slippage}
+        setSlippage={setSlippage}
+        showSlippageDropdown={isSolTokenSelected}
       />
 
       <ItemContent

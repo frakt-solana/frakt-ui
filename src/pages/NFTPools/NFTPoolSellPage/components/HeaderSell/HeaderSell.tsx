@@ -9,15 +9,17 @@ interface HeaderSellProps {
   poolPublicKey: string;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
+  hidden?: boolean;
 }
 
 export const HeaderSell: FC<HeaderSellProps> = ({
   poolPublicKey,
   poolTokenInfo,
   poolTokenPrice,
+  hidden = false,
 }) => {
   return (
-    <NFTPoolsHeaderInner poolPublicKey={poolPublicKey}>
+    <NFTPoolsHeaderInner poolPublicKey={poolPublicKey} hidden={hidden}>
       <HeaderSellInfo
         solanaPrice={(
           parseFloat(poolTokenPrice) *

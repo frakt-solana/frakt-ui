@@ -7,14 +7,14 @@ import { useWalletModal } from '../../contexts/WalletModal';
 import { HeaderStateProvider, useHeaderState } from './headerState';
 
 interface LayoutProps {
-  CustomHeader?: FC;
+  customHeader?: JSX.Element;
   children: JSX.Element[] | JSX.Element;
   className?: string;
   contentClassName?: string;
 }
 
 export const Layout: FC<LayoutProps> = ({
-  CustomHeader,
+  customHeader,
   children,
   className = '',
   contentClassName = '',
@@ -33,7 +33,7 @@ export const Layout: FC<LayoutProps> = ({
         className={classNames(styles.header, {
           [styles.headerHide]: isHeaderHidden,
         })}
-        CustomHeader={CustomHeader}
+        customHeader={customHeader}
       />
       <div
         onScroll={onContentScroll}

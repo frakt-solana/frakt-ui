@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -61,7 +61,7 @@ const useNftSell = ({
   const poolTokenBalanceOnSell = useRef<number>();
   const swapNeeded = useRef<boolean>(false);
 
-  const [slippage, setSlippage] = useState<number>();
+  const [slippage, setSlippage] = useState<number>(0.5);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
   useEffect(() => {
@@ -182,6 +182,8 @@ export const NFTPoolSellPage: FC = () => {
   } = usePoolTokensPrices([poolTokenInfo]);
 
   const {
+    slippage,
+    setSlippage,
     onSelect,
     onDeselect,
     selectedNft,
@@ -202,25 +204,20 @@ export const NFTPoolSellPage: FC = () => {
 
   const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
 
-  const Header = useCallback(
-    () => (
-      <HeaderSell
-        poolPublicKey={poolPubkey}
-        poolTokenInfo={poolTokenInfo}
-        poolTokenPrice={
-          poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.sell
-        }
-      />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [poolPublicKey, pricesLoading],
-  );
-
   const pageLoading = tokensMapLoading || poolLoading || pricesLoading;
 
   return (
     <NFTPoolPageLayout
-      CustomHeader={pageLoading ? null : Header}
+      customHeader={
+        <HeaderSell
+          poolPublicKey={poolPubkey}
+          poolTokenInfo={poolTokenInfo}
+          poolTokenPrice={
+            poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.sell
+          }
+          hidden={pageLoading}
+        />
+      }
       pageType={PoolPageType.SELL}
     >
       {pageLoading ? (
@@ -250,6 +247,8 @@ export const NFTPoolSellPage: FC = () => {
               poolTokenPrice={
                 poolTokenPricesByTokenMint.get(poolTokenInfo?.address).sell
               }
+              slippage={slippage}
+              setSlippage={setSlippage}
             />
           </div>
           <LoadingModal

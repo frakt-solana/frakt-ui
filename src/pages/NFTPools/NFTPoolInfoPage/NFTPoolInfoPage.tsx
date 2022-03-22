@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -39,17 +39,15 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const loading = poolLoading || tokensMapLoading;
 
-  const Header = useCallback(
-    () => (
-      <HeaderInfo poolPublicKey={poolPubkey} poolTokenInfo={poolTokenInfo} />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [poolPublicKey],
-  );
-
   return (
     <NFTPoolPageLayout
-      CustomHeader={loading ? null : Header}
+      customHeader={
+        <HeaderInfo
+          poolPublicKey={poolPubkey}
+          poolTokenInfo={poolTokenInfo}
+          hidden={loading}
+        />
+      }
       pageType={PoolPageType.INFO}
     >
       {loading ? (

@@ -7,16 +7,19 @@ import { NFTPoolsHeaderInner } from '../../../components/NFTPoolsHeaderInner';
 interface HeaderInfoProps {
   poolPublicKey: string;
   poolTokenInfo: TokenInfo;
+  hidden?: boolean;
 }
 
 export const HeaderInfo: FC<HeaderInfoProps> = ({
   poolPublicKey,
   poolTokenInfo,
+  hidden = false,
 }) => {
   return (
     <NFTPoolsHeaderInner
       poolPublicKey={poolPublicKey}
       className={styles.header}
+      hidden={hidden}
     >
       <div className={styles.titleWrapper}>
         <div

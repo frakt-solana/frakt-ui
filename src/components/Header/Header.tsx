@@ -16,10 +16,10 @@ import { useWalletModal } from '../../contexts/WalletModal';
 
 interface HeaderProps {
   className?: string;
-  CustomHeader?: FC;
+  customHeader?: JSX.Element;
 }
 
-const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
+const Header: FC<HeaderProps> = ({ className, customHeader }) => {
   const { connected } = useWallet();
   const { visible } = useWalletModal();
 
@@ -54,7 +54,7 @@ const Header: FC<HeaderProps> = ({ className, CustomHeader }) => {
         </ul>
         <BurgerMenu />
       </Container>
-      {CustomHeader && <CustomHeader />}
+      {customHeader}
     </header>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
@@ -78,7 +78,7 @@ const useNftsSwap = ({
   const opeartionWithSwap = useRef<boolean>(false);
   const opeartionWithoutSwap = useRef<boolean>(false);
 
-  const [slippage, setSlippage] = useState<number>();
+  const [slippage, setSlippage] = useState<number>(0.5);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
   const resetRefs = () => {
@@ -263,8 +263,8 @@ export const NFTPoolSwapPage: FC = () => {
   }, [pool]);
 
   const {
-    // slippage,
-    // setSlippage,
+    slippage,
+    setSlippage,
     swap,
     poolTokenBalance: balance,
     onSelect,
@@ -299,25 +299,20 @@ export const NFTPoolSwapPage: FC = () => {
 
   const poolTokenAvailable = balance >= SELL_COMMISSION_PERCENT / 100;
 
-  const Header = useCallback(
-    () => (
-      <HeaderSwap
-        poolPublicKey={poolPubkey}
-        poolTokenInfo={poolTokenInfo}
-        poolTokenPrice={
-          poolTokenPricesByTokenMint?.get(poolTokenInfo?.address)?.buy
-        }
-      />
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [poolPublicKey, pricesLoading],
-  );
-
   const pageLoading = poolLoading || tokensMapLoading || pricesLoading;
 
   return (
     <NFTPoolPageLayout
-      CustomHeader={pageLoading ? null : Header}
+      customHeader={
+        <HeaderSwap
+          poolPublicKey={poolPubkey}
+          poolTokenInfo={poolTokenInfo}
+          poolTokenPrice={
+            poolTokenPricesByTokenMint?.get(poolTokenInfo?.address)?.buy
+          }
+          hidden={pageLoading}
+        />
+      }
       pageType={PoolPageType.SWAP}
     >
       {pageLoading ? (
@@ -349,6 +344,8 @@ export const NFTPoolSwapPage: FC = () => {
               poolTokenPrice={
                 poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.buy
               }
+              slippage={slippage}
+              setSlippage={setSlippage}
             />
           </div>
           {isLotteryModalVisible && (

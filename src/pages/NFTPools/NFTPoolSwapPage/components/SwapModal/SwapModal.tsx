@@ -24,6 +24,8 @@ interface SwapModalProps {
   poolTokenAvailable: boolean;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
+  slippage: number;
+  setSlippage: (nextValue: number) => void;
 }
 
 enum Token {
@@ -39,6 +41,8 @@ export const SwapModal: FC<SwapModalProps> = ({
   poolTokenAvailable,
   poolTokenInfo,
   poolTokenPrice,
+  slippage,
+  setSlippage,
 }) => {
   const priceSOL = parseFloat(poolTokenPrice) * (SELL_COMMISSION_PERCENT / 100);
 
@@ -58,7 +62,10 @@ export const SwapModal: FC<SwapModalProps> = ({
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(priceSOL * 1.01).toFixed(3)} SOL`
+      ? `* Max total (with slippage) = ${(
+          priceSOL *
+          (1 + slippage / 100)
+        ).toFixed(3)} SOL`
       : '';
 
   const isBtnDisabled =
@@ -82,7 +89,9 @@ export const SwapModal: FC<SwapModalProps> = ({
         image={nft?.metadata.image}
         onHeaderClick={() => setIsModalDown(!isModalDown)}
         onDeselect={onDeselect}
-        setSlippage={isSolTokenSelected && !isModalDown && ((num) => num)}
+        slippage={slippage}
+        setSlippage={setSlippage}
+        showSlippageDropdown={isSolTokenSelected}
       />
 
       <div className={styles.separator}>
@@ -93,6 +102,8 @@ export const SwapModal: FC<SwapModalProps> = ({
         headerText="Swap to"
         name="Random"
         randomPoolImage={randomPoolImage}
+        slippage={slippage}
+        setSlippage={setSlippage}
       />
 
       <CurrencySelector
@@ -117,7 +128,9 @@ export const SwapModal: FC<SwapModalProps> = ({
 interface SwapModalItemProps extends ItemContentProps {
   headerText?: string;
   onHeaderClick?: () => void;
+  slippage: number;
   setSlippage?: (num: number) => void;
+  showSlippageDropdown?: boolean;
 }
 
 const SwapModalItem: FC<SwapModalItemProps> = ({
@@ -128,14 +141,18 @@ const SwapModalItem: FC<SwapModalItemProps> = ({
   onHeaderClick = () => {},
   onDeselect,
   randomPoolImage,
+  slippage,
   setSlippage,
+  showSlippageDropdown = false,
 }) => {
   return (
     <div className={styles.item}>
       <ModalHeader
         onHeaderClick={onHeaderClick}
         headerText={headerText}
+        slippage={slippage}
         setSlippage={setSlippage}
+        showSlippageDropdown={showSlippageDropdown}
       />
 
       <ItemContent

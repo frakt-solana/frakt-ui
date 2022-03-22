@@ -1,4 +1,6 @@
 import React, { FC } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
+import classNames from 'classnames/bind';
 
 import styles from './HeaderBuy.module.scss';
 import { QuestionIcon } from '../../../../../icons';
@@ -7,16 +9,18 @@ import {
   NftPoolData,
   SafetyDepositBoxState,
 } from '../../../../../utils/cacher/nftPools';
-import { useNftPoolTokenBalance } from '../../../hooks';
-
 import { NFTPoolsHeaderInner } from '../../../components/NFTPoolsHeaderInner';
-import { TokenInfo } from '@solana/spl-token-registry';
+import { useNftPoolTokenBalance } from '../../../hooks';
 
 interface HeaderBuyProps {
   pool: NftPoolData;
   onBuy: (needSwap?: boolean) => void;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
+  slippage: number;
+  setSlippage: (nextValue: number) => void;
+  className?: string;
+  hidden?: boolean;
 }
 
 const HeaderBuyComponent: FC<HeaderBuyProps> = ({
@@ -24,6 +28,10 @@ const HeaderBuyComponent: FC<HeaderBuyProps> = ({
   onBuy,
   poolTokenInfo,
   poolTokenPrice,
+  slippage,
+  setSlippage,
+  className,
+  hidden,
 }) => {
   const { balance } = useNftPoolTokenBalance(pool);
   const poolTokenAvailable = balance >= 1;
@@ -35,7 +43,8 @@ const HeaderBuyComponent: FC<HeaderBuyProps> = ({
   return (
     <NFTPoolsHeaderInner
       poolPublicKey={pool?.publicKey.toBase58()}
-      className={styles.header}
+      className={classNames(styles.header, className)}
+      hidden={hidden}
     >
       <div className={styles.randomWrapper}>
         <div className={styles.questionWrapper}>
@@ -51,6 +60,8 @@ const HeaderBuyComponent: FC<HeaderBuyProps> = ({
           onBuy={onBuy}
           poolTokenInfo={poolTokenInfo}
           poolTokenPrice={poolTokenPrice}
+          slippage={slippage}
+          setSlippage={setSlippage}
         />
       </div>
     </NFTPoolsHeaderInner>

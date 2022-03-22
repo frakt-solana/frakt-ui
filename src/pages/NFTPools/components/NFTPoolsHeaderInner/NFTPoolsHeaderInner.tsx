@@ -10,6 +10,7 @@ interface MarketHeaderInnerProps {
   poolPublicKey: string;
   className?: string;
   wrapperClassName?: string;
+  hidden?: boolean;
 }
 
 export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
@@ -17,9 +18,14 @@ export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
   poolPublicKey,
   className,
   wrapperClassName,
+  hidden,
 }) => {
   return (
-    <Container className={classNames(styles.container, wrapperClassName)}>
+    <Container
+      className={classNames(styles.container, wrapperClassName, {
+        [styles.hidden]: hidden,
+      })}
+    >
       <div className={classNames(styles.header, className)}>
         {children}
         <NFTPoolsNavigation

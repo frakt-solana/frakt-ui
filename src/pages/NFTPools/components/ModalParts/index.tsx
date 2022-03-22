@@ -12,6 +12,7 @@ import {
 } from '../../../../icons';
 import SettingsIcon from '../../../../icons/SettingsIcon';
 import styles from './ModalParts.module.scss';
+import NumericInput from '../../../../components/NumericInput';
 
 const { Option } = Select;
 
@@ -69,18 +70,138 @@ export const ItemContent: FC<ItemContentProps> = ({
   );
 };
 
+export interface SlippageDropdownProps {
+  slippage: string;
+  setSlippage: (nextValue: string) => void;
+  isSlippageDropdpwnVisible: boolean;
+  setIsSlippageDropdpwnVisible: (nextValue: boolean) => void;
+  posRight?: boolean;
+  className?: string;
+}
+
+export const SlippageDropdown: FC<SlippageDropdownProps> = ({
+  slippage,
+  setSlippage,
+  isSlippageDropdpwnVisible,
+  setIsSlippageDropdpwnVisible,
+  posRight = false,
+  className,
+}) => {
+  const [inputSlippageValue, setInputSlippageValue] = useState<string>('');
+
+  const onItemClick = (nextValue: string) => () => {
+    setSlippage(nextValue);
+    setInputSlippageValue('');
+  };
+
+  const onInputBlur = () => {
+    const inputSlippageValueNumber = Number(
+      inputSlippageValue.replace('%', ''),
+    );
+
+    const isInputValueValid =
+      !isNaN(inputSlippageValueNumber) &&
+      inputSlippageValueNumber >= 0.1 &&
+      inputSlippageValueNumber < 100;
+
+    if (isInputValueValid) {
+      setSlippage(inputSlippageValue.replace('%', ''));
+      setInputSlippageValue(`${inputSlippageValue}%`);
+    } else {
+      setSlippage('0.5');
+      setInputSlippageValue('');
+    }
+  };
+
+  return (
+    <div
+      className={classNames(
+        styles.slippageWrapper,
+        {
+          [styles.slippageVisible]: isSlippageDropdpwnVisible,
+        },
+        className,
+      )}
+    >
+      <SettingsIcon
+        onClick={(event) => {
+          setIsSlippageDropdpwnVisible(true);
+          event?.stopPropagation();
+        }}
+      />
+      <div
+        className={styles.slippageOverlay}
+        onClick={() => setIsSlippageDropdpwnVisible(false)}
+      />
+      <div
+        className={classNames(styles.slippageBlock, {
+          [styles.slippageBlockRight]: posRight,
+        })}
+      >
+        <p className={styles.slippageTitle}>Slippage tolerance</p>
+        <ul className={styles.slippageList}>
+          <li
+            className={classNames(styles.slippageItem, {
+              [styles.slippageItemActive]:
+                slippage === '0.1' && !inputSlippageValue,
+            })}
+            onClick={onItemClick('0.1')}
+          >
+            0.1%
+          </li>
+          <li
+            className={classNames(styles.slippageItem, {
+              [styles.slippageItemActive]:
+                slippage === '0.5' && !inputSlippageValue,
+            })}
+            onClick={onItemClick('0.5')}
+          >
+            0.5%
+          </li>
+          <li
+            className={classNames(styles.slippageItem, {
+              [styles.slippageItemActive]:
+                slippage === '1' && !inputSlippageValue,
+            })}
+            onClick={onItemClick('1')}
+          >
+            1%
+          </li>
+          <li className={styles.slippageItem}>
+            <NumericInput
+              className={styles.slippageInput}
+              value={inputSlippageValue}
+              onChange={setInputSlippageValue}
+              onFocus={() => {
+                setInputSlippageValue(inputSlippageValue.replace('%', ''));
+              }}
+              onBlur={onInputBlur}
+              positiveOnly
+              placeholder="0.0%"
+            />
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
 export interface ModalHeaderProps {
   onHeaderClick?: () => void;
   headerText: string;
   className?: string;
-  setSlippage?: (nextValue: number) => void;
+  slippage: number;
+  setSlippage: (nextValue: number) => void;
+  showSlippageDropdown?: boolean;
 }
 
 export const ModalHeader: FC<ModalHeaderProps> = ({
   onHeaderClick = () => {},
   headerText,
   className,
+  slippage,
   setSlippage,
+  showSlippageDropdown = true,
 }) => {
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 
@@ -94,38 +215,13 @@ export const ModalHeader: FC<ModalHeaderProps> = ({
     >
       <p className={styles.itemHeaderText}>{headerText}</p>
 
-      {setSlippage && (
-        <div
-          className={classNames(styles.slippageWrapper, {
-            [styles.slippageVisible]: isSlippageVisible,
-          })}
-        >
-          <SettingsIcon
-            onClick={(event) => {
-              setIsSlippageVisible(true);
-              event?.stopPropagation();
-            }}
-          />
-          <div
-            className={styles.slippageOverlay}
-            onClick={() => setIsSlippageVisible(false)}
-          />
-          <div className={styles.slippageBlock}>
-            <p className={styles.slippageTitle}>Slippage tolerance</p>
-            <ul className={styles.slippageList}>
-              <li className={styles.slippageItem}>1%</li>
-              <li className={styles.slippageItem}>5%</li>
-              <li className={styles.slippageItem}>10%</li>
-              <li className={styles.slippageItem}>
-                <input
-                  type="text"
-                  className={styles.slippageInput}
-                  placeholder="0.0%"
-                />
-              </li>
-            </ul>
-          </div>
-        </div>
+      {showSlippageDropdown && (
+        <SlippageDropdown
+          slippage={slippage.toString()}
+          setSlippage={(slippage) => setSlippage(parseFloat(slippage))}
+          isSlippageDropdpwnVisible={isSlippageVisible}
+          setIsSlippageDropdpwnVisible={setIsSlippageVisible}
+        />
       )}
     </div>
   );

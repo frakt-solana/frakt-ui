@@ -8,6 +8,7 @@ interface HeaderSwapProps {
   poolPublicKey: string;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
+  hidden?: boolean;
 }
 
 const COMMISSION_PERCENT = 0.02;
@@ -16,9 +17,10 @@ export const HeaderSwap: FC<HeaderSwapProps> = ({
   poolPublicKey,
   poolTokenInfo,
   poolTokenPrice,
+  hidden = false,
 }) => {
   return (
-    <NFTPoolsHeaderInner poolPublicKey={poolPublicKey}>
+    <NFTPoolsHeaderInner poolPublicKey={poolPublicKey} hidden={hidden}>
       <HeaderSellInfo
         solanaPrice={(parseFloat(poolTokenPrice) * COMMISSION_PERCENT).toFixed(
           3,

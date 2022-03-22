@@ -18,7 +18,7 @@ type GetTokenPrice = (params: {
 
 export const getTokenPrice: GetTokenPrice = async ({
   poolData,
-  slippage = 0.05,
+  slippage = 0.5,
   isBuy = true,
   connection,
 }) => {

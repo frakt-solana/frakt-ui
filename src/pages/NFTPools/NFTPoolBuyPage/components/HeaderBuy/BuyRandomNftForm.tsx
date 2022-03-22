@@ -1,16 +1,15 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import classNames from 'classnames';
 import { Select } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 import styles from './HeaderBuy.module.scss';
-import SettingsIcon from '../../../../../icons/SettingsIcon';
 import { ArrowDownBtn, SolanaIcon } from '../../../../../icons';
 import { useNativeAccount } from '../../../../../utils/accounts';
 import { useWalletModal } from '../../../../../contexts/WalletModal';
 import Button from '../../../../../components/Button';
+import { SlippageDropdown } from '../../../components/ModalParts';
 
 const { Option } = Select;
 
@@ -19,6 +18,8 @@ interface BuyRandomNftFormProps {
   poolTokenAvailable: boolean;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
+  slippage: number;
+  setSlippage: (nextValue: number) => void;
 }
 
 enum Token {
@@ -31,6 +32,8 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
   poolTokenAvailable,
   poolTokenInfo,
   poolTokenPrice,
+  slippage,
+  setSlippage,
 }) => {
   const poolTokenPriceSOL = parseFloat(poolTokenPrice);
 
@@ -54,9 +57,10 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(poolTokenPriceSOL * 1.01).toFixed(
-          3,
-        )} SOL`
+      ? `* Max total (with slippage) = ${(
+          poolTokenPriceSOL *
+          (1 + slippage / 100)
+        ).toFixed(3)} SOL`
       : '';
 
   const isBtnDisabled =
@@ -68,10 +72,16 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
       <div className={styles.buySettings}>
         <div className={styles.settingsWrapper}>
           {token === Token.SOL && (
-            <SlippageSelector
-              isSlippageVisible={isSlippageVisible}
-              setIsSlippageVisible={setIsSlippageVisible}
-            />
+            <>
+              <SlippageDropdown
+                slippage={slippage.toString()}
+                setSlippage={(slippage) => setSlippage(parseFloat(slippage))}
+                isSlippageDropdpwnVisible={isSlippageVisible}
+                setIsSlippageDropdpwnVisible={setIsSlippageVisible}
+                posRight
+              />
+              <div className={styles.separator} />
+            </>
           )}
           <p className={styles.randomNFTsPrice}>{price}</p>
           <div className={styles.separator} />
@@ -120,50 +130,5 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
         {connected ? 'Buy' : 'Connect wallet'}
       </Button>
     </div>
-  );
-};
-
-interface SlippageSelectorProps {
-  isSlippageVisible: boolean;
-  setIsSlippageVisible: (nextValue: boolean) => void;
-}
-
-const SlippageSelector: FC<SlippageSelectorProps> = ({
-  isSlippageVisible,
-  setIsSlippageVisible,
-}) => {
-  const toggleSlippageModal = () => setIsSlippageVisible(!isSlippageVisible);
-
-  return (
-    <>
-      <div
-        className={classNames({
-          [styles.slippageWrapper]: true,
-          [styles.slippageVisible]: isSlippageVisible,
-        })}
-      >
-        <SettingsIcon onClick={toggleSlippageModal} />
-        <div
-          className={styles.slippageOverlay}
-          onClick={() => setIsSlippageVisible(false)}
-        />
-        <div className={styles.slippageBlock}>
-          <p className={styles.slippageTitle}>Slippage tolerance</p>
-          <ul className={styles.slippageList}>
-            <li className={styles.slippageItem}>1%</li>
-            <li className={styles.slippageItem}>5%</li>
-            <li className={styles.slippageItem}>10%</li>
-            <li className={styles.slippageItem}>
-              <input
-                type="text"
-                className={styles.slippageInput}
-                placeholder="0.0%"
-              />
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className={styles.separator} />
-    </>
   );
 };
