@@ -1,12 +1,13 @@
 import { useParams } from 'react-router';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
+import BN from 'bn.js';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../components/WalletNotConnected';
-import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../contexts/userTokens';
 import styles from './NFTPoolSellPage.module.scss';
 import {
   filterWhitelistedNFTs,
@@ -22,6 +23,7 @@ import {
   useNftPoolTokenBalance,
   useNFTsFiltering,
   usePoolTokensPrices,
+  useUserRawNfts,
 } from '../hooks';
 import {
   NFTPoolPageLayout,
@@ -29,7 +31,6 @@ import {
 } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
-import BN from 'bn.js';
 import { SOL_TOKEN } from '../../../utils';
 import { getTokenPrice } from '../helpers';
 import { SELL_COMMISSION_PERCENT } from '../constants';
@@ -38,37 +39,6 @@ import {
   LoadingModal,
   useLoadingModal,
 } from '../../../components/LoadingModal';
-
-const useUserRawNfts = () => {
-  const { connected } = useWallet();
-
-  const {
-    nfts: rawNfts,
-    loading: userTokensLoading,
-    nftsLoading,
-    fetchUserNfts,
-    rawUserTokensByMint,
-    removeTokenOptimistic,
-  } = useUserTokens();
-
-  useEffect(() => {
-    if (
-      connected &&
-      !userTokensLoading &&
-      !nftsLoading &&
-      Object.keys(rawUserTokensByMint).length
-    ) {
-      fetchUserNfts();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, nftsLoading]);
-
-  return {
-    rawNfts,
-    rawNftsLoading: userTokensLoading || nftsLoading,
-    removeTokenOptimistic,
-  };
-};
 
 const useNftSell = ({
   pool,

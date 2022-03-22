@@ -3,8 +3,14 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { Percent } from '@raydium-io/raydium-sdk';
 
-import { UserNFTWithCollection } from '../../contexts/userTokens';
+import {
+  UserNFT,
+  UserNFTWithCollection,
+  useUserTokens,
+} from '../../contexts/userTokens';
 import { useDebounce } from '../../hooks';
 import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
@@ -15,9 +21,7 @@ import {
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { getOutputAmount } from '../../components/SwapForm';
-import { Percent } from '@raydium-io/raydium-sdk';
 import { SOL_TOKEN } from '../../utils';
-import { TokenInfo } from '@solana/spl-token-registry';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -210,5 +214,42 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
     loading: loading || liquidityPoolsLoading,
     priceByTokenMint,
     poolDataByMint,
+  };
+};
+
+type UseUserRawNfts = () => {
+  rawNfts: UserNFT[];
+  rawNftsLoading: boolean;
+  removeTokenOptimistic: (mints: string[]) => void;
+};
+
+export const useUserRawNfts: UseUserRawNfts = () => {
+  const { connected } = useWallet();
+
+  const {
+    nfts: rawNfts,
+    loading: userTokensLoading,
+    nftsLoading,
+    fetchUserNfts,
+    rawUserTokensByMint,
+    removeTokenOptimistic,
+  } = useUserTokens();
+
+  useEffect(() => {
+    if (
+      connected &&
+      !userTokensLoading &&
+      !nftsLoading &&
+      Object.keys(rawUserTokensByMint).length
+    ) {
+      fetchUserNfts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, userTokensLoading, nftsLoading]);
+
+  return {
+    rawNfts,
+    rawNftsLoading: userTokensLoading || nftsLoading,
+    removeTokenOptimistic,
   };
 };
