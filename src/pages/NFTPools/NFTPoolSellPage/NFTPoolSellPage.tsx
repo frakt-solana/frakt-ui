@@ -7,7 +7,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
 import { WalletNotConnected } from '../components/WalletNotConnected';
-import { UserNFT } from '../../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import styles from './NFTPoolSellPage.module.scss';
 import {
   filterWhitelistedNFTs,
@@ -50,7 +50,7 @@ const useNftSell = ({
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { connection } = useConnection();
   const { depositNftToCommunityPool } = useNftPools();
-  const { removeTokenOptimistic } = useUserRawNfts();
+  const { removeTokenOptimistic } = useUserTokens();
   const { balance } = useNftPoolTokenBalance(pool);
   const {
     visible: loadingModalVisible,

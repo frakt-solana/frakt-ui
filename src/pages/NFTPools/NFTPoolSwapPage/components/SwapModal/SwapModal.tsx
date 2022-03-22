@@ -14,11 +14,12 @@ import {
 } from '../../../components/ModalParts';
 import { useNativeAccount } from '../../../../../utils/accounts';
 import { LAMPORTS_PER_SOL } from '../../../../../utils/solanaUtils';
+import { SELL_COMMISSION_PERCENT } from '../../../constants';
 
 interface SwapModalProps {
   nft?: UserNFTWithCollection;
   onDeselect?: () => void;
-  onSubmit: () => void;
+  onSubmit: (needSwap?: boolean) => void;
   randomPoolImage?: string;
   poolTokenAvailable: boolean;
   poolTokenInfo: TokenInfo;
@@ -30,8 +31,6 @@ enum Token {
   POOL_TOKEN = 'poolToken',
 }
 
-const COMMISSION_PERCENT = 0.02;
-
 export const SwapModal: FC<SwapModalProps> = ({
   nft,
   onDeselect,
@@ -41,7 +40,7 @@ export const SwapModal: FC<SwapModalProps> = ({
   poolTokenInfo,
   poolTokenPrice,
 }) => {
-  const priceSOL = parseFloat(poolTokenPrice) * COMMISSION_PERCENT;
+  const priceSOL = parseFloat(poolTokenPrice) * (SELL_COMMISSION_PERCENT / 100);
 
   const { account } = useNativeAccount();
 
@@ -68,7 +67,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
   const price = isSolTokenSelected
     ? priceSOL.toFixed(3)
-    : COMMISSION_PERCENT.toFixed(3);
+    : (SELL_COMMISSION_PERCENT / 100).toFixed(3);
 
   return (
     <div
@@ -107,7 +106,7 @@ export const SwapModal: FC<SwapModalProps> = ({
 
       <SubmitButton
         text="Swap"
-        onClick={onSubmit}
+        onClick={() => onSubmit(isSolTokenSelected)}
         wrapperClassName={styles.swapBtnWrapper}
         disabled={isBtnDisabled}
       />
