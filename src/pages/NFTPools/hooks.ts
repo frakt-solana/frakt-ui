@@ -10,7 +10,10 @@ import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
+import {
+  PoolDataByMint,
+  useLiquidityPools,
+} from '../../contexts/liquidityPools';
 import { getOutputAmount } from '../../components/SwapForm';
 import { Percent } from '@raydium-io/raydium-sdk';
 import { SOL_TOKEN } from '../../utils';
@@ -142,6 +145,7 @@ export const useNftPoolTokenBalance = (
 type UsePoolTokensPrices = (poolTokensInfo: TokenInfo[]) => {
   loading: boolean;
   priceByTokenMint: Map<string, string>;
+  poolDataByMint: PoolDataByMint;
 };
 
 export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
@@ -157,32 +161,36 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
   } = useLiquidityPools();
 
   const fetchPrices = async () => {
+    const poolsData = poolTokensInfo
+      .map((poolTokenInfo) => poolDataByMint.get(poolTokenInfo?.address))
+      .filter((poolData) => !!poolData);
+
+    if (poolsData.length) {
+      const poolConfigs = poolsData.map(({ poolConfig }) => poolConfig);
+
+      const poolsInfo = await fetchRaydiumPoolsInfo(poolConfigs);
+
+      const priceByTokenMint = poolsInfo.reduce((map, poolInfo, idx) => {
+        const { amountOut } = getOutputAmount({
+          poolKeys: poolConfigs?.[idx],
+          poolInfo,
+          payToken: poolTokensInfo?.[idx],
+          payAmount: 1,
+          receiveToken: SOL_TOKEN,
+          slippage: new Percent(1, 100),
+        });
+
+        return map.set(poolTokensInfo?.[idx]?.address, amountOut);
+      }, new Map<string, string>());
+
+      setPriceByTokenMint(priceByTokenMint);
+    }
+  };
+
+  const initialFetch = async () => {
     try {
       setLoading(true);
-      const poolsData = poolTokensInfo
-        .map((poolTokenInfo) => poolDataByMint.get(poolTokenInfo?.address))
-        .filter((poolData) => !!poolData);
-
-      if (poolsData.length) {
-        const poolConfigs = poolsData.map(({ poolConfig }) => poolConfig);
-
-        const poolsInfo = await fetchRaydiumPoolsInfo(poolConfigs);
-
-        const priceByTokenMint = poolsInfo.reduce((map, poolInfo, idx) => {
-          const { amountOut } = getOutputAmount({
-            poolKeys: poolConfigs?.[idx],
-            poolInfo,
-            payToken: poolTokensInfo?.[idx],
-            payAmount: 1,
-            receiveToken: SOL_TOKEN,
-            slippage: new Percent(1, 100),
-          });
-
-          return map.set(poolTokensInfo?.[idx]?.address, amountOut);
-        }, new Map<string, string>());
-
-        setPriceByTokenMint(priceByTokenMint);
-      }
+      await fetchPrices();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -193,7 +201,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
 
   useEffect(() => {
     if (poolDataByMint.size) {
-      fetchPrices();
+      initialFetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liquidityPoolsLoading, poolDataByMint]);
@@ -201,5 +209,6 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
   return {
     loading: loading || liquidityPoolsLoading,
     priceByTokenMint,
+    poolDataByMint,
   };
 };

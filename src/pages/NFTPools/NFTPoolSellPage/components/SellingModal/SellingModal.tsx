@@ -12,9 +12,10 @@ import {
   ModalHeader,
   SubmitButton,
 } from '../../../components/ModalParts';
+import { SELL_COMMISSION_PERCENT } from '../../../constants';
 
-interface BuyingModalProps {
-  onSubmit: () => void;
+interface SellingModalProps {
+  onSubmit: (needSwap?: boolean) => void;
   onDeselect?: (nft: any) => void;
   nft: UserNFTWithCollection;
   poolTokenAvailable: boolean;
@@ -27,9 +28,7 @@ enum Token {
   POOL_TOKEN = 'poolToken',
 }
 
-const PRICE_WITH_COMMISSION_PERCENT = 0.98;
-
-export const SellingModal: FC<BuyingModalProps> = ({
+export const SellingModal: FC<SellingModalProps> = ({
   onDeselect,
   nft,
   onSubmit,
@@ -37,7 +36,8 @@ export const SellingModal: FC<BuyingModalProps> = ({
   poolTokenInfo,
   poolTokenPrice,
 }) => {
-  const priceSOL = parseFloat(poolTokenPrice) * PRICE_WITH_COMMISSION_PERCENT;
+  const priceSOL =
+    parseFloat(poolTokenPrice) * ((100 - SELL_COMMISSION_PERCENT) / 100);
 
   const { account } = useNativeAccount();
 
@@ -64,7 +64,7 @@ export const SellingModal: FC<BuyingModalProps> = ({
 
   const price = isSolTokenSelected
     ? priceSOL.toFixed(3)
-    : PRICE_WITH_COMMISSION_PERCENT.toFixed(3);
+    : ((100 - SELL_COMMISSION_PERCENT) / 100).toFixed(3);
 
   return (
     <div
@@ -96,7 +96,11 @@ export const SellingModal: FC<BuyingModalProps> = ({
         poolTokenInfo={poolTokenInfo}
       />
 
-      <SubmitButton text="Sell" onClick={onSubmit} disabled={isBtnDisabled} />
+      <SubmitButton
+        text="Sell"
+        onClick={() => onSubmit(isSolTokenSelected)}
+        disabled={isBtnDisabled}
+      />
     </div>
   );
 };

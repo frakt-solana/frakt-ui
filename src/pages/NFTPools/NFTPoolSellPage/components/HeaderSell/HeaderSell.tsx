@@ -3,14 +3,13 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { NFTPoolsHeaderInner } from '../../../components/NFTPoolsHeaderInner';
 import { HeaderSellInfo } from '../../../components/NFTPoolsHeaderInner/HeaderSellInfo';
+import { SELL_COMMISSION_PERCENT } from '../../../constants';
 
 interface HeaderSellProps {
   poolPublicKey: string;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
 }
-
-const PRICE_WITH_COMMISSION_PERCENT = 0.98;
 
 export const HeaderSell: FC<HeaderSellProps> = ({
   poolPublicKey,
@@ -21,9 +20,10 @@ export const HeaderSell: FC<HeaderSellProps> = ({
     <NFTPoolsHeaderInner poolPublicKey={poolPublicKey}>
       <HeaderSellInfo
         solanaPrice={(
-          parseFloat(poolTokenPrice) * PRICE_WITH_COMMISSION_PERCENT
+          parseFloat(poolTokenPrice) *
+          ((100 - SELL_COMMISSION_PERCENT) / 100)
         ).toFixed(3)}
-        tokenPrice={PRICE_WITH_COMMISSION_PERCENT.toFixed(3)}
+        tokenPrice={((100 - SELL_COMMISSION_PERCENT) / 100).toFixed(3)}
         poolTokenInfo={poolTokenInfo}
       />
     </NFTPoolsHeaderInner>

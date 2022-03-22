@@ -36,7 +36,7 @@ export const rawDepositNftToCommunityPool = async ({
   pool,
   nft,
   afterTransaction,
-}: DepositNftToCommunityPoolRawParams): Promise<void> => {
+}: DepositNftToCommunityPoolRawParams): Promise<boolean | null> => {
   const { publicKey: nftUserTokenAccount } = await getTokenAccount({
     tokenMint: new PublicKey(nft.mint),
     owner: wallet.publicKey,
@@ -92,6 +92,8 @@ export const rawDepositNftToCommunityPool = async ({
   );
 
   afterTransaction && afterTransaction();
+
+  return true;
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(

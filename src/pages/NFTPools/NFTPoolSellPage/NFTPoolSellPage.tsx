@@ -1,9 +1,10 @@
 import { useParams } from 'react-router';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletNotConnected } from '../components/WalletNotConnected';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import styles from './NFTPoolSellPage.module.scss';
@@ -27,14 +28,165 @@ import {
   PoolPageType,
 } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
+import { useLiquidityPools } from '../../../contexts/liquidityPools';
+import BN from 'bn.js';
+import { SOL_TOKEN } from '../../../utils';
+import { getTokenPrice } from '../helpers';
+import { SELL_COMMISSION_PERCENT } from '../constants';
+import { NftPoolData } from '../../../utils/cacher/nftPools';
+import {
+  LoadingModal,
+  useLoadingModal,
+} from '../../../components/LoadingModal';
+
+const useUserRawNfts = () => {
+  const { connected } = useWallet();
+
+  const {
+    nfts: rawNfts,
+    loading: userTokensLoading,
+    nftsLoading,
+    fetchUserNfts,
+    rawUserTokensByMint,
+    removeTokenOptimistic,
+  } = useUserTokens();
+
+  useEffect(() => {
+    if (
+      connected &&
+      !userTokensLoading &&
+      !nftsLoading &&
+      Object.keys(rawUserTokensByMint).length
+    ) {
+      fetchUserNfts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, userTokensLoading, nftsLoading]);
+
+  return {
+    rawNfts,
+    rawNftsLoading: userTokensLoading || nftsLoading,
+    removeTokenOptimistic,
+  };
+};
+
+const useNftSell = ({
+  pool,
+  poolTokenInfo,
+}: {
+  pool: NftPoolData;
+  poolTokenInfo: TokenInfo;
+}) => {
+  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
+  const { connection } = useConnection();
+  const { depositNftToCommunityPool } = useNftPools();
+  const { removeTokenOptimistic } = useUserRawNfts();
+  const { balance } = useNftPoolTokenBalance(pool);
+  const {
+    visible: loadingModalVisible,
+    open: openLoadingModal,
+    close: closeLoadingModal,
+  } = useLoadingModal();
+
+  const poolTokenBalanceOnSell = useRef<number>();
+  const swapNeeded = useRef<boolean>(false);
+
+  const [slippage, setSlippage] = useState<number>();
+  const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
+
+  useEffect(() => {
+    (async () => {
+      if (
+        !!poolTokenBalanceOnSell.current &&
+        balance > poolTokenBalanceOnSell.current &&
+        swapNeeded.current
+      ) {
+        const poolData = poolDataByMint.get(poolTokenInfo.address);
+
+        const { amountWithSlippage: receiveAmount } = await getTokenPrice({
+          poolData,
+          slippage: slippage || 1,
+          isBuy: false,
+          connection,
+        });
+
+        const receiveAmountBN = new BN(
+          parseFloat(receiveAmount) *
+            ((100 - SELL_COMMISSION_PERCENT) / 100) *
+            10 ** SOL_TOKEN.decimals,
+        );
+
+        const payAmount = new BN(
+          ((100 - SELL_COMMISSION_PERCENT) / 100) *
+            10 ** poolTokenInfo?.decimals,
+        );
+
+        await raydiumSwap({
+          baseToken: poolTokenInfo,
+          baseAmount: payAmount,
+          quoteToken: SOL_TOKEN,
+          quoteAmount: receiveAmountBN,
+          poolConfig: poolData?.poolConfig,
+        });
+
+        poolTokenBalanceOnSell.current = null;
+        swapNeeded.current = false;
+        closeLoadingModal();
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [balance]);
+
+  const onSelect = (nft: UserNFT) => {
+    setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));
+  };
+  const onDeselect = () => {
+    setSelectedNft(null);
+  };
+
+  const sell = async (needSwap = false) => {
+    if (needSwap) {
+      swapNeeded.current = true;
+    }
+    openLoadingModal();
+
+    const result = await depositNftToCommunityPool({
+      pool,
+      nft: selectedNft,
+      afterTransaction: () => {
+        removeTokenOptimistic([selectedNft?.mint]);
+        onDeselect();
+        poolTokenBalanceOnSell.current = balance;
+        if (!needSwap) {
+          closeLoadingModal();
+        }
+      },
+    });
+
+    if (!result) {
+      closeLoadingModal();
+    }
+  };
+
+  return {
+    slippage,
+    setSlippage,
+    sell,
+    poolTokenBalance: balance,
+    onSelect,
+    onDeselect,
+    selectedNft,
+    loadingModalVisible,
+    closeLoadingModal,
+  };
+};
 
 export const NFTPoolSellPage: FC = () => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
   usePublicKeyParam(poolPubkey);
-
   useNftPoolsInitialFetch();
 
-  const { depositNftToCommunityPool } = useNftPools();
+  const { connected } = useWallet();
 
   const {
     pool,
@@ -52,54 +204,26 @@ export const NFTPoolSellPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolPublicKey, tokensMap]);
 
-  const { connected } = useWallet();
-
-  const {
-    nfts: rawNfts,
-    loading: userTokensLoading,
-    nftsLoading,
-    fetchUserNfts,
-    rawUserTokensByMint,
-    removeTokenOptimistic,
-  } = useUserTokens();
+  const { rawNfts, rawNftsLoading: contentLoading } = useUserRawNfts();
 
   const {
     priceByTokenMint: poolTokenPriceByTokenMint,
     loading: pricesLoading,
   } = usePoolTokensPrices([poolTokenInfo]);
 
-  useEffect(() => {
-    if (
-      connected &&
-      !userTokensLoading &&
-      !nftsLoading &&
-      Object.keys(rawUserTokensByMint).length
-    ) {
-      fetchUserNfts();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, nftsLoading]);
+  const {
+    poolTokenBalance,
+    onSelect,
+    onDeselect,
+    selectedNft,
+    sell,
+    loadingModalVisible,
+    closeLoadingModal,
+  } = useNftSell({ pool, poolTokenInfo });
 
-  const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const [, setIsSidebar] = useState<boolean>(false);
 
-  const onSelect = (nft: UserNFT) => {
-    setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));
-  };
-  const onDeselect = () => {
-    setSelectedNft(null);
-  };
-  const onSell = () => {
-    //TODO Remove NFT from list after successfull selling
-    depositNftToCommunityPool({
-      pool,
-      nft: selectedNft,
-      afterTransaction: () => {
-        removeTokenOptimistic([selectedNft?.mint]);
-        onDeselect();
-      },
-    });
-  };
+  const poolTokenAvailable = poolTokenBalance >= 1;
 
   const whitelistedNFTs = useMemo(() => {
     return filterWhitelistedNFTs(
@@ -109,12 +233,7 @@ export const NFTPoolSellPage: FC = () => {
     );
   }, [rawNfts, whitelistedMintsDictionary, whitelistedCreatorsDictionary]);
 
-  const contentLoading = userTokensLoading || nftsLoading;
-
   const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
-
-  const { balance } = useNftPoolTokenBalance(pool);
-  const poolTokenAvailable = balance >= 1;
 
   const Header = useCallback(
     () => (
@@ -157,7 +276,7 @@ export const NFTPoolSellPage: FC = () => {
             <SellingModal
               nft={selectedNft}
               onDeselect={onDeselect}
-              onSubmit={onSell}
+              onSubmit={sell}
               poolTokenAvailable={poolTokenAvailable}
               poolTokenInfo={poolTokenInfo}
               poolTokenPrice={poolTokenPriceByTokenMint.get(
@@ -165,6 +284,10 @@ export const NFTPoolSellPage: FC = () => {
               )}
             />
           </div>
+          <LoadingModal
+            visible={loadingModalVisible}
+            onCancel={closeLoadingModal}
+          />
         </>
       )}
     </NFTPoolPageLayout>
