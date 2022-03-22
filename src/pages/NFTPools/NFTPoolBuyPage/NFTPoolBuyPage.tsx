@@ -193,7 +193,7 @@ export const NFTPoolBuyPage: FC = () => {
   }, [poolPublicKey, tokensMap]);
 
   const {
-    priceByTokenMint: poolTokenPriceByTokenMint,
+    pricesByTokenMint: poolTokenPricesByTokenMint,
     loading: pricesLoading,
   } = usePoolTokensPrices([poolTokenInfo]);
 
@@ -231,7 +231,9 @@ export const NFTPoolBuyPage: FC = () => {
         pool={pool}
         onBuy={buy}
         poolTokenInfo={poolTokenInfo}
-        poolTokenPrice={poolTokenPriceByTokenMint.get(poolTokenInfo?.address)}
+        poolTokenPrice={
+          poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.buy
+        }
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps

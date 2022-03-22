@@ -7,17 +7,18 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../../../components/FakeInfinityScroll';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { PricesByTokenMint } from '../../../hooks';
 
 interface PoolsList {
   pools: NftPoolData[];
   tokensMap: Map<string, TokenInfo>;
-  poolTokenPriceByTokenMint: Map<string, string>;
+  poolTokenPricesByTokenMint: PricesByTokenMint;
 }
 
 export const PoolsList: FC<PoolsList> = ({
   pools,
   tokensMap,
-  poolTokenPriceByTokenMint,
+  poolTokenPricesByTokenMint,
 }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
 
@@ -34,7 +35,9 @@ export const PoolsList: FC<PoolsList> = ({
           key={pool.publicKey.toBase58()}
           pool={pool}
           poolTokenInfo={tokensMap.get(pool?.fractionMint?.toBase58())}
-          price={poolTokenPriceByTokenMint.get(pool?.fractionMint?.toBase58())}
+          price={
+            poolTokenPricesByTokenMint.get(pool?.fractionMint?.toBase58())?.buy
+          }
         />
       ))}
     </FakeInfinityScroll>

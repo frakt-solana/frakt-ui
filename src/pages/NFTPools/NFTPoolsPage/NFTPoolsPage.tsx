@@ -53,7 +53,7 @@ export const NFTPoolsPage: FC = () => {
   }, [rawPools, fraktionTokensMap]);
 
   const {
-    priceByTokenMint: poolTokenPriceByTokenMint,
+    pricesByTokenMint: poolTokenPricesByTokenMint,
     loading: pricesLoading,
   } = usePoolTokensPrices(poolTokens);
 
@@ -103,7 +103,7 @@ export const NFTPoolsPage: FC = () => {
           <PoolsList
             pools={pools}
             tokensMap={fraktionTokensMap}
-            poolTokenPriceByTokenMint={poolTokenPriceByTokenMint}
+            poolTokenPricesByTokenMint={poolTokenPricesByTokenMint}
           />
         )}
       </Container>

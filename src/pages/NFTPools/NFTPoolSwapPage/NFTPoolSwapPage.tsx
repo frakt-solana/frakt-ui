@@ -281,7 +281,7 @@ export const NFTPoolSwapPage: FC = () => {
   const { rawNfts, rawNftsLoading: contentLoading } = useUserRawNfts();
 
   const {
-    priceByTokenMint: poolTokenPriceByTokenMint,
+    pricesByTokenMint: poolTokenPricesByTokenMint,
     loading: pricesLoading,
   } = usePoolTokensPrices([poolTokenInfo]);
 
@@ -304,7 +304,9 @@ export const NFTPoolSwapPage: FC = () => {
       <HeaderSwap
         poolPublicKey={poolPubkey}
         poolTokenInfo={poolTokenInfo}
-        poolTokenPrice={poolTokenPriceByTokenMint.get(poolTokenInfo?.address)}
+        poolTokenPrice={
+          poolTokenPricesByTokenMint?.get(poolTokenInfo?.address)?.buy
+        }
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -344,9 +346,9 @@ export const NFTPoolSwapPage: FC = () => {
               randomPoolImage={poolImage}
               poolTokenAvailable={poolTokenAvailable}
               poolTokenInfo={poolTokenInfo}
-              poolTokenPrice={poolTokenPriceByTokenMint.get(
-                poolTokenInfo?.address,
-              )}
+              poolTokenPrice={
+                poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.buy
+              }
             />
           </div>
           {isLotteryModalVisible && (

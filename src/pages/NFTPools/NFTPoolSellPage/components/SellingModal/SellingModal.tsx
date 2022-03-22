@@ -18,7 +18,6 @@ interface SellingModalProps {
   onSubmit: (needSwap?: boolean) => void;
   onDeselect?: (nft: any) => void;
   nft: UserNFTWithCollection;
-  poolTokenAvailable: boolean;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
 }
@@ -32,7 +31,6 @@ export const SellingModal: FC<SellingModalProps> = ({
   onDeselect,
   nft,
   onSubmit,
-  poolTokenAvailable,
   poolTokenInfo,
   poolTokenPrice,
 }) => {
@@ -58,9 +56,7 @@ export const SellingModal: FC<SellingModalProps> = ({
       ? `* Max total (with slippage) = ${(priceSOL * 1.01).toFixed(3)} SOL`
       : '';
 
-  const isBtnDisabled =
-    (!isSolTokenSelected && !poolTokenAvailable) ||
-    (isSolTokenSelected && solBalance < priceSOL);
+  const isBtnDisabled = isSolTokenSelected && solBalance < priceSOL;
 
   const price = isSolTokenSelected
     ? priceSOL.toFixed(3)

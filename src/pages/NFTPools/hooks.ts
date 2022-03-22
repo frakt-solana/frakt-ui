@@ -20,7 +20,7 @@ import {
   PoolDataByMint,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
-import { getOutputAmount } from '../../components/SwapForm';
+import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN } from '../../utils';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
@@ -146,16 +146,23 @@ export const useNftPoolTokenBalance = (
   };
 };
 
+export interface Price {
+  buy: string;
+  sell: string;
+}
+
+export type PricesByTokenMint = Map<string, Price>;
+
 type UsePoolTokensPrices = (poolTokensInfo: TokenInfo[]) => {
   loading: boolean;
-  priceByTokenMint: Map<string, string>;
+  pricesByTokenMint: PricesByTokenMint;
   poolDataByMint: PoolDataByMint;
 };
 
 export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [priceByTokenMint, setPriceByTokenMint] = useState<Map<string, string>>(
-    new Map<string, string>(),
+  const [pricesByTokenMint, setPricesByTokenMint] = useState<PricesByTokenMint>(
+    new Map<string, Price>(),
   );
 
   const {
@@ -174,8 +181,8 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
 
       const poolsInfo = await fetchRaydiumPoolsInfo(poolConfigs);
 
-      const priceByTokenMint = poolsInfo.reduce((map, poolInfo, idx) => {
-        const { amountOut } = getOutputAmount({
+      const pricesByTokenMint = poolsInfo.reduce((map, poolInfo, idx) => {
+        const { amountOut: sellPrice } = getOutputAmount({
           poolKeys: poolConfigs?.[idx],
           poolInfo,
           payToken: poolTokensInfo?.[idx],
@@ -184,10 +191,22 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
           slippage: new Percent(1, 100),
         });
 
-        return map.set(poolTokensInfo?.[idx]?.address, amountOut);
-      }, new Map<string, string>());
+        const { amountIn: buyPrice } = getInputAmount({
+          poolKeys: poolConfigs?.[idx],
+          poolInfo,
+          payToken: SOL_TOKEN,
+          receiveAmount: 1,
+          receiveToken: poolTokensInfo?.[idx],
+          slippage: new Percent(1, 100),
+        });
 
-      setPriceByTokenMint(priceByTokenMint);
+        return map.set(poolTokensInfo?.[idx]?.address, {
+          buy: buyPrice,
+          sell: sellPrice,
+        });
+      }, new Map<string, Price>());
+
+      setPricesByTokenMint(pricesByTokenMint);
     }
   };
 
@@ -212,7 +231,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
 
   return {
     loading: loading || liquidityPoolsLoading,
-    priceByTokenMint,
+    pricesByTokenMint,
     poolDataByMint,
   };
 };

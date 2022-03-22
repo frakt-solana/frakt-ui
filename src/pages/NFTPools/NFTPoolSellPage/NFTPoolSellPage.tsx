@@ -177,12 +177,11 @@ export const NFTPoolSellPage: FC = () => {
   const { rawNfts, rawNftsLoading: contentLoading } = useUserRawNfts();
 
   const {
-    priceByTokenMint: poolTokenPriceByTokenMint,
+    pricesByTokenMint: poolTokenPricesByTokenMint,
     loading: pricesLoading,
   } = usePoolTokensPrices([poolTokenInfo]);
 
   const {
-    poolTokenBalance,
     onSelect,
     onDeselect,
     selectedNft,
@@ -192,8 +191,6 @@ export const NFTPoolSellPage: FC = () => {
   } = useNftSell({ pool, poolTokenInfo });
 
   const [, setIsSidebar] = useState<boolean>(false);
-
-  const poolTokenAvailable = poolTokenBalance >= 1;
 
   const whitelistedNFTs = useMemo(() => {
     return filterWhitelistedNFTs(
@@ -210,7 +207,9 @@ export const NFTPoolSellPage: FC = () => {
       <HeaderSell
         poolPublicKey={poolPubkey}
         poolTokenInfo={poolTokenInfo}
-        poolTokenPrice={poolTokenPriceByTokenMint.get(poolTokenInfo?.address)}
+        poolTokenPrice={
+          poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.sell
+        }
       />
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -247,11 +246,10 @@ export const NFTPoolSellPage: FC = () => {
               nft={selectedNft}
               onDeselect={onDeselect}
               onSubmit={sell}
-              poolTokenAvailable={poolTokenAvailable}
               poolTokenInfo={poolTokenInfo}
-              poolTokenPrice={poolTokenPriceByTokenMint.get(
-                poolTokenInfo?.address,
-              )}
+              poolTokenPrice={
+                poolTokenPricesByTokenMint.get(poolTokenInfo?.address).sell
+              }
             />
           </div>
           <LoadingModal
