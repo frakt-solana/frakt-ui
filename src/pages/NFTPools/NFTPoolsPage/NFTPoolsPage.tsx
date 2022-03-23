@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Select } from '../../../components/Select/Select';
@@ -18,16 +18,9 @@ import { SearchInput } from '../../../components/SearchInput';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { usePoolTokensPrices } from '../hooks';
+import { usePoolsFiltering } from './hooks';
 
 export const NFTPoolsPage: FC = () => {
-  const { control /* watch */ } = useForm({
-    defaultValues: {
-      sort: SORT_VALUES[0],
-    },
-  });
-
-  // const sort = watch('sort');
-
   const { pools: rawPools, loading: poolsLoading } = useNftPools();
   const { loading: tokensMapLoading, fraktionTokensMap } =
     useTokenListContext();
@@ -57,12 +50,17 @@ export const NFTPoolsPage: FC = () => {
     loading: pricesLoading,
   } = usePoolTokensPrices(poolTokens);
 
-  const pools = useMemo(() => {
+  const activePools = useMemo(() => {
     return rawPools.filter(
       ({ state /* publicKey */ }) => state === CommunityPoolState.ACTIVE,
       // && publicKey.toBase58() === 'Gsyy57YjrRzKiFa6p5T6BBXmoGB3qEo8Q1hewijLRRWm',
     );
   }, [rawPools]);
+
+  const { control, pools, setSearch } = usePoolsFiltering({
+    pools: activePools,
+    poolTokens,
+  });
 
   const loading = tokensMapLoading || poolsLoading || pricesLoading;
 
@@ -74,9 +72,7 @@ export const NFTPoolsPage: FC = () => {
 
         <div className={styles.searchWrapper}>
           <SearchInput
-            onChange={(event) =>
-              /*searchItems(event.target.value || '')*/ event
-            }
+            onChange={(event) => setSearch(event.target.value || '')}
             className={styles.searchInput}
             placeholder="Search by pool name"
           />
@@ -111,7 +107,7 @@ export const NFTPoolsPage: FC = () => {
   );
 };
 
-const SORT_VALUES = [
+export const SORT_VALUES = [
   {
     label: (
       <span className={styles.sortName}>
