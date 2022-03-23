@@ -1,32 +1,39 @@
-import React from 'react';
 import styles from './styles.module.scss';
 import { WalletItem } from './WalletItem';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '../../contexts/WalletModal';
 import CurrentUserTable from '../CurrentUserTable';
+import LoanService from '../../services/LoansService';
 
 interface WalletContentProps {
   className?: string;
+  checkIsLogin: any;
 }
 
-const WalletContent = ({ className = '' }: WalletContentProps): JSX.Element => {
-  const { wallets, select, connected } = useWallet();
+const WalletContent = ({
+  className = '',
+  checkIsLogin,
+}: WalletContentProps): JSX.Element => {
+  const wallet = useWallet();
   const { setVisible } = useWalletModal();
+
+  const { connected, wallets, select } = wallet;
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
       <div className={styles.overlay} onClick={() => setVisible(false)} />
       <div className={`${styles.container} container`}>
-        {connected ? (
+        {connected && checkIsLogin() ? (
           <CurrentUserTable className={styles.itemsContainer} />
         ) : (
           <div className={styles.itemsContainer}>
             {wallets.map(({ name, icon: iconUrl }, idx) => (
               <WalletItem
                 key={idx}
-                onClick={(): void => {
+                onClick={async () => {
                   select(name);
                   setVisible(false);
+                  await LoanService.login({ wallet });
                 }}
                 imageSrc={iconUrl}
                 imageAlt={name}

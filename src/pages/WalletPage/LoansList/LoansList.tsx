@@ -8,6 +8,7 @@ import {
   useModalNFTsSlider,
   ModalNFTsSlider,
 } from '../../../components/ModalNFTsSlider';
+import { useLoans } from '../../../contexts/loans/loans.hooks';
 import { UserNFT } from '../../../contexts/userTokens';
 import styles from './LoansList.module.scss';
 
@@ -17,6 +18,7 @@ export interface LoansListProps {
 
 export const LoansList: FC<LoansListProps> = ({ nfts }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
+  const { loansData, loading } = useLoans();
 
   const {
     isModalVisible,
