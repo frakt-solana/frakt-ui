@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 
 import styles from './NFTPoolInfoPage.module.scss';
 import { HeaderInfo } from './components/HeaderInfo';
-import { SolanaIcon } from '../../../icons';
-import { POOL_HISTORY_DATA } from './tempData';
-import { HistoryListItem } from './components/HistoryListItem';
+// import { SolanaIcon } from '../../../icons';
+// import { POOL_HISTORY_DATA } from './tempData';
+// import { HistoryListItem } from './components/HistoryListItem';
 import { usePublicKeyParam } from '../../../hooks';
 import {
   NFTPoolPageLayout,
@@ -54,7 +54,8 @@ export const NFTPoolInfoPage = (): JSX.Element => {
         <Loader size="large" />
       ) : (
         <div className={styles.root}>
-          <div className={styles.leftSide}>
+          <p style={{ width: '100%' }}>*Under development</p>
+          {/* <div className={styles.leftSide}>
             <div className={styles.priceWrapper}>
               <h5 className={styles.cardTitle}>Price</h5>
               <ul className={styles.priceList}>
@@ -121,7 +122,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
                 <HistoryListItem key={idx} itemData={item} />
               ))}
             </ul>
-          </div>
+          </div> */}
         </div>
       )}
     </NFTPoolPageLayout>
