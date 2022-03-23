@@ -1,19 +1,24 @@
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 
 import styles from './NFTPoolInfoPage.module.scss';
 import { HeaderInfo } from './components/HeaderInfo';
-import { SolanaIcon } from '../../../icons';
-import { POOL_HISTORY_DATA } from './tempData';
-import { HistoryListItem } from './components/HistoryListItem';
+// import { SolanaIcon } from '../../../icons';
+// import { POOL_HISTORY_DATA } from './tempData';
+// import { HistoryListItem } from './components/HistoryListItem';
 import { usePublicKeyParam } from '../../../hooks';
-import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
+import {
+  NFTPoolPageLayout,
+  PoolPageType,
+} from '../components/NFTPoolPageLayout';
 import {
   useNftPool,
   useNftPoolsInitialFetch,
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
+import { useTokenListContext } from '../../../contexts/TokenList';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -21,19 +26,36 @@ export const NFTPoolInfoPage = (): JSX.Element => {
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
 
-  const { loading: poolLoading } = useNftPool(poolPubkey);
+  const { pool, loading: poolLoading } = useNftPool(poolPubkey);
+  const poolPublicKey = pool?.publicKey?.toBase58();
 
-  const loading = poolLoading;
+  const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
+    useTokenListContext();
 
-  const Header = () => <HeaderInfo poolPublicKey={poolPubkey} />;
+  const poolTokenInfo = useMemo(() => {
+    return tokensMap.get(pool?.fractionMint?.toBase58());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [poolPublicKey, tokensMap]);
+
+  const loading = poolLoading || tokensMapLoading;
 
   return (
-    <NFTPoolPageLayout CustomHeader={loading ? null : Header}>
+    <NFTPoolPageLayout
+      customHeader={
+        <HeaderInfo
+          poolPublicKey={poolPubkey}
+          poolTokenInfo={poolTokenInfo}
+          hidden={loading}
+        />
+      }
+      pageType={PoolPageType.INFO}
+    >
       {loading ? (
         <Loader size="large" />
       ) : (
         <div className={styles.root}>
-          <div className={styles.leftSide}>
+          <p style={{ width: '100%' }}>*Under development</p>
+          {/* <div className={styles.leftSide}>
             <div className={styles.priceWrapper}>
               <h5 className={styles.cardTitle}>Price</h5>
               <ul className={styles.priceList}>
@@ -96,11 +118,11 @@ export const NFTPoolInfoPage = (): JSX.Element => {
                   <span>date</span>
                 </div>
               </li>
-              {POOL_HISTORY_DATA.map((item) => (
-                <HistoryListItem key={item.itemId} itemData={item} />
+              {POOL_HISTORY_DATA.map((item, idx) => (
+                <HistoryListItem key={idx} itemData={item} />
               ))}
             </ul>
-          </div>
+          </div> */}
         </div>
       )}
     </NFTPoolPageLayout>

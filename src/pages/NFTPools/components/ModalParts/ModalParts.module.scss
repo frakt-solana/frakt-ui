@@ -148,6 +148,17 @@
   }
 }
 
+.slippageBlockRight {
+  top: 39px;
+  left: -13px;
+  right: unset;
+
+  &::before {
+    left: 15px;
+    top: -11px;
+  }
+}
+
 .slippageTitle {
   font: var(--font-text-3);
   margin-bottom: 10px;
@@ -181,8 +192,26 @@
   }
 }
 
+.slippageItemActive {
+  background-color: var(--color-gray-4);
+  pointer-events: none;
+}
+
+body .slippageInput {
+  &,
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    border: unset;
+    height: 100%;
+    padding: unset;
+    font-size: 15px;
+  }
+}
+
 .slippageInput {
   max-width: 100%;
+
   background-color: transparent;
   border: none;
   text-align: center;

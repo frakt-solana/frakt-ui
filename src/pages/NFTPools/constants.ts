@@ -8,3 +8,5 @@ export const LOTTERY_TICKET_ACCOUNT_LAYOUT = struct([
   u64('lottery_ticket_state'),
   u8('anchor_end'),
 ]);
+
+export const SELL_COMMISSION_PERCENT = 2; //? 2%

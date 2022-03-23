@@ -3,13 +3,25 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { Percent } from '@raydium-io/raydium-sdk';
 
-import { UserNFTWithCollection } from '../../contexts/userTokens';
+import {
+  UserNFT,
+  UserNFTWithCollection,
+  useUserTokens,
+} from '../../contexts/userTokens';
 import { useDebounce } from '../../hooks';
 import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
+import {
+  PoolDataByMint,
+  useLiquidityPools,
+} from '../../contexts/liquidityPools';
+import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
+import { SOL_TOKEN } from '../../utils';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -109,7 +121,7 @@ export const useLotteryTicketSubscription: UseLotteryTicketSubscription =
     };
   };
 
-const POOL_TOKEN_DECIMALS = 6;
+const POOL_TOKEN_DECIMALS = 9;
 
 export const useNftPoolTokenBalance = (
   pool: NftPoolData,
@@ -131,5 +143,147 @@ export const useNftPoolTokenBalance = (
 
   return {
     balance,
+  };
+};
+
+export interface Price {
+  buy: string;
+  sell: string;
+}
+
+export type PricesByTokenMint = Map<string, Price>;
+
+type UsePoolTokensPrices = (poolTokensInfo: TokenInfo[]) => {
+  loading: boolean;
+  pricesByTokenMint: PricesByTokenMint;
+  poolDataByMint: PoolDataByMint;
+};
+
+const pricesByTokenMintCache = { value: new Map<string, Price>() };
+
+export const usePoolTokensPrices: UsePoolTokensPrices = (
+  poolTokensInfo = [],
+) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [pricesByTokenMint, setPricesByTokenMint] = useState<PricesByTokenMint>(
+    new Map<string, Price>(),
+  );
+
+  const {
+    poolDataByMint,
+    loading: liquidityPoolsLoading,
+    fetchRaydiumPoolsInfo,
+  } = useLiquidityPools();
+
+  const fetchPrices = async () => {
+    const poolsData = poolTokensInfo
+      .map((poolTokenInfo) => poolDataByMint.get(poolTokenInfo?.address))
+      .filter((poolData) => !!poolData);
+
+    if (poolsData.length) {
+      const poolConfigs = poolsData.map(({ poolConfig }) => poolConfig);
+
+      const poolsInfo = await fetchRaydiumPoolsInfo(poolConfigs);
+
+      const pricesByTokenMint = poolsInfo.reduce((map, poolInfo, idx) => {
+        const { amountOut: sellPrice } = getOutputAmount({
+          poolKeys: poolConfigs?.[idx],
+          poolInfo,
+          payToken: poolTokensInfo?.[idx],
+          payAmount: 1,
+          receiveToken: SOL_TOKEN,
+          slippage: new Percent(1, 100),
+        });
+
+        const { amountIn: buyPrice } = getInputAmount({
+          poolKeys: poolConfigs?.[idx],
+          poolInfo,
+          payToken: SOL_TOKEN,
+          receiveAmount: 1,
+          receiveToken: poolTokensInfo?.[idx],
+          slippage: new Percent(1, 100),
+        });
+
+        return map.set(poolTokensInfo?.[idx]?.address, {
+          buy: buyPrice,
+          sell: sellPrice,
+        });
+      }, new Map<string, Price>());
+
+      pricesByTokenMintCache.value = new Map(pricesByTokenMint);
+
+      setPricesByTokenMint(pricesByTokenMint);
+    }
+  };
+
+  const initialFetch = async () => {
+    try {
+      const isDataCached =
+        poolTokensInfo.filter((tokenInfo) => {
+          return !!pricesByTokenMintCache.value?.has(tokenInfo?.address);
+        }).length === poolTokensInfo.length && poolTokensInfo.length !== 0;
+
+      if (isDataCached) {
+        return setPricesByTokenMint(pricesByTokenMintCache.value);
+      }
+
+      setLoading(true);
+      await fetchPrices();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (poolDataByMint.size) {
+      initialFetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [liquidityPoolsLoading, poolDataByMint]);
+
+  return {
+    loading: loading || liquidityPoolsLoading,
+    pricesByTokenMint,
+    poolDataByMint,
+  };
+};
+
+type UseUserRawNfts = () => {
+  rawNfts: UserNFT[];
+  rawNftsLoading: boolean;
+  removeTokenOptimistic: (mints: string[]) => void;
+};
+
+export const useUserRawNfts: UseUserRawNfts = () => {
+  const { connected } = useWallet();
+
+  const {
+    nfts: rawNfts,
+    loading: userTokensLoading,
+    nftsLoading,
+    fetchUserNfts,
+    rawUserTokensByMint,
+    removeTokenOptimistic,
+  } = useUserTokens();
+
+  useEffect(() => {
+    if (
+      connected &&
+      !userTokensLoading &&
+      !nftsLoading &&
+      Object.keys(rawUserTokensByMint).length
+    ) {
+      fetchUserNfts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, userTokensLoading, nftsLoading]);
+
+  return {
+    rawNfts,
+    rawNftsLoading: userTokensLoading || nftsLoading,
+    removeTokenOptimistic,
   };
 };

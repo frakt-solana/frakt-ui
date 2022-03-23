@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import { UserNFTWithCollection } from '../../../../../contexts/userTokens';
 import styles from './SellingModal.module.scss';
@@ -11,12 +12,16 @@ import {
   ModalHeader,
   SubmitButton,
 } from '../../../components/ModalParts';
+import { SELL_COMMISSION_PERCENT } from '../../../constants';
 
-interface BuyingModalProps {
-  onSubmit: () => void;
+interface SellingModalProps {
+  onSubmit: (needSwap?: boolean) => void;
   onDeselect?: (nft: any) => void;
   nft: UserNFTWithCollection;
-  poolTokenAvailable: boolean;
+  poolTokenInfo: TokenInfo;
+  poolTokenPrice: string;
+  slippage: number;
+  setSlippage: (nextValue: number) => void;
 }
 
 enum Token {
@@ -24,17 +29,18 @@ enum Token {
   POOL_TOKEN = 'poolToken',
 }
 
-enum Price {
-  SOL = 14.84,
-  POOL_TOKEN = 0.98,
-}
-
-export const SellingModal: FC<BuyingModalProps> = ({
+export const SellingModal: FC<SellingModalProps> = ({
   onDeselect,
   nft,
   onSubmit,
-  poolTokenAvailable,
+  poolTokenInfo,
+  poolTokenPrice,
+  slippage,
+  setSlippage,
 }) => {
+  const priceSOL =
+    parseFloat(poolTokenPrice) * ((100 - SELL_COMMISSION_PERCENT) / 100);
+
   const { account } = useNativeAccount();
 
   const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
@@ -51,14 +57,17 @@ export const SellingModal: FC<BuyingModalProps> = ({
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(Price.SOL * 0.98).toFixed(3)} SOL`
+      ? `* Min total (with slippage) = ${(
+          priceSOL *
+          (1 - slippage / 100)
+        ).toFixed(3)} SOL`
       : '';
 
-  const isBtnDisabled =
-    (!isSolTokenSelected && !poolTokenAvailable) ||
-    (isSolTokenSelected && solBalance < Price.SOL);
+  const isBtnDisabled = isSolTokenSelected && solBalance < priceSOL;
 
-  const price = isSolTokenSelected ? Price.SOL : Price.POOL_TOKEN;
+  const price = isSolTokenSelected
+    ? priceSOL.toFixed(3)
+    : ((100 - SELL_COMMISSION_PERCENT) / 100).toFixed(3);
 
   return (
     <div
@@ -71,7 +80,9 @@ export const SellingModal: FC<BuyingModalProps> = ({
       <ModalHeader
         onHeaderClick={toggleModalDown}
         headerText="You're selling"
-        setSlippage={isSolTokenSelected && !isModalDown && ((num) => num)}
+        slippage={slippage}
+        setSlippage={setSlippage}
+        showSlippageDropdown={isSolTokenSelected}
       />
 
       <ItemContent
@@ -85,11 +96,16 @@ export const SellingModal: FC<BuyingModalProps> = ({
       <CurrencySelector
         token={token}
         setToken={setToken}
-        price={price.toFixed(3)}
+        price={price}
         slippageText={slippageText}
+        poolTokenInfo={poolTokenInfo}
       />
 
-      <SubmitButton text="Sell" onClick={onSubmit} disabled={isBtnDisabled} />
+      <SubmitButton
+        text="Sell"
+        onClick={() => onSubmit(isSolTokenSelected)}
+        disabled={isBtnDisabled}
+      />
     </div>
   );
 };

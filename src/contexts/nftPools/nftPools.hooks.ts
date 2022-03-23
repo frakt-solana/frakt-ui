@@ -1,7 +1,10 @@
 import { useContext, useEffect, useMemo } from 'react';
 
-import { PoolWhitelistType } from '../../utils/cacher/nftPools';
 import { NftPoolsContext } from './nftPools.context';
+import {
+  getWhitelistedCreatorsDictionary,
+  getWhitelistedMintsDictionary,
+} from './nftPools.helpers';
 import { NftPoolsContextValues, UseNftPool } from './nftPools.model';
 
 export const useNftPools = (): NftPoolsContextValues => {
@@ -47,34 +50,14 @@ export const useNftPool: UseNftPool = (poolPubkey) => {
 
   const whitelistedMintsDictionary = useMemo(() => {
     if (pool) {
-      return Object.fromEntries(
-        pool.poolWhitelist
-          .filter(
-            ({ whitelistType }) =>
-              whitelistType === PoolWhitelistType.SINGLE_NFT_WHITELIST,
-          )
-          .map(({ whitelistedAddress }) => [
-            whitelistedAddress.toBase58(),
-            true,
-          ]),
-      );
+      return getWhitelistedMintsDictionary(pool);
     }
     return {};
   }, [pool]);
 
   const whitelistedCreatorsDictionary = useMemo(() => {
     if (pool) {
-      return Object.fromEntries(
-        pool.poolWhitelist
-          .filter(
-            ({ whitelistType }) =>
-              whitelistType === PoolWhitelistType.CREATOR_WHITELIST,
-          )
-          .map(({ whitelistedAddress }) => [
-            whitelistedAddress.toBase58(),
-            true,
-          ]),
-      );
+      return getWhitelistedCreatorsDictionary(pool);
     }
     return {};
   }, [pool]);

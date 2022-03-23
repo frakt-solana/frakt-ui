@@ -3,22 +3,17 @@
   inset: 0;
   width: 100%;
   height: 100vh;
-  padding-top: 50px;
   overflow: auto;
   background: var(--color-dark-06);
   backdrop-filter: blur(16px);
-  z-index: -1;
-  top: 0;
+  z-index: 2;
+  top: var(--header-height);
   left: 0;
   right: 0;
   bottom: 0;
 
   &.menuOverlayHidden {
     display: none;
-  }
-
-  @media screen and (max-width: 500px) {
-    padding-top: 76px;
   }
 }
 
@@ -58,11 +53,10 @@
     position: absolute;
     bottom: 4px;
     left: 0;
-    transition:  transform 0.2s ease-in, bottom 0.2s ease-in;
+    transition: transform 0.2s ease-in, bottom 0.2s ease-in;
   }
 
   &.opened {
-
     &::before {
       transform: rotate(-45deg);
       top: 14px;
@@ -100,7 +94,6 @@
     }
 
     &.opened {
-
       &::before {
         top: 10px;
       }
@@ -124,8 +117,7 @@
 .menuContent {
   height: 100%;
   padding: 25px 15px;
-  max-width: 370px;
-  width: 100%;
+  width: 250px;
   background-color: var(--black-color);
   margin-left: auto;
   position: relative;

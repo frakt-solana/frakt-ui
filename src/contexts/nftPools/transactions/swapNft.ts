@@ -5,15 +5,14 @@ import {
   createTransactionFuncFromRaw,
   WalletAndConnection,
 } from '../../../utils/transactions';
-
+import { UserNFT } from './../../userTokens/userTokens.model';
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import { rawDepositNftToCommunityPool } from './depositNftToCommunityPool';
 import { rawGetLotteryTicket } from './getLotteryTicket';
 
 export interface SwapNftParams {
   pool: NftPoolData;
-  nftMint: PublicKey;
-  byCreator?: boolean;
+  nft: UserNFT;
   afterDepositNftTransaction?: () => void;
 }
 
@@ -23,16 +22,14 @@ const rawSwapNft = async ({
   connection,
   wallet,
   pool,
-  nftMint,
-  byCreator,
+  nft,
   afterDepositNftTransaction,
 }: SwapNftRawParams): Promise<PublicKey> => {
   await rawDepositNftToCommunityPool({
     connection,
     wallet,
     pool,
-    nftMint,
-    byCreator,
+    nft,
     afterTransaction: afterDepositNftTransaction,
   });
 

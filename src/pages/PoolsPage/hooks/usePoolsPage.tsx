@@ -193,8 +193,8 @@ export const usePoolsPage = (): {
         }
         if (sortField === 'apr') {
           return compareNumbers(
-            poolsStatsByMarketId.get(poolConfigA.marketId.toBase58())?.apy,
-            poolsStatsByMarketId.get(poolConfigB.marketId.toBase58())?.apy,
+            poolsStatsByMarketId.get(poolConfigA.marketId.toBase58())?.apr,
+            poolsStatsByMarketId.get(poolConfigB.marketId.toBase58())?.apr,
             sortOrder === 'desc',
           );
         }

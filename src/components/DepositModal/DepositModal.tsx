@@ -110,12 +110,12 @@ const DepositModal: FC<DepositModalProps> = ({
             <div className={styles.depositInfo}>
               <p className={styles.value}>
                 {formatNumberToCurrency(
-                  parseFloat(totalValue) * (poolStats?.apy / 100) || 0,
+                  parseFloat(totalValue) * (poolStats?.apr / 100) || 0,
                 )}{' '}
                 <span>/ month</span>
               </p>
               <p className={styles.value}>
-                {poolStats?.apy || 0}% <span>/ apy</span>
+                {poolStats?.apr || 0}% <span>/ apy</span>
               </p>
             </div>
             {/* <p className={styles.link}>After staking</p> */}

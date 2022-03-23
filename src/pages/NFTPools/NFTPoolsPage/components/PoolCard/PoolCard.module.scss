@@ -115,10 +115,19 @@
   }
 }
 
+.poolName {
+  font: var(--font-text-2);
+  margin-bottom: 18px;
+
+  @media screen and (max-width: 550px) {
+    margin-bottom: 14px;
+  }
+}
+
 .poolTokenInfo {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 
   @media screen and (max-width: 550px) {
     margin-bottom: 10px;
@@ -126,22 +135,17 @@
 }
 
 .tokenImage {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   overflow: hidden;
   background-size: cover;
   background-color: var(--color-gray-6);
   margin-right: 10px;
-
-  @media screen and (max-width: 550px) {
-    width: 19px;
-    height: 19px;
-  }
 }
 
 .tokenName {
-  font: var(--font-text-2);
+  font: var(--font-text-5);
 }
 
 .priceLabel {

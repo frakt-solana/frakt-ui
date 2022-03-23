@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { TokenInfo } from '@solana/spl-token-registry';
 
 import styles from './SwapModal.module.scss';
 import { SwapMarketIcon } from '../../../../../icons';
@@ -13,23 +14,23 @@ import {
 } from '../../../components/ModalParts';
 import { useNativeAccount } from '../../../../../utils/accounts';
 import { LAMPORTS_PER_SOL } from '../../../../../utils/solanaUtils';
+import { SELL_COMMISSION_PERCENT } from '../../../constants';
 
 interface SwapModalProps {
   nft?: UserNFTWithCollection;
   onDeselect?: () => void;
-  onSubmit: () => void;
+  onSubmit: (needSwap?: boolean) => void;
   randomPoolImage?: string;
   poolTokenAvailable: boolean;
+  poolTokenInfo: TokenInfo;
+  poolTokenPrice: string;
+  slippage: number;
+  setSlippage: (nextValue: number) => void;
 }
 
 enum Token {
   SOL = 'sol',
   POOL_TOKEN = 'poolToken',
-}
-
-enum Price {
-  SOL = 0.3,
-  POOL_TOKEN = 0.02,
 }
 
 export const SwapModal: FC<SwapModalProps> = ({
@@ -38,7 +39,13 @@ export const SwapModal: FC<SwapModalProps> = ({
   onSubmit,
   randomPoolImage,
   poolTokenAvailable,
+  poolTokenInfo,
+  poolTokenPrice,
+  slippage,
+  setSlippage,
 }) => {
+  const priceSOL = parseFloat(poolTokenPrice) * (SELL_COMMISSION_PERCENT / 100);
+
   const { account } = useNativeAccount();
 
   const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
@@ -55,14 +62,19 @@ export const SwapModal: FC<SwapModalProps> = ({
 
   const slippageText =
     token === Token.SOL
-      ? `* Max total (with slippage) = ${(Price.SOL * 0.98).toFixed(3)} SOL`
+      ? `* Max total (with slippage) = ${(
+          priceSOL *
+          (1 + slippage / 100)
+        ).toFixed(3)} SOL`
       : '';
 
   const isBtnDisabled =
     (!isSolTokenSelected && !poolTokenAvailable) ||
-    (isSolTokenSelected && solBalance < Price.SOL);
+    (isSolTokenSelected && solBalance < priceSOL);
 
-  const price = isSolTokenSelected ? Price.SOL : Price.POOL_TOKEN;
+  const price = isSolTokenSelected
+    ? priceSOL.toFixed(3)
+    : (SELL_COMMISSION_PERCENT / 100).toFixed(3);
 
   return (
     <div
@@ -77,7 +89,9 @@ export const SwapModal: FC<SwapModalProps> = ({
         image={nft?.metadata.image}
         onHeaderClick={() => setIsModalDown(!isModalDown)}
         onDeselect={onDeselect}
-        setSlippage={isSolTokenSelected && !isModalDown && ((num) => num)}
+        slippage={slippage}
+        setSlippage={setSlippage}
+        showSlippageDropdown={isSolTokenSelected}
       />
 
       <div className={styles.separator}>
@@ -88,19 +102,22 @@ export const SwapModal: FC<SwapModalProps> = ({
         headerText="Swap to"
         name="Random"
         randomPoolImage={randomPoolImage}
+        slippage={slippage}
+        setSlippage={setSlippage}
       />
 
       <CurrencySelector
         token={token}
         setToken={setToken}
-        price={price.toFixed(3)}
+        price={price}
         slippageText={slippageText}
         label="Fee"
+        poolTokenInfo={poolTokenInfo}
       />
 
       <SubmitButton
         text="Swap"
-        onClick={onSubmit}
+        onClick={() => onSubmit(isSolTokenSelected)}
         wrapperClassName={styles.swapBtnWrapper}
         disabled={isBtnDisabled}
       />
@@ -111,7 +128,9 @@ export const SwapModal: FC<SwapModalProps> = ({
 interface SwapModalItemProps extends ItemContentProps {
   headerText?: string;
   onHeaderClick?: () => void;
+  slippage: number;
   setSlippage?: (num: number) => void;
+  showSlippageDropdown?: boolean;
 }
 
 const SwapModalItem: FC<SwapModalItemProps> = ({
@@ -122,14 +141,18 @@ const SwapModalItem: FC<SwapModalItemProps> = ({
   onHeaderClick = () => {},
   onDeselect,
   randomPoolImage,
+  slippage,
   setSlippage,
+  showSlippageDropdown = false,
 }) => {
   return (
     <div className={styles.item}>
       <ModalHeader
         onHeaderClick={onHeaderClick}
         headerText={headerText}
+        slippage={slippage}
         setSlippage={setSlippage}
+        showSlippageDropdown={showSlippageDropdown}
       />
 
       <ItemContent

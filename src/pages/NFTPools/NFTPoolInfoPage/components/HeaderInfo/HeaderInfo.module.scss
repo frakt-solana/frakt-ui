@@ -8,15 +8,18 @@
 
 .titleWrapper {
   padding: 20px 0 20px 20px;
-  height: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   font: var(--font-text-1);
-  text-transform: uppercase;
   margin-right: auto;
 
   @media screen and (max-width: 767px) {
     font-size: 15px;
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding: 0 0 20px 20px;
+    width: 100%;
   }
 }
 
@@ -33,11 +36,6 @@
   @media screen and (max-width: 767px) {
     height: 38px;
     width: 38px;
-  }
-
-  @media screen and (max-width: 500px) {
-    height: 23px;
-    width: 23px;
   }
 }
 

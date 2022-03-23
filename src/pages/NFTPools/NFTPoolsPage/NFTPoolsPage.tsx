@@ -1,7 +1,5 @@
 import { FC, useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Controller } from 'react-hook-form';
 
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Select } from '../../../components/Select/Select';
@@ -16,27 +14,55 @@ import styles from './NFTPoolsPage.module.scss';
 import { Loader } from '../../../components/Loader';
 import { CommunityPoolState } from '../../../utils/cacher/nftPools';
 import { Container } from '../../../components/Layout';
+import { SearchInput } from '../../../components/SearchInput';
+import { useTokenListContext } from '../../../contexts/TokenList';
+import { TokenInfo } from '@solana/spl-token-registry';
+import { usePoolTokensPrices } from '../hooks';
+import { usePoolsFiltering } from './hooks';
 
 export const NFTPoolsPage: FC = () => {
-  const { control /* watch */ } = useForm({
-    defaultValues: {
-      sort: SORT_VALUES[0],
-    },
-  });
+  const { pools: rawPools, loading: poolsLoading } = useNftPools();
+  const { loading: tokensMapLoading, fraktionTokensMap } =
+    useTokenListContext();
 
-  // const sort = watch('sort');
-
-  const { pools: rawPools, loading } = useNftPools();
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
 
-  const pools = useMemo(() => {
+  const poolTokens = useMemo(() => {
+    if (rawPools.length && fraktionTokensMap.size) {
+      return rawPools.reduce((poolTokens: TokenInfo[], pool) => {
+        const poolTokenMint = pool?.fractionMint?.toBase58();
+        const tokenInfo = fraktionTokensMap.get(poolTokenMint);
+
+        if (tokenInfo) {
+          return [...poolTokens, tokenInfo];
+        }
+
+        return poolTokens;
+      }, []);
+    }
+
+    return [];
+  }, [rawPools, fraktionTokensMap]);
+
+  const {
+    pricesByTokenMint: poolTokenPricesByTokenMint,
+    loading: pricesLoading,
+  } = usePoolTokensPrices(poolTokens);
+
+  const activePools = useMemo(() => {
     return rawPools.filter(
-      ({ state, publicKey }) =>
-        state === CommunityPoolState.ACTIVE &&
-        publicKey.toBase58() === 'Gsyy57YjrRzKiFa6p5T6BBXmoGB3qEo8Q1hewijLRRWm',
+      ({ state /* publicKey */ }) => state === CommunityPoolState.ACTIVE,
+      // && publicKey.toBase58() === 'Gsyy57YjrRzKiFa6p5T6BBXmoGB3qEo8Q1hewijLRRWm',
     );
   }, [rawPools]);
+
+  const { control, pools, setSearch } = usePoolsFiltering({
+    pools: activePools,
+    poolTokens,
+  });
+
+  const loading = tokensMapLoading || poolsLoading || pricesLoading;
 
   return (
     <AppLayout>
@@ -45,10 +71,10 @@ export const NFTPoolsPage: FC = () => {
         <h2 className={styles.subtitle}>Buy, sell, and swap NFTs instantly</h2>
 
         <div className={styles.searchWrapper}>
-          <Input
+          <SearchInput
+            onChange={(event) => setSearch(event.target.value || '')}
             className={styles.searchInput}
-            placeholder="Search pools"
-            prefix={<SearchOutlined className={styles.searchIcon} />}
+            placeholder="Search by pool name"
           />
           <div className={styles.sortWrapper}>
             <Controller
@@ -67,13 +93,21 @@ export const NFTPoolsPage: FC = () => {
             />
           </div>
         </div>
-        {loading ? <Loader size="large" /> : <PoolsList pools={pools} />}
+        {loading ? (
+          <Loader size="large" />
+        ) : (
+          <PoolsList
+            pools={pools}
+            tokensMap={fraktionTokensMap}
+            poolTokenPricesByTokenMint={poolTokenPricesByTokenMint}
+          />
+        )}
       </Container>
     </AppLayout>
   );
 };
 
-const SORT_VALUES = [
+export const SORT_VALUES = [
   {
     label: (
       <span className={styles.sortName}>

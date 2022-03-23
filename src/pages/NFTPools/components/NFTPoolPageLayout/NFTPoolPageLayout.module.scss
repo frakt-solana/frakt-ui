@@ -5,3 +5,34 @@
   padding-top: 105px;
   position: relative;
 }
+
+.buyContent {
+  @media screen and (max-width: 767px) {
+    padding-top: 218px;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    padding-top: 200px;
+  }
+}
+
+.sellContent,
+.swapContent {
+  @media screen and (max-width: 767px) {
+    padding-top: 142px;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    padding-top: 176px;
+  }
+}
+
+.infoContent {
+  @media screen and (max-width: 767px) {
+    padding-top: 136px;
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    padding-top: 166px;
+  }
+}

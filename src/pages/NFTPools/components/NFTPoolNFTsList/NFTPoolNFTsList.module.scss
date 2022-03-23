@@ -4,16 +4,36 @@
 .itemsSortWrapper {
   display: flex;
   align-items: center;
-  margin-top: 32px;
+  padding-top: 32px;
+  margin-bottom: 20px;
   gap: 20px;
   font: var(--font-text-3);
 
   @media screen and (max-width: 767px) {
     font-size: 15px;
-  }
-
-  @media screen and (max-width: 370px) {
     flex-wrap: wrap;
+  }
+}
+
+.poolName {
+  font: var(--font-title-2);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media screen and (max-width: 767px) {
+    width: 100%;
+    gap: 20px;
+
+    &::before,
+    &::after {
+      content: '';
+      display: block;
+      flex-grow: 1;
+      height: 1px;
+      background-color: var(--color-gray-4);
+    }
   }
 }
 
@@ -22,7 +42,7 @@
   font-size: 15px;
   display: none;
 
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 767px) {
     display: block;
   }
 
@@ -39,8 +59,8 @@
   flex-grow: 1;
   color: var(--color-gray-4);
 
-  @media screen and (max-width: 700px) {
-    margin-left: auto;
+  @media screen and (max-width: 767px) {
+    margin-right: auto;
     flex-grow: 0;
   }
 
@@ -51,7 +71,7 @@
     height: 1px;
     background-color: var(--color-gray-4);
 
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 767px) {
       display: none;
     }
   }
