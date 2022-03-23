@@ -26,6 +26,7 @@ export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
     ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
   )?.[0]?.nftImage;
 
+  const poolName = poolTokenInfo?.name || '';
   const tokenImage = poolTokenInfo?.logoURI || '';
   const tokenName = poolTokenInfo?.symbol || '';
 
@@ -47,6 +48,7 @@ export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
           </div>
         </div>
         <div className={styles.cardContentWrapper}>
+          <p className={styles.poolName}>{poolName}</p>
           <div className={styles.poolTokenInfo}>
             <div
               className={styles.tokenImage}
