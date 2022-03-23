@@ -159,8 +159,12 @@ type UsePoolTokensPrices = (poolTokensInfo: TokenInfo[]) => {
   poolDataByMint: PoolDataByMint;
 };
 
-export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
-  const [loading, setLoading] = useState<boolean>(true);
+const pricesByTokenMintCache = { value: new Map<string, Price>() };
+
+export const usePoolTokensPrices: UsePoolTokensPrices = (
+  poolTokensInfo = [],
+) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [pricesByTokenMint, setPricesByTokenMint] = useState<PricesByTokenMint>(
     new Map<string, Price>(),
   );
@@ -206,12 +210,23 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (poolTokensInfo) => {
         });
       }, new Map<string, Price>());
 
+      pricesByTokenMintCache.value = new Map(pricesByTokenMint);
+
       setPricesByTokenMint(pricesByTokenMint);
     }
   };
 
   const initialFetch = async () => {
     try {
+      const isDataCached =
+        poolTokensInfo.filter((tokenInfo) => {
+          return !!pricesByTokenMintCache.value?.has(tokenInfo?.address);
+        }).length === poolTokensInfo.length && poolTokensInfo.length !== 0;
+
+      if (isDataCached) {
+        return setPricesByTokenMint(pricesByTokenMintCache.value);
+      }
+
       setLoading(true);
       await fetchPrices();
     } catch (error) {

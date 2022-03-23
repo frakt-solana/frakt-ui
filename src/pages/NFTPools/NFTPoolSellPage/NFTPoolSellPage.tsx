@@ -245,7 +245,7 @@ export const NFTPoolSellPage: FC = () => {
               onSubmit={sell}
               poolTokenInfo={poolTokenInfo}
               poolTokenPrice={
-                poolTokenPricesByTokenMint.get(poolTokenInfo?.address).sell
+                poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.sell
               }
               slippage={slippage}
               setSlippage={setSlippage}
