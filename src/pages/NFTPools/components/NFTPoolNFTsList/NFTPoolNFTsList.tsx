@@ -3,7 +3,7 @@ import { Control, Controller } from 'react-hook-form';
 
 import { NFTsList, NFTsListProps } from '../NFTsList';
 import { Select } from '../../../../components/Select/Select';
-import { ArrowDownSmallIcon, FiltersIcon } from '../../../../icons';
+import { ArrowDownSmallIcon } from '../../../../icons';
 import { pluralize } from '../../../../utils';
 import styles from './NFTPoolNFTsList.module.scss';
 import {
@@ -22,7 +22,6 @@ interface MarketNFTsList extends NFTsListProps {
 
 export const NFTPoolNFTsList: FC<MarketNFTsList> = ({
   nfts,
-  setIsSidebar,
   control,
   sortFieldName,
   sortValues,
@@ -34,13 +33,6 @@ export const NFTPoolNFTsList: FC<MarketNFTsList> = ({
     <div className={styles.marketNFTsList}>
       <div className={styles.itemsSortWrapper}>
         <p className={styles.poolName}>{poolName}</p>
-        <p
-          className={styles.filtersIconWrapper}
-          onClick={() => setIsSidebar(true)}
-        >
-          Filters
-          <FiltersIcon />
-        </p>
         <div className={styles.itemsAmount}>
           {pluralize(nfts.length, 'item')}
         </div>
