@@ -1,33 +1,61 @@
 import { useState } from 'react';
 
-const RAYDIUM_STATS_API = 'https://api.raydium.io/pairs';
+const RAYDIUM_STATS_API = 'https://api.raydium.io/v2/main/pairs';
 
-interface RawPoolStats {
+// interface RawPoolStatsV1 {
+//   amm_id: string;
+//   apy: number;
+//   fee_7d: number;
+//   fee_7d_quote: number;
+//   fee_24h: number;
+//   fee_24h_quote: number;
+//   liquidity: number;
+//   lp_mint: string;
+//   lp_price: number;
+//   market: string;
+//   name: string;
+//   official: boolean;
+//   pair_id: string;
+//   price: number;
+//   token_amount_coin: number;
+//   token_amount_lp: number;
+//   token_amount_pc: number;
+//   volume_7d: number;
+//   volume_7d_quote: number;
+//   volume_24h: number;
+//   volume_24h_quote: number;
+// }
+
+interface RawPoolStatsV2 {
   amm_id: string;
-  apy: number;
-  fee_7d: number;
-  fee_7d_quote: number;
-  fee_24h: number;
-  fee_24h_quote: number;
+  apr7d: number;
+  apr24h: number;
+  apr30d: number;
+  fee7d: number;
+  fee7dQuote: number;
+  fee24h: number;
+  fee24hQuote: number;
+  fee30d: number;
+  fee30dQuote: number;
   liquidity: number;
-  lp_mint: string;
-  lp_price: number;
+  lpMint: string;
+  lpPrice: number;
   market: string;
   name: string;
-  official: boolean;
-  pair_id: string;
   price: number;
-  token_amount_coin: number;
-  token_amount_lp: number;
-  token_amount_pc: number;
-  volume_7d: number;
-  volume_7d_quote: number;
-  volume_24h: number;
-  volume_24h_quote: number;
+  tokenAmountCoin: number;
+  tokenAmountLp: number;
+  tokenAmountPc: number;
+  volume7d: number;
+  volume7dQuote: number;
+  volume24h: number;
+  volume24hQuote: number;
+  volume30d: number;
+  volume30dQuote: number;
 }
 
 export interface PoolStats {
-  apy: number;
+  apr: number;
   fee7d: number;
   fee24h: number;
   liquidity: number;
@@ -50,15 +78,17 @@ export const useLazyPoolsStats: UseLazyPoolsStats = () => {
 
   const fetchPoolsStats: FetchPoolsStats = async (marketIds) => {
     try {
-      const res: RawPoolStats[] = await (await fetch(RAYDIUM_STATS_API)).json();
+      const res: RawPoolStatsV2[] = await (
+        await fetch(RAYDIUM_STATS_API)
+      ).json();
 
       const poolsStatsByMarketId: PoolsStatsByMarketId = res
         .filter((poolStats) => marketIds.includes(poolStats.market))
         .reduce((statsByMarketId, poolStats) => {
           statsByMarketId.set(poolStats.market, {
-            apy: poolStats.apy || 0,
-            fee7d: poolStats.fee_7d || 0,
-            fee24h: poolStats.fee_24h || 0,
+            apr: poolStats.apr30d || 0,
+            fee7d: poolStats.fee7d || 0,
+            fee24h: poolStats.fee24h || 0,
             liquidity: poolStats.liquidity || 0,
           });
 

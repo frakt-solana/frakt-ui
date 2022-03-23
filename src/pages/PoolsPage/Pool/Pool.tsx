@@ -80,8 +80,8 @@ const Pool: FC<PoolInterface> = ({
             </p>
           </div>
           <div className={styles.totalValue}>
-            <p className={styles.title}>Apy</p>
-            <p className={styles.value}>{poolStats?.apy || 0}%</p>
+            <p className={styles.title}>Apr</p>
+            <p className={styles.value}>{poolStats?.apr || 0}%</p>
           </div>
         </div>
 
