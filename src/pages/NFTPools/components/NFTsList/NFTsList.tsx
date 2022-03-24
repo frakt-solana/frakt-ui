@@ -26,7 +26,7 @@ export const NFTsList: FC<NFTsListProps> = ({
   onCardClick,
   collectionByNftMint = {},
 }) => {
-  const { itemsToShow, next } = useFakeInfinityScroll(12);
+  const { itemsToShow, next } = useFakeInfinityScroll(15);
 
   const {
     isModalVisible,
