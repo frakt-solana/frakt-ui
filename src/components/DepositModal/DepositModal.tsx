@@ -14,9 +14,9 @@ import {
   FusionPoolInfo,
   formatNumberToCurrency,
 } from '../../contexts/liquidityPools';
-import { PoolStats } from '../../pages/PoolsPage/hooks/useLazyPoolsStats';
 import { LoadingModal } from '../LoadingModal';
 import { AccountInfoParsed } from '../../utils/accounts';
+import { PoolStats } from '../../pages/PoolsPage';
 
 interface DepositModalProps {
   visible: boolean;
