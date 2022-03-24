@@ -17,7 +17,7 @@ export const NFTCard: FC<NFTCardProps> = ({
   onDetailsClick,
   isSelected = false,
 }) => {
-  const { metadata, collectionName } = nft;
+  const { metadata /* collectionName */ } = nft;
 
   return (
     <div className={styles.nftCardWrapper} onClick={onClick}>
@@ -37,7 +37,7 @@ export const NFTCard: FC<NFTCardProps> = ({
         </div>
         <div className={styles.cardContentWrapper}>
           <p className={styles.nftName}>{metadata.name}</p>
-          <span className={styles.collectionName}>{collectionName}</span>
+          {/* <span className={styles.collectionName}>{collectionName}</span> */}
           <button
             className={styles.detailsBtn}
             onClick={(event) => {
