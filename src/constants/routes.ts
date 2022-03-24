@@ -99,7 +99,7 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: PATHS.YIELD,
+    path: PATHS.EARN,
     component: PoolsPage,
   },
   {

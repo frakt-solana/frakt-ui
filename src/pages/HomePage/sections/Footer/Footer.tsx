@@ -28,7 +28,7 @@ const ECOSYSTEM_LIST = [
   { path: PATHS.SWAP, label: 'Swap' },
   { path: process.env.DEX_URL, label: 'Trade' },
   { path: PATHS.COLLECTIONS, label: 'Collections' },
-  { path: PATHS.YIELD, label: 'Yield' },
+  { path: PATHS.EARN, label: 'Earn' },
 ];
 
 const LANDING_LIST = [

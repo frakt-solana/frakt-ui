@@ -32,7 +32,7 @@ const PoolsPage: FC = () => {
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <h1 className={styles.title}>Yield</h1>
+        <h1 className={styles.title}>Earn</h1>
         <h2 className={styles.subtitle}>
           Provide NFTs and liquidity to protocol and reap the rewards
         </h2>

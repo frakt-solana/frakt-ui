@@ -104,8 +104,8 @@ const NAVIGATION_LINKS = [
     label: 'Swap',
   },
   {
-    to: PATHS.YIELD,
-    label: 'Yield',
+    to: PATHS.EARN,
+    label: 'Earn',
   },
 ];
 

@@ -126,7 +126,7 @@ const LiquiditySection: FC<LiquiditySectionProps> = ({ poolStats }) => {
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>
       <LinkWithArrow
-        to={`${PATHS.YIELD}`}
+        to={`${PATHS.EARN}`}
         label="Earn"
         className={styles.liquidityLink}
       />
