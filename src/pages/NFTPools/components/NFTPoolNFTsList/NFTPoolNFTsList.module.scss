@@ -17,14 +17,20 @@
 
 .poolName {
   font: var(--font-title-2);
-  text-align: center;
+
   display: flex;
   justify-content: center;
   align-items: center;
 
+  @media screen and (max-width: 1023px) {
+    max-width: 360px;
+  }
+
   @media screen and (max-width: 767px) {
+    max-width: unset;
     width: 100%;
     gap: 20px;
+    text-align: center;
 
     &::before,
     &::after {
