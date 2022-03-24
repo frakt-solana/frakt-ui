@@ -14,12 +14,12 @@ import {
   FusionPoolInfo,
   RaydiumPoolInfo,
 } from '../../../contexts/liquidityPools';
-import { PoolStats } from '../hooks';
 import {
   PoolDetailsWalletConnected,
   PoolDetailsWalletDisconnected,
 } from './components';
 import { PoolCardHeader } from './components/PoolCardHeader';
+import { PoolStats } from '../model';
 
 interface PoolInterface {
   poolData: PoolData;
