@@ -78,6 +78,14 @@ const Withdraw: FC<WithdrawInterface> = ({
           secondaryReward,
           amount: baseAmount,
         });
+      } else {
+        await removeRaydiumLiquidity({
+          baseToken,
+          quoteToken: SOL_TOKEN,
+          amount,
+          poolConfig,
+        });
+        closeLoadingModal();
       }
 
       setWithdrawValue('');
@@ -86,20 +94,22 @@ const Withdraw: FC<WithdrawInterface> = ({
 
   useEffect(() => {
     (async () => {
-      const tokenAmount = lpTokenAccountInfo?.accountInfo?.amount?.toString();
+      if (stakedBalance) {
+        const tokenAmount = lpTokenAccountInfo?.accountInfo?.amount?.toString();
 
-      if (
-        !!lpTokenAmountOnSubmit.current &&
-        tokenAmount !== lpTokenAmountOnSubmit.current
-      ) {
-        await removeRaydiumLiquidity({
-          baseToken,
-          quoteToken: SOL_TOKEN,
-          amount: withdrawAmount,
-          poolConfig,
-        });
-        lpTokenAmountOnSubmit.current = null;
-        closeLoadingModal();
+        if (
+          !!lpTokenAmountOnSubmit.current &&
+          tokenAmount !== lpTokenAmountOnSubmit.current
+        ) {
+          await removeRaydiumLiquidity({
+            baseToken,
+            quoteToken: SOL_TOKEN,
+            amount: withdrawAmount,
+            poolConfig,
+          });
+          lpTokenAmountOnSubmit.current = null;
+          closeLoadingModal();
+        }
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
