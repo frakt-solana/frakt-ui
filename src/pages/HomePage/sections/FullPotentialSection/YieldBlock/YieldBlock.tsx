@@ -19,10 +19,10 @@ export const YieldBlock: FC<YieldBlockProps> = ({ className }) => {
   return (
     <div className={classNames(className, styles.block)}>
       <BlockContent
-        title={'Yield'}
+        title={'Earn'}
         icon={<YieldInfoIcon />}
         text={'Provide NFTs or liquidity to protocol and reap the rewards'}
-        to={PATHS.YIELD}
+        to={PATHS.EARN}
       />
       <div className={styles.percentsWrapper}>
         <PercentIcon100 className={styles.percent100} />

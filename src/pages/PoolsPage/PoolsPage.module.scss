@@ -7,6 +7,11 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  margin-bottom: 64px;
+
+  @media screen and (max-width: 1023px) {
+    margin-bottom: 0;
+  }
 }
 
 .title {
@@ -20,16 +25,25 @@
 }
 
 .search {
-  margin-bottom: 64px;
   max-width: 375px;
+
+  @media screen and (max-width: 1023px) {
+    margin-bottom: 64px;
+  }
 }
 
 .filters {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 35px;
-  gap: 30px;
+  flex-wrap: wrap;
+  gap: 15px 30px;
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+    justify-content: flex-start;
+    margin-bottom: 35px;
+  }
 }
 
 .sortingSelect {

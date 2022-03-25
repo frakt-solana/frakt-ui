@@ -30,7 +30,7 @@ export const PATHS = {
   VAULT_PUBKEY: '/:vaultPubkey',
   WALLET_PUBKEY: '/:walletPubkey',
   COLLECTION_NAME: '/:collectionName',
-  YIELD: '/yield',
+  EARN: '/earn',
   TEST: '/market_test',
   BORROW: '/borrow',
 };

@@ -362,6 +362,8 @@ body .slippageInput {
   border-radius: 50%;
   flex-shrink: 0;
   background-color: var(--color-gray-1);
+  background-position: center;
+  background-size: cover;
 }
 
 .slippageInfo {

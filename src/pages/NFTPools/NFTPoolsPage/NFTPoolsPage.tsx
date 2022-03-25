@@ -114,7 +114,7 @@ export const SORT_VALUES = [
         Name <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'collectionName_asc',
+    value: 'name_asc',
   },
   {
     label: (
@@ -122,6 +122,6 @@ export const SORT_VALUES = [
         Name <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'collectionName_desc',
+    value: 'name_desc',
   },
 ];

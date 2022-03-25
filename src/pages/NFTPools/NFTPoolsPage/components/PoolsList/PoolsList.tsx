@@ -20,7 +20,7 @@ export const PoolsList: FC<PoolsList> = ({
   tokensMap,
   poolTokenPricesByTokenMint,
 }) => {
-  const { itemsToShow, next } = useFakeInfinityScroll(12);
+  const { itemsToShow, next } = useFakeInfinityScroll(15);
 
   return (
     <FakeInfinityScroll

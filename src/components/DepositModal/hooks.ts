@@ -11,7 +11,7 @@ import {
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
-import { computeAnotherAmount } from '../SwapForm/helpers';
+import { getOutputAmount } from '../SwapForm/helpers';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
 import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
 import { useLoadingModal } from '../LoadingModal';
@@ -87,25 +87,25 @@ export const useDeposit = (
     setValue(name, value);
 
     if (name === InputControlsNames.BASE_VALUE) {
-      const { anotherAmount } = computeAnotherAmount({
+      const { amountOut } = getOutputAmount({
         poolKeys: poolConfig,
         poolInfo,
-        token: quoteToken,
-        amount: Number(value),
-        anotherCurrency: SOL_TOKEN,
+        payToken: quoteToken,
+        payAmount: Number(value),
+        receiveToken: SOL_TOKEN,
       });
 
-      setValue(InputControlsNames.QUOTE_VALUE, anotherAmount);
+      setValue(InputControlsNames.QUOTE_VALUE, amountOut);
     } else {
-      const { anotherAmount } = computeAnotherAmount({
+      const { amountOut } = getOutputAmount({
         poolKeys: poolConfig,
         poolInfo,
-        token: SOL_TOKEN,
-        amount: Number(value),
-        anotherCurrency: quoteToken,
+        payToken: SOL_TOKEN,
+        payAmount: Number(value),
+        receiveToken: quoteToken,
       });
 
-      setValue(InputControlsNames.BASE_VALUE, anotherAmount);
+      setValue(InputControlsNames.BASE_VALUE, amountOut);
     }
   };
 
