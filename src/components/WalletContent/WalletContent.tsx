@@ -1,9 +1,10 @@
-import styles from './styles.module.scss';
-import { WalletItem } from './WalletItem';
 import { useWallet } from '@solana/wallet-adapter-react';
+
 import { useWalletModal } from '../../contexts/WalletModal';
 import CurrentUserTable from '../CurrentUserTable';
-import LoanService from '../../services/LoansService';
+import styles from './styles.module.scss';
+import { WalletItem } from './WalletItem';
+import { login } from '../../utils/loans';
 
 interface WalletContentProps {
   className?: string;
@@ -33,7 +34,7 @@ const WalletContent = ({
                 onClick={async () => {
                   select(name);
                   setVisible(false);
-                  await LoanService.login({ wallet });
+                  await login(wallet);
                 }}
                 imageSrc={iconUrl}
                 imageAlt={name}

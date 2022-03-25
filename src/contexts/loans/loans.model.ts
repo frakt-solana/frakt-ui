@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
+import { LoanWithNftData } from '../../utils/loans';
 
 export interface LoansContextValues {
   loading: boolean;
-  loansData: [];
+  loansData: LoanWithNftData[];
 }
 
 export type LoansProviderType = ({

@@ -1,9 +1,13 @@
 import { FC } from 'react';
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
+import { LoanWithNftData, getBack } from '../../utils/loans';
 import styles from './LoanCard.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
+import { useLoans } from '../../contexts/loans';
+import useRemainLoan from './useRemainLoan';
 
 interface NFTCheckboxInterface {
   className?: string;
@@ -11,6 +15,7 @@ interface NFTCheckboxInterface {
   name?: string;
   ltvPrice?: string;
   onDetailsClick?: () => void;
+  nft: LoanWithNftData;
 }
 
 const LoanCard: FC<NFTCheckboxInterface> = ({
@@ -18,25 +23,22 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
   imageUrl,
   name,
   ltvPrice,
-  onDetailsClick,
+  nft,
 }) => {
-  const timeLeft = {
-    days: '2',
-    hours: '23',
-    minutes: '23',
-    seconds: '13',
+  const wallet = useWallet();
+  const { connection } = useConnection();
+  const { loansData } = useLoans();
+
+  const { duration, expiredAt } = loansData[0];
+
+  const onGetBackLoan = async (): Promise<void> => {
+    await getBack({ connection, wallet, loan: nft });
   };
 
-  const timePercent = '40';
+  const timeLeft = useRemainLoan(duration, expiredAt);
 
   return (
-    <div
-      className={styles.wrapper}
-      onClick={(event) => {
-        onDetailsClick();
-        event.stopPropagation();
-      }}
-    >
+    <div className={styles.wrapper}>
       <div className={classNames([styles.root, className])}>
         <div
           className={styles.root__image}
@@ -66,11 +68,15 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
             <div className={styles.timeProgressWrapper}>
               <div
                 className={styles.timeProgress}
-                style={{ width: `${timePercent}%` }}
+                style={{ width: `${timeLeft.width}%` }}
               />
             </div>
           </div>
-          <Button type="alternative" className={styles.btn}>
+          <Button
+            type="alternative"
+            className={styles.btn}
+            onClick={onGetBackLoan}
+          >
             Return
           </Button>
         </div>

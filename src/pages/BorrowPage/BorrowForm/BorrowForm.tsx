@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { Controller } from 'react-hook-form';
+import classNames from 'classnames';
 import { Form } from 'antd';
 
 import { LoadingModal } from '../../../components/LoadingModal';
@@ -16,7 +17,6 @@ import {
   RETURN_PERIOD_VALUES,
 } from './index';
 import ConfirmModal from '../../../components/ConfirmModal';
-import classNames from 'classnames';
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
@@ -36,7 +36,8 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     onTxnModalCancel,
     activeLine,
     setActiveLine,
-  } = useBorrowForm();
+    onCreateLoan,
+  } = useBorrowForm(selectedNft);
 
   return (
     <>
@@ -119,7 +120,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
       </div>
       <div className={styles.continueBtnContainer}>
         <Button
-          onClick={openConfirmModal}
+          onClick={onCreateLoan}
           type="alternative"
           className={styles.continueBtn}
         >

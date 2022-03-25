@@ -1,9 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Form, FormInstance } from 'antd';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
+import { Form, FormInstance } from 'antd';
 
-import { SortValue } from '../../VaultsPage/model';
 import { useConfirmModal } from '../../../components/ConfirmModal';
+import { UserNFT } from '../../../contexts/userTokens';
+import { SortValue } from '../../VaultsPage/model';
+import { createLoan } from '../../../utils/loans';
 
 interface FormValues {
   LTV: string;
@@ -25,7 +28,9 @@ export type FormFieldValues = {
   [SelectControlsNames.RETURN_PERIOD_VALUES]: Option;
 };
 
-export const useBorrowForm = (): {
+export const useBorrowForm = (
+  selectedNft: UserNFT[],
+): {
   confirmModalVisible: boolean;
   closeConfirmModalRaw: () => void;
   formControl: Control<FormFieldValues>;
@@ -38,10 +43,14 @@ export const useBorrowForm = (): {
   onTxnModalCancel: () => void;
   activeLine: string;
   setActiveLine: Dispatch<SetStateAction<string>>;
+  onCreateLoan: () => Promise<void>;
 } => {
   const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
   const [activeLine, setActiveLine] = useState<string>('');
   const [form] = Form.useForm<FormValues>();
+  const { connection } = useConnection();
+  const wallet = useWallet();
+
   const { control, watch } = useForm({
     defaultValues: {
       [SelectControlsNames.RETURN_PERIOD_VALUES]: RETURN_PERIOD_VALUES[0],
@@ -66,6 +75,10 @@ export const useBorrowForm = (): {
     setTxnModalVisible(false);
   };
 
+  const onCreateLoan = async (): Promise<void> => {
+    await createLoan({ connection, wallet, nft: selectedNft[0] });
+  };
+
   return {
     confirmModalVisible,
     returnPeriod,
@@ -79,6 +92,7 @@ export const useBorrowForm = (): {
     onTxnModalCancel,
     activeLine,
     setActiveLine,
+    onCreateLoan,
   };
 };
 

@@ -8,8 +8,10 @@ import {
   useModalNFTsSlider,
   ModalNFTsSlider,
 } from '../../../components/ModalNFTsSlider';
-import { useLoans } from '../../../contexts/loans/loans.hooks';
+import { useAuctionCountdown } from '../../../contexts/fraktion';
+import { useLoans } from '../../../contexts/loans';
 import { UserNFT } from '../../../contexts/userTokens';
+import { LoanWithNftData } from '../../../utils/loans';
 import styles from './LoansList.module.scss';
 
 export interface LoansListProps {
@@ -26,7 +28,6 @@ export const LoansList: FC<LoansListProps> = ({ nfts }) => {
     currentSlide,
     onSliderNavClick,
     setSwiper,
-    openOnCertainSlide,
   } = useModalNFTsSlider();
 
   return (
@@ -34,17 +35,17 @@ export const LoansList: FC<LoansListProps> = ({ nfts }) => {
       <FakeInfinityScroll
         itemsToShow={itemsToShow}
         next={next}
-        isLoading={false}
+        isLoading={loading}
         wrapperClassName={styles.loansList}
         emptyMessage="No suitable loans found"
       >
-        {nfts.map((nft, idx) => (
+        {loansData.map((nft: LoanWithNftData) => (
           <LoanCard
-            key={nft.mint}
-            onDetailsClick={() => openOnCertainSlide(idx)}
-            imageUrl={nft.metadata.image}
-            name={nft.metadata.name}
-            ltvPrice={'33'}
+            key={nft.id}
+            imageUrl={nft.nftData?.image}
+            name={nft.nftData?.name}
+            ltvPrice={nft.amount?.toString()}
+            nft={nft}
           />
         ))}
       </FakeInfinityScroll>
