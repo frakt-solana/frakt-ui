@@ -151,24 +151,16 @@ export const useDeposit = (
     lpTokenAmountOnSubmit.current =
       lpTokenAccountInfo?.accountInfo?.amount?.toString() || '0';
 
-    if (fusionPoolInfo?.mainRouter) {
-      await addRaydiumLiquidity({
-        baseToken: quoteToken,
-        baseAmount,
-        quoteToken: SOL_TOKEN,
-        quoteAmount,
-        poolConfig,
-        fixedSide: liquiditySide,
-      });
-    } else {
-      await addRaydiumLiquidity({
-        baseToken: quoteToken,
-        baseAmount,
-        quoteToken: SOL_TOKEN,
-        quoteAmount,
-        poolConfig,
-        fixedSide: liquiditySide,
-      });
+    await addRaydiumLiquidity({
+      baseToken: quoteToken,
+      baseAmount,
+      quoteToken: SOL_TOKEN,
+      quoteAmount,
+      poolConfig,
+      fixedSide: liquiditySide,
+    });
+
+    if (!fusionPoolInfo?.mainRouter) {
       closeLoadingModal();
     }
   };
