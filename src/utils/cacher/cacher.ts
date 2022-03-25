@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 
-import { VaultData } from '../../contexts/fraktion';
+import { VaultData, VaultState } from '../../contexts/fraktion';
 import { DEPRECATED_MARKETS } from '../markets';
 import { NftPoolData } from './nftPools';
 import { parseRawNftPools } from './nftPools/nftPools.helpers';
@@ -28,26 +28,41 @@ class API {
 
     const additionalVerifiedVaults = await getVerifiedVaultsByFraktTeam();
 
-    return vaults.map((vault: VaultData) => ({
-      ...vault,
-      isVerified:
-        vault.isVerified ||
-        additionalVerifiedVaults.includes[vault.vaultPubkey],
-      auction: {
-        auction: vault.auction.auction
-          ? {
-              ...vault.auction.auction,
-              tickSize: new BN(vault.auction.auction?.tickSize, 16),
-            }
-          : {},
-        bids: vault.auction.bids.map((bid) => ({
-          ...bid,
-          bidAmountPerShare: new BN(bid.bidAmountPerShare, 16),
-        })),
-      },
-      fractionsSupply: new BN(vault.fractionsSupply, 16),
-      lockedPricePerShare: new BN(vault.lockedPricePerShare, 16),
-    }));
+    return vaults.map((vault: VaultData) => {
+      const isDinoDaoVault =
+        vault.vaultPubkey === 'Uzp4nRWuZozb36PbjepYJGM5Q44Bqiw1nYrDfQC1Hd1';
+
+      const isPricingLookupAddressUset = '11111111111111111111111111111111';
+
+      return {
+        ...vault,
+        isVerified:
+          vault.isVerified ||
+          additionalVerifiedVaults.includes[vault.vaultPubkey],
+        auction: {
+          auction: vault.auction.auction
+            ? {
+                ...vault.auction.auction,
+                tickSize: new BN(vault.auction.auction?.tickSize, 16),
+              }
+            : {},
+          bids: vault.auction.bids.map((bid) => ({
+            ...bid,
+            bidAmountPerShare: new BN(bid.bidAmountPerShare, 16),
+          })),
+        },
+        fractionsSupply: new BN(vault.fractionsSupply, 16),
+        lockedPricePerShare: new BN(vault.lockedPricePerShare, 16),
+        state:
+          isDinoDaoVault && isPricingLookupAddressUset
+            ? VaultState.Active
+            : vault.state,
+        realState:
+          isDinoDaoVault && isPricingLookupAddressUset
+            ? VaultState.Active
+            : vault.state,
+      };
+    });
   }
 
   public async getMarkets(): Promise<
