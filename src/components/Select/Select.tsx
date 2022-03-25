@@ -17,6 +17,7 @@ interface SelectProps {
   value?: Option;
   label?: string;
   onFocus?: FocusEventHandler<HTMLInputElement>;
+  disabled?: boolean;
 }
 
 export const Select = ({
@@ -24,6 +25,7 @@ export const Select = ({
   valueContainerClassName = '',
   label,
   onFocus,
+  disabled,
   ...props
 }: SelectProps): JSX.Element => {
   const ValueContainer = (valueContainerProps: any) => (
@@ -47,6 +49,7 @@ export const Select = ({
       className={classNames(styles.select, className)}
       classNamePrefix="custom-select"
       onFocus={onFocus}
+      isDisabled={disabled}
     />
   );
 };

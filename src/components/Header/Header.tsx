@@ -23,18 +23,23 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = ({ className, customHeader }) => {
-  const { connected } = useWallet();
   const { visible } = useWalletModal();
+  const wallet = useWallet();
+  const { connected } = wallet;
 
-  const checkIsLogin = (): boolean => {
-    const walletTS = localStorage.getItem('wallet');
-    if (walletTS) return true;
+  const isAuth = (): boolean => {
+    const walletLS = localStorage.getItem('wallet');
+    const walletName = localStorage.getItem('walletName');
+
+    if (walletLS && walletName) {
+      return true;
+    }
     return false;
   };
 
   return (
     <header className={classNames(styles.root, styles.header, className)}>
-      {visible && <WalletContent checkIsLogin={checkIsLogin} />}
+      {visible && <WalletContent authenticated={isAuth()} />}
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           Frakt
@@ -50,7 +55,7 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
           </li>
           <li>
             <div className={styles.profileWrapper}>
-              {connected && checkIsLogin() ? (
+              {connected && isAuth() ? (
                 <ConnectedButton
                   className={classNames(
                     styles.walletBtn,

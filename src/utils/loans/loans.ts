@@ -157,12 +157,10 @@ export const createLoan = async ({
           },
         });
 
-        const loan = await api.post(`/services/api/store_loan`, {
+        await api.post(`/services/api/store_loan`, {
           id: response.data.preloan.id,
           init_tx: init_order_tx,
         });
-
-        console.log(loan);
       } catch (error) {
         console.log(error);
       }

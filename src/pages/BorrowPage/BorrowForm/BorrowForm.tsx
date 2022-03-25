@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Form } from 'antd';
 
 import { LoadingModal } from '../../../components/LoadingModal';
+import ConfirmModal from '../../../components/ConfirmModal';
 import { UserNFT } from '../../../contexts/userTokens';
 import { Select } from '../../../components/Select';
 import Button from '../../../components/Button';
@@ -16,7 +17,6 @@ import {
   LTV_VALUES,
   RETURN_PERIOD_VALUES,
 } from './index';
-import ConfirmModal from '../../../components/ConfirmModal';
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
@@ -29,7 +29,6 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     formControl,
     confirmModalVisible,
     closeConfirmModalRaw,
-    openConfirmModal,
     returnPeriod,
     ltvValues,
     txnModalVisible,
@@ -72,6 +71,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                       onFocus={() =>
                         setActiveLine(SelectControlsNames.LTV_VALUES)
                       }
+                      disabled
                       {...field}
                     />
                   )}
@@ -102,6 +102,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
                       onFocus={() =>
                         setActiveLine(SelectControlsNames.RETURN_PERIOD_VALUES)
                       }
+                      disabled
                       {...field}
                     />
                   )}

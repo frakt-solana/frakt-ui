@@ -76,7 +76,11 @@ export const useBorrowForm = (
   };
 
   const onCreateLoan = async (): Promise<void> => {
-    await createLoan({ connection, wallet, nft: selectedNft[0] });
+    await createLoan({
+      connection,
+      wallet,
+      nft: selectedNft[0],
+    });
   };
 
   return {

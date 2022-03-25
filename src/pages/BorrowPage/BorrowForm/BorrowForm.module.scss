@@ -86,7 +86,7 @@
   position: absolute !important;
 
   span {
-    color: var(--white-color);
+    color: var(--gray-color-3);
     font: var(--font-text-3);
   }
   :global {
@@ -95,6 +95,7 @@
       right: 0;
       margin-top: 20px;
       max-width: 120px;
+
       &::before {
         content: '';
         display: block;
@@ -115,6 +116,10 @@
         justify-content: flex-end;
       }
     }
+
+    .custom-select__indicator {
+      color: var(--gray-color-3);
+    }
   }
 }
 
@@ -123,6 +128,7 @@
 }
 
 .tokenName {
+  color: var(--gray-color-3);
   font: var(--font-text-3);
 }
 

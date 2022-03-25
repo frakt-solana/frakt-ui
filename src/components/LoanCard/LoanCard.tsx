@@ -3,11 +3,10 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import { LoanWithNftData, getBack } from '../../utils/loans';
+import useRemainLoan from './useRemainLoan';
 import styles from './LoanCard.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
-import { useLoans } from '../../contexts/loans';
-import useRemainLoan from './useRemainLoan';
 
 interface NFTCheckboxInterface {
   className?: string;
@@ -27,15 +26,12 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
 }) => {
   const wallet = useWallet();
   const { connection } = useConnection();
-  const { loansData } = useLoans();
-
-  const { duration, expiredAt } = loansData[0];
 
   const onGetBackLoan = async (): Promise<void> => {
     await getBack({ connection, wallet, loan: nft });
   };
 
-  const timeLeft = useRemainLoan(duration, expiredAt);
+  const timeLeft = useRemainLoan(nft.duration, nft.expiredAt);
 
   return (
     <div className={styles.wrapper}>

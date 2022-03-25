@@ -8,33 +8,45 @@ import { login } from '../../utils/loans';
 
 interface WalletContentProps {
   className?: string;
-  checkIsLogin: any;
+  authenticated: any;
 }
 
 const WalletContent = ({
   className = '',
-  checkIsLogin,
+  authenticated,
 }: WalletContentProps): JSX.Element => {
   const wallet = useWallet();
   const { setVisible } = useWalletModal();
 
   const { connected, wallets, select } = wallet;
 
+  const signToken = () => {
+    const walletLS = localStorage.getItem('wallet');
+    const walletName = localStorage.getItem('walletName');
+
+    if (!walletLS && walletName) {
+      login(wallet);
+    }
+    return;
+  };
+
   return (
     <div className={`${styles.wrapper} ${className}`}>
       <div className={styles.overlay} onClick={() => setVisible(false)} />
       <div className={`${styles.container} container`}>
-        {connected && checkIsLogin() ? (
+        {connected && authenticated ? (
           <CurrentUserTable className={styles.itemsContainer} />
         ) : (
           <div className={styles.itemsContainer}>
             {wallets.map(({ name, icon: iconUrl }, idx) => (
               <WalletItem
                 key={idx}
-                onClick={async () => {
+                onClick={() => {
                   select(name);
                   setVisible(false);
-                  await login(wallet);
+                  setTimeout(() => {
+                    signToken();
+                  }, 1000);
                 }}
                 imageSrc={iconUrl}
                 imageAlt={name}
