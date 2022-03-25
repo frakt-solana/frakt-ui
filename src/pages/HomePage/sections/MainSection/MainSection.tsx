@@ -25,7 +25,7 @@ export const MainSection: FC = () => {
         </NavLink>
         <LinkWithArrow
           externalLink
-          to="https://docs.fraktion.art"
+          to="https://docs.frakt.xyz"
           label="Read docs"
           className={styles.docsLink}
         />
