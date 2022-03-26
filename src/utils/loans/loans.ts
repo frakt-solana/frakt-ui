@@ -30,6 +30,7 @@ const getEstimateByMint = async (mint: string): Promise<unknown> => {
 
     return estimate;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
   }
 };
@@ -66,6 +67,7 @@ export const getBalance = async ({
       return data.result.value / LAMPORTS_PER_SOL;
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
   }
 };
@@ -127,7 +129,7 @@ export const createLoan = async ({
   // @ts-ignore
   const program = new Program(config, programId, provider);
 
-  const response = await getEstimateByMint(nft.mint);
+  await getEstimateByMint(nft.mint);
   const data = await getTokenAccountsByOwner(wallet, nft.mint);
 
   if (data && data.result && data.result.value) {
@@ -157,18 +159,24 @@ export const createLoan = async ({
           },
         });
 
-        await api.post(`/services/api/store_loan`, {
+        const loan = api.post(`/services/api/store_loan`, {
           id: response.data.preloan.id,
           init_tx: init_order_tx,
         });
+        return loan;
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.log(error);
       }
     }
   }
 };
 
-export const getBack = async ({ loan, connection, wallet }: GetBackProps) => {
+export const getBack = async ({
+  loan,
+  connection,
+  wallet,
+}: GetBackProps): Promise<void> => {
   // @ts-ignore
   const provider = new Provider(connection, wallet, 'processed');
   const programId = new web3.PublicKey(config.metadata.address);
@@ -209,6 +217,7 @@ export const getBack = async ({ loan, connection, wallet }: GetBackProps) => {
       fetchLoans();
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(e);
   }
 };
@@ -244,6 +253,7 @@ export const login = async (wallet: WalletContextState): Promise<void> => {
       );
     }
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.log(e);
   }
 };

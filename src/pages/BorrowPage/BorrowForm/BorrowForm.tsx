@@ -28,14 +28,14 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     onSubmit,
     formControl,
     confirmModalVisible,
-    closeConfirmModalRaw,
+    closeConfirmModal,
     returnPeriod,
     ltvValues,
     txnModalVisible,
     onTxnModalCancel,
     activeLine,
     setActiveLine,
-    onCreateLoan,
+    openConfirmModal,
   } = useBorrowForm(selectedNft);
 
   return (
@@ -121,7 +121,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
       </div>
       <div className={styles.continueBtnContainer}>
         <Button
-          onClick={onCreateLoan}
+          onClick={openConfirmModal}
           type="alternative"
           className={styles.continueBtn}
         >
@@ -130,8 +130,8 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
       </div>
       <ConfirmModal
         visible={confirmModalVisible}
-        onCancel={closeConfirmModalRaw}
-        onSubmit={onSubmit}
+        onCancel={closeConfirmModal}
+        onSubmit={() => onSubmit(selectedNft[0])}
         subtitle={` You are about to use your ${selectedNft[0].metadata.name} as collateral in ${ltvValues.value} SOL
         loan that you claim to return in ${returnPeriod.value} days. Want to proceed?`}
       />

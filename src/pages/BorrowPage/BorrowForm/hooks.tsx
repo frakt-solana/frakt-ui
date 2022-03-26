@@ -4,9 +4,10 @@ import { Control, useForm } from 'react-hook-form';
 import { Form, FormInstance } from 'antd';
 
 import { useConfirmModal } from '../../../components/ConfirmModal';
-import { UserNFT } from '../../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import { SortValue } from '../../VaultsPage/model';
 import { createLoan } from '../../../utils/loans';
+import { useLoadingModal } from '../../../components/LoadingModal';
 
 interface FormValues {
   LTV: string;
@@ -29,12 +30,12 @@ export type FormFieldValues = {
 };
 
 export const useBorrowForm = (
-  selectedNft: UserNFT[],
+  selectedNft?: UserNFT[],
 ): {
   confirmModalVisible: boolean;
-  closeConfirmModalRaw: () => void;
+  closeConfirmModal: () => void;
   formControl: Control<FormFieldValues>;
-  onSubmit: () => void;
+  onSubmit: (nft: UserNFT) => void;
   openConfirmModal: () => void;
   form: FormInstance<FormValues>;
   returnPeriod: SortValue;
@@ -43,13 +44,16 @@ export const useBorrowForm = (
   onTxnModalCancel: () => void;
   activeLine: string;
   setActiveLine: Dispatch<SetStateAction<string>>;
-  onCreateLoan: () => Promise<void>;
+  loadingModalVisible: boolean;
+  closeLoadingModal: () => void;
 } => {
   const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
   const [activeLine, setActiveLine] = useState<string>('');
   const [form] = Form.useForm<FormValues>();
   const { connection } = useConnection();
   const wallet = useWallet();
+
+  const { removeTokenOptimistic } = useUserTokens();
 
   const { control, watch } = useForm({
     defaultValues: {
@@ -61,33 +65,38 @@ export const useBorrowForm = (
   const {
     visible: confirmModalVisible,
     open: openConfirmModal,
-    close: closeConfirmModalRaw,
+    close: closeConfirmModal,
   } = useConfirmModal();
+
+  const { visible: loadingModalVisible, close: closeLoadingModal } =
+    useLoadingModal();
 
   const returnPeriod = watch(SelectControlsNames.RETURN_PERIOD_VALUES);
   const ltvValues = watch(SelectControlsNames.LTV_VALUES);
 
-  const onSubmit = (): void => {
+  const onSubmit = async (nft: UserNFT): Promise<void> => {
     setTxnModalVisible(true);
+    const response = await createLoan({
+      connection,
+      wallet,
+      nft: selectedNft[0],
+    });
+    if (response) {
+      removeTokenOptimistic([nft.mint]);
+    }
+    closeConfirmModal();
+    setTxnModalVisible(false);
   };
 
   const onTxnModalCancel = (): void => {
     setTxnModalVisible(false);
   };
 
-  const onCreateLoan = async (): Promise<void> => {
-    await createLoan({
-      connection,
-      wallet,
-      nft: selectedNft[0],
-    });
-  };
-
   return {
     confirmModalVisible,
     returnPeriod,
     ltvValues,
-    closeConfirmModalRaw,
+    closeConfirmModal,
     formControl: control,
     onSubmit,
     form,
@@ -96,7 +105,8 @@ export const useBorrowForm = (
     onTxnModalCancel,
     activeLine,
     setActiveLine,
-    onCreateLoan,
+    loadingModalVisible,
+    closeLoadingModal,
   };
 };
 

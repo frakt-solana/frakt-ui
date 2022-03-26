@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { LoansContextValues, LoansProviderType } from './loans.model';
+import {
+  FetchDataFunc,
+  LoansContextValues,
+  LoansProviderType,
+} from './loans.model';
 import { LoanWithNftData, fetchLoans } from '../../utils/loans';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
   loading: true,
   loansData: [],
+  fetchLoansData: () => Promise.resolve(null),
 });
 
 export const LoansProvider: LoansProviderType = ({ children }) => {
@@ -14,7 +19,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const [loansData, setLoansData] = useState<LoanWithNftData[]>([]);
   const wallet = useWallet();
 
-  const fetchLoansData = async (): Promise<void> => {
+  const fetchLoansData: FetchDataFunc = async () => {
     try {
       const allLoansData = await fetchLoans();
 
@@ -34,7 +39,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   }, [wallet]);
 
   return (
-    <LoansPoolsContext.Provider value={{ loading, loansData }}>
+    <LoansPoolsContext.Provider value={{ loading, loansData, fetchLoansData }}>
       {children}
     </LoansPoolsContext.Provider>
   );
