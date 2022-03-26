@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { LoanWithNftData } from '../../utils/loans';
 
 export type FetchDataFunc = () => Promise<void>;
