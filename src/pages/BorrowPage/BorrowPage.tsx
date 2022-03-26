@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 
@@ -35,16 +35,28 @@ const BorrowPage: FC = () => {
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
 
-  const rawNfts = nfts.reduce((acc, nft: UserNFT): UserNFTWithEstimate[] => {
-    const nameNft = nft.metadata?.collection?.name;
+  const rawNfts = nfts.reduce(
+    (acc: UserNFTWithEstimate[], nft: UserNFT): UserNFTWithEstimate[] => {
+      const nameNft = nft.metadata?.collection?.name;
 
-    const filtered = estimations.filter(({ name }) => name === nameNft);
-    if (filtered.length) {
-      return [{ ...nft, estimate: filtered }];
+      const filtered = estimations.filter(({ name }) => name === nameNft);
+      if (filtered[0]?.id) {
+        acc.push({ ...nft, estimate: filtered });
+      }
+
+      return acc;
+    },
+    [],
+  );
+
+  const getPriceByMint = useMemo(() => {
+    if (rawNfts.length) {
+      const selectedNftWithEstimation = rawNfts.filter(
+        ({ mint }) => mint === selectedNft[0]?.mint,
+      );
+      return selectedNftWithEstimation[0]?.estimate[0]?.floorPrice;
     }
-
-    return acc;
-  }, []);
+  }, [rawNfts, selectedNft]);
 
   return (
     <>
@@ -53,10 +65,7 @@ const BorrowPage: FC = () => {
         selectedNfts={selectedNft}
         onDeselect={onDeselectOneNft}
         sidebarForm={
-          <BorrowForm
-            selectedNft={selectedNft}
-            ltvPrice={rawNfts[0]?.estimate[0]?.floorPrice}
-          />
+          <BorrowForm selectedNft={selectedNft} ltvPrice={getPriceByMint} />
         }
       >
         <h1 className={styles.title}>Borrow money</h1>
