@@ -35,6 +35,18 @@ const getEstimateByMint = async (mint: string): Promise<unknown> => {
   }
 };
 
+export const fetchCollectionsData = async (): Promise<any> => {
+  try {
+    const response = await api.get(`/services/api/collections`);
+    if (response) {
+      return response.data.collections;
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+  }
+};
+
 export const getBalance = async ({
   wallet,
   connection,

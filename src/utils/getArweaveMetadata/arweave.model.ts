@@ -90,6 +90,9 @@ export interface ArweaveMetadata {
   symbol: string;
   description: string;
   seller_fee_basis_points?: number;
+  collection?: {
+    name?: string;
+  };
   image: string;
   animation_url?: string;
   external_url?: string;

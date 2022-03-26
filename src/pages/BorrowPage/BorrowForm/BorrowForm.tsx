@@ -20,9 +20,10 @@ import {
 
 interface BorrowFormProps {
   selectedNft: UserNFT[];
+  ltvPrice?: number;
 }
 
-export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
+export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft, ltvPrice }) => {
   const {
     form,
     onSubmit,
@@ -30,7 +31,6 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     confirmModalVisible,
     closeConfirmModal,
     returnPeriod,
-    ltvValues,
     txnModalVisible,
     onTxnModalCancel,
     activeLine,
@@ -42,7 +42,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
     <>
       <div className={styles.details}>
         <Form form={form} autoComplete="off">
-          <p className={styles.detailsTitle}>Borrow settings</p>
+          <p className={styles.detailsTitle}>Loan settings</p>
           <div className={styles.fieldWrapper}>
             <Form.Item name={SelectControlsNames.LTV_VALUES} validateFirst>
               <div className={styles.formContent}>
@@ -132,8 +132,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft }) => {
         visible={confirmModalVisible}
         onCancel={closeConfirmModal}
         onSubmit={() => onSubmit(selectedNft[0])}
-        subtitle={` You are about to use your ${selectedNft[0].metadata.name} as collateral in ${ltvValues.value} SOL
-        loan that you claim to return in ${returnPeriod.value} days. Want to proceed?`}
+        subtitle={` You are about to use your ${
+          selectedNft[0].metadata.name
+        } as collateral in ${ltvPrice.toFixed(3)} SOL
+        loan that you claim to return in ${
+          returnPeriod.value
+        } days. Want to proceed?`}
       />
       <LoadingModal
         subtitle="In order to transfer the NFT/s approval is needed."

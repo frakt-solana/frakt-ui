@@ -13,30 +13,38 @@ import FakeInfinityScroll, {
 } from '../../components/FakeInfinityScroll';
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
+import { EstimateNFT, useLoans } from '../../contexts/loans';
+import { UserNFT } from '../../contexts/userTokens';
+interface UserNFTWithEstimate extends UserNFT {
+  estimate: EstimateNFT[];
+}
 
 const BorrowPage: FC = () => {
   const [search, setSearch] = useState('');
 
+  const { setVisible } = useWalletModal();
   const wallet = useWallet();
 
-  const { setVisible } = useWalletModal();
-
-  const {
-    onDeselectOneNft,
-    onSelectOneNft,
-    nfts,
-    searchItems,
-    loading,
-    activeTokenAddress,
-    selectedNft,
-  } = useSelectLayout();
+  const { onDeselectOneNft, onSelectOneNft, nfts, searchItems, selectedNft } =
+    useSelectLayout();
 
   const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
-
   const { itemsToShow, next } = useFakeInfinityScroll(15);
+  const { estimations } = useLoans();
 
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
+
+  const rawNfts = nfts.reduce((acc, nft: UserNFT): UserNFTWithEstimate[] => {
+    const nameNft = nft.metadata?.collection?.name;
+
+    const filtered = estimations.filter(({ name }) => name === nameNft);
+    if (filtered.length) {
+      return [{ ...nft, estimate: filtered }];
+    }
+
+    return acc;
+  }, []);
 
   return (
     <>
@@ -44,7 +52,12 @@ const BorrowPage: FC = () => {
         currentVaultPubkey={currentVaultPubkey}
         selectedNfts={selectedNft}
         onDeselect={onDeselectOneNft}
-        sidebarForm={<BorrowForm selectedNft={selectedNft} />}
+        sidebarForm={
+          <BorrowForm
+            selectedNft={selectedNft}
+            ltvPrice={rawNfts[0]?.estimate[0]?.floorPrice}
+          />
+        }
       >
         <h1 className={styles.title}>Borrow money</h1>
         <h2 className={styles.subtitle}>
@@ -71,17 +84,22 @@ const BorrowPage: FC = () => {
           <FakeInfinityScroll
             itemsToShow={itemsToShow}
             next={next}
-            isLoading={loading}
+            isLoading={!rawNfts.length}
             wrapperClassName={styles.nftsList}
             emptyMessage="No suitable NFTs found"
           >
-            {nfts.map((nft) => (
+            {rawNfts.map((nft) => (
               <NFTCheckbox
                 key={nft.mint}
                 onClick={() => onSelectOneNft(nft)}
                 imageUrl={nft.metadata.image}
                 name={nft.metadata.name}
-                selected={activeTokenAddress === nft.mint}
+                selected={
+                  !!selectedNft.find(
+                    (selectedNft) => selectedNft?.mint === nft.mint,
+                  )
+                }
+                ltvPrice={nft.estimate[0].floorPrice}
               />
             ))}
           </FakeInfinityScroll>
