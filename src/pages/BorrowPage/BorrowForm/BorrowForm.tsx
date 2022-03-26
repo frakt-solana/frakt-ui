@@ -134,7 +134,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft, ltvPrice }) => {
         onSubmit={() => onSubmit(selectedNft[0])}
         subtitle={` You are about to use your ${
           selectedNft[0].metadata.name
-        } as collateral in ${ltvPrice.toFixed(3)} SOL
+        } as collateral in ${ltvPrice.toFixed(2)} SOL
         loan that you claim to return in ${
           returnPeriod.value
         } days. Want to proceed?`}
