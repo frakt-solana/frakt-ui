@@ -89,9 +89,13 @@ const useNftsSwap = ({
   };
 
   const depositNft = async () => {
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
     const result = await depositNftToCommunityPool({
       pool,
       nft: selectedNft,
+      poolLpMint,
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
@@ -140,7 +144,10 @@ const useNftsSwap = ({
   };
 
   const buyNft = async () => {
-    const lotteryTicketPubkey = await getLotteryTicket({ pool });
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
+    const lotteryTicketPubkey = await getLotteryTicket({ pool, poolLpMint });
     closeLoadingModal();
     resetRefs();
 

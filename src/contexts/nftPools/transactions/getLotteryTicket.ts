@@ -16,6 +16,7 @@ import { wrapAsyncWithTryCatch } from '../../../utils';
 
 export interface GetLotteryTicketParams {
   pool: NftPoolData;
+  poolLpMint: PublicKey;
   afterTransaction?: () => void;
 }
 
@@ -27,6 +28,7 @@ export const rawGetLotteryTicket = async ({
   connection,
   wallet,
   pool,
+  poolLpMint,
   afterTransaction,
 }: GetLotteryTicketRawParams): Promise<PublicKey> => {
   const { publicKey: userFractionsTokenAccount } = await getTokenAccount({
@@ -41,10 +43,7 @@ export const rawGetLotteryTicket = async ({
       userFractionsTokenAccount,
       fractionMint: pool.fractionMint,
       fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      tokenMintInputFusion: new PublicKey(
-        // 'C56Dq4P8kYpzt984PNBgQPb4v7vDdTaMNtucNYz9iSzT',
-        'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
-      ),
+      tokenMintInputFusion: poolLpMint,
       leaderboardProgramId: new PublicKey(
         process.env.LEADERBOARD_PROGRAM_PUBKEY,
       ),

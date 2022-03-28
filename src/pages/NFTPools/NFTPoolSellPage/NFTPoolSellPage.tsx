@@ -119,10 +119,13 @@ const useNftSell = ({
       swapNeeded.current = true;
     }
     openLoadingModal();
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
 
     const result = await depositNftToCommunityPool({
       pool,
       nft: selectedNft,
+      poolLpMint,
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();

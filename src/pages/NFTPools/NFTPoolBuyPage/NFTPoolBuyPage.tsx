@@ -116,7 +116,13 @@ const useNftBuy = ({
   };
 
   const runLottery = async () => {
-    const lotteryTicketPubkey = await getLotteryTicket({ pool });
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
+    const lotteryTicketPubkey = await getLotteryTicket({
+      pool,
+      poolLpMint,
+    });
     closeLoadingModal();
     poolTokenBalanceOnSubmit.current = null;
     swapNeeded.current = false;
