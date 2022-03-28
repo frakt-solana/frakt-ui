@@ -23,8 +23,13 @@ import { LinkWithArrow } from '../../../components/LinkWithArrow';
 import { PATHS } from '../../../constants';
 import { Price, useNftPoolTokenBalance, usePoolTokensPrices } from '../hooks';
 import { SELL_COMMISSION_PERCENT } from '../constants';
-import { PoolStats, useCachedPoolsStats } from '../../PoolsPage';
-import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
+import { PoolStats, useCachedPoolsStats, usePoolsPage } from '../../PoolsPage';
+import {
+  formatNumberWithSpaceSeparator,
+  FusionPoolInfo,
+  sumFusionAndRaudiymApr,
+  useLiquidityPools,
+} from '../../../contexts/liquidityPools';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
   const { poolPubkey } = useParams<{ poolPubkey: string }>();
@@ -36,6 +41,9 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
   const poolPublicKey = pool?.publicKey?.toBase58();
+
+  const { fusionPoolInfoMap } = usePoolsPage();
+  const { poolDataByMint } = useLiquidityPools();
 
   const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
     useTokenListContext();
@@ -50,6 +58,18 @@ export const NFTPoolInfoPage = (): JSX.Element => {
     loading: pricesLoading,
   } = usePoolTokensPrices([poolTokenInfo]);
 
+  const poolData = useMemo(() => {
+    return poolDataByMint.size
+      ? Array.from(poolDataByMint.values())
+          .filter(
+            ({ tokenInfo }) => tokenInfo.address !== process.env.FRKT_MINT,
+          )
+          .filter(
+            ({ tokenInfo }) => tokenInfo.address === poolTokenInfo?.address,
+          )
+      : [];
+  }, [poolDataByMint, poolTokenInfo?.address]);
+
   const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
     useCachedPoolsStats();
 
@@ -62,6 +82,10 @@ export const NFTPoolInfoPage = (): JSX.Element => {
   const pageLoading = poolLoading || tokensMapLoading;
 
   const loading = pricesLoading || poolsStatsLoading;
+
+  const fusionPoolInfo = fusionPoolInfoMap.get(
+    poolData[0]?.poolConfig?.lpMint.toBase58(),
+  );
 
   return (
     <NFTPoolPageLayout
@@ -82,7 +106,12 @@ export const NFTPoolInfoPage = (): JSX.Element => {
             <PriceSection price={poolTokenPrice} />
           )}
 
-          {!!poolStats && <LiquiditySection poolStats={poolStats} />}
+          {
+            <LiquiditySection
+              poolStats={poolStats}
+              fusionPoolInfo={fusionPoolInfo}
+            />
+          }
 
           {connected && !!poolTokenInfo && (
             <UserBalanceSection
@@ -115,14 +144,18 @@ const UserBalanceSection: FC<UserBalanceSectionProps> = ({
 
 interface LiquiditySectionProps {
   poolStats: PoolStats;
+  fusionPoolInfo: FusionPoolInfo;
 }
 
-const LiquiditySection: FC<LiquiditySectionProps> = ({ poolStats }) => {
+const LiquiditySection: FC<LiquiditySectionProps> = ({
+  poolStats,
+  fusionPoolInfo,
+}) => {
   return (
     <div className={styles.liquidityWrapper}>
       <h5 className={styles.cardTitle}>Liquidity</h5>
       <p className={styles.liquiditySubtitle}>APR</p>
-      <p>{poolStats?.apr} %</p>
+      <p>{sumFusionAndRaudiymApr(fusionPoolInfo, poolStats)} %</p>
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>
       <LinkWithArrow

@@ -5,6 +5,7 @@ import {
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 import BN, { max, min } from 'bn.js';
+import { PoolStats } from '../../pages/PoolsPage';
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
 
 export const calculateTVL = (
@@ -241,3 +242,15 @@ export const getStakedBalance = (
   lpDecimals: number,
 ): number =>
   Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
+
+export const sumFusionAndRaudiymApr = (
+  fusionPoolInfo: FusionPoolInfo,
+  poolStats: PoolStats,
+): number => {
+  if (fusionPoolInfo?.mainRouter) {
+    const SECONDS_IN_YEAR = 31536000;
+    const { apr, endTime } = fusionPoolInfo.mainRouter;
+
+    return (Number(apr) * Number(endTime)) / SECONDS_IN_YEAR + poolStats?.apr;
+  }
+};
