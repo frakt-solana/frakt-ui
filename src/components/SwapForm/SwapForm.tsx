@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import SettingsIcon from '../../icons/SettingsIcon';
@@ -15,14 +15,14 @@ import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useLazyPoolInfo } from './hooks/useLazyPoolInfo';
 import { useSwapForm } from './hooks/useSwapForm';
-// import { ConfirmModal, SwapDifferentPriceContent } from '../Modal/Modal';
+import { ConfirmModal, SwapDifferentPriceContent } from '../Modal/Modal';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
-// const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
-// const PRICE_IMPACT_WRANING_TRESHOLD = 15;
+const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
+const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const {
@@ -38,6 +38,8 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
+    vaultInfo,
+    receiveValue,
   } = useSwapForm(defaultTokenMint);
 
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
@@ -77,15 +79,45 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     fetchPoolInfo(payToken.address, receiveToken.address);
   };
 
+  const valuationDifference: string = useMemo(() => {
+    if (!vaultInfo) {
+      return '';
+    }
+
+    const isBuy = payToken.address === SOL_TOKEN.address;
+
+    if (isBuy) {
+      const amountMarket = Number(receiveValue);
+
+      const amountLocked =
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
+
+      const difference = (amountMarket / amountLocked) * 100 - 100;
+
+      return isNaN(difference) ? '' : difference.toFixed(2);
+    } else {
+      const amountMarketSOL = Number(receiveValue);
+
+      const amountLockedSOL =
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
+
+      const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
+
+      return isNaN(difference) ? '' : difference.toFixed(2);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vaultInfo, payValue, receiveValue]);
+
   const swapTokens = () => {
-    // if (Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD) {
-    //   return ConfirmModal({
-    //     title: 'Continue with current price?',
-    //     content: <SwapDifferentPriceContent />,
-    //     okText: 'Swap anyway',
-    //     onOk: handleSwap,
-    //   });
-    // }
+    if (Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD) {
+      return ConfirmModal({
+        title: 'Continue with current price?',
+        content: <SwapDifferentPriceContent />,
+        okText: 'Swap anyway',
+        onOk: handleSwap,
+      });
+    }
     handleSwap();
   };
 
@@ -182,25 +214,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
           </span>
         </div>
       )}
-      {/* {tokenPriceImpact && (
-        <div className={styles.info}>
-          <span className={styles.info__title}>
-            <span className={styles.info__titleName}>Valuation difference</span>
-            <Tooltip
-              placement="top"
-              trigger="hover"
-              overlay="Swap price difference from the initial price per fraktion set for buyout"
-            >
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </span>
-          <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
-        </div>
-      )} */}
       {tokenPriceImpact && (
         <div className={styles.info}>
           <span className={styles.info__title}>
-            <span className={styles.info__titleName}>Price impact</span>
+            <span className={styles.info__titleName}>Price Impact</span>
             <Tooltip
               placement="top"
               trigger="hover"
@@ -210,6 +227,23 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             </Tooltip>
           </span>
           <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
+        </div>
+      )}
+      {valuationDifference && (
+        <div className={styles.info}>
+          <span className={styles.info__title}>
+            <span className={styles.info__titleName}>Valuation Difference</span>
+            <Tooltip
+              placement="top"
+              trigger="hover"
+              overlay="The difference between the market price and estimated price due to trade size"
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </span>
+          <span
+            className={styles.info__value}
+          >{`${valuationDifference}%`}</span>
         </div>
       )}
       <Button

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { Percent } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -11,6 +11,7 @@ import {
 import { SOL_TOKEN } from '../../../utils';
 import { getOutputAmount } from '../../SwapForm/helpers';
 import { useLazyPoolInfo } from './useLazyPoolInfo';
+import { useFraktion, VaultData } from '../../../contexts/fraktion';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -42,6 +43,7 @@ export const useSwapForm = (
   slippage: string;
   tokenMinAmount: string;
   tokenPriceImpact: string;
+  vaultInfo: VaultData;
   setSlippage: (nextValue: string) => void;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
@@ -49,6 +51,9 @@ export const useSwapForm = (
   const { poolDataByMint } = useLiquidityPools();
   const { connected } = useWallet();
   const intervalRef = useRef<any>();
+  const { vaults, loading } = useFraktion();
+
+  console.log(vaults);
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -92,6 +97,18 @@ export const useSwapForm = (
     setValue(InputControlsNames.RECEIVE_VALUE, '');
     setValue(InputControlsNames.RECEIVE_TOKEN, nextToken);
   };
+
+  const vaultInfo = useMemo(() => {
+    if (receiveToken && payToken) {
+      const token =
+        payToken.address === SOL_TOKEN.address ? receiveToken : payToken;
+      console.log(vaults);
+
+      return vaults.find(({ fractionMint }) => fractionMint === token.address);
+    } else {
+      return null;
+    }
+  }, [vaults, receiveToken, payToken, loading]);
 
   const changeSides = () => {
     const payValueBuf = payValue;
@@ -169,5 +186,6 @@ export const useSwapForm = (
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
+    vaultInfo,
   };
 };

@@ -58,6 +58,8 @@ export const useAuctionCountdown = (
 export const useFraktionInitialFetch = (): void => {
   const { loading, vaults, refetch } = useFraktion();
 
+  console.log(vaults);
+
   useEffect(() => {
     if (!loading && !vaults.length) {
       refetch();
