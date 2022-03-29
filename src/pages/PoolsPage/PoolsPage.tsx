@@ -13,6 +13,7 @@ import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { Select } from '../../components/Select';
+import { Tabs } from '../../components/Tabs';
 
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
@@ -27,6 +28,9 @@ const PoolsPage: FC = () => {
     onPoolCardClick,
     fusionPoolInfoMap,
     poolsStatsByMarketId,
+    poolTabs,
+    tabValue,
+    setTabValue,
   } = usePoolsPage();
 
   return (
@@ -36,6 +40,12 @@ const PoolsPage: FC = () => {
         <h2 className={styles.subtitle}>
           Provide NFTs and liquidity to protocol and reap the rewards
         </h2>
+        <Tabs
+          className={styles.tabs}
+          tabs={poolTabs}
+          value={tabValue}
+          setValue={setTabValue}
+        />
         <div className={styles.sortWrapper}>
           <SearchInput
             onChange={(e) => searchItems(e.target.value || '')}
@@ -78,7 +88,7 @@ const PoolsPage: FC = () => {
           itemsToShow={itemsToShow}
           next={next}
           isLoading={loading}
-          emptyMessage={'No Liquidity pool found'}
+          emptyMessage="No pools found"
         >
           {poolsData.map((poolData) => (
             <Pool
