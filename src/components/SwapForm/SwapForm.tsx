@@ -15,13 +15,14 @@ import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useLazyPoolInfo } from './hooks/useLazyPoolInfo';
 import { useSwapForm } from './hooks/useSwapForm';
-import { ConfirmModal, SwapDifferentPriceContent } from '../Modal/Modal';
+import { useConfirmModal } from '../ConfirmModal';
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
-const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
+// const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
 const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
@@ -109,14 +110,16 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultInfo, payValue, receiveValue]);
 
+  const {
+    visible: confirmModalVisible,
+    open: openConfirmModal,
+    close: closeConfirmModal,
+  } = useConfirmModal();
+
   const swapTokens = () => {
     if (Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD) {
-      return ConfirmModal({
-        title: 'Continue with current price?',
-        content: <SwapDifferentPriceContent />,
-        okText: 'Swap anyway',
-        onOk: handleSwap,
-      });
+      openConfirmModal();
+      return;
     }
     handleSwap();
   };
@@ -259,6 +262,19 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         slippage={slippage}
         setSlippage={setSlippage}
         onCancel={() => setSlippageModalVisible(false)}
+      />
+      <ConfirmModal
+        title={`Continue with\n current price?`}
+        visible={confirmModalVisible}
+        onCancel={closeConfirmModal}
+        btnAgree={'Swap anyway'}
+        subtitle={`Swap price is very different from the
+        initial price per fraktion set for buyout.\n
+        It usually happens due to low liquidity
+        in the pool, or the asset being
+        overpriced/underpriced.\n
+        Do you wish to perform the swap anyway?`}
+        onSubmit={handleSwap}
       />
     </div>
   );
