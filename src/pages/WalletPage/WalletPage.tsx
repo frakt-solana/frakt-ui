@@ -10,7 +10,7 @@ import BN from 'bn.js';
 
 import { Container } from '../../components/Layout';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { PATHS } from '../../constants';
+import { createPoolLink, PATHS, POOL_TABS } from '../../constants';
 import {
   useFraktion,
   useFraktionInitialFetch,
@@ -262,10 +262,14 @@ const WalletPage = (): JSX.Element => {
 };
 
 const TokenCard = ({ token }: { token: TokenInfoWithAmount }): JSX.Element => {
-  const vaultPubkey = (token.extensions as any)?.vaultPubkey;
+  const isVaultToken = token?.tags?.includes('fractionalized-nft');
+
+  const linkTo = isVaultToken
+    ? `${PATHS.VAULT}/${(token?.extensions as any)?.vaultPubkey}`
+    : createPoolLink(POOL_TABS.INFO, (token?.extensions as any)?.poolPubkey);
 
   return (
-    <NavLink to={`${PATHS.VAULT}/${vaultPubkey}`} className={styles.token}>
+    <NavLink to={linkTo} className={styles.token}>
       <div className={styles.token__info}>
         <img
           className={styles.token__logo}
@@ -284,7 +288,7 @@ const TokenCard = ({ token }: { token: TokenInfoWithAmount }): JSX.Element => {
         </div>
       </div>
       <Button type="alternative" className={styles.token__btn}>
-        Browse vault
+        {isVaultToken ? 'Browse vault' : 'Browse pool'}
       </Button>
     </NavLink>
   );

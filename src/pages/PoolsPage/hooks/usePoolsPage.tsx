@@ -150,7 +150,10 @@ export const usePoolsPage = (): {
   }, [rawPoolsData]);
 
   const loading =
-    poolsInfoMapLoading || poolDataByMintLoading || poolsStatsLoading;
+    poolsInfoMapLoading ||
+    poolDataByMintLoading ||
+    poolsStatsLoading ||
+    fusionPoolInfoMapLoading;
 
   useEffect(() => {
     if (rawPoolsData.length) {
