@@ -46,7 +46,7 @@ const DOCS_LIST = [
 
 const SOCIALS_LIST = [
   { to: 'https://tinyurl.com/zp3rx6z3', icon: DiscordIcon },
-  { to: 'https://twitter.com/FraktArt', icon: TwitterIcon },
+  { to: 'https://twitter.com/FRAKT_HQ', icon: TwitterIcon },
   { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
 
