@@ -1,5 +1,4 @@
-import BN from 'bn.js';
-import { FC, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import SettingsIcon from '../../icons/SettingsIcon';
@@ -13,7 +12,6 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
-import { useLazyPoolInfo } from './hooks/useLazyPoolInfo';
 import { useSwapForm } from './hooks/useSwapForm';
 import { useConfirmModal } from '../ConfirmModal';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
@@ -29,7 +27,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const {
     isSwapBtnEnabled,
     receiveToken,
-    payValue,
     onPayTokenChange,
     onReceiveTokenChange,
     payToken,
@@ -39,12 +36,11 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
-    vaultInfo,
-    receiveValue,
+    valuationDifference,
+    handleSwap,
   } = useSwapForm(defaultTokenMint);
 
-  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
-  const { fetchPoolInfo } = useLazyPoolInfo();
+  const { poolDataByMint } = useLiquidityPools();
 
   const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
     ({ tokenInfo }) => tokenInfo,
@@ -52,63 +48,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
-
-  const handleSwap = async () => {
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    //? Need to get suitable pool
-    const splToken = isBuy ? receiveToken : payToken;
-
-    const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
-
-    const payAmount = new BN(Number(payValue) * 10 ** payToken.decimals);
-
-    const quoteAmount = new BN(
-      Number(tokenMinAmount) * 10 ** receiveToken.decimals,
-    );
-
-    // await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
-
-    await raydiumSwap({
-      baseToken: payToken,
-      baseAmount: payAmount,
-      quoteToken: receiveToken,
-      quoteAmount: quoteAmount,
-      poolConfig,
-    });
-
-    fetchPoolInfo(payToken.address, receiveToken.address);
-  };
-
-  const valuationDifference: string = useMemo(() => {
-    if (!vaultInfo) {
-      return '';
-    }
-
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    if (isBuy) {
-      const amountMarket = Number(receiveValue);
-
-      const amountLocked =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
-
-      const difference = (amountMarket / amountLocked) * 100 - 100;
-
-      return isNaN(difference) ? '' : difference.toFixed(2);
-    } else {
-      const amountMarketSOL = Number(receiveValue);
-
-      const amountLockedSOL =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
-
-      const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
-
-      return isNaN(difference) ? '' : difference.toFixed(2);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo, payValue, receiveValue]);
 
   const {
     visible: confirmModalVisible,
