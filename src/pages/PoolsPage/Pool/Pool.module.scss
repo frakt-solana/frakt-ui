@@ -14,6 +14,7 @@
 
   @media screen and (max-width: 767px) {
     flex-wrap: wrap;
+    position: relative;
   }
 }
 
@@ -37,6 +38,12 @@
   width: 24px;
   height: 24px;
   transform: rotate(-90deg);
+
+  @media screen and (max-width: 767px) {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+  }
 }
 
 .rotate {
@@ -57,7 +64,7 @@
   display: flex;
   gap: 60px;
 
-  @media screen and (max-width: 769px) {
+  @media screen and (max-width: 767px) {
     order: 1;
     width: 100%;
     flex-direction: column;
@@ -86,7 +93,7 @@
 .subtitle {
   font: var(--font-subtitle);
 
-  @media screen and (max-width: 769px) {
+  @media screen and (max-width: 767px) {
     font: var(--font-subtitle-2);
   }
 }
@@ -94,7 +101,7 @@
 .totalValue {
   min-width: 90px;
 
-  @media screen and (max-width: 769px) {
+  @media screen and (max-width: 767px) {
     display: flex;
     align-items: center;
     justify-content: space-between;
