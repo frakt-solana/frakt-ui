@@ -38,7 +38,7 @@ const DROPDOWN_EXTERNAL_LINKS = [
   },
   {
     label: 'Medium',
-    href: 'https://medium.com/@frakt_nft',
+    href: 'https://medium.com/@frakt_HQ',
     icon: MediumIcon,
   },
   {

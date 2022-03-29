@@ -39,7 +39,7 @@ const LANDING_LIST = [
 ];
 
 const DOCS_LIST = [
-  { to: 'https://medium.com/@frakt_nft', icon: MediumIcon },
+  { to: 'https://medium.com/@frakt_HQ', icon: MediumIcon },
   { to: 'https://docs.frakt.xyz/', icon: DocsIcon },
   // { to: 'https://github.com/frakt-solana', icon: CoinGeckoIcon },
 ];
