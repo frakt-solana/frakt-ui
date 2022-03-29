@@ -221,7 +221,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             <Tooltip
               placement="top"
               trigger="hover"
-              overlay="The difference between the market price and estimated price due to trade size"
+              overlay="Swap price difference from the initial price per fraktion set for buyout"
             >
               <QuestionCircleOutlined />
             </Tooltip>

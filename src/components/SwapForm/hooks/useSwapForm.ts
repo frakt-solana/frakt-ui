@@ -11,7 +11,12 @@ import {
 import { SOL_TOKEN } from '../../../utils';
 import { getOutputAmount } from '../../SwapForm/helpers';
 import { useLazyPoolInfo } from './useLazyPoolInfo';
-import { useFraktion, VaultData } from '../../../contexts/fraktion';
+import {
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+  VaultData,
+} from '../../../contexts/fraktion';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -51,9 +56,9 @@ export const useSwapForm = (
   const { poolDataByMint } = useLiquidityPools();
   const { connected } = useWallet();
   const intervalRef = useRef<any>();
-  const { vaults, loading } = useFraktion();
-
-  console.log(vaults);
+  const { vaults } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -102,13 +107,12 @@ export const useSwapForm = (
     if (receiveToken && payToken) {
       const token =
         payToken.address === SOL_TOKEN.address ? receiveToken : payToken;
-      console.log(vaults);
 
       return vaults.find(({ fractionMint }) => fractionMint === token.address);
     } else {
       return null;
     }
-  }, [vaults, receiveToken, payToken, loading]);
+  }, [vaults, receiveToken, payToken]);
 
   const changeSides = () => {
     const payValueBuf = payValue;
