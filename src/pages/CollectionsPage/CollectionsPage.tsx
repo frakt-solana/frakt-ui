@@ -113,44 +113,37 @@ const CollectionsPage: FC = () => {
     const [sortField, sortOrder] = sort.value.split('_');
 
     return collectionsData
-      .filter(({ collectionName }) =>
-        collectionName.toUpperCase().includes(searchString),
-      )
-      .sort(
-        (
-          { collectionName: collectionNameA },
-          { collectionName: collectionNameB },
-        ) => {
-          if (sortField === 'collectionName') {
-            if (sortOrder === 'desc') {
-              return collectionNameA.localeCompare(collectionNameB);
-            }
-            return collectionNameB.localeCompare(collectionNameA);
+      .filter(({ name }) => name.toUpperCase().includes(searchString))
+      .sort(({ name: collectionNameA }, { name: collectionNameB }) => {
+        if (sortField === 'collectionName') {
+          if (sortOrder === 'desc') {
+            return collectionNameA.localeCompare(collectionNameB);
           }
-          if (sortField === 'vault') {
-            return compareVaultsArraysBySize(
-              vaultsNotArchivedByCollectionName[collectionNameA],
-              vaultsNotArchivedByCollectionName[collectionNameB],
-              sortOrder === 'desc',
-            );
-          }
-          if (sortField === 'nfts') {
-            return compareVaultsArraysByNFTsAmount(
-              vaultsNotArchivedByCollectionName[collectionNameA],
-              vaultsNotArchivedByCollectionName[collectionNameB],
-              sortOrder === 'desc',
-            );
-          }
-          if (sortField === 'name') {
-            return compareVaultsArraysByName(
-              collectionNameA,
-              collectionNameB,
-              sortOrder === 'desc',
-            );
-          }
-          return 0;
-        },
-      );
+          return collectionNameB.localeCompare(collectionNameA);
+        }
+        if (sortField === 'vault') {
+          return compareVaultsArraysBySize(
+            vaultsNotArchivedByCollectionName[collectionNameA],
+            vaultsNotArchivedByCollectionName[collectionNameB],
+            sortOrder === 'desc',
+          );
+        }
+        if (sortField === 'nfts') {
+          return compareVaultsArraysByNFTsAmount(
+            vaultsNotArchivedByCollectionName[collectionNameA],
+            vaultsNotArchivedByCollectionName[collectionNameB],
+            sortOrder === 'desc',
+          );
+        }
+        if (sortField === 'name') {
+          return compareVaultsArraysByName(
+            collectionNameA,
+            collectionNameB,
+            sortOrder === 'desc',
+          );
+        }
+        return 0;
+      });
   }, [collectionsData, searchString, vaultsNotArchivedByCollectionName, sort]);
 
   return (
@@ -170,13 +163,13 @@ const CollectionsPage: FC = () => {
           emptyMessage={'No collections found'}
         >
           {filteredCollection.map(
-            ({ collectionName, bannerPath }, idx) =>
+            ({ name: collectionName, image }, idx) =>
               vaultsNotArchivedByCollectionName[collectionName] && (
                 <NavLink key={idx} to={`${PATHS.COLLECTION}/${collectionName}`}>
                   <CollectionCard
                     key={idx}
                     collectionName={collectionName}
-                    thumbnailPath={bannerPath}
+                    collectionImage={image}
                     vaultsByCollectionName={
                       vaultsNotArchivedByCollectionName[collectionName]
                     }

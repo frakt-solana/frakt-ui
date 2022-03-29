@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import { UserNFT } from '../../../../contexts/userTokens';
 import { CopyClipboardIcon } from '../../../../icons';
-import { copyToClipboard, getCollectionThumbnailUrl } from '../../../../utils';
+import { copyToClipboard } from '../../../../utils';
 import { CollectionData } from '../../../../utils/collections';
 import { shortenAddress } from '../../../../utils/solanaUtils';
 import Tooltip from '../../../Tooltip';
@@ -27,20 +27,16 @@ export const SlideContent: FC<SlideContent> = ({ nft, collection }) => {
       <div className={styles.slideInfoBlock}>
         {!!collection && (
           <NavLink
-            to={`${PATHS.COLLECTION}/${collection?.collectionName}`}
+            to={`${PATHS.COLLECTION}/${collection?.name}`}
             className={styles.collectionLink}
           >
             <div
               className={styles.collectionIcon}
               style={{
-                backgroundImage: `url(${getCollectionThumbnailUrl(
-                  collection?.thumbnailPath,
-                )})`,
+                backgroundImage: `url(${collection?.image})`,
               }}
             />
-            <p className={styles.collectionName}>
-              {collection?.collectionName}
-            </p>
+            <p className={styles.collectionName}>{collection?.image}</p>
           </NavLink>
         )}
         <h5 className={styles.nftTitle}>{metadata.name}</h5>

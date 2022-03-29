@@ -58,10 +58,6 @@ const VaultPage: FC = () => {
     nftIndex: 1,
   });
 
-  const collections = (vaultData?.safetyBoxes || []).map(
-    (nft) => nft.nftCollectionName,
-  );
-
   const vaultMarket = useMemo(() => {
     return vaultsMarkets?.find(
       ({ baseMint }) => baseMint === vaultData.fractionMint,
@@ -87,7 +83,7 @@ const VaultPage: FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const result = await fetchCollectionsData(collections);
+        const result = await fetchCollectionsData();
         if (result) {
           setAllNftsCollectionInfo(result);
         }

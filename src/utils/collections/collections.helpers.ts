@@ -1,11 +1,7 @@
 import { VaultData } from '../../contexts/fraktion';
-import {
-  CollectionData,
-  VaultsByCollectionName,
-  PromiseFulfilledResult,
-} from './collections.model';
+import { CollectionData, VaultsByCollectionName } from './collections.model';
 
-const EXCHANGE_COLLECTION_INFO_API = process.env.COLLECTION_URL;
+const COLLECTION_INFO_API = process.env.COLLECTION_URL;
 
 export const mapVaultsByCollectionName = (
   vaults: VaultData[],
@@ -34,45 +30,24 @@ export const mapVaultsByCollectionName = (
   }, {});
 };
 
-export const fetchCollectionData = async (
-  collectionName: string,
-): Promise<CollectionData | null> => {
-  try {
-    const responseData = await (
-      await fetch(
-        `${EXCHANGE_COLLECTION_INFO_API}/metadata?collectionName=${collectionName}`,
-      )
-    ).json();
-
-    return responseData?.states?.live || null;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return null;
-  }
-};
-
 export const fetchCollectionsData = async (
-  collectionsNames: string[],
+  offset = 0,
+  previousResponse = [],
 ): Promise<CollectionData[]> => {
-  try {
-    const responses = await Promise.allSettled(
-      collectionsNames.map((collectionName) =>
-        fetchCollectionData(collectionName),
-      ),
-    );
+  let offseter = offset;
+  const res = await (
+    await fetch(`${COLLECTION_INFO_API}?offset=${offseter}&limit=${500}`)
+  ).json();
 
-    return responses
-      .filter(
-        ({ value, status }: PromiseFulfilledResult) =>
-          status === 'fulfilled' && value,
-      )
-      .map(({ value }: PromiseFulfilledResult) => value as CollectionData);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
-    return [];
+  const response = [...previousResponse, ...res];
+
+  if (res.length !== 0) {
+    offseter += 500;
+
+    return fetchCollectionsData(offseter, response);
   }
+
+  return response;
 };
 
 export const compareVaultsArraysBySize = (

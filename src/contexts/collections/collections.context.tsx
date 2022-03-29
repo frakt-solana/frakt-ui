@@ -40,8 +40,23 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
     try {
       setIsLoading(true);
       const collectionsNames = Object.keys(vaultsByCollectionName);
-      const collectionsData = await fetchCollectionsData(collectionsNames);
-      setCollectionsData(collectionsData);
+      const collectionsData = await fetchCollectionsData();
+
+      const collectionsWithVaults = collectionsNames.reduce(
+        (acc, сollectionName) => {
+          const filtered = collectionsData.filter(
+            ({ name }) => name === сollectionName,
+          );
+          if (filtered.length > 0) {
+            acc.push(...filtered);
+          }
+
+          return acc;
+        },
+        [],
+      );
+
+      setCollectionsData(collectionsWithVaults);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

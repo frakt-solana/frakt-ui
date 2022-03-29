@@ -1,57 +1,49 @@
 import { FC } from 'react';
 import { DiscordIcon, TwitterIcon2 as TwitterIcon } from '../../../icons';
 import { WebsiteIcon } from '../../../icons/WebsiteIcon';
-import { getCollectionThumbnailUrl } from '../../../utils';
-import { useCollectionData } from '../../../utils/collections';
+import { CollectionData } from '../../../utils/collections';
 
 import styles from './styles.module.scss';
 
 interface CollectionBannerProps {
-  collectionName: string;
+  currentCollection: CollectionData[];
 }
 
 export const CollectionBanner: FC<CollectionBannerProps> = ({
-  collectionName,
+  currentCollection,
 }) => {
-  const { collectionsItem: collectionData } = useCollectionData(collectionName);
-
   return (
     <div className={styles.banner}>
       <div
         className={styles.bgImage}
         style={{
-          backgroundImage: `url(${getCollectionThumbnailUrl(
-            collectionData?.bannerPath,
-          )})`,
+          backgroundImage: `url(${currentCollection[0]?.image})`,
         }}
       />
-      <img
-        className={styles.thumbnail}
-        src={getCollectionThumbnailUrl(collectionData?.thumbnailPath)}
-      />
-      <div className={styles.title}>{collectionData?.collectionName}</div>
+      <img className={styles.thumbnail} src={currentCollection[0]?.image} />
+      <div className={styles.title}>{currentCollection[0]?.name}</div>
       <div className={styles.socialLinks}>
-        {collectionData?.website && (
+        {currentCollection[0]?.website && (
           <a
-            href={collectionData.website}
+            href={currentCollection[0].website}
             target="_bank"
             rel="noopener noreferrer"
           >
             <WebsiteIcon width={46} alt="website" />
           </a>
         )}
-        {collectionData?.discord && (
+        {currentCollection[0]?.discord && (
           <a
-            href={collectionData.discord}
+            href={currentCollection[0].discord}
             target="_bank"
             rel="noopener noreferrer"
           >
             <DiscordIcon width={48} alt="discord" />
           </a>
         )}
-        {collectionData?.twitter && (
+        {currentCollection[0]?.twitter && (
           <a
-            href={collectionData.twitter}
+            href={currentCollection[0].twitter}
             target="_bank"
             rel="noopener noreferrer"
           >

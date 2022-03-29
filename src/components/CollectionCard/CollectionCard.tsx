@@ -1,19 +1,18 @@
 import { FC } from 'react';
 
-import { getCollectionThumbnailUrl } from '../../utils';
 import styles from './styles.module.scss';
 import { VaultData } from '../../contexts/fraktion';
 
 interface CollectionCardProps {
   collectionName: string;
-  thumbnailPath: string;
+  collectionImage: string;
   className?: string;
   vaultsByCollectionName: VaultData[];
 }
 
 const CollectionCard: FC<CollectionCardProps> = ({
   collectionName,
-  thumbnailPath,
+  collectionImage,
   vaultsByCollectionName,
 }) => {
   const nftsAmount = vaultsByCollectionName.reduce(
@@ -44,7 +43,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <div
           className={styles.image}
           style={{
-            backgroundImage: `url(${getCollectionThumbnailUrl(thumbnailPath)})`,
+            backgroundImage: `url(${collectionImage})`,
           }}
         />
         <h3 className={styles.name}>{collectionName}</h3>
