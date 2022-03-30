@@ -188,7 +188,7 @@ const useNftBuy = ({
     setPrizeImg,
     loadingModalVisible,
     closeLoadingModal,
-    loadingModalSubtitle: `Transactions left: ${transactionsLeft}`,
+    loadingModalSubtitle: `Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`,
     slippage,
     setSlippage,
   };

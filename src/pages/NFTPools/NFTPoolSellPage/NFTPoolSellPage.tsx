@@ -158,7 +158,7 @@ const useNftSell = ({
     selectedNft,
     loadingModalVisible,
     closeLoadingModal,
-    loadingModalSubtitle: `Transactions left: ${transactionsLeft}`,
+    loadingModalSubtitle: `Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`,
   };
 };
 
