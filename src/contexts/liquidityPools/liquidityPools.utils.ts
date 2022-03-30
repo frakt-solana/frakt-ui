@@ -243,7 +243,7 @@ export const getStakedBalance = (
 ): number =>
   Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
 
-export const sumFusionAndRaudiymApr = (
+export const sumFusionAndRaydiumApr = (
   fusionPoolInfo: FusionPoolInfo,
   poolStats: PoolStats,
 ): number => {

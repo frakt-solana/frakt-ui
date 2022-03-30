@@ -27,7 +27,7 @@ import { PoolStats, useCachedPoolsStats, usePoolsPage } from '../../PoolsPage';
 import {
   formatNumberWithSpaceSeparator,
   FusionPoolInfo,
-  sumFusionAndRaudiymApr,
+  sumFusionAndRaydiumApr,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
 
@@ -156,7 +156,7 @@ const LiquiditySection: FC<LiquiditySectionProps> = ({
       <h5 className={styles.cardTitle}>Liquidity</h5>
       <p className={styles.liquiditySubtitle}>APR</p>
       <p>
-        {sumFusionAndRaudiymApr(fusionPoolInfo, poolStats)?.toFixed(2) || 0}%
+        {sumFusionAndRaydiumApr(fusionPoolInfo, poolStats)?.toFixed(2) || 0}%
       </p>
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>

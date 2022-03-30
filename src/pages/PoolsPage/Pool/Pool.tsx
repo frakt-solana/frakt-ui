@@ -14,7 +14,7 @@ import {
   PoolData,
   FusionPoolInfo,
   RaydiumPoolInfo,
-  sumFusionAndRaudiymApr,
+  sumFusionAndRaydiumApr,
 } from '../../../contexts/liquidityPools';
 import {
   PoolDetailsWalletConnected,
@@ -83,7 +83,7 @@ const Pool: FC<PoolInterface> = ({
           <div className={styles.totalValue}>
             <p className={styles.title}>Apr</p>
             <p className={styles.value}>
-              {sumFusionAndRaudiymApr(fusionPoolInfo, poolStats)?.toFixed(2) ||
+              {sumFusionAndRaydiumApr(fusionPoolInfo, poolStats)?.toFixed(2) ||
                 0}
               %
             </p>
