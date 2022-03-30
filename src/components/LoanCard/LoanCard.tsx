@@ -14,7 +14,7 @@ interface NFTCheckboxInterface {
   className?: string;
   imageUrl?: string;
   name?: string;
-  ltvPrice?: string;
+  ltvPrice?: number;
   onDetailsClick?: () => void;
   nft: LoanWithNftData;
 }
@@ -59,7 +59,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>LTV</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{ltvPrice}</p>
+                <p className={styles.ltvText}>{ltvPrice.toFixed(2)}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>

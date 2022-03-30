@@ -50,7 +50,7 @@ export const LoansList: FC<LoansListProps> = ({ nfts }) => {
             key={nft.id}
             imageUrl={nft.nftData?.image}
             name={nft.nftData?.name}
-            ltvPrice={nft.amount?.toString()}
+            ltvPrice={nft.amount}
             nft={nft}
           />
         ))}

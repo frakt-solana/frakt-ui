@@ -25,8 +25,14 @@ const BorrowPage: FC = () => {
   const { setVisible } = useWalletModal();
   const wallet = useWallet();
 
-  const { onDeselectOneNft, onSelectOneNft, nfts, searchItems, selectedNft } =
-    useSelectLayout();
+  const {
+    onDeselectOneNft,
+    onSelectOneNft,
+    nfts,
+    loading,
+    searchItems,
+    selectedNft,
+  } = useSelectLayout();
 
   const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
   const { itemsToShow, next } = useFakeInfinityScroll(15);
@@ -93,7 +99,7 @@ const BorrowPage: FC = () => {
           <FakeInfinityScroll
             itemsToShow={itemsToShow}
             next={next}
-            isLoading={!rawNfts.length}
+            isLoading={loading}
             wrapperClassName={styles.nftsList}
             emptyMessage="No suitable NFTs found"
           >
