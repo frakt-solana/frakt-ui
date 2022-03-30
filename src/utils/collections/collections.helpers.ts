@@ -31,20 +31,20 @@ export const mapVaultsByCollectionName = (
 };
 
 export const fetchCollectionsData = async (
-  offset = 0,
+  previousOffset = 0,
   previousResponse = [],
 ): Promise<CollectionData[]> => {
-  let offseter = offset;
+  let offset = previousOffset;
   const res = await (
-    await fetch(`${COLLECTION_INFO_API}?offset=${offseter}&limit=${500}`)
+    await fetch(`${COLLECTION_INFO_API}?offset=${offset}&limit=${500}`)
   ).json();
 
   const response = [...previousResponse, ...res];
 
   if (res.length !== 0) {
-    offseter += 500;
+    offset += 500;
 
-    return fetchCollectionsData(offseter, response);
+    return fetchCollectionsData(offset, response);
   }
 
   return response;

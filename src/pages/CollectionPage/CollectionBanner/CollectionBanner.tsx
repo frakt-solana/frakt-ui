@@ -12,41 +12,33 @@ interface CollectionBannerProps {
 export const CollectionBanner: FC<CollectionBannerProps> = ({
   currentCollection,
 }) => {
+  if (!currentCollection.length) return;
+
+  const { image, name, website, discord, twitter } = currentCollection[0];
+
   return (
     <div className={styles.banner}>
       <div
         className={styles.bgImage}
         style={{
-          backgroundImage: `url(${currentCollection[0]?.image})`,
+          backgroundImage: `url(${image})`,
         }}
       />
-      <img className={styles.thumbnail} src={currentCollection[0]?.image} />
-      <div className={styles.title}>{currentCollection[0]?.name}</div>
+      <img className={styles.thumbnail} src={image} />
+      <div className={styles.title}>{name}</div>
       <div className={styles.socialLinks}>
-        {currentCollection[0]?.website && (
-          <a
-            href={currentCollection[0].website}
-            target="_bank"
-            rel="noopener noreferrer"
-          >
+        {website && (
+          <a href={website} target="_bank" rel="noopener noreferrer">
             <WebsiteIcon width={46} alt="website" />
           </a>
         )}
-        {currentCollection[0]?.discord && (
-          <a
-            href={currentCollection[0].discord}
-            target="_bank"
-            rel="noopener noreferrer"
-          >
+        {discord && (
+          <a href={discord} target="_bank" rel="noopener noreferrer">
             <DiscordIcon width={48} alt="discord" />
           </a>
         )}
-        {currentCollection[0]?.twitter && (
-          <a
-            href={currentCollection[0].twitter}
-            target="_bank"
-            rel="noopener noreferrer"
-          >
+        {twitter && (
+          <a href={twitter} target="_bank" rel="noopener noreferrer">
             <TwitterIcon width={48} alt="twitter" />
           </a>
         )}
