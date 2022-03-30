@@ -16,6 +16,7 @@ import ConnectButton from '../ConnectButton';
 import ConnectedButton from '../ConnectedButton';
 import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
+import { login } from '../../utils/loans';
 
 interface HeaderProps {
   className?: string;
@@ -27,19 +28,34 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
   const wallet = useWallet();
   const { connected } = wallet;
 
-  const isAuth = (): boolean => {
+  const isAuth = () => {
     const walletLS = localStorage.getItem('wallet');
     const walletName = localStorage.getItem('walletName');
 
     if (walletLS && walletName) {
       return true;
     }
-    return false;
+    return;
+  };
+
+  const signToken = async () => {
+    const walletLS = localStorage.getItem('wallet');
+    const walletName = localStorage.getItem('walletName');
+
+    if (!walletLS && walletName) {
+      await login(wallet);
+      return true;
+    } else if (walletLS && walletName) {
+      return true;
+    }
+    return;
   };
 
   return (
     <header className={classNames(styles.root, styles.header, className)}>
-      {visible && <WalletContent authenticated={isAuth()} />}
+      {visible && (
+        <WalletContent authenticated={isAuth()} signToken={signToken} />
+      )}
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           Frakt

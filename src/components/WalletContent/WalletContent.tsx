@@ -4,31 +4,22 @@ import { useWalletModal } from '../../contexts/WalletModal';
 import CurrentUserTable from '../CurrentUserTable';
 import styles from './styles.module.scss';
 import { WalletItem } from './WalletItem';
-import { login } from '../../utils/loans';
 
 interface WalletContentProps {
   className?: string;
   authenticated: any;
+  signToken?: () => void;
 }
 
 const WalletContent = ({
   className = '',
   authenticated,
+  signToken,
 }: WalletContentProps): JSX.Element => {
   const wallet = useWallet();
   const { setVisible } = useWalletModal();
 
   const { connected, wallets, select } = wallet;
-
-  const signToken = () => {
-    const walletLS = localStorage.getItem('wallet');
-    const walletName = localStorage.getItem('walletName');
-
-    if (!walletLS && walletName) {
-      login(wallet);
-    }
-    return;
-  };
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
