@@ -57,7 +57,9 @@ export const rawHarvestLiquidity = async ({
     rewardsTokenMint,
   );
 
-  transaction.add(...secondaryHarvestInstruction);
+  if (secondaryHarvestInstruction?.length) {
+    transaction.add(...secondaryHarvestInstruction);
+  }
 
   await signAndConfirmTransaction({
     transaction,
