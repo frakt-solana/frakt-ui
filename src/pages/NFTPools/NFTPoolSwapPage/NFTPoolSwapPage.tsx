@@ -211,7 +211,7 @@ const useNftsSwap = ({
       balance >= buyPrice;
 
     const canBuyWithoutSwap =
-      !!poolTokenBalanceBeforeDeposit &&
+      !!poolTokenBalanceBeforeDeposit.current &&
       opeartionWithoutSwap.current &&
       balance > poolTokenBalanceBeforeDeposit.current &&
       balance >= buyPrice;
