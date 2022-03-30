@@ -42,8 +42,9 @@ export const NFTPoolInfoPage = (): JSX.Element => {
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
   const poolPublicKey = pool?.publicKey?.toBase58();
 
-  const { fusionPoolInfoMap } = usePoolsPage();
-  const { poolDataByMint } = useLiquidityPools();
+  const { fusionPoolInfoMap, loading: fusionPoolsLoading } = usePoolsPage();
+  const { poolDataByMint, loading: liquidityPoolsLoading } =
+    useLiquidityPools();
 
   const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
     useTokenListContext();
@@ -58,17 +59,11 @@ export const NFTPoolInfoPage = (): JSX.Element => {
     loading: pricesLoading,
   } = usePoolTokensPrices([poolTokenInfo]);
 
-  const poolData = useMemo(() => {
-    return poolDataByMint.size
-      ? Array.from(poolDataByMint.values())
-          .filter(
-            ({ tokenInfo }) => tokenInfo.address !== process.env.FRKT_MINT,
-          )
-          .filter(
-            ({ tokenInfo }) => tokenInfo.address === poolTokenInfo?.address,
-          )
-      : [];
-  }, [poolDataByMint, poolTokenInfo?.address]);
+  const fusionPoolInfo = useMemo(() => {
+    const poolData = poolDataByMint.get(poolTokenInfo?.address);
+
+    return fusionPoolInfoMap.get(poolData?.poolConfig?.lpMint.toBase58());
+  }, [poolDataByMint, poolTokenInfo?.address, fusionPoolInfoMap]);
 
   const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
     useCachedPoolsStats();
@@ -81,11 +76,11 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const pageLoading = poolLoading || tokensMapLoading;
 
-  const loading = pricesLoading || poolsStatsLoading;
-
-  const fusionPoolInfo = fusionPoolInfoMap.get(
-    poolData[0]?.poolConfig?.lpMint.toBase58(),
-  );
+  const loading =
+    pricesLoading ||
+    poolsStatsLoading ||
+    liquidityPoolsLoading ||
+    fusionPoolsLoading;
 
   return (
     <NFTPoolPageLayout

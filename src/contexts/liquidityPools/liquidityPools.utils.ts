@@ -1,10 +1,11 @@
+import BN, { max, min } from 'bn.js';
 import {
   MainRouterView,
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
-import BN, { max, min } from 'bn.js';
+
 import { PoolStats } from '../../pages/PoolsPage';
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
 
@@ -257,4 +258,5 @@ export const sumFusionAndRaydiumApr = (
       poolStats?.apr
     );
   }
+  return 0;
 };
