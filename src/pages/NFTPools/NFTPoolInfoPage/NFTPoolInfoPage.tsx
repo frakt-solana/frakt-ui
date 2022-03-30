@@ -155,7 +155,9 @@ const LiquiditySection: FC<LiquiditySectionProps> = ({
     <div className={styles.liquidityWrapper}>
       <h5 className={styles.cardTitle}>Liquidity</h5>
       <p className={styles.liquiditySubtitle}>APR</p>
-      <p>{sumFusionAndRaudiymApr(fusionPoolInfo, poolStats) || 0} %</p>
+      <p>
+        {sumFusionAndRaudiymApr(fusionPoolInfo, poolStats)?.toFixed(2) || 0}%
+      </p>
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>
       <LinkWithArrow
