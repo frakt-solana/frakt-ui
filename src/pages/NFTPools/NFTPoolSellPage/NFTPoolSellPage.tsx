@@ -62,6 +62,7 @@ const useNftSell = ({
   const swapNeeded = useRef<boolean>(false);
 
   const [slippage, setSlippage] = useState<number>(0.5);
+  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
   useEffect(() => {
@@ -102,6 +103,7 @@ const useNftSell = ({
         poolTokenBalanceOnSell.current = null;
         swapNeeded.current = false;
         closeLoadingModal();
+        setTransactionsLeft(0);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,7 +117,9 @@ const useNftSell = ({
   };
 
   const sell = async (needSwap = false) => {
+    setTransactionsLeft(1);
     if (needSwap) {
+      setTransactionsLeft(2);
       swapNeeded.current = true;
     }
     openLoadingModal();
@@ -130,14 +134,17 @@ const useNftSell = ({
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
         poolTokenBalanceOnSell.current = balance;
+        setTransactionsLeft(1);
         if (!needSwap) {
           closeLoadingModal();
+          setTransactionsLeft(null);
         }
       },
     });
 
     if (!result) {
       closeLoadingModal();
+      setTransactionsLeft(null);
     }
   };
 
@@ -151,6 +158,7 @@ const useNftSell = ({
     selectedNft,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle: `Transactions left: ${transactionsLeft}`,
   };
 };
 
@@ -193,6 +201,7 @@ export const NFTPoolSellPage: FC = () => {
     sell,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle,
   } = useNftSell({ pool, poolTokenInfo });
 
   const [, setIsSidebar] = useState<boolean>(false);
@@ -257,6 +266,7 @@ export const NFTPoolSellPage: FC = () => {
           <LoadingModal
             visible={loadingModalVisible}
             onCancel={closeLoadingModal}
+            subtitle={loadingModalSubtitle}
           />
         </>
       )}

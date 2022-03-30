@@ -83,6 +83,7 @@ const useNftBuy = ({
   const swapNeeded = useRef<boolean>(false);
 
   const [slippage, setSlippage] = useState<number>(0.5);
+  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
 
   const buyPoolToken = async () => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
@@ -108,10 +109,13 @@ const useNftBuy = ({
       poolConfig: poolData?.poolConfig,
     });
 
+    setTransactionsLeft(1);
+
     if (!result) {
       poolTokenBalanceOnSubmit.current = null;
       swapNeeded.current = false;
       closeLoadingModal();
+      setTransactionsLeft(null);
     }
   };
 
@@ -126,6 +130,7 @@ const useNftBuy = ({
     closeLoadingModal();
     poolTokenBalanceOnSubmit.current = null;
     swapNeeded.current = false;
+    setTransactionsLeft(null);
 
     if (lotteryTicketPubkey) {
       openLotteryModal();
@@ -141,6 +146,10 @@ const useNftBuy = ({
           )?.nftImage || '';
 
         setPrizeImg(nftImage);
+
+        if (!nftImage) {
+          setIsLotteryModalVisible(false);
+        }
       });
     }
   };
@@ -149,11 +158,13 @@ const useNftBuy = ({
     openLoadingModal();
 
     if (needSwap) {
+      setTransactionsLeft(2);
       swapNeeded.current = true;
       poolTokenBalanceOnSubmit.current = balance;
 
       buyPoolToken();
     } else {
+      setTransactionsLeft(1);
       runLottery();
     }
   };
@@ -177,6 +188,7 @@ const useNftBuy = ({
     setPrizeImg,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle: `Transactions left: ${transactionsLeft}`,
     slippage,
     setSlippage,
   };
@@ -226,6 +238,7 @@ export const NFTPoolBuyPage: FC = () => {
     setPrizeImg,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle,
     slippage,
     setSlippage,
   } = useNftBuy({ pool, poolTokenInfo });
@@ -272,6 +285,7 @@ export const NFTPoolBuyPage: FC = () => {
       <LoadingModal
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
+        subtitle={loadingModalSubtitle}
       />
     </NFTPoolPageLayout>
   );
