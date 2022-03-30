@@ -13,7 +13,6 @@ import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useSwapForm } from './hooks/useSwapForm';
-import { useConfirmModal } from '../ConfirmModal';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
 interface SwapFormInterface {
@@ -38,6 +37,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     tokenPriceImpact,
     valuationDifference,
     handleSwap,
+    confirmModalVisible,
+    openConfirmModal,
+    closeConfirmModal,
   } = useSwapForm(defaultTokenMint);
 
   const { poolDataByMint } = useLiquidityPools();
@@ -48,12 +50,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
-
-  const {
-    visible: confirmModalVisible,
-    open: openConfirmModal,
-    close: closeConfirmModal,
-  } = useConfirmModal();
 
   const swapTokens = () => {
     if (Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD) {

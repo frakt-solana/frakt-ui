@@ -14,6 +14,7 @@ import {
   useFraktionPolling,
 } from '../../../contexts/fraktion';
 import BN from 'bn.js';
+import { useConfirmModal } from '../../ConfirmModal';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -45,6 +46,9 @@ export const useSwapForm = (
   valuationDifference: string;
   setSlippage: (nextValue: string) => void;
   handleSwap: () => void;
+  confirmModalVisible: boolean;
+  openConfirmModal: () => void;
+  closeConfirmModal: () => void;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
@@ -63,6 +67,12 @@ export const useSwapForm = (
       [InputControlsNames.RECEIVE_VALUE]: '',
     },
   });
+
+  const {
+    visible: confirmModalVisible,
+    open: openConfirmModal,
+    close: closeConfirmModal,
+  } = useConfirmModal();
 
   const { receiveToken, payValue, payToken, receiveValue } = watch();
 
@@ -184,7 +194,7 @@ export const useSwapForm = (
 
       const difference = (amountMarket / amountLocked) * 100 - 100;
 
-      return isNaN(difference) ? '' : difference.toFixed(2);
+      return isNaN(difference) ? '0' : difference.toFixed(2);
     } else {
       const amountMarketSOL = Number(receiveValue);
 
@@ -193,13 +203,15 @@ export const useSwapForm = (
 
       const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
 
-      return isNaN(difference) ? '' : difference.toFixed(2);
+      return isNaN(difference) ? '0' : difference.toFixed(2);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo, payValue, receiveValue]);
+  }, [vaultInfo, payValue, receiveValue, payToken, receiveToken]);
 
   const handleSwap = async () => {
+    closeConfirmModal();
+
     const isBuy = payToken.address === SOL_TOKEN.address;
 
     //? Need to get suitable pool
@@ -238,5 +250,8 @@ export const useSwapForm = (
     tokenPriceImpact,
     valuationDifference,
     handleSwap,
+    confirmModalVisible,
+    openConfirmModal,
+    closeConfirmModal,
   };
 };
