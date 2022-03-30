@@ -249,8 +249,12 @@ export const sumFusionAndRaydiumApr = (
 ): number => {
   if (fusionPoolInfo?.mainRouter) {
     const SECONDS_IN_YEAR = 31536000;
-    const { apr, endTime } = fusionPoolInfo.mainRouter;
+    const { apr, endTime, decimalsInput } = fusionPoolInfo.mainRouter;
 
-    return (Number(apr) * Number(endTime)) / SECONDS_IN_YEAR + poolStats?.apr;
+    return (
+      (((Number(apr) * Number(endTime)) / SECONDS_IN_YEAR) * 1e2) /
+        (1e10 / Number(decimalsInput)) +
+      poolStats?.apr
+    );
   }
 };
