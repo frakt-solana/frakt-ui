@@ -28,7 +28,7 @@ export const useLazyPoolsStats: UseLazyPoolsStats = () => {
         .filter((poolStats) => marketIds.includes(poolStats.market))
         .reduce((statsByMarketId, poolStats) => {
           statsByMarketId.set(poolStats.market, {
-            apr: poolStats.apr30d || 0,
+            apr: poolStats.apr7d || 0,
             fee7d: poolStats.fee7d || 0,
             fee24h: poolStats.fee24h || 0,
             liquidity: poolStats.liquidity || 0,

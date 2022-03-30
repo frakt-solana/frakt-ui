@@ -24,11 +24,15 @@
   margin-bottom: 18px;
 }
 
+.tabs {
+  margin-bottom: 32px;
+}
+
 .search {
   max-width: 375px;
 
   @media screen and (max-width: 1023px) {
-    margin-bottom: 64px;
+    margin-bottom: 28px;
   }
 }
 
@@ -41,7 +45,6 @@
 
   @media screen and (max-width: 1023px) {
     width: 100%;
-    justify-content: flex-start;
     margin-bottom: 35px;
   }
 }

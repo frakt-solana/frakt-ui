@@ -39,14 +39,14 @@ const LANDING_LIST = [
 ];
 
 const DOCS_LIST = [
-  { to: 'https://medium.com/@frakt_nft', icon: MediumIcon },
+  { to: 'https://medium.com/@frakt_HQ', icon: MediumIcon },
   { to: 'https://docs.frakt.xyz/', icon: DocsIcon },
   // { to: 'https://github.com/frakt-solana', icon: CoinGeckoIcon },
 ];
 
 const SOCIALS_LIST = [
   { to: 'https://tinyurl.com/zp3rx6z3', icon: DiscordIcon },
-  { to: 'https://twitter.com/FraktArt', icon: TwitterIcon },
+  { to: 'https://twitter.com/FRAKT_HQ', icon: TwitterIcon },
   { to: 'https://github.com/frakt-solana', icon: GitHubIcon },
 ];
 

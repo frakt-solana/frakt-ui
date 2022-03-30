@@ -96,7 +96,7 @@ const Rewards: FC<RewardsInterface> = ({
               type="tertiary"
               onClick={onStakeLiquidity}
             >
-              stake
+              Stake
             </Button>
           )}
           {!!calcLiquidityRewards(

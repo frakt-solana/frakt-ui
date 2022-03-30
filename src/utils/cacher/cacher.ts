@@ -4,7 +4,10 @@ import { VaultData, VaultState } from '../../contexts/fraktion';
 import { DEPRECATED_MARKETS } from '../markets';
 import { NftPoolData } from './nftPools';
 import { parseRawNftPools } from './nftPools/nftPools.helpers';
-import { getVerifiedVaultsByFraktTeam } from './vaults';
+import {
+  getVerifiedVaultsByFraktTeam,
+  IGNORE_DELISTED_NFTS_VAULTS_PUBKEYS,
+} from './vaults';
 
 const CACHER_URL = process.env.BFF_URL;
 export const IS_BFF_ENABLED = !!CACHER_URL;
@@ -34,6 +37,14 @@ class API {
 
       const isPricingLookupAddressUset = '11111111111111111111111111111111';
 
+      const safetyBoxes = IGNORE_DELISTED_NFTS_VAULTS_PUBKEYS.includes(
+        vault.vaultPubkey,
+      )
+        ? vault.safetyBoxes
+        : vault.safetyBoxes.filter(
+            ({ store }) => store !== '11111111111111111111111111111111',
+          );
+
       return {
         ...vault,
         isVerified:
@@ -61,6 +72,7 @@ class API {
           isDinoDaoVault && isPricingLookupAddressUset
             ? VaultState.Active
             : vault.state,
+        safetyBoxes,
       };
     });
   }

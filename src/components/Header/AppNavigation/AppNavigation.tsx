@@ -23,7 +23,7 @@ interface AppNavigationProps {
 const DROPDOWN_EXTERNAL_LINKS = [
   {
     label: 'Twitter',
-    href: 'https://twitter.com/FraktArt',
+    href: 'https://twitter.com/FRAKT_HQ',
     icon: TwitterIcon,
   },
   {
@@ -38,7 +38,7 @@ const DROPDOWN_EXTERNAL_LINKS = [
   },
   {
     label: 'Medium',
-    href: 'https://medium.com/@frakt_nft',
+    href: 'https://medium.com/@frakt_HQ',
     icon: MediumIcon,
   },
   {

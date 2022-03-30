@@ -23,6 +23,7 @@ import {
 export interface DepositNftToCommunityPoolParams {
   pool: NftPoolData;
   nft: UserNFT;
+  poolLpMint: PublicKey;
   afterTransaction?: () => void;
 }
 
@@ -35,6 +36,7 @@ export const rawDepositNftToCommunityPool = async ({
   wallet,
   pool,
   nft,
+  poolLpMint,
   afterTransaction,
 }: DepositNftToCommunityPoolRawParams): Promise<boolean | null> => {
   const { publicKey: nftUserTokenAccount } = await getTokenAccount({
@@ -69,12 +71,9 @@ export const rawDepositNftToCommunityPool = async ({
       fractionMint: pool.fractionMint,
       metadataInfo,
       fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      tokenMintInputFusion: new PublicKey(
-        'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
-      ),
-      leaderboardProgramId: new PublicKey(
-        process.env.LEADERBOARD_PROGRAM_PUBKEY,
-      ),
+      tokenMintInputFusion: poolLpMint,
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
