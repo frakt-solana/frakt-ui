@@ -44,9 +44,8 @@ export const rawGetLotteryTicket = async ({
       fractionMint: pool.fractionMint,
       fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       tokenMintInputFusion: poolLpMint,
-      leaderboardProgramId: new PublicKey(
-        process.env.LEADERBOARD_PROGRAM_PUBKEY,
-      ),
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),

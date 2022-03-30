@@ -72,10 +72,8 @@ export const rawDepositNftToCommunityPool = async ({
       metadataInfo,
       fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       tokenMintInputFusion: poolLpMint,
-      // tokenMintInputFusion: new PublicKey(process.env.FRKT_MINT),
-      leaderboardProgramId: new PublicKey(
-        process.env.LEADERBOARD_PROGRAM_PUBKEY,
-      ),
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
