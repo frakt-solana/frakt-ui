@@ -15,6 +15,7 @@ import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { EstimateNFT, useLoans } from '../../contexts/loans';
 import { UserNFT } from '../../contexts/userTokens';
+
 interface UserNFTWithEstimate extends UserNFT {
   estimate: EstimateNFT[];
 }

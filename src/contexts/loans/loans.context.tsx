@@ -23,7 +23,7 @@ export const LoansPoolsContext = React.createContext<LoansContextValues>({
 export const LoansProvider: LoansProviderType = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loansData, setLoansData] = useState<LoanWithNftData[]>([]);
-  const wallet = useWallet();
+  const { connected } = useWallet();
   const [estimations, setEstimations] = useState<EstimateNFT[]>([]);
 
   const fetchLoansData: FetchDataFunc = async () => {
@@ -43,10 +43,10 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   };
 
   useEffect(() => {
-    if (wallet.publicKey && !loading) {
+    if (connected) {
       fetchLoansData();
     }
-  }, [wallet, loading]);
+  }, [connected]);
 
   return (
     <LoansPoolsContext.Provider
