@@ -26,10 +26,7 @@ import {
 import { FilterFormInputsNames } from '../model';
 import { Loader } from '../../../components/Loader';
 import { SwapModal } from './components/SwapModal';
-import {
-  NftPoolData,
-  SafetyDepositBoxState,
-} from '../../../utils/cacher/nftPools';
+import { NftPoolData } from '../../../utils/cacher/nftPools';
 import {
   NFTPoolPageLayout,
   PoolPageType,
@@ -236,10 +233,6 @@ export const NFTPoolSwapPage: FC = () => {
 
   const { connected } = useWallet();
 
-  const poolImage = pool?.safetyBoxes.filter(
-    ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
-  )?.[0]?.nftImage;
-
   const {
     slippage,
     setSlippage,
@@ -316,7 +309,7 @@ export const NFTPoolSwapPage: FC = () => {
               nft={selectedNft}
               onDeselect={onDeselect}
               onSubmit={swap}
-              randomPoolImage={poolImage}
+              randomPoolImage={poolTokenInfo?.logoURI}
               poolTokenAvailable={poolTokenAvailable}
               poolTokenInfo={poolTokenInfo}
               poolTokenPrice={
