@@ -20,7 +20,11 @@ export const HeaderSwap: FC<HeaderSwapProps> = ({
   hidden = false,
 }) => {
   return (
-    <NFTPoolsHeaderInner poolPublicKey={poolPublicKey} hidden={hidden}>
+    <NFTPoolsHeaderInner
+      poolPublicKey={poolPublicKey}
+      hidden={hidden}
+      poolTokenInfo={poolTokenInfo}
+    >
       <HeaderSellInfo
         solanaPrice={(parseFloat(poolTokenPrice) * COMMISSION_PERCENT).toFixed(
           3,

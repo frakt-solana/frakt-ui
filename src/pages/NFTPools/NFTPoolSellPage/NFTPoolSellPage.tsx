@@ -20,6 +20,7 @@ import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
 import {
+  useAPR,
   useNftPoolTokenBalance,
   useNFTsFiltering,
   usePoolTokensPrices,
@@ -216,7 +217,10 @@ export const NFTPoolSellPage: FC = () => {
 
   const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
 
-  const pageLoading = tokensMapLoading || poolLoading || pricesLoading;
+  const { loading: aprLoading } = useAPR();
+
+  const pageLoading =
+    tokensMapLoading || poolLoading || pricesLoading || aprLoading;
 
   return (
     <NFTPoolPageLayout

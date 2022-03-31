@@ -22,6 +22,7 @@ export const HeaderInfo: FC<HeaderInfoProps> = ({
       poolPublicKey={poolPublicKey}
       className={styles.header}
       hidden={hidden}
+      poolTokenInfo={poolTokenInfo}
     >
       <div className={styles.wrapper}>
         <img src={poolImage} alt="Pool image" className={styles.poolBgImage} />

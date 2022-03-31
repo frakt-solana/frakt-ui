@@ -17,6 +17,7 @@ import {
 } from '../../../contexts/nftPools';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import {
+  useAPR,
   useNftPoolTokenBalance,
   useNFTsFiltering,
   usePoolTokensPrices,
@@ -271,9 +272,12 @@ export const NFTPoolSwapPage: FC = () => {
 
   const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
 
+  const { loading: aprLoading } = useAPR();
+
   const poolTokenAvailable = balance >= SELL_COMMISSION_PERCENT / 100;
 
-  const pageLoading = poolLoading || tokensMapLoading || pricesLoading;
+  const pageLoading =
+    poolLoading || tokensMapLoading || pricesLoading || aprLoading;
 
   return (
     <NFTPoolPageLayout

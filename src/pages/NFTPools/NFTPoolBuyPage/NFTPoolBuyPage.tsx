@@ -18,6 +18,7 @@ import { UserNFTWithCollection } from '../../../contexts/userTokens';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import {
+  useAPR,
   useNftPoolTokenBalance,
   useNFTsFiltering,
   usePoolTokensPrices,
@@ -204,7 +205,10 @@ export const NFTPoolBuyPage: FC = () => {
     setSlippage,
   } = useNftBuy({ pool, poolTokenInfo });
 
-  const loading = poolLoading || !pool || tokensMapLoading || pricesLoading;
+  const { loading: aprLoading } = useAPR();
+
+  const loading =
+    poolLoading || !pool || tokensMapLoading || pricesLoading || aprLoading;
 
   return (
     <NFTPoolPageLayout

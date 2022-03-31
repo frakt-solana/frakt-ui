@@ -36,6 +36,7 @@ const HeaderBuyComponent: FC<HeaderBuyProps> = ({
       poolPublicKey={pool?.publicKey.toBase58()}
       className={classNames(className)}
       hidden={hidden}
+      poolTokenInfo={poolTokenInfo}
     >
       <BuyRandomNftForm
         poolTokenAvailable={poolTokenAvailable}

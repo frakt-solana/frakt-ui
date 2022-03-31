@@ -19,7 +19,11 @@ export const HeaderSell: FC<HeaderSellProps> = ({
   hidden = false,
 }) => {
   return (
-    <NFTPoolsHeaderInner poolPublicKey={poolPublicKey} hidden={hidden}>
+    <NFTPoolsHeaderInner
+      poolPublicKey={poolPublicKey}
+      hidden={hidden}
+      poolTokenInfo={poolTokenInfo}
+    >
       <HeaderSellInfo
         solanaPrice={(
           parseFloat(poolTokenPrice) *
