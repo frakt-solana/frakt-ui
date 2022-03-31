@@ -11,8 +11,8 @@ import {
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
-  useLazyFusionPools,
   FusionPoolInfoByMint,
+  useLazyFusionPools,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../PoolsPage.module.scss';
