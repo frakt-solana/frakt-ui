@@ -69,8 +69,10 @@ export const rawHarvestLiquidity = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawHarvestLiquidity, {
-  onSuccessMessage: 'Liquidity harvested successfully',
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Liquidity harvested successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const harvestLiquidity = createTransactionFuncFromRaw(

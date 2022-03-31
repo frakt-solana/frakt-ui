@@ -50,6 +50,6 @@ const rawAddToWhitelist = async ({
 export const addToWhitelistTransaction = wrapAsyncWithTryCatch(
   rawAddToWhitelist,
   {
-    onErrorMessage: 'Error',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );

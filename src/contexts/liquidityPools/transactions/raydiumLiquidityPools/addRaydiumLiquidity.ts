@@ -77,8 +77,10 @@ const rawAddRaydiumLiquidity = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddRaydiumLiquidity, {
-  onSuccessMessage: 'Liquidity provided successfully',
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Liquidity provided successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const addRaydiumLiquidity = createTransactionFuncFromRaw(

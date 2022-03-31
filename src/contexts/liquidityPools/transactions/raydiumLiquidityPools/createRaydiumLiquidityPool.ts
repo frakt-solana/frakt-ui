@@ -62,8 +62,10 @@ const rawCreateRaydiumLiquidityPool = async ({
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   rawCreateRaydiumLiquidityPool,
   {
-    onSuccessMessage: 'Liquidity pool created',
-    onErrorMessage: 'Transaction failed',
+    onSuccessMessage: {
+      message: 'Liquidity pool created successfully',
+    },
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
 

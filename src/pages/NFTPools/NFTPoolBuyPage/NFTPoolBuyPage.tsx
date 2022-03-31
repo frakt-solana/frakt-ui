@@ -18,13 +18,11 @@ import { UserNFTWithCollection } from '../../../contexts/userTokens';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import {
-  useLotteryTicketSubscription,
   useNftPoolTokenBalance,
   useNFTsFiltering,
   usePoolTokensPrices,
 } from '../hooks';
 import { FilterFormInputsNames } from '../model';
-import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
 import {
   NFTPoolPageLayout,
   PoolPageType,
@@ -65,19 +63,11 @@ const useNftBuy = ({
   const { connection } = useConnection();
   const { getLotteryTicket } = useNftPools();
   const { balance } = useNftPoolTokenBalance(pool);
-  const { subscribe } = useLotteryTicketSubscription();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
-  const {
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
-    openLotteryModal,
-  } = useLotteryModal();
 
   const poolTokenBalanceOnSubmit = useRef<number>();
   const swapNeeded = useRef<boolean>(false);
@@ -123,7 +113,7 @@ const useNftBuy = ({
     const poolData = poolDataByMint.get(poolTokenInfo.address);
     const poolLpMint = poolData?.poolConfig?.lpMint;
 
-    const lotteryTicketPubkey = await getLotteryTicket({
+    await getLotteryTicket({
       pool,
       poolLpMint,
     });
@@ -131,27 +121,6 @@ const useNftBuy = ({
     poolTokenBalanceOnSubmit.current = null;
     swapNeeded.current = false;
     setTransactionsLeft(null);
-
-    if (lotteryTicketPubkey) {
-      openLotteryModal();
-
-      subscribe(lotteryTicketPubkey, (saferyBoxPublicKey) => {
-        if (saferyBoxPublicKey === '11111111111111111111111111111111') {
-          return;
-        }
-
-        const nftImage =
-          pool.safetyBoxes.find(
-            ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
-          )?.nftImage || '';
-
-        setPrizeImg(nftImage);
-
-        if (!nftImage) {
-          setIsLotteryModalVisible(false);
-        }
-      });
-    }
   };
 
   const buy = (needSwap = false) => {
@@ -182,10 +151,6 @@ const useNftBuy = ({
 
   return {
     buy,
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
     loadingModalVisible,
     closeLoadingModal,
     loadingModalSubtitle: `Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`,
@@ -232,10 +197,6 @@ export const NFTPoolBuyPage: FC = () => {
 
   const {
     buy,
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
     loadingModalVisible,
     closeLoadingModal,
     loadingModalSubtitle,
@@ -272,14 +233,6 @@ export const NFTPoolBuyPage: FC = () => {
           sortFieldName={FilterFormInputsNames.SORT}
           sortValues={SORT_VALUES}
           poolName={poolTokenInfo?.name || ''}
-        />
-      )}
-      {isLotteryModalVisible && (
-        <LotteryModal
-          setIsVisible={setIsLotteryModalVisible}
-          prizeImg={prizeImg}
-          setPrizeImg={setPrizeImg}
-          nftImages={getNftImagesForLottery(nfts)}
         />
       )}
       <LoadingModal

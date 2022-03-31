@@ -1,6 +1,8 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { TokenInfo } from '@solana/spl-token-registry';
+import BN from 'bn.js';
 
 import styles from './NFTPoolSwapPage.module.scss';
 import { HeaderSwap } from './components/HeaderSwap';
@@ -15,7 +17,6 @@ import {
 } from '../../../contexts/nftPools';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import {
-  useLotteryTicketSubscription,
   useNftPoolTokenBalance,
   useNFTsFiltering,
   usePoolTokensPrices,
@@ -28,15 +29,12 @@ import {
   NftPoolData,
   SafetyDepositBoxState,
 } from '../../../utils/cacher/nftPools';
-import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
-import { getNftImagesForLottery } from '../NFTPoolBuyPage';
-import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import {
   NFTPoolPageLayout,
   PoolPageType,
 } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import { TokenInfo } from '@solana/spl-token-registry';
+
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 import {
   LoadingModal,
@@ -44,7 +42,6 @@ import {
 } from '../../../components/LoadingModal';
 import { SELL_COMMISSION_PERCENT } from '../constants';
 import { getTokenPrice } from '../helpers';
-import BN from 'bn.js';
 import { SOL_TOKEN } from '../../../utils';
 
 const useNftsSwap = ({
@@ -57,16 +54,8 @@ const useNftsSwap = ({
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { connection } = useConnection();
   const { depositNftToCommunityPool, getLotteryTicket } = useNftPools();
-  const { subscribe } = useLotteryTicketSubscription();
   const { removeTokenOptimistic } = useUserTokens();
   const { balance } = useNftPoolTokenBalance(pool);
-  const {
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
-    openLotteryModal,
-  } = useLotteryModal();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
@@ -152,31 +141,10 @@ const useNftsSwap = ({
     const poolData = poolDataByMint.get(poolTokenInfo.address);
     const poolLpMint = poolData?.poolConfig?.lpMint;
 
-    const lotteryTicketPubkey = await getLotteryTicket({ pool, poolLpMint });
+    await getLotteryTicket({ pool, poolLpMint });
     closeLoadingModal();
     resetRefs();
     setTransactionsLeft(null);
-
-    if (lotteryTicketPubkey) {
-      openLotteryModal();
-
-      subscribe(lotteryTicketPubkey, (saferyBoxPublicKey) => {
-        if (saferyBoxPublicKey === '11111111111111111111111111111111') {
-          return;
-        }
-
-        const nftImage =
-          pool.safetyBoxes.find(
-            ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
-          )?.nftImage || '';
-
-        setPrizeImg(nftImage);
-
-        if (!nftImage) {
-          setIsLotteryModalVisible(false);
-        }
-      });
-    }
   };
 
   const swap = async (needSwap = false) => {
@@ -233,10 +201,6 @@ const useNftsSwap = ({
     slippage,
     setSlippage,
     swap,
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
     poolTokenBalance: balance,
     onSelect,
     onDeselect,
@@ -275,16 +239,6 @@ export const NFTPoolSwapPage: FC = () => {
     ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
   )?.[0]?.nftImage;
 
-  const poolNfts = useMemo(() => {
-    if (pool) {
-      return pool.safetyBoxes.map((safetyBox) => ({
-        ...safetyDepositBoxWithNftMetadataToUserNFT(safetyBox),
-        collectionName: safetyBox?.nftCollectionName || '',
-      }));
-    }
-    return [];
-  }, [pool]);
-
   const {
     slippage,
     setSlippage,
@@ -296,10 +250,6 @@ export const NFTPoolSwapPage: FC = () => {
     loadingModalVisible,
     closeLoadingModal,
     loadingModalSubtitle,
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
   } = useNftsSwap({ pool, poolTokenInfo });
 
   const { rawNfts, rawNftsLoading: contentLoading } = useUserRawNfts();
@@ -372,14 +322,6 @@ export const NFTPoolSwapPage: FC = () => {
               setSlippage={setSlippage}
             />
           </div>
-          {isLotteryModalVisible && (
-            <LotteryModal
-              setIsVisible={setIsLotteryModalVisible}
-              prizeImg={prizeImg}
-              setPrizeImg={setPrizeImg}
-              nftImages={getNftImagesForLottery(poolNfts)}
-            />
-          )}
           <LoadingModal
             visible={loadingModalVisible}
             onCancel={closeLoadingModal}
