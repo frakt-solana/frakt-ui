@@ -1,76 +1,29 @@
-.header {
-  @media screen and (max-width: 767px) {
-    min-height: 218px;
-  }
-}
-
-.randomWrapper {
-  display: flex;
-  align-items: center;
-
-  @media screen and (max-width: 767px) {
-    padding: 0 15px 20px;
-    width: 100%;
-  }
-
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    padding: 0 20px 30px;
-    width: 100%;
-  }
-}
-
-.questionWrapper {
-  width: 106px;
+.poolBgImage {
   border: var(--border-gray-1);
-  border-top: none;
-  overflow: hidden;
-  position: relative;
+  height: 106px;
+  width: 106px;
+  object-fit: cover;
+  display: block;
   margin-right: 20px;
 
   @media screen and (max-width: 1023px) {
-    display: none;
+    width: 43px;
+    height: 43px;
   }
-
-  &::after {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-  }
-}
-
-.poolBgImage {
-  height: 106px;
-  object-fit: cover;
-  display: block;
-}
-
-.questionIcon {
-  position: absolute;
-  left: 29px;
-  top: 21px;
-  z-index: 2;
 }
 
 .buyWrapper {
   display: flex;
-  gap: 20px;
-  margin-right: auto;
+  align-items: flex-start;
 
-  @media screen and (max-width: 767px) {
-    gap: 10px;
-    flex-direction: column;
-    margin-right: unset;
-    width: 100%;
+  @media screen and (max-width: 1023px) {
+    padding: 0 0 20px 20px;
   }
 
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    flex-direction: row;
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 0 20px 20px 20px;
   }
 }
 
@@ -81,12 +34,19 @@
   background-color: var(--black-color);
   height: 43px;
   padding: 0 12px;
+  margin-top: 20px;
+  margin-right: 16px;
   font: var(--font-text-3);
   line-height: 1;
   position: relative;
 
+  @media screen and (max-width: 1023px) {
+    margin-top: unset;
+  }
+
   @media screen and (max-width: 767px) {
     font-size: 15px;
+    margin-right: unset;
   }
 }
 
@@ -96,54 +56,6 @@
   background-color: var(--color-gray-4);
   margin-left: 10px;
   margin-right: 10px;
-}
-
-.amountControls {
-  display: flex;
-  align-items: center;
-  margin-right: 10px;
-  gap: 5px;
-}
-
-.amountControlIcon {
-  width: 22px;
-  height: 22px;
-  position: relative;
-  background-color: var(--color-gray-4);
-  cursor: pointer;
-  transition: background-color 0.1s ease-in;
-
-  &:hover {
-    background-color: var(--color-gray-3);
-  }
-
-  &.disabled {
-    background-color: var(--color-gray-7);
-  }
-
-  &::before {
-    display: block;
-    content: '';
-    position: absolute;
-    background-color: var(--white-color);
-    height: 2px;
-    width: 12px;
-    left: 5px;
-    top: 10px;
-  }
-}
-
-.plusIcon {
-  &::after {
-    display: block;
-    content: '';
-    position: absolute;
-    background-color: var(--white-color);
-    width: 2px;
-    height: 12px;
-    left: 10px;
-    top: 5px;
-  }
 }
 
 .randomNFTsPrice {
@@ -272,6 +184,10 @@
   font-weight: bold;
   margin-top: 10px;
   min-height: 13px;
+
+  @media screen and (max-width: 767px) {
+    margin-bottom: 10px;
+  }
 }
 
 .buySettings {
@@ -288,6 +204,7 @@
 .buyButton {
   width: 180px;
   height: 43px;
+  margin-top: 20px;
   padding: unset;
   display: flex;
   align-items: center;
@@ -301,18 +218,8 @@
   @media screen and (min-width: 768px) and (max-width: 1023px) {
     width: 136px;
   }
-}
 
-.marketNavigation {
-  margin-bottom: 26px;
-
-  @media screen and (max-width: 1400px) {
-    margin-bottom: 30px;
-    width: 100%;
-    order: -1;
-  }
-
-  @media screen and (max-width: 767px) {
-    margin-bottom: 20px;
+  @media screen and (max-width: 1023px) {
+    margin-top: unset;
   }
 }

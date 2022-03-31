@@ -67,8 +67,11 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
     (token === Token.POOL_TOKEN && !poolTokenAvailable) ||
     (token === Token.SOL && solBalance < poolTokenPriceSOL);
 
+  const poolImage = poolTokenInfo?.logoURI;
+
   return (
     <div className={styles.buyWrapper}>
+      <img src={poolImage} alt="Pool image" className={styles.poolBgImage} />
       <div className={styles.buySettings}>
         <div className={styles.settingsWrapper}>
           {token === Token.SOL && (

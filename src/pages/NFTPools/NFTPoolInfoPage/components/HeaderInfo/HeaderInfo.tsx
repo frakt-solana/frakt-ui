@@ -15,19 +15,16 @@ export const HeaderInfo: FC<HeaderInfoProps> = ({
   poolTokenInfo,
   hidden = false,
 }) => {
+  const poolImage = poolTokenInfo?.logoURI;
+
   return (
     <NFTPoolsHeaderInner
       poolPublicKey={poolPublicKey}
       className={styles.header}
       hidden={hidden}
     >
-      <div className={styles.titleWrapper}>
-        <div
-          className={styles.poolImage}
-          style={{
-            backgroundImage: `url(${poolTokenInfo?.logoURI})`,
-          }}
-        />
+      <div className={styles.wrapper}>
+        <img src={poolImage} alt="Pool image" className={styles.poolBgImage} />
         <h2 className={styles.title}>{poolTokenInfo?.name}</h2>
       </div>
     </NFTPoolsHeaderInner>

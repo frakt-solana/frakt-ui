@@ -26,6 +26,50 @@
   pointer-events: auto;
   min-height: 108px;
   flex-wrap: wrap;
+  position: relative;
+}
+
+.aprContainer {
+  position: absolute;
+  height: 56px;
+  width: 254px;
+  bottom: -56px;
+  left: calc(50% - 127px);
+  background-color: var(--color-gray-7);
+  clip-path: polygon(0% 0%, 12% 100%, 88% 100%, 100% 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aprContainerTitle {
+  color: var(--color-gray-4);
+  font: var(--font-text-5);
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.aprContainerQuestion {
+  margin-left: 5px;
+  svg {
+    color: #5d5fef;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.aprValues {
+  font: var(--font-text-3);
+  color: var(--color-gray-4);
+}
+
+.aprValueRed {
+  color: #ff6666;
+}
+
+.aprValueGreen {
+  color: #83d6a4;
 }
 
 .poolsNavigation {
@@ -34,7 +78,7 @@
   }
 
   @media screen and (min-width: 768px) and (max-width: 1023px) {
-    padding: 30px 20px;
+    padding: 20px 20px;
     width: 100%;
   }
 
@@ -44,8 +88,15 @@
   }
 }
 
+.headerSell {
+  display: flex;
+
+  @media screen and (max-width: 1023px) {
+    padding: 0 20px 20px;
+  }
+}
+
 .sellInfoWrapper {
-  margin: 20px 0 0 20px;
   background: red;
   display: flex;
   align-items: center;
@@ -53,19 +104,32 @@
   background-color: var(--black-color);
   height: 43px;
   padding: 0 10px;
+  margin-top: 20px;
   font: var(--font-text-3);
   line-height: 1;
   position: relative;
 
-  @media screen and (max-width: 767px) {
-    font-size: 15px;
-    margin: 0 20px 20px;
+  @media screen and (max-width: 1023px) {
+    max-width: 320px;
+    margin-top: unset;
   }
 
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    margin: 0 20px 30px;
-    max-width: 320px;
-    margin-right: auto;
+  @media screen and (max-width: 767px) {
+    font-size: 15px;
+  }
+}
+
+.poolBgImage {
+  border: var(--border-gray-1);
+  height: 106px;
+  width: 106px;
+  object-fit: cover;
+  display: block;
+  margin-right: 20px;
+
+  @media screen and (max-width: 1023px) {
+    width: 43px;
+    height: 43px;
   }
 }
 

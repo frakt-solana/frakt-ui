@@ -2,37 +2,26 @@
   padding-bottom: 50px;
   padding-left: 20px;
   width: 100%;
-  padding-top: 105px;
+  padding-top: 150px;
   position: relative;
 }
 
 .buyContent {
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1023px) {
     padding-top: 218px;
   }
-
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    padding-top: 200px;
+  @media screen and (max-width: 767px) {
+    padding-top: 268px;
   }
 }
 
 .sellContent,
-.swapContent {
-  @media screen and (max-width: 767px) {
-    padding-top: 142px;
-  }
-
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    padding-top: 176px;
-  }
-}
-
+.swapContent,
 .infoContent {
-  @media screen and (max-width: 767px) {
-    padding-top: 136px;
+  @media screen and (max-width: 1023px) {
+    padding-top: 196px;
   }
-
-  @media screen and (min-width: 768px) and (max-width: 1023px) {
-    padding-top: 166px;
+  @media screen and (max-width: 767px) {
+    padding-top: 194px;
   }
 }
