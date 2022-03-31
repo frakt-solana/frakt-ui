@@ -258,5 +258,5 @@ export const sumFusionAndRaydiumApr = (
       poolStats?.apr
     );
   }
-  return 0;
+  return poolStats?.apr || 0;
 };

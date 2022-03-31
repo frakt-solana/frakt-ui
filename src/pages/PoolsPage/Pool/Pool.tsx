@@ -83,9 +83,7 @@ const Pool: FC<PoolInterface> = ({
           <div className={styles.totalValue}>
             <p className={styles.title}>Apr</p>
             <p className={styles.value}>
-              {sumFusionAndRaydiumApr(fusionPoolInfo, poolStats)?.toFixed(2) ||
-                0}
-              %
+              {sumFusionAndRaydiumApr(fusionPoolInfo, poolStats)?.toFixed(2)}%
             </p>
           </div>
         </div>
