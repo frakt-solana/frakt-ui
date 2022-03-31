@@ -43,10 +43,10 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   };
 
   useEffect(() => {
-    if (wallet.publicKey) {
+    if (wallet.publicKey && !loading) {
       fetchLoansData();
     }
-  }, [wallet]);
+  }, [wallet, loading]);
 
   return (
     <LoansPoolsContext.Provider
