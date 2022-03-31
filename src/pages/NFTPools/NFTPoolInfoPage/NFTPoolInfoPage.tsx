@@ -18,12 +18,13 @@ import {
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
+import { useCachedFusionPools } from '../../PoolsPage/hooks';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { LinkWithArrow } from '../../../components/LinkWithArrow';
 import { PATHS } from '../../../constants';
 import { Price, useNftPoolTokenBalance, usePoolTokensPrices } from '../hooks';
 import { SELL_COMMISSION_PERCENT } from '../constants';
-import { PoolStats, useCachedPoolsStats, usePoolsPage } from '../../PoolsPage';
+import { PoolStats, useCachedPoolsStats } from '../../PoolsPage';
 import {
   formatNumberWithSpaceSeparator,
   FusionPoolInfo,
@@ -41,8 +42,8 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
   const poolPublicKey = pool?.publicKey?.toBase58();
+  const { fusionPoolsByMint } = useCachedFusionPools();
 
-  const { fusionPoolInfoMap, loading: fusionPoolsLoading } = usePoolsPage();
   const { poolDataByMint, loading: liquidityPoolsLoading } =
     useLiquidityPools();
 
@@ -62,8 +63,8 @@ export const NFTPoolInfoPage = (): JSX.Element => {
   const fusionPoolInfo = useMemo(() => {
     const poolData = poolDataByMint.get(poolTokenInfo?.address);
 
-    return fusionPoolInfoMap.get(poolData?.poolConfig?.lpMint.toBase58());
-  }, [poolDataByMint, poolTokenInfo?.address, fusionPoolInfoMap]);
+    return fusionPoolsByMint.get(poolData?.poolConfig?.lpMint.toBase58());
+  }, [poolDataByMint, poolTokenInfo?.address, fusionPoolsByMint]);
 
   const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
     useCachedPoolsStats();
@@ -76,11 +77,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const pageLoading = poolLoading || tokensMapLoading;
 
-  const loading =
-    pricesLoading ||
-    poolsStatsLoading ||
-    liquidityPoolsLoading ||
-    fusionPoolsLoading;
+  const loading = pricesLoading || poolsStatsLoading || liquidityPoolsLoading;
 
   return (
     <NFTPoolPageLayout

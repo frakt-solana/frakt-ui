@@ -11,7 +11,6 @@ import {
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
-  useLazyFusionPools,
   FusionPoolInfoByMint,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
@@ -19,6 +18,7 @@ import styles from '../PoolsPage.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
 import { POOL_INFO_POLLING_INTERVAL } from '../constants';
 import { Tab, useTabs } from '../../../components/Tabs';
+import { useCachedFusionPools } from './index';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -48,7 +48,7 @@ export const usePoolsPage = (): {
   activePoolTokenAddress: string | null;
   onPoolCardClick: (tokenAddress: string) => void;
   userLpBalanceByMint: LpBalanceByMint;
-  fusionPoolInfoMap: FusionPoolInfoByMint;
+  fusionPoolsByMint: FusionPoolInfoByMint;
   poolsStatsByMarketId: PoolsStatsByMarketId;
   isFusionPoolsPolling: boolean;
   poolTabs: Tab[];
@@ -88,10 +88,10 @@ export const usePoolsPage = (): {
     useLiquidityPools();
 
   const {
-    fusionPoolInfoMap,
+    fusionPoolsByMint,
     loading: fusionPoolInfoMapLoading,
     fetchFusionPoolsInfo,
-  } = useLazyFusionPools();
+  } = useCachedFusionPools();
 
   const rawPoolsData = useMemo(() => {
     return poolDataByMint.size
@@ -180,7 +180,7 @@ export const usePoolsPage = (): {
 
     return rawPoolsData
       .filter(({ tokenInfo, poolConfig }) => {
-        const fusionPoolInfo = fusionPoolInfoMap.get(
+        const fusionPoolInfo = fusionPoolsByMint.get(
           poolConfig.lpMint.toBase58(),
         );
 
@@ -230,7 +230,7 @@ export const usePoolsPage = (): {
     showStaked,
     poolsStatsByMarketId,
     raydiumPoolsInfoMap,
-    fusionPoolInfoMap,
+    fusionPoolsByMint,
     fusionPoolInfoMapLoading,
     userLpBalanceByMint,
     tabValue,
@@ -280,7 +280,7 @@ export const usePoolsPage = (): {
     activePoolTokenAddress,
     onPoolCardClick,
     userLpBalanceByMint,
-    fusionPoolInfoMap,
+    fusionPoolsByMint,
     poolsStatsByMarketId,
     isFusionPoolsPolling,
     poolTabs,
