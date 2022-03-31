@@ -22,7 +22,6 @@ interface UserNFTWithEstimate extends UserNFT {
 
 const BorrowPage: FC = () => {
   const [search, setSearch] = useState('');
-
   const { setVisible } = useWalletModal();
   const wallet = useWallet();
 
