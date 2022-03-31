@@ -34,6 +34,7 @@ const BorrowPage: FC = () => {
     selectedNft,
   } = useSelectLayout();
 
+  const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
   const { itemsToShow, next } = useFakeInfinityScroll(15);
   const { estimations } = useLoans();
@@ -70,8 +71,13 @@ const BorrowPage: FC = () => {
         currentVaultPubkey={currentVaultPubkey}
         selectedNfts={selectedNft}
         onDeselect={onDeselectOneNft}
+        isCloseSidebar={isCloseSidebar}
         sidebarForm={
-          <BorrowForm selectedNft={selectedNft} ltvPrice={getPriceByMint} />
+          <BorrowForm
+            selectedNft={selectedNft}
+            ltvPrice={getPriceByMint}
+            onCloseSidebar={() => setIsCloseSidebar(true)}
+          />
         }
       >
         <h1 className={styles.title}>Borrow money</h1>

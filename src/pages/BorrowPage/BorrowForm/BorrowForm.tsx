@@ -21,9 +21,14 @@ import {
 interface BorrowFormProps {
   selectedNft: UserNFT[];
   ltvPrice?: number;
+  onCloseSidebar: () => void;
 }
 
-export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft, ltvPrice }) => {
+export const BorrowForm: FC<BorrowFormProps> = ({
+  selectedNft,
+  ltvPrice,
+  onCloseSidebar,
+}) => {
   const {
     form,
     onSubmit,
@@ -36,7 +41,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({ selectedNft, ltvPrice }) => {
     activeLine,
     setActiveLine,
     openConfirmModal,
-  } = useBorrowForm(selectedNft);
+  } = useBorrowForm(selectedNft, onCloseSidebar);
 
   return (
     <>

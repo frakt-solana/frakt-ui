@@ -11,6 +11,7 @@ export interface SidebarProps {
   currentVaultPubkey?: string;
   nfts: UserNFT[];
   sidebarForm: JSX.Element;
+  isCloseSidebar: boolean;
 }
 
 const Sidebar: FC<SidebarProps> = ({
@@ -18,6 +19,7 @@ const Sidebar: FC<SidebarProps> = ({
   currentVaultPubkey,
   nfts,
   sidebarForm,
+  isCloseSidebar = false,
 }) => {
   const {
     isSidebarVisible,
@@ -30,37 +32,42 @@ const Sidebar: FC<SidebarProps> = ({
 
   return (
     <>
-      <div
-        className={classNames([
-          styles.sidebarWrapper,
-          { [styles.visible]: isSidebarVisible },
-          { [styles.collapsed]: isSidebarCollapsed },
-          { [styles.headerHidden]: isHeaderHidden },
-        ])}
-      >
-        <div className={styles.sidebar}>
-          <p className={styles.nftsAmount} onClick={toggleSidebarCollapse}>
-            Your NFT{isBasket && 's'} ({nfts.length + lockedNfts.length})
-          </p>
-          <Slider
-            nfts={nfts}
-            lockedNFT={lockedNfts}
-            onDeselect={onDeselect}
-            className={styles.slider}
+      {!isCloseSidebar && (
+        <>
+          <div
+            className={classNames([
+              styles.sidebarWrapper,
+              { [styles.visible]: isSidebarVisible },
+              { [styles.collapsed]: isSidebarCollapsed },
+              { [styles.headerHidden]: isHeaderHidden },
+            ])}
+          >
+            <div className={styles.sidebar}>
+              <p className={styles.nftsAmount} onClick={toggleSidebarCollapse}>
+                Your NFT{isBasket && 's'} ({nfts.length + lockedNfts.length})
+              </p>
+              <Slider
+                nfts={nfts}
+                lockedNFT={lockedNfts}
+                onDeselect={onDeselect}
+                className={styles.slider}
+              />
+              <div className={styles.separator} />
+              {isSidebarVisible && sidebarForm}
+            </div>
+          </div>
+          <div
+            className={classNames([
+              styles.backDrop,
+              {
+                [styles.backDropVisible]:
+                  isSidebarVisible && !isSidebarCollapsed,
+              },
+            ])}
+            onClick={toggleSidebarCollapse}
           />
-          <div className={styles.separator} />
-          {isSidebarVisible && sidebarForm}
-        </div>
-      </div>
-      <div
-        className={classNames([
-          styles.backDrop,
-          {
-            [styles.backDropVisible]: isSidebarVisible && !isSidebarCollapsed,
-          },
-        ])}
-        onClick={toggleSidebarCollapse}
-      />
+        </>
+      )}
     </>
   );
 };

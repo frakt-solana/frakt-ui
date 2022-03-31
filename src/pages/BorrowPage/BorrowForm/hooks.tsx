@@ -31,6 +31,7 @@ export type FormFieldValues = {
 
 export const useBorrowForm = (
   selectedNft?: UserNFT[],
+  onCloseSidebar?: () => void,
 ): {
   confirmModalVisible: boolean;
   closeConfirmModal: () => void;
@@ -86,6 +87,7 @@ export const useBorrowForm = (
     }
     closeConfirmModal();
     setTxnModalVisible(false);
+    onCloseSidebar();
   };
 
   const onTxnModalCancel = (): void => {

@@ -11,6 +11,7 @@ interface SelectLayoutProps {
   onDeselect?: (nft: UserNFT) => void;
   currentVaultPubkey: string;
   sidebarForm: JSX.Element;
+  isCloseSidebar?: boolean;
 }
 
 export const SelectLayout: FC<SelectLayoutProps> = ({
@@ -19,6 +20,7 @@ export const SelectLayout: FC<SelectLayoutProps> = ({
   selectedNfts,
   onDeselect,
   sidebarForm,
+  isCloseSidebar,
 }) => {
   return (
     <AppLayout className={styles.positionRelative}>
@@ -27,6 +29,7 @@ export const SelectLayout: FC<SelectLayoutProps> = ({
         nfts={selectedNfts}
         onDeselect={onDeselect}
         sidebarForm={sidebarForm}
+        isCloseSidebar={isCloseSidebar}
       />
       <Container component="main" className={styles.contentWrapper}>
         <div id="content-reducer" className={styles.contentReducer}>
