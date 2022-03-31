@@ -65,6 +65,16 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
                 </div>
               </div>
+              <p className={styles.ltvTitle}>FEE</p>
+              <div className={styles.ltvContent}>
+                <p className={styles.ltvText}>
+                  {(nft.return_amount - nft.amount).toFixed(3)}
+                </p>
+                <div className={styles.tokenInfo}>
+                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
+                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
+                </div>
+              </div>
               <p className={styles.ltvTitle}>RETURMENT</p>
               <div className={styles.countdown}>
                 <p className={styles.timeItem}>{timeLeft.days}d</p>
