@@ -26,7 +26,7 @@ const PoolsPage: FC = () => {
     searchItems,
     activePoolTokenAddress,
     onPoolCardClick,
-    fusionPoolsByMint,
+    fusionPoolInfoMap,
     poolsStatsByMarketId,
     poolTabs,
     tabValue,
@@ -104,7 +104,7 @@ const PoolsPage: FC = () => {
               onPoolCardClick={() =>
                 onPoolCardClick(poolData.tokenInfo.address)
               }
-              fusionPoolInfo={fusionPoolsByMint.get(
+              fusionPoolInfo={fusionPoolInfoMap.get(
                 poolData.poolConfig.lpMint.toBase58(),
               )}
             />

@@ -12,13 +12,13 @@ import {
   PoolData,
   RaydiumPoolInfoMap,
   FusionPoolInfoByMint,
+  useLazyFusionPools,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../PoolsPage.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
 import { POOL_INFO_POLLING_INTERVAL } from '../constants';
 import { Tab, useTabs } from '../../../components/Tabs';
-import { useCachedFusionPools } from './index';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -48,7 +48,7 @@ export const usePoolsPage = (): {
   activePoolTokenAddress: string | null;
   onPoolCardClick: (tokenAddress: string) => void;
   userLpBalanceByMint: LpBalanceByMint;
-  fusionPoolsByMint: FusionPoolInfoByMint;
+  fusionPoolInfoMap: FusionPoolInfoByMint;
   poolsStatsByMarketId: PoolsStatsByMarketId;
   isFusionPoolsPolling: boolean;
   poolTabs: Tab[];
@@ -88,10 +88,10 @@ export const usePoolsPage = (): {
     useLiquidityPools();
 
   const {
-    fusionPoolsByMint,
+    fusionPoolInfoMap,
     loading: fusionPoolInfoMapLoading,
     fetchFusionPoolsInfo,
-  } = useCachedFusionPools();
+  } = useLazyFusionPools();
 
   const rawPoolsData = useMemo(() => {
     return poolDataByMint.size
@@ -180,7 +180,7 @@ export const usePoolsPage = (): {
 
     return rawPoolsData
       .filter(({ tokenInfo, poolConfig }) => {
-        const fusionPoolInfo = fusionPoolsByMint.get(
+        const fusionPoolInfo = fusionPoolInfoMap.get(
           poolConfig.lpMint.toBase58(),
         );
 
@@ -230,7 +230,7 @@ export const usePoolsPage = (): {
     showStaked,
     poolsStatsByMarketId,
     raydiumPoolsInfoMap,
-    fusionPoolsByMint,
+    fusionPoolInfoMap,
     fusionPoolInfoMapLoading,
     userLpBalanceByMint,
     tabValue,
@@ -280,7 +280,7 @@ export const usePoolsPage = (): {
     activePoolTokenAddress,
     onPoolCardClick,
     userLpBalanceByMint,
-    fusionPoolsByMint,
+    fusionPoolInfoMap,
     poolsStatsByMarketId,
     isFusionPoolsPolling,
     poolTabs,

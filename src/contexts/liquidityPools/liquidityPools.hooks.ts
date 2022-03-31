@@ -1,16 +1,21 @@
 import { useContext, useEffect, useState } from 'react';
-import { useConnection } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { PublicKey } from '@solana/web3.js';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
+  fetchProgramAccounts,
   fetchRaydiumPoolsInfoMap,
   fetchSolanaPriceUSD,
+  mapFusionPoolInfo,
 } from './liquidityPools.helpers';
 import {
+  FusionPoolInfoByMint,
   LiquidityPoolsContextValues,
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
+import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
 
 export const useLiquidityPools = (): LiquidityPoolsContextValues => {
   const context = useContext(LiquidityPoolsContext);
@@ -78,4 +83,41 @@ export const useLazyRaydiumPoolsInfoMap = (): {
   };
 
   return { raydiumPoolsInfoMap, loading, fetchPoolsInfoMap };
+};
+
+export const useLazyFusionPools = (): {
+  loading: boolean;
+  fusionPoolInfoMap: FusionPoolInfoByMint;
+  fetchFusionPoolsInfo: (lpMints: string[]) => Promise<void>;
+} => {
+  const wallet = useWallet();
+  const { connection } = useConnection();
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [fusionPoolInfoMap, setFusionPoolInfoMap] =
+    useState<FusionPoolInfoByMint>(new Map());
+
+  const fetchFusionPoolsInfo = async (lpMints: string[]) => {
+    try {
+      const allProgramAccounts = await fetchProgramAccounts({
+        vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
+        connection,
+      });
+
+      const fusionPoolInfoMap = mapFusionPoolInfo(
+        allProgramAccounts,
+        lpMints,
+        wallet?.publicKey?.toBase58(),
+      );
+
+      setFusionPoolInfoMap(fusionPoolInfoMap);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { fusionPoolInfoMap, loading, fetchFusionPoolsInfo };
 };

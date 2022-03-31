@@ -42,7 +42,8 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
   const poolPublicKey = pool?.publicKey?.toBase58();
-  const { fusionPoolsByMint } = useCachedFusionPools();
+  const { fusionPoolsByMint, loading: fusionPoolsLoading } =
+    useCachedFusionPools();
 
   const { poolDataByMint, loading: liquidityPoolsLoading } =
     useLiquidityPools();
@@ -77,7 +78,11 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const pageLoading = poolLoading || tokensMapLoading;
 
-  const loading = pricesLoading || poolsStatsLoading || liquidityPoolsLoading;
+  const loading =
+    pricesLoading ||
+    poolsStatsLoading ||
+    liquidityPoolsLoading ||
+    fusionPoolsLoading;
 
   return (
     <NFTPoolPageLayout
