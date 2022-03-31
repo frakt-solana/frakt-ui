@@ -26,7 +26,7 @@ export interface HarvestLiquidityTransactionRawParams
   extends HarvestLiquidityTransactionParams,
     WalletAndConnection {}
 
-export const rowHarvestLiquidity = async ({
+export const rawHarvestLiquidity = async ({
   router,
   connection,
   wallet,
@@ -57,7 +57,9 @@ export const rowHarvestLiquidity = async ({
     rewardsTokenMint,
   );
 
-  transaction.add(...secondaryHarvestInstruction);
+  if (secondaryHarvestInstruction?.length) {
+    transaction.add(...secondaryHarvestInstruction);
+  }
 
   await signAndConfirmTransaction({
     transaction,
@@ -66,7 +68,7 @@ export const rowHarvestLiquidity = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowHarvestLiquidity, {
+const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawHarvestLiquidity, {
   onSuccessMessage: 'Liquidity harvested successfully',
   onErrorMessage: 'Transaction failed',
 });

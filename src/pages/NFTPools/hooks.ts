@@ -238,11 +238,11 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
   };
 
   useEffect(() => {
-    if (poolDataByMint.size) {
+    if (poolDataByMint.size && poolTokensInfo.length) {
       initialFetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liquidityPoolsLoading, poolDataByMint]);
+  }, [liquidityPoolsLoading, poolDataByMint, poolTokensInfo]);
 
   return {
     loading: loading || liquidityPoolsLoading,

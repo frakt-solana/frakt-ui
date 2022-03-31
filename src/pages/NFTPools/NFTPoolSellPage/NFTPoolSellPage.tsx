@@ -62,6 +62,7 @@ const useNftSell = ({
   const swapNeeded = useRef<boolean>(false);
 
   const [slippage, setSlippage] = useState<number>(0.5);
+  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
   useEffect(() => {
@@ -102,6 +103,7 @@ const useNftSell = ({
         poolTokenBalanceOnSell.current = null;
         swapNeeded.current = false;
         closeLoadingModal();
+        setTransactionsLeft(0);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,26 +117,34 @@ const useNftSell = ({
   };
 
   const sell = async (needSwap = false) => {
+    setTransactionsLeft(1);
     if (needSwap) {
+      setTransactionsLeft(2);
       swapNeeded.current = true;
     }
     openLoadingModal();
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
 
     const result = await depositNftToCommunityPool({
       pool,
       nft: selectedNft,
+      poolLpMint,
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
         poolTokenBalanceOnSell.current = balance;
+        setTransactionsLeft(1);
         if (!needSwap) {
           closeLoadingModal();
+          setTransactionsLeft(null);
         }
       },
     });
 
     if (!result) {
       closeLoadingModal();
+      setTransactionsLeft(null);
     }
   };
 
@@ -148,6 +158,7 @@ const useNftSell = ({
     selectedNft,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle: `Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`,
   };
 };
 
@@ -190,6 +201,7 @@ export const NFTPoolSellPage: FC = () => {
     sell,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle,
   } = useNftSell({ pool, poolTokenInfo });
 
   const [, setIsSidebar] = useState<boolean>(false);
@@ -254,6 +266,7 @@ export const NFTPoolSellPage: FC = () => {
           <LoadingModal
             visible={loadingModalVisible}
             onCancel={closeLoadingModal}
+            subtitle={loadingModalSubtitle}
           />
         </>
       )}

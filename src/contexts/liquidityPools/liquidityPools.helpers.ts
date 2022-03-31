@@ -270,12 +270,14 @@ export const mapFusionPoolInfo = (
   } = getFusionDataMap(allProgramAccounts, lpMints, owner);
 
   return lpMints.reduce((fusionPoolInfo, lpMint) => {
-    fusionPoolInfo.set(lpMint, {
-      mainRouter: routerInfoByMint.get(lpMint),
-      stakeAccount: stakeAccountsByMint.get(lpMint),
-      secondaryReward: secondaryRewardByMint.get(lpMint),
-      secondaryStakeAccount: secondaryStakeAccountsByMint.get(lpMint),
-    });
+    if (routerInfoByMint.get(lpMint)) {
+      fusionPoolInfo.set(lpMint, {
+        mainRouter: routerInfoByMint.get(lpMint),
+        stakeAccount: stakeAccountsByMint.get(lpMint),
+        secondaryReward: secondaryRewardByMint.get(lpMint),
+        secondaryStakeAccount: secondaryStakeAccountsByMint.get(lpMint),
+      });
+    }
 
     return fusionPoolInfo;
   }, new Map<string, FusionPoolInfo>());

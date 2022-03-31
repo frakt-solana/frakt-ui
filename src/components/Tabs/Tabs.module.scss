@@ -1,0 +1,49 @@
+.tabsWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tab {
+  flex: 1;
+  height: 48px;
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font: var(--font-text-3);
+  color: var(--white-color);
+  background: transparent;
+  border: 1px solid var(--color-gray-4);
+  cursor: pointer;
+  transition: background var(--transition-1), color var(--transition-1);
+
+  &:hover {
+    background: var(--gray-color-7);
+  }
+
+  &:active,
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    color: var(--color-gray-4);
+  }
+
+  @media screen and (max-width: 1023px) {
+    height: 40px;
+  }
+}
+
+.tabActive {
+  &,
+  &:hover {
+    background: var(--white-color);
+    color: var(--black-color);
+    pointer-events: none;
+  }
+}

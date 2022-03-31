@@ -96,13 +96,13 @@ const Rewards: FC<RewardsInterface> = ({
               type="tertiary"
               onClick={onStakeLiquidity}
             >
-              stake
+              Stake
             </Button>
           )}
-          {!!calcLiquidityRewards(
+          {calcLiquidityRewards(
             fusionPoolInfo.mainRouter,
             fusionPoolInfo.stakeAccount,
-          ) && (
+          ) > 1e-5 && (
             <Button
               type="tertiary"
               className={styles.harvestBtn}

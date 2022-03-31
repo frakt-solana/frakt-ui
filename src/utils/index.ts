@@ -44,8 +44,8 @@ export const FRKT_TOKEN: TokenInfo = {
     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
   extensions: {
     coingeckoId: 'frakt-token',
-    twitter: 'https://twitter.com/FraktArt',
-    website: 'https://frakt.art',
+    twitter: 'https://twitter.com/FRAKT_HQ',
+    website: 'https://frakt.xyz/',
   },
   tags: ['utility-token'],
 };

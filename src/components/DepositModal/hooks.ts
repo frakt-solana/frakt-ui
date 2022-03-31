@@ -159,6 +159,10 @@ export const useDeposit = (
       poolConfig,
       fixedSide: liquiditySide,
     });
+
+    if (!fusionPoolInfo?.mainRouter) {
+      closeLoadingModal();
+    }
   };
 
   useEffect(() => {

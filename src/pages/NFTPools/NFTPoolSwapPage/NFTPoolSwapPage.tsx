@@ -79,6 +79,7 @@ const useNftsSwap = ({
   const opeartionWithoutSwap = useRef<boolean>(false);
 
   const [slippage, setSlippage] = useState<number>(0.5);
+  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
   const resetRefs = () => {
@@ -89,9 +90,13 @@ const useNftsSwap = ({
   };
 
   const depositNft = async () => {
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
     const result = await depositNftToCommunityPool({
       pool,
       nft: selectedNft,
+      poolLpMint,
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
@@ -102,6 +107,7 @@ const useNftsSwap = ({
     if (!result) {
       resetRefs();
       closeLoadingModal();
+      setTransactionsLeft(null);
     }
   };
 
@@ -133,16 +139,23 @@ const useNftsSwap = ({
       poolConfig: poolData?.poolConfig,
     });
 
+    setTransactionsLeft(1);
+
     if (!result) {
       resetRefs();
       closeLoadingModal();
+      setTransactionsLeft(null);
     }
   };
 
   const buyNft = async () => {
-    const lotteryTicketPubkey = await getLotteryTicket({ pool });
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
+    const lotteryTicketPubkey = await getLotteryTicket({ pool, poolLpMint });
     closeLoadingModal();
     resetRefs();
+    setTransactionsLeft(null);
 
     if (lotteryTicketPubkey) {
       openLotteryModal();
@@ -158,24 +171,33 @@ const useNftsSwap = ({
           )?.nftImage || '';
 
         setPrizeImg(nftImage);
+
+        if (!nftImage) {
+          setIsLotteryModalVisible(false);
+        }
       });
     }
   };
 
   const swap = async (needSwap = false) => {
-    openLoadingModal();
-
     if (needSwap) {
       opeartionWithSwap.current = true;
       poolTokenBalanceBeforeSwap.current = balance;
+      setTransactionsLeft(3);
     } else {
       opeartionWithoutSwap.current = true;
+      setTransactionsLeft(2);
     }
+
+    openLoadingModal();
 
     await depositNft();
 
     if (needSwap) {
+      setTransactionsLeft(2);
       await buyPoolToken();
+    } else {
+      setTransactionsLeft(1);
     }
   };
 
@@ -189,7 +211,7 @@ const useNftsSwap = ({
       balance >= buyPrice;
 
     const canBuyWithoutSwap =
-      !!poolTokenBalanceBeforeDeposit &&
+      !!poolTokenBalanceBeforeDeposit.current &&
       opeartionWithoutSwap.current &&
       balance > poolTokenBalanceBeforeDeposit.current &&
       balance >= buyPrice;
@@ -221,6 +243,7 @@ const useNftsSwap = ({
     selectedNft,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle: `Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`,
   };
 };
 
@@ -272,6 +295,7 @@ export const NFTPoolSwapPage: FC = () => {
     selectedNft,
     loadingModalVisible,
     closeLoadingModal,
+    loadingModalSubtitle,
     isLotteryModalVisible,
     setIsLotteryModalVisible,
     prizeImg,
@@ -359,6 +383,7 @@ export const NFTPoolSwapPage: FC = () => {
           <LoadingModal
             visible={loadingModalVisible}
             onCancel={closeLoadingModal}
+            subtitle={loadingModalSubtitle}
           />
         </>
       )}

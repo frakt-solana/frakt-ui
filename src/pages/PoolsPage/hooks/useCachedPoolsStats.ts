@@ -38,7 +38,7 @@ export const useCachedPoolsStats: UseCachedPoolsStats = () => {
 
         if (baseTokenMint) {
           return acc.set(baseTokenMint, {
-            apr: rawStats.apr30d || 0,
+            apr: rawStats.apr7d || 0,
             fee7d: rawStats.fee7d || 0,
             fee24h: rawStats.fee24h || 0,
             liquidity: rawStats.liquidity || 0,
