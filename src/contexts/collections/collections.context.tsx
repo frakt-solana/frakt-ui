@@ -47,7 +47,7 @@ export const CollectionsProvider: FC<CollectionsProviderProps> = ({
           const filtered = collectionsData.filter(
             ({ name }) => name === сollectionName,
           );
-          if (filtered.length > 0) {
+          if (filtered.length) {
             acc.push(...filtered);
           }
 
