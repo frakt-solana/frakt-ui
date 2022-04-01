@@ -38,17 +38,17 @@ export const useSelectLayout = (): {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  useEffect(() => {
-    if (
-      connected &&
-      !userTokensLoading &&
-      !loading &&
-      Object.keys(rawUserTokensByMint).length
-    ) {
-      fetchUserNfts();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, loading]);
+  // useEffect(() => {
+  //   if (
+  //     connected &&
+  //     !userTokensLoading &&
+  //     !loading &&
+  //     Object.keys(rawUserTokensByMint).length
+  //   ) {
+  //     fetchUserNfts();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [connected, userTokensLoading, loading]);
 
   const onDeselect = (nft: UserNFT): void => {
     setSelectedNfts(

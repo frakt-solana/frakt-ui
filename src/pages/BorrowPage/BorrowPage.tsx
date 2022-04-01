@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { EstimateNFT, useLoans } from '../../contexts/loans';
 import { UserNFT } from '../../contexts/userTokens';
+import { useLazyTokens } from '../../contexts/userTokens/useLazyTokens';
 
 interface UserNFTWithEstimate extends UserNFT {
   estimate: EstimateNFT[];
@@ -29,11 +30,20 @@ const BorrowPage: FC = () => {
   const {
     onDeselectOneNft,
     onSelectOneNft,
-    nfts,
-    loading,
+    // nfts,
+    // loading,
     searchItems,
     selectedNft,
   } = useSelectLayout();
+
+  const { nfts, fetchPoolInfo, loading } = useLazyTokens();
+
+  useEffect(() => {
+    (async () => {
+      console.log(nfts);
+      await fetchPoolInfo();
+    })();
+  }, [loading]);
 
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
