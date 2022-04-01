@@ -25,6 +25,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const [loansData, setLoansData] = useState<LoanWithNftData[]>([]);
   const { connected } = useWallet();
   const [estimations, setEstimations] = useState<EstimateNFT[]>([]);
+  const walletLS = localStorage.getItem('wallet');
 
   const fetchLoansData: FetchDataFunc = async () => {
     try {
@@ -43,10 +44,10 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   };
 
   useEffect(() => {
-    if (connected) {
+    if (connected && walletLS) {
       fetchLoansData();
     }
-  }, [connected]);
+  }, [connected, walletLS]);
 
   return (
     <LoansPoolsContext.Provider

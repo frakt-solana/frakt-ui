@@ -38,7 +38,7 @@ const NFTCheckbox: FC<NFTCheckboxInterface> = ({
           <p className={styles.root__title}>{name}</p>
           {ltvPrice && (
             <div className={styles.ltvWrapper}>
-              <p className={styles.ltvTitle}>LTV</p>
+              <p className={styles.ltvTitle}>Amount to borrow</p>
               <div className={styles.ltvContent}>
                 <p className={styles.ltvText}>{ltvPrice.toFixed(2)}</p>
                 <div className={styles.tokenInfo}>

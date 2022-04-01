@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
@@ -28,6 +28,8 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
   const wallet = useWallet();
   const { connected } = wallet;
 
+  const [auth, setAuth] = useState(false);
+
   const isAuth = () => {
     const walletLS = localStorage.getItem('wallet');
     const walletName = localStorage.getItem('walletName');
@@ -35,7 +37,7 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
     if (walletLS && walletName) {
       return true;
     }
-    return;
+    return false;
   };
 
   const signToken = async () => {
@@ -44,9 +46,7 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
 
     if (!walletLS && walletName) {
       await login(wallet);
-      return true;
-    } else if (walletLS && walletName) {
-      return true;
+      setAuth(true);
     }
     return;
   };

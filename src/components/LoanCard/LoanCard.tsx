@@ -57,7 +57,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
           <div className={styles.root__content}>
             <p className={styles.root__title}>{name}</p>
             <div className={styles.ltvWrapper}>
-              <p className={styles.ltvTitle}>LTV</p>
+              <p className={styles.ltvTitle}>Borrowed</p>
               <div className={styles.ltvContent}>
                 <p className={styles.ltvText}>{ltvPrice.toFixed(2)}</p>
                 <div className={styles.tokenInfo}>
@@ -65,7 +65,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
                 </div>
               </div>
-              <p className={styles.ltvTitle}>FEE</p>
+              <p className={styles.ltvTitle}>To repay</p>
               <div className={styles.ltvContent}>
                 <p className={styles.ltvText}>
                   {(nft.return_amount - nft.amount).toFixed(3)}
@@ -75,7 +75,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
                 </div>
               </div>
-              <p className={styles.ltvTitle}>RETURMENT</p>
+              <p className={styles.ltvTitle}>Time to return</p>
               <div className={styles.countdown}>
                 <p className={styles.timeItem}>{timeLeft.days}d</p>
                 <span className={styles.timeDelim}>:</span>
@@ -97,7 +97,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
               className={styles.btn}
               onClick={onGetBackLoan}
             >
-              Return
+              Repay
             </Button>
           </div>
         </div>

@@ -137,12 +137,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({
         visible={confirmModalVisible}
         onCancel={closeConfirmModal}
         onSubmit={() => onSubmit(selectedNft[0])}
-        subtitle={` You are about to use your ${
+        subtitle={`You are about to use your ${
           selectedNft[0].metadata.name
-        } as collateral in ${ltvPrice?.toFixed(2)} SOL
-        loan that you claim to return in ${
+        } as collateral in loan that you claim to return in ${
           returnPeriod.value
-        } days. Want to proceed?`}
+        } days and repay is ${ltvPrice?.toFixed(3)} SOL.
+         Want to proceed?`}
       />
       <LoadingModal
         subtitle="In order to transfer the NFT/s approval is needed."
