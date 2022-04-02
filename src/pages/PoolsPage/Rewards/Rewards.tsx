@@ -91,7 +91,7 @@ const Rewards: FC<RewardsInterface> = ({
             </div>
           ) : (
             <div className={styles.rewardInfo}>
-              <p>You are not staking LP-tokens yet</p>
+              <p>You are not staking LP tokens yet</p>
             </div>
           )}
         </div>
