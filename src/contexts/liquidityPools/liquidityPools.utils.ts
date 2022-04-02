@@ -239,5 +239,4 @@ export const caclLiquiditySecondRewars = (
 export const getStakedBalance = (
   fusionPoolInfo: FusionPoolInfo,
   lpDecimals: number,
-): number =>
-  Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
+): number => Number(fusionPoolInfo?.stakeAccount?.amount) / 10 ** lpDecimals;

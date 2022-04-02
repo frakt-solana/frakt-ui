@@ -59,12 +59,24 @@ const Withdraw: FC<WithdrawInterface> = ({
     close: closeLoadingModal,
   } = useLoadingModal();
 
+  const isStaked = String(fusionPoolInfo?.stakeAccount?.isStaked) === 'true';
+  const NOT_ALLOW_ZERO_LP = 1;
+
   const onSubmitHandler = async (): Promise<void> => {
+    const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
+    const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
+
+    const baseAmountForRaydium = new BN(
+      Number(withdrawValue) * 10 ** lpDecimals - NOT_ALLOW_ZERO_LP,
+    );
+
+    const amountForRaydium = new TokenAmount(
+      new Token(lpMint, lpDecimals),
+      baseAmountForRaydium,
+    );
+
     if (fusionPoolInfo) {
       const { mainRouter, secondaryReward, stakeAccount } = fusionPoolInfo;
-
-      const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
-      const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
 
       setWithdrawAmount(amount);
       openLoadingModal();
@@ -72,25 +84,23 @@ const Withdraw: FC<WithdrawInterface> = ({
       lpTokenAmountOnSubmit.current =
         lpTokenAccountInfo?.accountInfo?.amount?.toString() || '0';
 
-      if (stakedBalance) {
+      if (stakedBalance && isStaked) {
         await unstakeLiquidity({
           router: mainRouter,
           secondaryReward,
           amount: baseAmount,
           stakeAccount,
         });
-      } else {
-        await removeRaydiumLiquidity({
-          baseToken,
-          quoteToken: SOL_TOKEN,
-          amount,
-          poolConfig,
-        });
-        closeLoadingModal();
       }
-
-      setWithdrawValue('');
     }
+    await removeRaydiumLiquidity({
+      baseToken,
+      quoteToken: SOL_TOKEN,
+      amount: amountForRaydium,
+      poolConfig,
+    });
+    closeLoadingModal();
+    setWithdrawValue('');
   };
 
   useEffect(() => {
@@ -121,7 +131,7 @@ const Withdraw: FC<WithdrawInterface> = ({
       <div className={styles.header}>
         <p className={styles.title}>Withdraw</p>
         <div className={styles.balanceWrap}>
-          {stakedBalance && fusionPoolInfo.stakeAccount ? (
+          {stakedBalance && isStaked ? (
             <p className={styles.balance}>Staked balance: {stakedBalance}</p>
           ) : (
             <p className={styles.balance}>Wallet balance: {balance}</p>
