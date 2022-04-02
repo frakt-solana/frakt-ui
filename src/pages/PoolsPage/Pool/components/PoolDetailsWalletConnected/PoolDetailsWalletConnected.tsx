@@ -40,7 +40,7 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
           lpTokenAccountInfo={lpTokenAccountInfo}
           fusionPoolInfo={fusionPoolInfo}
         />
-        {fusionPoolInfo?.stakeAccount && (
+        {fusionPoolInfo?.mainRouter && (
           <Rewards
             baseToken={tokenInfo}
             poolConfig={poolConfig}
