@@ -68,7 +68,11 @@ export const rawGetLotteryTicket = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawGetLotteryTicket, {
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Buy made successfully',
+    description: 'Your nft will arrive in 30 seconds',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const getLotteryTicket = createTransactionFuncFromRaw(

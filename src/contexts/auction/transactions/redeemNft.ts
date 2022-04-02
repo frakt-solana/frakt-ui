@@ -52,7 +52,10 @@ export const rawRedeemNft = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawRedeemNft, {
-  onSuccessMessage: 'NFT redeemed successfully',
+  onSuccessMessage: {
+    message: 'NFT redeemed successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const redeemNft = createTransactionFuncFromRaw(wrappedAsyncWithTryCatch);

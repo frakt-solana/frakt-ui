@@ -53,8 +53,10 @@ export const rawBidOnAuction = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawBidOnAuction, {
-  onSuccessMessage: 'Bid placed successfully',
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Bid placed successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const bidOnAuction = createTransactionFuncFromRaw(

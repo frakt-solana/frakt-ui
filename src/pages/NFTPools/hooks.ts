@@ -18,10 +18,12 @@ import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
 import {
   PoolDataByMint,
+  sumFusionAndRaydiumApr,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN } from '../../utils';
+import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -285,5 +287,37 @@ export const useUserRawNfts: UseUserRawNfts = () => {
     rawNfts,
     rawNftsLoading: userTokensLoading || nftsLoading,
     removeTokenOptimistic,
+  };
+};
+
+type UseAPR = (poolTokenInfo?: TokenInfo) => {
+  loading: boolean;
+  liquidityAPR: number;
+};
+
+export const useAPR: UseAPR = (poolTokenInfo) => {
+  const { fusionPoolsByMint, loading: fusionPoolsLoading } =
+    useCachedFusionPools();
+
+  const { poolDataByMint, loading: liquidityPoolsLoading } =
+    useLiquidityPools();
+
+  const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
+    useCachedPoolsStats();
+
+  const fusionPoolInfo = useMemo(() => {
+    const poolData = poolDataByMint.get(poolTokenInfo?.address);
+
+    return fusionPoolsByMint.get(poolData?.poolConfig?.lpMint.toBase58());
+  }, [poolDataByMint, poolTokenInfo?.address, fusionPoolsByMint]);
+
+  const poolStats = poolsStatsByBaseTokenMint.get(poolTokenInfo?.address);
+
+  const loading =
+    fusionPoolsLoading || liquidityPoolsLoading || poolsStatsLoading;
+
+  return {
+    loading,
+    liquidityAPR: sumFusionAndRaydiumApr(fusionPoolInfo, poolStats) || 0,
   };
 };

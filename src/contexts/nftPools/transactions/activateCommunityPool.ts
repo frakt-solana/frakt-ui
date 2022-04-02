@@ -46,6 +46,6 @@ const rawActivateCommunityPool = async ({
 export const activateCommunityPoolTransaction = wrapAsyncWithTryCatch(
   rawActivateCommunityPool,
   {
-    onErrorMessage: 'Error',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
