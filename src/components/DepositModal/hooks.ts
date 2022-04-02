@@ -150,7 +150,7 @@ export const useDeposit = (
     const baseAmount = new BN(Number(baseValue) * 10 ** quoteToken.decimals);
     const quoteAmount = new BN(Number(quoteValue) * 1e9);
 
-    await addRaydiumLiquidityTxn({
+    const result = await addRaydiumLiquidityTxn({
       baseToken: quoteToken,
       baseAmount,
       quoteToken: SOL_TOKEN,
@@ -160,6 +160,8 @@ export const useDeposit = (
     });
 
     setTransactionsLeft(1);
+
+    return !!result;
   };
 
   const stakeLiquidity = async () => {
@@ -186,9 +188,9 @@ export const useDeposit = (
 
     openLoadingModal();
 
-    await addRaydiumLiquidity();
+    const result = await addRaydiumLiquidity();
 
-    if (!isPoolAwarded) {
+    if (!isPoolAwarded || !result) {
       setTransactionsLeft(null);
       lpTokenAmountOnSubmit.current = null;
       closeLoadingModal();
