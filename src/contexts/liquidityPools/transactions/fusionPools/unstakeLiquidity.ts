@@ -38,7 +38,7 @@ export const rawUnstakeLiquidity = async ({
   secondaryReward,
   amount,
   stakeAccount,
-}: UnstakeLiquidityTransactionRawParams): Promise<void> => {
+}: UnstakeLiquidityTransactionRawParams): Promise<boolean | null> => {
   const transaction = new Transaction();
 
   if (Number(stakeAccount.unstakedAtCumulative)) {
@@ -86,6 +86,8 @@ export const rawUnstakeLiquidity = async ({
     connection,
     wallet,
   });
+
+  return true;
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawUnstakeLiquidity, {

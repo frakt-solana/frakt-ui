@@ -37,7 +37,7 @@ export interface LiquidityPoolsContextValues {
   stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,
-  ) => Promise<void>;
+  ) => Promise<boolean | null>;
 }
 
 export type LiquidityPoolsProviderType = ({

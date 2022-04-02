@@ -157,21 +157,17 @@ export const calcTotalForCreateLiquidity = (
   return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };
 
-export const calcLiquidityRewards = (
+export const calcFusionMainRewards = (
   mainRouter: MainRouterView,
   stakeAccount: StakeAccountView,
 ): number => {
   if (!mainRouter || !stakeAccount) return 0;
 
-  const check_date = min(
-    new BN(Math.floor(Date.now() / 1000)),
-    new BN(mainRouter.endTime),
-  );
+  const checkDate = Math.floor(Date.now() / 1000);
 
   const reward =
     ((Number(mainRouter.cumulative) +
-      Number(mainRouter.apr) *
-        (check_date.toNumber() - Number(mainRouter.lastTime)) -
+      Number(mainRouter.apr) * (checkDate - Number(mainRouter.lastTime)) -
       Number(stakeAccount.stakedAtCumulative)) *
       Number(stakeAccount.amount)) /
     (1e10 / Number(mainRouter.decimalsInput)) /
@@ -181,7 +177,7 @@ export const calcLiquidityRewards = (
   return reward;
 };
 
-export const caclLiquiditySecondRewars = (
+export const caclFusionSecondRewards = (
   stakeAccount: StakeAccountView,
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
@@ -241,8 +237,7 @@ export const caclLiquiditySecondRewars = (
 export const getStakedBalance = (
   fusionPoolInfo: FusionPoolInfo,
   lpDecimals: number,
-): number =>
-  Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
+): number => Number(fusionPoolInfo?.stakeAccount?.amount) / 10 ** lpDecimals;
 
 export const sumFusionAndRaydiumApr = (
   fusionPoolInfo: FusionPoolInfo,

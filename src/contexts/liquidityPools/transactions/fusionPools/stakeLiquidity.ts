@@ -49,7 +49,7 @@ const rawStakeLiquidity = async ({
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawStakeLiquidity, {
   onSuccessMessage: {
-    message: 'Liquidity deposited successfully',
+    message: 'Liquidity staked successfully',
   },
   onErrorMessage: { message: 'Transaction failed' },
 });
