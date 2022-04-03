@@ -1,16 +1,16 @@
 import { FC, useEffect } from 'react';
 
-import { UserNFT } from '../../../contexts/userTokens';
-import { LoanWithNftData } from '../../../utils/loans';
-import LoanCard from '../../../components/LoanCard';
-import { useLoans } from '../../../contexts/loans';
+import { UserNFT } from '../../../../contexts/userTokens';
+import { LoanWithNftData } from '../../../../utils/loans';
+import LoanCard from '../../../../components/LoanCard';
+import { useLoans } from '../../../../contexts/loans';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
-} from '../../../components/FakeInfinityScroll';
+} from '../../../../components/FakeInfinityScroll';
 import {
   useModalNFTsSlider,
   ModalNFTsSlider,
-} from '../../../components/ModalNFTsSlider';
+} from '../../../../components/ModalNFTsSlider';
 import styles from './LoansList.module.scss';
 
 export interface LoansListProps {

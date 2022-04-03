@@ -1,0 +1,10 @@
+.loader {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.emptyMessage {
+  font: var(--font-btn-mid);
+}

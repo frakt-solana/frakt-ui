@@ -1,30 +1,32 @@
-import { FC } from 'react';
-import { NavLink } from 'react-router-dom';
+import { FC, useState } from 'react';
+import { TokenInfo } from '@solana/spl-token-registry';
 import classNames from 'classnames';
+import BN from 'bn.js';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { useWalletPage, WalletTabs } from './hooks';
 import { Container } from '../../components/Layout';
-import VaultCard from '../../components/VaultCard';
-import { Loader } from '../../components/Loader';
-import { ProfileCard } from './ProfileCard';
-import { FRKT_TOKEN } from '../../utils';
+import { ProfileCard } from './components/ProfileCard';
 import styles from './styles.module.scss';
-import { PATHS } from '../../constants';
-import { TokenCard } from './TokenCard';
-import { LoansList } from './LoansList';
+import { VaultsTab } from './components/VaultsTab';
+import { LoansTab } from './components/LoansTab';
+import { TokensTab } from './components/TokensTab';
+
+export interface TokenInfoWithAmount extends TokenInfo {
+  amountBN: BN;
+}
+
+export enum WalletTabs {
+  TOKENS = 'tokens',
+  VAULTS = 'vaults',
+  LOANS = 'loans',
+}
 
 const WalletPage: FC = () => {
-  const {
-    onSwitchTab,
-    tab,
-    rawNfts,
-    tokensLoading,
-    userTokens,
-    userVaults,
-    nftsLoading,
-    vaultsLoading,
-  } = useWalletPage();
+  const [tab, setTab] = useState<WalletTabs>(WalletTabs.TOKENS);
+
+  const onSwitchTab = (event: any) => {
+    setTab(event.target.name);
+  };
 
   return (
     <AppLayout>
@@ -69,63 +71,9 @@ const WalletPage: FC = () => {
                 Vaults
               </button>
             </div>
-            {tab === WalletTabs.LOANS && (
-              <>
-                {nftsLoading ? (
-                  <div className={styles.loader}>
-                    <Loader size={'large'} />
-                  </div>
-                ) : (
-                  <LoansList nfts={rawNfts} />
-                )}
-              </>
-            )}
-            {tab === WalletTabs.TOKENS && (
-              <>
-                {tokensLoading ? (
-                  <div className={styles.loader}>
-                    <Loader size={'large'} />
-                  </div>
-                ) : (
-                  <div className={styles.tokens}>
-                    {!userTokens.length && (
-                      <p className={styles.emptyMessage}>No tokens found</p>
-                    )}
-                    {userTokens
-                      .filter((token) => token.address !== FRKT_TOKEN.address)
-                      .map((token) => (
-                        <TokenCard key={token.address} token={token} />
-                      ))}
-                  </div>
-                )}
-              </>
-            )}
-
-            {tab === WalletTabs.VAULTS && (
-              <>
-                {vaultsLoading ? (
-                  <div className={styles.loader}>
-                    <Loader size={'large'} />
-                  </div>
-                ) : (
-                  <>
-                    <div className={styles.vaults}>
-                      {!userVaults.length && (
-                        <p className={styles.emptyMessage}>No vaults found</p>
-                      )}
-                      {userVaults.map((vault) => (
-                        <NavLink
-                          key={vault.vaultPubkey}
-                          to={`${PATHS.VAULT}/${vault.vaultPubkey}`}
-                        >
-                          <VaultCard vaultData={vault} />
-                        </NavLink>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </>
-            )}
+            {tab === WalletTabs.LOANS && <LoansTab />}
+            {tab === WalletTabs.TOKENS && <TokensTab />}
+            {tab === WalletTabs.VAULTS && <VaultsTab />}
           </div>
         </div>
       </Container>

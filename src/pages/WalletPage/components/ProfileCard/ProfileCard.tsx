@@ -2,12 +2,15 @@ import { FC, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useConnection } from '@solana/wallet-adapter-react';
 
-import { getOwnerAvatar, useNameServiceInfo } from '../../../utils/nameService';
-import { shortenAddress } from '../../../utils/solanaUtils';
-import { PencilIcon, TwitterIcon2 } from '../../../icons';
-import Button from '../../../components/Button';
+import {
+  getOwnerAvatar,
+  useNameServiceInfo,
+} from '../../../../utils/nameService';
+import { shortenAddress } from '../../../../utils/solanaUtils';
+import { PencilIcon, TwitterIcon2 } from '../../../../icons';
+import Button from '../../../../components/Button';
 import styles from './ProfileCard.module.scss';
-import { LinkWithArrow } from '../../../components/LinkWithArrow';
+import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 
 export const ProfileCard: FC = () => {
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =

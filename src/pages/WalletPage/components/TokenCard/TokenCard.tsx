@@ -2,11 +2,11 @@ import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import BN from 'bn.js';
 
-import { decimalBNToString } from '../../../utils';
-import Button from '../../../components/Button';
-import { TokenInfoWithAmount } from '../hooks';
+import { decimalBNToString } from '../../../../utils';
+import Button from '../../../../components/Button';
 import styles from './TokenCard.module.scss';
-import { PATHS } from '../../../constants';
+import { PATHS } from '../../../../constants';
+import { TokenInfoWithAmount } from '../../WalletPage';
 
 interface TokenCardProps {
   token: TokenInfoWithAmount;
