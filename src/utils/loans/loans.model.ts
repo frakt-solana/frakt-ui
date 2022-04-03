@@ -1,5 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection } from '@solana/web3.js';
+
 import { UserNFT } from '../../contexts/userTokens';
 
 export interface CreateLoanProps {
@@ -11,10 +12,10 @@ export interface CreateLoanProps {
 export interface GetBackProps {
   wallet: WalletContextState;
   connection: Connection;
-  loan: LoanInterface;
+  loan: LoanProps;
 }
 
-export interface LoanInterface {
+export interface LoanProps {
   amount: number;
   duration: number;
   id: string;
@@ -28,13 +29,29 @@ export interface LoanInterface {
   expiredAt: string;
 }
 
-export interface LoanWithNftData extends LoanInterface {
-  nftData: {
-    name: string;
-    symbol: string;
-    description: string;
-    seller_fee_basis_points: number;
-    external_url: string;
-    image: string;
-  };
+export interface LoanNftData {
+  name: string;
+  symbol: string;
+  description: string;
+  seller_fee_basis_points: number;
+  external_url: string;
+  image: string;
+  attributes: [];
+  collection: { name: string; family: string };
+}
+
+export interface AvailableCollectionsProps {
+  candymachine_address: [];
+  createdAt: string;
+  floorPrice: number;
+  id: string;
+  name: string;
+  nfts: [];
+  returnAmount: number;
+  status_id: string;
+  valuation: number;
+}
+
+export interface LoanWithNftData extends LoanProps {
+  nftData: LoanNftData;
 }

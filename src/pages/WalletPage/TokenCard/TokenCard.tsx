@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import BN from 'bn.js';
 
@@ -6,7 +7,6 @@ import Button from '../../../components/Button';
 import { TokenInfoWithAmount } from '../hooks';
 import styles from './TokenCard.module.scss';
 import { PATHS } from '../../../constants';
-import { FC } from 'react';
 
 interface TokenCardProps {
   token: TokenInfoWithAmount;

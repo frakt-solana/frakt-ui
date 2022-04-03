@@ -7,13 +7,19 @@ import * as spl from '@solana/spl-token';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
-import { CreateLoanProps, GetBackProps, LoanWithNftData } from './loans.model';
-import { REACT_APP_SOLANA_RPC } from './loans.constants';
+import {
+  AvailableCollectionsProps,
+  CreateLoanProps,
+  GetBackProps,
+  LoanProps,
+  LoanWithNftData,
+} from './loans.model';
+import { SOLANA_RPC } from './loans.constants';
 import { WalletAndConnection } from '../transactions';
-import config from '../../program_config/idl.json';
+import config from '../../program_config/config.json';
 import api from './axios';
 
-const getPdaAddress = async (program: Program<Idl>) => {
+const getPdaAddress = async (program: Program<Idl>): Promise<PublicKey> => {
   const [voteAccount] = await web3.PublicKey.findProgramAddress(
     [Buffer.from('vote_account')],
     program.programId,
@@ -35,11 +41,14 @@ const getEstimateByMint = async (mint: string): Promise<unknown> => {
   }
 };
 
-export const fetchCollectionsData = async (): Promise<any> => {
+export const fetchCollectionsData = async (): Promise<
+  AvailableCollectionsProps[]
+> => {
   try {
     const response = await api.get(`/services/api/collections`);
+
     if (response) {
-      return response.data.collections;
+      return response.data?.collections || [];
     }
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -60,7 +69,7 @@ export const getBalance = async ({
   const pdaAddress = voteAccount.toBase58();
 
   try {
-    const response = await fetch(REACT_APP_SOLANA_RPC, {
+    const response = await fetch(SOLANA_RPC, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -88,7 +97,7 @@ const getTokenAccountsByOwner = async (
   wallet: WalletContextState,
   mint: string,
 ): Promise<any> => {
-  const response = await fetch(REACT_APP_SOLANA_RPC, {
+  const response = await fetch(SOLANA_RPC, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -115,13 +124,14 @@ export const fetchLoans = async (): Promise<LoanWithNftData[]> => {
   const { data } = response;
 
   return await Promise.all(
-    data.loans.map(async (loan: any) => {
+    data.loans.map(async (loan: LoanProps) => {
       try {
         const nftData = await axios.get(loan.nft_uri);
+        const { data } = nftData;
 
         return {
           ...loan,
-          nftData: nftData.data || null,
+          nftData: data || null,
         };
       } catch (error) {
         return loan;
