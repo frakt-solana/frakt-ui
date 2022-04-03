@@ -6,15 +6,13 @@ import { CollectionData } from '../../../utils/collections';
 import styles from './styles.module.scss';
 
 interface CollectionBannerProps {
-  currentCollection: CollectionData[];
+  currentCollection: CollectionData;
 }
 
 export const CollectionBanner: FC<CollectionBannerProps> = ({
   currentCollection,
 }) => {
-  if (!currentCollection.length) return;
-
-  const { image, name, website, discord, twitter } = currentCollection[0];
+  const { image, name, website, discord, twitter } = currentCollection;
 
   return (
     <div className={styles.banner}>

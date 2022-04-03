@@ -67,7 +67,7 @@ const CollectionPage: FC = () => {
     return loading ? {} : mapVaultsByCollectionName(vaults);
   }, [loading, vaults]);
 
-  const currentCollection = collectionsData.filter(
+  const currentCollection = collectionsData.find(
     ({ name }) => name === collectionName,
   );
 
