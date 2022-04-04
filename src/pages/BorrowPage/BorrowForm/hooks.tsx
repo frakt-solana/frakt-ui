@@ -4,10 +4,11 @@ import { Control, useForm } from 'react-hook-form';
 import { Form, FormInstance } from 'antd';
 
 import { useConfirmModal } from '../../../components/ConfirmModal';
-import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../contexts/userTokens';
 import { SortValue } from '../../VaultsPage/model';
 import { createLoan } from '../../../utils/loans';
 import { useLoadingModal } from '../../../components/LoadingModal';
+import { useLazyTokens } from '../../../contexts/userTokens/useLazyUserTokens';
 
 interface FormValues {
   LTV: string;
@@ -54,7 +55,7 @@ export const useBorrowForm = (
   const { connection } = useConnection();
   const wallet = useWallet();
 
-  const { removeTokenOptimistic } = useUserTokens();
+  const { removeTokenOptimistic } = useLazyTokens();
 
   const { control, watch } = useForm({
     defaultValues: {

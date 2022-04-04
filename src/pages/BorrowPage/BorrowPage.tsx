@@ -15,7 +15,7 @@ import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { EstimateNFT, useLoans } from '../../contexts/loans';
 import { UserNFT } from '../../contexts/userTokens';
-import { useLazyTokens } from '../../contexts/userTokens/useLazyTokens';
+import { useLazyTokens } from '../../contexts/userTokens/useLazyUserTokens';
 
 interface UserNFTWithEstimate extends UserNFT {
   estimate: EstimateNFT[];
@@ -27,23 +27,17 @@ const BorrowPage: FC = () => {
   const { setVisible } = useWalletModal();
   const wallet = useWallet();
 
-  const {
-    onDeselectOneNft,
-    onSelectOneNft,
-    // nfts,
-    // loading,
-    searchItems,
-    selectedNft,
-  } = useSelectLayout();
+  const { onDeselectOneNft, onSelectOneNft, searchItems, selectedNft } =
+    useSelectLayout();
 
   const { nfts, fetchUserTokens, loading } = useLazyTokens();
 
   useEffect(() => {
     (async () => {
-      console.log(nfts);
       await fetchUserTokens();
     })();
-  }, [loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nfts, loading]);
 
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const { loadingModalVisible, closeLoadingModal } = useBorrowForm();

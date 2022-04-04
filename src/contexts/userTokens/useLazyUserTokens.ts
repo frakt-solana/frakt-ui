@@ -1,14 +1,16 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { getAllUserTokens } from 'solana-nft-metadata';
+import { keyBy } from 'lodash';
+
 import { RawUserTokensByMint, UserNFT } from '.';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
-import { keyBy } from 'lodash';
 
 export const useLazyTokens = (): {
   nfts: UserNFT[];
   fetchUserTokens: () => Promise<void>;
   loading: boolean;
+  removeTokenOptimistic: (mints: string[]) => void;
 } => {
   const [rawUserTokensByMint, setRawUserTokensByMint] =
     useState<RawUserTokensByMint>({});
@@ -50,9 +52,25 @@ export const useLazyTokens = (): {
     }
   };
 
+  const removeTokenOptimistic = (mints: string[]): void => {
+    const patchedRawUserTokensByMint = Object.fromEntries(
+      Object.entries(rawUserTokensByMint).filter(
+        ([key]) => !mints.includes(key),
+      ),
+    );
+
+    const patchedNfts = nfts.filter((nft) => {
+      return !mints.includes(nft.mint);
+    });
+
+    setNfts(patchedNfts);
+    setRawUserTokensByMint(patchedRawUserTokensByMint);
+  };
+
   return {
     nfts,
     fetchUserTokens: fetch,
     loading,
+    removeTokenOptimistic,
   };
 };

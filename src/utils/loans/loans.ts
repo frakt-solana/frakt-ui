@@ -157,7 +157,7 @@ export const createLoan = async ({
   if (data && data.result && data.result.value) {
     const response = await api.post('/services/api/store_preloan', {
       nft: nft.mint,
-      nft_mint: data.result.value[0].pubkey,
+      nft_mint: data.result.value[0]?.pubkey,
     });
 
     if (response.data.preloan && response.data.preloan.order) {

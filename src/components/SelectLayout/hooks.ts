@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useDebounce } from '../../hooks';
@@ -18,14 +17,7 @@ export const useSelectLayout = (): {
   activeTokenAddress: string;
   selectedNft: UserNFT[];
 } => {
-  const { connected } = useWallet();
-  const {
-    nfts: rawNfts,
-    loading: userTokensLoading,
-    nftsLoading: loading,
-    fetchUserNfts,
-    rawUserTokensByMint,
-  } = useUserTokens();
+  const { nfts: rawNfts, nftsLoading: loading } = useUserTokens();
 
   const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
   const [searchString, setSearchString] = useState<string>('');
@@ -37,18 +29,6 @@ export const useSelectLayout = (): {
     setItemsToShow(15);
     setSearchString(search.toUpperCase());
   }, 300);
-
-  // useEffect(() => {
-  //   if (
-  //     connected &&
-  //     !userTokensLoading &&
-  //     !loading &&
-  //     Object.keys(rawUserTokensByMint).length
-  //   ) {
-  //     fetchUserNfts();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [connected, userTokensLoading, loading]);
 
   const onDeselect = (nft: UserNFT): void => {
     setSelectedNfts(
