@@ -36,5 +36,8 @@ export const rawUnlockVault = async ({
 };
 
 export const unlockVault = wrapAsyncWithTryCatch(rawUnlockVault, {
-  onSuccessMessage: 'Vault unlocked successfully',
+  onSuccessMessage: {
+    message: 'Vault unlocked successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });

@@ -71,7 +71,7 @@ class API {
         realState:
           isDinoDaoVault && isPricingLookupAddressUset
             ? VaultState.Active
-            : vault.state,
+            : vault.realState,
         safetyBoxes,
       };
     });

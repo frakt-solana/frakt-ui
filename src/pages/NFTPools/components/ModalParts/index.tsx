@@ -4,12 +4,7 @@ import { FC, useRef, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import Button from '../../../../components/Button';
-import {
-  ArrowDownBtn,
-  CloseModalIcon,
-  QuestionIcon,
-  SolanaIcon,
-} from '../../../../icons';
+import { ArrowDownBtn, CloseModalIcon, SolanaIcon } from '../../../../icons';
 import SettingsIcon from '../../../../icons/SettingsIcon';
 import styles from './ModalParts.module.scss';
 import NumericInput from '../../../../components/NumericInput';
@@ -40,13 +35,7 @@ export const ItemContent: FC<ItemContentProps> = ({
           <div
             className={styles.questionImg}
             style={{ backgroundImage: `url(${randomPoolImage})` }}
-          >
-            <QuestionIcon
-              className={styles.questionIcon}
-              width={25}
-              height={44}
-            />
-          </div>
+          />
         ) : (
           <div
             className={styles.itemImg}

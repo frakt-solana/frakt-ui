@@ -44,21 +44,21 @@ export const rawHarvestLiquidity = async ({
 
   transaction.add(harvestInstruction);
 
-  const rewardsTokenMint = secondaryReward.map(
+  const secondaryRewardsTokensMints = secondaryReward.map(
     ({ tokenMint }) => new PublicKey(tokenMint),
   );
 
-  const secondaryHarvestInstruction = await harvestSecondaryReward(
+  const secondaryHarvestInstructions = await harvestSecondaryReward(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
-    rewardsTokenMint,
+    secondaryRewardsTokensMints,
   );
 
-  if (secondaryHarvestInstruction?.length) {
-    transaction.add(...secondaryHarvestInstruction);
+  if (secondaryHarvestInstructions?.length) {
+    transaction.add(...secondaryHarvestInstructions);
   }
 
   await signAndConfirmTransaction({
@@ -69,8 +69,10 @@ export const rawHarvestLiquidity = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawHarvestLiquidity, {
-  onSuccessMessage: 'Liquidity harvested successfully',
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Rewards harvested successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const harvestLiquidity = createTransactionFuncFromRaw(

@@ -1,10 +1,12 @@
+import BN, { max, min } from 'bn.js';
 import {
   MainRouterView,
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
-import BN, { max, min } from 'bn.js';
+
+import { PoolStats } from '../../pages/PoolsPage';
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
 
 export const calculateTVL = (
@@ -155,21 +157,17 @@ export const calcTotalForCreateLiquidity = (
   return formatNumberToCurrency(allBaseTokenPriceUSD + allQuoteTokenPriceUSD);
 };
 
-export const calcLiquidityRewards = (
+export const calcFusionMainRewards = (
   mainRouter: MainRouterView,
   stakeAccount: StakeAccountView,
 ): number => {
   if (!mainRouter || !stakeAccount) return 0;
 
-  const check_date = min(
-    new BN(Math.floor(Date.now() / 1000)),
-    new BN(mainRouter.endTime),
-  );
+  const checkDate = Math.floor(Date.now() / 1000);
 
   const reward =
     ((Number(mainRouter.cumulative) +
-      Number(mainRouter.apr) *
-        (check_date.toNumber() - Number(mainRouter.lastTime)) -
+      Number(mainRouter.apr) * (checkDate - Number(mainRouter.lastTime)) -
       Number(stakeAccount.stakedAtCumulative)) *
       Number(stakeAccount.amount)) /
     (1e10 / Number(mainRouter.decimalsInput)) /
@@ -179,7 +177,7 @@ export const calcLiquidityRewards = (
   return reward;
 };
 
-export const caclLiquiditySecondRewars = (
+export const caclFusionSecondRewards = (
   stakeAccount: StakeAccountView,
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
@@ -239,5 +237,21 @@ export const caclLiquiditySecondRewars = (
 export const getStakedBalance = (
   fusionPoolInfo: FusionPoolInfo,
   lpDecimals: number,
-): number =>
-  Number(fusionPoolInfo?.mainRouter?.amountOfStaked) / 10 ** lpDecimals;
+): number => Number(fusionPoolInfo?.stakeAccount?.amount) / 10 ** lpDecimals;
+
+export const sumFusionAndRaydiumApr = (
+  fusionPoolInfo: FusionPoolInfo,
+  poolStats: PoolStats,
+): number => {
+  if (fusionPoolInfo?.mainRouter) {
+    const SECONDS_IN_YEAR = 31536000;
+    const { apr, endTime, decimalsInput } = fusionPoolInfo.mainRouter;
+
+    return (
+      (((Number(apr) * Number(endTime)) / SECONDS_IN_YEAR) * 1e2) /
+        (1e10 / Number(decimalsInput)) +
+      poolStats?.apr
+    );
+  }
+  return poolStats?.apr || 0;
+};

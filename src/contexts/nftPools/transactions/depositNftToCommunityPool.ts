@@ -98,8 +98,10 @@ export const rawDepositNftToCommunityPool = async ({
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   rawDepositNftToCommunityPool,
   {
-    onSuccessMessage: 'NFT deposited successfully',
-    onErrorMessage: 'NFT depositing failed',
+    onSuccessMessage: {
+      message: 'NFT deposited successfully',
+    },
+    onErrorMessage: { message: 'NFT depositing failed' },
   },
 );
 

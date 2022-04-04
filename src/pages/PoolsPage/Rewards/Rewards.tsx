@@ -5,8 +5,8 @@ import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import Button from '../../../components/Button';
 import styles from './Rewards.module.scss';
 import {
-  caclLiquiditySecondRewars,
-  calcLiquidityRewards,
+  caclFusionSecondRewards,
+  calcFusionMainRewards,
   FusionPoolInfo,
   getTokenInfoByReward,
   getTokenInfoBySecondaryReward,
@@ -69,25 +69,31 @@ const Rewards: FC<RewardsInterface> = ({
       <div className={styles.content}>
         <div className={styles.info}>
           <p className={styles.title}>Pending rewards</p>
-          <div className={styles.rewardInfo}>
-            <p>
-              {calcLiquidityRewards(mainRouter, stakeAccount)?.toFixed(5)}{' '}
-              <span>{rewardInfoByMint[0]?.symbol}</span>
-            </p>
-            {secondaryRewardInfoByMint.map((reward) => (
-              <span key={reward.tokenMint}>
-                <span>
-                  {caclLiquiditySecondRewars(
-                    stakeAccount,
-                    reward,
-                    secondaryStakeAccount,
-                    mainRouter,
-                  )?.toFixed(5)}
-                </span>{' '}
-                <span>{reward.tokenInfo[0].symbol}</span>
-              </span>
-            ))}
-          </div>
+          {stakeAccount ? (
+            <div className={styles.rewardInfo}>
+              <p>
+                {calcFusionMainRewards(mainRouter, stakeAccount)?.toFixed(5)}{' '}
+                <span>{rewardInfoByMint[0]?.symbol}</span>
+              </p>
+              {secondaryRewardInfoByMint.map((reward) => (
+                <span key={reward.tokenMint}>
+                  <span>
+                    {caclFusionSecondRewards(
+                      stakeAccount,
+                      reward,
+                      secondaryStakeAccount,
+                      mainRouter,
+                    )?.toFixed(5)}
+                  </span>{' '}
+                  <span>{reward.tokenInfo[0].symbol}</span>
+                </span>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.rewardInfo}>
+              <p>You are not staking LP tokens yet</p>
+            </div>
+          )}
         </div>
         <div className={styles.wrapperBtn}>
           {!!balance && (
@@ -99,7 +105,7 @@ const Rewards: FC<RewardsInterface> = ({
               Stake
             </Button>
           )}
-          {calcLiquidityRewards(
+          {calcFusionMainRewards(
             fusionPoolInfo.mainRouter,
             fusionPoolInfo.stakeAccount,
           ) > 1e-5 && (

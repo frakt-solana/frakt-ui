@@ -51,8 +51,10 @@ export const rawAddNFTsToVault = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddNFTsToVault, {
-  onSuccessMessage: 'NFT(s) added successfully',
-  onErrorMessage: 'Transaction error',
+  onSuccessMessage: {
+    message: 'NFT(s) added successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const addNFTsToVault = createTransactionFuncFromRaw(
