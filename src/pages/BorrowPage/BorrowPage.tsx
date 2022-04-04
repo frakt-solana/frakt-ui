@@ -36,12 +36,12 @@ const BorrowPage: FC = () => {
     selectedNft,
   } = useSelectLayout();
 
-  const { nfts, fetchPoolInfo, loading } = useLazyTokens();
+  const { nfts, fetchUserTokens, loading } = useLazyTokens();
 
   useEffect(() => {
     (async () => {
       console.log(nfts);
-      await fetchPoolInfo();
+      await fetchUserTokens();
     })();
   }, [loading]);
 

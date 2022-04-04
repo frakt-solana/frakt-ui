@@ -117,23 +117,11 @@ export const RETURN_PERIOD_VALUES: SortValue[] = [
     label: <span>7 Days</span>,
     value: '7',
   },
-  {
-    label: <span>10 Days</span>,
-    value: '10',
-  },
 ];
 
 export const LTV_VALUES: SortValue[] = [
   {
     label: <span>30%</span>,
     value: '30',
-  },
-  {
-    label: <span>50%</span>,
-    value: '50',
-  },
-  {
-    label: <span>100%</span>,
-    value: '100',
   },
 ];

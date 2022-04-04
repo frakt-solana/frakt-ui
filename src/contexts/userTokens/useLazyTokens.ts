@@ -7,14 +7,14 @@ import { keyBy } from 'lodash';
 
 export const useLazyTokens = (): {
   nfts: UserNFT[];
-  fetchPoolInfo: () => Promise<void>;
+  fetchUserTokens: () => Promise<void>;
   loading: boolean;
 } => {
   const [rawUserTokensByMint, setRawUserTokensByMint] =
     useState<RawUserTokensByMint>({});
   const [nfts, setNfts] = useState<UserNFT[]>([]);
 
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const { connection } = useConnection();
   const { publicKey } = useWallet();
 
@@ -52,7 +52,7 @@ export const useLazyTokens = (): {
 
   return {
     nfts,
-    fetchPoolInfo: fetch,
+    fetchUserTokens: fetch,
     loading,
   };
 };
