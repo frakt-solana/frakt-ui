@@ -22,10 +22,15 @@ interface UserNFTWithEstimate extends UserNFT {
 }
 
 const BorrowPage: FC = () => {
-  const [search, setSearch] = useState('');
-
-  const { setVisible } = useWalletModal();
   const wallet = useWallet();
+
+  const [search, setSearch] = useState<string>('');
+  const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
+
+  const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
+  const { itemsToShow, next } = useFakeInfinityScroll(15);
+  const { setVisible } = useWalletModal();
+  const { estimations } = useLoans();
 
   const { onDeselectOneNft, onSelectOneNft, searchItems, selectedNft } =
     useSelectLayout();
@@ -38,11 +43,6 @@ const BorrowPage: FC = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nfts, loading]);
-
-  const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
-  const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
-  const { itemsToShow, next } = useFakeInfinityScroll(15);
-  const { estimations } = useLoans();
 
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();

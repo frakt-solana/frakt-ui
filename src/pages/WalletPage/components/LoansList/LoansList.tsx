@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 import { UserNFT } from '../../../../contexts/userTokens';
 import { LoanWithNftData } from '../../../../utils/loans';
@@ -19,14 +19,7 @@ export interface LoansListProps {
 
 export const LoansList: FC<LoansListProps> = ({ nfts }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
-  const { loansData, loading, fetchLoansData } = useLoans();
-
-  useEffect(() => {
-    (async () => {
-      await fetchLoansData();
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { loansData, loading } = useLoans();
 
   const {
     isModalVisible,

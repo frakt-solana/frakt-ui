@@ -244,7 +244,7 @@ export const getBack = async ({
   }
 };
 
-export const login = async (wallet: WalletContextState): Promise<void> => {
+export const login = async (wallet: WalletContextState): Promise<boolean> => {
   try {
     const message = `Sign this to verify your wallet
       ${uuidv4()}-${uuidv4()}-${uuidv4()}-${uuidv4()}`;
@@ -274,6 +274,7 @@ export const login = async (wallet: WalletContextState): Promise<void> => {
         }),
       );
     }
+    return true;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);

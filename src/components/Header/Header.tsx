@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
@@ -28,33 +28,36 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
   const wallet = useWallet();
   const { connected } = wallet;
 
-  const [auth, setAuth] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
 
-  const isAuth = () => {
+  useEffect(() => {
     const walletLS = localStorage.getItem('wallet');
     const walletName = localStorage.getItem('walletName');
 
     if (walletLS && walletName) {
-      return true;
+      setAuthenticated(true);
     }
-    return false;
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticated]);
 
-  const signToken = async () => {
+  const signToken = async (): Promise<void> => {
     const walletLS = localStorage.getItem('wallet');
     const walletName = localStorage.getItem('walletName');
 
     if (!walletLS && walletName) {
-      await login(wallet);
-      setAuth(true);
+      const isLogin = await login(wallet);
+      if (isLogin) {
+        setAuthenticated(true);
+      }
+    } else {
+      setAuthenticated(false);
     }
-    return;
   };
 
   return (
     <header className={classNames(styles.root, styles.header, className)}>
       {visible && (
-        <WalletContent authenticated={isAuth()} signToken={signToken} />
+        <WalletContent authenticated={authenticated} signToken={signToken} />
       )}
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={PATHS.ROOT}>
@@ -71,7 +74,7 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
           </li>
           <li>
             <div className={styles.profileWrapper}>
-              {connected && isAuth() ? (
+              {connected && authenticated ? (
                 <ConnectedButton
                   className={classNames(
                     styles.walletBtn,
