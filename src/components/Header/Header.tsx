@@ -41,10 +41,7 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
   }, [authenticated]);
 
   const signToken = async (): Promise<void> => {
-    const walletLS = localStorage.getItem('wallet');
-    const walletName = localStorage.getItem('walletName');
-
-    if (!walletLS && walletName) {
+    if (!authenticated) {
       const isLogin = await login(wallet);
       if (isLogin) {
         setAuthenticated(true);
