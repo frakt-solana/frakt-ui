@@ -62,3 +62,100 @@ export const getOutputAmount = ({
     console.error(err);
   }
 };
+
+interface AmountInParams {
+  poolKeys: LiquidityPoolKeysV4;
+  poolInfo: RaydiumPoolInfo;
+  receiveToken: TokenInfo;
+  receiveAmount: number;
+  payToken: TokenInfo;
+  slippage?: Percent;
+}
+
+export const getInputAmount = ({
+  poolKeys,
+  poolInfo,
+  receiveToken,
+  receiveAmount,
+  payToken,
+  slippage = new Percent(1, 100),
+}: AmountInParams): {
+  amountIn: string;
+  maxAmountIn: string;
+  priceImpact: string;
+} => {
+  try {
+    const amountOut = new TokenAmount(
+      new Token(
+        receiveToken.address,
+        receiveToken.decimals,
+        receiveToken.symbol,
+        receiveToken.name,
+      ),
+      receiveAmount,
+      false,
+    );
+
+    const { amountIn, maxAmountIn, priceImpact } = Liquidity.computeAmountIn({
+      poolKeys,
+      poolInfo,
+      amountOut,
+      currencyIn: payToken,
+      slippage,
+    });
+
+    return {
+      amountIn: amountIn.toSignificant(),
+      maxAmountIn: maxAmountIn.toSignificant(),
+      priceImpact: priceImpact.toSignificant(),
+    };
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  }
+};
+
+interface ComputeAnotherAmountParams {
+  poolKeys: LiquidityPoolKeysV4;
+  poolInfo: RaydiumPoolInfo;
+  token: TokenInfo;
+  amount: number;
+  anotherCurrency: TokenInfo;
+  slippage?: Percent;
+}
+
+export const computeAnotherAmount = ({
+  poolKeys,
+  poolInfo,
+  token,
+  amount,
+  anotherCurrency,
+  slippage = new Percent(1, 100),
+}: ComputeAnotherAmountParams): {
+  anotherAmount: string;
+  maxAnotherAmount: string;
+} => {
+  try {
+    const tokenAmount = new TokenAmount(
+      new Token(token.address, token.decimals, token.symbol, token.name),
+      amount,
+      false,
+    );
+
+    const { anotherAmount, maxAnotherAmount } = Liquidity.computeAnotherAmount({
+      poolKeys,
+      poolInfo,
+      amount: tokenAmount,
+      anotherCurrency,
+      slippage,
+    });
+
+    return {
+      anotherAmount: anotherAmount.toSignificant(),
+      maxAnotherAmount: maxAnotherAmount.toSignificant(),
+    };
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  }
+};

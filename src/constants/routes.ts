@@ -12,12 +12,12 @@ import {
   FraktionalizePage,
   CollectionsPage,
   CollectionPage,
-  // MarketPage,
-  // MarketBuyPage,
-  // MarketSellPage,
-  // MarketSwapPage,
-  // MarketInfoPage,
-  // MarketTestPage,
+  NFTPoolsPage,
+  NFTPoolBuyPage,
+  NFTPoolSellPage,
+  NFTPoolSwapPage,
+  NFTPoolInfoPage,
+  // NFTPoolsTestPage,
 } from '../pages';
 
 interface Route {
@@ -30,7 +30,7 @@ export const routes: Route[] = [
   // {
   //   exact: true,
   //   path: PATHS.TEST,
-  //   component: MarketTestPage,
+  //   component: NFTPoolsTestPage,
   // },
   {
     exact: true,
@@ -47,31 +47,31 @@ export const routes: Route[] = [
     path: `${PATHS.VAULT}${PATHS.VAULT_PUBKEY}`,
     component: VaultPage,
   },
-  // {
-  //   exact: true,
-  //   path: PATHS.POOLS,
-  //   component: MarketPage,
-  // },
-  // {
-  //   exact: true,
-  //   path: PATHS.POOL_BUY,
-  //   component: MarketBuyPage,
-  // },
-  // {
-  //   exact: true,
-  //   path: PATHS.POOL_SELL,
-  //   component: MarketSellPage,
-  // },
-  // {
-  //   exact: true,
-  //   path: PATHS.POOL_SWAP,
-  //   component: MarketSwapPage,
-  // },
-  // {
-  //   exact: true,
-  //   path: PATHS.POOL_INFO,
-  //   component: MarketInfoPage,
-  // },
+  {
+    exact: true,
+    path: PATHS.POOLS,
+    component: NFTPoolsPage,
+  },
+  {
+    exact: true,
+    path: PATHS.POOL_BUY,
+    component: NFTPoolBuyPage,
+  },
+  {
+    exact: true,
+    path: PATHS.POOL_SELL,
+    component: NFTPoolSellPage,
+  },
+  {
+    exact: true,
+    path: PATHS.POOL_SWAP,
+    component: NFTPoolSwapPage,
+  },
+  {
+    exact: true,
+    path: PATHS.POOL_INFO,
+    component: NFTPoolInfoPage,
+  },
   {
     exact: true,
     path: PATHS.SWAP,
@@ -99,7 +99,7 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: PATHS.YIELD,
+    path: PATHS.EARN,
     component: PoolsPage,
   },
   {

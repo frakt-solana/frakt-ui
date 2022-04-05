@@ -1,0 +1,162 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  :global {
+    .ant-modal-title {
+      font: var(--font-h4);
+      padding-top: 13px;
+      text-align: center;
+    }
+  }
+}
+
+.subtitle {
+  color: var(--white-color);
+  font: var(--font-btn-small);
+}
+
+.input {
+  font: var(--font-input) !important;
+
+  &::placeholder {
+    color: var(--white-color) !important;
+  }
+}
+
+.refreshIcon {
+  background: var(--accent-color-1);
+  border-radius: 2px;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+
+  &:hover {
+    opacity: 0.8;
+    transition: var(--transition-1);
+  }
+}
+
+.depositContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #191919;
+  border-radius: 10px;
+  min-width: 327px;
+  margin: 30px 0;
+  padding: 20px;
+
+  .depositInfo {
+    color: var(--white-color);
+    display: flex;
+    gap: 30px;
+  }
+
+  .value {
+    font: var(--font-subtitle-2);
+
+    span {
+      font: var(--font-secondary);
+      text-transform: uppercase;
+    }
+  }
+}
+
+.link {
+  cursor: pointer;
+  color: var(--accent-color-1);
+  margin-top: 10px;
+  font: var(--font-btn-small);
+  text-decoration: underline;
+}
+
+.inputWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
+
+  .input {
+    width: 293px;
+  }
+
+  .token {
+    display: flex;
+    gap: 10px;
+  }
+
+  .tokenName {
+    color: var(--white-color);
+    font: var(--font-subtitle);
+  }
+
+  .tokenIcon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.totalInputWrapper {
+  width: 100%;
+  margin-bottom: 25px;
+
+  .totalValue {
+    color: var(--white-color);
+  }
+}
+
+.verify {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .text {
+    color: var(--white-color);
+    font: var(--font-smallest);
+
+    a {
+      color: var(--accent-color-1);
+      text-decoration: underline;
+    }
+  }
+}
+
+.depositBtn {
+  justify-content: center;
+  padding: 12px 0;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.refresh {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 30px;
+}
+
+.totalLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  width: 100%;
+
+  .title {
+    color: var(--gray-color-3);
+    font: var(--font-secondary);
+    text-transform: uppercase;
+  }
+
+  .line {
+    background: var(--gray-color-3);
+    height: 1px;
+    width: 100%;
+  }
+}

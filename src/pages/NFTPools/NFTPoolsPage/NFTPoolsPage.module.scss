@@ -1,0 +1,92 @@
+.container {
+  position: relative;
+
+  padding-top: 64px;
+  padding-bottom: 64px;
+
+  @media screen and (max-width: 767px) {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  @media screen and (max-width: 700px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+
+.title {
+  font: var(--font-title-2);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font: var(--font-text-2);
+  margin-bottom: 18px;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 32px;
+  margin-bottom: 20px;
+
+  @media screen and (max-width: 370px) {
+    flex-wrap: wrap;
+  }
+}
+
+.searchInput {
+  max-width: 330px;
+  margin-right: 20px;
+
+  @media screen and (max-width: 370px) {
+    margin-bottom: 20px;
+  }
+}
+
+.searchIcon {
+  margin-right: 5px;
+
+  svg {
+    width: 14px;
+    color: var(--color-gray-03);
+  }
+}
+
+.sortingSelect {
+  span {
+    color: var(--white-color);
+  }
+}
+
+.sortingSelectValueContainer {
+  svg {
+    position: relative;
+    top: 2px;
+
+    path {
+      stroke: var(--accent-color-1) !important;
+    }
+  }
+
+  .sortName {
+    color: var(--accent-color-1);
+  }
+}
+
+.sortWrapper {
+  flex-shrink: 0;
+
+  .arrowDown,
+  .arrowUp {
+    path {
+      stroke: var(--white-color);
+    }
+  }
+
+  .arrowDown {
+    transform: rotate(180deg);
+  }
+}

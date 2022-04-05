@@ -7,12 +7,13 @@ import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { SearchInput } from '../../components/SearchInput';
 import { Container } from '../../components/Layout';
-import styles from './styles.module.scss';
+import styles from './PoolsPage.module.scss';
 import Pool from './Pool';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import { Select } from '../../components/Select';
+import { Tabs } from '../../components/Tabs';
 
 const PoolsPage: FC = () => {
   const { connected } = useWallet();
@@ -27,15 +28,24 @@ const PoolsPage: FC = () => {
     onPoolCardClick,
     fusionPoolInfoMap,
     poolsStatsByMarketId,
+    poolTabs,
+    tabValue,
+    setTabValue,
   } = usePoolsPage();
 
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <h1 className={styles.title}>Yield</h1>
+        <h1 className={styles.title}>Earn</h1>
         <h2 className={styles.subtitle}>
           Provide NFTs and liquidity to protocol and reap the rewards
         </h2>
+        <Tabs
+          className={styles.tabs}
+          tabs={poolTabs}
+          value={tabValue}
+          setValue={setTabValue}
+        />
         <div className={styles.sortWrapper}>
           <SearchInput
             onChange={(e) => searchItems(e.target.value || '')}
@@ -78,7 +88,7 @@ const PoolsPage: FC = () => {
           itemsToShow={itemsToShow}
           next={next}
           isLoading={loading}
-          emptyMessage={'No Liquidity pool found'}
+          emptyMessage="No pools found"
         >
           {poolsData.map((poolData) => (
             <Pool

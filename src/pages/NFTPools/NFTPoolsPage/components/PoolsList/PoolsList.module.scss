@@ -1,0 +1,12 @@
+.poolsList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 15px;
+  align-items: stretch;
+
+  @media screen and (max-width: 550px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

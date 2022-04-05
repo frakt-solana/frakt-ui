@@ -23,12 +23,12 @@ import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 import { Container } from '../../../../components/Layout';
 
 const ECOSYSTEM_LIST = [
-  // { path: PATHS.POOLS, label: 'Pools' },
+  { path: PATHS.POOLS, label: 'Pools' },
   { path: PATHS.VAULTS, label: 'Vaults' },
   { path: PATHS.SWAP, label: 'Swap' },
   { path: process.env.DEX_URL, label: 'Trade' },
   { path: PATHS.COLLECTIONS, label: 'Collections' },
-  { path: PATHS.YIELD, label: 'Yield' },
+  { path: PATHS.EARN, label: 'Earn' },
 ];
 
 const LANDING_LIST = [

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAllUserTokens } from 'solana-nft-metadata';
-import { keyBy } from 'lodash';
+import { keyBy, isArray } from 'lodash';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
 import {
@@ -8,7 +8,10 @@ import {
   UserNFT,
   UserTokensValues,
 } from './userTokens.model';
-import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
+import {
+  fetchWalletNFTsFromQuickNode,
+  // fetchWalletNFTsUsingArweave,
+} from './userTokens.helpers';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
   nfts: [],
@@ -32,10 +35,10 @@ export const UserTokensProvider = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const [nftsLoading, setNftsLoading] = useState<boolean>(false);
-  const [nfts, setNfts] = useState<UserNFT[]>([]);
+  const [nfts, setNfts] = useState<UserNFT[]>(null);
 
   const clearTokens = () => {
-    setNfts([]);
+    setNfts(null);
     setRawUserTokensByMint({});
     setLoading(false);
   };
@@ -59,23 +62,15 @@ export const UserTokensProvider = ({
   };
 
   const fetchUserNfts = async () => {
-    if (nfts.length) return;
+    if (isArray(nfts)) return;
     setNftsLoading(true);
     try {
-      const mints = Object.entries(rawUserTokensByMint)
-        .filter(([, tokenView]) => tokenView.amount === 1)
-        .map(([mint]) => mint);
-
-      const arweaveMetadata = await getArweaveMetadataByMint(mints);
-
-      const tokensArray = Object.entries(arweaveMetadata).map(
-        ([mint, metadata]) => ({
-          mint,
-          metadata,
-        }),
+      // const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
+      const userNFTs = await fetchWalletNFTsFromQuickNode(
+        publicKey?.toBase58(),
       );
 
-      setNfts(tokensArray);
+      setNfts(userNFTs);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

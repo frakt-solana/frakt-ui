@@ -91,10 +91,10 @@ const NAVIGATION_LINKS = [
   //   to: PATHS.TEST,
   //   label: 'Test',
   // },
-  // {
-  //   to: PATHS.POOLS,
-  //   label: 'Pools',
-  // },
+  {
+    to: PATHS.POOLS,
+    label: 'Pools',
+  },
   {
     to: PATHS.VAULTS,
     label: 'Vaults',
@@ -104,8 +104,8 @@ const NAVIGATION_LINKS = [
     label: 'Swap',
   },
   {
-    to: PATHS.YIELD,
-    label: 'Yield',
+    to: PATHS.EARN,
+    label: 'Earn',
   },
 ];
 

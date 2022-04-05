@@ -40,7 +40,7 @@ const rawAddRaydiumLiquidity = async ({
   quoteAmount,
   poolConfig,
   fixedSide,
-}: AddLiquidityTransactionRawParams): Promise<void> => {
+}: AddLiquidityTransactionRawParams): Promise<boolean | null> => {
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
@@ -74,11 +74,15 @@ const rawAddRaydiumLiquidity = async ({
     connection,
     wallet,
   });
+
+  return true;
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddRaydiumLiquidity, {
-  onSuccessMessage: 'Liquidity provided successfully',
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Liquidity provided successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const addRaydiumLiquidity = createTransactionFuncFromRaw(

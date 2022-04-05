@@ -75,8 +75,10 @@ export const rawCreateVault = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateVault, {
-  onSuccessMessage: 'Fraktionalized successfully',
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Fraktionalized successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const createVault = createTransactionFuncFromRaw(

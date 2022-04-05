@@ -59,7 +59,7 @@ export const rawUnlockVaultAndRedeemNfts = async ({
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   rawUnlockVaultAndRedeemNfts,
   {
-    onErrorMessage: 'Transaction failed',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
 

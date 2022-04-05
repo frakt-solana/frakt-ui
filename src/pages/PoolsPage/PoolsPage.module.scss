@@ -1,0 +1,79 @@
+.container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.sortWrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 64px;
+
+  @media screen and (max-width: 1023px) {
+    margin-bottom: 0;
+  }
+}
+
+.title {
+  font: var(--font-title-2);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font: var(--font-text-2);
+  margin-bottom: 18px;
+}
+
+.tabs {
+  margin-bottom: 32px;
+}
+
+.search {
+  max-width: 375px;
+
+  @media screen and (max-width: 1023px) {
+    margin-bottom: 28px;
+  }
+}
+
+.filters {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px 30px;
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+    margin-bottom: 35px;
+  }
+}
+
+.sortingSelect {
+  width: unset;
+  margin-left: 8px;
+}
+
+.sortingSelectContainer {
+  svg {
+    position: relative;
+    top: 2px;
+    path {
+      stroke: var(--accent-color-1);
+    }
+  }
+}
+
+.arrowUp,
+.arrowDown {
+  position: relative;
+  top: 2px;
+
+  path {
+    stroke: var(--white-color);
+  }
+}
+
+.arrowDown {
+  transform: rotate(180deg);
+}

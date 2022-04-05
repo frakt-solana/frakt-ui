@@ -1,5 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
-import { addToWhitelist, Provider } from 'community-pools-client-library-v2';
+import {
+  addToWhitelist,
+  Provider,
+} from '@frakters/community-pools-client-library-v2';
 
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
@@ -47,6 +50,6 @@ const rawAddToWhitelist = async ({
 export const addToWhitelistTransaction = wrapAsyncWithTryCatch(
   rawAddToWhitelist,
   {
-    onErrorMessage: 'Error',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );

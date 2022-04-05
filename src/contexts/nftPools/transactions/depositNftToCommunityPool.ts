@@ -2,8 +2,8 @@ import { PublicKey } from '@solana/web3.js';
 import {
   depositNftToCommunityPool as depositNftToCommunityPoolTxn,
   Provider,
-} from 'community-pools-client-library-v2';
-import { deriveMetadataPubkeyFromMint } from 'community-pools-client-library-v2/lib/utils/utils';
+} from '@frakters/community-pools-client-library-v2';
+import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
 
 import { NftPoolData } from './../../../utils/cacher/nftPools';
 import {
@@ -14,11 +14,16 @@ import {
 
 import { getTokenAccount } from '../../../utils/accounts';
 import { wrapAsyncWithTryCatch } from '../../../utils';
+import { UserNFT } from '../../userTokens';
+import {
+  getWhitelistedCreatorsDictionary,
+  isNFTWhitelistedByCreator,
+} from '../nftPools.helpers';
 
 export interface DepositNftToCommunityPoolParams {
   pool: NftPoolData;
-  nftMint: PublicKey;
-  byCreator?: boolean;
+  nft: UserNFT;
+  poolLpMint: PublicKey;
   afterTransaction?: () => void;
 }
 
@@ -30,34 +35,45 @@ export const rawDepositNftToCommunityPool = async ({
   connection,
   wallet,
   pool,
-  nftMint,
-  byCreator = false,
+  nft,
+  poolLpMint,
   afterTransaction,
-}: DepositNftToCommunityPoolRawParams): Promise<void> => {
+}: DepositNftToCommunityPoolRawParams): Promise<boolean | null> => {
   const { publicKey: nftUserTokenAccount } = await getTokenAccount({
-    tokenMint: nftMint,
+    tokenMint: new PublicKey(nft.mint),
     owner: wallet.publicKey,
     connection,
   });
 
-  const metadataInfo = byCreator
-    ? await deriveMetadataPubkeyFromMint(nftMint)
-    : nftMint;
+  const whitelistedCreatorsDictionary = getWhitelistedCreatorsDictionary(pool);
 
-  const poolWhitelist = pool.poolWhitelist.find(
-    ({ whitelistedAddress }) =>
-      whitelistedAddress.toBase58() === nftMint.toBase58(),
-  ); //! Add condition for creator
-  //TODO
+  const whitelistedCreator: string | null = isNFTWhitelistedByCreator(
+    nft,
+    whitelistedCreatorsDictionary,
+  );
+
+  const metadataInfo = whitelistedCreator
+    ? await deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
+    : new PublicKey(nft.mint);
+
+  const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
+    return whitelistedCreator
+      ? whitelistedAddress.toBase58() === whitelistedCreator
+      : whitelistedAddress.toBase58() === nft.mint;
+  });
 
   await depositNftToCommunityPoolTxn(
     {
-      nftMint: nftMint,
+      nftMint: new PublicKey(nft.mint),
       communityPool: pool.publicKey,
       poolWhitelist: poolWhitelist.publicKey,
       nftUserTokenAccount,
       fractionMint: pool.fractionMint,
       metadataInfo,
+      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion: poolLpMint,
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
@@ -75,13 +91,17 @@ export const rawDepositNftToCommunityPool = async ({
   );
 
   afterTransaction && afterTransaction();
+
+  return true;
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   rawDepositNftToCommunityPool,
   {
-    onSuccessMessage: 'NFT deposited successfully',
-    onErrorMessage: 'NFT depositing failed',
+    onSuccessMessage: {
+      message: 'NFT deposited successfully',
+    },
+    onErrorMessage: { message: 'NFT depositing failed' },
   },
 );
 

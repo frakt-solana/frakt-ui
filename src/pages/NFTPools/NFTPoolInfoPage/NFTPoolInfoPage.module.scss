@@ -1,0 +1,150 @@
+.root {
+  padding-top: 50px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 30px;
+
+  @media screen and (max-width: 1023px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+}
+
+.priceWrapper {
+  width: 375px;
+
+  @media screen and (max-width: 1023px) {
+    grid-column: 1 / -1;
+  }
+}
+
+.cardTitle {
+  font: var(--font-text-2);
+  margin-bottom: 20px;
+}
+
+.priceItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: var(--font-text-3);
+  border-bottom: var(--border-gray-1);
+  padding: 12px 10px;
+  background-color: var(--color-gray-7);
+
+  &:first-child {
+    border-top: var(--border-gray-1);
+  }
+}
+
+.priceItemBuy {
+  background: linear-gradient(
+    90deg,
+    rgba(131, 214, 164, 0.36) 0%,
+    rgba(131, 214, 164, 0) 93.75%
+  );
+}
+
+.priceItemSell {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 102, 102, 0.36) 0%,
+    rgba(255, 102, 102, 0) 93.75%
+  );
+}
+
+.priceItemSwap {
+  background: linear-gradient(
+    90deg,
+    rgba(62, 158, 248, 0.36) 0%,
+    rgba(62, 158, 248, 0) 93.75%
+  );
+}
+
+.priceItemTitle {
+  font: var(--font-text-5);
+  text-transform: uppercase;
+}
+
+.priceItemTitleBuy {
+  color: var(--green-color);
+}
+
+.priceItemTitleSell {
+  color: var(--red-error-color);
+}
+
+.priceItemTitleSwap {
+  color: var(--blue-color-1);
+}
+
+.liquidityWrapper {
+  font: var(--font-text-3);
+  color: var(--white-color);
+  width: 250px;
+}
+.liquiditySubtitle {
+  font: var(--font-text-5);
+  color: var(--color-gray-4);
+  padding-top: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+
+  &:first-of-type {
+    padding-top: 0;
+  }
+}
+.liquidityLink {
+  padding-top: 20px;
+}
+
+.solPriceWrapper {
+  font: var(--font-text-3);
+  color: var(--white-color);
+  display: flex;
+  align-items: center;
+}
+.solPriceIcon {
+  margin-left: 10px;
+  margin-right: 5px;
+}
+.tokenPriceIcon {
+  margin-left: 10px;
+  margin-right: 5px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-gray-1);
+  background-position: center;
+  background-size: cover;
+}
+
+.balanceWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.priceWrapper,
+.liquidityWrapper,
+.balanceWrapper {
+  padding: 30px;
+  border: var(--border-gray-1);
+  border-radius: 10px;
+
+  @media screen and (max-width: 767px) {
+    padding: 20px;
+  }
+
+  @media screen and (max-width: 1023px) {
+    width: unset;
+  }
+}

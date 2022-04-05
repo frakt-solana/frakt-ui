@@ -107,7 +107,7 @@ const FraktionalizePage = (): JSX.Element => {
   };
 
   const nfts = useMemo(() => {
-    return rawNfts.filter(({ metadata }) =>
+    return (rawNfts || []).filter(({ metadata }) =>
       metadata?.name.toUpperCase().includes(searchString),
     );
   }, [searchString, rawNfts]);
@@ -116,6 +116,7 @@ const FraktionalizePage = (): JSX.Element => {
     closeTxnModal();
     setTxnModalState('loading');
   };
+
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar

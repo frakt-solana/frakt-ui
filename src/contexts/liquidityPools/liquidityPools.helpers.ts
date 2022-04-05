@@ -1,4 +1,3 @@
-import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 import {
   CurrencyAmount,
   Liquidity,
@@ -12,6 +11,13 @@ import {
 import BN from 'bn.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection, PublicKey } from '@solana/web3.js';
+import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
+import {
+  MainRouterView,
+  SecondaryRewardView,
+  SecondStakeAccountView,
+  StakeAccountView,
+} from '@frakters/frkt-multiple-reward/lib/accounts';
 
 import { SOL_TOKEN } from '../../utils';
 import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
@@ -26,12 +32,6 @@ import {
   FusionPoolInfo,
   secondaryRewardWithTokenInfo,
 } from './liquidityPools.model';
-import {
-  MainRouterView,
-  SecondaryRewardView,
-  SecondStakeAccountView,
-  StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
   connection,
@@ -270,12 +270,14 @@ export const mapFusionPoolInfo = (
   } = getFusionDataMap(allProgramAccounts, lpMints, owner);
 
   return lpMints.reduce((fusionPoolInfo, lpMint) => {
-    fusionPoolInfo.set(lpMint, {
-      mainRouter: routerInfoByMint.get(lpMint),
-      stakeAccount: stakeAccountsByMint.get(lpMint),
-      secondaryReward: secondaryRewardByMint.get(lpMint),
-      secondaryStakeAccount: secondaryStakeAccountsByMint.get(lpMint),
-    });
+    if (routerInfoByMint.get(lpMint)) {
+      fusionPoolInfo.set(lpMint, {
+        mainRouter: routerInfoByMint.get(lpMint),
+        stakeAccount: stakeAccountsByMint.get(lpMint),
+        secondaryReward: secondaryRewardByMint.get(lpMint),
+        secondaryStakeAccount: secondaryStakeAccountsByMint.get(lpMint),
+      });
+    }
 
     return fusionPoolInfo;
   }, new Map<string, FusionPoolInfo>());
@@ -299,4 +301,4 @@ export const getTokenInfoByReward = (
   stakeAccount: StakeAccountView,
   tokensList: TokenInfo[],
 ): TokenInfo[] =>
-  tokensList.filter(({ address }) => address === stakeAccount.tokenMintOutput);
+  tokensList.filter(({ address }) => address === stakeAccount?.tokenMintOutput);

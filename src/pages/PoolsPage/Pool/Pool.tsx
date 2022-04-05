@@ -3,23 +3,24 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import { useWalletModal } from '../../../contexts/WalletModal';
+import { PoolCardHeader } from './components/PoolCardHeader';
 import { useUserSplAccount } from '../../../utils/accounts';
 import DepositModal from '../../../components/DepositModal';
 import { ChevronDownIcon } from '../../../icons';
 import { SOL_TOKEN } from '../../../utils';
-import styles from './styles.module.scss';
+import styles from './Pool.module.scss';
 import {
   formatNumberWithSpaceSeparator,
   PoolData,
   FusionPoolInfo,
   RaydiumPoolInfo,
+  sumFusionAndRaydiumApr,
 } from '../../../contexts/liquidityPools';
-import { PoolStats } from '../hooks';
 import {
   PoolDetailsWalletConnected,
   PoolDetailsWalletDisconnected,
 } from './components';
-import { PoolCardHeader } from './components/PoolCardHeader';
+import { PoolStats } from '../model';
 
 interface PoolInterface {
   poolData: PoolData;
@@ -80,8 +81,10 @@ const Pool: FC<PoolInterface> = ({
             </p>
           </div>
           <div className={styles.totalValue}>
-            <p className={styles.title}>Apy</p>
-            <p className={styles.value}>{poolStats?.apy || 0}%</p>
+            <p className={styles.title}>Apr</p>
+            <p className={styles.value}>
+              {sumFusionAndRaydiumApr(fusionPoolInfo, poolStats)?.toFixed(2)}%
+            </p>
           </div>
         </div>
 

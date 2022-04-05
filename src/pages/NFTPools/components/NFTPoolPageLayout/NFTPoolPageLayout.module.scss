@@ -1,0 +1,27 @@
+.content {
+  padding-bottom: 50px;
+  padding-left: 20px;
+  width: 100%;
+  padding-top: 150px;
+  position: relative;
+}
+
+.buyContent {
+  @media screen and (max-width: 1023px) {
+    padding-top: 218px;
+  }
+  @media screen and (max-width: 767px) {
+    padding-top: 268px;
+  }
+}
+
+.sellContent,
+.swapContent,
+.infoContent {
+  @media screen and (max-width: 1023px) {
+    padding-top: 196px;
+  }
+  @media screen and (max-width: 767px) {
+    padding-top: 194px;
+  }
+}

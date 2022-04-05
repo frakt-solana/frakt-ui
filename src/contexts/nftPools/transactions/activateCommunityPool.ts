@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import {
   activateCommunityPool,
   Provider,
-} from 'community-pools-client-library-v2';
+} from '@frakters/community-pools-client-library-v2';
 
 import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
@@ -46,6 +46,6 @@ const rawActivateCommunityPool = async ({
 export const activateCommunityPoolTransaction = wrapAsyncWithTryCatch(
   rawActivateCommunityPool,
   {
-    onErrorMessage: 'Error',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );

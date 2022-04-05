@@ -1,0 +1,111 @@
+.pool {
+  background: #191919;
+  border: 1px solid var(--gray-color-3);
+  border-radius: 10px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.poolCard {
+  display: flex;
+  align-items: center;
+  padding: 20px 25px 20px 20px;
+  cursor: pointer;
+
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+    position: relative;
+  }
+}
+
+.tokenInfo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+.image {
+  border-radius: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.chevronVisibleIcon {
+  margin-left: 60px;
+  cursor: pointer;
+  fill: var(--white-color);
+  width: 24px;
+  height: 24px;
+  transform: rotate(-90deg);
+
+  @media screen and (max-width: 767px) {
+    position: absolute;
+    top: 30px;
+    right: 20px;
+  }
+}
+
+.rotate {
+  transform: rotate(0deg);
+}
+
+.title {
+  font: var(--font-secondary);
+  text-transform: uppercase;
+}
+
+.value {
+  font: var(--font-body-small);
+  margin-top: 10px;
+}
+
+.statsValue {
+  display: flex;
+  gap: 60px;
+
+  @media screen and (max-width: 767px) {
+    order: 1;
+    width: 100%;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 10px;
+
+    .value {
+      margin-top: 0;
+    }
+  }
+}
+
+.poolDetails {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-top: 1px solid var(--gray-color-7);
+  padding: 20px;
+  gap: 20px;
+
+  @media screen and (max-width: 1140px) {
+    flex-wrap: wrap;
+  }
+}
+
+.subtitle {
+  font: var(--font-subtitle);
+
+  @media screen and (max-width: 767px) {
+    font: var(--font-subtitle-2);
+  }
+}
+
+.totalValue {
+  min-width: 90px;
+
+  @media screen and (max-width: 767px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+  }
+}

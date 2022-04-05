@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import {
   getLotteryTicket as getLotteryTicketTxn,
   Provider,
-} from 'community-pools-client-library-v2';
+} from '@frakters/community-pools-client-library-v2';
 
 import { NftPoolData } from './../../../utils/cacher/nftPools';
 import {
@@ -16,6 +16,7 @@ import { wrapAsyncWithTryCatch } from '../../../utils';
 
 export interface GetLotteryTicketParams {
   pool: NftPoolData;
+  poolLpMint: PublicKey;
   afterTransaction?: () => void;
 }
 
@@ -27,6 +28,7 @@ export const rawGetLotteryTicket = async ({
   connection,
   wallet,
   pool,
+  poolLpMint,
   afterTransaction,
 }: GetLotteryTicketRawParams): Promise<PublicKey> => {
   const { publicKey: userFractionsTokenAccount } = await getTokenAccount({
@@ -40,6 +42,10 @@ export const rawGetLotteryTicket = async ({
       communityPool: pool.publicKey,
       userFractionsTokenAccount,
       fractionMint: pool.fractionMint,
+      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion: poolLpMint,
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
@@ -62,7 +68,11 @@ export const rawGetLotteryTicket = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawGetLotteryTicket, {
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Buy made successfully',
+    description: 'You will receive your NFT shortly',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const getLotteryTicket = createTransactionFuncFromRaw(
