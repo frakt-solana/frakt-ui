@@ -1,42 +1,42 @@
-import { FC, useEffect } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { FC } from 'react';
 
+import { LoanWithNftData } from '../../../../utils/loans';
+import LoanCard from '../../../../components/LoanCard';
 import { Loader } from '../../../../components/Loader';
-import { useUserTokens } from '../../../../contexts/userTokens';
-import { LoansList } from '../LoansList';
+import { useLoans } from '../../../../contexts/loans';
 import styles from './styles.module.scss';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../../../../components/FakeInfinityScroll';
 
 export const LoansTab: FC = () => {
-  const { connected } = useWallet();
-
-  const {
-    nfts: rawNfts,
-    loading: userTokensLoading,
-    nftsLoading,
-    fetchUserNfts,
-    rawUserTokensByMint,
-  } = useUserTokens();
-
-  useEffect(() => {
-    if (
-      connected &&
-      !userTokensLoading &&
-      !nftsLoading &&
-      Object.keys(rawUserTokensByMint).length
-    ) {
-      fetchUserNfts();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, nftsLoading]);
+  const { loansData, loading } = useLoans();
+  const { itemsToShow, next } = useFakeInfinityScroll(12);
 
   return (
     <>
-      {nftsLoading ? (
+      {loading ? (
         <div className={styles.loader}>
           <Loader size={'large'} />
         </div>
       ) : (
-        <LoansList nfts={rawNfts} />
+        <FakeInfinityScroll
+          itemsToShow={itemsToShow}
+          next={next}
+          isLoading={loading}
+          wrapperClassName={styles.loansList}
+          emptyMessage="No suitable loans found"
+        >
+          {loansData.map((nft: LoanWithNftData) => (
+            <LoanCard
+              key={nft.id}
+              imageUrl={nft.nftData?.image}
+              name={nft.nftData?.name}
+              ltvPrice={nft.amount}
+              nft={nft}
+            />
+          ))}
+        </FakeInfinityScroll>
       )}
     </>
   );

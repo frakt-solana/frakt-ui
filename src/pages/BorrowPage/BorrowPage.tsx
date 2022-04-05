@@ -1,10 +1,8 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useParams } from 'react-router-dom';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { LoadingModal } from '../../components/LoadingModal';
-import { useWalletModal } from '../../contexts/WalletModal';
 import { SearchInput } from '../../components/SearchInput';
 import BorrowForm, { useBorrowForm } from './BorrowForm';
 import NFTCheckbox from '../../components/NFTCheckbox';
@@ -13,62 +11,26 @@ import FakeInfinityScroll, {
 } from '../../components/FakeInfinityScroll';
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
-import { EstimateNFT, useLoans } from '../../contexts/loans';
-import { UserNFT } from '../../contexts/userTokens';
-import { useLazyTokens } from '../../contexts/userTokens/useLazyUserTokens';
-
-interface UserNFTWithEstimate extends UserNFT {
-  estimate: EstimateNFT[];
-}
+import { useBorrowPage } from './hooks';
 
 const BorrowPage: FC = () => {
-  const wallet = useWallet();
-
+  const { connected } = useWallet();
   const [search, setSearch] = useState<string>('');
-  const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
-
-  const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
   const { itemsToShow, next } = useFakeInfinityScroll(15);
-  const { setVisible } = useWalletModal();
-  const { estimations } = useLoans();
+  const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
 
   const { onDeselectOneNft, onSelectOneNft, searchItems, selectedNft } =
     useSelectLayout();
 
-  const { nfts, fetchUserTokens, loading } = useLazyTokens();
-
-  useEffect(() => {
-    (async () => {
-      await fetchUserTokens();
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nfts, loading]);
-
-  const { vaultPubkey: currentVaultPubkey } =
-    useParams<{ vaultPubkey: string }>();
-
-  const rawNfts = nfts.reduce(
-    (acc: UserNFTWithEstimate[], nft: UserNFT): UserNFTWithEstimate[] => {
-      const nameNft = nft.metadata?.collection?.name;
-
-      const filtered = estimations.filter(({ name }) => name === nameNft);
-      if (filtered[0]?.id) {
-        acc.push({ ...nft, estimate: filtered });
-      }
-
-      return acc;
-    },
-    [],
-  );
-
-  const getPriceByMint = useMemo(() => {
-    if (rawNfts.length) {
-      const selectedNftWithEstimation = rawNfts.filter(
-        ({ mint }) => mint === selectedNft[0]?.mint,
-      );
-      return selectedNftWithEstimation[0]?.estimate[0]?.floorPrice;
-    }
-  }, [rawNfts, selectedNft]);
+  const {
+    currentVaultPubkey,
+    isCloseSidebar,
+    getPriceByMint,
+    setIsCloseSidebar,
+    rawNfts,
+    setVisible,
+    loading,
+  } = useBorrowPage(selectedNft);
 
   return (
     <>
@@ -98,7 +60,7 @@ const BorrowPage: FC = () => {
           className={styles.search}
           placeholder="Search by NFT name"
         />
-        {!wallet.connected ? (
+        {!connected ? (
           <Button
             type="secondary"
             className={styles.connectBtn}
