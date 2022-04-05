@@ -6,7 +6,7 @@ import { keyBy } from 'lodash';
 import { RawUserTokensByMint, UserNFT } from '.';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
-export const useLazyTokens = (): {
+export const useLazyUserTokens = (): {
   nfts: UserNFT[];
   fetchUserTokens: () => Promise<void>;
   loading: boolean;

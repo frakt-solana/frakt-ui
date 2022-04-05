@@ -28,7 +28,7 @@ const getPdaAddress = async (program: Program<Idl>): Promise<PublicKey> => {
   return voteAccount;
 };
 
-const getEstimateByMint = async (mint: string): Promise<unknown> => {
+export const getEstimateByMint = async (mint: string): Promise<unknown> => {
   try {
     const estimate = await api.post(`/services/api/estimate`, {
       mint,
@@ -97,25 +97,30 @@ const getTokenAccountsByOwner = async (
   wallet: WalletContextState,
   mint: string,
 ): Promise<any> => {
-  const response = await fetch(SOLANA_RPC, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: uuidv4(),
-      method: 'getTokenAccountsByOwner',
-      params: [
-        wallet?.publicKey?.toBase58(),
-        { mint: mint },
-        { encoding: 'jsonParsed' },
-      ],
-    }),
-  });
+  try {
+    const response = await fetch(SOLANA_RPC, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: uuidv4(),
+        method: 'getTokenAccountsByOwner',
+        params: [
+          wallet?.publicKey?.toBase58(),
+          { mint: mint },
+          { encoding: 'jsonParsed' },
+        ],
+      }),
+    });
 
-  const data = await response.json();
-  return data;
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+  }
 };
 
 export const fetchLoans = async (): Promise<LoanWithNftData[]> => {
@@ -151,7 +156,6 @@ export const createLoan = async ({
   // @ts-ignore
   const program = new Program(config, programId, provider);
 
-  await getEstimateByMint(nft.mint);
   const data = await getTokenAccountsByOwner(wallet, nft.mint);
 
   if (data && data.result && data.result.value) {

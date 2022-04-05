@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo, Dispatch, SetStateAction } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useLazyTokens } from '../../contexts/userTokens/useLazyUserTokens';
+import { useLazyUserTokens, UserNFT } from '../../contexts/userTokens';
 import { EstimateNFT, useLoans } from '../../contexts/loans';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { UserNFT } from '../../contexts/userTokens';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface UserNFTWithEstimate extends UserNFT {
   estimate: EstimateNFT[];
@@ -22,17 +22,18 @@ export const useBorrowPage = (
   loading: boolean;
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
-  const { nfts, fetchUserTokens, loading } = useLazyTokens();
+  const { nfts, fetchUserTokens, loading } = useLazyUserTokens();
+  const { connected } = useWallet();
 
   const { setVisible } = useWalletModal();
   const { estimations } = useLoans();
 
   useEffect(() => {
-    (async () => {
-      await fetchUserTokens();
-    })();
+    if (connected) {
+      fetchUserTokens();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nfts, loading]);
+  }, [nfts, loading, connected]);
 
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
