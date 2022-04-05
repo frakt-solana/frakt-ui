@@ -136,13 +136,3 @@
   height: 23px;
   width: 23px;
 }
-
-.modal {
-  :global {
-    .ant-modal-body {
-      margin-top: -50px;
-      padding-top: 60px;
-      padding-bottom: 30px;
-    }
-  }
-}

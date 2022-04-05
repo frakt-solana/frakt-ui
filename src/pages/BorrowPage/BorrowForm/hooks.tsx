@@ -4,8 +4,7 @@ import { Control, useForm } from 'react-hook-form';
 import { Form, FormInstance } from 'antd';
 
 import { useConfirmModal } from '../../../components/ConfirmModal';
-import { UserNFT, useLazyUserTokens } from '../../../contexts/userTokens';
-import { SortValue } from '../../VaultsPage/model';
+import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import { createLoan } from '../../../utils/loans';
 import { useLoadingModal } from '../../../components/LoadingModal';
 
@@ -39,8 +38,8 @@ export const useBorrowForm = (
   onSubmit: (nft: UserNFT) => void;
   openConfirmModal: () => void;
   form: FormInstance<FormValues>;
-  returnPeriod: SortValue;
-  ltvValues: SortValue;
+  returnPeriod: Option;
+  ltvValues: Option;
   txnModalVisible: boolean;
   onTxnModalCancel: () => void;
   activeLine: string;
@@ -54,7 +53,7 @@ export const useBorrowForm = (
   const { connection } = useConnection();
   const wallet = useWallet();
 
-  const { removeTokenOptimistic } = useLazyUserTokens();
+  const { removeTokenOptimistic } = useUserTokens();
 
   const { control, watch } = useForm({
     defaultValues: {
@@ -112,14 +111,14 @@ export const useBorrowForm = (
   };
 };
 
-export const RETURN_PERIOD_VALUES: SortValue[] = [
+export const RETURN_PERIOD_VALUES: Option[] = [
   {
     label: <span>7 Days</span>,
     value: '7',
   },
 ];
 
-export const LTV_VALUES: SortValue[] = [
+export const LTV_VALUES: Option[] = [
   {
     label: <span>30%</span>,
     value: '30',

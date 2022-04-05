@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo, Dispatch, SetStateAction } from 'react';
+import { useState, useMemo, Dispatch, SetStateAction, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useLazyUserTokens, UserNFT } from '../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { EstimateNFT, useLoans } from '../../contexts/loans';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useDebounce } from '../../hooks';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface UserNFTWithEstimate extends UserNFT {
   estimate: EstimateNFT[];
@@ -24,20 +24,31 @@ export const useBorrowPage = (
   loading: boolean;
   searchItems: (search: string) => void;
 } => {
-  const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
-  const { nfts, fetchUserTokens, loading } = useLazyUserTokens();
   const { connected } = useWallet();
+  const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
+  const {
+    nfts,
+    nftsLoading,
+    fetchUserNfts,
+    rawUserTokensByMint,
+    loading: userTokensLoading,
+  } = useUserTokens();
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const [searchString, setSearchString] = useState<string>('');
   const { setVisible } = useWalletModal();
-  const { estimations } = useLoans();
+  const { estimations, loading: loansLoading } = useLoans();
 
   useEffect(() => {
-    if (connected) {
-      fetchUserTokens();
+    if (
+      connected &&
+      !userTokensLoading &&
+      !nftsLoading &&
+      Object.keys(rawUserTokensByMint).length
+    ) {
+      fetchUserNfts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nfts, connected]);
+  }, [connected, userTokensLoading, nftsLoading]);
 
   const { vaultPubkey: currentVaultPubkey } =
     useParams<{ vaultPubkey: string }>();
@@ -83,7 +94,7 @@ export const useBorrowPage = (
     setIsCloseSidebar,
     rawNfts,
     setVisible,
-    loading,
+    loading: nftsLoading || loansLoading,
     searchItems,
   };
 };

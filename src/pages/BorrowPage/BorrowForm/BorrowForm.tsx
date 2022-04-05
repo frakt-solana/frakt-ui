@@ -10,7 +10,6 @@ import { Select } from '../../../components/Select';
 import Button from '../../../components/Button';
 import { SOL_TOKEN } from '../../../utils';
 import styles from './BorrowForm.module.scss';
-
 import {
   useBorrowForm,
   SelectControlsNames,

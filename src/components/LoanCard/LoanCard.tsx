@@ -1,14 +1,15 @@
 import { FC } from 'react';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
+import moment from 'moment';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import { LoanWithNftData, getBack } from '../../utils/loans';
-import { useLoans } from '../../contexts/loans';
-import useRemainLoan from './useRemainLoan';
+// import { useLoans } from '../../contexts/loans';
 import styles from './LoanCard.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
+import { useCountdown } from '../../hooks';
 
 interface NFTCheckboxInterface {
   className?: string;
@@ -35,16 +36,23 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const { fetchLoansData } = useLoans();
+  // const { fetchLoansData } = useLoans();
 
   const onGetBackLoan = async (): Promise<void> => {
     openLoadingModal();
     await getBack({ connection, wallet, loan: nft });
-    await fetchLoansData();
+    // await fetchLoansData(); //TODO: Optimistic here
     closeLoadingModal();
   };
 
-  const timeLeft = useRemainLoan(nft.duration, nft.expiredAt);
+  const { timeLeft, leftTimeInSeconds } = useCountdown(
+    moment(nft.expiredAt).unix(),
+  );
+
+  const loanDurationInSeconds = nft.duration * 24 * 60 * 60;
+
+  const progress =
+    ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
 
   return (
     <>
@@ -88,7 +96,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
               <div className={styles.timeProgressWrapper}>
                 <div
                   className={styles.timeProgress}
-                  style={{ width: `${timeLeft.width}%` }}
+                  style={{ width: `${100 - progress}%` }}
                 />
               </div>
             </div>

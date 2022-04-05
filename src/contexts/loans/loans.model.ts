@@ -9,6 +9,8 @@ export interface LoansContextValues {
   loansData: LoanWithNftData[];
   fetchLoansData: FetchDataFunc;
   estimations: EstimateNFT[];
+  isPawnshopAuthenticated: boolean;
+  pawnshopLogin: () => Promise<void>;
 }
 
 export interface EstimateNFT {
@@ -23,8 +25,4 @@ export interface EstimateNFT {
   valuation: number;
 }
 
-export type LoansProviderType = ({
-  children,
-}: {
-  children: ReactNode;
-}) => JSX.Element;
+export type LoansProviderType = (props: { children: ReactNode }) => JSX.Element;

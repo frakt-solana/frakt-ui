@@ -23,7 +23,9 @@
 .modal {
   :global {
     .ant-modal-body {
-      padding-bottom: 160px;
+      margin-top: -50px;
+      padding-top: 60px;
+      padding-bottom: 30px;
     }
   }
 }

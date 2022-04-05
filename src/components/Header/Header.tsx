@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
@@ -16,7 +16,7 @@ import ConnectButton from '../ConnectButton';
 import ConnectedButton from '../ConnectedButton';
 import WalletContent from '../WalletContent';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { login } from '../../utils/loans';
+import { useLoans } from '../../contexts/loans';
 
 interface HeaderProps {
   className?: string;
@@ -25,37 +25,13 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ className, customHeader }) => {
   const { visible } = useWalletModal();
+  const { isPawnshopAuthenticated } = useLoans();
   const wallet = useWallet();
   const { connected } = wallet;
 
-  const [authenticated, setAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const walletLS = localStorage.getItem('wallet');
-    const walletName = localStorage.getItem('walletName');
-
-    if (walletLS && walletName) {
-      setAuthenticated(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authenticated]);
-
-  const signToken = async (): Promise<void> => {
-    if (!authenticated) {
-      const isLogin = await login(wallet);
-      if (isLogin) {
-        setAuthenticated(true);
-      }
-    } else {
-      setAuthenticated(false);
-    }
-  };
-
   return (
     <header className={classNames(styles.root, styles.header, className)}>
-      {visible && (
-        <WalletContent authenticated={authenticated} signToken={signToken} />
-      )}
+      {visible && <WalletContent />}
       <Container component="nav" className={styles.container}>
         <NavLink className={styles.logo} to={PATHS.ROOT}>
           Frakt
@@ -71,7 +47,7 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
           </li>
           <li>
             <div className={styles.profileWrapper}>
-              {connected && authenticated ? (
+              {connected && isPawnshopAuthenticated ? (
                 <ConnectedButton
                   className={classNames(
                     styles.walletBtn,

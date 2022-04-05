@@ -3,7 +3,7 @@
 import { Idl, Program, Provider, web3 } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import * as spl from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID as SPL_TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
@@ -152,7 +152,7 @@ export const createLoan = async ({
 }: CreateLoanProps): Promise<any> => {
   // @ts-ignore
   const provider = new Provider(connection, wallet, 'processed');
-  const programId = new web3.PublicKey(config.metadata.address);
+  const programId = new PublicKey(config.metadata.address);
   // @ts-ignore
   const program = new Program(config, programId, provider);
 
@@ -165,12 +165,10 @@ export const createLoan = async ({
     });
 
     if (response.data.preloan && response.data.preloan.order) {
-      const [voteAccount] = await web3.PublicKey.findProgramAddress(
+      const [voteAccount] = await PublicKey.findProgramAddress(
         [Buffer.from('vote_account')],
         program.programId,
       );
-
-      const tokenProgramID = spl.TOKEN_PROGRAM_ID;
 
       try {
         const init_order_tx = await program.rpc.initiateOrder({
@@ -180,7 +178,7 @@ export const createLoan = async ({
             user: wallet.publicKey,
             nftAccount: new web3.PublicKey(response.data.preloan.nft),
             nftMint: nft.mint,
-            tokenProgram: tokenProgramID,
+            tokenProgram: SPL_TOKEN_PROGRAM_ID,
             systemProgram: web3.SystemProgram.programId,
           },
         });
@@ -218,8 +216,6 @@ export const getBack = async ({
     program.programId,
   );
 
-  const tokenProgramID = spl.TOKEN_PROGRAM_ID;
-
   try {
     const tx = await program.rpc.paybackOrder({
       accounts: {
@@ -228,20 +224,16 @@ export const getBack = async ({
         user: wallet.publicKey,
         nftAccount: g_nft,
         nftMint: g_nft_mint,
-        tokenProgram: tokenProgramID,
+        tokenProgram: SPL_TOKEN_PROGRAM_ID,
         systemProgram: web3.SystemProgram.programId,
       },
       signers: [],
     });
 
-    const response = await api.post(`/services/api/close_loan`, {
+    await api.post(`/services/api/close_loan`, {
       id: loan.id,
       close_tx: tx,
     });
-
-    if (response.status === 200) {
-      fetchLoans();
-    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -253,6 +245,7 @@ export const login = async (wallet: WalletContextState): Promise<boolean> => {
     const message = `Sign this to verify your wallet
       ${uuidv4()}-${uuidv4()}-${uuidv4()}-${uuidv4()}`;
     const encodedMessage = new TextEncoder().encode(message);
+
     // @ts-ignore
     const signedMessage = await window.solana.signMessage(
       encodedMessage,

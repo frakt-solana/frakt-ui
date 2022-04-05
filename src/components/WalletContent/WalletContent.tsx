@@ -1,5 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 
+import { useLoans } from '../../contexts/loans';
 import { useWalletModal } from '../../contexts/WalletModal';
 import CurrentUserTable from '../CurrentUserTable';
 import styles from './styles.module.scss';
@@ -7,17 +8,12 @@ import { WalletItem } from './WalletItem';
 
 interface WalletContentProps {
   className?: string;
-  authenticated: any;
-  signToken?: () => void;
 }
 
-const WalletContent = ({
-  className = '',
-  authenticated,
-  signToken,
-}: WalletContentProps): JSX.Element => {
+const WalletContent = ({ className = '' }: WalletContentProps): JSX.Element => {
   const wallet = useWallet();
   const { setVisible } = useWalletModal();
+  const { isPawnshopAuthenticated, pawnshopLogin } = useLoans();
 
   const { connected, wallets, select } = wallet;
 
@@ -25,7 +21,7 @@ const WalletContent = ({
     <div className={`${styles.wrapper} ${className}`}>
       <div className={styles.overlay} onClick={() => setVisible(false)} />
       <div className={`${styles.container} container`}>
-        {connected && authenticated ? (
+        {connected && isPawnshopAuthenticated ? (
           <CurrentUserTable className={styles.itemsContainer} />
         ) : (
           <div className={styles.itemsContainer}>
@@ -36,7 +32,7 @@ const WalletContent = ({
                   select(name);
                   setVisible(false);
                   setTimeout(() => {
-                    signToken();
+                    pawnshopLogin();
                   }, 1000);
                 }}
                 imageSrc={iconUrl}
