@@ -257,7 +257,7 @@ export const NFTPoolSwapPage: FC = () => {
 
   const whitelistedNFTs = useMemo(() => {
     return filterWhitelistedNFTs(
-      rawNfts,
+      rawNfts || [],
       whitelistedMintsDictionary,
       whitelistedCreatorsDictionary,
     );
