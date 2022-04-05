@@ -84,10 +84,10 @@ export const useBorrowForm = (
     });
     if (response) {
       removeTokenOptimistic([nft.mint]);
+      onCloseSidebar();
     }
     closeConfirmModal();
     setTxnModalVisible(false);
-    onCloseSidebar();
   };
 
   const onTxnModalCancel = (): void => {
