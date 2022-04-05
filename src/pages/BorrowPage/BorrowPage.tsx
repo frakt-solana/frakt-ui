@@ -19,8 +19,7 @@ const BorrowPage: FC = () => {
   const { itemsToShow, next } = useFakeInfinityScroll(15);
   const { loadingModalVisible, closeLoadingModal } = useBorrowForm();
 
-  const { onDeselectOneNft, onSelectOneNft, searchItems, selectedNft } =
-    useSelectLayout();
+  const { onDeselectOneNft, onSelectOneNft, selectedNft } = useSelectLayout();
 
   const {
     currentVaultPubkey,
@@ -30,6 +29,7 @@ const BorrowPage: FC = () => {
     rawNfts,
     setVisible,
     loading,
+    searchItems,
   } = useBorrowPage(selectedNft);
 
   return (

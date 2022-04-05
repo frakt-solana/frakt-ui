@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams, useHistory } from 'react-router';
 
@@ -19,7 +19,7 @@ import {
 import { PATHS } from '../../constants';
 import DetailsForm from './DetailsForm';
 import { useSidebar } from '../../components/SelectLayout/components/Sidebar/hooks';
-import { UserNFT } from '../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { DetailsFormDisabled } from './DetailsForm/DetailsFormDisabled';
 
 const FraktionalizePage: FC = () => {
@@ -51,6 +51,24 @@ const FraktionalizePage: FC = () => {
     searchItems,
     loading,
   } = useSelectLayout();
+
+  const {
+    rawUserTokensByMint,
+    loading: userTokensLoading,
+    fetchUserNfts,
+  } = useUserTokens();
+
+  useEffect(() => {
+    if (
+      connected &&
+      !userTokensLoading &&
+      !loading &&
+      Object.keys(rawUserTokensByMint).length
+    ) {
+      fetchUserNfts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connected, userTokensLoading, loading]);
 
   const { currentVault, lockedNfts, isVaultActive } = useSidebar(
     currentVaultPubkey,
