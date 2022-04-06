@@ -206,6 +206,10 @@ body .slippageInput {
   outline: none;
 }
 
+.slippageInputActive {
+  background-color: var(--color-gray-4);
+}
+
 .btnWrapper {
   padding: 0 20px 20px;
 }

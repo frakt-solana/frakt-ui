@@ -158,7 +158,9 @@ export const SlippageDropdown: FC<SlippageDropdownProps> = ({
           </li>
           <li className={styles.slippageItem}>
             <NumericInput
-              className={styles.slippageInput}
+              className={classNames(styles.slippageInput, {
+                [styles.slippageInputActive]: inputSlippageValue,
+              })}
               value={inputSlippageValue}
               onChange={setInputSlippageValue}
               onFocus={() => {
