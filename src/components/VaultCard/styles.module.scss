@@ -4,11 +4,11 @@
   position: relative;
   z-index: 1;
 
-  @media screen and (max-width: 700px){
+  @media screen and (max-width: 700px) {
     padding: 18px;
   }
 
-  @media screen and (max-width: 550px){
+  @media screen and (max-width: 550px) {
     padding: 11px;
   }
 }
@@ -30,6 +30,7 @@
       top: 10px;
       left: 10px;
       z-index: -1;
+      transition: border-color var(--transition-1), opacity var(--transition-1);
     }
 
     display: flex;
@@ -41,6 +42,10 @@
 
     &:hover {
       border-color: var(--accent-color-1);
+      &::before {
+        opacity: 0.5;
+        border-color: var(--accent-color-1);
+      }
     }
 
     .nameContainer {
@@ -58,12 +63,12 @@
         max-height: 60px;
         overflow: hidden;
 
-        @media screen and (max-width: 700px){
+        @media screen and (max-width: 700px) {
           font-size: 19px;
           margin-bottom: 10px;
         }
 
-        @media screen and (max-width: 550px){
+        @media screen and (max-width: 550px) {
           font-size: 15px;
         }
       }
@@ -83,11 +88,11 @@
           border-radius: 50%;
         }
 
-        @media screen and (max-width: 700px){
+        @media screen and (max-width: 700px) {
           font-size: 11px;
         }
 
-        @media screen and (max-width: 550px){
+        @media screen and (max-width: 550px) {
           font-size: 9px;
         }
       }
@@ -100,11 +105,11 @@
       justify-content: space-between;
       gap: 16px;
 
-      @media screen and (max-width: 767px){
+      @media screen and (max-width: 767px) {
         gap: 10px;
       }
 
-      @media screen and (max-width: 550px){
+      @media screen and (max-width: 550px) {
         flex-wrap: wrap;
       }
 
@@ -123,13 +128,13 @@
           margin-top: 8px;
         }
 
-        @media screen and (max-width: 767px){
+        @media screen and (max-width: 767px) {
           .value {
             font-size: 19px;
           }
         }
 
-        @media screen and (max-width: 550px){
+        @media screen and (max-width: 550px) {
           min-width: 40%;
 
           .title {
@@ -172,19 +177,19 @@
   position: relative;
   overflow: hidden;
 
-  @media screen and (max-width: 767px){
+  @media screen and (max-width: 767px) {
     height: 270px;
   }
 
-  @media screen and (max-width: 550px){
+  @media screen and (max-width: 550px) {
     height: 200px;
   }
 
-  @media screen and (max-width: 450px){
+  @media screen and (max-width: 450px) {
     height: 160px;
   }
 
-  @media screen and (max-width: 370px){
+  @media screen and (max-width: 370px) {
     height: 250px;
   }
 }
@@ -320,11 +325,11 @@
       }
     }
 
-    @media screen and (max-width: 700px){
+    @media screen and (max-width: 700px) {
       padding: 18px;
     }
 
-    @media screen and (max-width: 550px){
+    @media screen and (max-width: 550px) {
       padding: 11px;
       gap: 5px;
     }
@@ -356,5 +361,3 @@
     background-color: var(--accent-color-1);
   }
 }
-
-
