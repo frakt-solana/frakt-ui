@@ -25,7 +25,7 @@ const rawGetLoanBack = async ({
   wallet,
   connection,
   loan,
-}: GetBackLoanTransactionRawParams): Promise<void> => {
+}: GetBackLoanTransactionRawParams): Promise<boolean> => {
   const { order, nft, nft_address } = loan;
   // @ts-ignore
   const provider = new Provider(connection, wallet, 'processed');
@@ -56,6 +56,8 @@ const rawGetLoanBack = async ({
       id: loan.id,
       close_tx: tx,
     });
+
+    return true;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
@@ -64,7 +66,7 @@ const rawGetLoanBack = async ({
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawGetLoanBack, {
   onSuccessMessage: {
-    message: 'Getback loan successfully',
+    message: 'Loan repaid successfully',
   },
   onErrorMessage: { message: 'Transaction failed' },
 });

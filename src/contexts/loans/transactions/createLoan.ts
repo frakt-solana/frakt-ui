@@ -79,7 +79,7 @@ const rawCreateLoan = async ({
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateLoan, {
   onSuccessMessage: {
-    message: 'Create loan successfully',
+    message: 'Loan created  successfully',
   },
   onErrorMessage: { message: 'Transaction failed' },
 });
