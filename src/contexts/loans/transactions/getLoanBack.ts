@@ -38,30 +38,25 @@ const rawGetLoanBack = async ({
     program.programId,
   );
 
-  try {
-    const tx = await program.rpc.paybackOrder({
-      accounts: {
-        order: new PublicKey(order),
-        voteAccount: voteAccount,
-        user: wallet.publicKey,
-        nftAccount: new PublicKey(nft),
-        nftMint: new PublicKey(nft_address),
-        tokenProgram: SPL_TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-      },
-      signers: [],
-    });
+  const tx = await program.rpc.paybackOrder({
+    accounts: {
+      order: new PublicKey(order),
+      voteAccount: voteAccount,
+      user: wallet.publicKey,
+      nftAccount: new PublicKey(nft),
+      nftMint: new PublicKey(nft_address),
+      tokenProgram: SPL_TOKEN_PROGRAM_ID,
+      systemProgram: SystemProgram.programId,
+    },
+    signers: [],
+  });
 
-    await api.post(`/services/api/close_loan`, {
-      id: loan.id,
-      close_tx: tx,
-    });
+  await api.post(`/services/api/close_loan`, {
+    id: loan.id,
+    close_tx: tx,
+  });
 
-    return true;
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log(e);
-  }
+  return true;
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawGetLoanBack, {

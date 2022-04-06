@@ -24,7 +24,7 @@ export const LoansPoolsContext = React.createContext<LoansContextValues>({
   pawnshopLogin: () => Promise.resolve(null),
   getLoanBack: () => Promise.resolve(null),
   createLoan: () => Promise.resolve(null),
-  removeTokenOptimistic: () => {},
+  removeLoanOptimistic: () => {},
 });
 
 export const LoansProvider: LoansProviderType = ({ children }) => {
@@ -74,7 +74,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     }
   };
 
-  const removeTokenOptimistic = (mints: string[]): void => {
+  const removeLoanOptimistic = (mints: string[]): void => {
     const patchedLoansData = loansData.filter((nft) => {
       return !mints.includes(nft.nft);
     });
@@ -97,7 +97,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
         estimations,
         pawnshopLogin,
         isPawnshopAuthenticated,
-        removeTokenOptimistic,
+        removeLoanOptimistic,
         getLoanBack: getLoanBack({
           connection,
           wallet,

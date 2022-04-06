@@ -17,7 +17,7 @@ export interface LoansContextValues {
   pawnshopLogin: () => Promise<void>;
   getLoanBack: (params: GetBackLoanTransactionParams) => Promise<boolean>;
   createLoan: (params: CreateLoanTransactionParams) => Promise<any>;
-  removeTokenOptimistic: (mints: string[]) => void;
+  removeLoanOptimistic: (mints: string[]) => void;
 }
 
 export interface EstimateNFT {

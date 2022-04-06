@@ -50,29 +50,24 @@ const rawCreateLoan = async ({
         program.programId,
       );
 
-      try {
-        const init_order_tx = await program.rpc.initiateOrder({
-          accounts: {
-            order: data.preloan.order,
-            voteAccount: voteAccount,
-            user: wallet.publicKey,
-            nftAccount: new PublicKey(data.preloan.nft),
-            nftMint: nft.mint,
-            tokenProgram: SPL_TOKEN_PROGRAM_ID,
-            systemProgram: SystemProgram.programId,
-          },
-        });
+      const init_order_tx = await program.rpc.initiateOrder({
+        accounts: {
+          order: data.preloan.order,
+          voteAccount: voteAccount,
+          user: wallet.publicKey,
+          nftAccount: new PublicKey(data.preloan.nft),
+          nftMint: nft.mint,
+          tokenProgram: SPL_TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+        },
+      });
 
-        const loan = api.post(`/services/api/store_loan`, {
-          id: data.preloan.id,
-          init_tx: init_order_tx,
-        });
+      const loan = api.post(`/services/api/store_loan`, {
+        id: data.preloan.id,
+        init_tx: init_order_tx,
+      });
 
-        return loan;
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(error);
-      }
+      return loan;
     }
   }
 };

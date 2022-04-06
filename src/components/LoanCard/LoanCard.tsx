@@ -26,7 +26,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
   ltvPrice,
   nft,
 }) => {
-  const { getLoanBack, removeTokenOptimistic } = useLoans();
+  const { getLoanBack, removeLoanOptimistic } = useLoans();
 
   const {
     visible: loadingModalVisible,
@@ -38,7 +38,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
     openLoadingModal();
     const response = await getLoanBack({ loan: nft });
     if (response) {
-      await removeTokenOptimistic([nft.nft]);
+      await removeLoanOptimistic([nft.nft]);
     }
     closeLoadingModal();
   };
