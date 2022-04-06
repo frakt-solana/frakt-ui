@@ -1,1 +1,1 @@
-export const SOLANA_RPC = process.env.SOLANA_RPC;
+export const RPC_ENDPOINT = process.env.RPC_ENDPOINT;

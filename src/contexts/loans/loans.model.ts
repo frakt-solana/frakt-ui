@@ -1,6 +1,10 @@
 import { ReactNode } from 'react';
 
 import { LoanWithNftData } from '../../utils/loans';
+import {
+  CreateLoanTransactionParams,
+  GetBackLoanTransactionParams,
+} from './transactions';
 
 export type FetchDataFunc = () => Promise<void>;
 
@@ -11,6 +15,8 @@ export interface LoansContextValues {
   estimations: EstimateNFT[];
   isPawnshopAuthenticated: boolean;
   pawnshopLogin: () => Promise<void>;
+  getLoanBack: (params: GetBackLoanTransactionParams) => Promise<void>;
+  createLoan: (params: CreateLoanTransactionParams) => Promise<any>;
 }
 
 export interface EstimateNFT {

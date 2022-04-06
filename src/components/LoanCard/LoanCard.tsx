@@ -1,15 +1,14 @@
 import { FC } from 'react';
-import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import moment from 'moment';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
-import { LoanWithNftData, getBack } from '../../utils/loans';
-// import { useLoans } from '../../contexts/loans';
+import { LoanWithNftData } from '../../utils/loans';
 import styles from './LoanCard.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
 import { useCountdown } from '../../hooks';
+import { useLoans } from '../../contexts/loans';
 
 interface NFTCheckboxInterface {
   className?: string;
@@ -27,8 +26,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
   ltvPrice,
   nft,
 }) => {
-  const wallet = useWallet();
-  const { connection } = useConnection();
+  const { getLoanBack } = useLoans();
 
   const {
     visible: loadingModalVisible,
@@ -36,11 +34,9 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  // const { fetchLoansData } = useLoans();
-
   const onGetBackLoan = async (): Promise<void> => {
     openLoadingModal();
-    await getBack({ connection, wallet, loan: nft });
+    await getLoanBack({ loan: nft });
     // await fetchLoansData(); //TODO: Optimistic here
     closeLoadingModal();
   };

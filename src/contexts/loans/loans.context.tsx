@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import {
   EstimateNFT,
@@ -13,6 +13,7 @@ import {
   fetchCollectionsData,
   login,
 } from '../../utils/loans';
+import { createLoan, getLoanBack } from './transactions';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
   loading: true,
@@ -21,6 +22,8 @@ export const LoansPoolsContext = React.createContext<LoansContextValues>({
   estimations: [],
   isPawnshopAuthenticated: false,
   pawnshopLogin: () => Promise.resolve(null),
+  getLoanBack: () => Promise.resolve(null),
+  createLoan: () => Promise.resolve(null),
 });
 
 export const LoansProvider: LoansProviderType = ({ children }) => {
@@ -28,6 +31,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const [loansData, setLoansData] = useState<LoanWithNftData[]>([]);
   const wallet = useWallet();
   const [estimations, setEstimations] = useState<EstimateNFT[]>([]);
+  const { connection } = useConnection();
 
   const [isPawnshopAuthenticated, setIsPawnshopAuthenticated] = useState(false);
 
@@ -84,6 +88,14 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
         estimations,
         pawnshopLogin,
         isPawnshopAuthenticated,
+        getLoanBack: getLoanBack({
+          connection,
+          wallet,
+        }),
+        createLoan: createLoan({
+          connection,
+          wallet,
+        }),
       }}
     >
       {children}

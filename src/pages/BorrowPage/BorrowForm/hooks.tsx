@@ -1,12 +1,11 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 import { Form, FormInstance } from 'antd';
 
 import { useConfirmModal } from '../../../components/ConfirmModal';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
-import { createLoan } from '../../../utils/loans';
 import { useLoadingModal } from '../../../components/LoadingModal';
+import { useLoans } from '../../../contexts/loans';
 
 interface FormValues {
   LTV: string;
@@ -50,8 +49,7 @@ export const useBorrowForm = (
   const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
   const [activeLine, setActiveLine] = useState<string>('');
   const [form] = Form.useForm<FormValues>();
-  const { connection } = useConnection();
-  const wallet = useWallet();
+  const { createLoan } = useLoans();
 
   const { removeTokenOptimistic } = useUserTokens();
 
@@ -76,11 +74,7 @@ export const useBorrowForm = (
 
   const onSubmit = async (nft: UserNFT): Promise<void> => {
     setTxnModalVisible(true);
-    const response = await createLoan({
-      connection,
-      wallet,
-      nft: selectedNft[0],
-    });
+    const response = await createLoan({ nft: selectedNft[0] });
     if (response) {
       removeTokenOptimistic([nft.mint]);
       onCloseSidebar();
