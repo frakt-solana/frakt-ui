@@ -61,7 +61,7 @@ export const useSelectLayout = (): {
   };
 
   const nfts = useMemo(() => {
-    return rawNfts.filter(({ metadata }) =>
+    return (rawNfts || []).filter(({ metadata }) =>
       metadata?.name.toUpperCase().includes(searchString),
     );
   }, [searchString, rawNfts]);

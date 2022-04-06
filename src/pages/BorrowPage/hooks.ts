@@ -59,14 +59,14 @@ export const useBorrowPage = (
   }, 300);
 
   const filteredNfts = useMemo(() => {
-    return nfts.filter(({ metadata }) =>
+    return (nfts || []).filter(({ metadata }) =>
       metadata?.name.toUpperCase().includes(searchString),
     );
   }, [searchString, nfts]);
 
   const rawNfts = filteredNfts.reduce(
     (acc: UserNFTWithEstimate[], nft: UserNFT): UserNFTWithEstimate[] => {
-      const nameNft = nft.metadata?.collection?.name;
+      const nameNft = nft?.metadata?.collectionName;
 
       const filtered = estimations.filter(({ name }) => name === nameNft);
       if (filtered[0]?.id) {
