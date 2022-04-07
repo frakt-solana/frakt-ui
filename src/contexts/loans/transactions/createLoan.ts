@@ -27,8 +27,9 @@ const rawCreateLoan = async ({
   connection,
   nft,
 }: CreateLoanTransactionRawParams): Promise<any> => {
-  // @ts-ignore
-  const provider = new Provider(connection, wallet, 'processed');
+  const provider = new Provider(connection, wallet, {
+    commitment: 'processed',
+  });
   const programId = new PublicKey(config.metadata.address);
   // @ts-ignore
   const program = new Program(config, programId, provider);
@@ -39,7 +40,7 @@ const rawCreateLoan = async ({
   });
 
   if (tokenAccount) {
-    const { data } = await api.post('/services/api/store_preloan', {
+    const { data }: any = await api.post('/services/api/store_preloan', {
       nft: nft.mint,
       nft_mint: tokenAccount,
     });

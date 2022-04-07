@@ -27,7 +27,7 @@ export const fetchCollectionsData = async (): Promise<
   AvailableCollectionsProps[]
 > => {
   try {
-    const response = await api.get(`/services/api/collections`);
+    const response: any = await api.get(`/services/api/collections`);
 
     if (response) {
       return response.data?.collections || [];
@@ -39,7 +39,7 @@ export const fetchCollectionsData = async (): Promise<
 };
 
 export const fetchLoans = async (): Promise<LoanWithNftData[]> => {
-  const response = await api.post(`/services/api/get_loans`);
+  const response: any = await api.post(`/services/api/get_loans`);
 
   const { data } = response;
 
@@ -76,7 +76,7 @@ export const login = async (wallet: WalletContextState): Promise<boolean> => {
     const formData = new FormData();
     formData.append('file', new Blob(signedMessage.signature));
 
-    const { data } = await api.post(`/services/api/login`, {
+    const { data }: any = await api.post(`/services/api/login`, {
       publicKey: signedMessage?.publicKey.toBase58(),
       message: message,
       wallet: Array.from(signedMessage.publicKey.toBytes()),
