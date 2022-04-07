@@ -271,40 +271,6 @@
   min-height: 97px;
 }
 
-.tabs {
-  width: 100%;
-  display: flex;
-}
-
-.tab {
-  padding: 18px 24px;
-  width: 120px;
-  font: var(--font-btn-small);
-  color: var(--white-color);
-  background: transparent;
-  border: 1px solid var(--gray-color-3);
-  cursor: pointer;
-  transition: background var(--transition-1), color var(--transition-1);
-
-  @media screen and (max-width: 1023px) {
-    font-size: 15px;
-    width: 33%;
-    height: 38px;
-    padding-top: 10px;
-  }
-
-  &:hover {
-    background: var(--gray-color-7);
-  }
-
-  &Active,
-  &Active:hover {
-    background: var(--white-color);
-    color: var(--black-color);
-    pointer-events: none;
-  }
-}
-
 .tabContent {
   padding-top: 24px;
 
