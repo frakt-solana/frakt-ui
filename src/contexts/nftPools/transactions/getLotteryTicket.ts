@@ -16,6 +16,7 @@ import { wrapAsyncWithTryCatch } from '../../../utils';
 
 export interface GetLotteryTicketParams {
   pool: NftPoolData;
+  poolLpMint: PublicKey;
   afterTransaction?: () => void;
 }
 
@@ -27,6 +28,7 @@ export const rawGetLotteryTicket = async ({
   connection,
   wallet,
   pool,
+  poolLpMint,
   afterTransaction,
 }: GetLotteryTicketRawParams): Promise<PublicKey> => {
   const { publicKey: userFractionsTokenAccount } = await getTokenAccount({
@@ -41,13 +43,9 @@ export const rawGetLotteryTicket = async ({
       userFractionsTokenAccount,
       fractionMint: pool.fractionMint,
       fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      tokenMintInputFusion: new PublicKey(
-        // 'C56Dq4P8kYpzt984PNBgQPb4v7vDdTaMNtucNYz9iSzT',
-        'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
-      ),
-      leaderboardProgramId: new PublicKey(
-        process.env.LEADERBOARD_PROGRAM_PUBKEY,
-      ),
+      tokenMintInputFusion: poolLpMint,
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
     },
     {
       programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
@@ -70,7 +68,11 @@ export const rawGetLotteryTicket = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawGetLotteryTicket, {
-  onErrorMessage: 'Transaction failed',
+  onSuccessMessage: {
+    message: 'Buy made successfully',
+    description: 'You will receive your NFT shortly',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const getLotteryTicket = createTransactionFuncFromRaw(

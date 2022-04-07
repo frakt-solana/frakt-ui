@@ -16,7 +16,7 @@ export const MainSection: FC = () => {
         </h1>
         <h2 className={styles.subtitle}>
           Buy, sell, earn yield and get instant liquidity out of your NFTs.{' '}
-          <br /> Oh, and get rewarded in process!
+          <br /> Oh, and get rewarded in the process!
         </h2>
         <NavLink to={PATHS.VAULTS}>
           <Button className={styles.btn} type="alternative">

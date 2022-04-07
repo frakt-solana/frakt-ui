@@ -156,24 +156,35 @@
   font: var(--font-text-5);
 }
 
-.priceLabel {
+.priceLabel,
+.aprLabel {
   font: var(--font-text-7);
   color: var(--color-gray-4);
   text-transform: uppercase;
+  margin-bottom: 10px;
+
+  @media screen and (max-width: 550px) {
+    margin-bottom: 5px;
+  }
 }
 
 .priceWrapper {
   display: flex;
   font-size: 18px;
   font-weight: 400;
-  margin-top: 10px;
-
-  @media screen and (max-width: 550px) {
-    margin-top: 5px;
-  }
 
   svg {
     margin-left: 10px;
     margin-right: 5px;
   }
+}
+
+.aprWrapper {
+  padding-top: 20px;
+}
+
+.aprValue {
+  font: var(--font-text-3);
+  color: var(--color-gray-4);
+  color: #83d6a4;
 }

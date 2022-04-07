@@ -39,6 +39,6 @@ const rawAddToWhitelistOwner = async ({
 export const addToWhitelistOwner = wrapAsyncWithTryCatch(
   rawAddToWhitelistOwner,
   {
-    onErrorMessage: 'Error',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );

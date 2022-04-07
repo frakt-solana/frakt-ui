@@ -73,8 +73,10 @@ export const rawRaydiumSwap = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawRaydiumSwap, {
-  onSuccessMessage: 'Swap made successfully',
-  onErrorMessage: 'Swap failed',
+  onSuccessMessage: {
+    message: 'Swap made successfully',
+  },
+  onErrorMessage: { message: 'Swap failed' },
 });
 
 export const raydiumSwap = createTransactionFuncFromRaw(

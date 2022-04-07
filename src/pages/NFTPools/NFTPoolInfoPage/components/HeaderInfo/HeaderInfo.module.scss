@@ -6,41 +6,50 @@
   }
 }
 
-.titleWrapper {
-  padding: 20px 0 20px 20px;
+.wrapper {
+  padding: 0;
   display: flex;
-  align-items: center;
-  font: var(--font-text-1);
-  margin-right: auto;
-
-  @media screen and (max-width: 767px) {
-    font-size: 15px;
-  }
 
   @media screen and (max-width: 1023px) {
-    padding: 0 0 20px 20px;
-    width: 100%;
+    padding: 0 20px 20px;
+    align-items: center;
   }
 }
 
-.poolImage {
-  width: 43px;
-  height: 43px;
-  overflow: hidden;
-  margin-right: 10px;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  background-color: var(--color-gray-1);
+.poolBgImage {
+  border: var(--border-gray-1);
+  height: 106px;
+  width: 106px;
+  object-fit: cover;
+  display: block;
+  margin-right: 20px;
 
-  @media screen and (max-width: 767px) {
-    height: 38px;
-    width: 38px;
+  @media screen and (max-width: 1023px) {
+    width: 43px;
+    height: 43px;
   }
 }
 
 .title {
-  font: var(--font-text-1);
+  margin-top: 20px;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 1;
+
+  @media screen and (max-width: 1439px) {
+    font-size: 32px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 1023px) {
+    margin-top: unset;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 20px;
+  }
 }
 
 .marketNavigation {

@@ -28,7 +28,7 @@ export const rawInitCommunityPool = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawInitCommunityPool, {
-  onErrorMessage: 'Error',
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const createCommunityPool = wrappedAsyncWithTryCatch;

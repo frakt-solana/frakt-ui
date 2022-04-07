@@ -60,8 +60,10 @@ export const rawStartFraktionalizerAuction = async ({
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   rawStartFraktionalizerAuction,
   {
-    onSuccessMessage: 'Auction started successfully',
-    onErrorMessage: 'Transaction failed',
+    onSuccessMessage: {
+      message: 'Auction started successfully',
+    },
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
 

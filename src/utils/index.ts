@@ -44,8 +44,8 @@ export const FRKT_TOKEN: TokenInfo = {
     'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj/logo.png',
   extensions: {
     coingeckoId: 'frakt-token',
-    twitter: 'https://twitter.com/FraktArt',
-    website: 'https://frakt.art',
+    twitter: 'https://twitter.com/FRAKT_HQ',
+    website: 'https://frakt.xyz/',
   },
   tags: ['utility-token'],
 };
@@ -130,14 +130,19 @@ export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
 };
 
 interface NotificationMessage {
-  onSuccessMessage?: string;
-  onErrorMessage?: string;
-  onFinishMessage?: string;
+  message: string;
+  description?: string;
+}
+
+interface NotificationMessages {
+  onSuccessMessage?: NotificationMessage;
+  onErrorMessage?: NotificationMessage;
+  onFinishMessage?: NotificationMessage;
 }
 
 type WrapAsyncWithTryCatch = <FuncParams, FuncReturn>(
   func: (params: FuncParams) => Promise<FuncReturn>,
-  notificationMessages: NotificationMessage,
+  notificationMessages: NotificationMessages,
 ) => (funcParams: FuncParams) => Promise<FuncReturn>;
 
 export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
@@ -148,7 +153,8 @@ export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
 
       onSuccessMessage &&
         notify({
-          message: onSuccessMessage,
+          message: onSuccessMessage?.message,
+          description: onSuccessMessage?.description,
           type: NotifyType.SUCCESS,
         });
 
@@ -159,13 +165,15 @@ export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
 
       onErrorMessage &&
         notify({
-          message: onErrorMessage,
+          message: onErrorMessage?.message,
+          description: onErrorMessage?.description,
           type: NotifyType.ERROR,
         });
     } finally {
       onFinishMessage &&
         notify({
-          message: onFinishMessage,
+          message: onFinishMessage?.message,
+          description: onFinishMessage?.description,
           type: NotifyType.INFO,
         });
     }

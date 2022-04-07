@@ -50,7 +50,7 @@ export const rawCreateMarket = async ({
 };
 
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateMarket, {
-  onErrorMessage: 'Error listing new market',
+  onErrorMessage: { message: 'Error listing new market' },
 });
 
 export const createMarket = createTransactionFuncFromRaw(

@@ -46,8 +46,10 @@ export const rawRedeemRewardsFromAuctionShares = async ({
 const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
   rawRedeemRewardsFromAuctionShares,
   {
-    onSuccessMessage: 'Redeemed SOL successfull',
-    onErrorMessage: 'Transaction failed',
+    onSuccessMessage: {
+      message: 'Redeemed SOL successfull',
+    },
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
 
