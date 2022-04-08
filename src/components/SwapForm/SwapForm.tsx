@@ -53,7 +53,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
   const swapTokens = () => {
     if (
-      Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD &&
+      Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD ||
       Number(valuationDifference) > MAX_PERCENT_VALUATION_DIFFERENCE
     ) {
       openConfirmModal();
