@@ -19,7 +19,7 @@ import { CollectionBanner } from './CollectionBanner';
 import styles from './styles.module.scss';
 import { Sidebar } from '../VaultsPage/components/Sidebar';
 import { InputControlsNames, StatusRadioNames } from '../VaultsPage/model';
-import { useCollections } from '../../contexts/collections';
+import { useCachedCollections } from '../CollectionsPage';
 
 const SORT_VALUES = [
   {
@@ -59,9 +59,12 @@ const CollectionPage: FC = () => {
   const [searchString, setSearchString] = useState<string>('');
   const [isSidebar, setIsSidebar] = useState<boolean>(false);
   const { collectionName } = useParams<{ collectionName: string }>();
-  const { collectionsData } = useCollections();
+  const { collections } = useCachedCollections();
+
   const { vaults, loading } = useFraktion();
   useFraktionInitialFetch();
+
+  const collectionsData = Array.from(collections.values());
 
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultsByCollectionName(vaults);
@@ -151,7 +154,9 @@ const CollectionPage: FC = () => {
 
   return (
     <AppLayout>
-      <CollectionBanner currentCollection={currentCollection} />
+      {currentCollection && (
+        <CollectionBanner currentCollection={currentCollection} />
+      )}
       <Container component="main" className={styles.wrapper}>
         <Sidebar
           isSidebar={isSidebar}

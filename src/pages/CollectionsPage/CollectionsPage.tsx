@@ -18,8 +18,8 @@ import FakeInfinityScroll, {
 import { useDebounce } from '../../hooks';
 import ArrowDownSmallIcon from '../../icons/arrowDownSmall';
 import { CollectionsFilter } from './CollectionsFilter';
-import { useCollections } from '../../contexts/collections';
 import { useFraktionInitialFetch } from '../../contexts/fraktion';
+import { useCachedCollections } from './useCachedCollections';
 
 const SORT_VALUES = [
   {
@@ -97,12 +97,16 @@ const CollectionsPage: FC = () => {
   const sort = watch('sort');
 
   const [searchString, setSearchString] = useState<string>('');
-  const {
-    collectionsData,
-    vaultsNotArchivedByCollectionName,
-    isCollectionsLoading,
-  } = useCollections();
+
   useFraktionInitialFetch();
+
+  const {
+    collections,
+    loading: isCollectionsLoading,
+    vaultsNotArchivedByCollectionName,
+  } = useCachedCollections();
+
+  const collectionsData = Array.from(collections.values());
 
   const { itemsToShow, next } = useFakeInfinityScroll(9);
   const searchItems = useDebounce((search: string) => {
