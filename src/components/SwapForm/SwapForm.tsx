@@ -19,7 +19,7 @@ interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
-// const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
+const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
 const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
@@ -52,7 +52,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     useState<boolean>(false);
 
   const swapTokens = () => {
-    if (Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD) {
+    if (
+      Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD &&
+      Number(valuationDifference) > MAX_PERCENT_VALUATION_DIFFERENCE
+    ) {
       openConfirmModal();
       return;
     }
