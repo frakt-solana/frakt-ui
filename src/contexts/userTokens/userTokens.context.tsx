@@ -65,7 +65,6 @@ export const UserTokensProvider = ({
     if (isArray(nfts)) return;
     setNftsLoading(true);
     try {
-      // const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
       const userNFTs = await fetchWalletNFTsFromQuickNode(
         publicKey?.toBase58(),
       );
