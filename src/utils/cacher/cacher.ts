@@ -35,7 +35,8 @@ class API {
       const isDinoDaoVault =
         vault.vaultPubkey === 'Uzp4nRWuZozb36PbjepYJGM5Q44Bqiw1nYrDfQC1Hd1';
 
-      const isPricingLookupAddressUset = '11111111111111111111111111111111';
+      const isPricingLookupAddressUnset =
+        vault.pricingLookupAddress === '11111111111111111111111111111111';
 
       const safetyBoxes = IGNORE_DELISTED_NFTS_VAULTS_PUBKEYS.includes(
         vault.vaultPubkey,
@@ -65,11 +66,11 @@ class API {
         fractionsSupply: new BN(vault.fractionsSupply, 16),
         lockedPricePerShare: new BN(vault.lockedPricePerShare, 16),
         state:
-          isDinoDaoVault && isPricingLookupAddressUset
+          isDinoDaoVault && isPricingLookupAddressUnset
             ? VaultState.Active
             : vault.state,
         realState:
-          isDinoDaoVault && isPricingLookupAddressUset
+          isDinoDaoVault && isPricingLookupAddressUnset
             ? VaultState.Active
             : vault.realState,
         safetyBoxes,
