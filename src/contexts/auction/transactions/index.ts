@@ -5,3 +5,4 @@ export { redeemRewardsFromAuctionShares } from './redeemRewardsFromAuctionShares
 export { unlockVault } from './unlockVault';
 export { redeemNft } from './redeemNft';
 export { unlockVaultAndRedeemNfts } from './unlockVaultAndRedeemNfts';
+export { createBuyoutByOwner } from './createBuyoutByOwner';
