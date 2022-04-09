@@ -1,4 +1,4 @@
-import { addNFTsToBacket as addNFTsToVaultTransaction } from 'fraktionalizer-client-library';
+import { addNFTsToBacket as addNFTsToVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   createTransactionFuncFromRaw,
@@ -29,8 +29,8 @@ export const rawAddNFTsToVault = async ({
   rawUserTokensByMint,
 }: AddNFTsToRawVault): Promise<void> => {
   const nftMintsAndTokenAccounts = userNfts.map(({ mint }) => ({
-    mintAddress: mint,
-    tokenAccount: String(rawUserTokensByMint[mint]?.tokenAccountPubkey),
+    mint,
+    token_account: String(rawUserTokensByMint[mint]?.tokenAccountPubkey),
   }));
 
   await addNFTsToVaultTransaction({

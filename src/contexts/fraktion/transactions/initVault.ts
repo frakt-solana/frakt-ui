@@ -1,4 +1,4 @@
-import { initBacket as initVaultTransaction } from 'fraktionalizer-client-library';
+import { initBacket as initVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import fraktionConfig from '../config';
 import {

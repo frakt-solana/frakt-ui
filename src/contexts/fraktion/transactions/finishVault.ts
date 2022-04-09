@@ -1,5 +1,5 @@
 import BN from 'bn.js';
-import { finishBacket as finishVaultTransaction } from 'fraktionalizer-client-library';
+import { finishBacket as finishVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import { UnfinishedVaultData } from '../fraktion.model';
 import {

@@ -1,4 +1,4 @@
-import { unlockBacketAfterBuyoutAuction as unlockVaultTransaction } from 'fraktionalizer-client-library';
+import { unlockBacketAfterBuyoutAuction as unlockVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   signAndConfirmTransaction,

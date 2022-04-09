@@ -1,4 +1,4 @@
-import { withdrawNFTFromCombinedBacket as redeemNftTransaction } from 'fraktionalizer-client-library';
+import { withdrawNFTFromCombinedBacket as redeemNftTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   createTransactionFuncFromRaw,

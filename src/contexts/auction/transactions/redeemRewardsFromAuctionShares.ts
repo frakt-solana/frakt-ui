@@ -1,4 +1,4 @@
-import { redeemRewardsFromAuctionShares as redeemRewardsFromAuctionSharesTransaction } from 'fraktionalizer-client-library';
+import { redeemRewardsFromAuctionShares as redeemRewardsFromAuctionSharesTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   createTransactionFuncFromRaw,
