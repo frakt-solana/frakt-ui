@@ -1,4 +1,4 @@
-import { bidOnAuction as bidOnAuctionTransaction } from 'fraktionalizer-client-library';
+import { bidOnAuction as bidOnAuctionTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   createTransactionFuncFromRaw,

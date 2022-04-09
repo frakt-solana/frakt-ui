@@ -1,4 +1,4 @@
-import { refundBid as refundBidTransaction } from 'fraktionalizer-client-library';
+import { refundBid as refundBidTransaction } from '@frakters/fraktionalizer-client-library';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection } from '@solana/web3.js';
 import { notify } from '../../../utils';

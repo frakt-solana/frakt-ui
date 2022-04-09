@@ -85,7 +85,8 @@
 }
 
 .buyout__buyoutBtn,
-.buyout__connectWalletBtn {
+.buyout__connectWalletBtn,
+.instantBuyoutBtn {
   min-height: 100%;
   flex-grow: 1;
   flex-shrink: 2;
@@ -116,4 +117,8 @@
   @media screen and (max-width: 1060px) {
     width: 100%;
   }
+}
+
+.instantBuyoutBtn {
+  margin-top: 12px;
 }
