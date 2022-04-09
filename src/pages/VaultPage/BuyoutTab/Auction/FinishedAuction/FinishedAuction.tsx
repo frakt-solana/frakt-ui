@@ -38,6 +38,7 @@ export const FinishedAuction: FC<FinishedAuctionProps> = ({ vaultInfo }) => {
   const isWinner = (() => {
     if (
       !winningBid &&
+      vaultInfo?.auction?.auction?.auctionPubkey &&
       winningBidPubKey === '11111111111111111111111111111111'
     ) {
       return (
