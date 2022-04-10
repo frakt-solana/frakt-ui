@@ -9,10 +9,10 @@ import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 
 import { getTokenAccount } from '../../../utils/accounts';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 
 export interface GetLotteryTicketParams {
   pool: NftPoolData;
@@ -67,7 +67,7 @@ export const rawGetLotteryTicket = async ({
   return lotteryTicketPubkey;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawGetLotteryTicket, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawGetLotteryTicket, {
   onSuccessMessage: {
     message: 'Buy made successfully',
     description: 'You will receive your NFT shortly',

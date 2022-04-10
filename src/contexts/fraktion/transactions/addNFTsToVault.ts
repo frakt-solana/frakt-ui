@@ -1,11 +1,11 @@
 import { addNFTsToBacket as addNFTsToVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../config';
 import { RawUserTokensByMint, UserNFT } from '../../userTokens';
 
@@ -50,7 +50,7 @@ export const rawAddNFTsToVault = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddNFTsToVault, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawAddNFTsToVault, {
   onSuccessMessage: {
     message: 'NFT(s) added successfully',
   },

@@ -6,8 +6,9 @@ import {
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 
-import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
+import { SOL_TOKEN } from '../../../../utils';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
@@ -32,7 +33,7 @@ export const rawRemoveRaydiumLiquidity = async ({
   quoteToken = SOL_TOKEN,
   poolConfig,
   amount,
-}: RemoveLiquidityTransactionRawParams): Promise<void> => {
+}: RemoveLiquidityTransactionRawParams): Promise<boolean> => {
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
@@ -62,9 +63,11 @@ export const rawRemoveRaydiumLiquidity = async ({
     connection,
     wallet,
   });
+
+  return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawRemoveRaydiumLiquidity,
   {
     onSuccessMessage: {
