@@ -10,7 +10,6 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { TokenFieldWithBalance } from '../../../components/TokenField';
 import {
   AccountInfoParsed,
-  getTokenAccount,
   getTokenAccountBalance,
 } from '../../../utils/accounts';
 import Button from '../../../components/Button';
@@ -26,8 +25,6 @@ import {
   LoadingModal,
   useLoadingModal,
 } from '../../../components/LoadingModal';
-import { PublicKey } from '@solana/web3.js';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 interface WithdrawInterface {
   baseToken: TokenInfo;
@@ -50,8 +47,6 @@ const Withdraw: FC<WithdrawInterface> = ({
   } = useLiquidityPools();
   const [withdrawValue, setWithdrawValue] = useState<string>('');
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
-  const wallet = useWallet();
-  const { connection } = useConnection();
 
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
@@ -68,16 +63,10 @@ const Withdraw: FC<WithdrawInterface> = ({
 
   const isStakedInFusion = fusionPoolInfo?.stakeAccount?.isStaked;
 
-  const removeRaydiumLiquidity = async (): Promise<boolean> => {
-    const { accountInfo } = await getTokenAccount({
-      tokenMint: new PublicKey(fusionPoolInfo?.mainRouter?.tokenMintInput),
-      owner: wallet.publicKey,
-      connection,
-    });
-
+  const removeRaydiumLiquidity = async (removeAmount: BN): Promise<boolean> => {
     const lpTokenAmount = new TokenAmount(
       new Token(lpMint, lpDecimals),
-      accountInfo?.amount,
+      removeAmount,
     );
 
     const result = await removeRaydiumLiquidityTxn({
@@ -100,19 +89,21 @@ const Withdraw: FC<WithdrawInterface> = ({
 
       openLoadingModal();
 
+      const removeAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
+
       if (isStakedInFusion) {
         const { mainRouter, secondaryReward, stakeAccount } = fusionPoolInfo;
         const unstakeResult = await unstakeLiquidity({
           router: mainRouter,
           secondaryReward,
-          amount: new BN(Number(withdrawValue) * 10 ** lpDecimals),
+          amount: removeAmount,
           stakeAccount,
         });
         if (!unstakeResult) throw new Error('Unstake failed');
         setTransactionsLeft(1);
       }
 
-      const removeLiquidityResult = await removeRaydiumLiquidity();
+      const removeLiquidityResult = await removeRaydiumLiquidity(removeAmount);
       if (!removeLiquidityResult) {
         throw new Error('Removing liquidity failed');
       }
