@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -60,23 +60,11 @@ const useNftsSwap = ({
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const poolTokenBalanceBeforeDeposit = useRef<number>();
-  const poolTokenBalanceBeforeSwap = useRef<number>();
-  const opeartionWithSwap = useRef<boolean>(false);
-  const opeartionWithoutSwap = useRef<boolean>(false);
-
   const [slippage, setSlippage] = useState<number>(0.5);
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
-  const resetRefs = () => {
-    poolTokenBalanceBeforeDeposit.current = null;
-    poolTokenBalanceBeforeSwap.current = null;
-    opeartionWithSwap.current = false;
-    opeartionWithoutSwap.current = false;
-  };
-
-  const depositNft = async () => {
+  const depositNft = async (): Promise<boolean> => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
     const poolLpMint = poolData?.poolConfig?.lpMint;
 
@@ -87,18 +75,13 @@ const useNftsSwap = ({
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
-        poolTokenBalanceBeforeDeposit.current = balance;
       },
     });
 
-    if (!result) {
-      resetRefs();
-      closeLoadingModal();
-      setTransactionsLeft(null);
-    }
+    return result;
   };
 
-  const buyPoolToken = async () => {
+  const buyPoolToken = async (): Promise<boolean> => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
 
     const { amountWithSlippage: payAmount } = await getTokenPrice({
@@ -126,67 +109,57 @@ const useNftsSwap = ({
       poolConfig: poolData?.poolConfig,
     });
 
-    setTransactionsLeft(1);
+    return !!result;
+  };
 
-    if (!result) {
-      resetRefs();
+  const buyNft = async (): Promise<boolean> => {
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
+    const result = await getLotteryTicket({ pool, poolLpMint });
+
+    return !!result;
+  };
+
+  const swap = async (needSwap = false) => {
+    try {
+      if (needSwap) {
+        setTransactionsLeft(3);
+      } else {
+        setTransactionsLeft(2);
+      }
+
+      openLoadingModal();
+
+      const isDepositSuccessful = await depositNft();
+      if (!isDepositSuccessful) {
+        throw new Error('NFT deposit failed');
+      }
+
+      setTransactionsLeft((prevValue) => prevValue - 1);
+
+      if (isDepositSuccessful && needSwap) {
+        const isRaydiumSwapSuccessful = await buyPoolToken();
+
+        if (!isRaydiumSwapSuccessful) {
+          throw new Error('Raydium swap failed');
+        }
+
+        setTransactionsLeft((prevValue) => prevValue - 1);
+      }
+
+      const isLotterySuccessful = await buyNft();
+      if (!isLotterySuccessful) {
+        throw new Error('Lottery failed');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
       closeLoadingModal();
       setTransactionsLeft(null);
     }
   };
-
-  const buyNft = async () => {
-    const poolData = poolDataByMint.get(poolTokenInfo.address);
-    const poolLpMint = poolData?.poolConfig?.lpMint;
-
-    await getLotteryTicket({ pool, poolLpMint });
-    closeLoadingModal();
-    resetRefs();
-    setTransactionsLeft(null);
-  };
-
-  const swap = async (needSwap = false) => {
-    if (needSwap) {
-      opeartionWithSwap.current = true;
-      poolTokenBalanceBeforeSwap.current = balance;
-      setTransactionsLeft(3);
-    } else {
-      opeartionWithoutSwap.current = true;
-      setTransactionsLeft(2);
-    }
-
-    openLoadingModal();
-
-    await depositNft();
-
-    if (needSwap) {
-      setTransactionsLeft(2);
-      await buyPoolToken();
-    } else {
-      setTransactionsLeft(1);
-    }
-  };
-
-  useEffect(() => {
-    const buyPrice = SELL_COMMISSION_PERCENT / 100;
-
-    const canBuyAfterSwap =
-      !!poolTokenBalanceBeforeSwap.current &&
-      opeartionWithSwap.current &&
-      balance > poolTokenBalanceBeforeSwap.current &&
-      balance >= buyPrice;
-
-    const canBuyWithoutSwap =
-      !!poolTokenBalanceBeforeDeposit.current &&
-      opeartionWithoutSwap.current &&
-      balance > poolTokenBalanceBeforeDeposit.current &&
-      balance >= buyPrice;
-
-    if (canBuyAfterSwap || canBuyWithoutSwap) {
-      buyNft();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [balance]);
 
   const onSelect = (nft: UserNFT) => {
     setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));

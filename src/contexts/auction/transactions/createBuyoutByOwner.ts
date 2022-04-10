@@ -4,8 +4,8 @@ import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../../fraktion/config';
 import { VaultData } from '../../fraktion';
 
@@ -40,7 +40,7 @@ export const rawCreateBuyoutByOwner = async ({
   );
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateBuyoutByOwner, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawCreateBuyoutByOwner, {
   onSuccessMessage: {
     message: 'Buyout made successfully',
   },

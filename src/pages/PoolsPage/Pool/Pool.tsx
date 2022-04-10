@@ -119,7 +119,6 @@ const Pool: FC<PoolInterface> = ({
         poolConfig={poolConfig}
         fusionPoolInfo={fusionPoolInfo}
         poolStats={poolStats}
-        lpTokenAccountInfo={lpTokenAccountInfo}
       />
     </div>
   );

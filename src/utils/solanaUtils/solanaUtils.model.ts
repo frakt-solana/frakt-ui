@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { AccountInfo as TokenAccountInfo } from '@solana/spl-token';
 
@@ -15,7 +16,7 @@ export enum NotifyType {
 
 export interface NotifyOject {
   message: string;
-  description?: string;
+  description?: string | ReactNode;
   type?: NotifyType;
 }
 

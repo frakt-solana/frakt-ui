@@ -1,6 +1,5 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { shuffle } from 'lodash';
 import BN from 'bn.js';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -17,12 +16,7 @@ import { Loader } from '../../../components/Loader';
 import { UserNFTWithCollection } from '../../../contexts/userTokens';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
-import {
-  useAPR,
-  useNftPoolTokenBalance,
-  useNFTsFiltering,
-  usePoolTokensPrices,
-} from '../hooks';
+import { useAPR, useNFTsFiltering, usePoolTokensPrices } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import {
   NFTPoolPageLayout,
@@ -39,19 +33,19 @@ import {
 import { getTokenPrice } from '../helpers';
 import { SOL_TOKEN } from '../../../utils';
 
-export const getNftImagesForLottery = (
-  nfts: UserNFTWithCollection[],
-): string[] => {
-  const ARRAY_SIZE = 20;
+// const getNftImagesForLottery = (
+//   nfts: UserNFTWithCollection[],
+// ): string[] => {
+//   const ARRAY_SIZE = 20;
 
-  const shuffled = shuffle(nfts.map(({ metadata }) => metadata.image));
+//   const shuffled = shuffle(nfts.map(({ metadata }) => metadata.image));
 
-  if (shuffled.length >= ARRAY_SIZE) {
-    return shuffled.slice(0, ARRAY_SIZE);
-  }
+//   if (shuffled.length >= ARRAY_SIZE) {
+//     return shuffled.slice(0, ARRAY_SIZE);
+//   }
 
-  return shuffled;
-};
+//   return shuffled;
+// };
 
 const useNftBuy = ({
   pool,
@@ -63,20 +57,16 @@ const useNftBuy = ({
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { connection } = useConnection();
   const { getLotteryTicket } = useNftPools();
-  const { balance } = useNftPoolTokenBalance(pool);
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const poolTokenBalanceOnSubmit = useRef<number>();
-  const swapNeeded = useRef<boolean>(false);
-
   const [slippage, setSlippage] = useState<number>(0.5);
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
 
-  const buyPoolToken = async () => {
+  const buyPoolToken = async (): Promise<boolean> => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
 
     const { amountWithSlippage: payAmount } = await getTokenPrice({
@@ -92,7 +82,7 @@ const useNftBuy = ({
 
     const receiveAmountBN = new BN(10 ** SOL_TOKEN?.decimals);
 
-    const result = await raydiumSwap({
+    const success = await raydiumSwap({
       quoteToken: poolTokenInfo,
       quoteAmount: receiveAmountBN,
       baseToken: SOL_TOKEN,
@@ -100,55 +90,46 @@ const useNftBuy = ({
       poolConfig: poolData?.poolConfig,
     });
 
-    setTransactionsLeft(1);
+    return !!success;
+  };
 
-    if (!result) {
-      poolTokenBalanceOnSubmit.current = null;
-      swapNeeded.current = false;
+  const runLottery = async (): Promise<boolean> => {
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
+    const success = await getLotteryTicket({
+      pool,
+      poolLpMint,
+    });
+
+    return !!success;
+  };
+
+  const buy = async (needSwap = false) => {
+    try {
+      openLoadingModal();
+
+      if (needSwap) {
+        setTransactionsLeft(2);
+        const isTokenBuySucessful = await buyPoolToken();
+        if (!isTokenBuySucessful) {
+          throw new Error('Raydium swap failed');
+        }
+      }
+
+      setTransactionsLeft(1);
+      const isLotterySuccessful = await runLottery();
+      if (!isLotterySuccessful) {
+        throw new Error('Lottery failed');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
       closeLoadingModal();
       setTransactionsLeft(null);
     }
   };
-
-  const runLottery = async () => {
-    const poolData = poolDataByMint.get(poolTokenInfo.address);
-    const poolLpMint = poolData?.poolConfig?.lpMint;
-
-    await getLotteryTicket({
-      pool,
-      poolLpMint,
-    });
-    closeLoadingModal();
-    poolTokenBalanceOnSubmit.current = null;
-    swapNeeded.current = false;
-    setTransactionsLeft(null);
-  };
-
-  const buy = (needSwap = false) => {
-    openLoadingModal();
-
-    if (needSwap) {
-      setTransactionsLeft(2);
-      swapNeeded.current = true;
-      poolTokenBalanceOnSubmit.current = balance;
-
-      buyPoolToken();
-    } else {
-      setTransactionsLeft(1);
-      runLottery();
-    }
-  };
-
-  useEffect(() => {
-    if (
-      !!poolTokenBalanceOnSubmit.current &&
-      balance > poolTokenBalanceOnSubmit.current &&
-      swapNeeded.current
-    ) {
-      runLottery();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [balance]);
 
   return {
     buy,

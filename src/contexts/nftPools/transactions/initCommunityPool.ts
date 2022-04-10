@@ -1,10 +1,10 @@
 import { PublicKey } from '@solana/web3.js';
 import { initCommunityPool } from '@frakters/community-pools-client-library-v2';
 
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import { Provider } from '@project-serum/anchor';
 
@@ -27,7 +27,7 @@ export const rawInitCommunityPool = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawInitCommunityPool, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawInitCommunityPool, {
   onErrorMessage: { message: 'Transaction failed' },
 });
 

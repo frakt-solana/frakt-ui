@@ -4,8 +4,8 @@ import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../../fraktion/config';
 import { VaultData } from '../../fraktion';
 
@@ -43,7 +43,7 @@ export const rawRedeemRewardsFromAuctionShares = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawRedeemRewardsFromAuctionShares,
   {
     onSuccessMessage: {

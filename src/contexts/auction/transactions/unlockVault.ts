@@ -3,9 +3,9 @@ import { unlockBacketAfterBuyoutAuction as unlockVaultTransaction } from '@frakt
 import {
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import fraktionConfig from '../../fraktion/config';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { VaultData } from '../../fraktion';
 
 interface UnlockVaultParams extends WalletAndConnection {
@@ -35,7 +35,7 @@ export const rawUnlockVault = async ({
   });
 };
 
-export const unlockVault = wrapAsyncWithTryCatch(rawUnlockVault, {
+export const unlockVault = wrapTxnWithTryCatch(rawUnlockVault, {
   onSuccessMessage: {
     message: 'Vault unlocked successfully',
   },

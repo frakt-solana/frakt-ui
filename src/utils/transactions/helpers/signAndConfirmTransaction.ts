@@ -1,5 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, Signer, Transaction } from '@solana/web3.js';
+import { notify } from '../..';
+import { NotifyType } from '../../solanaUtils';
 
 interface SignAndConfirmTransactionProps {
   transaction: Transaction;
@@ -32,5 +34,11 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
     // { skipPreflight: true },
   );
 
-  return void connection.confirmTransaction(txid);
+  notify({
+    message: 'Transaction sended',
+    // description: onSuccessMessage?.description,
+    type: NotifyType.INFO,
+  });
+
+  await connection.confirmTransaction(txid, 'finalized');
 };

@@ -10,10 +10,9 @@ import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-
 import { getTokenAccount } from '../../../utils/accounts';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { UserNFT } from '../../userTokens';
 import {
   getWhitelistedCreatorsDictionary,
@@ -95,7 +94,7 @@ export const rawDepositNftToCommunityPool = async ({
   return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawDepositNftToCommunityPool,
   {
     onSuccessMessage: {

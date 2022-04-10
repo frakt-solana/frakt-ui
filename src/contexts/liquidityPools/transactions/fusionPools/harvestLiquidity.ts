@@ -9,8 +9,8 @@ import {
 import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
 
-import { wrapAsyncWithTryCatch } from '../../../../utils';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
@@ -68,7 +68,7 @@ export const rawHarvestLiquidity = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawHarvestLiquidity, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawHarvestLiquidity, {
   onSuccessMessage: {
     message: 'Rewards harvested successfully',
   },
