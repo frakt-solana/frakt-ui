@@ -34,9 +34,9 @@ export interface LiquidityPoolsContextValues {
   ) => Promise<boolean | null>;
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   harvestLiquidity: (params: any) => Promise<void>;
-  stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
+  stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<boolean>;
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,
   ) => Promise<boolean | null>;

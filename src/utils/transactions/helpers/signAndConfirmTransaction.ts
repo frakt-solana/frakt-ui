@@ -40,5 +40,5 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
     type: NotifyType.INFO,
   });
 
-  await connection.confirmTransaction(txid);
+  await connection.confirmTransaction(txid, 'finalized');
 };

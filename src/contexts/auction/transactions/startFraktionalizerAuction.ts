@@ -1,10 +1,10 @@
 import { startFraktionalizerAuction as startFraktionalizerAuctionTransaction } from '@frakters/fraktionalizer-client-library';
 
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import fraktionConfig from '../../fraktion/config';
 import { VaultData } from '../../fraktion';
@@ -56,7 +56,7 @@ export const rawStartFraktionalizerAuction = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawStartFraktionalizerAuction,
   {
     onSuccessMessage: {

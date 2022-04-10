@@ -1,10 +1,10 @@
 import { registerToken } from '../../../utils/registerToken';
 import { IS_DEVNET } from '../../../config';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { rawInitVault, rawAddNFTsToVault, rawFinishVault } from './index';
 import { RawUserTokensByMint, UserNFT } from '../../userTokens';
 import { UnfinishedVaultData } from '../fraktion.model';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -74,7 +74,7 @@ export const rawCreateVault = async ({
   return fractionalMint;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateVault, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawCreateVault, {
   onSuccessMessage: {
     message: 'Fraktionalized successfully',
   },
