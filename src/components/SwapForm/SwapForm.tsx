@@ -53,8 +53,8 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
 
   const swapTokens = () => {
     if (
-      Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD ||
-      Number(valuationDifference) > MAX_PERCENT_VALUATION_DIFFERENCE
+      Math.abs(Number(tokenPriceImpact)) > PRICE_IMPACT_WRANING_TRESHOLD ||
+      Math.abs(Number(valuationDifference)) > MAX_PERCENT_VALUATION_DIFFERENCE
     ) {
       openConfirmModal();
       return;
@@ -162,7 +162,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             <Tooltip
               placement="top"
               trigger="hover"
-              overlay="Swap price difference from the initial price per fraktion set for buyout"
+              overlay="The difference between the market price and estimated price due to trade size"
             >
               <QuestionCircleOutlined />
             </Tooltip>
@@ -177,7 +177,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             <Tooltip
               placement="top"
               trigger="hover"
-              overlay="The difference between the market price and estimated price due to trade size"
+              overlay="Swap price difference from the initial price per fraktion set for buyout"
             >
               <QuestionCircleOutlined />
             </Tooltip>
@@ -205,9 +205,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         title={`Continue with\n current price?`}
         visible={confirmModalVisible}
         onCancel={closeConfirmModal}
-        btnAgree={'Swap anyway'}
+        btnAgree="Swap anyway"
         subtitle={`Swap price is very different from the
-        initial price per fraktion set for buyout.\n
+        initial price per fraktion set for buyout or/and market price.\n
         It usually happens due to low liquidity
         in the pool, or the asset being
         overpriced/underpriced.\n
