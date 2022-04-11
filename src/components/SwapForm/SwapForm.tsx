@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import { FC, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
@@ -13,22 +12,20 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
-import { useLazyPoolInfo } from './hooks/useLazyPoolInfo';
 import { useSwapForm } from './hooks/useSwapForm';
-// import { ConfirmModal, SwapDifferentPriceContent } from '../Modal/Modal';
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
 }
 
-// const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
-// const PRICE_IMPACT_WRANING_TRESHOLD = 15;
+const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
+const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const {
     isSwapBtnEnabled,
     receiveToken,
-    payValue,
     onPayTokenChange,
     onReceiveTokenChange,
     payToken,
@@ -38,10 +35,14 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
+    valuationDifference,
+    handleSwap,
+    confirmModalVisible,
+    openConfirmModal,
+    closeConfirmModal,
   } = useSwapForm(defaultTokenMint);
 
-  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
-  const { fetchPoolInfo } = useLazyPoolInfo();
+  const { poolDataByMint } = useLiquidityPools();
 
   const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
     ({ tokenInfo }) => tokenInfo,
@@ -50,42 +51,14 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
 
-  const handleSwap = async () => {
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    //? Need to get suitable pool
-    const splToken = isBuy ? receiveToken : payToken;
-
-    const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
-
-    const payAmount = new BN(Number(payValue) * 10 ** payToken.decimals);
-
-    const quoteAmount = new BN(
-      Number(tokenMinAmount) * 10 ** receiveToken.decimals,
-    );
-
-    // await raydiumSwap(tokenAmountBN, tokenMinAmountBN, poolConfig, isBuy);
-
-    await raydiumSwap({
-      baseToken: payToken,
-      baseAmount: payAmount,
-      quoteToken: receiveToken,
-      quoteAmount: quoteAmount,
-      poolConfig,
-    });
-
-    fetchPoolInfo(payToken.address, receiveToken.address);
-  };
-
   const swapTokens = () => {
-    // if (Number(tokenPriceImpact) > PRICE_IMPACT_WRANING_TRESHOLD) {
-    //   return ConfirmModal({
-    //     title: 'Continue with current price?',
-    //     content: <SwapDifferentPriceContent />,
-    //     okText: 'Swap anyway',
-    //     onOk: handleSwap,
-    //   });
-    // }
+    if (
+      Math.abs(Number(tokenPriceImpact)) > PRICE_IMPACT_WRANING_TRESHOLD ||
+      Math.abs(Number(valuationDifference)) > MAX_PERCENT_VALUATION_DIFFERENCE
+    ) {
+      openConfirmModal();
+      return;
+    }
     handleSwap();
   };
 
@@ -182,25 +155,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
           </span>
         </div>
       )}
-      {/* {tokenPriceImpact && (
-        <div className={styles.info}>
-          <span className={styles.info__title}>
-            <span className={styles.info__titleName}>Valuation difference</span>
-            <Tooltip
-              placement="top"
-              trigger="hover"
-              overlay="Swap price difference from the initial price per fraktion set for buyout"
-            >
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </span>
-          <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
-        </div>
-      )} */}
       {tokenPriceImpact && (
         <div className={styles.info}>
           <span className={styles.info__title}>
-            <span className={styles.info__titleName}>Price impact</span>
+            <span className={styles.info__titleName}>Price Impact</span>
             <Tooltip
               placement="top"
               trigger="hover"
@@ -210,6 +168,23 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             </Tooltip>
           </span>
           <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
+        </div>
+      )}
+      {valuationDifference && (
+        <div className={styles.info}>
+          <span className={styles.info__title}>
+            <span className={styles.info__titleName}>Valuation Difference</span>
+            <Tooltip
+              placement="top"
+              trigger="hover"
+              overlay="Swap price difference from the initial price per fraktion set for buyout"
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </span>
+          <span
+            className={styles.info__value}
+          >{`${valuationDifference}%`}</span>
         </div>
       )}
       <Button
@@ -225,6 +200,19 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         slippage={slippage}
         setSlippage={setSlippage}
         onCancel={() => setSlippageModalVisible(false)}
+      />
+      <ConfirmModal
+        title={`Continue with\n current price?`}
+        visible={confirmModalVisible}
+        onCancel={closeConfirmModal}
+        btnAgree="Swap anyway"
+        subtitle={`Swap price is very different from the
+        initial price per fraktion set for buyout or/and market price.\n
+        It usually happens due to low liquidity
+        in the pool, or the asset being
+        overpriced/underpriced.\n
+        Do you wish to perform the swap anyway?`}
+        onSubmit={handleSwap}
       />
     </div>
   );

@@ -1,16 +1,20 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { Percent } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 
-import {
-  useLiquidityPools,
-  useCurrentSolanaPrice,
-} from '../../../contexts/liquidityPools';
+import { useLiquidityPools } from '../../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../../utils';
 import { getOutputAmount } from '../../SwapForm/helpers';
 import { useLazyPoolInfo } from './useLazyPoolInfo';
+import {
+  useFraktion,
+  useFraktionInitialFetch,
+  useFraktionPolling,
+} from '../../../contexts/fraktion';
+import BN from 'bn.js';
+import { useConfirmModal } from '../../ConfirmModal';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -33,22 +37,26 @@ export const useSwapForm = (
   onPayTokenChange: (nextToken: TokenInfo) => void;
   onReceiveTokenChange: (nextToken: TokenInfo) => void;
   changeSides: () => void;
-  currentSolanaPriceUSD: number;
   isSwapBtnEnabled: boolean;
   receiveToken: TokenInfo;
   payToken: TokenInfo;
-  payValue: string;
-  receiveValue: string;
   slippage: string;
   tokenMinAmount: string;
   tokenPriceImpact: string;
+  valuationDifference: string;
   setSlippage: (nextValue: string) => void;
+  handleSwap: () => void;
+  confirmModalVisible: boolean;
+  openConfirmModal: () => void;
+  closeConfirmModal: () => void;
 } => {
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
-  const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
-  const { poolDataByMint } = useLiquidityPools();
+  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { connected } = useWallet();
   const intervalRef = useRef<any>();
+  const { vaults } = useFraktion();
+  useFraktionInitialFetch();
+  useFraktionPolling();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -59,6 +67,12 @@ export const useSwapForm = (
       [InputControlsNames.RECEIVE_VALUE]: '',
     },
   });
+
+  const {
+    visible: confirmModalVisible,
+    open: openConfirmModal,
+    close: closeConfirmModal,
+  } = useConfirmModal();
 
   const { receiveToken, payValue, payToken, receiveValue } = watch();
 
@@ -92,6 +106,17 @@ export const useSwapForm = (
     setValue(InputControlsNames.RECEIVE_VALUE, '');
     setValue(InputControlsNames.RECEIVE_TOKEN, nextToken);
   };
+
+  const vaultInfo = useMemo(() => {
+    if (receiveToken && payToken) {
+      const token =
+        payToken.address === SOL_TOKEN.address ? receiveToken : payToken;
+
+      return vaults.find(({ fractionMint }) => fractionMint === token.address);
+    } else {
+      return null;
+    }
+  }, [vaults, receiveToken, payToken]);
 
   const changeSides = () => {
     const payValueBuf = payValue;
@@ -154,20 +179,79 @@ export const useSwapForm = (
 
   const isSwapBtnEnabled = poolInfo && connected && Number(payValue) > 0;
 
+  const valuationDifference: string = useMemo(() => {
+    if (!vaultInfo) {
+      return '';
+    }
+
+    const isBuy = payToken.address === SOL_TOKEN.address;
+
+    if (isBuy) {
+      const amountMarket = Number(receiveValue);
+
+      const amountLocked =
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
+
+      const difference = (amountMarket / amountLocked) * 100 - 100;
+
+      return isNaN(difference) ? '0' : difference.toFixed(2);
+    } else {
+      const amountMarketSOL = Number(receiveValue);
+
+      const amountLockedSOL =
+        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
+
+      const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
+
+      return isNaN(difference) ? '0' : difference.toFixed(2);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vaultInfo, payValue, receiveValue, payToken, receiveToken]);
+
+  const handleSwap = async () => {
+    closeConfirmModal();
+
+    const isBuy = payToken.address === SOL_TOKEN.address;
+
+    //? Need to get suitable pool
+    const splToken = isBuy ? receiveToken : payToken;
+
+    const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
+
+    const payAmount = new BN(Number(payValue) * 10 ** payToken.decimals);
+
+    const quoteAmount = new BN(
+      Number(tokenMinAmount) * 10 ** receiveToken.decimals,
+    );
+
+    await raydiumSwap({
+      baseToken: payToken,
+      baseAmount: payAmount,
+      quoteToken: receiveToken,
+      quoteAmount: quoteAmount,
+      poolConfig,
+    });
+
+    fetchPoolInfo(payToken.address, receiveToken.address);
+  };
+
   return {
     formControl: control,
-    currentSolanaPriceUSD,
     isSwapBtnEnabled,
-    onPayTokenChange,
     receiveToken,
-    payValue,
-    payToken,
-    receiveValue,
-    changeSides,
+    onPayTokenChange,
     onReceiveTokenChange,
+    payToken,
+    changeSides,
     slippage,
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
+    valuationDifference,
+    handleSwap,
+    confirmModalVisible,
+    openConfirmModal,
+    closeConfirmModal,
   };
 };
