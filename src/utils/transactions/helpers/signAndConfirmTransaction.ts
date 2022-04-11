@@ -35,7 +35,7 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   );
 
   notify({
-    message: 'Transaction sended',
+    message: 'Transaction sent',
     // description: onSuccessMessage?.description,
     type: NotifyType.INFO,
   });
