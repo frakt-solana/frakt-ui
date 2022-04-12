@@ -240,11 +240,15 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
   };
 
   useEffect(() => {
-    if (poolDataByMint.size && poolTokensInfo.length) {
+    if (
+      poolDataByMint.size &&
+      poolTokensInfo.length &&
+      !liquidityPoolsLoading
+    ) {
       initialFetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liquidityPoolsLoading, poolDataByMint, poolTokensInfo?.length]);
+  }, [liquidityPoolsLoading, poolDataByMint?.size, poolTokensInfo?.length]);
 
   return {
     loading: loading || liquidityPoolsLoading,
