@@ -2,8 +2,7 @@ import BN from 'bn.js';
 
 import { VaultData, VaultState } from '../../contexts/fraktion';
 import { DEPRECATED_MARKETS } from '../markets';
-import { NftPoolData } from './nftPools';
-import { parseRawNftPools } from './nftPools/nftPools.helpers';
+import { HIDDEN_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
 import {
   getVerifiedVaultsByFraktTeam,
   IGNORE_DELISTED_NFTS_VAULTS_PUBKEYS,
@@ -103,7 +102,11 @@ class API {
     const res = await fetch(`${CACHER_URL}/nft-pools`);
     const rawPoolsData = await res.json();
 
-    return parseRawNftPools(rawPoolsData);
+    const nftPoolData = parseRawNftPools(rawPoolsData);
+
+    return nftPoolData.filter(
+      ({ publicKey }) => !HIDDEN_POOLS.includes(publicKey.toBase58()),
+    );
   }
 }
 
