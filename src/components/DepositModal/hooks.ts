@@ -11,7 +11,6 @@ import {
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
-import { getOutputAmount } from '../SwapForm/helpers';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
 import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
 import { useLoadingModal } from '../LoadingModal';
@@ -88,26 +87,17 @@ export const useDeposit = (
   const handleChange = (value: string, name: InputControlsNames) => {
     setValue(name, value);
 
+    const ratio =
+      poolInfo?.quoteReserve.toNumber() /
+      10 ** poolInfo?.quoteDecimals /
+      (poolInfo?.baseReserve.toNumber() / 10 ** poolInfo?.baseDecimals);
+
     if (name === InputControlsNames.BASE_VALUE) {
-      const { amountOut } = getOutputAmount({
-        poolKeys: poolConfig,
-        poolInfo,
-        payToken: quoteToken,
-        payAmount: Number(value),
-        receiveToken: SOL_TOKEN,
-      });
-
-      setValue(InputControlsNames.QUOTE_VALUE, amountOut);
+      const amount = Number(value) * ratio;
+      setValue(InputControlsNames.QUOTE_VALUE, amount.toFixed(5));
     } else {
-      const { amountOut } = getOutputAmount({
-        poolKeys: poolConfig,
-        poolInfo,
-        payToken: SOL_TOKEN,
-        payAmount: Number(value),
-        receiveToken: quoteToken,
-      });
-
-      setValue(InputControlsNames.BASE_VALUE, amountOut);
+      const amount = Number(value) / ratio;
+      setValue(InputControlsNames.BASE_VALUE, amount.toFixed(5));
     }
   };
 
