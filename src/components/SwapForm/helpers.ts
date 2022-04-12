@@ -60,6 +60,11 @@ export const getOutputAmount = ({
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(err);
+    return {
+      amountOut: '',
+      minAmountOut: '',
+      priceImpact: '',
+    };
   }
 };
 
@@ -112,6 +117,11 @@ export const getInputAmount = ({
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error(err);
+    return {
+      amountIn: '',
+      maxAmountIn: '',
+      priceImpact: '',
+    };
   }
 };
 
