@@ -8,6 +8,7 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { PoolsInfoIcon } from '../../../svg';
 import { MockPoolCard } from './MockPoolCard';
 import { POOLS_DATA } from './poolsData';
+import { PATHS } from '../../../../../constants';
 
 SwiperCore.use([Navigation, Autoplay, Scrollbar]);
 
@@ -31,6 +32,7 @@ export const PoolsBlock: FC<PoolsBlockProps> = ({ className }) => {
         text={
           'Instantly buy, sell and swap NFTs, or use pool tokens to generate passive income'
         }
+        to={PATHS.POOLS}
       />
       <div className={styles.sliderWrapper}>
         <Swiper

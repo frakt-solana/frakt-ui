@@ -1,7 +1,9 @@
 import { unlockVault } from './index';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { VaultData, VaultState } from '../../fraktion';
-import { WalletAndConnection } from '../../../utils/transactions';
+import {
+  WalletAndConnection,
+  wrapTxnWithTryCatch,
+} from '../../../utils/transactions';
 import { rawRedeemNft } from './redeemNft';
 
 interface UnlockVaultAndRedeemNftsParams {
@@ -56,7 +58,7 @@ export const rawUnlockVaultAndRedeemNfts = async ({
   }
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawUnlockVaultAndRedeemNfts,
   {
     onErrorMessage: { message: 'Transaction failed' },

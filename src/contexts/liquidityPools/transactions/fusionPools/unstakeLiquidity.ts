@@ -11,9 +11,9 @@ import {
 import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
 
-import { wrapAsyncWithTryCatch } from '../../../../utils';
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
@@ -90,7 +90,7 @@ export const rawUnstakeLiquidity = async ({
   return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawUnstakeLiquidity, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawUnstakeLiquidity, {
   onSuccessMessage: {
     message: 'Liquidity harvested successfully',
   },

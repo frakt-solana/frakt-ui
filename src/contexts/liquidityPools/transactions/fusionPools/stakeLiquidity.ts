@@ -4,9 +4,9 @@ import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import BN from 'bn.js';
 
-import { wrapAsyncWithTryCatch } from '../../../../utils';
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
@@ -26,7 +26,7 @@ const rawStakeLiquidity = async ({
   router,
   connection,
   wallet,
-}: StakeLiquidityTransactionRawParams): Promise<void> => {
+}: StakeLiquidityTransactionRawParams): Promise<boolean> => {
   const transaction = new Transaction();
 
   const instruction = await stakeInFusion(
@@ -45,9 +45,11 @@ const rawStakeLiquidity = async ({
     connection,
     wallet,
   });
+
+  return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawStakeLiquidity, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawStakeLiquidity, {
   onSuccessMessage: {
     message: 'Liquidity staked successfully',
   },

@@ -93,7 +93,7 @@ export const useLazyFusionPools = (): {
   const wallet = useWallet();
   const { connection } = useConnection();
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [fusionPoolInfoMap, setFusionPoolInfoMap] =
     useState<FusionPoolInfoByMint>(new Map());
 

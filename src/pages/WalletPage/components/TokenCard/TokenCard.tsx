@@ -13,16 +13,14 @@ interface TokenCardProps {
 }
 
 export const TokenCard: FC<TokenCardProps> = ({ token }) => {
-  const vaultPubkey = (token.extensions as any)?.vaultPubkey;
-  const poolPubkey = (token.extensions as any)?.poolPubkey;
+  const isVaultToken = token?.tags?.includes('fractionalized-nft');
 
-  const vaultLink = `${PATHS.VAULT}/${vaultPubkey}`;
+  const linkTo = isVaultToken
+    ? `${PATHS.VAULT}/${(token?.extensions as any)?.vaultPubkey}`
+    : createPoolLink(POOL_TABS.INFO, (token?.extensions as any)?.poolPubkey);
 
   return (
-    <NavLink
-      to={vaultPubkey ? vaultLink : createPoolLink(POOL_TABS.BUY, poolPubkey)}
-      className={styles.token}
-    >
+    <NavLink to={linkTo} className={styles.token}>
       <div className={styles.token__info}>
         <img
           className={styles.token__logo}
@@ -41,7 +39,7 @@ export const TokenCard: FC<TokenCardProps> = ({ token }) => {
         </div>
       </div>
       <Button type="alternative" className={styles.token__btn}>
-        {vaultPubkey ? 'Browse vault' : 'Browse pool'}
+        {isVaultToken ? 'Browse vault' : 'Browse pool'}
       </Button>
     </NavLink>
   );

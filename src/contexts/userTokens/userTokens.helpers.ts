@@ -23,41 +23,37 @@ export const fetchWalletNFTsFromQuickNode = async (
     })
   ).json();
 
-  const userNFTs: UserNFT[] = data?.result?.assets
-    ?.filter(({ chain, network }) => {
-      return chain === 'SOL' && network === 'mainnet beta';
-    })
-    .map((nft) => {
-      const {
-        collectionName,
-        creators,
-        description,
-        imageUrl,
+  const userNFTs: UserNFT[] = data?.result?.assets.map((nft) => {
+    const {
+      collectionName,
+      creators,
+      description,
+      imageUrl,
+      name,
+      traits,
+      tokenAddress,
+    } = nft;
+
+    const parsedCreators: NFTCreator[] = creators.map((address) => ({
+      address,
+      share: 0,
+    }));
+
+    return {
+      mint: tokenAddress,
+      metadata: {
         name,
-        traits,
-        tokenAddress,
-      } = nft;
-
-      const parsedCreators: NFTCreator[] = creators.map((address) => ({
-        address,
-        share: 0,
-      }));
-
-      return {
-        mint: tokenAddress,
-        metadata: {
-          name,
-          symbol: 'Unknown',
-          description,
-          collectionName,
-          image: imageUrl,
-          attributes: traits,
-          properties: {
-            creators: parsedCreators,
-          },
+        symbol: 'Unknown',
+        description,
+        collectionName,
+        image: imageUrl,
+        attributes: traits,
+        properties: {
+          creators: parsedCreators,
         },
-      };
-    });
+      },
+    };
+  });
 
   return userNFTs;
 };

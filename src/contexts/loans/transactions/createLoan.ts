@@ -10,8 +10,8 @@ import api from '../../../utils/loans/axios';
 import {
   createTransactionFuncFromRaw,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { UserNFT } from '../../userTokens';
 
 export interface CreateLoanTransactionParams {
@@ -73,7 +73,7 @@ const rawCreateLoan = async ({
   }
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateLoan, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawCreateLoan, {
   onSuccessMessage: {
     message: 'Loan created  successfully',
   },

@@ -1,11 +1,11 @@
-import { bidOnAuction as bidOnAuctionTransaction } from 'fraktionalizer-client-library';
+import { bidOnAuction as bidOnAuctionTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../../fraktion/config';
 import { VaultData } from '../../fraktion';
 interface BidOnAuctionParams {
@@ -52,7 +52,7 @@ export const rawBidOnAuction = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawBidOnAuction, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawBidOnAuction, {
   onSuccessMessage: {
     message: 'Bid placed successfully',
   },

@@ -18,12 +18,14 @@
 
 .title {
   font: var(--font-h4);
+  white-space: pre-line;
 }
 
 .subtitle {
   color: var(--white-color);
   font: var(--font-text-2);
   margin: 20px 0;
+  white-space: pre-line;
 }
 
 .modal {

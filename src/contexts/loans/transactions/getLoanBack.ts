@@ -6,10 +6,10 @@ import { Program, Provider } from '@project-serum/anchor';
 
 import config from '../../../program_config/config.json';
 import api from '../../../utils/loans/axios';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
   createTransactionFuncFromRaw,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import { LoanProps } from '../../../utils/loans';
 
@@ -59,7 +59,7 @@ const rawGetLoanBack = async ({
   return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawGetLoanBack, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawGetLoanBack, {
   onSuccessMessage: {
     message: 'Loan repaid successfully',
   },

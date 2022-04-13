@@ -8,6 +8,7 @@ import {
   refundBid,
   startFraktionalizerAuction,
   unlockVaultAndRedeemNfts,
+  createBuyoutByOwner,
 } from './transactions';
 
 //eslint-disable-next-line
@@ -28,6 +29,10 @@ export const useAuction = () => {
     }),
     unlockVaultAndRedeemNfts: unlockVaultAndRedeemNfts({
       patchVault,
+      wallet,
+      connection,
+    }),
+    createBuyoutByOwner: createBuyoutByOwner({
       wallet,
       connection,
     }),

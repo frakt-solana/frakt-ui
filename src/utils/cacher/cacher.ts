@@ -2,8 +2,7 @@ import BN from 'bn.js';
 
 import { VaultData, VaultState } from '../../contexts/fraktion';
 import { DEPRECATED_MARKETS } from '../markets';
-import { NftPoolData } from './nftPools';
-import { parseRawNftPools } from './nftPools/nftPools.helpers';
+import { HIDDEN_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
 import {
   getVerifiedVaultsByFraktTeam,
   IGNORE_DELISTED_NFTS_VAULTS_PUBKEYS,
@@ -35,7 +34,8 @@ class API {
       const isDinoDaoVault =
         vault.vaultPubkey === 'Uzp4nRWuZozb36PbjepYJGM5Q44Bqiw1nYrDfQC1Hd1';
 
-      const isPricingLookupAddressUset = '11111111111111111111111111111111';
+      const isPricingLookupAddressUnset =
+        vault.pricingLookupAddress === '11111111111111111111111111111111';
 
       const safetyBoxes = IGNORE_DELISTED_NFTS_VAULTS_PUBKEYS.includes(
         vault.vaultPubkey,
@@ -49,7 +49,7 @@ class API {
         ...vault,
         isVerified:
           vault.isVerified ||
-          additionalVerifiedVaults.includes[vault.vaultPubkey],
+          additionalVerifiedVaults.includes(vault.vaultPubkey),
         auction: {
           auction: vault.auction.auction
             ? {
@@ -65,11 +65,11 @@ class API {
         fractionsSupply: new BN(vault.fractionsSupply, 16),
         lockedPricePerShare: new BN(vault.lockedPricePerShare, 16),
         state:
-          isDinoDaoVault && isPricingLookupAddressUset
+          isDinoDaoVault && isPricingLookupAddressUnset
             ? VaultState.Active
             : vault.state,
         realState:
-          isDinoDaoVault && isPricingLookupAddressUset
+          isDinoDaoVault && isPricingLookupAddressUnset
             ? VaultState.Active
             : vault.realState,
         safetyBoxes,
@@ -102,7 +102,11 @@ class API {
     const res = await fetch(`${CACHER_URL}/nft-pools`);
     const rawPoolsData = await res.json();
 
-    return parseRawNftPools(rawPoolsData);
+    const nftPoolData = parseRawNftPools(rawPoolsData);
+
+    return nftPoolData.filter(
+      ({ publicKey }) => !HIDDEN_POOLS.includes(publicKey.toBase58()),
+    );
   }
 }
 

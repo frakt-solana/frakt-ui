@@ -129,55 +129,5 @@ export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
   return `https://cdn.exchange.art/${thumbaiUrl?.replace(/ /g, '%20')}`;
 };
 
-interface NotificationMessage {
-  message: string;
-  description?: string;
-}
-
-interface NotificationMessages {
-  onSuccessMessage?: NotificationMessage;
-  onErrorMessage?: NotificationMessage;
-  onFinishMessage?: NotificationMessage;
-}
-
-type WrapAsyncWithTryCatch = <FuncParams, FuncReturn>(
-  func: (params: FuncParams) => Promise<FuncReturn>,
-  notificationMessages: NotificationMessages,
-) => (funcParams: FuncParams) => Promise<FuncReturn>;
-
-export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
-  (transactionFunc, { onSuccessMessage, onErrorMessage, onFinishMessage }) =>
-  async (transactionFuncParams) => {
-    try {
-      const result = await transactionFunc(transactionFuncParams);
-
-      onSuccessMessage &&
-        notify({
-          message: onSuccessMessage?.message,
-          description: onSuccessMessage?.description,
-          type: NotifyType.SUCCESS,
-        });
-
-      return result;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      onErrorMessage &&
-        notify({
-          message: onErrorMessage?.message,
-          description: onErrorMessage?.description,
-          type: NotifyType.ERROR,
-        });
-    } finally {
-      onFinishMessage &&
-        notify({
-          message: onFinishMessage?.message,
-          description: onFinishMessage?.description,
-          type: NotifyType.INFO,
-        });
-    }
-  };
-
 export const pluralize = (count: number, noun: string, suffix = 's'): string =>
   `${count} ${noun}${count !== 1 ? suffix : ''}`;

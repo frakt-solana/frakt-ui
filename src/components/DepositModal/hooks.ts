@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import BN from 'bn.js';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
 
 import {
@@ -11,11 +11,11 @@ import {
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
-import { getOutputAmount } from '../SwapForm/helpers';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
 import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
 import { useLoadingModal } from '../LoadingModal';
-import { AccountInfoParsed } from '../../utils/accounts';
+import { getTokenAccount } from '../../utils/accounts';
+import { PublicKey } from '@solana/web3.js';
 
 export enum InputControlsNames {
   QUOTE_VALUE = 'quoteValue',
@@ -37,7 +37,6 @@ export const useDeposit = (
   quoteToken: TokenInfo,
   poolConfig: LiquidityPoolKeysV4,
   fusionPoolInfo: FusionPoolInfo,
-  lpTokenAccountInfo: AccountInfoParsed,
 ): {
   formControl: Control<FormFieldValues>;
   totalValue: string;
@@ -57,6 +56,7 @@ export const useDeposit = (
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
   const wallet = useWallet();
+  const { connection } = useConnection();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -87,26 +87,17 @@ export const useDeposit = (
   const handleChange = (value: string, name: InputControlsNames) => {
     setValue(name, value);
 
+    const ratio =
+      poolInfo?.quoteReserve.toNumber() /
+      10 ** poolInfo?.quoteDecimals /
+      (poolInfo?.baseReserve.toNumber() / 10 ** poolInfo?.baseDecimals);
+
     if (name === InputControlsNames.BASE_VALUE) {
-      const { amountOut } = getOutputAmount({
-        poolKeys: poolConfig,
-        poolInfo,
-        payToken: quoteToken,
-        payAmount: Number(value),
-        receiveToken: SOL_TOKEN,
-      });
-
-      setValue(InputControlsNames.QUOTE_VALUE, amountOut);
+      const amount = Number(value) * ratio;
+      setValue(InputControlsNames.QUOTE_VALUE, amount.toFixed(5));
     } else {
-      const { amountOut } = getOutputAmount({
-        poolKeys: poolConfig,
-        poolInfo,
-        payToken: SOL_TOKEN,
-        payAmount: Number(value),
-        receiveToken: quoteToken,
-      });
-
-      setValue(InputControlsNames.BASE_VALUE, amountOut);
+      const amount = Number(value) / ratio;
+      setValue(InputControlsNames.BASE_VALUE, amount.toFixed(5));
     }
   };
 
@@ -119,18 +110,11 @@ export const useDeposit = (
 
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
 
-  const lpTokenAmountOnSubmit = useRef<BN>();
-
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
-    close: closeLoadingModalRaw,
+    close: closeLoadingModal,
   } = useLoadingModal();
-
-  const closeLoadingModal = () => {
-    lpTokenAmountOnSubmit.current && (lpTokenAmountOnSubmit.current = null);
-    closeLoadingModalRaw();
-  };
 
   useEffect(() => {
     setValue(
@@ -164,46 +148,54 @@ export const useDeposit = (
     return !!result;
   };
 
-  const stakeLiquidity = async () => {
-    setTransactionsLeft(1);
-    await stakeLiquidityTxn({
-      amount: new BN(Number(lpTokenAmountOnSubmit.current)),
+  const stakeLiquidity = async (): Promise<boolean> => {
+    const { accountInfo } = await getTokenAccount({
+      tokenMint: new PublicKey(fusionPoolInfo?.mainRouter?.tokenMintInput),
+      owner: wallet.publicKey,
+      connection,
+    });
+
+    const result = await stakeLiquidityTxn({
+      amount: accountInfo?.amount,
       router: fusionPoolInfo.mainRouter,
     });
 
-    closeLoadingModal();
-    setTransactionsLeft(null);
-    lpTokenAmountOnSubmit.current = null;
+    return !!result;
   };
 
   const onSubmit = async () => {
-    const isPoolAwarded = fusionPoolInfo?.mainRouter;
+    try {
+      const isPoolAwarded = fusionPoolInfo?.mainRouter;
 
-    if (isPoolAwarded) {
-      lpTokenAmountOnSubmit.current = lpTokenAccountInfo?.accountInfo?.amount;
-      setTransactionsLeft(2);
-    } else {
+      if (isPoolAwarded) {
+        setTransactionsLeft(2);
+      } else {
+        setTransactionsLeft(1);
+      }
+
+      openLoadingModal();
+
+      const addRaydiumLiquidityResult = await addRaydiumLiquidity();
+      if (!addRaydiumLiquidityResult) {
+        throw new Error('Providing liquidity failed');
+      }
+
       setTransactionsLeft(1);
-    }
 
-    openLoadingModal();
-
-    const result = await addRaydiumLiquidity();
-
-    if (!isPoolAwarded || !result) {
-      setTransactionsLeft(null);
-      lpTokenAmountOnSubmit.current = null;
+      if (isPoolAwarded) {
+        const stakeResult = await stakeLiquidity();
+        if (!stakeResult) {
+          throw new Error('Stake failed');
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    } finally {
       closeLoadingModal();
+      setTransactionsLeft(null);
     }
   };
-
-  useEffect(() => {
-    if (lpTokenAmountOnSubmit.current) {
-      stakeLiquidity();
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lpTokenAccountInfo]);
 
   return {
     formControl: control,

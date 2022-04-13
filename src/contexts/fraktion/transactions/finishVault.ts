@@ -1,13 +1,13 @@
 import BN from 'bn.js';
-import { finishBacket as finishVaultTransaction } from 'fraktionalizer-client-library';
+import { finishBacket as finishVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import { UnfinishedVaultData } from '../fraktion.model';
 import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { adjustPricePerFraction } from '../utils';
 import fraktionConfig from '../config';
 
@@ -61,7 +61,7 @@ export const rawFinishVault = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawFinishVault, {});
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawFinishVault, {});
 
 export const finishVault = createTransactionFuncFromRaw(
   wrappedAsyncWithTryCatch,

@@ -1,11 +1,11 @@
-import { withdrawNFTFromCombinedBacket as redeemNftTransaction } from 'fraktionalizer-client-library';
+import { withdrawNFTFromCombinedBacket as redeemNftTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../../fraktion/config';
 import { VaultData } from '../../fraktion';
 
@@ -51,7 +51,7 @@ export const rawRedeemNft = async ({
   );
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawRedeemNft, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawRedeemNft, {
   onSuccessMessage: {
     message: 'NFT redeemed successfully',
   },

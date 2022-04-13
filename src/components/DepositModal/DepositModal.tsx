@@ -16,7 +16,6 @@ import {
   sumFusionAndRaydiumApr,
 } from '../../contexts/liquidityPools';
 import { LoadingModal } from '../LoadingModal';
-import { AccountInfoParsed } from '../../utils/accounts';
 import { PoolStats } from '../../pages/PoolsPage';
 
 interface DepositModalProps {
@@ -27,7 +26,6 @@ interface DepositModalProps {
   poolConfig: LiquidityPoolKeysV4;
   fusionPoolInfo: FusionPoolInfo;
   poolStats: PoolStats;
-  lpTokenAccountInfo: AccountInfoParsed;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
@@ -38,7 +36,6 @@ const DepositModal: FC<DepositModalProps> = ({
   poolConfig,
   fusionPoolInfo,
   poolStats,
-  lpTokenAccountInfo,
 }) => {
   const {
     formControl,
@@ -52,7 +49,7 @@ const DepositModal: FC<DepositModalProps> = ({
     onSubmit,
     closeLoadingModal,
     loadingModalSubtitle,
-  } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo, lpTokenAccountInfo);
+  } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo);
 
   const onSubmitHandler = () => {
     setVisible(false);
