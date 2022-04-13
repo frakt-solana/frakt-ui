@@ -5,7 +5,7 @@ import BN from 'bn.js';
 import { decimalBNToString } from '../../../../utils';
 import Button from '../../../../components/Button';
 import styles from './TokenCard.module.scss';
-import { PATHS } from '../../../../constants';
+import { createPoolLink, PATHS, POOL_TABS } from '../../../../constants';
 import { TokenInfoWithAmount } from '../../WalletPage';
 
 interface TokenCardProps {
@@ -14,9 +14,15 @@ interface TokenCardProps {
 
 export const TokenCard: FC<TokenCardProps> = ({ token }) => {
   const vaultPubkey = (token.extensions as any)?.vaultPubkey;
+  const poolPubkey = (token.extensions as any)?.poolPubkey;
+
+  const vaultLink = `${PATHS.VAULT}/${vaultPubkey}`;
 
   return (
-    <NavLink to={`${PATHS.VAULT}/${vaultPubkey}`} className={styles.token}>
+    <NavLink
+      to={vaultPubkey ? vaultLink : createPoolLink(POOL_TABS.BUY, poolPubkey)}
+      className={styles.token}
+    >
       <div className={styles.token__info}>
         <img
           className={styles.token__logo}
@@ -35,7 +41,7 @@ export const TokenCard: FC<TokenCardProps> = ({ token }) => {
         </div>
       </div>
       <Button type="alternative" className={styles.token__btn}>
-        Browse vault
+        {vaultPubkey ? 'Browse vault' : 'Browse pool'}
       </Button>
     </NavLink>
   );
