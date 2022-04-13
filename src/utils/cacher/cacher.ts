@@ -49,7 +49,7 @@ class API {
         ...vault,
         isVerified:
           vault.isVerified ||
-          additionalVerifiedVaults.includes[vault.vaultPubkey],
+          additionalVerifiedVaults.includes(vault.vaultPubkey),
         auction: {
           auction: vault.auction.auction
             ? {
