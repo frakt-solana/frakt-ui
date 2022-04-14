@@ -4,8 +4,6 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { UserNFTWithCollection } from '../../../../../contexts/userTokens';
 import styles from './SellingModal.module.scss';
-import { useNativeAccount } from '../../../../../utils/accounts';
-import { LAMPORTS_PER_SOL } from '../../../../../utils/solanaUtils';
 import {
   CurrencySelector,
   ItemContent,
@@ -41,10 +39,6 @@ export const SellingModal: FC<SellingModalProps> = ({
   const priceSOL =
     parseFloat(poolTokenPrice) * ((100 - SELL_COMMISSION_PERCENT) / 100);
 
-  const { account } = useNativeAccount();
-
-  const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
-
   const [isModalDown, setIsModalDown] = useState<boolean>(false);
 
   const [token, setToken] = useState<Token>(Token.SOL);
@@ -62,8 +56,6 @@ export const SellingModal: FC<SellingModalProps> = ({
           (1 - slippage / 100)
         ).toFixed(3)} SOL`
       : '';
-
-  const isBtnDisabled = isSolTokenSelected && solBalance < priceSOL;
 
   const price = isSolTokenSelected
     ? priceSOL.toFixed(3)
@@ -101,11 +93,7 @@ export const SellingModal: FC<SellingModalProps> = ({
         poolTokenInfo={poolTokenInfo}
       />
 
-      <SubmitButton
-        text="Sell"
-        onClick={() => onSubmit(isSolTokenSelected)}
-        disabled={isBtnDisabled}
-      />
+      <SubmitButton text="Sell" onClick={() => onSubmit(isSolTokenSelected)} />
     </div>
   );
 };
