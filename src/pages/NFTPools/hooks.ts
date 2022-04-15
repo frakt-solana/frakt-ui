@@ -22,8 +22,10 @@ import {
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
-import { SOL_TOKEN } from '../../utils';
+import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
 import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
+import { useParams } from 'react-router-dom';
+import { CUSTOM_POOLS_NAMES } from '../../utils/cacher/nftPools';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -324,4 +326,15 @@ export const useAPR: UseAPR = (poolTokenInfo) => {
     loading,
     liquidityAPR: sumFusionAndRaydiumApr(fusionPoolInfo, poolStats) || 0,
   };
+};
+
+type UsePoolPubkeyParam = () => string;
+
+export const usePoolPubkeyParam: UsePoolPubkeyParam = () => {
+  const { poolPubkey: poolPubkeyOrName } = useParams<{ poolPubkey: string }>();
+
+  return (
+    swapStringKeysAndValues(CUSTOM_POOLS_NAMES)[poolPubkeyOrName] ||
+    poolPubkeyOrName
+  );
 };

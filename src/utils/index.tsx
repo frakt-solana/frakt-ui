@@ -3,6 +3,7 @@ import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
@@ -131,3 +132,11 @@ export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
 
 export const pluralize = (count: number, noun: string, suffix = 's'): string =>
   `${count} ${noun}${count !== 1 ? suffix : ''}`;
+
+export const swapStringKeysAndValues = (
+  obj: Dictionary<string>,
+): Dictionary<string> => {
+  const swapped = Object.entries(obj).map(([key, value]) => [value, key]);
+
+  return Object.fromEntries(swapped);
+};

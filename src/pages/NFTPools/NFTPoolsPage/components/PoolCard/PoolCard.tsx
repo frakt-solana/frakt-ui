@@ -19,7 +19,7 @@ interface PoolCardProps {
 }
 
 export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
-  const { publicKey, safetyBoxes } = pool;
+  const { safetyBoxes } = pool;
 
   const { liquidityAPR } = useAPR(poolTokenInfo);
 
@@ -35,7 +35,10 @@ export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
 
   return (
     <NavLink
-      to={createPoolLink(POOL_TABS.BUY, publicKey.toBase58())}
+      to={createPoolLink(
+        POOL_TABS.BUY,
+        pool?.customName || pool?.publicKey?.toBase58(),
+      )}
       className={styles.poolCardWrapper}
     >
       <div className={styles.poolCard}>

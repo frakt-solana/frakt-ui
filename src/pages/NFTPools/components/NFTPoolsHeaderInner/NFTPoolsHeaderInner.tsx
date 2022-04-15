@@ -5,13 +5,14 @@ import { FC, ReactNode } from 'react';
 
 import { Container } from '../../../../components/Layout';
 import Tooltip from '../../../../components/Tooltip';
+import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { useAPR } from '../../hooks';
 import { NFTPoolsNavigation } from '../NFTPoolsNavigation';
 import styles from './NFTPoolsHeaderInner.module.scss';
 
 interface MarketHeaderInnerProps {
   children?: ReactNode;
-  poolPublicKey: string;
+  pool: NftPoolData;
   poolTokenInfo?: TokenInfo;
   className?: string;
   wrapperClassName?: string;
@@ -20,7 +21,7 @@ interface MarketHeaderInnerProps {
 
 export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
   children,
-  poolPublicKey,
+  pool,
   className,
   wrapperClassName,
   poolTokenInfo,
@@ -36,10 +37,7 @@ export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
     >
       <div className={classNames(styles.header, className)}>
         {children}
-        <NFTPoolsNavigation
-          poolPublicKey={poolPublicKey}
-          className={styles.poolsNavigation}
-        />
+        <NFTPoolsNavigation pool={pool} className={styles.poolsNavigation} />
         {!aprLoading && (
           <div className={styles.aprContainer}>
             <p className={styles.aprContainerTitle}>
