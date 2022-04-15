@@ -5,10 +5,11 @@ import classNames from 'classnames';
 import { createPoolLink, POOL_TABS } from '../../../../constants';
 import { BuyIcon, InfoIcon, SellIcon, SwapMarketIcon } from '../../../../icons';
 import styles from './NFTPoolsNavigation.module.scss';
+import { NftPoolData } from '../../../../utils/cacher/nftPools';
 
 interface HeaderBuyProps {
   className?: string;
-  poolPublicKey: string;
+  pool: NftPoolData;
 }
 
 const POOL_LINKS = [
@@ -39,10 +40,7 @@ const POOL_LINKS = [
   },
 ];
 
-export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({
-  className,
-  poolPublicKey,
-}) => {
+export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({ className, pool }) => {
   return (
     <ul className={classNames(styles.navigation, className)}>
       {POOL_LINKS.map(({ label, tab, icon: Icon }, idx) => (
@@ -50,7 +48,10 @@ export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({
           <NavLink
             activeClassName={styles.activeLink}
             className={styles.link}
-            to={createPoolLink(tab, poolPublicKey)}
+            to={createPoolLink(
+              tab,
+              pool?.customName || pool?.publicKey?.toBase58(),
+            )}
           >
             <Icon className={styles.navIcon} />
             {label}

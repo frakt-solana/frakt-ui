@@ -1,7 +1,6 @@
 // import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import { FC, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
 
 import { Loader } from '../../../components/Loader';
 import { POOL_TABS } from '../../../constants';
@@ -13,7 +12,7 @@ import {
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { usePublicKeyParam } from '../../../hooks';
 import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
-import { useAPR } from '../hooks';
+import { useAPR, usePoolPubkeyParam } from '../hooks';
 import { HeaderInfo } from '../NFTPoolInfoPage/components/HeaderInfo';
 import {
   StakingInfo,
@@ -25,7 +24,7 @@ import {
 import styles from './NFTPoolStakePage.module.scss';
 
 export const NFTPoolStakePage: FC = () => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
@@ -53,7 +52,7 @@ export const NFTPoolStakePage: FC = () => {
     <NFTPoolPageLayout
       customHeader={
         <HeaderInfo
-          poolPublicKey={poolPubkey}
+          pool={pool}
           poolTokenInfo={poolTokenInfo}
           hidden={pageLoading}
         />

@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
@@ -20,6 +19,7 @@ import {
   useAPR,
   useNftPoolTokenBalance,
   useNFTsFiltering,
+  usePoolPubkeyParam,
   usePoolTokensPrices,
   useUserRawNfts,
 } from '../hooks';
@@ -181,7 +181,7 @@ const useNftsSwap = ({
 };
 
 export const NFTPoolSwapPage: FC = () => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
 
   useNftPoolsInitialFetch();
@@ -247,7 +247,7 @@ export const NFTPoolSwapPage: FC = () => {
     <NFTPoolPageLayout
       customHeader={
         <HeaderSwap
-          poolPublicKey={poolPubkey}
+          pool={pool}
           poolTokenInfo={poolTokenInfo}
           poolTokenPrice={
             poolTokenPricesByTokenMint?.get(poolTokenInfo?.address)?.buy
