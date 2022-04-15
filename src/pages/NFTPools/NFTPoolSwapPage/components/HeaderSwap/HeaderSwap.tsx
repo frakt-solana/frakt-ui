@@ -3,9 +3,10 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { NFTPoolsHeaderInner } from '../../../components/NFTPoolsHeaderInner';
 import { HeaderSellInfo } from '../../../components/NFTPoolsHeaderInner/HeaderSellInfo';
+import { NftPoolData } from '../../../../../utils/cacher/nftPools';
 
 interface HeaderSwapProps {
-  poolPublicKey: string;
+  pool: NftPoolData;
   poolTokenInfo: TokenInfo;
   poolTokenPrice: string;
   hidden?: boolean;
@@ -14,14 +15,14 @@ interface HeaderSwapProps {
 const COMMISSION_PERCENT = 0.02;
 
 export const HeaderSwap: FC<HeaderSwapProps> = ({
-  poolPublicKey,
+  pool,
   poolTokenInfo,
   poolTokenPrice,
   hidden = false,
 }) => {
   return (
     <NFTPoolsHeaderInner
-      poolPublicKey={poolPublicKey}
+      pool={pool}
       hidden={hidden}
       poolTokenInfo={poolTokenInfo}
     >

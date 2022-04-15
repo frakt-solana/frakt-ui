@@ -27,6 +27,7 @@ export interface CommunityPool {
   state: CommunityPoolState;
   tokenProgram: PublicKey;
   tokenTypeCount: BN;
+  customName?: string;
 }
 export enum CommunityPoolState {
   INACTIVE = 'inactive',

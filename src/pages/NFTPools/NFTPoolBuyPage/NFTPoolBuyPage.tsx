@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
 import BN from 'bn.js';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -16,7 +15,12 @@ import { Loader } from '../../../components/Loader';
 import { UserNFTWithCollection } from '../../../contexts/userTokens';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
-import { useAPR, useNFTsFiltering, usePoolTokensPrices } from '../hooks';
+import {
+  useAPR,
+  useNFTsFiltering,
+  usePoolPubkeyParam,
+  usePoolTokensPrices,
+} from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import {
   NFTPoolPageLayout,
@@ -142,7 +146,7 @@ const useNftBuy = ({
 };
 
 export const NFTPoolBuyPage: FC = () => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
   useNftPoolsInitialFetch();
   useNftPoolsPolling();

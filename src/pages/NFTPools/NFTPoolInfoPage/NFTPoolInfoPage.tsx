@@ -1,5 +1,4 @@
 import { FC, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -25,6 +24,7 @@ import {
   Price,
   useAPR,
   useNftPoolTokenBalance,
+  usePoolPubkeyParam,
   usePoolTokensPrices,
 } from '../hooks';
 import { SELL_COMMISSION_PERCENT } from '../constants';
@@ -32,7 +32,7 @@ import { PoolStats, useCachedPoolsStats } from '../../PoolsPage';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
@@ -74,7 +74,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
     <NFTPoolPageLayout
       customHeader={
         <HeaderInfo
-          poolPublicKey={poolPubkey}
+          pool={pool}
           poolTokenInfo={poolTokenInfo}
           hidden={pageLoading}
         />

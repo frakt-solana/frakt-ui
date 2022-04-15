@@ -5,23 +5,24 @@ import classNames from 'classnames';
 import { createPoolLink, POOL_TABS } from '../../../../constants';
 import { BuyIcon, InfoIcon, SellIcon, SwapMarketIcon } from '../../../../icons';
 import styles from './NFTPoolsNavigation.module.scss';
+import { NftPoolData } from '../../../../utils/cacher/nftPools';
 
 interface HeaderBuyProps {
   className?: string;
-  poolPublicKey: string;
+  pool: NftPoolData;
 }
 
-export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({
-  className,
-  poolPublicKey,
-}) => {
+export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({ className, pool }) => {
   return (
     <ul className={classNames(styles.navigation, className)}>
       <li className={styles.item}>
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={createPoolLink(POOL_TABS.BUY, poolPublicKey)}
+          to={createPoolLink(
+            POOL_TABS.BUY,
+            pool?.customName || pool?.publicKey?.toBase58(),
+          )}
         >
           <BuyIcon className={styles.navIcon} />
           Buy
@@ -31,7 +32,10 @@ export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={createPoolLink(POOL_TABS.SELL, poolPublicKey)}
+          to={createPoolLink(
+            POOL_TABS.SELL,
+            pool?.customName || pool?.publicKey?.toBase58(),
+          )}
         >
           <SellIcon className={styles.navIcon} />
           Sell
@@ -41,7 +45,10 @@ export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={createPoolLink(POOL_TABS.SWAP, poolPublicKey)}
+          to={createPoolLink(
+            POOL_TABS.SWAP,
+            pool?.customName || pool?.publicKey?.toBase58(),
+          )}
         >
           <SwapMarketIcon className={styles.navIcon} />
           Swap
@@ -51,7 +58,10 @@ export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({
         <NavLink
           activeClassName={styles.activeLink}
           className={styles.link}
-          to={createPoolLink(POOL_TABS.INFO, poolPublicKey)}
+          to={createPoolLink(
+            POOL_TABS.INFO,
+            pool?.customName || pool?.publicKey?.toBase58(),
+          )}
         >
           <InfoIcon className={styles.navIcon} />
           Info
