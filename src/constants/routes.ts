@@ -19,6 +19,7 @@ import {
   NFTPoolInfoPage,
   // NFTPoolsTestPage,
 } from '../pages';
+import { NFTPoolStakePage } from '../pages/NFTPools/NFTPoolStakePage';
 
 interface Route {
   path: string;
@@ -66,6 +67,11 @@ export const routes: Route[] = [
     exact: true,
     path: PATHS.POOL_SWAP,
     component: NFTPoolSwapPage,
+  },
+  {
+    exact: true,
+    path: PATHS.POOL_STAKE,
+    component: NFTPoolStakePage,
   },
   {
     exact: true,

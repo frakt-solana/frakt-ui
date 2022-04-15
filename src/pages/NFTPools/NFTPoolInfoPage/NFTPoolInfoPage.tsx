@@ -8,10 +8,7 @@ import styles from './NFTPoolInfoPage.module.scss';
 import { HeaderInfo } from './components/HeaderInfo';
 import { SolanaIcon } from '../../../icons';
 import { usePublicKeyParam } from '../../../hooks';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import {
   useNftPool,
   useNftPoolsInitialFetch,
@@ -20,7 +17,7 @@ import {
 import { Loader } from '../../../components/Loader';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { LinkWithArrow } from '../../../components/LinkWithArrow';
-import { PATHS } from '../../../constants';
+import { PATHS, POOL_TABS } from '../../../constants';
 import {
   Price,
   useAPR,
@@ -79,7 +76,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
           hidden={pageLoading}
         />
       }
-      pageType={PoolPageType.INFO}
+      tab={POOL_TABS.INFO}
     >
       {loading ? (
         <Loader size="large" />

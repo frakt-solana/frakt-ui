@@ -25,10 +25,7 @@ import {
   usePoolTokensPrices,
   useUserRawNfts,
 } from '../hooks';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../../utils';
@@ -39,6 +36,7 @@ import {
   LoadingModal,
   useLoadingModal,
 } from '../../../components/LoadingModal';
+import { POOL_TABS } from '../../../constants';
 
 const useNftSell = ({
   pool,
@@ -230,7 +228,7 @@ export const NFTPoolSellPage: FC = () => {
           hidden={pageLoading}
         />
       }
-      pageType={PoolPageType.SELL}
+      tab={POOL_TABS.SELL}
     >
       {pageLoading ? (
         <Loader size="large" />

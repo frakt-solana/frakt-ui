@@ -27,10 +27,7 @@ import { FilterFormInputsNames } from '../model';
 import { Loader } from '../../../components/Loader';
 import { SwapModal } from './components/SwapModal';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
 
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
@@ -41,6 +38,7 @@ import {
 import { SELL_COMMISSION_PERCENT } from '../constants';
 import { getTokenPrice } from '../helpers';
 import { SOL_TOKEN } from '../../../utils';
+import { POOL_TABS } from '../../../constants';
 
 const useNftsSwap = ({
   pool,
@@ -257,7 +255,7 @@ export const NFTPoolSwapPage: FC = () => {
           hidden={pageLoading}
         />
       }
-      pageType={PoolPageType.SWAP}
+      tab={POOL_TABS.SWAP}
     >
       {pageLoading ? (
         <Loader size="large" />

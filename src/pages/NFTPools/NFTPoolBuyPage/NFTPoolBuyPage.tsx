@@ -18,10 +18,7 @@ import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { useAPR, useNFTsFiltering, usePoolTokensPrices } from '../hooks';
 import { FilterFormInputsNames } from '../model';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 
@@ -32,6 +29,7 @@ import {
 } from '../../../components/LoadingModal';
 import { getTokenPrice } from '../helpers';
 import { SOL_TOKEN } from '../../../utils';
+import { POOL_TABS } from '../../../constants';
 
 // const getNftImagesForLottery = (
 //   nfts: UserNFTWithCollection[],
@@ -206,7 +204,7 @@ export const NFTPoolBuyPage: FC = () => {
           hidden={loading}
         />
       }
-      pageType={PoolPageType.BUY}
+      tab={POOL_TABS.BUY}
     >
       {loading ? (
         <Loader size="large" />

@@ -1,0 +1,25 @@
+.walletInfoBalanceWrapper {
+  display: flex;
+  gap: 0 10px;
+  font: var(--font-text-5);
+  color: var(--white-color);
+
+  &::after {
+    margin-top: 7px;
+    content: '';
+    order: 1;
+    display: block;
+    flex-grow: 1;
+    height: 1px;
+    background: var(--color-gray-4);
+  }
+}
+.walletInfoBalanceTitle {
+  order: 0;
+}
+.walletInfoBalanceValuesWrapper {
+  order: 2;
+}
+.walletInfoBalanceValue {
+  font-weight: 400;
+}
