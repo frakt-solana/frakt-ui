@@ -1,4 +1,3 @@
-import { useParams } from 'react-router';
 import { FC, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
@@ -22,6 +21,7 @@ import { FilterFormInputsNames } from '../model';
 import {
   useAPR,
   useNFTsFiltering,
+  usePoolPubkeyParam,
   usePoolTokensPrices,
   useUserRawNfts,
 } from '../hooks';
@@ -160,7 +160,7 @@ const useNftSell = ({
 };
 
 export const NFTPoolSellPage: FC = () => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
   useNftPoolsInitialFetch();
 
@@ -222,7 +222,7 @@ export const NFTPoolSellPage: FC = () => {
     <NFTPoolPageLayout
       customHeader={
         <HeaderSell
-          poolPublicKey={poolPubkey}
+          pool={pool}
           poolTokenInfo={poolTokenInfo}
           poolTokenPrice={
             poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.sell

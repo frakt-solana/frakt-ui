@@ -4,3 +4,7 @@ export const HIDDEN_POOLS = [
   // 'HfEJXp9YNdrrPuqAoaeKzL3pyCvsdnVQxHXpf7KVTsjY', //? Solpunks pool
   // '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv', //? Sol Patrol pool
 ];
+
+export const CUSTOM_POOLS_NAMES = {
+  HfEJXp9YNdrrPuqAoaeKzL3pyCvsdnVQxHXpf7KVTsjY: 'solpunks',
+};

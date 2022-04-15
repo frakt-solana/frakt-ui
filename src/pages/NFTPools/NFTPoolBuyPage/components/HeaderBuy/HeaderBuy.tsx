@@ -33,7 +33,7 @@ const HeaderBuyComponent: FC<HeaderBuyProps> = ({
 
   return (
     <NFTPoolsHeaderInner
-      poolPublicKey={pool?.publicKey.toBase58()}
+      pool={pool}
       className={classNames(className)}
       hidden={hidden}
       poolTokenInfo={poolTokenInfo}
