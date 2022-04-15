@@ -34,10 +34,13 @@ export const fetchWalletNFTsFromQuickNode = async (
       tokenAddress,
     } = nft;
 
-    const parsedCreators: NFTCreator[] = creators.map((address) => ({
-      address,
-      share: 0,
-    }));
+    const parsedCreators: NFTCreator[] = creators.map(
+      ({ address, share, verified }) => ({
+        address,
+        share: share || 0,
+        verified: !!verified,
+      }),
+    );
 
     return {
       mint: tokenAddress,

@@ -78,6 +78,7 @@ export interface ArweaveAttribute {
 export interface NFTCreator {
   address: string;
   share: number;
+  verified?: boolean;
 }
 
 interface NFTFile {
