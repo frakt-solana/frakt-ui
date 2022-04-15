@@ -35,13 +35,28 @@ export const isNFTWhitelistedByCreator = (
 ): string | null => {
   const { metadata } = nft;
 
-  const nftCreatorsArray =
-    metadata?.properties?.creators?.map(({ address }) => address) || [];
+  //? Fallback for old nft metadata fetching instead of quickNode
+  // const nftCreatorsArray =
+  //   metadata?.properties?.creators?.map(({ address }) => address) || [];
 
-  const whitelistedCreators = Object.keys(whitelistedCreatorsDictionary);
+  // const whitelistedCreators = Object.keys(whitelistedCreatorsDictionary);
 
-  const whitelistedCreator = whitelistedCreators.find((whitelistedCreator) =>
-    nftCreatorsArray.includes(whitelistedCreator),
+  // const whitelistedCreator = whitelistedCreators.find((whitelistedCreator) =>
+  //   nftCreatorsArray.includes(whitelistedCreator),
+  // );
+
+  const nftCreatorAddresses =
+    metadata?.properties?.creators
+      ?.filter(({ verified }) => !!verified)
+      ?.map(({ address }) => address) || [];
+
+  const whitelistedCreatorsAddresses = Object.keys(
+    whitelistedCreatorsDictionary,
+  );
+
+  const whitelistedCreator = whitelistedCreatorsAddresses.find(
+    (whitelistedCreatorAddress) =>
+      nftCreatorAddresses.includes(whitelistedCreatorAddress),
   );
 
   return whitelistedCreator || null;

@@ -28,11 +28,17 @@ export interface UserTokensValues {
   removeTokenOptimistic: (mints: string[]) => void;
 }
 
+interface QNFetchNFTDataCreators {
+  address: string;
+  share?: number;
+  verified?: number;
+}
+
 export interface QNFetchNFTData {
   chain: string;
   collectionAddress: string;
   collectionName: string;
-  creators: string[];
+  creators: QNFetchNFTDataCreators[];
   description: string;
   imageUrl: string;
   name: string;
