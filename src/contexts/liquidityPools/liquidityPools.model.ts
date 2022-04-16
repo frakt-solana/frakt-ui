@@ -1,6 +1,5 @@
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
 
@@ -42,6 +41,31 @@ export interface LiquidityPoolsContextValues {
   ) => Promise<boolean | null>;
 }
 
+export interface LiquidityPoolKeysV4String {
+  authority: string;
+  baseMint: string;
+  baseVault: string;
+  id: string;
+  lpMint: string;
+  lpVault: string;
+  marketAsks: string;
+  marketAuthority: string;
+  marketBaseVault: string;
+  marketBids: string;
+  marketEventQueue: string;
+  marketId: string;
+  marketProgramId: string;
+  marketQuoteVault: string;
+  marketVersion: number;
+  openOrders: string;
+  programId: string;
+  quoteMint: string;
+  quoteVault: string;
+  targetOrders: string;
+  version: number;
+  withdrawQueue: string;
+}
+
 export type LiquidityPoolsProviderType = ({
   children,
 }: {
@@ -70,10 +94,8 @@ export interface PoolData {
 }
 
 export type FetchPoolDataByMint = ({
-  connection,
   tokensMap,
 }: {
-  connection: Connection;
   tokensMap: Map<string, TokenInfo>;
 }) => Promise<PoolDataByMint>;
 
