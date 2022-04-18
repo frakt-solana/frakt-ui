@@ -33,11 +33,12 @@ export const LendingBlock: FC<LendingBlockProps> = ({ className }) => {
         </div>
       </div>
       <BlockContent
-        title={'Borrowing'}
+        title={'Loans'}
         icon={<LandingInfoIcon />}
         text={
           'Get instant loans against your NFTs, use that liquidity and then repay with a little interest'
         }
+        linkToGnomies
       />
     </div>
   );
