@@ -1,0 +1,91 @@
+.navigationItem {
+  height: 100%;
+
+  a,
+  button {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.dropdown {
+  background-color: var(--black-color);
+  padding: 10px 0;
+  border: var(--border-gray-1);
+  top: 64px !important;
+
+  &::after {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-left: var(--border-gray-1);
+    border-top: var(--border-gray-1);
+    background-color: var(--black-color);
+    transform: rotate(45deg);
+    position: absolute;
+    right: 10px;
+    top: -10px;
+    z-index: -1;
+  }
+
+  li {
+    a {
+      min-width: 180px;
+      padding: 5px 20px;
+      color: var(--white-color);
+      font: var(--font-text-3);
+
+      &:hover {
+        color: var(--white-color);
+        background-color: var(--color-gray-7);
+      }
+
+      svg {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    display: none;
+  }
+}
+
+.mobileDropdown {
+  display: none;
+
+  @media screen and (max-width: 1023px) {
+    display: block;
+
+    .dropdownLink {
+      color: var(--white-color);
+      background: none;
+      outline: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 16px;
+
+      svg {
+        margin-right: 10px;
+      }
+    }
+  }
+}
+
+.dropdownTrigger {
+  height: 100%;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  @media screen and (max-width: 1023px) {
+    display: none;
+  }
+}
+
+.moreArrowIcon {
+  margin-left: 11px;
+}

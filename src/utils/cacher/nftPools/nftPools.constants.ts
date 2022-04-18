@@ -8,4 +8,5 @@ export const HIDDEN_POOLS = [
 
 export const CUSTOM_POOLS_NAMES = {
   HfEJXp9YNdrrPuqAoaeKzL3pyCvsdnVQxHXpf7KVTsjY: 'solpunks',
+  '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr': 'thugbirdz',
 };

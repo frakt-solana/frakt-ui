@@ -21,9 +21,9 @@ export const FullPotentialSection: FC<FullPotentialSectionProps> = ({
       <h2 className={styles.title} id={OUR_PRODUCT_ID} ref={navRef}>
         Unlock the full potential of your NFTs
       </h2>
-      <FraktionalizationBlock className={styles.block} />
-      <PoolsBlock className={classNames(styles.block, styles.blockRight)} />
       <LendingBlock className={styles.block} />
+      <PoolsBlock className={classNames(styles.block, styles.blockRight)} />
+      <FraktionalizationBlock className={styles.block} />
       <YieldBlock
         className={classNames(styles.block, styles.blockRight, styles.blockBg)}
       />
