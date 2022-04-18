@@ -77,8 +77,9 @@ export const isNFTWhitelisted = (
   whitelistedCreatorsDictionary: Dictionary<boolean>,
 ): boolean => {
   return (
-    !!isNFTWhitelistedByMint(nft, whitelistedMintsDictionary) ||
-    !!isNFTWhitelistedByCreator(nft, whitelistedCreatorsDictionary)
+    (!!isNFTWhitelistedByMint(nft, whitelistedMintsDictionary) ||
+      !!isNFTWhitelistedByCreator(nft, whitelistedCreatorsDictionary)) &&
+    !nft?.metadata?.name?.includes('SSBxSolPunk')
   );
 };
 
