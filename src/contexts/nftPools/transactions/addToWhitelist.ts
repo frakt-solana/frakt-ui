@@ -4,10 +4,10 @@ import {
   Provider,
 } from '@frakters/community-pools-client-library-v2';
 
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 
 export interface AddToWhiteListTransactionParams {
@@ -47,9 +47,9 @@ const rawAddToWhitelist = async ({
   );
 };
 
-export const addToWhitelistTransaction = wrapAsyncWithTryCatch(
+export const addToWhitelistTransaction = wrapTxnWithTryCatch(
   rawAddToWhitelist,
   {
-    onErrorMessage: 'Error',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );

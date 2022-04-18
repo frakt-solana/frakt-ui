@@ -3,6 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import { useWalletModal } from '../../../contexts/WalletModal';
+import { PoolCardHeader } from './components/PoolCardHeader';
 import { useUserSplAccount } from '../../../utils/accounts';
 import DepositModal from '../../../components/DepositModal';
 import { ChevronDownIcon } from '../../../icons';
@@ -13,12 +14,12 @@ import {
   PoolData,
   FusionPoolInfo,
   RaydiumPoolInfo,
+  sumFusionAndRaydiumApr,
 } from '../../../contexts/liquidityPools';
 import {
   PoolDetailsWalletConnected,
   PoolDetailsWalletDisconnected,
 } from './components';
-import { PoolCardHeader } from './components/PoolCardHeader';
 import { PoolStats } from '../model';
 
 interface PoolInterface {
@@ -81,7 +82,9 @@ const Pool: FC<PoolInterface> = ({
           </div>
           <div className={styles.totalValue}>
             <p className={styles.title}>Apr</p>
-            <p className={styles.value}>{poolStats?.apr || 0}%</p>
+            <p className={styles.value}>
+              {sumFusionAndRaydiumApr(fusionPoolInfo, poolStats)?.toFixed(2)}%
+            </p>
           </div>
         </div>
 
@@ -116,7 +119,6 @@ const Pool: FC<PoolInterface> = ({
         poolConfig={poolConfig}
         fusionPoolInfo={fusionPoolInfo}
         poolStats={poolStats}
-        lpTokenAccountInfo={lpTokenAccountInfo}
       />
     </div>
   );

@@ -1,6 +1,5 @@
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection } from '@solana/web3.js';
 import BN from 'bn.js';
 import { ReactNode } from 'react';
 
@@ -29,15 +28,42 @@ export interface LiquidityPoolsContextValues {
   ) => Promise<RaydiumPoolInfo[]>;
   raydiumSwap: (params: SwapTransactionParams) => Promise<boolean | void>;
   createRaydiumLiquidityPool: (params: any) => Promise<void>;
-  addRaydiumLiquidity: (params: AddLiquidityTransactionParams) => Promise<void>;
+  addRaydiumLiquidity: (
+    params: AddLiquidityTransactionParams,
+  ) => Promise<boolean | null>;
   removeRaydiumLiquidity: (
     params: RemoveLiquidityTransactionParams,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   harvestLiquidity: (params: any) => Promise<void>;
-  stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<void>;
+  stakeLiquidity: (params: StakeLiquidityTransactionParams) => Promise<boolean>;
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,
-  ) => Promise<void>;
+  ) => Promise<boolean | null>;
+}
+
+export interface LiquidityPoolKeysV4String {
+  authority: string;
+  baseMint: string;
+  baseVault: string;
+  id: string;
+  lpMint: string;
+  lpVault: string;
+  marketAsks: string;
+  marketAuthority: string;
+  marketBaseVault: string;
+  marketBids: string;
+  marketEventQueue: string;
+  marketId: string;
+  marketProgramId: string;
+  marketQuoteVault: string;
+  marketVersion: number;
+  openOrders: string;
+  programId: string;
+  quoteMint: string;
+  quoteVault: string;
+  targetOrders: string;
+  version: number;
+  withdrawQueue: string;
 }
 
 export type LiquidityPoolsProviderType = ({
@@ -68,10 +94,8 @@ export interface PoolData {
 }
 
 export type FetchPoolDataByMint = ({
-  connection,
   tokensMap,
 }: {
-  connection: Connection;
   tokensMap: Map<string, TokenInfo>;
 }) => Promise<PoolDataByMint>;
 

@@ -1,5 +1,4 @@
 import { FC, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -21,13 +20,19 @@ import { Loader } from '../../../components/Loader';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { LinkWithArrow } from '../../../components/LinkWithArrow';
 import { PATHS } from '../../../constants';
-import { Price, useNftPoolTokenBalance, usePoolTokensPrices } from '../hooks';
+import {
+  Price,
+  useAPR,
+  useNftPoolTokenBalance,
+  usePoolPubkeyParam,
+  usePoolTokensPrices,
+} from '../hooks';
 import { SELL_COMMISSION_PERCENT } from '../constants';
 import { PoolStats, useCachedPoolsStats } from '../../PoolsPage';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
@@ -59,15 +64,17 @@ export const NFTPoolInfoPage = (): JSX.Element => {
 
   const { balance: userPoolTokenBalance } = useNftPoolTokenBalance(pool);
 
-  const pageLoading = poolLoading || tokensMapLoading;
+  const { loading: aprLoading } = useAPR();
 
-  const loading = pricesLoading || poolsStatsLoading;
+  const pageLoading = poolLoading || tokensMapLoading || aprLoading;
+
+  const loading = pageLoading || pricesLoading || poolsStatsLoading;
 
   return (
     <NFTPoolPageLayout
       customHeader={
         <HeaderInfo
-          poolPublicKey={poolPubkey}
+          pool={pool}
           poolTokenInfo={poolTokenInfo}
           hidden={pageLoading}
         />
@@ -82,7 +89,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
             <PriceSection price={poolTokenPrice} />
           )}
 
-          {!!poolStats && <LiquiditySection poolStats={poolStats} />}
+          {<LiquiditySection poolStats={poolStats} />}
 
           {connected && !!poolTokenInfo && (
             <UserBalanceSection
@@ -121,8 +128,6 @@ const LiquiditySection: FC<LiquiditySectionProps> = ({ poolStats }) => {
   return (
     <div className={styles.liquidityWrapper}>
       <h5 className={styles.cardTitle}>Liquidity</h5>
-      <p className={styles.liquiditySubtitle}>APR</p>
-      <p>{poolStats?.apr} %</p>
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>
       <LinkWithArrow

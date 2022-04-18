@@ -10,10 +10,9 @@ import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-
 import { getTokenAccount } from '../../../utils/accounts';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { UserNFT } from '../../userTokens';
 import {
   getWhitelistedCreatorsDictionary,
@@ -36,7 +35,7 @@ export const rawDepositNftToCommunityPool = async ({
   wallet,
   pool,
   nft,
-  poolLpMint,
+  poolLpMint = new PublicKey(process.env.FRKT_MINT),
   afterTransaction,
 }: DepositNftToCommunityPoolRawParams): Promise<boolean | null> => {
   const { publicKey: nftUserTokenAccount } = await getTokenAccount({
@@ -95,11 +94,13 @@ export const rawDepositNftToCommunityPool = async ({
   return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawDepositNftToCommunityPool,
   {
-    onSuccessMessage: 'NFT deposited successfully',
-    onErrorMessage: 'NFT depositing failed',
+    onSuccessMessage: {
+      message: 'NFT deposited successfully',
+    },
+    onErrorMessage: { message: 'NFT depositing failed' },
   },
 );
 

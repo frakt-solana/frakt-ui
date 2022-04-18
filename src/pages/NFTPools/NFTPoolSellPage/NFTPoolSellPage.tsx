@@ -1,5 +1,4 @@
-import { useParams } from 'react-router';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -20,8 +19,9 @@ import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
 import {
-  useNftPoolTokenBalance,
+  useAPR,
   useNFTsFiltering,
+  usePoolPubkeyParam,
   usePoolTokensPrices,
   useUserRawNfts,
 } from '../hooks';
@@ -47,82 +47,52 @@ const useNftSell = ({
   pool: NftPoolData;
   poolTokenInfo: TokenInfo;
 }) => {
-  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
+  const { poolDataByMint, raydiumSwap: raydiumSwapTx } = useLiquidityPools();
   const { connection } = useConnection();
   const { depositNftToCommunityPool } = useNftPools();
   const { removeTokenOptimistic } = useUserTokens();
-  const { balance } = useNftPoolTokenBalance(pool);
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const poolTokenBalanceOnSell = useRef<number>();
-  const swapNeeded = useRef<boolean>(false);
-
   const [slippage, setSlippage] = useState<number>(0.5);
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
-  useEffect(() => {
-    (async () => {
-      if (
-        !!poolTokenBalanceOnSell.current &&
-        balance > poolTokenBalanceOnSell.current &&
-        swapNeeded.current
-      ) {
-        const poolData = poolDataByMint.get(poolTokenInfo.address);
+  const raydiumSwap = async (): Promise<boolean> => {
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
 
-        const { amountWithSlippage: receiveAmount } = await getTokenPrice({
-          poolData,
-          slippage: slippage || 1,
-          isBuy: false,
-          connection,
-        });
+    const { amountWithSlippage: receiveAmount } = await getTokenPrice({
+      poolData,
+      slippage: slippage || 1,
+      isBuy: false,
+      connection,
+    });
 
-        const receiveAmountBN = new BN(
-          parseFloat(receiveAmount) *
-            ((100 - SELL_COMMISSION_PERCENT) / 100) *
-            10 ** SOL_TOKEN.decimals,
-        );
+    const receiveAmountBN = new BN(
+      parseFloat(receiveAmount) *
+        ((100 - SELL_COMMISSION_PERCENT) / 100) *
+        10 ** SOL_TOKEN.decimals,
+    );
 
-        const payAmount = new BN(
-          ((100 - SELL_COMMISSION_PERCENT) / 100) *
-            10 ** poolTokenInfo?.decimals,
-        );
+    const payAmount = new BN(
+      ((100 - SELL_COMMISSION_PERCENT) / 100) * 10 ** poolTokenInfo?.decimals,
+    );
 
-        await raydiumSwap({
-          baseToken: poolTokenInfo,
-          baseAmount: payAmount,
-          quoteToken: SOL_TOKEN,
-          quoteAmount: receiveAmountBN,
-          poolConfig: poolData?.poolConfig,
-        });
+    const result = await raydiumSwapTx({
+      baseToken: poolTokenInfo,
+      baseAmount: payAmount,
+      quoteToken: SOL_TOKEN,
+      quoteAmount: receiveAmountBN,
+      poolConfig: poolData?.poolConfig,
+    });
 
-        poolTokenBalanceOnSell.current = null;
-        swapNeeded.current = false;
-        closeLoadingModal();
-        setTransactionsLeft(0);
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [balance]);
-
-  const onSelect = (nft: UserNFT) => {
-    setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));
-  };
-  const onDeselect = () => {
-    setSelectedNft(null);
+    return !!result;
   };
 
-  const sell = async (needSwap = false) => {
-    setTransactionsLeft(1);
-    if (needSwap) {
-      setTransactionsLeft(2);
-      swapNeeded.current = true;
-    }
-    openLoadingModal();
+  const depositNFT = async (): Promise<boolean> => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
     const poolLpMint = poolData?.poolConfig?.lpMint;
 
@@ -133,26 +103,53 @@ const useNftSell = ({
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
-        poolTokenBalanceOnSell.current = balance;
-        setTransactionsLeft(1);
-        if (!needSwap) {
-          closeLoadingModal();
-          setTransactionsLeft(null);
-        }
       },
     });
 
-    if (!result) {
+    return !!result;
+  };
+
+  const sell = async (needSwap = false) => {
+    try {
+      setTransactionsLeft(1);
+      if (needSwap) {
+        setTransactionsLeft(2);
+      }
+      openLoadingModal();
+
+      const isDepositSuccessful = await depositNFT();
+      if (!isDepositSuccessful) {
+        throw new Error('NFT deposit failed');
+      }
+
+      if (isDepositSuccessful && needSwap) {
+        setTransactionsLeft(1);
+        const isRaydiumSwapSuccessful = await raydiumSwap();
+
+        if (!isRaydiumSwapSuccessful) {
+          throw new Error('Raydium swap failed');
+        }
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
       closeLoadingModal();
       setTransactionsLeft(null);
     }
+  };
+
+  const onSelect = (nft: UserNFT) => {
+    setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));
+  };
+  const onDeselect = () => {
+    setSelectedNft(null);
   };
 
   return {
     slippage,
     setSlippage,
     sell,
-    poolTokenBalance: balance,
     onSelect,
     onDeselect,
     selectedNft,
@@ -163,7 +160,7 @@ const useNftSell = ({
 };
 
 export const NFTPoolSellPage: FC = () => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
   useNftPoolsInitialFetch();
 
@@ -208,7 +205,7 @@ export const NFTPoolSellPage: FC = () => {
 
   const whitelistedNFTs = useMemo(() => {
     return filterWhitelistedNFTs(
-      rawNfts,
+      rawNfts || [],
       whitelistedMintsDictionary,
       whitelistedCreatorsDictionary,
     );
@@ -216,13 +213,16 @@ export const NFTPoolSellPage: FC = () => {
 
   const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
 
-  const pageLoading = tokensMapLoading || poolLoading || pricesLoading;
+  const { loading: aprLoading } = useAPR();
+
+  const pageLoading =
+    tokensMapLoading || poolLoading || pricesLoading || aprLoading;
 
   return (
     <NFTPoolPageLayout
       customHeader={
         <HeaderSell
-          poolPublicKey={poolPubkey}
+          pool={pool}
           poolTokenInfo={poolTokenInfo}
           poolTokenPrice={
             poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.sell

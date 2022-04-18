@@ -75,9 +75,10 @@ export interface ArweaveAttribute {
   value: number | string;
 }
 
-interface NFTCreator {
+export interface NFTCreator {
   address: string;
   share: number;
+  verified?: boolean;
 }
 
 interface NFTFile {
@@ -89,6 +90,7 @@ export interface ArweaveMetadata {
   name: string;
   symbol: string;
   description: string;
+  collectionName?: string;
   seller_fee_basis_points?: number;
   image: string;
   animation_url?: string;

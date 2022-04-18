@@ -32,6 +32,13 @@ h5 {
     }
   }
 }
+.fraktion__notificationLink {
+  &,
+  &:hover {
+    color: var(--accent-color-1);
+    text-decoration: underline;
+  }
+}
 
 .itemForIntersectionMenu {
   position: absolute;

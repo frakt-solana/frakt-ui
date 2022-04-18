@@ -6,16 +6,16 @@ import { Controller } from 'react-hook-form';
 import { InputControlsNames, useDeposit } from './hooks';
 import Checkbox from '../CustomCheckbox';
 import NumericInput from '../NumericInput';
-import styles from './styles.module.scss';
+import styles from './DepositModal.module.scss';
 import { SOL_TOKEN } from '../../utils';
 import { Modal } from '../Modal';
 import Button from '../Button';
 import {
   FusionPoolInfo,
   formatNumberToCurrency,
+  sumFusionAndRaydiumApr,
 } from '../../contexts/liquidityPools';
 import { LoadingModal } from '../LoadingModal';
-import { AccountInfoParsed } from '../../utils/accounts';
 import { PoolStats } from '../../pages/PoolsPage';
 
 interface DepositModalProps {
@@ -26,7 +26,6 @@ interface DepositModalProps {
   poolConfig: LiquidityPoolKeysV4;
   fusionPoolInfo: FusionPoolInfo;
   poolStats: PoolStats;
-  lpTokenAccountInfo: AccountInfoParsed;
 }
 
 const DepositModal: FC<DepositModalProps> = ({
@@ -37,7 +36,6 @@ const DepositModal: FC<DepositModalProps> = ({
   poolConfig,
   fusionPoolInfo,
   poolStats,
-  lpTokenAccountInfo,
 }) => {
   const {
     formControl,
@@ -50,7 +48,8 @@ const DepositModal: FC<DepositModalProps> = ({
     loadingModalVisible,
     onSubmit,
     closeLoadingModal,
-  } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo, lpTokenAccountInfo);
+    loadingModalSubtitle,
+  } = useDeposit(tokenInfo, poolConfig, fusionPoolInfo);
 
   const onSubmitHandler = () => {
     setVisible(false);
@@ -110,21 +109,25 @@ const DepositModal: FC<DepositModalProps> = ({
             <div className={styles.depositInfo}>
               <p className={styles.value}>
                 {formatNumberToCurrency(
-                  parseFloat(totalValue) * (poolStats?.apr / 100) || 0,
+                  parseFloat(totalValue) *
+                    (sumFusionAndRaydiumApr(fusionPoolInfo, poolStats) / 100) ||
+                    0,
                 )}{' '}
                 <span>/ month</span>
               </p>
               <p className={styles.value}>
-                {poolStats?.apr || 0}% <span>/ apy</span>
+                {sumFusionAndRaydiumApr(fusionPoolInfo, poolStats)?.toFixed(
+                  2,
+                ) || 0}
+                % <span>/ apy</span>
               </p>
             </div>
-            {/* <p className={styles.link}>After staking</p> */}
           </div>
           <div className={styles.verify}>
             <Controller
               control={formControl}
               name={InputControlsNames.IS_VERIFIED}
-              render={({ field }) => <Checkbox {...field} />}
+              render={({ field: { ref, ...field } }) => <Checkbox {...field} />}
             />
             <p className={styles.text}>
               I verify that I have read the{' '}
@@ -148,6 +151,7 @@ const DepositModal: FC<DepositModalProps> = ({
       <LoadingModal
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
+        subtitle={loadingModalSubtitle}
       />
     </>
   );

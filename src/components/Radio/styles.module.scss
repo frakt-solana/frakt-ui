@@ -1,4 +1,15 @@
 .radio {
+  width: 100%;
+
+  &:hover {
+    :global {
+      .ant-radio-input + .ant-radio-inner {
+        border-color: var(--accent-color-1);
+        background-color: var(--accent-shadow-color);
+      }
+    }
+  }
+
   :global {
     .ant-radio {
       + span {
@@ -20,8 +31,7 @@
 
     .ant-radio-wrapper:hover .ant-radio-inner,
     .ant-radio-checked .ant-radio-inner,
-    .ant-radio:hover .ant-radio-inner,
-    .ant-radio-input:focus + .ant-radio-inner {
+    .ant-radio:hover .ant-radio-inner {
       border-color: var(--accent-color-1);
       background-color: var(--accent-shadow-color);
     }

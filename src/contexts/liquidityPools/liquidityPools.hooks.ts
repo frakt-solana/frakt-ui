@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
-import { PublicKey } from '@solana/web3.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { PublicKey } from '@solana/web3.js';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
-  mapFusionPoolInfo,
   fetchProgramAccounts,
   fetchRaydiumPoolsInfoMap,
   fetchSolanaPriceUSD,
+  mapFusionPoolInfo,
 } from './liquidityPools.helpers';
 import {
   FusionPoolInfoByMint,
@@ -93,7 +93,7 @@ export const useLazyFusionPools = (): {
   const wallet = useWallet();
   const { connection } = useConnection();
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [fusionPoolInfoMap, setFusionPoolInfoMap] =
     useState<FusionPoolInfoByMint>(new Map());
 

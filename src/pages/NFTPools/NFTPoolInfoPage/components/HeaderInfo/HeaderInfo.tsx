@@ -3,31 +3,30 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import styles from './HeaderInfo.module.scss';
 import { NFTPoolsHeaderInner } from '../../../components/NFTPoolsHeaderInner';
+import { NftPoolData } from '../../../../../utils/cacher/nftPools';
 
 interface HeaderInfoProps {
-  poolPublicKey: string;
+  pool: NftPoolData;
   poolTokenInfo: TokenInfo;
   hidden?: boolean;
 }
 
 export const HeaderInfo: FC<HeaderInfoProps> = ({
-  poolPublicKey,
+  pool,
   poolTokenInfo,
   hidden = false,
 }) => {
+  const poolImage = poolTokenInfo?.logoURI;
+
   return (
     <NFTPoolsHeaderInner
-      poolPublicKey={poolPublicKey}
+      pool={pool}
       className={styles.header}
       hidden={hidden}
+      poolTokenInfo={poolTokenInfo}
     >
-      <div className={styles.titleWrapper}>
-        <div
-          className={styles.poolImage}
-          style={{
-            backgroundImage: `url(${poolTokenInfo?.logoURI})`,
-          }}
-        />
+      <div className={styles.wrapper}>
+        <img src={poolImage} alt="Pool image" className={styles.poolBgImage} />
         <h2 className={styles.title}>{poolTokenInfo?.name}</h2>
       </div>
     </NFTPoolsHeaderInner>

@@ -1,11 +1,11 @@
-import { redeemRewardsFromAuctionShares as redeemRewardsFromAuctionSharesTransaction } from 'fraktionalizer-client-library';
+import { redeemRewardsFromAuctionShares as redeemRewardsFromAuctionSharesTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../../fraktion/config';
 import { VaultData } from '../../fraktion';
 
@@ -43,11 +43,13 @@ export const rawRedeemRewardsFromAuctionShares = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawRedeemRewardsFromAuctionShares,
   {
-    onSuccessMessage: 'Redeemed SOL successfull',
-    onErrorMessage: 'Transaction failed',
+    onSuccessMessage: {
+      message: 'Redeemed SOL successfull',
+    },
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
 

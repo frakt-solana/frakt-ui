@@ -3,6 +3,7 @@ import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BN from 'bn.js';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
 
@@ -129,47 +130,13 @@ export const getCollectionThumbnailUrl = (thumbaiUrl: string): string => {
   return `https://cdn.exchange.art/${thumbaiUrl?.replace(/ /g, '%20')}`;
 };
 
-interface NotificationMessage {
-  onSuccessMessage?: string;
-  onErrorMessage?: string;
-  onFinishMessage?: string;
-}
-
-type WrapAsyncWithTryCatch = <FuncParams, FuncReturn>(
-  func: (params: FuncParams) => Promise<FuncReturn>,
-  notificationMessages: NotificationMessage,
-) => (funcParams: FuncParams) => Promise<FuncReturn>;
-
-export const wrapAsyncWithTryCatch: WrapAsyncWithTryCatch =
-  (transactionFunc, { onSuccessMessage, onErrorMessage, onFinishMessage }) =>
-  async (transactionFuncParams) => {
-    try {
-      const result = await transactionFunc(transactionFuncParams);
-
-      onSuccessMessage &&
-        notify({
-          message: onSuccessMessage,
-          type: NotifyType.SUCCESS,
-        });
-
-      return result;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-
-      onErrorMessage &&
-        notify({
-          message: onErrorMessage,
-          type: NotifyType.ERROR,
-        });
-    } finally {
-      onFinishMessage &&
-        notify({
-          message: onFinishMessage,
-          type: NotifyType.INFO,
-        });
-    }
-  };
-
 export const pluralize = (count: number, noun: string, suffix = 's'): string =>
   `${count} ${noun}${count !== 1 ? suffix : ''}`;
+
+export const swapStringKeysAndValues = (
+  obj: Dictionary<string>,
+): Dictionary<string> => {
+  const swapped = Object.entries(obj).map(([key, value]) => [value, key]);
+
+  return Object.fromEntries(swapped);
+};

@@ -3,8 +3,9 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
-import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
+import { SOL_TOKEN } from '../../../../utils';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   WalletAndConnection,
 } from '../../../../utils/transactions';
@@ -59,11 +60,13 @@ const rawCreateRaydiumLiquidityPool = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawCreateRaydiumLiquidityPool,
   {
-    onSuccessMessage: 'Liquidity pool created',
-    onErrorMessage: 'Transaction failed',
+    onSuccessMessage: {
+      message: 'Liquidity pool created successfully',
+    },
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
 

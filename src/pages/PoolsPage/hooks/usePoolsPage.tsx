@@ -11,8 +11,8 @@ import {
   useLazyRaydiumPoolsInfoMap,
   PoolData,
   RaydiumPoolInfoMap,
-  useLazyFusionPools,
   FusionPoolInfoByMint,
+  useLazyFusionPools,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../PoolsPage.module.scss';
@@ -140,14 +140,14 @@ export const usePoolsPage = (): {
   }, [rawPoolsData]);
 
   useEffect(() => {
-    if (rawPoolsData.length) {
+    if (rawPoolsData.length && connected) {
       const lpMints = rawPoolsData.map(({ poolConfig }) =>
         poolConfig.lpMint.toBase58(),
       );
       fetchFusionPoolsInfo(lpMints);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawPoolsData]);
+  }, [rawPoolsData, connected]);
 
   const loading =
     poolsInfoMapLoading ||

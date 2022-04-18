@@ -1,6 +1,7 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { FC, useMemo, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { TokenInfo } from '@solana/spl-token-registry';
+import BN from 'bn.js';
 
 import styles from './NFTPoolSwapPage.module.scss';
 import { HeaderSwap } from './components/HeaderSwap';
@@ -15,28 +16,22 @@ import {
 } from '../../../contexts/nftPools';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import {
-  useLotteryTicketSubscription,
+  useAPR,
   useNftPoolTokenBalance,
   useNFTsFiltering,
+  usePoolPubkeyParam,
   usePoolTokensPrices,
   useUserRawNfts,
 } from '../hooks';
 import { FilterFormInputsNames } from '../model';
 import { Loader } from '../../../components/Loader';
 import { SwapModal } from './components/SwapModal';
-import {
-  NftPoolData,
-  SafetyDepositBoxState,
-} from '../../../utils/cacher/nftPools';
-import { LotteryModal, useLotteryModal } from '../components/LotteryModal';
-import { getNftImagesForLottery } from '../NFTPoolBuyPage';
-import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
+import { NftPoolData } from '../../../utils/cacher/nftPools';
 import {
   NFTPoolPageLayout,
   PoolPageType,
 } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import { TokenInfo } from '@solana/spl-token-registry';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 import {
   LoadingModal,
@@ -44,7 +39,6 @@ import {
 } from '../../../components/LoadingModal';
 import { SELL_COMMISSION_PERCENT } from '../constants';
 import { getTokenPrice } from '../helpers';
-import BN from 'bn.js';
 import { SOL_TOKEN } from '../../../utils';
 
 const useNftsSwap = ({
@@ -57,39 +51,19 @@ const useNftsSwap = ({
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const { connection } = useConnection();
   const { depositNftToCommunityPool, getLotteryTicket } = useNftPools();
-  const { subscribe } = useLotteryTicketSubscription();
   const { removeTokenOptimistic } = useUserTokens();
   const { balance } = useNftPoolTokenBalance(pool);
-  const {
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
-    openLotteryModal,
-  } = useLotteryModal();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const poolTokenBalanceBeforeDeposit = useRef<number>();
-  const poolTokenBalanceBeforeSwap = useRef<number>();
-  const opeartionWithSwap = useRef<boolean>(false);
-  const opeartionWithoutSwap = useRef<boolean>(false);
-
   const [slippage, setSlippage] = useState<number>(0.5);
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
 
-  const resetRefs = () => {
-    poolTokenBalanceBeforeDeposit.current = null;
-    poolTokenBalanceBeforeSwap.current = null;
-    opeartionWithSwap.current = false;
-    opeartionWithoutSwap.current = false;
-  };
-
-  const depositNft = async () => {
+  const depositNft = async (): Promise<boolean> => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
     const poolLpMint = poolData?.poolConfig?.lpMint;
 
@@ -100,18 +74,13 @@ const useNftsSwap = ({
       afterTransaction: () => {
         removeTokenOptimistic([selectedNft?.mint]);
         onDeselect();
-        poolTokenBalanceBeforeDeposit.current = balance;
       },
     });
 
-    if (!result) {
-      resetRefs();
-      closeLoadingModal();
-      setTransactionsLeft(null);
-    }
+    return result;
   };
 
-  const buyPoolToken = async () => {
+  const buyPoolToken = async (): Promise<boolean> => {
     const poolData = poolDataByMint.get(poolTokenInfo.address);
 
     const { amountWithSlippage: payAmount } = await getTokenPrice({
@@ -139,88 +108,57 @@ const useNftsSwap = ({
       poolConfig: poolData?.poolConfig,
     });
 
-    setTransactionsLeft(1);
+    return !!result;
+  };
 
-    if (!result) {
-      resetRefs();
+  const buyNft = async (): Promise<boolean> => {
+    const poolData = poolDataByMint.get(poolTokenInfo.address);
+    const poolLpMint = poolData?.poolConfig?.lpMint;
+
+    const result = await getLotteryTicket({ pool, poolLpMint });
+
+    return !!result;
+  };
+
+  const swap = async (needSwap = false) => {
+    try {
+      if (needSwap) {
+        setTransactionsLeft(3);
+      } else {
+        setTransactionsLeft(2);
+      }
+
+      openLoadingModal();
+
+      const isDepositSuccessful = await depositNft();
+      if (!isDepositSuccessful) {
+        throw new Error('NFT deposit failed');
+      }
+
+      setTransactionsLeft((prevValue) => prevValue - 1);
+
+      if (isDepositSuccessful && needSwap) {
+        const isRaydiumSwapSuccessful = await buyPoolToken();
+
+        if (!isRaydiumSwapSuccessful) {
+          throw new Error('Raydium swap failed');
+        }
+
+        setTransactionsLeft((prevValue) => prevValue - 1);
+      }
+
+      const isLotterySuccessful = await buyNft();
+      if (!isLotterySuccessful) {
+        throw new Error('Lottery failed');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
       closeLoadingModal();
       setTransactionsLeft(null);
     }
   };
-
-  const buyNft = async () => {
-    const poolData = poolDataByMint.get(poolTokenInfo.address);
-    const poolLpMint = poolData?.poolConfig?.lpMint;
-
-    const lotteryTicketPubkey = await getLotteryTicket({ pool, poolLpMint });
-    closeLoadingModal();
-    resetRefs();
-    setTransactionsLeft(null);
-
-    if (lotteryTicketPubkey) {
-      openLotteryModal();
-
-      subscribe(lotteryTicketPubkey, (saferyBoxPublicKey) => {
-        if (saferyBoxPublicKey === '11111111111111111111111111111111') {
-          return;
-        }
-
-        const nftImage =
-          pool.safetyBoxes.find(
-            ({ publicKey }) => publicKey.toBase58() === saferyBoxPublicKey,
-          )?.nftImage || '';
-
-        setPrizeImg(nftImage);
-
-        if (!nftImage) {
-          setIsLotteryModalVisible(false);
-        }
-      });
-    }
-  };
-
-  const swap = async (needSwap = false) => {
-    if (needSwap) {
-      opeartionWithSwap.current = true;
-      poolTokenBalanceBeforeSwap.current = balance;
-      setTransactionsLeft(3);
-    } else {
-      opeartionWithoutSwap.current = true;
-      setTransactionsLeft(2);
-    }
-
-    openLoadingModal();
-
-    await depositNft();
-
-    if (needSwap) {
-      setTransactionsLeft(2);
-      await buyPoolToken();
-    } else {
-      setTransactionsLeft(1);
-    }
-  };
-
-  useEffect(() => {
-    const buyPrice = SELL_COMMISSION_PERCENT / 100;
-
-    const canBuyAfterSwap =
-      !!poolTokenBalanceBeforeSwap.current &&
-      opeartionWithSwap.current &&
-      balance > poolTokenBalanceBeforeSwap.current &&
-      balance >= buyPrice;
-
-    const canBuyWithoutSwap =
-      !!poolTokenBalanceBeforeDeposit.current &&
-      opeartionWithoutSwap.current &&
-      balance > poolTokenBalanceBeforeDeposit.current &&
-      balance >= buyPrice;
-
-    if (canBuyAfterSwap || canBuyWithoutSwap) {
-      buyNft();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [balance]);
 
   const onSelect = (nft: UserNFT) => {
     setSelectedNft((prevNft) => (prevNft?.mint === nft.mint ? null : nft));
@@ -233,10 +171,6 @@ const useNftsSwap = ({
     slippage,
     setSlippage,
     swap,
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
     poolTokenBalance: balance,
     onSelect,
     onDeselect,
@@ -248,7 +182,7 @@ const useNftsSwap = ({
 };
 
 export const NFTPoolSwapPage: FC = () => {
-  const { poolPubkey } = useParams<{ poolPubkey: string }>();
+  const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
 
   useNftPoolsInitialFetch();
@@ -271,20 +205,6 @@ export const NFTPoolSwapPage: FC = () => {
 
   const { connected } = useWallet();
 
-  const poolImage = pool?.safetyBoxes.filter(
-    ({ safetyBoxState }) => safetyBoxState === SafetyDepositBoxState.LOCKED,
-  )?.[0]?.nftImage;
-
-  const poolNfts = useMemo(() => {
-    if (pool) {
-      return pool.safetyBoxes.map((safetyBox) => ({
-        ...safetyDepositBoxWithNftMetadataToUserNFT(safetyBox),
-        collectionName: safetyBox?.nftCollectionName || '',
-      }));
-    }
-    return [];
-  }, [pool]);
-
   const {
     slippage,
     setSlippage,
@@ -296,10 +216,6 @@ export const NFTPoolSwapPage: FC = () => {
     loadingModalVisible,
     closeLoadingModal,
     loadingModalSubtitle,
-    isLotteryModalVisible,
-    setIsLotteryModalVisible,
-    prizeImg,
-    setPrizeImg,
   } = useNftsSwap({ pool, poolTokenInfo });
 
   const { rawNfts, rawNftsLoading: contentLoading } = useUserRawNfts();
@@ -313,7 +229,7 @@ export const NFTPoolSwapPage: FC = () => {
 
   const whitelistedNFTs = useMemo(() => {
     return filterWhitelistedNFTs(
-      rawNfts,
+      rawNfts || [],
       whitelistedMintsDictionary,
       whitelistedCreatorsDictionary,
     );
@@ -321,15 +237,18 @@ export const NFTPoolSwapPage: FC = () => {
 
   const { control, nfts } = useNFTsFiltering(whitelistedNFTs);
 
+  const { loading: aprLoading } = useAPR();
+
   const poolTokenAvailable = balance >= SELL_COMMISSION_PERCENT / 100;
 
-  const pageLoading = poolLoading || tokensMapLoading || pricesLoading;
+  const pageLoading =
+    poolLoading || tokensMapLoading || pricesLoading || aprLoading;
 
   return (
     <NFTPoolPageLayout
       customHeader={
         <HeaderSwap
-          poolPublicKey={poolPubkey}
+          pool={pool}
           poolTokenInfo={poolTokenInfo}
           poolTokenPrice={
             poolTokenPricesByTokenMint?.get(poolTokenInfo?.address)?.buy
@@ -362,7 +281,7 @@ export const NFTPoolSwapPage: FC = () => {
               nft={selectedNft}
               onDeselect={onDeselect}
               onSubmit={swap}
-              randomPoolImage={poolImage}
+              randomPoolImage={poolTokenInfo?.logoURI}
               poolTokenAvailable={poolTokenAvailable}
               poolTokenInfo={poolTokenInfo}
               poolTokenPrice={
@@ -372,14 +291,6 @@ export const NFTPoolSwapPage: FC = () => {
               setSlippage={setSlippage}
             />
           </div>
-          {isLotteryModalVisible && (
-            <LotteryModal
-              setIsVisible={setIsLotteryModalVisible}
-              prizeImg={prizeImg}
-              setPrizeImg={setPrizeImg}
-              nftImages={getNftImagesForLottery(poolNfts)}
-            />
-          )}
           <LoadingModal
             visible={loadingModalVisible}
             onCancel={closeLoadingModal}

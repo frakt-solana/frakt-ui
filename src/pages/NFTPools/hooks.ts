@@ -18,10 +18,14 @@ import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
 import {
   PoolDataByMint,
+  sumFusionAndRaydiumApr,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
-import { SOL_TOKEN } from '../../utils';
+import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
+import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
+import { useParams } from 'react-router-dom';
+import { CUSTOM_POOLS_NAMES } from '../../utils/cacher/nftPools';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -238,11 +242,15 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
   };
 
   useEffect(() => {
-    if (poolDataByMint.size && poolTokensInfo.length) {
+    if (
+      poolDataByMint.size &&
+      poolTokensInfo.length &&
+      !liquidityPoolsLoading
+    ) {
       initialFetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liquidityPoolsLoading, poolDataByMint, poolTokensInfo]);
+  }, [liquidityPoolsLoading, poolDataByMint?.size, poolTokensInfo?.length]);
 
   return {
     loading: loading || liquidityPoolsLoading,
@@ -286,4 +294,47 @@ export const useUserRawNfts: UseUserRawNfts = () => {
     rawNftsLoading: userTokensLoading || nftsLoading,
     removeTokenOptimistic,
   };
+};
+
+type UseAPR = (poolTokenInfo?: TokenInfo) => {
+  loading: boolean;
+  liquidityAPR: number;
+};
+
+export const useAPR: UseAPR = (poolTokenInfo) => {
+  const { fusionPoolsByMint, loading: fusionPoolsLoading } =
+    useCachedFusionPools();
+
+  const { poolDataByMint, loading: liquidityPoolsLoading } =
+    useLiquidityPools();
+
+  const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
+    useCachedPoolsStats();
+
+  const fusionPoolInfo = useMemo(() => {
+    const poolData = poolDataByMint.get(poolTokenInfo?.address);
+
+    return fusionPoolsByMint.get(poolData?.poolConfig?.lpMint.toBase58());
+  }, [poolDataByMint, poolTokenInfo?.address, fusionPoolsByMint]);
+
+  const poolStats = poolsStatsByBaseTokenMint.get(poolTokenInfo?.address);
+
+  const loading =
+    fusionPoolsLoading || liquidityPoolsLoading || poolsStatsLoading;
+
+  return {
+    loading,
+    liquidityAPR: sumFusionAndRaydiumApr(fusionPoolInfo, poolStats) || 0,
+  };
+};
+
+type UsePoolPubkeyParam = () => string;
+
+export const usePoolPubkeyParam: UsePoolPubkeyParam = () => {
+  const { poolPubkey: poolPubkeyOrName } = useParams<{ poolPubkey: string }>();
+
+  return (
+    swapStringKeysAndValues(CUSTOM_POOLS_NAMES)[poolPubkeyOrName] ||
+    poolPubkeyOrName
+  );
 };

@@ -1,11 +1,11 @@
-import { addNFTsToBacket as addNFTsToVaultTransaction } from 'fraktionalizer-client-library';
+import { addNFTsToBacket as addNFTsToVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import fraktionConfig from '../config';
 import { RawUserTokensByMint, UserNFT } from '../../userTokens';
 
@@ -29,8 +29,8 @@ export const rawAddNFTsToVault = async ({
   rawUserTokensByMint,
 }: AddNFTsToRawVault): Promise<void> => {
   const nftMintsAndTokenAccounts = userNfts.map(({ mint }) => ({
-    mintAddress: mint,
-    tokenAccount: String(rawUserTokensByMint[mint]?.tokenAccountPubkey),
+    mint,
+    token_account: String(rawUserTokensByMint[mint]?.tokenAccountPubkey),
   }));
 
   await addNFTsToVaultTransaction({
@@ -50,9 +50,11 @@ export const rawAddNFTsToVault = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddNFTsToVault, {
-  onSuccessMessage: 'NFT(s) added successfully',
-  onErrorMessage: 'Transaction error',
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawAddNFTsToVault, {
+  onSuccessMessage: {
+    message: 'NFT(s) added successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const addNFTsToVault = createTransactionFuncFromRaw(

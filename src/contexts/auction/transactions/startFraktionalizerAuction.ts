@@ -1,11 +1,10 @@
-import { PublicKey } from '@solana/web3.js';
-import { startFraktionalizerAuction as startFraktionalizerAuctionTransaction } from 'fraktionalizer-client-library';
+import { startFraktionalizerAuction as startFraktionalizerAuctionTransaction } from '@frakters/fraktionalizer-client-library';
 
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import fraktionConfig from '../../fraktion/config';
 import { VaultData } from '../../fraktion';
@@ -37,7 +36,7 @@ export const rawStartFraktionalizerAuction = async ({
     startingAuctionBidCap: startingAuctionBidCap,
     userPubkey: wallet.publicKey.toString(),
     adminPubkey: fraktionConfig.ADMIN_PUBKEY,
-    vaultAuthority: new PublicKey(vaultInfo.authority),
+    vaultAuthority: vaultInfo.authority,
     vault: vaultInfo.vaultPubkey,
     auction: vaultInfo.auction?.auction?.auctionPubkey || null,
     fractionMint: vaultInfo.fractionMint,
@@ -57,11 +56,13 @@ export const rawStartFraktionalizerAuction = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(
   rawStartFraktionalizerAuction,
   {
-    onSuccessMessage: 'Auction started successfully',
-    onErrorMessage: 'Transaction failed',
+    onSuccessMessage: {
+      message: 'Auction started successfully',
+    },
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );
 

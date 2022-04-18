@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import BN from 'bn.js';
 import {
   LiquidityPoolKeysV4,
@@ -41,17 +41,19 @@ const Withdraw: FC<WithdrawInterface> = ({
   fusionPoolInfo,
   lpTokenAccountInfo,
 }) => {
-  const { removeRaydiumLiquidity, unstakeLiquidity } = useLiquidityPools();
+  const {
+    removeRaydiumLiquidity: removeRaydiumLiquidityTxn,
+    unstakeLiquidity,
+  } = useLiquidityPools();
   const [withdrawValue, setWithdrawValue] = useState<string>('');
+  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
 
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
 
   const balance = getTokenAccountBalance(lpTokenAccountInfo, lpDecimals);
-  const stakedBalance = getStakedBalance(fusionPoolInfo, lpDecimals);
-  const lpTokenAmountOnSubmit = useRef<string>(null);
 
-  const [withdrawAmount, setWithdrawAmount] = useState<TokenAmount>();
+  const stakedBalance = getStakedBalance(fusionPoolInfo, lpDecimals);
 
   const {
     visible: loadingModalVisible,
@@ -59,79 +61,67 @@ const Withdraw: FC<WithdrawInterface> = ({
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const isStaked = String(fusionPoolInfo?.stakeAccount?.isStaked) === 'true';
-  const NOT_ALLOW_ZERO_LP = 1;
+  const isStakedInFusion = fusionPoolInfo?.stakeAccount?.isStaked;
 
-  const onSubmitHandler = async (): Promise<void> => {
-    const baseAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
-    const amount = new TokenAmount(new Token(lpMint, lpDecimals), baseAmount);
-
-    const baseAmountForRaydium = new BN(
-      Number(withdrawValue) * 10 ** lpDecimals - NOT_ALLOW_ZERO_LP,
-    );
-
-    const amountForRaydium = new TokenAmount(
+  const removeRaydiumLiquidity = async (removeAmount: BN): Promise<boolean> => {
+    const lpTokenAmount = new TokenAmount(
       new Token(lpMint, lpDecimals),
-      baseAmountForRaydium,
+      removeAmount,
     );
 
-    if (fusionPoolInfo) {
-      const { mainRouter, secondaryReward, stakeAccount } = fusionPoolInfo;
-
-      setWithdrawAmount(amount);
-      openLoadingModal();
-
-      lpTokenAmountOnSubmit.current =
-        lpTokenAccountInfo?.accountInfo?.amount?.toString() || '0';
-
-      if (stakedBalance && isStaked) {
-        await unstakeLiquidity({
-          router: mainRouter,
-          secondaryReward,
-          amount: baseAmount,
-          stakeAccount,
-        });
-      }
-    }
-    await removeRaydiumLiquidity({
+    const result = await removeRaydiumLiquidityTxn({
       baseToken,
       quoteToken: SOL_TOKEN,
-      amount: amountForRaydium,
+      amount: lpTokenAmount,
       poolConfig,
     });
-    closeLoadingModal();
-    setWithdrawValue('');
+
+    return !!result;
   };
 
-  useEffect(() => {
-    (async () => {
-      if (stakedBalance) {
-        const tokenAmount = lpTokenAccountInfo?.accountInfo?.amount?.toString();
-
-        if (
-          !!lpTokenAmountOnSubmit.current &&
-          tokenAmount !== lpTokenAmountOnSubmit.current
-        ) {
-          await removeRaydiumLiquidity({
-            baseToken,
-            quoteToken: SOL_TOKEN,
-            amount: withdrawAmount,
-            poolConfig,
-          });
-          lpTokenAmountOnSubmit.current = null;
-          closeLoadingModal();
-        }
+  const onSubmitHandler = async (): Promise<void> => {
+    try {
+      if (isStakedInFusion) {
+        setTransactionsLeft(2);
+      } else {
+        setTransactionsLeft(1);
       }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lpTokenAccountInfo]);
+
+      openLoadingModal();
+
+      const removeAmount = new BN(Number(withdrawValue) * 10 ** lpDecimals);
+
+      if (isStakedInFusion) {
+        const { mainRouter, secondaryReward, stakeAccount } = fusionPoolInfo;
+        const unstakeResult = await unstakeLiquidity({
+          router: mainRouter,
+          secondaryReward,
+          amount: removeAmount,
+          stakeAccount,
+        });
+        if (!unstakeResult) throw new Error('Unstake failed');
+        setTransactionsLeft(1);
+      }
+
+      const removeLiquidityResult = await removeRaydiumLiquidity(removeAmount);
+      if (!removeLiquidityResult) {
+        throw new Error('Removing liquidity failed');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      closeLoadingModal();
+      setTransactionsLeft(null);
+    }
+  };
 
   return (
     <div className={styles.withdraw}>
       <div className={styles.header}>
         <p className={styles.title}>Withdraw</p>
         <div className={styles.balanceWrap}>
-          {stakedBalance && isStaked ? (
+          {stakedBalance && fusionPoolInfo.stakeAccount ? (
             <p className={styles.balance}>Staked balance: {stakedBalance}</p>
           ) : (
             <p className={styles.balance}>Wallet balance: {balance}</p>
@@ -146,7 +136,9 @@ const Withdraw: FC<WithdrawInterface> = ({
           style={{ width: '100%' }}
           showMaxButton
           lpTokenSymbol={baseToken.symbol}
-          lpBalance={stakedBalance ? stakedBalance : balance}
+          lpBalance={
+            stakedBalance && isStakedInFusion ? stakedBalance : balance
+          }
         />
         <Button
           type="tertiary"
@@ -160,6 +152,7 @@ const Withdraw: FC<WithdrawInterface> = ({
       <LoadingModal
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
+        subtitle={`Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`}
       />
     </div>
   );

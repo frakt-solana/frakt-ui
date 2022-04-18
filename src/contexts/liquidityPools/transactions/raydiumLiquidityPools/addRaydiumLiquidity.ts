@@ -7,8 +7,9 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 
-import { SOL_TOKEN, wrapAsyncWithTryCatch } from '../../../../utils';
+import { SOL_TOKEN } from '../../../../utils';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
@@ -40,7 +41,7 @@ const rawAddRaydiumLiquidity = async ({
   quoteAmount,
   poolConfig,
   fixedSide,
-}: AddLiquidityTransactionRawParams): Promise<void> => {
+}: AddLiquidityTransactionRawParams): Promise<boolean | null> => {
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
@@ -74,11 +75,15 @@ const rawAddRaydiumLiquidity = async ({
     connection,
     wallet,
   });
+
+  return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawAddRaydiumLiquidity, {
-  onSuccessMessage: 'Liquidity provided successfully',
-  onErrorMessage: 'Transaction failed',
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawAddRaydiumLiquidity, {
+  onSuccessMessage: {
+    message: 'Liquidity provided successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const addRaydiumLiquidity = createTransactionFuncFromRaw(

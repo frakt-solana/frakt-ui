@@ -9,8 +9,8 @@ import {
 import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
 
-import { wrapAsyncWithTryCatch } from '../../../../utils';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
@@ -26,7 +26,7 @@ export interface HarvestLiquidityTransactionRawParams
   extends HarvestLiquidityTransactionParams,
     WalletAndConnection {}
 
-export const rowHarvestLiquidity = async ({
+export const rawHarvestLiquidity = async ({
   router,
   connection,
   wallet,
@@ -44,20 +44,22 @@ export const rowHarvestLiquidity = async ({
 
   transaction.add(harvestInstruction);
 
-  const rewardsTokenMint = secondaryReward.map(
+  const secondaryRewardsTokensMints = secondaryReward.map(
     ({ tokenMint }) => new PublicKey(tokenMint),
   );
 
-  const secondaryHarvestInstruction = await harvestSecondaryReward(
+  const secondaryHarvestInstructions = await harvestSecondaryReward(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,
     new PublicKey(router.tokenMintInput),
     new PublicKey(router.tokenMintOutput),
-    rewardsTokenMint,
+    secondaryRewardsTokensMints,
   );
 
-  transaction.add(...secondaryHarvestInstruction);
+  if (secondaryHarvestInstructions?.length) {
+    transaction.add(...secondaryHarvestInstructions);
+  }
 
   await signAndConfirmTransaction({
     transaction,
@@ -66,9 +68,11 @@ export const rowHarvestLiquidity = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rowHarvestLiquidity, {
-  onSuccessMessage: 'Liquidity harvested successfully',
-  onErrorMessage: 'Transaction failed',
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawHarvestLiquidity, {
+  onSuccessMessage: {
+    message: 'Rewards harvested successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const harvestLiquidity = createTransactionFuncFromRaw(

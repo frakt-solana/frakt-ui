@@ -49,7 +49,6 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
       const poolDataByMint = await fetchPoolDataByMint({
-        connection,
         tokensMap: fraktionTokensMap,
       });
 

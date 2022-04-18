@@ -4,8 +4,10 @@ import {
   Provider,
 } from '@frakters/community-pools-client-library-v2';
 
-import { wrapAsyncWithTryCatch } from '../../../utils';
-import { signAndConfirmTransaction } from '../../../utils/transactions';
+import {
+  signAndConfirmTransaction,
+  wrapTxnWithTryCatch,
+} from '../../../utils/transactions';
 import { AddToWhiteListTransactionRawParams } from './index';
 
 const rawAddToWhitelistOwner = async ({
@@ -36,9 +38,6 @@ const rawAddToWhitelistOwner = async ({
   );
 };
 
-export const addToWhitelistOwner = wrapAsyncWithTryCatch(
-  rawAddToWhitelistOwner,
-  {
-    onErrorMessage: 'Error',
-  },
-);
+export const addToWhitelistOwner = wrapTxnWithTryCatch(rawAddToWhitelistOwner, {
+  onErrorMessage: { message: 'Transaction failed' },
+});

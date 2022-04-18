@@ -11,9 +11,9 @@ import {
 import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
 
-import { wrapAsyncWithTryCatch } from '../../../../utils';
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   signAndConfirmTransaction,
   WalletAndConnection,
@@ -38,7 +38,7 @@ export const rawUnstakeLiquidity = async ({
   secondaryReward,
   amount,
   stakeAccount,
-}: UnstakeLiquidityTransactionRawParams): Promise<void> => {
+}: UnstakeLiquidityTransactionRawParams): Promise<boolean | null> => {
   const transaction = new Transaction();
 
   if (Number(stakeAccount.unstakedAtCumulative)) {
@@ -86,11 +86,15 @@ export const rawUnstakeLiquidity = async ({
     connection,
     wallet,
   });
+
+  return true;
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawUnstakeLiquidity, {
-  onSuccessMessage: 'Liquidity harvest successfully',
-  onErrorMessage: 'Transaction failed',
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawUnstakeLiquidity, {
+  onSuccessMessage: {
+    message: 'Liquidity harvested successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });
 
 export const unstakeLiquidity = createTransactionFuncFromRaw(

@@ -1,11 +1,11 @@
-import { initBacket as initVaultTransaction } from 'fraktionalizer-client-library';
+import { initBacket as initVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import fraktionConfig from '../config';
 import {
+  wrapTxnWithTryCatch,
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../utils/transactions';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { UnfinishedVaultData } from '../fraktion.model';
 
 const { PROGRAM_PUBKEY, SOL_TOKEN_PUBKEY, FRACTION_DECIMALS } = fraktionConfig;
@@ -38,4 +38,4 @@ export const rawInitVault = async ({
   return { vaultPubkey, fractionalMint, fractionTreasury, redeemTreasury };
 };
 
-export const initVault = wrapAsyncWithTryCatch(rawInitVault, {});
+export const initVault = wrapTxnWithTryCatch(rawInitVault, {});

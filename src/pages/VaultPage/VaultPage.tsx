@@ -1,6 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import classNames from 'classnames/bind';
 import { NavLink } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -29,13 +28,35 @@ import { CollectionData, fetchCollectionsData } from '../../utils/collections';
 import { NFTDoubleSlider } from './NFTDoubleSlider';
 import { RedeemNftsFromUnfinishedVault } from './RedeemNftsFromUnfinishedVault';
 import Button from '../../components/Button';
+import { Tabs, useTabs } from '../../components/Tabs';
 
 const VaultPage: FC = () => {
-  const [tab, setTab] = useState<tabType>('trade');
   const { vaultPubkey } = useParams<{ vaultPubkey: string }>();
   const { loading, vaults, vaultsMarkets } = useFraktion();
   useFraktionInitialFetch();
   useFraktionPolling();
+
+  const {
+    tabs,
+    setValue: setTabValue,
+    value: tabValue,
+  } = useTabs({
+    tabs: [
+      {
+        label: 'Trade',
+        value: 'trade',
+      },
+      {
+        label: 'Swap',
+        value: 'swap',
+      },
+      {
+        label: 'Buyout',
+        value: 'buyout',
+      },
+    ],
+    defaultValue: 'trade',
+  });
 
   const [allNftsCollectionInfo, setAllNftsCollectionInfo] = useState<
     CollectionData[]
@@ -103,8 +124,9 @@ const VaultPage: FC = () => {
   useEffect(() => {
     if (vaultData) {
       const isAuctionStarted = vaultData.auction.auction?.isStarted;
-      isAuctionStarted && setTab('buyout');
+      isAuctionStarted && setTabValue('buyout');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultData]);
 
   useEffect(() => {
@@ -122,6 +144,9 @@ const VaultPage: FC = () => {
         nftIndex: nftIndex + 1,
       });
     };
+
+  const isVaultArchived = vaultData?.state === VaultState.Archived;
+  const vaultHasBidHistory = !!vaultData?.auction?.bids?.length;
 
   return (
     <AppLayout>
@@ -173,33 +198,34 @@ const VaultPage: FC = () => {
                     marketId={vaultMarket?.address}
                   />
                 )}
-                {/* //? Show tabs if vault active or bought */}
-                {(vaultData.state === VaultState.Active ||
-                  vaultData.state === VaultState.AuctionFinished ||
-                  vaultData.state === VaultState.AuctionLive) && (
+
+                {!isVaultArchived && (
                   <>
-                    <Tabs tab={tab} setTab={setTab} />
+                    <Tabs tabs={tabs} value={tabValue} setValue={setTabValue} />
                     <div className={styles.tabContent}>
-                      {tab === 'trade' && (
+                      {tabValue === 'trade' && (
                         <TradeTab
                           vaultInfo={vaultData}
                           tokerName={vaultTitleData.symbol}
                           vaultMarketAddress={vaultMarket?.address}
                         />
                       )}
-                      {tab === 'swap' && (
+                      {tabValue === 'swap' && (
                         <SwapTab
                           vaultMarketAddress={vaultMarket?.address}
                           fractionMint={vaultData.fractionMint}
                           vaultLockedPrice={vaultData.lockedPricePerShare}
                         />
                       )}
-                      {tab === 'buyout' && <BuyoutTab vaultInfo={vaultData} />}
+                      {tabValue === 'buyout' && (
+                        <BuyoutTab vaultInfo={vaultData} />
+                      )}
                     </div>
                   </>
                 )}
-                {vaultData.state === VaultState.Archived && (
-                  <div className={styles.detailsPlaceholder} />
+
+                {isVaultArchived && vaultHasBidHistory && (
+                  <BuyoutTab vaultInfo={vaultData} />
                 )}
               </div>
             </div>
@@ -226,50 +252,6 @@ const VaultPage: FC = () => {
         )}
       </Container>
     </AppLayout>
-  );
-};
-
-type tabType = 'trade' | 'swap' | 'buyout';
-
-interface TabsProps {
-  tab: tabType;
-  setTab: (tab: tabType) => void;
-}
-
-const Tabs: FC<TabsProps> = ({ tab, setTab }) => {
-  return (
-    <div className={styles.tabs}>
-      <button
-        className={classNames([
-          styles.tab,
-          { [styles.tabActive]: tab === 'trade' },
-        ])}
-        name="trade"
-        onClick={() => setTab('trade')}
-      >
-        Trade
-      </button>
-      <button
-        className={classNames([
-          styles.tab,
-          { [styles.tabActive]: tab === 'swap' },
-        ])}
-        name="swap"
-        onClick={() => setTab('swap')}
-      >
-        Swap
-      </button>
-      <button
-        className={classNames([
-          styles.tab,
-          { [styles.tabActive]: tab === 'buyout' },
-        ])}
-        name="buyout"
-        onClick={() => setTab('buyout')}
-      >
-        Buyout
-      </button>
-    </div>
   );
 };
 

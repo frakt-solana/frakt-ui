@@ -17,7 +17,7 @@ import { Container } from '../../../components/Layout';
 import { SearchInput } from '../../../components/SearchInput';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { usePoolTokensPrices } from '../hooks';
+import { useAPR, usePoolTokensPrices } from '../hooks';
 import { usePoolsFiltering } from './hooks';
 
 export const NFTPoolsPage: FC = () => {
@@ -62,7 +62,10 @@ export const NFTPoolsPage: FC = () => {
     poolTokens,
   });
 
-  const loading = tokensMapLoading || poolsLoading || pricesLoading;
+  const { loading: aprLoading } = useAPR();
+
+  const loading =
+    tokensMapLoading || poolsLoading || pricesLoading || aprLoading;
 
   return (
     <AppLayout>

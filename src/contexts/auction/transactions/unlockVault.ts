@@ -1,11 +1,11 @@
-import { unlockBacketAfterBuyoutAuction as unlockVaultTransaction } from 'fraktionalizer-client-library';
+import { unlockBacketAfterBuyoutAuction as unlockVaultTransaction } from '@frakters/fraktionalizer-client-library';
 
 import {
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import fraktionConfig from '../../fraktion/config';
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { VaultData } from '../../fraktion';
 
 interface UnlockVaultParams extends WalletAndConnection {
@@ -35,6 +35,9 @@ export const rawUnlockVault = async ({
   });
 };
 
-export const unlockVault = wrapAsyncWithTryCatch(rawUnlockVault, {
-  onSuccessMessage: 'Vault unlocked successfully',
+export const unlockVault = wrapTxnWithTryCatch(rawUnlockVault, {
+  onSuccessMessage: {
+    message: 'Vault unlocked successfully',
+  },
+  onErrorMessage: { message: 'Transaction failed' },
 });

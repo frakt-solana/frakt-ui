@@ -4,10 +4,10 @@ import {
   Provider,
 } from '@frakters/community-pools-client-library-v2';
 
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import {
   signAndConfirmTransaction,
   WalletAndConnection,
+  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 
 export interface ActivateCommunityPoolTransactionParams {
@@ -43,9 +43,9 @@ const rawActivateCommunityPool = async ({
   );
 };
 
-export const activateCommunityPoolTransaction = wrapAsyncWithTryCatch(
+export const activateCommunityPoolTransaction = wrapTxnWithTryCatch(
   rawActivateCommunityPool,
   {
-    onErrorMessage: 'Error',
+    onErrorMessage: { message: 'Transaction failed' },
   },
 );

@@ -2,10 +2,10 @@ import { MARKETS } from '@project-serum/serum';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
 
-import { wrapAsyncWithTryCatch } from '../../../utils';
 import { registerMarket } from '../../../utils/markets';
 import { listMarket } from '../../../utils/serumUtils/send';
 import {
+  wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   WalletAndConnection,
 } from '../../../utils/transactions';
@@ -49,8 +49,8 @@ export const rawCreateMarket = async ({
   await registerMarket(tickerName, marketAddress.toBase58(), fractionsMint);
 };
 
-const wrappedAsyncWithTryCatch = wrapAsyncWithTryCatch(rawCreateMarket, {
-  onErrorMessage: 'Error listing new market',
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawCreateMarket, {
+  onErrorMessage: { message: 'Error listing new market' },
 });
 
 export const createMarket = createTransactionFuncFromRaw(
