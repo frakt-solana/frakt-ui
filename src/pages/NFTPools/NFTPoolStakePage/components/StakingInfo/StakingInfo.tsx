@@ -1,45 +1,38 @@
 import classNames from 'classnames';
 import { FC } from 'react';
 
+import { WalletInfoBalance } from '../WalletInfoBalance';
+import { WalletInfoButton } from '../WalletInfoButton';
+import { WalletInfoWrapper } from '../WalletInfoWrapper';
 import styles from './StakingInfo.module.scss';
 
 interface StakingInfoProps {
-  title: string;
-  apr: string;
-  totalLiquidity: string;
-  infoText: string;
-  isRisky?: boolean;
   className?: string;
 }
 
-export const StakingInfo: FC<StakingInfoProps> = ({
-  title,
-  apr,
-  totalLiquidity,
-  infoText,
-  isRisky = false,
-  className,
-}) => {
+export const StakingInfo: FC<StakingInfoProps> = ({ className }) => {
   return (
-    <div className={classNames(styles.staking, className)}>
-      <h2 className={styles.stakingTitle}>{title}</h2>
-
-      <div className={styles.stakingStats}>
-        <div className={styles.stakingStatsTitle}>Total liquidity</div>
-        <div className={styles.stakingStatsTitle}>APR</div>
-        <div className={styles.stakingStatsValue}>{totalLiquidity}</div>
-        <div
-          className={classNames([
-            styles.stakingStatsValue,
-            styles.stakingStatsValueGreen,
-            { [styles.stakingStatsValueRed]: isRisky },
-          ])}
-        >
-          {apr}
-        </div>
+    <WalletInfoWrapper className={classNames(styles.stakingInfo, className)}>
+      <div className={styles.stakingRow}>
+        <WalletInfoBalance
+          className={styles.stakingBalance}
+          title="rPWNG STAKING"
+          values={['10.000']}
+        />
+        <WalletInfoButton className={styles.stakingBtn}>
+          Unstake
+        </WalletInfoButton>
       </div>
-
-      <p className={styles.stakingInfo}>{infoText}</p>
-    </div>
+      <div className={styles.stakingRow}>
+        <WalletInfoBalance
+          className={styles.stakingBalance}
+          title="rPWNG/SOL Staking"
+          values={['10.000']}
+        />
+        <WalletInfoButton className={styles.stakingBtn}>
+          Withdraw
+        </WalletInfoButton>
+      </div>
+    </WalletInfoWrapper>
   );
 };

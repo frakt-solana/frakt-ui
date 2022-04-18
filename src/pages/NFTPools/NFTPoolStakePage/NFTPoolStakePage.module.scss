@@ -8,15 +8,10 @@
   padding: 30px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  align-items: flex-start;
   gap: 0 30px;
 }
 
-.subtitleWalletInfoInventory {
-  grid-column: 1 / 3;
-}
-.subtitleWalletInfoLiquidity {
-  grid-column: 3 / -1;
-}
 .subtitleStaking {
   text-align: center;
   grid-column: 1 / -1;
@@ -28,30 +23,41 @@
   padding-top: 30px;
   margin-bottom: 12px;
 }
-.walletInfoTitleInventory {
-  grid-column: 1 / 3;
-}
-.walletInfoTitleLiquidity {
-  grid-column: 3 / -1;
-}
 
-.walletInfoInventory {
-  grid-column: 1 / 3;
-}
-.walletInfoLiquidity {
-  grid-column: 3 / 4;
-}
 .walletInfoInventoryStaking {
   grid-column: 4 / -1;
 }
 
-.walletInfoBtnWrapper {
-  padding-top: 10px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0 10px;
+.stakingInfoInventory {
+  grid-column: 1 / 3;
 }
 
-.walletInfoBtn {
-  width: 50%;
+.stakingInfoLiquidity {
+  grid-column: 3 / -1;
+}
+
+.inventoryWalletInfo {
+  grid-column: 1 / 3;
+}
+
+.liquidityWalletInfo {
+  grid-column: 3 / -1;
+}
+
+// .rewardsInfo {
+//   grid-column: 4 / -1;
+// }
+
+.stakingInfo {
+  grid-column: 1 / 4;
+}
+
+.liquidityWalletInfoMain {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 20px;
+}
+
+.liquiditySubtitle {
+  grid-column: 1 / -1;
 }

@@ -1,34 +1,20 @@
-.staking {
-  color: var(--white-color);
-}
-
-.stakingTitle {
-  font: var(--font-title-2);
-  margin-bottom: 14px;
-}
-
 .stakingInfo {
-  font: var(--font-text-3);
+  display: flex;
+  flex-direction: column;
+  gap: 10px 0;
 }
 
-.stakingStats {
-  display: grid;
-  grid-template-columns: max-content auto;
-  gap: 8px 24px;
-  margin-bottom: 14px;
+.stakingRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0 20px;
 }
 
-.stakingStatsTitle {
-  font: var(--font-text-5);
-  text-transform: uppercase;
+.stakingBalance {
+  flex-grow: 1;
 }
 
-.stakingStatsValue {
-  font: var(--font-text-3);
-}
-.stakingStatsValueGreen {
-  color: #83d6a4;
-}
-.stakingStatsValueRed {
-  color: var(--red-color);
+.stakingBtn {
+  width: 30%;
 }

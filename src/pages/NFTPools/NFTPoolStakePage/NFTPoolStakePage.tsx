@@ -1,25 +1,27 @@
-// import { useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import { FC, useMemo } from 'react';
 
 import { Loader } from '../../../components/Loader';
 import { POOL_TABS } from '../../../constants';
+import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
 import {
+  filterWhitelistedNFTs,
   useNftPool,
   useNftPoolsInitialFetch,
-  useNftPoolsPolling,
 } from '../../../contexts/nftPools';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { usePublicKeyParam } from '../../../hooks';
+import { useSplTokenBalance } from '../../../utils/accounts';
+import { useCachedPoolsStats } from '../../PoolsPage';
 import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
-import { useAPR, usePoolPubkeyParam } from '../hooks';
+import { useAPR, usePoolPubkeyParam, useUserRawNfts } from '../hooks';
 import { HeaderInfo } from '../NFTPoolInfoPage/components/HeaderInfo';
 import {
+  RewardsInfo,
+  StakingDetails,
   StakingInfo,
-  WalletInfoBalance,
-  // WalletInfoBalanceProps,
-  WalletInfoButton,
-  WalletInfoWrapper,
+  WalletInfo,
 } from './components';
 import styles from './NFTPoolStakePage.module.scss';
 
@@ -27,11 +29,15 @@ export const NFTPoolStakePage: FC = () => {
   const poolPubkey = usePoolPubkeyParam();
   usePublicKeyParam(poolPubkey);
   useNftPoolsInitialFetch();
-  useNftPoolsPolling();
 
-  // const { connected } = useWallet();
+  const { connected } = useWallet();
 
-  const { pool, loading: poolLoading } = useNftPool(poolPubkey);
+  const {
+    pool,
+    whitelistedMintsDictionary,
+    whitelistedCreatorsDictionary,
+    loading: poolLoading,
+  } = useNftPool(poolPubkey);
   const poolPublicKey = pool?.publicKey?.toBase58();
 
   const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
@@ -42,11 +48,35 @@ export const NFTPoolStakePage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolPublicKey, tokensMap]);
 
-  const { loading: aprLoading } = useAPR();
+  const { rawNfts, rawNftsLoading } = useUserRawNfts();
 
-  const pageLoading = poolLoading || tokensMapLoading || aprLoading;
+  const whitelistedNFTs = useMemo(() => {
+    return filterWhitelistedNFTs(
+      rawNfts || [],
+      whitelistedMintsDictionary,
+      whitelistedCreatorsDictionary,
+    );
+  }, [rawNfts, whitelistedMintsDictionary, whitelistedCreatorsDictionary]);
+
+  const { loading: aprLoading, liquidityAPR } = useAPR(poolTokenInfo);
+
+  const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
+    useCachedPoolsStats();
+  const poolStats = poolsStatsByBaseTokenMint.get(poolTokenInfo?.address);
+
+  const pageLoading =
+    poolLoading ||
+    tokensMapLoading ||
+    aprLoading ||
+    poolsStatsLoading ||
+    rawNftsLoading;
 
   const loading = pageLoading;
+
+  const { balance: poolTokenBalance } = useSplTokenBalance(
+    poolTokenInfo?.address,
+    9,
+  );
 
   return (
     <NFTPoolPageLayout
@@ -64,62 +94,63 @@ export const NFTPoolStakePage: FC = () => {
       ) : (
         <div className={styles.root}>
           <div className={styles.stakingWrapper}>
-            <StakingInfo
+            <StakingDetails
               className={styles.stakingInfoInventory}
               title="Inventory Staking"
               infoText="Stake pool tokens without any risk but with reduced rewards"
               totalLiquidity="$ 123 456 789"
               apr="30.20 %"
             />
-            <StakingInfo
+            <StakingDetails
               className={styles.stakingInfoLiquidity}
               title="Liquidity Staking"
               infoText="Stake LP tokens with high rewards but with risk of impermanent
               loss"
-              totalLiquidity="$ 123 456 789"
-              apr="210.32 %"
+              totalLiquidity={`$ ${formatNumberWithSpaceSeparator(
+                poolStats?.volume || 0,
+              )}`}
+              apr={`${liquidityAPR.toFixed(2)} %`}
               isRisky
             />
-            <p
-              className={classNames(
-                styles.subtitle,
-                styles.subtitleWalletInfoInventory,
-              )}
-            >
-              Wallet info
-            </p>
-            <p
-              className={classNames(
-                styles.subtitle,
-                styles.subtitleWalletInfoLiquidity,
-              )}
-            >
-              Wallet info
-            </p>
-            <WalletInfo
-              title="rPWNG"
-              balance="10.003"
-              firstAction={{ label: 'Stake rPWNG', action: () => {} }}
-              secondAction={{ label: 'Sell NFT & Stake', action: () => {} }}
-              className={styles.walletInfoInventory}
-            />
-            <WalletInfo
-              title="rPWNG"
-              balance="10.003"
-              firstAction={{ label: 'Deposit', action: () => {} }}
-              secondAction={{ label: 'Sell NFT & Deposit', action: () => {} }}
-              className={styles.walletInfoLiquidity}
-            />
-            <WalletInfo
-              title="rPWNG/SOL"
-              balance="10.003"
-              firstAction={{ label: 'Stake', action: () => {} }}
-              secondAction={{ label: 'Withdraw', action: () => {} }}
-              className={styles.walletInfoLiquidityStaking}
-            />
-            <p className={classNames(styles.subtitle, styles.subtitleStaking)}>
-              Staking info
-            </p>
+            {connected && (
+              <>
+                <InventoryWalletInfo
+                  poolToken={{
+                    ticker: poolTokenInfo?.symbol,
+                    balance: poolTokenBalance,
+                  }}
+                  onSellNft={() => {}}
+                  sellNftAvailable={!!whitelistedNFTs?.length}
+                  className={styles.inventoryWalletInfo}
+                />
+                <LiquidityWalletInfo
+                  poolToken={{
+                    ticker: poolTokenInfo?.symbol,
+                    balance: poolTokenBalance,
+                  }}
+                  lpToken={{
+                    ticker: `${poolTokenInfo?.symbol}/SOL`,
+                    balance: 0,
+                  }}
+                  onSellNft={() => {}}
+                  sellNftAvailable={!!whitelistedNFTs?.length}
+                  className={styles.liquidityWalletInfo}
+                />
+                <p
+                  className={classNames(
+                    styles.subtitle,
+                    styles.subtitleStaking,
+                  )}
+                >
+                  Staking info
+                </p>
+                <StakingInfo className={styles.stakingInfo} />
+                <RewardsInfo
+                  className={styles.rewardsInfo}
+                  values={['10 PUNKS', '20 rFRKT', '20 rFRKT']}
+                />
+              </>
+            )}
           </div>
         </div>
       )}
@@ -127,45 +158,86 @@ export const NFTPoolStakePage: FC = () => {
   );
 };
 
-interface Action {
-  label: string;
-  action: () => void;
-}
-
-interface WalletInfoProps {
-  title: string;
-  balance: string;
-  firstAction: Action;
-  secondAction?: Action;
+interface InventoryWalletInfoProps {
+  poolToken: {
+    ticker: string;
+    balance: number;
+  };
+  sellNftAvailable?: boolean;
+  onSellNft: () => void;
   className?: string;
 }
 
-export const WalletInfo: FC<WalletInfoProps> = ({
-  title,
-  balance,
-  firstAction,
-  secondAction,
+const InventoryWalletInfo: FC<InventoryWalletInfoProps> = ({
+  poolToken,
+  sellNftAvailable = false,
+  onSellNft,
   className,
 }) => {
   return (
-    <WalletInfoWrapper className={className}>
-      <WalletInfoBalance title={title} values={[balance]} />
-      <div className={styles.walletInfoBtnWrapper}>
-        <WalletInfoButton
-          className={styles.walletInfoBtn}
-          onClick={firstAction.action}
-        >
-          {firstAction.label}
-        </WalletInfoButton>
-        {secondAction && (
-          <WalletInfoButton
-            className={styles.walletInfoBtn}
-            onClick={secondAction.action}
-          >
-            {secondAction.label}
-          </WalletInfoButton>
-        )}
-      </div>
-    </WalletInfoWrapper>
+    <div className={className}>
+      <p className={styles.subtitle}>Wallet info</p>
+      <WalletInfo
+        title={poolToken?.ticker || 'Unknown'}
+        balance={poolToken?.balance ? poolToken.balance.toFixed(3) : '0'}
+        firstAction={{ label: 'Stake rPWNG', action: () => {} }}
+        secondAction={
+          sellNftAvailable
+            ? { label: 'Sell NFT & Stake', action: onSellNft }
+            : null
+        }
+        className={styles.walletInfoInventory}
+      />
+    </div>
+  );
+};
+
+interface LiquidityWalletInfoProps {
+  poolToken: {
+    ticker: string;
+    balance: number;
+  };
+  lpToken?: {
+    ticker: string;
+    balance: number;
+  };
+  sellNftAvailable?: boolean;
+  onSellNft: () => void;
+  className?: string;
+}
+
+const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
+  poolToken,
+  lpToken,
+  sellNftAvailable = false,
+  onSellNft,
+  className,
+}) => {
+  return (
+    <div className={classNames(styles.liquidityWalletInfoMain, className)}>
+      <p className={classNames(styles.liquiditySubtitle, styles.subtitle)}>
+        Wallet info
+      </p>
+      <WalletInfo
+        title={poolToken?.ticker || 'Unknown'}
+        balance={poolToken?.balance ? poolToken.balance.toFixed(3) : '0'}
+        firstAction={{ label: 'Deposit', action: () => {} }}
+        secondAction={
+          sellNftAvailable
+            ? { label: 'Sell NFT & Deposit', action: onSellNft }
+            : null
+        }
+        className={styles.walletInfoLiquidity}
+      />
+      {!!lpToken && (
+        <WalletInfo
+          title={lpToken.ticker || 'Unknown'}
+          balance={lpToken.balance ? lpToken.balance.toFixed(3) : '0'}
+          firstAction={{ label: 'Stake', action: () => {} }}
+          secondAction={{ label: 'Withdraw', action: () => {} }}
+          className={styles.walletInfoLiquidityStaking}
+        />
+      )}
+    </div>
   );
 };
