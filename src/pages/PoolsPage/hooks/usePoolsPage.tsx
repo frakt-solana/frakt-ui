@@ -12,7 +12,7 @@ import {
   PoolData,
   RaydiumPoolInfoMap,
   FusionPoolInfoByMint,
-  useLazyFusionPools,
+  useLazyFusionPools_old,
 } from '../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../PoolsPage.module.scss';
@@ -91,7 +91,7 @@ export const usePoolsPage = (): {
     fusionPoolInfoMap,
     loading: fusionPoolInfoMapLoading,
     fetchFusionPoolsInfo,
-  } = useLazyFusionPools();
+  } = useLazyFusionPools_old();
 
   const rawPoolsData = useMemo(() => {
     return poolDataByMint.size

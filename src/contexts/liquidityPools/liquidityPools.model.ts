@@ -127,3 +127,10 @@ export interface FusionPoolInfo {
 export interface secondaryRewardWithTokenInfo extends SecondaryRewardView {
   tokenInfo: TokenInfo[];
 }
+
+export interface FusionPool {
+  router: MainRouterView;
+  secondaryRewards: SecondaryRewardView;
+  stakeAccounts: StakeAccountView[];
+  secondaryStakeAccounts: SecondStakeAccountView[];
+}

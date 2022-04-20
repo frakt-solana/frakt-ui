@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
+import { keyBy, groupBy } from 'lodash';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
@@ -11,11 +12,13 @@ import {
   mapFusionPoolInfo,
 } from './liquidityPools.helpers';
 import {
+  FusionPool,
   FusionPoolInfoByMint,
   LiquidityPoolsContextValues,
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
 import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
+import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 
 export const useLiquidityPools = (): LiquidityPoolsContextValues => {
   const context = useContext(LiquidityPoolsContext);
@@ -85,7 +88,7 @@ export const useLazyRaydiumPoolsInfoMap = (): {
   return { raydiumPoolsInfoMap, loading, fetchPoolsInfoMap };
 };
 
-export const useLazyFusionPools = (): {
+export const useLazyFusionPools_old = (): {
   loading: boolean;
   fusionPoolInfoMap: FusionPoolInfoByMint;
   fetchFusionPoolsInfo: (lpMints: string[]) => Promise<void>;
@@ -120,4 +123,92 @@ export const useLazyFusionPools = (): {
   };
 
   return { fusionPoolInfoMap, loading, fetchFusionPoolsInfo };
+};
+
+type UseLazyFusionPools = () => {
+  fusionPools: FusionPool[];
+  loading: boolean;
+  initialFetch: () => Promise<void>;
+  refetch: () => Promise<void>;
+};
+
+export const useLazyFusionPools: UseLazyFusionPools = () => {
+  const { connection } = useConnection();
+
+  const [fusionPools, setFusionPools] = useState<FusionPool[]>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const fetchPools = async () => {
+    const {
+      mainRouters,
+      stakeAccounts,
+      secondaryRewards,
+      secondaryStakeAccounts,
+    } = await getAllProgramAccounts(
+      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      connection,
+    );
+
+    const stakeAccountsByRouterPubkey = groupBy(stakeAccounts, 'routerPubkey');
+
+    const secondaryRewardsByRouterPubkey = keyBy(
+      secondaryRewards,
+      'routerPubkey',
+    );
+    const secondaryStakeAccountsByStakeAccountPubkey = groupBy(
+      secondaryStakeAccounts,
+      'secondaryReward',
+    );
+
+    const fusionPools: FusionPool[] = mainRouters.map((router) => {
+      const stakeAccounts =
+        stakeAccountsByRouterPubkey[router.mainRouterPubkey] || [];
+
+      const secondaryRewards =
+        secondaryRewardsByRouterPubkey[router.mainRouterPubkey] || null;
+
+      const secondaryStakeAccounts =
+        secondaryStakeAccountsByStakeAccountPubkey[
+          secondaryRewards?.secondaryRewardaccount
+        ] || [];
+
+      return {
+        router,
+        stakeAccounts,
+        secondaryRewards: secondaryRewards,
+        secondaryStakeAccounts,
+      };
+    });
+
+    setFusionPools(fusionPools);
+  };
+
+  const initialFetch = async () => {
+    try {
+      setLoading(true);
+
+      await fetchPools();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refetch = async () => {
+    try {
+      await fetchPools();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
+  return {
+    fusionPools,
+    loading,
+    initialFetch,
+    refetch,
+  };
 };
