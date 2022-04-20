@@ -34,4 +34,5 @@ export const PATHS = {
   COLLECTION_NAME: '/:collectionName',
   EARN: '/earn',
   TEST: '/market_test',
+  BORROW: 'https://gnomies.fi/',
 };

@@ -2,56 +2,12 @@
   display: flex;
   height: 100%;
   margin-left: auto;
-  margin-right: 16px;
 
   @media screen and (max-width: 1023px) {
     display: none;
     margin-left: 0;
     margin-right: 0;
     height: unset;
-  }
-}
-
-.dropdown {
-  background-color: var(--black-color);
-  padding: 10px 0;
-  border: var(--border-gray-1);
-
-  &::after {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 20px;
-    border-left: var(--border-gray-1);
-    border-top: var(--border-gray-1);
-    background-color: var(--black-color);
-    transform: rotate(45deg);
-    position: absolute;
-    right: 10px;
-    top: -10px;
-    z-index: -1;
-  }
-
-  li {
-    a {
-      min-width: 180px;
-      padding: 5px 20px;
-      color: var(--white-color);
-      font: var(--font-text-3);
-
-      &:hover {
-        color: var(--white-color);
-        background-color: var(--color-gray-7);
-      }
-
-      svg {
-        margin-right: 5px;
-      }
-    }
-  }
-
-  @media screen and (max-width: 1023px) {
-    display: none;
   }
 }
 
@@ -66,39 +22,62 @@
   }
 }
 
-.mobileDropdown {
-  display: none;
+.navigationLink {
+  color: var(--white-color);
+  padding: 0 16px;
 
-  @media screen and (max-width: 1023px) {
+  &:hover {
+    color: var(--white-color);
+  }
+}
+
+.title {
+  font: var(--font-subtitle-2);
+}
+
+.subtitle {
+  margin-top: 7px;
+  font: var(--font-text-3);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  max-width: 312px;
+}
+
+.linkList {
+  .link {
+    padding: 20px;
+  }
+  &::after {
+    content: '';
     display: block;
+    height: 1px;
+    width: 100%;
+    background-color: var(--gray-color-3);
+  }
+  &:last-child {
+    margin-right: 0;
 
-    .dropdownLink {
-      color: var(--white-color);
-      background: none;
-      outline: none;
-      border: none;
-      cursor: pointer;
-      padding: 0 16px;
-
-      svg {
-        margin-right: 10px;
-      }
+    &::after {
+      display: none;
     }
   }
 }
 
-.dropdownTrigger {
-  height: 100%;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
+.dropdownLink {
+  color: var(--white-color);
+  background: none;
+  outline: none;
+  border: none;
   cursor: pointer;
+  padding: 0 16px;
 
-  @media screen and (max-width: 1023px) {
-    display: none;
+  svg {
+    margin-right: 10px;
   }
-}
-
-.moreArrowIcon {
-  margin-left: 11px;
 }
