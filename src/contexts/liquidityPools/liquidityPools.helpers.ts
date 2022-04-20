@@ -32,6 +32,7 @@ import {
   FusionPoolInfo,
   secondaryRewardWithTokenInfo,
   LiquidityPoolKeysV4String,
+  FusionPool,
 } from './liquidityPools.model';
 
 export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
@@ -339,3 +340,19 @@ export const getTokenInfoByReward = (
   tokensList: TokenInfo[],
 ): TokenInfo[] =>
   tokensList.filter(({ address }) => address === stakeAccount?.tokenMintOutput);
+
+export const findSpecificFusionPool = (
+  pools: FusionPool[] = [],
+  inputTokenMint: string,
+  outputTokenMint: string,
+): FusionPool | null => {
+  return (
+    pools.find(
+      ({ router }) =>
+        router.poolConfigInput === inputTokenMint &&
+        router.poolConfigOutput === outputTokenMint,
+    ) || null
+  );
+};
+
+//TODO const getFusionPoolsByWallet = (arr: FusionPool[], walletPubkey) => {}
