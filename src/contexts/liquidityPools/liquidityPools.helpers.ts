@@ -349,8 +349,8 @@ export const findSpecificFusionPool = (
   return (
     pools.find(
       ({ router }) =>
-        router.poolConfigInput === inputTokenMint &&
-        router.poolConfigOutput === outputTokenMint,
+        router.tokenMintInput === inputTokenMint &&
+        router.tokenMintOutput === outputTokenMint,
     ) || null
   );
 };
