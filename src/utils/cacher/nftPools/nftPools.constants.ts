@@ -1,4 +1,5 @@
 export const HIDDEN_POOLS = [
+  'FuasyZT2HZDsz5ndmFP9XeuQneK7prDwRugenqkPC1TB', //? NewBatCity
   'EHNimBvyzYB8qJvpXzaGudDZ3eNUnezyCMLxigXvTqwU', //? Blockasset legends
   '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr', //? thugbirds
   'CA5qBCJS5wwdvMmt2ANLUxUecmNjf7Py9s7N1UEJ1cxy',
