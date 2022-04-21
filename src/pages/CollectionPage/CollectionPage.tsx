@@ -64,15 +64,11 @@ const CollectionPage: FC = () => {
   const { vaults, loading } = useFraktion();
   useFraktionInitialFetch();
 
-  const collectionsData = Array.from(collections.values());
-
   const vaultsByCollectionName = useMemo(() => {
     return loading ? {} : mapVaultsByCollectionName(vaults);
   }, [loading, vaults]);
 
-  const currentCollection = collectionsData.find(
-    ({ name }) => name === collectionName,
-  );
+  const currentCollection = collections.get(collectionName);
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
