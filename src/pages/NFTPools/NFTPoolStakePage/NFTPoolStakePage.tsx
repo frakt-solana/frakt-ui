@@ -1,21 +1,15 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 
 import { Loader } from '../../../components/Loader';
 import { POOL_TABS } from '../../../constants';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
-import {
-  filterWhitelistedNFTs,
-  useNftPool,
-  useNftPoolsInitialFetch,
-} from '../../../contexts/nftPools';
-import { useTokenListContext } from '../../../contexts/TokenList';
+import { useNftPoolsInitialFetch } from '../../../contexts/nftPools';
 import { usePublicKeyParam } from '../../../hooks';
 import { useSplTokenBalance } from '../../../utils/accounts';
-import { useCachedPoolsStats } from '../../PoolsPage';
 import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
-import { useAPR, usePoolPubkeyParam, useUserRawNfts } from '../hooks';
+import { usePoolPubkeyParam } from '../hooks';
 import { HeaderInfo } from '../NFTPoolInfoPage/components/HeaderInfo';
 import {
   RewardsInfo,
@@ -23,6 +17,7 @@ import {
   StakingInfo,
   WalletInfo,
 } from './components';
+import { useNftPoolForStakePage } from './hooks';
 import styles from './NFTPoolStakePage.module.scss';
 
 export const NFTPoolStakePage: FC = () => {
@@ -34,47 +29,28 @@ export const NFTPoolStakePage: FC = () => {
 
   const {
     pool,
-    whitelistedMintsDictionary,
-    whitelistedCreatorsDictionary,
-    loading: poolLoading,
-  } = useNftPool(poolPubkey);
-  const poolPublicKey = pool?.publicKey?.toBase58();
+    poolStats,
+    poolTokenInfo,
+    liquidityAPR,
+    walletNfts,
+    loading: nftPoolForStakePageLoading,
+    pageLoading: unavailableToRenderHeader,
+    inventoryFusionPool,
+    liquidityFusionPool,
+    // liquidityPoolInfo,
+  } = useNftPoolForStakePage(poolPubkey);
 
-  const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
-    useTokenListContext();
+  const pageLoading = unavailableToRenderHeader;
 
-  const poolTokenInfo = useMemo(() => {
-    return tokensMap.get(pool?.fractionMint?.toBase58());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poolPublicKey, tokensMap]);
-
-  const { rawNfts, rawNftsLoading } = useUserRawNfts();
-
-  const whitelistedNFTs = useMemo(() => {
-    return filterWhitelistedNFTs(
-      rawNfts || [],
-      whitelistedMintsDictionary,
-      whitelistedCreatorsDictionary,
-    );
-  }, [rawNfts, whitelistedMintsDictionary, whitelistedCreatorsDictionary]);
-
-  const { loading: aprLoading, liquidityAPR } = useAPR(poolTokenInfo);
-
-  const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
-    useCachedPoolsStats();
-  const poolStats = poolsStatsByBaseTokenMint.get(poolTokenInfo?.address);
-
-  const pageLoading =
-    poolLoading ||
-    tokensMapLoading ||
-    aprLoading ||
-    poolsStatsLoading ||
-    rawNftsLoading;
-
-  const loading = pageLoading;
+  const loading = nftPoolForStakePageLoading;
 
   const { balance: poolTokenBalance } = useSplTokenBalance(
-    poolTokenInfo?.address,
+    inventoryFusionPool?.router?.tokenMintInput,
+    9,
+  );
+
+  const { balance: lpTokenBalance } = useSplTokenBalance(
+    liquidityFusionPool?.router?.tokenMintInput,
     9,
   );
 
@@ -120,7 +96,7 @@ export const NFTPoolStakePage: FC = () => {
                     balance: poolTokenBalance,
                   }}
                   onSellNft={() => {}}
-                  sellNftAvailable={!!whitelistedNFTs?.length}
+                  sellNftAvailable={!!walletNfts?.length}
                   className={styles.inventoryWalletInfo}
                 />
                 <LiquidityWalletInfo
@@ -130,10 +106,10 @@ export const NFTPoolStakePage: FC = () => {
                   }}
                   lpToken={{
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
-                    balance: 0,
+                    balance: lpTokenBalance,
                   }}
                   onSellNft={() => {}}
-                  sellNftAvailable={!!whitelistedNFTs?.length}
+                  sellNftAvailable={!!walletNfts?.length}
                   className={styles.liquidityWalletInfo}
                 />
                 <p
