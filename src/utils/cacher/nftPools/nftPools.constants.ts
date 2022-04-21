@@ -1,7 +1,7 @@
 export const HIDDEN_POOLS = [
   '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr', //? thugbirds
   'FuasyZT2HZDsz5ndmFP9XeuQneK7prDwRugenqkPC1TB', //? NewBatCity
-  'CA5qBCJS5wwdvMmt2ANLUxUecmNjf7Py9s7N1UEJ1cxy', //? HRHC
+  // 'CA5qBCJS5wwdvMmt2ANLUxUecmNjf7Py9s7N1UEJ1cxy', //? HRHC
   // 'AaYBdEnjqYoay3ozs2tY1tm9kFXxjUrAZeNZngnqwmV1', //? Sollamas
   // 'HfEJXp9YNdrrPuqAoaeKzL3pyCvsdnVQxHXpf7KVTsjY', //? Solpunks
   'EHNimBvyzYB8qJvpXzaGudDZ3eNUnezyCMLxigXvTqwU', //? Blockasset legends
