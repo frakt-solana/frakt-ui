@@ -1,3 +1,4 @@
+import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import { FC } from 'react';
@@ -9,7 +10,7 @@ import { useNftPoolsInitialFetch } from '../../../contexts/nftPools';
 import { usePublicKeyParam } from '../../../hooks';
 import { useSplTokenBalance } from '../../../utils/accounts';
 import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
-import { usePoolPubkeyParam } from '../hooks';
+import { useAPR, usePoolPubkeyParam, usePoolTokensPrices } from '../hooks';
 import { HeaderInfo } from '../NFTPoolInfoPage/components/HeaderInfo';
 import {
   RewardsInfo,
@@ -17,8 +18,18 @@ import {
   StakingInfo,
   WalletInfo,
 } from './components';
-import { useNftPoolForStakePage } from './hooks';
+import { useNftPoolStakePage } from './hooks';
 import styles from './NFTPoolStakePage.module.scss';
+
+const usePoolTokenPrice = (poolTokenInfo: TokenInfo) => {
+  const { pricesByTokenMint: poolTokenPricesByTokenMint, loading } =
+    usePoolTokensPrices([poolTokenInfo]);
+
+  return {
+    loading,
+    poolTokenPrice: poolTokenPricesByTokenMint.get(poolTokenInfo?.address)?.buy,
+  };
+};
 
 export const NFTPoolStakePage: FC = () => {
   const poolPubkey = usePoolPubkeyParam();
@@ -29,20 +40,24 @@ export const NFTPoolStakePage: FC = () => {
 
   const {
     pool,
-    poolStats,
     poolTokenInfo,
-    liquidityAPR,
-    walletNfts,
-    loading: nftPoolForStakePageLoading,
-    pageLoading: unavailableToRenderHeader,
+    userNfts,
+    // raydiumPoolInfo,
     inventoryFusionPool,
     liquidityFusionPool,
-    // liquidityPoolInfo,
-  } = useNftPoolForStakePage(poolPubkey);
+    pageLoading: pageLoadingNftPool,
+    contentLoading: contentLoadingNftPool,
+  } = useNftPoolStakePage(poolPubkey);
 
-  const pageLoading = unavailableToRenderHeader;
+  const { inverntoryAPR, liquidityAPR, raydiumPoolLiquidityUSD } =
+    useAPR(poolTokenInfo);
 
-  const loading = nftPoolForStakePageLoading;
+  const { poolTokenPrice, loading: poolTokenPriceLoading } =
+    usePoolTokenPrice(poolTokenInfo);
+
+  const inventoryTotalLiquidity =
+    Number(poolTokenPrice) *
+      Number(inventoryFusionPool?.router?.amountOfStaked) || 0;
 
   const { balance: poolTokenBalance } = useSplTokenBalance(
     inventoryFusionPool?.router?.tokenMintInput,
@@ -53,6 +68,9 @@ export const NFTPoolStakePage: FC = () => {
     liquidityFusionPool?.router?.tokenMintInput,
     9,
   );
+
+  const pageLoading = pageLoadingNftPool;
+  const contentLoading = contentLoadingNftPool || poolTokenPriceLoading;
 
   return (
     <NFTPoolPageLayout
@@ -65,7 +83,7 @@ export const NFTPoolStakePage: FC = () => {
       }
       tab={POOL_TABS.STAKE}
     >
-      {loading ? (
+      {contentLoading ? (
         <Loader size="large" />
       ) : (
         <div className={styles.root}>
@@ -74,8 +92,10 @@ export const NFTPoolStakePage: FC = () => {
               className={styles.stakingInfoInventory}
               title="Inventory Staking"
               infoText="Stake pool tokens without any risk but with reduced rewards"
-              totalLiquidity="$ 123 456 789"
-              apr="30.20 %"
+              totalLiquidity={`$ ${formatNumberWithSpaceSeparator(
+                inventoryTotalLiquidity || 0,
+              )}`}
+              apr={`${inverntoryAPR.toFixed(2)} %`}
             />
             <StakingDetails
               className={styles.stakingInfoLiquidity}
@@ -83,7 +103,7 @@ export const NFTPoolStakePage: FC = () => {
               infoText="Stake LP tokens with high rewards but with risk of impermanent
               loss"
               totalLiquidity={`$ ${formatNumberWithSpaceSeparator(
-                poolStats?.volume || 0,
+                raydiumPoolLiquidityUSD || 0,
               )}`}
               apr={`${liquidityAPR.toFixed(2)} %`}
               isRisky
@@ -96,7 +116,7 @@ export const NFTPoolStakePage: FC = () => {
                     balance: poolTokenBalance,
                   }}
                   onSellNft={() => {}}
-                  sellNftAvailable={!!walletNfts?.length}
+                  sellNftAvailable={!!userNfts?.length}
                   className={styles.inventoryWalletInfo}
                 />
                 <LiquidityWalletInfo
@@ -109,7 +129,7 @@ export const NFTPoolStakePage: FC = () => {
                     balance: lpTokenBalance,
                   }}
                   onSellNft={() => {}}
-                  sellNftAvailable={!!walletNfts?.length}
+                  sellNftAvailable={!!userNfts?.length}
                   className={styles.liquidityWalletInfo}
                 />
                 <p
