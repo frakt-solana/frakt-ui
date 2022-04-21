@@ -18,7 +18,6 @@ import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
-import { CollectionsProvider } from './contexts/collections';
 import { NftPoolsProvider } from './contexts/nftPools';
 
 const wallets = [
@@ -39,9 +38,7 @@ function App(): JSX.Element {
               <LiquidityPoolsProvider>
                 <FraktionProvider>
                   <NftPoolsProvider>
-                    <CollectionsProvider>
-                      <Router />
-                    </CollectionsProvider>
+                    <Router />
                   </NftPoolsProvider>
                 </FraktionProvider>
               </LiquidityPoolsProvider>
