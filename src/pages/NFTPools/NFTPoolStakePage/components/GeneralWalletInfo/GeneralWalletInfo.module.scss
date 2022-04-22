@@ -1,0 +1,13 @@
+.generalWalletInfo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 30px;
+}
+
+.inventoryWalletInfo {
+  grid-column: 1 / 2;
+}
+
+.liquidityWalletInfo {
+  grid-column: 2 / -1;
+}

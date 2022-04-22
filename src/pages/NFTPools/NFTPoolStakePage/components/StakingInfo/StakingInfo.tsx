@@ -7,32 +7,48 @@ import { WalletInfoWrapper } from '../WalletInfoWrapper';
 import styles from './StakingInfo.module.scss';
 
 interface StakingInfoProps {
+  poolToken?: {
+    ticker: string;
+    balance: number;
+  };
+  lpToken?: {
+    ticker: string;
+    balance: number;
+  };
   className?: string;
 }
 
-export const StakingInfo: FC<StakingInfoProps> = ({ className }) => {
+export const StakingInfo: FC<StakingInfoProps> = ({
+  poolToken,
+  lpToken,
+  className,
+}) => {
   return (
     <WalletInfoWrapper className={classNames(styles.stakingInfo, className)}>
-      <div className={styles.stakingRow}>
-        <WalletInfoBalance
-          className={styles.stakingBalance}
-          title="rPWNG STAKING"
-          values={['10.000']}
-        />
-        <WalletInfoButton className={styles.stakingBtn}>
-          Unstake
-        </WalletInfoButton>
-      </div>
-      <div className={styles.stakingRow}>
-        <WalletInfoBalance
-          className={styles.stakingBalance}
-          title="rPWNG/SOL Staking"
-          values={['10.000']}
-        />
-        <WalletInfoButton className={styles.stakingBtn}>
-          Withdraw
-        </WalletInfoButton>
-      </div>
+      {!!poolToken?.balance && (
+        <div className={styles.stakingRow}>
+          <WalletInfoBalance
+            className={styles.stakingBalance}
+            title={`${poolToken?.ticker} STAKING`}
+            values={[poolToken?.balance ? poolToken.balance.toFixed(3) : '0']}
+          />
+          <WalletInfoButton className={styles.stakingBtn}>
+            Unstake
+          </WalletInfoButton>
+        </div>
+      )}
+      {!!lpToken?.balance && (
+        <div className={styles.stakingRow}>
+          <WalletInfoBalance
+            className={styles.stakingBalance}
+            title={`${lpToken?.ticker} STAKING`}
+            values={[lpToken?.balance ? lpToken.balance.toFixed(3) : '0']}
+          />
+          <WalletInfoButton className={styles.stakingBtn}>
+            Withdraw
+          </WalletInfoButton>
+        </div>
+      )}
     </WalletInfoWrapper>
   );
 };

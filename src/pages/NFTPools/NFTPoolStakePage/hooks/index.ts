@@ -4,3 +4,5 @@ export * from './useNftPoolWithTokenInfo';
 export * from './usePoolSuitableUserNfts';
 export * from './useNftPoolLiquidityAndFusionWithPolling';
 export * from './useNftPoolStakePage';
+export * from './useInventoryStakingTotalLiquidityUSD';
+export * from './useStakingPageInfo';

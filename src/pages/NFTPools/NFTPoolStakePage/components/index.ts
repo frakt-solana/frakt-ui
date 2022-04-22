@@ -5,3 +5,6 @@ export * from './WalletInfoButton';
 export * from './WalletInfo';
 export * from './RewardsInfo';
 export * from './StakingInfo';
+export * from './InventoryWalletInfo';
+export * from './LiquidityWalletInfo';
+export * from './GeneralWalletInfo';

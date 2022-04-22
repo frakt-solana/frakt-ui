@@ -13,7 +13,7 @@ export interface Action {
 interface WalletInfoProps {
   title: string;
   balance: string;
-  firstAction: Action;
+  firstAction?: Action;
   secondAction?: Action;
   className?: string;
 }
@@ -29,13 +29,15 @@ export const WalletInfo: FC<WalletInfoProps> = ({
     <WalletInfoWrapper className={className}>
       <WalletInfoBalance title={title} values={[balance]} />
       <div className={styles.walletInfoBtnWrapper}>
-        <WalletInfoButton
-          className={styles.walletInfoBtn}
-          onClick={firstAction.action}
-        >
-          {firstAction.label}
-        </WalletInfoButton>
-        {secondAction && (
+        {!!firstAction && (
+          <WalletInfoButton
+            className={styles.walletInfoBtn}
+            onClick={firstAction.action}
+          >
+            {firstAction.label}
+          </WalletInfoButton>
+        )}
+        {!!secondAction && (
           <WalletInfoButton
             className={styles.walletInfoBtn}
             onClick={secondAction.action}

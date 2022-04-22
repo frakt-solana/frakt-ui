@@ -130,7 +130,9 @@ export interface secondaryRewardWithTokenInfo extends SecondaryRewardView {
 
 export interface FusionPool {
   router: MainRouterView;
-  secondaryRewards: SecondaryRewardView;
   stakeAccounts: StakeAccountView[];
-  secondaryStakeAccounts: SecondStakeAccountView[];
+  secondaryRewards: {
+    rewards: SecondaryRewardView;
+    stakeAccounts: SecondStakeAccountView[];
+  }[];
 }

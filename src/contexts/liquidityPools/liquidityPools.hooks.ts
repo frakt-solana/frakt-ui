@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
-import { keyBy, groupBy } from 'lodash';
+import { groupBy } from 'lodash';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
@@ -19,6 +19,7 @@ import {
 } from './liquidityPools.model';
 import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
+import { SecondaryRewardView } from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export const useLiquidityPools = (): LiquidityPoolsContextValues => {
   const context = useContext(LiquidityPoolsContext);
@@ -151,11 +152,11 @@ export const useLazyFusionPools: UseLazyFusionPools = () => {
 
     const stakeAccountsByRouterPubkey = groupBy(stakeAccounts, 'routerPubkey');
 
-    const secondaryRewardsByRouterPubkey = keyBy(
+    const secondaryRewardsByRouterPubkey = groupBy(
       secondaryRewards,
       'routerPubkey',
     );
-    const secondaryStakeAccountsByStakeAccountPubkey = groupBy(
+    const secondaryStakeAccountsBySecondaryRewardAccountPubkey = groupBy(
       secondaryStakeAccounts,
       'secondaryReward',
     );
@@ -164,19 +165,22 @@ export const useLazyFusionPools: UseLazyFusionPools = () => {
       const stakeAccounts =
         stakeAccountsByRouterPubkey[router.mainRouterPubkey] || [];
 
-      const secondaryRewards =
-        secondaryRewardsByRouterPubkey[router.mainRouterPubkey] || null;
-
-      const secondaryStakeAccounts =
-        secondaryStakeAccountsByStakeAccountPubkey[
-          secondaryRewards?.secondaryRewardaccount
-        ] || [];
+      const secondaryRewards = (
+        secondaryRewardsByRouterPubkey[router.mainRouterPubkey] || []
+      )?.map((rewards: SecondaryRewardView) => {
+        return {
+          rewards,
+          stakeAccounts:
+            secondaryStakeAccountsBySecondaryRewardAccountPubkey[
+              rewards?.secondaryRewardaccount
+            ] || [],
+        };
+      });
 
       return {
         router,
         stakeAccounts,
-        secondaryRewards: secondaryRewards,
-        secondaryStakeAccounts,
+        secondaryRewards,
       };
     });
 

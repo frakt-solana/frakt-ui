@@ -6,22 +6,30 @@ import { WalletInfoWrapper } from '../WalletInfoWrapper';
 import styles from './RewardsInfo.module.scss';
 
 interface RewardsInfoProps {
-  values: string[];
+  rewards: {
+    ticker: string;
+    balance: number;
+  }[];
   onHarvest?: () => void;
   hideHarvestBtn?: boolean;
   className?: string;
 }
 
 export const RewardsInfo: FC<RewardsInfoProps> = ({
-  values,
+  rewards,
   onHarvest = () => {},
-  hideHarvestBtn = false,
   className,
 }) => {
+  const rewardsValues =
+    rewards?.map(({ ticker, balance }) => `${balance?.toFixed(5)} ${ticker}`) ||
+    [];
+
+  const harvestAvailable = !!rewards?.find(({ balance }) => !!balance) || false;
+
   return (
     <WalletInfoWrapper className={className}>
-      <WalletInfoBalance title="PENDING REWARDS" values={values} />
-      {!hideHarvestBtn && (
+      <WalletInfoBalance title="PENDING REWARDS" values={rewardsValues} />
+      {harvestAvailable && (
         <WalletInfoButton className={styles.harvestBtn} onClick={onHarvest}>
           Harvest
         </WalletInfoButton>

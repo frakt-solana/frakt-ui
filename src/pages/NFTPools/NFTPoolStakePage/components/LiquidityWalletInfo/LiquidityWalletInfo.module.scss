@@ -1,0 +1,29 @@
+.liquidityWalletInfoMain {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 20px;
+}
+
+.subtitle {
+  font: var(--font-text-2);
+  color: var(--color-gray-4);
+  padding-top: 30px;
+  margin-bottom: 12px;
+  grid-column: 1 / -1;
+}
+
+.poolTokenIntfo {
+  grid-column: 1 / -1;
+}
+
+.halfWidth {
+  grid-column: 1 / 2;
+}
+
+.lpTokenInfo {
+  grid-column: 2 / -1;
+}
+
+.firstColumnt {
+  grid-column: 1 / 2;
+}
