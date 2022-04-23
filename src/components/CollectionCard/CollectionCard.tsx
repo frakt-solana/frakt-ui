@@ -1,20 +1,21 @@
 import { FC } from 'react';
 
-import { getCollectionThumbnailUrl } from '../../utils';
 import styles from './styles.module.scss';
 import { VaultData } from '../../contexts/fraktion';
 
 interface CollectionCardProps {
   collectionName: string;
-  thumbnailPath: string;
+  collectionImage: string;
+  collectionSymbol: string;
   className?: string;
   vaultsByCollectionName: VaultData[];
 }
 
 const CollectionCard: FC<CollectionCardProps> = ({
   collectionName,
-  thumbnailPath,
+  collectionImage,
   vaultsByCollectionName,
+  collectionSymbol,
 }) => {
   const nftsAmount = vaultsByCollectionName.reduce(
     (acc: VaultData[], curr, index, self) => {
@@ -25,7 +26,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         })
       )
         curr?.safetyBoxes.forEach((nft) => {
-          if (nft.nftCollectionName === collectionName) acc.push(curr);
+          if (nft.nftCollectionName === collectionSymbol) acc.push(curr);
         });
       return acc;
     },
@@ -44,7 +45,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
         <div
           className={styles.image}
           style={{
-            backgroundImage: `url(${getCollectionThumbnailUrl(thumbnailPath)})`,
+            backgroundImage: `url(${collectionImage})`,
           }}
         />
         <h3 className={styles.name}>{collectionName}</h3>

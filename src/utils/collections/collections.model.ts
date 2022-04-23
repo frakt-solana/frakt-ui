@@ -2,12 +2,12 @@ import { VaultData } from '../../contexts/fraktion';
 
 export interface CollectionData {
   discord?: string;
-  collectionName?: string;
+  name?: string;
   twitter?: string;
   description?: string;
-  bannerPath?: string;
   website?: string;
-  thumbnailPath?: string;
+  image?: string;
+  symbol?: string;
 }
 
 export interface PromiseFulfilledResult {
