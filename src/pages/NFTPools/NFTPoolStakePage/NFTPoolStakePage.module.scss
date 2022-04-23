@@ -43,3 +43,12 @@
 .stakingInfo {
   grid-column: 1 / 4;
 }
+
+.modalWrapper {
+  position: fixed;
+  bottom: -1px;
+  right: 15px;
+  left: 0;
+  z-index: 99;
+  height: 1px;
+}

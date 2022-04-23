@@ -1,6 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { Loader } from '../../../components/Loader';
 import { POOL_TABS } from '../../../constants';
@@ -15,9 +15,19 @@ import {
   StakingDetails,
   StakingInfo,
   GeneralWalletInfo,
+  DepositLiquidityModal,
 } from './components';
 import { useNftPoolStakePage, useStakingPageInfo } from './hooks';
 import styles from './NFTPoolStakePage.module.scss';
+
+const useDepositLiquidityModal = () => {
+  const [visible, setVisible] = useState<boolean>(false);
+
+  return {
+    visible,
+    setVisible,
+  };
+};
 
 export const NFTPoolStakePage: FC = () => {
   const poolPubkey = usePoolPubkeyParam();
@@ -30,8 +40,8 @@ export const NFTPoolStakePage: FC = () => {
     pool,
     poolTokenInfo,
     userNfts,
-    // raydiumPoolInfo,
-    // raydiumLiquidityPoolKeys,
+    raydiumPoolInfo,
+    raydiumLiquidityPoolKeys,
     inventoryFusionPool,
     liquidityFusionPool,
     pageLoading: pageLoadingNftPool,
@@ -57,6 +67,11 @@ export const NFTPoolStakePage: FC = () => {
 
   const pageLoading = pageLoadingNftPool;
   const contentLoading = contentLoadingNftPool || stakingInfoLoading;
+
+  const {
+    visible: depositLiquidityModalVisible,
+    setVisible: setDepositLiquidityModalVisible,
+  } = useDepositLiquidityModal();
 
   return (
     <NFTPoolPageLayout
@@ -106,6 +121,9 @@ export const NFTPoolStakePage: FC = () => {
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
                     balance: lpTokenBalance,
                   }}
+                  onDepositLiquidity={() =>
+                    setDepositLiquidityModalVisible(true)
+                  }
                   onSellAndStakeInInventoryPool={
                     !!userNfts?.length && (() => {})
                   }
@@ -136,6 +154,17 @@ export const NFTPoolStakePage: FC = () => {
                   className={styles.rewardsInfo}
                   rewards={stakeRewards}
                 />
+                <div className={styles.modalWrapper}>
+                  <DepositLiquidityModal
+                    visible={depositLiquidityModalVisible}
+                    setVisible={setDepositLiquidityModalVisible}
+                    baseToken={poolTokenInfo}
+                    raydiumPoolInfo={raydiumPoolInfo}
+                    apr={liquidityAPR}
+                    raydiumLiquidityPoolKeys={raydiumLiquidityPoolKeys}
+                    liquidityFusionPool={liquidityFusionPool}
+                  />
+                </div>
               </>
             )}
           </div>

@@ -8,3 +8,4 @@ export * from './StakingInfo';
 export * from './InventoryWalletInfo';
 export * from './LiquidityWalletInfo';
 export * from './GeneralWalletInfo';
+export * from './DepositLiquidityModal';

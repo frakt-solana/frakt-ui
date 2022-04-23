@@ -1,0 +1,124 @@
+.wrapper {
+  position: relative;
+  margin-left: auto;
+  max-width: 295px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: var(--border-gray-1);
+  border-bottom: none;
+  background-color: var(--color-gray-7);
+  // padding: 0 20px 20px;
+  transition: transform 0.3s ease-out;
+
+  &.visible {
+    transform: translateY(-100%);
+
+    .closeModal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @media screen and (max-width: 1600px) {
+    &.modalDown {
+      transform: translateY(-70px);
+
+      @media screen and (max-width: 767px) {
+        transform: translateY(-60px);
+      }
+
+      .slippageWrapper {
+        display: none;
+      }
+
+      .closeModal {
+        transform: translateY(250px);
+        opacity: 0;
+      }
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: 270px;
+  }
+}
+
+.itemContent {
+  padding: 0 20px;
+}
+
+.tokenAmountInputWithBalance {
+  padding: 5px 20px;
+}
+
+.closeModalIcon {
+  position: absolute;
+  right: 0;
+  top: -63px;
+  height: 43px;
+  width: 43px;
+  border: 1px solid var(--gray-color-3);
+  background: var(--black-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border: 1px solid var(--white-color);
+  }
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.closeIcon {
+  width: 23px;
+
+  @media screen and (max-width: 470px) {
+    width: 15px;
+  }
+}
+
+.totalUSD {
+  padding: 10px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--white-color);
+  font: var(--font-text-3);
+}
+
+.estimatedRewards {
+  padding: 5px 20px 5px;
+  font: var(--font-text-3);
+  color: var(--white-color);
+}
+.estimatedRewardsTitle {
+  padding: 15px 0 5px;
+  font: var(--font-text-6);
+  text-align: center;
+}
+.estimatedRewardsValues {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bold {
+  font: var(--font-text-5);
+}
+
+.errors {
+  padding: 10px 20px;
+  height: 50px;
+  font: var(--font-text-6);
+  color: var(--red-error-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
