@@ -1,0 +1,108 @@
+.sidebarWrapper {
+  position: fixed;
+  top: 0;
+  right: 10px; //scroll width
+  height: 100%;
+  width: 25%;
+  min-width: 375px;
+  background-color: red;
+  background-color: var(--black-color);
+  border-left: 1px solid var(--gray-color-6);
+  z-index: 2;
+  transform: translateX(calc(100% + 10px));
+  transition: transform var(--transition-1), opacity var(--transition-1),
+    padding-top var(--transition-1);
+  padding-top: var(--header-height);
+
+  &.visible {
+    transform: translateX(0);
+    opacity: 1;
+
+    .sidebar {
+      opacity: 1;
+    }
+  }
+
+  @media screen and (max-width: 1023px) {
+    padding-top: calc(var(--header-height));
+    transform: translateY(calc(100%));
+    right: 0;
+
+    &.visible.collapsed {
+      transform: translateY(calc(100% - 90px));
+      padding-top: 0;
+    }
+  }
+}
+
+.headerHidden {
+  padding-top: 0;
+}
+
+.collapsed {
+  @media screen and (max-width: 1279px) {
+    transform: translateY(calc(100%));
+  }
+}
+
+.sidebar {
+  overflow: auto;
+  transition: transform var(--transition-1), opacity var(--transition-1);
+  height: 100%;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 9;
+
+  @media screen and (max-width: 375px) {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+.nftsAmount {
+  font: var(--font-subtitle-2);
+  padding: 24px 24px 12px;
+
+  @media screen and (max-width: 1023px) {
+    height: 90px;
+    padding: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color-1);
+    cursor: pointer;
+  }
+}
+
+.separator {
+  padding: 0 24px;
+  margin-bottom: 32px;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: var(--gray-color-3);
+  }
+}
+
+.backDrop {
+  display: none;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(16px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+}
+
+.backDropVisible {
+  @media screen and (max-width: 1023px) {
+    display: block;
+  }
+}

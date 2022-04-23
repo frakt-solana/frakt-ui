@@ -1,0 +1,34 @@
+.slider {
+  :global {
+    .ant-slider-dot {
+      border-color: var(--color-gray-4);
+      background-color: var(--color-gray-4);
+      width: 10px;
+      height: 10px;
+    }
+
+    .ant-slider-dot-active {
+      border-color: var(--accent-color-3);
+      background-color: var(--accent-color-3);
+    }
+
+    .ant-slider-step {
+      background-color: var(--gray-color-2);
+    }
+
+    .ant-slider-handle {
+      width: 18px;
+      height: 18px;
+      border-color: var(--accent-color-3);
+      background-color: var(--accent-color-3);
+      margin-top: -7px;
+    }
+
+    .ant-slider-track {
+      background-color: var(--accent-color-3);
+    }
+    .ant-slider-mark-text {
+      color: var(--color-gray-4);
+    }
+  }
+}

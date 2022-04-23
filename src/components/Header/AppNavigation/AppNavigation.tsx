@@ -66,12 +66,7 @@ export const DropdownMenuDoStuff: FC = () => {
           </NavLink>
         </li>
         <li className={styles.linkList}>
-          <a
-            href={PATHS.BORROW}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.link}
-          >
+          <a href={PATHS.BORROW} className={styles.link}>
             <div className={styles.content}>
               <p className={styles.title}>Borrow</p>
               <p className={styles.subtitle}>
@@ -98,18 +93,6 @@ export const AppNavigation: FC<AppNavigationProps> = ({
         className,
       )}
     >
-      {!withoutLinks && (
-        <li className={styles.navigationItem}>
-          <a
-            href={PATHS.BORROW}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.navigationLink}
-          >
-            Loans
-          </a>
-        </li>
-      )}
       {!withoutLinks &&
         NAVIGATION_LINKS.map(({ label, to }, idx) => (
           <li key={idx} className={styles.navigationItem}>

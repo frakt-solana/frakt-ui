@@ -20,6 +20,7 @@ import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { CollectionsProvider } from './contexts/collections';
 import { NftPoolsProvider } from './contexts/nftPools';
+import { LoansProvider } from './contexts/loans';
 
 const wallets = [
   getPhantomWallet(),
@@ -40,7 +41,9 @@ function App(): JSX.Element {
                 <FraktionProvider>
                   <NftPoolsProvider>
                     <CollectionsProvider>
-                      <Router />
+                      <LoansProvider>
+                        <Router />
+                      </LoansProvider>
                     </CollectionsProvider>
                   </NftPoolsProvider>
                 </FraktionProvider>

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import classNames from 'classnames';
 
 import { Loader } from '../Loader';
 import { Modal } from '../Modal';
@@ -9,6 +10,8 @@ interface LoadingModalProps {
   title?: string;
   subtitle?: string;
   onCancel?: () => void;
+  loaderSize?: 'large' | 'default' | 'small';
+  className?: string;
 }
 
 export const LoadingModal: FC<LoadingModalProps> = ({
@@ -16,6 +19,8 @@ export const LoadingModal: FC<LoadingModalProps> = ({
   title = 'Please approve all transactions',
   subtitle = '',
   onCancel,
+  loaderSize = 'large',
+  className,
 }) => {
   return (
     <Modal
@@ -25,9 +30,10 @@ export const LoadingModal: FC<LoadingModalProps> = ({
       maskClosable={false}
       width={560}
       onCancel={onCancel}
+      className={classNames(styles.modal, className)}
     >
       <div className={styles.content}>
-        <Loader size="large" />
+        <Loader size={loaderSize} />
         <span className={styles.infoTitle}>{title}</span>
         <span className={styles.infoSubtitle}>{subtitle}</span>
       </div>

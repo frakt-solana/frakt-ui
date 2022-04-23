@@ -1,0 +1,101 @@
+.fieldWrapper {
+  margin-bottom: 20px;
+}
+
+.formContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.line {
+  &::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: var(--gray-color-3);
+  }
+}
+
+.activeLine {
+  &::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: #5d5fef;
+  }
+}
+
+.formTitle {
+  color: var(--gray-color-3);
+  font: var(--font-text-5);
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.select {
+  position: absolute !important;
+
+  span {
+    color: var(--gray-color-3);
+    font: var(--font-text-3);
+  }
+  :global {
+    .custom-select__menu {
+      position: absolute;
+      right: 0;
+      margin-top: 20px;
+      max-width: 120px;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-left: var(--border-gray-1);
+        border-top: var(--border-gray-1);
+        background-color: var(--black-color);
+        transform: rotate(45deg);
+        position: absolute;
+        right: 30%;
+        top: -11px;
+        z-index: 1;
+      }
+    }
+    .custom-select__control {
+      @media screen and (max-width: 550px) {
+        justify-content: flex-end;
+      }
+    }
+
+    .custom-select__indicator {
+      color: var(--gray-color-3);
+    }
+  }
+}
+
+.tokenInfo {
+  display: flex;
+}
+
+.tokenName {
+  color: var(--gray-color-3);
+  font: var(--font-text-3);
+}
+
+.tokenIcon {
+  height: 23px;
+  width: 23px;
+}
+
+.continueBtnContainer {
+  width: 100%;
+}
+
+.continueBtn {
+  width: 100%;
+  justify-content: center;
+  font: var(--font-btn-small);
+}

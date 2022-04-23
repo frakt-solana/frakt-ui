@@ -1,7 +1,8 @@
 import styles from './styles.module.scss';
-import { useAuctionCountdown, VaultData } from '../../contexts/fraktion';
+import { VaultData } from '../../contexts/fraktion';
 import React, { FC } from 'react';
 import classNames from 'classnames';
+import { useCountdown } from '../../hooks';
 
 interface AuctionInfoProps {
   fractionsSupplyNum: number;
@@ -24,7 +25,7 @@ export const AuctionInfo: FC<AuctionInfoProps> = ({
   const allTime = auctionEndingTime - auctionStartTime;
   const timePercent = String((sinceTime / allTime) * 100).slice(0, 2);
 
-  const { timeLeft } = useAuctionCountdown(auctionEndingTime);
+  const { timeLeft } = useCountdown(auctionEndingTime);
 
   return (
     <div className={classNames(styles.stats, styles.statsAuction)}>

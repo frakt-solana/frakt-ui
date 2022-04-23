@@ -1,0 +1,1 @@
+export const LOANS_PROGRAM_PUBKEY = process.env.LOANS_PROGRAM_PUBKEY;

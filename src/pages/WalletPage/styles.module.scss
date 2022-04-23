@@ -24,47 +24,12 @@
   margin-bottom: 2px;
 }
 
-.description {
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-
-  .ownerTwitter {
-    margin-left: 16px;
-    opacity: 1;
-    transition: opacity var(--transition-1);
-    &:hover {
-      opacity: 0.75;
-    }
-  }
-
-  .twitterIcon {
-    margin-top: 4px;
-  }
-
-  .ownerAvatar {
-    margin-right: 10px;
-    width: 32px;
-    height: 32px;
-    background: var(--gray-color-3) no-repeat center;
-    background-size: cover;
-    border-radius: 50%;
-  }
-
-  @media screen and (max-width: 1023px) {
-    font-size: 20px;
-  }
-
-  @media screen and (max-width: 767px) {
-    font-size: 18px;
-  }
-}
-
 .tabs {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 30px;
+  margin-bottom: 15px;
+  width: 100%;
 
   @media screen and (max-width: 767px) {
     margin-top: 20px;
@@ -76,7 +41,7 @@
 
 .tab {
   padding: 18px 24px;
-  width: 120px;
+  width: 100%;
   font: var(--font-btn-small);
   color: var(--white-color);
   background: transparent;
@@ -106,76 +71,18 @@
   }
 }
 
-.tokensContainer {
+.content {
   display: flex;
-  flex-direction: column;
-}
+  width: 100%;
+  gap: 30px;
 
-.tokens {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.token {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  border: 1px solid var(--gray-color-3);
-  cursor: pointer;
-  transition: border-color var(--transition-1);
-
-  &:hover {
-    border-color: var(--accent-color-1);
-  }
-
-  &__info {
-    padding: 8px;
-    display: flex;
-    justify-content: space-between;
-    gap: 18px;
-  }
-
-  &__logo {
-    border-radius: 50%;
-    height: 48px;
-    width: 48px;
-    flex-shrink: 0;
-  }
-
-  &__name {
-    margin-bottom: 2px;
-    font: var(--font-btn-small);
-    color: var(--white-color);
-  }
-
-  &__balance {
-    font: var(--font-btn-small);
-    color: var(--gray-color-3);
-  }
-
-  &__btn {
-    padding: 0 24px;
-
-    @media screen and (max-width: 400px) {
-      display: none;
-    }
+  @media screen and (max-width: 1200px) {
+    flex-direction: column;
   }
 }
 
-.vaults {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(300px, 1fr));
-  gap: 24px;
-  align-items: stretch;
-
-  @media screen and (max-width: 1023px) {
-    grid-template-columns: repeat(2, minmax(158px, 1fr));
-  }
-
-  @media screen and (max-width: 370px) {
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  }
+.tabsContent {
+  width: 100%;
 }
 
 .emptyMessage {

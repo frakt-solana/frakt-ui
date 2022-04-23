@@ -1,0 +1,60 @@
+.details {
+  padding: 0 24px;
+  flex-grow: 1;
+
+  :global {
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+
+    .ant-form-vertical .ant-form-item {
+      flex-direction: row;
+    }
+
+    .ant-form-item-label {
+      width: 100%;
+      margin-bottom: 4px;
+      font: var(--font-secondary);
+      opacity: 0.25;
+      text-transform: uppercase;
+      padding: 0 !important;
+    }
+  }
+
+  @media screen and (max-width: 1450px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.detailsTitle {
+  font: var(--font-btn-small);
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.fieldWrapper {
+  margin-bottom: 30px;
+}
+
+.formContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebarListItem {
+  display: flex;
+  margin: 30px 0 20px;
+}
+
+.continueBtnContainer {
+  width: 100%;
+}
+
+.continueBtn {
+  width: 100%;
+  justify-content: center;
+  font: var(--font-btn-small);
+}

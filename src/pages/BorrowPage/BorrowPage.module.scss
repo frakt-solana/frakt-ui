@@ -1,0 +1,30 @@
+.title {
+  font: var(--font-h4);
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font: var(--font-text-2);
+  margin-bottom: 18px;
+}
+
+.search {
+  margin-bottom: 32px;
+  max-width: 350px;
+}
+
+.connectBtn {
+  width: 100%;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: unset;
+}
+
+.nftsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 32px;
+  align-items: stretch;
+}
