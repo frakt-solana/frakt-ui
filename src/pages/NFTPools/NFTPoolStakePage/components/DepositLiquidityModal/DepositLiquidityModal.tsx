@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import BN from 'bn.js';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { ModalHeader, SubmitButton } from '../../../components/ModalParts';
 import styles from './DepositLiquidityModal.module.scss';
@@ -26,8 +28,6 @@ import {
   LoadingModal,
   useLoadingModal,
 } from '../../../../../components/LoadingModal';
-import BN from 'bn.js';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 interface DepositLiquidityModalProps {
   visible?: boolean;
@@ -85,7 +85,11 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
   const notEnoughBaseTokenError = parseFloat(baseValue) > baseTokenBalance;
   const notEnoughSOLError = parseFloat(solValue) > solBalance;
 
-  const submitButtonDisabled = notEnoughBaseTokenError || notEnoughSOLError;
+  const submitButtonDisabled =
+    notEnoughBaseTokenError ||
+    notEnoughSOLError ||
+    !parseFloat(baseValue) ||
+    !parseFloat(solValue);
 
   const totalValueUSD = calculateTotalDeposit(
     solValue,

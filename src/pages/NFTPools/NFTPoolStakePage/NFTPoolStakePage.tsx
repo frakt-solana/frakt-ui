@@ -16,11 +16,12 @@ import {
   StakingInfo,
   GeneralWalletInfo,
   DepositLiquidityModal,
+  WithdrawLiquidityModal,
 } from './components';
 import { useNftPoolStakePage, useStakingPageInfo } from './hooks';
 import styles from './NFTPoolStakePage.module.scss';
 
-const useDepositLiquidityModal = () => {
+const useModal = () => {
   const [visible, setVisible] = useState<boolean>(false);
 
   return {
@@ -71,7 +72,12 @@ export const NFTPoolStakePage: FC = () => {
   const {
     visible: depositLiquidityModalVisible,
     setVisible: setDepositLiquidityModalVisible,
-  } = useDepositLiquidityModal();
+  } = useModal();
+
+  const {
+    visible: withdrawLiquidityModalVisible,
+    setVisible: setWithdrawLiquidityModalVisible,
+  } = useModal();
 
   return (
     <NFTPoolPageLayout
@@ -148,6 +154,7 @@ export const NFTPoolStakePage: FC = () => {
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
                     balance: lpTokensStaked,
                   }}
+                  onWithdraw={() => setWithdrawLiquidityModalVisible(true)}
                   className={styles.stakingInfo}
                 />
                 <RewardsInfo
@@ -162,6 +169,18 @@ export const NFTPoolStakePage: FC = () => {
                     raydiumPoolInfo={raydiumPoolInfo}
                     apr={liquidityAPR}
                     raydiumLiquidityPoolKeys={raydiumLiquidityPoolKeys}
+                    liquidityFusionPool={liquidityFusionPool}
+                  />
+                </div>
+                <div className={styles.modalWrapper}>
+                  <WithdrawLiquidityModal
+                    visible={withdrawLiquidityModalVisible}
+                    setVisible={setWithdrawLiquidityModalVisible}
+                    baseToken={poolTokenInfo}
+                    raydiumLiquidityPoolKeys={raydiumLiquidityPoolKeys}
+                    raydiumPoolInfo={raydiumPoolInfo}
+                    lpTokenStakedAmount={lpTokensStaked}
+                    withdrawStaked
                     liquidityFusionPool={liquidityFusionPool}
                   />
                 </div>
