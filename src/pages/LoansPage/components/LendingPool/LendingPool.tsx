@@ -20,27 +20,6 @@ const LendingPool: FC<LendingPoolProps> = ({
   totalSupply,
   loans,
 }) => {
-  const stats = [
-    {
-      name: 'Total supply',
-      value: `${totalSupply || 0} SOL`,
-      equivalent: true,
-    },
-    {
-      name: 'APY',
-      value: `${apy || 0} %`,
-    },
-    {
-      name: 'Your deposit',
-      value: `${deposit || 0} SOL`,
-      equivalent: true,
-    },
-    {
-      name: 'Your loans',
-      value: `${loans || 0} SOL`,
-    },
-  ];
-
   const [poolModalVisible, setPoolModalVisible] = useState<boolean>(false);
 
   return (
@@ -67,15 +46,30 @@ const LendingPool: FC<LendingPoolProps> = ({
           </div>
 
           <div className={styles.statsValue}>
-            {stats.map(({ name, value, equivalent }) => (
-              <div key={name} className={styles.totalValue}>
-                <p className={styles.title}>{name}</p>
-                <div>
-                  <p className={styles.value}>{value}</p>
-                  {equivalent && <p className={styles.equivalent}>≈ $10.000</p>}
-                </div>
+            <div className={styles.totalValue}>
+              <p className={styles.title}>Total supply</p>
+              <div>
+                <p className={styles.value}>{totalSupply} SOL</p>
+                <p className={styles.equivalent}>≈ $10.000</p>
               </div>
-            ))}
+            </div>
+            <div className={styles.totalValue}>
+              <p className={styles.title}>APY</p>
+              <p className={styles.value}>{apy || 0} %</p>
+            </div>
+            <div className={styles.totalValue}>
+              <p className={styles.title}>Your deposit</p>
+              <div>
+                <p className={styles.value}>{deposit || 0} SOL</p>
+                <p className={styles.equivalent}>≈ $10.000</p>
+              </div>
+            </div>
+            <div className={styles.totalValue}>
+              <p className={styles.title}>Your loans</p>
+              <div>
+                <p className={styles.value}>{loans || 0} SOL</p>
+              </div>
+            </div>
             <div className={styles.btnWrapper}>
               <Button
                 className={styles.btn}

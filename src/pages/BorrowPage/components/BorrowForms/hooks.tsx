@@ -16,7 +16,7 @@ interface Option {
   value: unknown;
 }
 
-interface OptionStatus {
+interface OptionForm {
   label: string;
   value: string;
 }
@@ -34,8 +34,8 @@ export type FormFieldValues = {
 };
 
 export enum StatusRadioNames {
-  SHOW_SHORT_SIDEBAR = 'showShortSidebar',
-  SHOW_LONG_SIDEBAR = 'showLongSidebar',
+  SHORT_TERM_FORM = 'shortTermForm',
+  LONG_TERM_FORM = 'longTermForm',
 }
 
 export const useBorrowForm = (
@@ -119,13 +119,13 @@ export const RETURN_PERIOD_VALUES: Option[] = [
   },
 ];
 
-export const STATUS_VALUES: OptionStatus[] = [
+export const STATUS_VALUES: OptionForm[] = [
   {
     label: 'Long-term',
-    value: StatusRadioNames.SHOW_LONG_SIDEBAR,
+    value: StatusRadioNames.LONG_TERM_FORM,
   },
   {
     label: 'Short-term',
-    value: StatusRadioNames.SHOW_SHORT_SIDEBAR,
+    value: StatusRadioNames.SHORT_TERM_FORM,
   },
 ];

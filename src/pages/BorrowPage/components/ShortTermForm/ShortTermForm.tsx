@@ -51,6 +51,7 @@ export const ShortTermForm: FC = () => {
                 marks={sliderMarks}
                 step={10}
                 max={50}
+                disabled
               />
             )}
           />

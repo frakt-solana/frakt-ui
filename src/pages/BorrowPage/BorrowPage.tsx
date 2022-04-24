@@ -3,15 +3,14 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { SearchInput } from '../../components/SearchInput';
-import BorrowForm from './components/LongTermForm';
 import NFTCheckbox from '../../components/NFTCheckbox';
+import BorrowForms from './components/BorrowForms';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
-import BorrowForms from './components/BorrowForms';
 
 const BorrowPage: FC = () => {
   const { connected } = useWallet();

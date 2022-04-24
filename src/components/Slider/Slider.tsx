@@ -12,6 +12,7 @@ interface SliderProps {
   max?: number;
   className?: string;
   tipFormatter: (value: number) => ReactNode;
+  disabled?: boolean;
 }
 
 const Slider: FC<SliderProps> = ({
@@ -22,6 +23,7 @@ const Slider: FC<SliderProps> = ({
   max,
   className,
   tipFormatter,
+  disabled,
 }) => {
   return (
     <AntdSlider
@@ -32,6 +34,7 @@ const Slider: FC<SliderProps> = ({
       marks={marks}
       step={step}
       max={max}
+      disabled={disabled}
     />
   );
 };

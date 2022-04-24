@@ -1,10 +1,10 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
+
 import { Tab, useTabs } from '../../../components/Tabs';
-import { useDebounce } from '../../../hooks';
 import { ArrowDownSmallIcon } from '../../../icons';
 import styles from '../LoansPage.module.scss';
+import { useDebounce } from '../../../hooks';
 
 export enum InputControlsNames {
   SHOW_STAKED = 'showStaked',
@@ -34,7 +34,7 @@ export const useLoansPage = (): {
   setTabValue: (value: string) => void;
   searchItems: (value?: string) => void;
 } => {
-  const { control, watch } = useForm({
+  const { control } = useForm({
     defaultValues: {
       [InputControlsNames.SHOW_STAKED]: false,
       [InputControlsNames.SORT]: SORT_VALUES[0],
@@ -48,9 +48,7 @@ export const useLoansPage = (): {
     tabs: LOANS_TABS,
     defaultValue: LOANS_TABS[0].value,
   });
-  const { connected } = useWallet();
-  const [searchString, setSearchString] = useState<string>('');
-  const sort = watch(InputControlsNames.SORT);
+  const [, setSearchString] = useState<string>('');
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
@@ -73,6 +71,7 @@ const LOANS_TABS: Tab[] = [
   {
     label: 'Liquidations',
     value: 'liquidations',
+    disabled: true,
   },
   {
     label: 'My loans',
@@ -84,17 +83,17 @@ export const SORT_VALUES: SortValue[] = [
   {
     label: (
       <span>
-        Liquidity <ArrowDownSmallIcon className={styles.arrowDown} />
+        Price <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'liquidity_desc',
+    value: 'price_desc',
   },
   {
     label: (
       <span>
-        Liquidity <ArrowDownSmallIcon className={styles.arrowUp} />
+        Price <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'liquidity_asc',
+    value: 'price_asc',
   },
 ];

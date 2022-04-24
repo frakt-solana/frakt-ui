@@ -45,6 +45,7 @@ export const LongTermForm: FC = () => {
                 marks={sliderMarks}
                 step={1}
                 max={50}
+                disabled
               />
             )}
           />

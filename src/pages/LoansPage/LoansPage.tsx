@@ -1,5 +1,5 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { Controller } from 'react-hook-form';
 
 import { ControlledToggle } from '../../components/Toggle/Toggle';
@@ -76,7 +76,7 @@ const LoansPage: FC = () => {
             apy={'30'}
           />
         )}
-        {tabValue === LoanTabsNames.LIQUIDATIONS && <LoansTab />}
+        {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
         {tabValue === LoanTabsNames.LOANS && <LoansTab />}
       </Container>
     </AppLayout>

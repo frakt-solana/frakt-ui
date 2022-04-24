@@ -3,11 +3,12 @@ import { Radio as RadioAntd, Form } from 'antd';
 import { Controller } from 'react-hook-form';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
-import styles from './BorrowForms.module.scss';
-import { Radio } from '../../../../components/Radio';
+import { LoadingModal } from '../../../../components/LoadingModal';
 import { LongTermForm } from '../LongTermForm/LongTermForm';
 import { UserNFT } from '../../../../contexts/userTokens';
+import { Radio } from '../../../../components/Radio';
 import Button from '../../../../components/Button';
+import styles from './BorrowForms.module.scss';
 import ShortTermForm from '../ShortTermForm';
 import {
   SelectControlsNames,
@@ -15,7 +16,6 @@ import {
   STATUS_VALUES,
   useBorrowForm,
 } from './hooks';
-import { LoadingModal } from '../../../../components/LoadingModal';
 
 interface BorrowFormsProps {
   selectedNft?: UserNFT[];
@@ -41,17 +41,14 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
     onSubmit,
   } = useBorrowForm(selectedNft, onCloseSidebar);
 
-  const confirmTextForShortTerm = `You are about to use your ${
-    selectedNft[0]?.metadata.name
-  } as collateral in loan that you claim to return in ${
-    returnPeriod.value
-  } days and repay is ${ltvPrice?.toFixed(3)} SOL. Want to proceed?`;
+  const nameSelectedNft = selectedNft[0]?.metadata.name;
+  const loanPeriod = returnPeriod.value;
 
-  const confirmTextForLongTerm = `You are about to use your ${
-    selectedNft[0]?.metadata.name
-  } as collateral in loan  and repay is ${ltvPrice?.toFixed(
-    3,
-  )} SOL. Want to proceed?`;
+  const confirmText = `You are about to use your ${nameSelectedNft} as collateral in loan ${
+    formStatus === StatusRadioNames.SHORT_TERM_FORM
+      ? `that you claim to return in ${loanPeriod} days`
+      : ''
+  } and repay is ${ltvPrice?.toFixed(3)} SOL. Want to proceed?`;
 
   return (
     <>
@@ -80,10 +77,8 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
                 />
               </div>
             </RadioAntd.Group>
-            {formStatus === StatusRadioNames.SHOW_LONG_SIDEBAR && (
-              <LongTermForm />
-            )}
-            {formStatus === StatusRadioNames.SHOW_SHORT_SIDEBAR && (
+            {formStatus === StatusRadioNames.LONG_TERM_FORM && <LongTermForm />}
+            {formStatus === StatusRadioNames.SHORT_TERM_FORM && (
               <ShortTermForm />
             )}
           </div>
@@ -102,11 +97,7 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
         visible={confirmModalVisible}
         onCancel={closeConfirmModal}
         onSubmit={() => onSubmit(selectedNft[0])}
-        subtitle={
-          formStatus === StatusRadioNames.SHOW_LONG_SIDEBAR
-            ? confirmTextForLongTerm
-            : confirmTextForShortTerm
-        }
+        subtitle={confirmText}
       />
       <LoadingModal
         subtitle="In order to transfer the NFT/s approval is needed."

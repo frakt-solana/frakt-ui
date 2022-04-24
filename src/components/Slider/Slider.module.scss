@@ -5,6 +5,7 @@
       background-color: var(--color-gray-4);
       width: 10px;
       height: 10px;
+      margin-top: -1px;
     }
 
     .ant-slider-dot-active {
@@ -12,8 +13,8 @@
       background-color: var(--accent-color-3);
     }
 
-    .ant-slider-step {
-      background-color: var(--gray-color-2);
+    .ant-slider-rail {
+      height: 2px;
     }
 
     .ant-slider-handle {
@@ -26,7 +27,11 @@
 
     .ant-slider-track {
       background-color: var(--accent-color-3);
+      &:hover {
+        background-color: var(--accent-color-3);
+      }
     }
+
     .ant-slider-mark-text {
       color: var(--color-gray-4);
     }
