@@ -18,6 +18,8 @@ interface GeneralWalletInfoProps {
   onSellAndStakeInInventoryPool?: () => void;
   onSellAndStakeInLiquididtyPool?: () => void;
   onDepositLiquidity?: () => void;
+  onStakeLp?: () => void;
+  onWithdrawLp?: () => void;
   className?: string;
 }
 
@@ -28,6 +30,8 @@ export const GeneralWalletInfo: FC<GeneralWalletInfoProps> = ({
   onSellAndStakeInInventoryPool,
   onSellAndStakeInLiquididtyPool,
   onDepositLiquidity,
+  onStakeLp,
+  onWithdrawLp,
   className,
 }) => {
   const showInventoryWalletInfo =
@@ -54,6 +58,8 @@ export const GeneralWalletInfo: FC<GeneralWalletInfoProps> = ({
           onDepositLiquidity={onDepositLiquidity}
           onSellNft={onSellAndStakeInLiquididtyPool}
           className={styles.liquidityWalletInfo}
+          onStakeLp={onStakeLp}
+          onWithdrawLp={onWithdrawLp}
         />
       )}
     </div>

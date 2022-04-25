@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
-import { groupBy } from 'lodash';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
@@ -10,6 +9,7 @@ import {
   fetchRaydiumPoolsInfoMap,
   fetchSolanaPriceUSD,
   mapFusionPoolInfo,
+  mapRawPools,
 } from './liquidityPools.helpers';
 import {
   FusionPool,
@@ -19,7 +19,6 @@ import {
 } from './liquidityPools.model';
 import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
-import { SecondaryRewardView } from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export const useLiquidityPools = (): LiquidityPoolsContextValues => {
   const context = useContext(LiquidityPoolsContext);
@@ -150,40 +149,12 @@ export const useLazyFusionPools: UseLazyFusionPools = () => {
       connection,
     );
 
-    const stakeAccountsByRouterPubkey = groupBy(stakeAccounts, 'routerPubkey');
-
-    const secondaryRewardsByRouterPubkey = groupBy(
+    const fusionPools: FusionPool[] = mapRawPools({
+      mainRouters,
+      stakeAccounts,
       secondaryRewards,
-      'routerPubkey',
-    );
-    const secondaryStakeAccountsBySecondaryRewardAccountPubkey = groupBy(
       secondaryStakeAccounts,
-      'secondaryReward',
-    );
-
-    const fusionPools: FusionPool[] = mainRouters.map((router) => {
-      const stakeAccounts =
-        stakeAccountsByRouterPubkey[router.mainRouterPubkey] || [];
-
-      const secondaryRewards = (
-        secondaryRewardsByRouterPubkey[router.mainRouterPubkey] || []
-      )?.map((rewards: SecondaryRewardView) => {
-        return {
-          rewards,
-          stakeAccounts:
-            secondaryStakeAccountsBySecondaryRewardAccountPubkey[
-              rewards?.secondaryRewardaccount
-            ] || [],
-        };
-      });
-
-      return {
-        router,
-        stakeAccounts,
-        secondaryRewards,
-      };
     });
-
     setFusionPools(fusionPools);
   };
 

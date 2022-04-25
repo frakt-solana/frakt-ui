@@ -18,6 +18,7 @@ import {
   SecondStakeAccountView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
+import { groupBy } from 'lodash';
 
 import { SOL_TOKEN } from '../../utils';
 import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
@@ -355,4 +356,50 @@ export const findSpecificFusionPool = (
   );
 };
 
-//TODO const getFusionPoolsByWallet = (arr: FusionPool[], walletPubkey) => {}
+export const mapRawPools = ({
+  mainRouters,
+  stakeAccounts,
+  secondaryRewards,
+  secondaryStakeAccounts,
+}: {
+  mainRouters: MainRouterView[];
+  stakeAccounts: StakeAccountView[];
+  secondaryRewards: SecondaryRewardView[];
+  secondaryStakeAccounts: SecondStakeAccountView[];
+}): FusionPool[] => {
+  const stakeAccountsByRouterPubkey = groupBy(stakeAccounts, 'routerPubkey');
+
+  const secondaryRewardsByRouterPubkey = groupBy(
+    secondaryRewards,
+    'routerPubkey',
+  );
+  const secondaryStakeAccountsBySecondaryRewardAccountPubkey = groupBy(
+    secondaryStakeAccounts,
+    'secondaryReward',
+  );
+
+  const fusionPools: FusionPool[] = mainRouters.map((router) => {
+    const stakeAccounts =
+      stakeAccountsByRouterPubkey[router.mainRouterPubkey] || [];
+
+    const secondaryRewards = (
+      secondaryRewardsByRouterPubkey[router.mainRouterPubkey] || []
+    )?.map((rewards: SecondaryRewardView) => {
+      return {
+        rewards,
+        stakeAccounts:
+          secondaryStakeAccountsBySecondaryRewardAccountPubkey[
+            rewards?.secondaryRewardaccount
+          ] || [],
+      };
+    });
+
+    return {
+      router,
+      stakeAccounts,
+      secondaryRewards,
+    };
+  });
+
+  return fusionPools;
+};

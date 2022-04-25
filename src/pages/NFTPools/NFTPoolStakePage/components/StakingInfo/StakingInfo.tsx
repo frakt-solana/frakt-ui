@@ -15,6 +15,7 @@ interface StakingInfoProps {
     ticker: string;
     balance: number;
   };
+  onUnstake: () => void;
   onWithdraw: () => void;
   className?: string;
 }
@@ -23,6 +24,7 @@ export const StakingInfo: FC<StakingInfoProps> = ({
   poolToken,
   lpToken,
   onWithdraw,
+  onUnstake,
   className,
 }) => {
   return (
@@ -34,7 +36,7 @@ export const StakingInfo: FC<StakingInfoProps> = ({
             title={`${poolToken?.ticker} STAKING`}
             values={[poolToken?.balance ? poolToken.balance.toFixed(3) : '0']}
           />
-          <WalletInfoButton className={styles.stakingBtn}>
+          <WalletInfoButton className={styles.stakingBtn} onClick={onUnstake}>
             Unstake
           </WalletInfoButton>
         </div>

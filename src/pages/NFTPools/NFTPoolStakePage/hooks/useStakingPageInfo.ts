@@ -16,7 +16,7 @@ type UseStakingPageInfo = (props: {
   poolTokenInfo: TokenInfo;
 }) => {
   loading: boolean;
-  inverntoryAPR: number;
+  inventoryAPR: number;
   liquidityAPR: number;
   raydiumPoolLiquidityUSD: number;
   inventoryTotalLiquidity: number;
@@ -69,7 +69,7 @@ export const useStakingPageInfo: UseStakingPageInfo = ({
     liquidityFusionPool,
   ]);
 
-  const { inverntoryAPR, liquidityAPR, raydiumPoolLiquidityUSD } =
+  const { inventoryAPR, liquidityAPR, raydiumPoolLiquidityUSD } =
     useAPR(poolTokenInfo);
 
   const {
@@ -102,7 +102,7 @@ export const useStakingPageInfo: UseStakingPageInfo = ({
 
   return {
     loading: inventoryTotalLiquidityLoading,
-    inverntoryAPR,
+    inventoryAPR,
     liquidityAPR,
     raydiumPoolLiquidityUSD,
     inventoryTotalLiquidity,

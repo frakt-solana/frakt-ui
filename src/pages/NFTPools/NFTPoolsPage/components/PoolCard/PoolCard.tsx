@@ -22,7 +22,7 @@ interface PoolCardProps {
 export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
   const { safetyBoxes } = pool;
 
-  const { liquidityAPR, inverntoryAPR } = useAPR(poolTokenInfo);
+  const { liquidityAPR, inventoryAPR } = useAPR(poolTokenInfo);
 
   const nftsAmount = safetyBoxes.length;
 
@@ -76,7 +76,7 @@ export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
               <div
                 className={classNames(styles.aprValue, styles.aprValueGreen)}
               >
-                {inverntoryAPR.toFixed(2) || 0} %
+                {inventoryAPR.toFixed(2) || 0} %
               </div>
             </div>
             <div className={styles.apr}>

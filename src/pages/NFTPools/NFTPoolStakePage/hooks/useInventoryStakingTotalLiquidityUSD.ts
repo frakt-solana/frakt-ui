@@ -37,7 +37,8 @@ export const useInventoryStakingTotalLiquidityUSD: UseInventoryStakingTotalLiqui
 
     const totalLiquidity =
       Number(poolTokenPrice) *
-        Number(inventoryFusionPool?.router?.amountOfStaked) *
+        (Number(inventoryFusionPool?.router?.amountOfStaked) /
+          10 ** poolTokenInfo?.decimals) *
         currentSolanaPriceUSD || 0;
 
     return {

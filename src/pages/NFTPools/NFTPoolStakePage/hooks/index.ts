@@ -6,3 +6,4 @@ export * from './useNftPoolLiquidityAndFusionWithPolling';
 export * from './useNftPoolStakePage';
 export * from './useInventoryStakingTotalLiquidityUSD';
 export * from './useStakingPageInfo';
+export * from './useCachedFusionPoolsForStats';

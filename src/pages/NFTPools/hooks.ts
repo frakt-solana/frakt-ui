@@ -17,16 +17,17 @@ import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
 import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
 import {
+  FusionPool,
   getFusionApr,
   PoolDataByMint,
-  sumFusionAndRaydiumApr,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
-import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
+import { PoolStats, useCachedPoolsStats } from '../PoolsPage';
 import { useParams } from 'react-router-dom';
 import { CUSTOM_POOLS_NAMES } from '../../utils/cacher/nftPools';
+import { useCachedFusionPoolsForStats } from './NFTPoolStakePage/hooks';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -300,13 +301,13 @@ export const useUserRawNfts: UseUserRawNfts = () => {
 type UseAPR = (poolTokenInfo?: TokenInfo) => {
   loading: boolean;
   liquidityAPR: number;
-  inverntoryAPR: number;
+  inventoryAPR: number;
   raydiumPoolLiquidityUSD: number;
 };
 
 export const useAPR: UseAPR = (poolTokenInfo) => {
-  const { fusionPoolsByMint, loading: fusionPoolsLoading } =
-    useCachedFusionPools();
+  const { fusionPools, loading: fusionPoolsLoading } =
+    useCachedFusionPoolsForStats();
 
   const { poolDataByMint, loading: liquidityPoolsLoading } =
     useLiquidityPools();
@@ -315,25 +316,39 @@ export const useAPR: UseAPR = (poolTokenInfo) => {
     useCachedPoolsStats();
 
   const liquidityFusionPoolInfo = useMemo(() => {
-    const poolData = poolDataByMint.get(poolTokenInfo?.address);
+    if (poolDataByMint?.size && poolTokenInfo?.address && fusionPools?.length) {
+      const poolData = poolDataByMint.get(poolTokenInfo?.address);
+      const lpMint = poolData?.poolConfig?.lpMint.toBase58();
 
-    return fusionPoolsByMint.get(poolData?.poolConfig?.lpMint.toBase58());
-  }, [poolDataByMint, poolTokenInfo?.address, fusionPoolsByMint]);
+      const liquidityFusionPool =
+        fusionPools?.find(({ router }) => {
+          return (
+            router.tokenMintInput === lpMint &&
+            router.tokenMintOutput === poolTokenInfo?.address
+          );
+        }) || null;
 
-  const inventoryFusionPoolInfo = useMemo(() => {
-    if (poolTokenInfo?.address && fusionPoolsByMint.size) {
-      return (
-        Array.from(fusionPoolsByMint?.values())?.find(
-          ({ mainRouter: router }) => {
-            router.tokenMintInput === poolTokenInfo?.address &&
-              router.tokenMintOutput === poolTokenInfo?.address;
-          },
-        ) || null
-      );
+      return liquidityFusionPool;
     }
 
     return null;
-  }, [poolTokenInfo?.address, fusionPoolsByMint]);
+  }, [poolDataByMint, poolTokenInfo?.address, fusionPools]);
+
+  const inventoryFusionPoolInfo = useMemo(() => {
+    if (poolTokenInfo?.address && fusionPools?.length) {
+      const inventoryFusionPool =
+        fusionPools?.find(({ router }) => {
+          return (
+            router.tokenMintInput === poolTokenInfo?.address &&
+            router.tokenMintOutput === poolTokenInfo?.address
+          );
+        }) || null;
+
+      return inventoryFusionPool;
+    }
+
+    return null;
+  }, [poolTokenInfo?.address, fusionPools]);
 
   const poolStats = poolsStatsByBaseTokenMint.get(poolTokenInfo?.address);
 
@@ -344,9 +359,19 @@ export const useAPR: UseAPR = (poolTokenInfo) => {
     loading,
     liquidityAPR:
       sumFusionAndRaydiumApr(liquidityFusionPoolInfo, poolStats) || 0,
-    inverntoryAPR: getFusionApr(inventoryFusionPoolInfo?.mainRouter) || 0,
+    inventoryAPR: getFusionApr(inventoryFusionPoolInfo?.router) || 0,
     raydiumPoolLiquidityUSD: poolStats?.liquidity || 0,
   };
+};
+
+export const sumFusionAndRaydiumApr = (
+  fusionPool: FusionPool,
+  poolStats: PoolStats,
+): number => {
+  if (fusionPool?.router) {
+    return getFusionApr(fusionPool.router) + poolStats?.apr;
+  }
+  return poolStats?.apr || 0;
 };
 
 type UsePoolPubkeyParam = () => string;

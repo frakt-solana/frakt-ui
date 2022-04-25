@@ -15,6 +15,8 @@ interface LiquidityWalletInfoProps {
   };
   onSellNft: () => void;
   onDepositLiquidity: () => void;
+  onStakeLp: () => void;
+  onWithdrawLp: () => void;
   className?: string;
 }
 
@@ -23,6 +25,8 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
   lpToken,
   onSellNft,
   onDepositLiquidity,
+  onStakeLp,
+  onWithdrawLp,
   className,
 }) => {
   const showPoolTokenInfo = !!poolToken?.balance || !!onSellNft;
@@ -55,8 +59,8 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
         <WalletInfo
           title={lpToken.ticker || 'Unknown'}
           balance={lpToken.balance ? lpToken.balance.toFixed(3) : '0'}
-          firstAction={{ label: 'Stake', action: () => {} }}
-          secondAction={{ label: 'Withdraw', action: () => {} }}
+          firstAction={{ label: 'Stake', action: onStakeLp }}
+          secondAction={{ label: 'Withdraw', action: onWithdrawLp }}
           className={classNames([
             styles.lpTokenInfo,
             { [styles.firstColumnt]: !showPoolTokenInfo },

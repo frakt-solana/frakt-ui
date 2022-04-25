@@ -21,6 +21,11 @@ import {
   DepositLiquidityModal,
   WithdrawLiquidityModal,
   StakePoolTokenModal,
+  UnstakeInventoryModal,
+  StakeAndWithdrawLP,
+  useStakeAndWithdrawLP,
+  useHarvestRewards,
+  HarvestRewards,
 } from './components';
 import { useNftPoolStakePage, useStakingPageInfo } from './hooks';
 import styles from './NFTPoolStakePage.module.scss';
@@ -33,6 +38,51 @@ const useModal = () => {
     setVisible,
   };
 };
+
+// interface UseStakeModals = () => {
+
+// }
+
+// enum MODALS {
+//   DEPOSIT_LIQUIDITY = 'depositLiquidity',
+//   WITHDRAW_LIQUIDITY = 'withdrawLiquidity',
+//   STAKE_POOL_TOKEN = 'stakePoolToken',
+//   UNSTAKE_INVENTORY = 'unstakeInventory',
+// }
+
+// const useStakeModals = () => {
+//   const {
+//     visible: depositLiquidityModalVisible,
+//     setVisible: setDepositLiquidityModalVisible,
+//   } = useModal();
+
+//   const {
+//     visible: withdrawLiquidityModalVisible,
+//     setVisible: setWithdrawLiquidityModalVisible,
+//   } = useModal();
+
+//   const {
+//     visible: stakePoolTokenModalVisible,
+//     setVisible: setStakePoolTokenModalVisible,
+//   } = useModal();
+
+//   const {
+//     visible: unstakeInventoryModalVisible,
+//     setVisible: setUnstakeInventoryModalVisible,
+//   } = useModal();
+
+//   return {
+//     depositLiquidityModalVisible,
+//     withdrawLiquidityModalVisible,
+//     stakePoolTokenModalVisible,
+//     unstakeInventoryModalVisible,
+
+//     setDepositLiquidityModalVisible,
+//     setWithdrawLiquidityModalVisible,
+//     setStakePoolTokenModalVisible,
+//     setUnstakeInventoryModalVisible,
+//   };
+// };
 
 export const NFTPoolStakePage: FC = () => {
   const poolPubkey = usePoolPubkeyParam();
@@ -55,7 +105,7 @@ export const NFTPoolStakePage: FC = () => {
 
   const {
     loading: stakingInfoLoading,
-    inverntoryAPR,
+    inventoryAPR,
     liquidityAPR,
     raydiumPoolLiquidityUSD,
     inventoryTotalLiquidity,
@@ -88,8 +138,35 @@ export const NFTPoolStakePage: FC = () => {
     setVisible: setStakePoolTokenModalVisible,
   } = useModal();
 
+  const {
+    visible: unstakeInventoryModalVisible,
+    setVisible: setUnstakeInventoryModalVisible,
+  } = useModal();
+
+  const {
+    visible: stakeAndWithdrawLoadingVisible,
+    close: closeStakeAndWithdrawLoading,
+    stakeLp,
+    withdrawLp,
+  } = useStakeAndWithdrawLP({
+    liquidityFusionPool,
+    poolToken: poolTokenInfo,
+    lpTokenBalance,
+    raydiumLiquidityPoolKeys,
+    raydiumPoolInfo,
+  });
+
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const { control, nfts } = useNFTsFiltering(userNfts);
+
+  const {
+    harvest,
+    visible: harvestLoadingVisible,
+    close: closeHarvestLoading,
+  } = useHarvestRewards({
+    inventoryFusionPool,
+    liquidityFusionPool,
+  });
 
   return (
     <NFTPoolPageLayout
@@ -114,7 +191,7 @@ export const NFTPoolStakePage: FC = () => {
               totalLiquidity={`$ ${formatNumberWithSpaceSeparator(
                 inventoryTotalLiquidity || 0,
               )}`}
-              apr={`${inverntoryAPR.toFixed(2)} %`}
+              apr={`${inventoryAPR.toFixed(2)} %`}
             />
             <StakingDetails
               className={styles.stakingInfoLiquidity}
@@ -139,9 +216,11 @@ export const NFTPoolStakePage: FC = () => {
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
                     balance: lpTokenBalance,
                   }}
-                  onStakeInInventory={() => setStakePoolTokenModalVisible(true)}
+                  onStakeInInventory={() =>
+                    setStakePoolTokenModalVisible((prev) => !prev)
+                  }
                   onDepositLiquidity={() =>
-                    setDepositLiquidityModalVisible(true)
+                    setDepositLiquidityModalVisible((prev) => !prev)
                   }
                   onSellAndStakeInInventoryPool={
                     !!userNfts?.length && (() => {})
@@ -149,6 +228,8 @@ export const NFTPoolStakePage: FC = () => {
                   onSellAndStakeInLiquididtyPool={
                     !!userNfts?.length && (() => {})
                   }
+                  onStakeLp={stakeLp}
+                  onWithdrawLp={withdrawLp}
                 />
                 <p
                   className={classNames(
@@ -167,12 +248,18 @@ export const NFTPoolStakePage: FC = () => {
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
                     balance: lpTokensStaked,
                   }}
-                  onWithdraw={() => setWithdrawLiquidityModalVisible(true)}
+                  onUnstake={() =>
+                    setUnstakeInventoryModalVisible((prev) => !prev)
+                  }
+                  onWithdraw={() =>
+                    setWithdrawLiquidityModalVisible((prev) => !prev)
+                  }
                   className={styles.stakingInfo}
                 />
                 <RewardsInfo
                   className={styles.rewardsInfo}
                   rewards={stakeRewards}
+                  onHarvest={harvest}
                 />
                 <div className={styles.modalWrapper}>
                   <DepositLiquidityModal
@@ -205,6 +292,15 @@ export const NFTPoolStakePage: FC = () => {
                     inventoryFusionPool={inventoryFusionPool}
                   />
                 </div>
+                <div className={styles.modalWrapper}>
+                  <UnstakeInventoryModal
+                    visible={unstakeInventoryModalVisible}
+                    setVisible={setUnstakeInventoryModalVisible}
+                    poolToken={poolTokenInfo}
+                    inventoryFusionPool={inventoryFusionPool}
+                    poolTokensStakedAmount={poolTokensStaked}
+                  />
+                </div>
               </>
             )}
           </div>
@@ -223,6 +319,14 @@ export const NFTPoolStakePage: FC = () => {
           )}
         </div>
       )}
+      <StakeAndWithdrawLP
+        visible={stakeAndWithdrawLoadingVisible}
+        close={closeStakeAndWithdrawLoading}
+      />
+      <HarvestRewards
+        visible={harvestLoadingVisible}
+        close={closeHarvestLoading}
+      />
     </NFTPoolPageLayout>
   );
 };
