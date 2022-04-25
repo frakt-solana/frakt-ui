@@ -28,6 +28,7 @@ export { PlusIcon } from './PlusIcon';
 export { BuyIcon } from './BuyIcon';
 export { SellIcon } from './SellIcon';
 export { InfoIcon } from './InfoIcon';
+export { StakeIcon } from './StakeIcon';
 export { SwapMarketIcon } from './SwapMarketIcon';
 export { FiltersIcon } from './FiltersIcon';
 export { FraktLogoIcon } from './FraktLogoIcon';

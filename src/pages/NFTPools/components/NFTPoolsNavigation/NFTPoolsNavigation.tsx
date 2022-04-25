@@ -3,7 +3,13 @@ import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { createPoolLink, POOL_TABS } from '../../../../constants';
-import { BuyIcon, InfoIcon, SellIcon, SwapMarketIcon } from '../../../../icons';
+import {
+  BuyIcon,
+  InfoIcon,
+  SellIcon,
+  StakeIcon,
+  SwapMarketIcon,
+} from '../../../../icons';
 import styles from './NFTPoolsNavigation.module.scss';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 
@@ -31,7 +37,7 @@ const POOL_LINKS = [
   {
     label: 'Stake',
     tab: POOL_TABS.STAKE,
-    icon: SwapMarketIcon,
+    icon: StakeIcon,
   },
   {
     label: 'Info',
