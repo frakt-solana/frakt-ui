@@ -5,6 +5,8 @@ import {
   TokenAmount,
 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import BN from 'bn.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import {
@@ -17,14 +19,15 @@ import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../../../contexts/liquidityPools';
-import { CloseModalIcon } from '../../../../../icons';
 import { SOL_TOKEN } from '../../../../../utils';
 import { useSplTokenBalance } from '../../../../../utils/accounts';
-import { ModalHeader, SubmitButton } from '../../../components/ModalParts';
+import {
+  ModalClose,
+  ModalHeader,
+  SubmitButton,
+} from '../../../components/ModalParts';
 import styles from './WithdrawLiquidityModal.module.scss';
 import { Slider } from '../../../../../components/Slider';
-import BN from 'bn.js';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 export interface WithdrawLiquidityModalProps {
   visible?: boolean;
@@ -171,14 +174,7 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
           [styles.visible]: visible,
         })}
       >
-        {visible && (
-          <div
-            className={styles.closeModalIcon}
-            onClick={() => setVisible(false)}
-          >
-            <CloseModalIcon className={styles.closeIcon} />
-          </div>
-        )}
+        {visible && <ModalClose onClick={() => setVisible(false)} />}
         <ModalHeader
           headerText="Withdraw"
           slippage={0}

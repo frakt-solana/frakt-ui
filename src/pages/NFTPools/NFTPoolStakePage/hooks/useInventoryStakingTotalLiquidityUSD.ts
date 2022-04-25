@@ -6,7 +6,12 @@ import {
 } from '../../../../contexts/liquidityPools';
 import { usePoolTokensPrices } from '../../hooks';
 
-const usePoolTokenPrice = (poolTokenInfo: TokenInfo) => {
+type UsePoolTokenPrice = (poolTokenInfo: TokenInfo) => {
+  loading: boolean;
+  poolTokenPrice: string;
+};
+
+export const usePoolTokenPrice: UsePoolTokenPrice = (poolTokenInfo) => {
   const { pricesByTokenMint: poolTokenPricesByTokenMint, loading } =
     usePoolTokensPrices([poolTokenInfo]);
 

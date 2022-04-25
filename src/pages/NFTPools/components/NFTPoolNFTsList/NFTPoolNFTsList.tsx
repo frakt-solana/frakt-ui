@@ -32,7 +32,7 @@ export const NFTPoolNFTsList: FC<MarketNFTsList> = ({
   return (
     <div className={styles.marketNFTsList}>
       <div className={styles.itemsSortWrapper}>
-        <p className={styles.poolName}>{poolName}</p>
+        {!!poolName && <p className={styles.poolName}>{poolName}</p>}
         <div className={styles.itemsAmount}>
           {pluralize(nfts.length, 'item')}
         </div>

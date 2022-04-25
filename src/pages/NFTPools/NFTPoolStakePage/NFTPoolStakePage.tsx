@@ -6,9 +6,12 @@ import { Loader } from '../../../components/Loader';
 import { POOL_TABS } from '../../../constants';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
 import { useNftPoolsInitialFetch } from '../../../contexts/nftPools';
+import { UserNFT } from '../../../contexts/userTokens';
 import { usePublicKeyParam } from '../../../hooks';
+import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
-import { usePoolPubkeyParam } from '../hooks';
+import { useNFTsFiltering, usePoolPubkeyParam } from '../hooks';
+import { FilterFormInputsNames } from '../model';
 import { HeaderInfo } from '../NFTPoolInfoPage/components/HeaderInfo';
 import {
   RewardsInfo,
@@ -17,6 +20,7 @@ import {
   GeneralWalletInfo,
   DepositLiquidityModal,
   WithdrawLiquidityModal,
+  StakePoolTokenModal,
 } from './components';
 import { useNftPoolStakePage, useStakingPageInfo } from './hooks';
 import styles from './NFTPoolStakePage.module.scss';
@@ -79,6 +83,14 @@ export const NFTPoolStakePage: FC = () => {
     setVisible: setWithdrawLiquidityModalVisible,
   } = useModal();
 
+  const {
+    visible: stakePoolTokenModalVisible,
+    setVisible: setStakePoolTokenModalVisible,
+  } = useModal();
+
+  const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
+  const { control, nfts } = useNFTsFiltering(userNfts);
+
   return (
     <NFTPoolPageLayout
       customHeader={
@@ -127,6 +139,7 @@ export const NFTPoolStakePage: FC = () => {
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
                     balance: lpTokenBalance,
                   }}
+                  onStakeInInventory={() => setStakePoolTokenModalVisible(true)}
                   onDepositLiquidity={() =>
                     setDepositLiquidityModalVisible(true)
                   }
@@ -184,9 +197,30 @@ export const NFTPoolStakePage: FC = () => {
                     liquidityFusionPool={liquidityFusionPool}
                   />
                 </div>
+                <div className={styles.modalWrapper}>
+                  <StakePoolTokenModal
+                    visible={stakePoolTokenModalVisible}
+                    setVisible={setStakePoolTokenModalVisible}
+                    poolToken={poolTokenInfo}
+                    inventoryFusionPool={inventoryFusionPool}
+                  />
+                </div>
               </>
             )}
           </div>
+          {connected && !contentLoading && (
+            <NFTPoolNFTsList
+              nfts={nfts}
+              setIsSidebar={() => {}}
+              control={control}
+              sortFieldName={FilterFormInputsNames.SORT}
+              sortValues={SORT_VALUES}
+              onCardClick={(nft) => {
+                setSelectedNft(nft);
+              }}
+              selectedNft={selectedNft}
+            />
+          )}
         </div>
       )}
     </NFTPoolPageLayout>

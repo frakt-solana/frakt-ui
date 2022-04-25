@@ -27,7 +27,11 @@ export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
   poolTokenInfo,
   hidden,
 }) => {
-  const { loading: aprLoading, liquidityAPR } = useAPR(poolTokenInfo);
+  const {
+    loading: aprLoading,
+    liquidityAPR,
+    inverntoryAPR,
+  } = useAPR(poolTokenInfo);
 
   return (
     <Container
@@ -53,10 +57,14 @@ export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
               </Tooltip>
             </p>
             <p className={styles.aprValues}>
-              <span className={styles.aprValueGreen}>
-                {liquidityAPR.toFixed(2) || 0} %
+              <span className={styles.aprValueRed}>
+                {inverntoryAPR.toFixed(2) || 0} %
               </span>{' '}
-              {/* / <span className={styles.aprValueGreen}>124.99 %</span> */}
+              /{' '}
+              <span className={styles.aprValueGreen}>
+                {' '}
+                {liquidityAPR.toFixed(2) || 0} %
+              </span>
             </p>
           </div>
         )}

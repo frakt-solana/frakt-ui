@@ -6,7 +6,13 @@ import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import BN from 'bn.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
-import { ModalHeader, SubmitButton } from '../../../components/ModalParts';
+import {
+  EstimatedRewards,
+  ModalClose,
+  ModalHeader,
+  SubmitButton,
+  TotalUSD,
+} from '../../../components/ModalParts';
 import styles from './DepositLiquidityModal.module.scss';
 import { TokenAmountInputWithBalance } from '../../../../../components/TokenAmountInputWithBalance';
 import {
@@ -17,13 +23,11 @@ import {
 import { SOL_TOKEN } from '../../../../../utils';
 import {
   calculateTotalDeposit,
-  formatNumberToCurrency,
   FusionPool,
   RaydiumPoolInfo,
   useCurrentSolanaPrice,
   useLiquidityPools,
 } from '../../../../../contexts/liquidityPools';
-import { CloseModalIcon } from '../../../../../icons';
 import {
   LoadingModal,
   useLoadingModal,
@@ -173,14 +177,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
           [styles.visible]: visible,
         })}
       >
-        {visible && (
-          <div
-            className={styles.closeModalIcon}
-            onClick={() => setVisible(false)}
-          >
-            <CloseModalIcon className={styles.closeIcon} />
-          </div>
-        )}
+        {visible && <ModalClose onClick={() => setVisible(false)} />}
         <ModalHeader
           headerText="Deposit"
           slippage={0}
@@ -208,25 +205,13 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
           error={notEnoughSOLError}
         />
 
-        <div className={styles.totalUSD}>
-          <p>Total</p>
-          {formatNumberToCurrency(totalValueUSD)}
-        </div>
+        <TotalUSD className={styles.totalUSD} totalValueUSD={totalValueUSD} />
 
-        <div className={styles.estimatedRewards}>
-          <p className={styles.estimatedRewardsTitle}>
-            Estimated earnings from fees (7d)
-          </p>
-          <div className={styles.estimatedRewardsValues}>
-            <p>
-              {formatNumberToCurrency((totalValueUSD * apr) / 100)}{' '}
-              <span className={styles.bold}>/ month</span>
-            </p>
-            <p>
-              {apr && apr.toFixed(2)} % <span className={styles.bold}>APR</span>
-            </p>
-          </div>
-        </div>
+        <EstimatedRewards
+          className={styles.estimatedRewards}
+          totalValueUSD={totalValueUSD}
+          apr={apr}
+        />
 
         <div className={styles.errors}>
           {notEnoughBaseTokenError && <p>Not enough {baseToken?.symbol}</p>}

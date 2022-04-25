@@ -14,6 +14,7 @@ interface GeneralWalletInfoProps {
     ticker: string;
     balance: number;
   };
+  onStakeInInventory?: () => void;
   onSellAndStakeInInventoryPool?: () => void;
   onSellAndStakeInLiquididtyPool?: () => void;
   onDepositLiquidity?: () => void;
@@ -23,6 +24,7 @@ interface GeneralWalletInfoProps {
 export const GeneralWalletInfo: FC<GeneralWalletInfoProps> = ({
   poolToken,
   lpToken,
+  onStakeInInventory,
   onSellAndStakeInInventoryPool,
   onSellAndStakeInLiquididtyPool,
   onDepositLiquidity,
@@ -40,6 +42,7 @@ export const GeneralWalletInfo: FC<GeneralWalletInfoProps> = ({
       {showInventoryWalletInfo && (
         <InventoryWalletInfo
           poolToken={poolToken}
+          onStake={onStakeInInventory}
           onSellNft={onSellAndStakeInInventoryPool}
           className={styles.inventoryWalletInfo}
         />

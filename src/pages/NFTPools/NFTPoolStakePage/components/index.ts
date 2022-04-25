@@ -10,3 +10,4 @@ export * from './LiquidityWalletInfo';
 export * from './GeneralWalletInfo';
 export * from './DepositLiquidityModal';
 export * from './WithdrawLiquidityModal';
+export * from './StakePoolTokenModal';
