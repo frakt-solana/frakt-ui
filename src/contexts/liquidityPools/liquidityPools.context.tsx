@@ -19,6 +19,7 @@ import {
   LiquidityPoolsProviderType,
   PoolDataByMint,
 } from './liquidityPools.model';
+import { prismaSwap } from './transactions/prisma';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
@@ -26,6 +27,7 @@ export const LiquidityPoolsContext =
     poolDataByMint: new Map(),
     fetchRaydiumPoolsInfo: () => Promise.resolve(null),
     raydiumSwap: () => Promise.resolve(null),
+    prismaSwap: () => Promise.resolve(null),
     createRaydiumLiquidityPool: () => Promise.resolve(null),
     addRaydiumLiquidity: () => Promise.resolve(null),
     removeRaydiumLiquidity: () => Promise.resolve(null),
@@ -73,6 +75,10 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
         poolDataByMint,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap({
+          connection,
+          wallet,
+        }),
+        prismaSwap: prismaSwap({
           connection,
           wallet,
         }),

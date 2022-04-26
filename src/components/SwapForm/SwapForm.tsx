@@ -13,7 +13,8 @@ import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useSwapForm } from './hooks/useSwapForm';
-import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../ConfirmModal';
+import { LoadingModal } from '../LoadingModal';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
@@ -40,6 +41,8 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     confirmModalVisible,
     openConfirmModal,
     closeConfirmModal,
+    loadingModalVisible,
+    closeLoadingModal,
   } = useSwapForm(defaultTokenMint);
 
   const { poolDataByMint } = useLiquidityPools();
@@ -213,6 +216,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         overpriced/underpriced.\n
         Do you wish to perform the swap anyway?`}
         onSubmit={handleSwap}
+      />
+      <LoadingModal
+        visible={loadingModalVisible}
+        onCancel={closeLoadingModal}
       />
     </div>
   );

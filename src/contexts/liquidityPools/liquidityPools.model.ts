@@ -27,6 +27,7 @@ export interface LiquidityPoolsContextValues {
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
   raydiumSwap: (params: SwapTransactionParams) => Promise<boolean | void>;
+  prismaSwap: (params: any) => Promise<void>;
   createRaydiumLiquidityPool: (params: any) => Promise<void>;
   addRaydiumLiquidity: (
     params: AddLiquidityTransactionParams,
@@ -77,6 +78,7 @@ export interface RaydiumPoolInfo {
   baseDecimals: number;
   quoteDecimals: number;
   lpDecimals: number;
+  startTime: BN;
   baseReserve: BN;
   quoteReserve: BN;
   lpSupply: BN;

@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useMemo } from 'react';
 import { Percent } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
@@ -13,10 +13,9 @@ import {
   useFraktionInitialFetch,
   useFraktionPolling,
 } from '../../../contexts/fraktion';
-import BN from 'bn.js';
 import { useConfirmModal } from '../../ConfirmModal';
-import { Prism } from '@prism-hq/prism-ag';
 import { useTokenListContext } from '../../../contexts/TokenList';
+import { useLoadingModal } from '../../LoadingModal';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -46,17 +45,17 @@ export const useSwapForm = (
   tokenMinAmount: string;
   tokenPriceImpact: string;
   valuationDifference: string;
+  loadingModalVisible: boolean;
+  closeLoadingModal: () => void;
   setSlippage: (nextValue: string) => void;
   handleSwap: () => void;
   confirmModalVisible: boolean;
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
 } => {
-  const wallet = useWallet();
-  const { connection } = useConnection();
   const { tokensList } = useTokenListContext();
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
-  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
+  const { poolDataByMint, prismaSwap } = useLiquidityPools();
   const { connected } = useWallet();
   const intervalRef = useRef<any>();
   const { vaults } = useFraktion();
@@ -89,6 +88,12 @@ export const useSwapForm = (
     register(InputControlsNames.PAY_VALUE);
     register(InputControlsNames.RECEIVE_VALUE);
   }, [register]);
+
+  const {
+    visible: loadingModalVisible,
+    open: openLoadingModal,
+    close: closeLoadingModal,
+  } = useLoadingModal();
 
   const onPayTokenChange = (nextToken: TokenInfo) => {
     if (
@@ -214,60 +219,26 @@ export const useSwapForm = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vaultInfo, payValue, receiveValue, payToken, receiveToken]);
 
-  const initPrism = async () => {
-    return await Prism.init({
-      user: wallet.publicKey,
-      host: {
-        publicKey: wallet.publicKey.toBase58(),
-        fee: 5,
-      },
-      connection: connection,
-      slippage: 1,
-      tokenList: { tokens: tokensList },
-    });
-  };
-
   const handleSwap = async () => {
     closeConfirmModal();
+    openLoadingModal();
 
-    const isBuy = payToken.address === SOL_TOKEN.address;
+    await prismaSwap({
+      receiveToken: receiveToken.address,
+      payToken: payToken.address,
+      tokensList,
+      payValue,
+      slippage,
+    });
 
-    //? Need to get suitable pool
-    const splToken = isBuy ? receiveToken : payToken;
-
-    // const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
-
-    // const payAmount = new BN(Number(payValue) * 10 ** payToken.decimals);
-
-    // const quoteAmount = new BN(
-    //   Number(tokenMinAmount) * 10 ** receiveToken.decimals,
-    // );
-
-    // await raydiumSwap({
-    //   baseToken: payToken,
-    //   baseAmount: payAmount,
-    //   quoteToken: receiveToken,
-    //   quoteAmount: quoteAmount,
-    //   poolConfig,
-    // });
-
-    const prisma = await initPrism();
-    console.log(prisma);
-    await prisma.setSigner(wallet);
-    console.log(payToken.symbol, receiveToken.symbol);
-    await prisma.loadRoutes(payToken.symbol, receiveToken.symbol);
-    console.log(payValue);
-    const routes = await prisma.getRoutes(Number(payValue));
-    console.log(routes);
-    const result = await prisma.swap(routes[0]);
-    console.log(result);
-
-    await prisma.confirmSwap(result);
+    closeLoadingModal();
 
     fetchPoolInfo(payToken.address, receiveToken.address);
   };
 
   return {
+    loadingModalVisible,
+    closeLoadingModal,
     formControl: control,
     isSwapBtnEnabled,
     receiveToken,
