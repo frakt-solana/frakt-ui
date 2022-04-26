@@ -1,9 +1,9 @@
 import { FC, useEffect, useState } from 'react';
-import { PublicKey } from '@solana/web3.js';
+import { useConnection } from '@solana/wallet-adapter-react';
+import { useHistory, useParams } from 'react-router-dom';
 import { getAllUserTokens } from 'solana-nft-metadata';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useHistory, useParams } from 'react-router-dom';
-import { useConnection } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 
 import { useTokenListContext } from '../../../../contexts/TokenList';
 import { TokenInfoWithAmount } from '../../WalletPage';
@@ -20,7 +20,7 @@ export const TokensTab: FC = () => {
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   const { connection } = useConnection();
 
-  const fetchUserTokens = async () => {
+  const fetchUserTokens = async (): Promise<void> => {
     try {
       //? Checking if wallet valid
       new PublicKey(walletPubkey);

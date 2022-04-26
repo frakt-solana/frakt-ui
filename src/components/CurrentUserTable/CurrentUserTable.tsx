@@ -6,7 +6,6 @@ import { SolanaIcon, UserIcon } from '../../icons';
 import { useNativeAccount } from '../../utils/accounts';
 import styles from './styles.module.scss';
 import { PATHS } from '../../constants';
-import React from 'react';
 import { LinkWithArrow } from '../LinkWithArrow';
 
 interface CurrentUserTableProps {
@@ -44,7 +43,7 @@ const CurrentUserTable = ({
           </p>
           <LinkWithArrow
             to={`${PATHS.WALLET}/${publicKey.toString()}`}
-            label="My collection"
+            label="My profile"
             className={styles.myCollectionLink}
           />
         </div>

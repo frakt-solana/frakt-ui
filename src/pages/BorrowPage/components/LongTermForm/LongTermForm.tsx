@@ -2,10 +2,10 @@ import { FC } from 'react';
 import { Controller } from 'react-hook-form';
 import { Form } from 'antd';
 
-import { SOL_TOKEN } from '../../../../utils';
-import styles from './LongTermForm.module.scss';
 import { SelectControlsNames, useBorrowForm } from '../BorrowForms';
 import Slider from '../../../../components/Slider';
+import styles from './LongTermForm.module.scss';
+import { SOL_TOKEN } from '../../../../utils';
 
 export const LongTermForm: FC = () => {
   const { formControl, ltvValues } = useBorrowForm();

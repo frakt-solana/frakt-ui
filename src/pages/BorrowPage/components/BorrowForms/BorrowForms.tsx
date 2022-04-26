@@ -39,7 +39,7 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
     txnModalVisible,
     onTxnModalCancel,
     onSubmit,
-  } = useBorrowForm(selectedNft, onCloseSidebar);
+  } = useBorrowForm(onCloseSidebar);
 
   const nameSelectedNft = selectedNft[0]?.metadata.name;
   const loanPeriod = returnPeriod.value;

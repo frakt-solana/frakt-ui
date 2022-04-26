@@ -26,9 +26,19 @@
 .subtitle {
   font: var(--font-text-3);
   margin-top: 20px;
+
+  @media screen and (max-width: 1024px) {
+    font: var(--font-text-5);
+    font-weight: 400;
+    margin-top: 10px;
+  }
 }
 
 .btn {
   padding: 12px 96px;
   max-height: 48px;
+
+  @media screen and (max-width: 1024px) {
+    padding: 8px 34px;
+  }
 }

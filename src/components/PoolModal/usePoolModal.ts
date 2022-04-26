@@ -18,7 +18,7 @@ export const usePoolModal = (): {
   depositValue: number;
   formControl: Control<FormFieldValues>;
 } => {
-  const { control, watch, register, setValue } = useForm({
+  const { control, watch, register } = useForm({
     defaultValues: {
       [InputControlsNames.DEPOSIT_VALUE]: 0,
     },

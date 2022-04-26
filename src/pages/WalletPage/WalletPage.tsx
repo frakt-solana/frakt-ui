@@ -1,15 +1,15 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
-import classNames from 'classnames';
 import BN from 'bn.js';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { Container } from '../../components/Layout';
+import { Tab, Tabs, useTabs } from '../../components/Tabs';
 import { ProfileCard } from './components/ProfileCard';
-import styles from './styles.module.scss';
+import { Container } from '../../components/Layout';
 import { VaultsTab } from './components/VaultsTab';
-import { LoansTab } from './components/LoansTab';
 import { TokensTab } from './components/TokensTab';
+import { LoansTab } from './components/LoansTab';
+import styles from './styles.module.scss';
 
 export interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -22,11 +22,14 @@ export enum WalletTabs {
 }
 
 const WalletPage: FC = () => {
-  const [tab, setTab] = useState<WalletTabs>(WalletTabs.TOKENS);
-
-  const onSwitchTab = (event: any) => {
-    setTab(event.target.name);
-  };
+  const {
+    tabs,
+    value: tabValue,
+    setValue: setTabValue,
+  } = useTabs({
+    tabs: POOL_TABS,
+    defaultValue: POOL_TABS[0].value,
+  });
 
   return (
     <AppLayout>
@@ -39,41 +42,15 @@ const WalletPage: FC = () => {
         <div className={styles.content}>
           <ProfileCard />
           <div className={styles.tabsContent}>
-            <div className={styles.tabs}>
-              <button
-                className={classNames([
-                  styles.tab,
-                  { [styles.tabActive]: tab === WalletTabs.LOANS },
-                ])}
-                name={WalletTabs.LOANS}
-                onClick={onSwitchTab}
-              >
-                Loans
-              </button>
-              <button
-                className={classNames([
-                  styles.tab,
-                  { [styles.tabActive]: tab === WalletTabs.TOKENS },
-                ])}
-                name={WalletTabs.TOKENS}
-                onClick={onSwitchTab}
-              >
-                Tokens
-              </button>
-              <button
-                className={classNames([
-                  styles.tab,
-                  { [styles.tabActive]: tab === WalletTabs.VAULTS },
-                ])}
-                name={WalletTabs.VAULTS}
-                onClick={onSwitchTab}
-              >
-                Vaults
-              </button>
-            </div>
-            {tab === WalletTabs.LOANS && <LoansTab />}
-            {tab === WalletTabs.TOKENS && <TokensTab />}
-            {tab === WalletTabs.VAULTS && <VaultsTab />}
+            <Tabs
+              className={styles.tabs}
+              tabs={tabs}
+              value={tabValue}
+              setValue={setTabValue}
+            />
+            {tabValue === WalletTabs.LOANS && <LoansTab />}
+            {tabValue === WalletTabs.TOKENS && <TokensTab />}
+            {tabValue === WalletTabs.VAULTS && <VaultsTab />}
           </div>
         </div>
       </Container>
@@ -82,3 +59,18 @@ const WalletPage: FC = () => {
 };
 
 export default WalletPage;
+
+const POOL_TABS: Tab[] = [
+  {
+    label: 'Loans',
+    value: 'loans',
+  },
+  {
+    label: 'Tokens',
+    value: 'tokens',
+  },
+  {
+    label: 'Vaults',
+    value: 'vaults',
+  },
+];

@@ -39,38 +39,6 @@
   }
 }
 
-.tab {
-  padding: 18px 24px;
-  width: 100%;
-  font: var(--font-btn-small);
-  color: var(--white-color);
-  background: transparent;
-  border: 1px solid var(--gray-color-3);
-  cursor: pointer;
-  transition: background var(--transition-1), color var(--transition-1);
-
-  @media screen and (max-width: 1023px) {
-    font-size: 15px;
-    height: 38px;
-    padding-top: 10px;
-  }
-
-  @media screen and (max-width: 767px) {
-    width: 50%;
-  }
-
-  &:hover {
-    background: var(--gray-color-7);
-  }
-
-  &Active,
-  &Active:hover {
-    background: var(--white-color);
-    color: var(--black-color);
-    pointer-events: none;
-  }
-}
-
 .content {
   display: flex;
   width: 100%;
@@ -83,19 +51,4 @@
 
 .tabsContent {
   width: 100%;
-}
-
-.emptyMessage {
-  font: var(--font-btn-mid);
-}
-
-.loader {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.filters {
-  margin-bottom: 35px;
 }

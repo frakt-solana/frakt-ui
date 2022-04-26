@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { LoanView } from '@frakters/nft-lending-v2/lib/accounts';
-import { paybackLoan } from '@frakters/nft-lending-v2';
+import { paybackLoan as txn } from '@frakters/nft-lending-v2';
 import { Provider } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 
@@ -12,25 +11,24 @@ import {
 } from '../../../utils/transactions';
 import { LOANS_PROGRAM_PUBKEY } from '../loans.constants';
 
-export interface GetBackLoanTransactionParams {
+export interface PaybackLoanTransactionParams {
   loan: LoanView;
 }
 
-export interface GetBackLoanTransactionRawParams
-  extends GetBackLoanTransactionParams,
+export interface PaybackLoanTransactionRawParams
+  extends PaybackLoanTransactionParams,
     WalletAndConnection {}
 
-const rawGetLoanBack = async ({
+const rawPaybackLoan = async ({
   wallet,
   connection,
   loan,
-}: GetBackLoanTransactionRawParams): Promise<void> => {
+}: PaybackLoanTransactionRawParams): Promise<void> => {
   const options = Provider.defaultOptions();
   const provider = new Provider(connection, wallet, options);
 
-  await paybackLoan({
+  await txn({
     programId: new PublicKey(LOANS_PROGRAM_PUBKEY),
-    //@ts-ignore
     provider,
     user: wallet.publicKey,
     admin: new PublicKey(''),
@@ -51,13 +49,13 @@ const rawGetLoanBack = async ({
   });
 };
 
-const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawGetLoanBack, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawPaybackLoan, {
   onSuccessMessage: {
     message: 'Loan repaid successfully',
   },
   onErrorMessage: { message: 'Transaction failed' },
 });
 
-export const getLoanBack = createTransactionFuncFromRaw(
+export const paybackLoan = createTransactionFuncFromRaw(
   wrappedAsyncWithTryCatch,
 );

@@ -10,12 +10,14 @@ export type FetchDataFunc = () => Promise<void>;
 
 export interface LoansContextValues {
   fetchLoansData: FetchDataFunc;
+  loansProgramAccounts: LoansProgramAccount;
   loading: boolean;
-  getLoanBack: (params: any) => Promise<any>;
-  createLoan: (params: any) => Promise<any>;
+  paybackLoan: (params: any) => Promise<any>;
+  proposeLoan: (params: any) => Promise<any>;
+  approvedLoan: (params: any) => Promise<any>;
 }
 
-export interface LoanProgramAccount {
+export interface LoansProgramAccount {
   collectionInfo: CollectionInfoView[];
   deposit: DepositView[];
   liquidityPool: LiquidityPoolView[];

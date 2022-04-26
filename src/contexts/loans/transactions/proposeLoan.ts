@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
-import { proposeLoan } from '@frakters/nft-lending-v2';
+import { proposeLoan as txn } from '@frakters/nft-lending-v2';
 
 import {
   createTransactionFuncFromRaw,
@@ -12,45 +11,49 @@ import {
 import { UserNFT } from '../../userTokens';
 import { LOANS_PROGRAM_PUBKEY } from '../loans.constants';
 
-export interface CreateLoanTransactionParams {
+export interface ProposeLoanTransactionParams {
   nft: UserNFT;
 }
 
-export interface CreateLoanTransactionRawParams
-  extends CreateLoanTransactionParams,
+export interface ProposeLoanTransactionRawParams
+  extends ProposeLoanTransactionParams,
     WalletAndConnection {}
 
-const rawCreateLoan = async ({
+const rawProposeLoan = async ({
   wallet,
   connection,
   nft,
-}: CreateLoanTransactionRawParams): Promise<any> => {
+}: ProposeLoanTransactionRawParams): Promise<PublicKey> => {
   const options = Provider.defaultOptions();
   const provider = new Provider(connection, wallet, options);
 
-  await proposeLoan({
+  const response = await txn({
     programId: new PublicKey(LOANS_PROGRAM_PUBKEY),
-    //@ts-ignore
     provider,
     user: wallet.publicKey,
-    nftMint: new PublicKey(''),
-    sendTxn: async (transaction) => {
+    nftMint: new PublicKey(nft.mint),
+    sendTxn: async (transaction, signers) => {
       await signAndConfirmTransaction({
         transaction,
+        signers,
         connection,
         wallet,
       });
     },
   });
+
+  console.log(response);
+
+  return response;
 };
 
-const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawCreateLoan, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawProposeLoan, {
   onSuccessMessage: {
     message: 'Loan created  successfully',
   },
   onErrorMessage: { message: 'Transaction failed' },
 });
 
-export const createLoan = createTransactionFuncFromRaw(
+export const proposeLoan = createTransactionFuncFromRaw(
   wrappedAsyncWithTryCatch,
 );

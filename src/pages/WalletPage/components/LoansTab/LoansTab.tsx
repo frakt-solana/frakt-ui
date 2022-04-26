@@ -1,7 +1,9 @@
 import { FC } from 'react';
+import { LoanView } from '@frakters/nft-lending-v2/lib/accounts';
 
 import LoanCard from '../../../../components/LoanCard';
 import { Loader } from '../../../../components/Loader';
+import { useLoans } from '../../../../contexts/loans';
 import styles from './styles.module.scss';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
@@ -9,10 +11,11 @@ import FakeInfinityScroll, {
 
 export const LoansTab: FC = () => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
+  const { loading, loansProgramAccounts } = useLoans();
 
   return (
     <>
-      {itemsToShow ? (
+      {loading ? (
         <div className={styles.loader}>
           <Loader size={'large'} />
         </div>
@@ -23,14 +26,8 @@ export const LoansTab: FC = () => {
           wrapperClassName={styles.loansList}
           emptyMessage="No suitable loans found"
         >
-          {[].map((nft: any) => (
-            <LoanCard
-              key={nft.id}
-              imageUrl={nft.nftData?.image}
-              name={nft.nftData?.name}
-              ltvPrice={nft.amount}
-              nft={nft}
-            />
+          {loansProgramAccounts?.loan.map((nft: LoanView) => (
+            <LoanCard key={nft.loanPubkey} nft={nft} />
           ))}
         </FakeInfinityScroll>
       )}

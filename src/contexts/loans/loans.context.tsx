@@ -5,18 +5,20 @@ import { PublicKey } from '@solana/web3.js';
 
 import {
   FetchDataFunc,
-  LoanProgramAccount,
+  LoansProgramAccount,
   LoansContextValues,
   LoansProviderType,
 } from './loans.model';
-import { createLoan, getLoanBack } from './transactions';
+import { proposeLoan, paybackLoan } from './transactions';
 import { LOANS_PROGRAM_PUBKEY } from './loans.constants';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
   loading: true,
+  loansProgramAccounts: null,
   fetchLoansData: () => Promise.resolve(null),
-  getLoanBack: () => Promise.resolve(null),
-  createLoan: () => Promise.resolve(null),
+  paybackLoan: () => Promise.resolve(null),
+  proposeLoan: () => Promise.resolve(null),
+  approvedLoan: () => Promise.resolve(null),
 });
 
 export const LoansProvider: LoansProviderType = ({ children }) => {
@@ -24,7 +26,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const wallet = useWallet();
   const { connection } = useConnection();
   const [loansProgramAccounts, setLoansProgramAccounts] =
-    useState<LoanProgramAccount>();
+    useState<LoansProgramAccount>();
 
   const fetchLoansData: FetchDataFunc = async () => {
     try {
@@ -32,6 +34,8 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
         new PublicKey(LOANS_PROGRAM_PUBKEY),
         connection,
       );
+      console.log(programAccounts);
+      setLoansProgramAccounts(programAccounts);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -50,12 +54,17 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     <LoansPoolsContext.Provider
       value={{
         loading,
+        loansProgramAccounts,
         fetchLoansData,
-        getLoanBack: getLoanBack({
+        paybackLoan: paybackLoan({
           connection,
           wallet,
         }),
-        createLoan: createLoan({
+        proposeLoan: proposeLoan({
+          connection,
+          wallet,
+        }),
+        approvedLoan: proposeLoan({
           connection,
           wallet,
         }),
