@@ -19,6 +19,7 @@ import {
   SecondaryRewardView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
+import { PrismaSwapTransactionParams } from './transactions/prisma';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
@@ -27,7 +28,7 @@ export interface LiquidityPoolsContextValues {
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
   raydiumSwap: (params: SwapTransactionParams) => Promise<boolean | void>;
-  prismaSwap: (params: any) => Promise<void>;
+  prismaSwap: (params: PrismaSwapTransactionParams) => Promise<void>;
   createRaydiumLiquidityPool: (params: any) => Promise<void>;
   addRaydiumLiquidity: (
     params: AddLiquidityTransactionParams,

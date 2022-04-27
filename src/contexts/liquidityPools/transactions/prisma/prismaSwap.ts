@@ -7,7 +7,7 @@ import {
   WalletAndConnection,
 } from '../../../../utils/transactions';
 
-export interface SwapTransactionParams {
+export interface PrismaSwapTransactionParams {
   receiveToken: string;
   payToken: string;
   payValue: string;
@@ -15,8 +15,8 @@ export interface SwapTransactionParams {
   slippage?: string;
 }
 
-export interface SwapTransactionRawParams
-  extends SwapTransactionParams,
+export interface PrismaSwapTransactionRawParams
+  extends PrismaSwapTransactionParams,
     WalletAndConnection {}
 
 export const rawPrismaSwap = async ({
@@ -26,7 +26,7 @@ export const rawPrismaSwap = async ({
   connection,
   tokensList,
   payValue,
-}: SwapTransactionRawParams): Promise<void> => {
+}: PrismaSwapTransactionRawParams): Promise<void> => {
   const initPrism = async () => {
     return await Prism.init({
       user: wallet.publicKey,
