@@ -5,7 +5,7 @@ import {
   PromiseFulfilledResult,
 } from './collections.model';
 
-const EXCHANGE_COLLECTION_INFO_API = process.env.COLLECTION_URL;
+const COLLECTION_INFO_API = process.env.COLLECTION_URL;
 
 export const mapVaultsByCollectionName = (
   vaults: VaultData[],
@@ -39,12 +39,10 @@ export const fetchCollectionData = async (
 ): Promise<CollectionData | null> => {
   try {
     const responseData = await (
-      await fetch(
-        `${EXCHANGE_COLLECTION_INFO_API}/metadata?collectionName=${collectionName}`,
-      )
+      await fetch(`${COLLECTION_INFO_API}/${collectionName}`)
     ).json();
 
-    return responseData?.states?.live || null;
+    return responseData || null;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
