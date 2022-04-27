@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import styles from './LiquidityWalletInfo.module.scss';
 import { WalletInfo } from '../WalletInfo';
+import { CONTROLS } from '../../constants';
 
 interface LiquidityWalletInfoProps {
   poolToken: {
@@ -17,6 +18,7 @@ interface LiquidityWalletInfoProps {
   onDepositLiquidity: () => void;
   onStakeLp: () => void;
   onWithdrawLp: () => void;
+  activeControl?: CONTROLS;
   className?: string;
 }
 
@@ -27,6 +29,7 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
   onDepositLiquidity,
   onStakeLp,
   onWithdrawLp,
+  activeControl,
   className,
 }) => {
   const showPoolTokenInfo = !!poolToken?.balance || !!onSellNft;
@@ -41,12 +44,22 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
           balance={poolToken?.balance ? poolToken.balance.toFixed(3) : '0'}
           firstAction={
             poolToken?.balance
-              ? { label: 'Deposit', action: onDepositLiquidity }
+              ? {
+                  label: 'Deposit',
+                  action: onDepositLiquidity,
+                  btnPressedState:
+                    activeControl === CONTROLS.DEPOSIT_LIQUIDITY_MODAL,
+                }
               : null
           }
           secondAction={
             onSellNft
-              ? { label: 'Sell NFT & Deposit', action: onSellNft }
+              ? {
+                  label: 'Sell NFT & Deposit',
+                  action: onSellNft,
+                  btnPressedState:
+                    activeControl === CONTROLS.SELECT_NFTS_LIQUIDITY,
+                }
               : null
           }
           className={classNames([

@@ -45,7 +45,7 @@ export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
         {!aprLoading && (
           <div className={styles.aprContainer}>
             <p className={styles.aprContainerTitle}>
-              Staking APR{' '}
+              APR{' '}
               <Tooltip
                 placement="bottom"
                 trigger="hover"
@@ -57,11 +57,11 @@ export const NFTPoolsHeaderInner: FC<MarketHeaderInnerProps> = ({
               </Tooltip>
             </p>
             <p className={styles.aprValues}>
-              <span className={styles.aprValueRed}>
+              <span className={styles.aprValueGreen}>
                 {inventoryAPR.toFixed(2) || 0} %
               </span>{' '}
               /{' '}
-              <span className={styles.aprValueGreen}>
+              <span className={styles.aprValueRed}>
                 {' '}
                 {liquidityAPR.toFixed(2) || 0} %
               </span>

@@ -1,12 +1,7 @@
 import { FC, useState } from 'react';
-import {
-  LiquidityPoolKeysV4,
-  Token,
-  TokenAmount,
-} from '@raydium-io/raydium-sdk';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import {
@@ -17,7 +12,6 @@ import { TokenAmountInputWithBalance } from '../../../../../components/TokenAmou
 import {
   FusionPool,
   RaydiumPoolInfo,
-  useLiquidityPools,
 } from '../../../../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../../../../utils';
 import { useSplTokenBalance } from '../../../../../utils/accounts';
@@ -28,6 +22,7 @@ import {
 } from '../../../components/ModalParts';
 import styles from './WithdrawLiquidityModal.module.scss';
 import { Slider } from '../../../../../components/Slider';
+import { unstakeAndRemoveLiquidity } from '../../transactions';
 
 export interface WithdrawLiquidityModalProps {
   visible?: boolean;
@@ -50,16 +45,11 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
   withdrawStaked = false,
   liquidityFusionPool,
 }) => {
-  const {
-    removeRaydiumLiquidity: removeRaydiumLiquidityTxn,
-    unstakeLiquidity,
-  } = useLiquidityPools();
-
-  const { publicKey: walletPublicKey } = useWallet();
+  const wallet = useWallet();
+  const { connection } = useConnection();
 
   const [percent, setPercent] = useState(0);
   const [lpValue, setLpValue] = useState<string>('');
-  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
 
   const { balance: lpTokenWalletBalance } = useSplTokenBalance(
     raydiumLiquidityPoolKeys?.lpMint?.toBase58(),
@@ -104,57 +94,22 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
 
   const submitButtonDisabled = notEnoughLpTokenError || !percent;
 
-  const removeRaydiumLiquidity = async (removeAmount: BN): Promise<boolean> => {
-    const lpTokenAmount = new TokenAmount(
-      new Token(raydiumLiquidityPoolKeys?.lpMint, raydiumPoolInfo?.lpDecimals),
-      removeAmount,
-    );
-
-    const result = await removeRaydiumLiquidityTxn({
-      baseToken,
-      quoteToken: SOL_TOKEN,
-      amount: lpTokenAmount,
-      poolConfig: raydiumLiquidityPoolKeys,
-    });
-
-    return !!result;
-  };
-
   const onSubmit = async (): Promise<void> => {
     try {
-      if (withdrawStaked) {
-        setTransactionsLeft(2);
-      } else {
-        setTransactionsLeft(1);
-      }
-
+      openLoadingModal();
       setVisible(false);
 
-      openLoadingModal();
+      const result = await unstakeAndRemoveLiquidity({
+        connection,
+        wallet,
+        liquidityFusion: liquidityFusionPool,
+        poolToken: baseToken,
+        raydiumLiquidityPoolKeys,
+        raydiumPoolInfo,
+        amount: parseFloat(lpValue),
+      });
 
-      const removeAmount = new BN(
-        parseFloat(lpValue) * 10 ** raydiumPoolInfo?.lpDecimals,
-      );
-
-      if (withdrawStaked) {
-        const { router, secondaryRewards, stakeAccounts } = liquidityFusionPool;
-        const walletStakeAccount = stakeAccounts?.find(
-          ({ stakeOwner }) => stakeOwner === walletPublicKey?.toBase58(),
-        );
-
-        const unstakeResult = await unstakeLiquidity({
-          router,
-          secondaryReward:
-            secondaryRewards?.map(({ rewards }) => rewards) || [],
-          amount: removeAmount,
-          stakeAccount: walletStakeAccount,
-        });
-        if (!unstakeResult) throw new Error('Unstake failed');
-        setTransactionsLeft(1);
-      }
-
-      const removeLiquidityResult = await removeRaydiumLiquidity(removeAmount);
-      if (!removeLiquidityResult) {
+      if (!result) {
         throw new Error('Removing liquidity failed');
       }
     } catch (error) {
@@ -162,7 +117,6 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
       console.error(error);
     } finally {
       closeLoadingModal();
-      setTransactionsLeft(null);
     }
   };
 
@@ -210,7 +164,6 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
       <LoadingModal
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
-        subtitle={`Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`}
       />
     </>
   );

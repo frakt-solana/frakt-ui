@@ -1,5 +1,6 @@
 import { FC } from 'react';
 
+import { CONTROLS } from '../../constants';
 import { WalletInfo } from '../WalletInfo';
 import styles from './InventoryWalletInfo.module.scss';
 
@@ -8,8 +9,9 @@ interface InventoryWalletInfoProps {
     ticker: string;
     balance: number;
   };
-  onStake: () => void;
-  onSellNft: () => void;
+  onStake?: () => void;
+  onSellNft?: () => void;
+  activeControl?: CONTROLS;
   className?: string;
 }
 
@@ -17,6 +19,7 @@ export const InventoryWalletInfo: FC<InventoryWalletInfoProps> = ({
   poolToken,
   onStake,
   onSellNft,
+  activeControl,
   className,
 }) => {
   return (
@@ -26,10 +29,24 @@ export const InventoryWalletInfo: FC<InventoryWalletInfoProps> = ({
         title={poolToken?.ticker || 'Unknown'}
         balance={poolToken?.balance ? poolToken.balance.toFixed(3) : '0'}
         firstAction={
-          poolToken?.balance ? { label: 'Stake rPWNG', action: onStake } : null
+          poolToken?.balance
+            ? {
+                label: 'Stake rPWNG',
+                action: onStake,
+                btnPressedState:
+                  activeControl === CONTROLS.STAKE_POOL_TOKEN_MODAL,
+              }
+            : null
         }
         secondAction={
-          onSellNft ? { label: 'Sell NFT & Stake', action: onSellNft } : null
+          onSellNft
+            ? {
+                label: 'Sell NFT & Stake',
+                action: onSellNft,
+                btnPressedState:
+                  activeControl === CONTROLS.SELECT_NFTS_INVENTORY,
+              }
+            : null
         }
       />
     </div>

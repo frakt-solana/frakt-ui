@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import { FC } from 'react';
 
 import { WalletInfoBalance } from '../WalletInfoBalance';
@@ -8,6 +9,7 @@ import styles from './WalletInfo.module.scss';
 export interface Action {
   label: string;
   action: () => void;
+  btnPressedState?: boolean;
 }
 
 interface WalletInfoProps {
@@ -31,7 +33,10 @@ export const WalletInfo: FC<WalletInfoProps> = ({
       <div className={styles.walletInfoBtnWrapper}>
         {!!firstAction && (
           <WalletInfoButton
-            className={styles.walletInfoBtn}
+            className={classNames([
+              styles.walletInfoBtn,
+              { [styles.walletInfoBtnPressed]: firstAction?.btnPressedState },
+            ])}
             onClick={firstAction.action}
           >
             {firstAction.label}
@@ -39,7 +44,10 @@ export const WalletInfo: FC<WalletInfoProps> = ({
         )}
         {!!secondAction && (
           <WalletInfoButton
-            className={styles.walletInfoBtn}
+            className={classNames([
+              styles.walletInfoBtn,
+              { [styles.walletInfoBtnPressed]: secondAction?.btnPressedState },
+            ])}
             onClick={secondAction.action}
           >
             {secondAction.label}

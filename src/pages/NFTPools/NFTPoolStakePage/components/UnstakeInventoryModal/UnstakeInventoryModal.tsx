@@ -42,7 +42,6 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
 
   const [percent, setPercent] = useState(0);
   const [value, setValue] = useState<string>('');
-  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
 
   const {
     visible: loadingModalVisible,
@@ -79,8 +78,6 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
 
   const onSubmit = async (): Promise<void> => {
     try {
-      setTransactionsLeft(1);
-
       setVisible(false);
 
       openLoadingModal();
@@ -106,7 +103,6 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
       console.error(error);
     } finally {
       closeLoadingModal();
-      setTransactionsLeft(null);
     }
   };
 
@@ -157,7 +153,6 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
       <LoadingModal
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
-        subtitle={`Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`}
       />
     </>
   );

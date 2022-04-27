@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
 import BN from 'bn.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
@@ -16,7 +16,6 @@ import {
 import styles from './DepositLiquidityModal.module.scss';
 import { TokenAmountInputWithBalance } from '../../../../../components/TokenAmountInputWithBalance';
 import {
-  getTokenAccount,
   useNativeAccount,
   useSplTokenBalance,
 } from '../../../../../utils/accounts';
@@ -24,14 +23,15 @@ import { SOL_TOKEN } from '../../../../../utils';
 import {
   calculateTotalDeposit,
   FusionPool,
+  getTokenAccount,
   RaydiumPoolInfo,
   useCurrentSolanaPrice,
-  useLiquidityPools,
 } from '../../../../../contexts/liquidityPools';
 import {
   LoadingModal,
   useLoadingModal,
 } from '../../../../../components/LoadingModal';
+import { provideLiquidity, stakeInLiquidityFusion } from '../../transactions';
 
 interface DepositLiquidityModalProps {
   visible?: boolean;
@@ -43,7 +43,7 @@ interface DepositLiquidityModalProps {
   liquidityFusionPool: FusionPool;
 }
 
-const calcRatio = (raydiumPoolInfo: RaydiumPoolInfo) =>
+export const calcRatio = (raydiumPoolInfo: RaydiumPoolInfo): number =>
   raydiumPoolInfo?.quoteReserve.toNumber() /
   10 ** raydiumPoolInfo?.quoteDecimals /
   (raydiumPoolInfo?.baseReserve.toNumber() /
@@ -58,24 +58,30 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
   raydiumLiquidityPoolKeys,
   liquidityFusionPool,
 }) => {
-  const { publicKey: walletPublicKey } = useWallet();
+  const wallet = useWallet();
+  const walletPublicKey = wallet?.publicKey;
+
   const { connection } = useConnection();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
 
   const [baseValue, setBaseValue] = useState<string>('');
   const [solValue, setSolValue] = useState<string>('');
 
+  const [fixedSide, setFixedSide] = useState<LiquiditySide>('a');
+
   const onBaseValueChange = (value: string) => {
     setBaseValue(value);
     const ratio = calcRatio(raydiumPoolInfo);
     const amount = Number(value) * ratio;
     setSolValue(amount ? amount.toFixed(5) : '');
+    setFixedSide('a');
   };
   const onSolValueChange = (value: string) => {
     setSolValue(value);
     const ratio = calcRatio(raydiumPoolInfo);
     const amount = Number(value) / ratio;
     setBaseValue(amount ? amount.toFixed(5) : '');
+    setFixedSide('b');
   };
 
   const { balance: baseTokenBalance } = useSplTokenBalance(
@@ -101,8 +107,6 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
     currentSolanaPriceUSD,
   );
 
-  const { addRaydiumLiquidity: addRaydiumLiquidityTxn } = useLiquidityPools();
-  const { stakeLiquidity: stakeLiquidityTxn } = useLiquidityPools();
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const {
     visible: loadingModalVisible,
@@ -110,53 +114,47 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const addRaydiumLiquidity = async () => {
-    const baseAmount = new BN(parseFloat(baseValue) * 10 ** baseToken.decimals);
-    const quoteAmount = new BN(parseFloat(solValue) * 10 ** SOL_TOKEN.decimals);
-
-    const result = await addRaydiumLiquidityTxn({
-      baseToken,
-      baseAmount,
-      quoteToken: SOL_TOKEN,
-      quoteAmount,
-      poolConfig: raydiumLiquidityPoolKeys,
-      fixedSide: 'a',
-    });
-
-    setTransactionsLeft(1);
-
-    return !!result;
-  };
-
-  const stakeLiquidity = async (): Promise<boolean> => {
-    const { accountInfo } = await getTokenAccount({
-      tokenMint: new PublicKey(liquidityFusionPool?.router?.tokenMintInput),
-      owner: walletPublicKey,
-      connection,
-    });
-
-    const result = await stakeLiquidityTxn({
-      amount: accountInfo?.amount,
-      router: liquidityFusionPool?.router,
-    });
-
-    return !!result;
-  };
-
   const onSubmit = async () => {
     try {
       setTransactionsLeft(2);
       openLoadingModal();
       setVisible(false);
 
-      const addRaydiumLiquidityResult = await addRaydiumLiquidity();
+      const baseAmount = new BN(
+        parseFloat(baseValue) * 10 ** baseToken.decimals,
+      );
+      const quoteAmount = new BN(
+        parseFloat(solValue) * 10 ** SOL_TOKEN.decimals,
+      );
+
+      const addRaydiumLiquidityResult = await provideLiquidity({
+        connection,
+        wallet,
+        poolToken: baseToken,
+        poolTokenAmount: baseAmount,
+        solAmount: quoteAmount,
+        raydiumLiquidityPoolKeys,
+        fixedSide,
+      });
       if (!addRaydiumLiquidityResult) {
         throw new Error('Providing liquidity failed');
       }
 
       setTransactionsLeft(1);
 
-      const stakeResult = await stakeLiquidity();
+      const { accountInfo } = await getTokenAccount({
+        tokenMint: new PublicKey(liquidityFusionPool?.router?.tokenMintInput),
+        owner: walletPublicKey,
+        connection,
+      });
+
+      const stakeResult = await stakeInLiquidityFusion({
+        amount: accountInfo?.amount,
+        connection,
+        wallet,
+        liquidityFusionPool,
+      });
+
       if (!stakeResult) {
         throw new Error('Stake failed');
       }

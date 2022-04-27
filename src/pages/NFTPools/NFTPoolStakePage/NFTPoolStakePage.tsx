@@ -1,12 +1,11 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { Loader } from '../../../components/Loader';
 import { POOL_TABS } from '../../../constants';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
 import { useNftPoolsInitialFetch } from '../../../contexts/nftPools';
-import { UserNFT } from '../../../contexts/userTokens';
 import { usePublicKeyParam } from '../../../hooks';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
@@ -26,63 +25,16 @@ import {
   useStakeAndWithdrawLP,
   useHarvestRewards,
   HarvestRewards,
+  SellAndStakeModal,
+  SellAndDepositModal,
 } from './components';
-import { useNftPoolStakePage, useStakingPageInfo } from './hooks';
+import { CONTROLS } from './constants';
+import {
+  useNftPoolStakePage,
+  useStakeControls,
+  useStakingPageInfo,
+} from './hooks';
 import styles from './NFTPoolStakePage.module.scss';
-
-const useModal = () => {
-  const [visible, setVisible] = useState<boolean>(false);
-
-  return {
-    visible,
-    setVisible,
-  };
-};
-
-// interface UseStakeModals = () => {
-
-// }
-
-// enum MODALS {
-//   DEPOSIT_LIQUIDITY = 'depositLiquidity',
-//   WITHDRAW_LIQUIDITY = 'withdrawLiquidity',
-//   STAKE_POOL_TOKEN = 'stakePoolToken',
-//   UNSTAKE_INVENTORY = 'unstakeInventory',
-// }
-
-// const useStakeModals = () => {
-//   const {
-//     visible: depositLiquidityModalVisible,
-//     setVisible: setDepositLiquidityModalVisible,
-//   } = useModal();
-
-//   const {
-//     visible: withdrawLiquidityModalVisible,
-//     setVisible: setWithdrawLiquidityModalVisible,
-//   } = useModal();
-
-//   const {
-//     visible: stakePoolTokenModalVisible,
-//     setVisible: setStakePoolTokenModalVisible,
-//   } = useModal();
-
-//   const {
-//     visible: unstakeInventoryModalVisible,
-//     setVisible: setUnstakeInventoryModalVisible,
-//   } = useModal();
-
-//   return {
-//     depositLiquidityModalVisible,
-//     withdrawLiquidityModalVisible,
-//     stakePoolTokenModalVisible,
-//     unstakeInventoryModalVisible,
-
-//     setDepositLiquidityModalVisible,
-//     setWithdrawLiquidityModalVisible,
-//     setStakePoolTokenModalVisible,
-//     setUnstakeInventoryModalVisible,
-//   };
-// };
 
 export const NFTPoolStakePage: FC = () => {
   const poolPubkey = usePoolPubkeyParam();
@@ -124,24 +76,15 @@ export const NFTPoolStakePage: FC = () => {
   const contentLoading = contentLoadingNftPool || stakingInfoLoading;
 
   const {
-    visible: depositLiquidityModalVisible,
-    setVisible: setDepositLiquidityModalVisible,
-  } = useModal();
-
-  const {
-    visible: withdrawLiquidityModalVisible,
-    setVisible: setWithdrawLiquidityModalVisible,
-  } = useModal();
-
-  const {
-    visible: stakePoolTokenModalVisible,
-    setVisible: setStakePoolTokenModalVisible,
-  } = useModal();
-
-  const {
-    visible: unstakeInventoryModalVisible,
-    setVisible: setUnstakeInventoryModalVisible,
-  } = useModal();
+    activeControl,
+    showHideModal,
+    toggleModal,
+    toggleSelectNftsVisisble,
+    selectNftRef,
+    selectedNft,
+    onSelect: onSelectNft,
+    onDeselect: onDeselectNft,
+  } = useStakeControls();
 
   const {
     visible: stakeAndWithdrawLoadingVisible,
@@ -156,7 +99,6 @@ export const NFTPoolStakePage: FC = () => {
     raydiumPoolInfo,
   });
 
-  const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
   const { control, nfts } = useNFTsFiltering(userNfts);
 
   const {
@@ -216,18 +158,20 @@ export const NFTPoolStakePage: FC = () => {
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
                     balance: lpTokenBalance,
                   }}
-                  onStakeInInventory={() =>
-                    setStakePoolTokenModalVisible((prev) => !prev)
-                  }
-                  onDepositLiquidity={() =>
-                    setDepositLiquidityModalVisible((prev) => !prev)
-                  }
-                  onSellAndStakeInInventoryPool={
-                    !!userNfts?.length && (() => {})
-                  }
-                  onSellAndStakeInLiquididtyPool={
-                    !!userNfts?.length && (() => {})
-                  }
+                  userNfts={userNfts}
+                  activeControl={activeControl}
+                  onStakeInInventory={toggleModal(
+                    CONTROLS.STAKE_POOL_TOKEN_MODAL,
+                  )}
+                  onDepositLiquidity={toggleModal(
+                    CONTROLS.DEPOSIT_LIQUIDITY_MODAL,
+                  )}
+                  onSellAndStakeInInventoryPool={toggleSelectNftsVisisble(
+                    CONTROLS.SELECT_NFTS_INVENTORY,
+                  )}
+                  onSellAndStakeInLiquididtyPool={toggleSelectNftsVisisble(
+                    CONTROLS.SELECT_NFTS_LIQUIDITY,
+                  )}
                   onStakeLp={stakeLp}
                   onWithdrawLp={withdrawLp}
                 />
@@ -248,12 +192,9 @@ export const NFTPoolStakePage: FC = () => {
                     ticker: `${poolTokenInfo?.symbol}/SOL`,
                     balance: lpTokensStaked,
                   }}
-                  onUnstake={() =>
-                    setUnstakeInventoryModalVisible((prev) => !prev)
-                  }
-                  onWithdraw={() =>
-                    setWithdrawLiquidityModalVisible((prev) => !prev)
-                  }
+                  onUnstake={toggleModal(CONTROLS.UNSTAKE_INVENTORY_MODAL)}
+                  onWithdraw={toggleModal(CONTROLS.WITHDRAW_LIQUIDITY_MODAL)}
+                  activeControl={activeControl}
                   className={styles.stakingInfo}
                 />
                 <RewardsInfo
@@ -263,8 +204,8 @@ export const NFTPoolStakePage: FC = () => {
                 />
                 <div className={styles.modalWrapper}>
                   <DepositLiquidityModal
-                    visible={depositLiquidityModalVisible}
-                    setVisible={setDepositLiquidityModalVisible}
+                    visible={activeControl === CONTROLS.DEPOSIT_LIQUIDITY_MODAL}
+                    setVisible={showHideModal(CONTROLS.DEPOSIT_LIQUIDITY_MODAL)}
                     baseToken={poolTokenInfo}
                     raydiumPoolInfo={raydiumPoolInfo}
                     apr={liquidityAPR}
@@ -274,8 +215,12 @@ export const NFTPoolStakePage: FC = () => {
                 </div>
                 <div className={styles.modalWrapper}>
                   <WithdrawLiquidityModal
-                    visible={withdrawLiquidityModalVisible}
-                    setVisible={setWithdrawLiquidityModalVisible}
+                    visible={
+                      activeControl === CONTROLS.WITHDRAW_LIQUIDITY_MODAL
+                    }
+                    setVisible={showHideModal(
+                      CONTROLS.WITHDRAW_LIQUIDITY_MODAL,
+                    )}
                     baseToken={poolTokenInfo}
                     raydiumLiquidityPoolKeys={raydiumLiquidityPoolKeys}
                     raydiumPoolInfo={raydiumPoolInfo}
@@ -286,19 +231,49 @@ export const NFTPoolStakePage: FC = () => {
                 </div>
                 <div className={styles.modalWrapper}>
                   <StakePoolTokenModal
-                    visible={stakePoolTokenModalVisible}
-                    setVisible={setStakePoolTokenModalVisible}
+                    visible={activeControl === CONTROLS.STAKE_POOL_TOKEN_MODAL}
+                    setVisible={showHideModal(CONTROLS.STAKE_POOL_TOKEN_MODAL)}
                     poolToken={poolTokenInfo}
                     inventoryFusionPool={inventoryFusionPool}
                   />
                 </div>
                 <div className={styles.modalWrapper}>
                   <UnstakeInventoryModal
-                    visible={unstakeInventoryModalVisible}
-                    setVisible={setUnstakeInventoryModalVisible}
+                    visible={activeControl === CONTROLS.UNSTAKE_INVENTORY_MODAL}
+                    setVisible={showHideModal(CONTROLS.UNSTAKE_INVENTORY_MODAL)}
                     poolToken={poolTokenInfo}
                     inventoryFusionPool={inventoryFusionPool}
                     poolTokensStakedAmount={poolTokensStaked}
+                  />
+                </div>
+                <div className={styles.modalWrapper}>
+                  <SellAndStakeModal
+                    visible={
+                      activeControl === CONTROLS.SELECT_NFTS_INVENTORY &&
+                      !!selectedNft
+                    }
+                    onDeselect={onDeselectNft}
+                    pool={pool}
+                    poolToken={poolTokenInfo}
+                    apr={inventoryAPR}
+                    inventoryFusionPool={inventoryFusionPool}
+                    nft={selectedNft}
+                  />
+                </div>
+                <div className={styles.modalWrapper}>
+                  <SellAndDepositModal
+                    visible={
+                      activeControl === CONTROLS.SELECT_NFTS_LIQUIDITY &&
+                      !!selectedNft
+                    }
+                    onDeselect={onDeselectNft}
+                    poolToken={poolTokenInfo}
+                    pool={pool}
+                    apr={liquidityAPR}
+                    liquidityFusionPool={liquidityFusionPool}
+                    nft={selectedNft}
+                    raydiumLiquidityPoolKeys={raydiumLiquidityPoolKeys}
+                    raydiumPoolInfo={raydiumPoolInfo}
                   />
                 </div>
               </>
@@ -306,14 +281,19 @@ export const NFTPoolStakePage: FC = () => {
           </div>
           {connected && !contentLoading && (
             <NFTPoolNFTsList
+              ref={selectNftRef}
+              className={classNames({
+                [styles.hidden]: !(
+                  activeControl === CONTROLS.SELECT_NFTS_INVENTORY ||
+                  activeControl === CONTROLS.SELECT_NFTS_LIQUIDITY
+                ),
+              })}
               nfts={nfts}
               setIsSidebar={() => {}}
               control={control}
               sortFieldName={FilterFormInputsNames.SORT}
               sortValues={SORT_VALUES}
-              onCardClick={(nft) => {
-                setSelectedNft(nft);
-              }}
+              onCardClick={onSelectNft}
               selectedNft={selectedNft}
             />
           )}

@@ -14,3 +14,5 @@ export * from './StakePoolTokenModal';
 export * from './UnstakeInventoryModal';
 export * from './StakeAndWithdrawLP';
 export * from './HarvestRewards';
+export * from './SellAndStakeModal';
+export * from './SellAndDepositModal';

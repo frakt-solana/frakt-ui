@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { FC } from 'react';
+import { CONTROLS } from '../../constants';
 
 import { WalletInfoBalance } from '../WalletInfoBalance';
 import { WalletInfoButton } from '../WalletInfoButton';
@@ -17,6 +18,7 @@ interface StakingInfoProps {
   };
   onUnstake: () => void;
   onWithdraw: () => void;
+  activeControl?: CONTROLS;
   className?: string;
 }
 
@@ -25,6 +27,7 @@ export const StakingInfo: FC<StakingInfoProps> = ({
   lpToken,
   onWithdraw,
   onUnstake,
+  activeControl,
   className,
 }) => {
   return (
@@ -36,7 +39,16 @@ export const StakingInfo: FC<StakingInfoProps> = ({
             title={`${poolToken?.ticker} STAKING`}
             values={[poolToken?.balance ? poolToken.balance.toFixed(3) : '0']}
           />
-          <WalletInfoButton className={styles.stakingBtn} onClick={onUnstake}>
+          <WalletInfoButton
+            className={classNames([
+              styles.stakingBtn,
+              {
+                [styles.stakingBtnPressed]:
+                  activeControl === CONTROLS.UNSTAKE_INVENTORY_MODAL,
+              },
+            ])}
+            onClick={onUnstake}
+          >
             Unstake
           </WalletInfoButton>
         </div>
@@ -48,7 +60,16 @@ export const StakingInfo: FC<StakingInfoProps> = ({
             title={`${lpToken?.ticker} STAKING`}
             values={[lpToken?.balance ? lpToken.balance.toFixed(3) : '0']}
           />
-          <WalletInfoButton className={styles.stakingBtn} onClick={onWithdraw}>
+          <WalletInfoButton
+            className={classNames([
+              styles.stakingBtn,
+              {
+                [styles.stakingBtnPressed]:
+                  activeControl === CONTROLS.WITHDRAW_LIQUIDITY_MODAL,
+              },
+            ])}
+            onClick={onWithdraw}
+          >
             Withdraw
           </WalletInfoButton>
         </div>

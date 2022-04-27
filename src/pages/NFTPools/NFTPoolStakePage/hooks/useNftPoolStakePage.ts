@@ -7,6 +7,7 @@ import {
 } from '../../../../contexts/liquidityPools';
 import { UserNFT } from '../../../../contexts/userTokens';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
+import { useAPR } from '../../hooks';
 import { useNftPoolLiquidityAndFusionWithPolling } from './useNftPoolLiquidityAndFusionWithPolling';
 import { useNftPoolWithTokenInfo } from './useNftPoolWithTokenInfo';
 import { usePoolSuitableUserNfts } from './usePoolSuitableUserNfts';
@@ -33,6 +34,8 @@ export const useNftPoolStakePage: UseNftPoolForStakePage = (poolPubkey) => {
   const { nfts: userNfts, loading: userNftsLoading } =
     usePoolSuitableUserNfts(pool);
 
+  const { loading: aprLoading } = useAPR();
+
   const {
     raydiumLiquidityPoolKeys,
     raydiumPoolInfo,
@@ -41,7 +44,7 @@ export const useNftPoolStakePage: UseNftPoolForStakePage = (poolPubkey) => {
     loading: liquidityAndFusionPoolsLoading,
   } = useNftPoolLiquidityAndFusionWithPolling(poolTokenInfo?.address);
 
-  const pageLoading = poolLoading;
+  const pageLoading = poolLoading || aprLoading;
 
   const contentLoading =
     pageLoading || userNftsLoading || liquidityAndFusionPoolsLoading;

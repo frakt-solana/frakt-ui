@@ -85,18 +85,16 @@ export const harvest: Harvest = async ({
       transactionLiquidity.add(...liquiditySecondaryRewardsInstructions);
     }
 
+    const transactions = [transactionInventory, transactionLiquidity];
+
     const { blockhash } = await connection.getRecentBlockhash();
 
-    transactionInventory.recentBlockhash = blockhash;
-    transactionInventory.feePayer = wallet.publicKey;
+    transactions.forEach((transaction) => {
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = wallet.publicKey;
+    });
 
-    transactionLiquidity.recentBlockhash = blockhash;
-    transactionLiquidity.feePayer = wallet.publicKey;
-
-    const signedTransactions = await wallet.signAllTransactions([
-      transactionInventory,
-      transactionLiquidity,
-    ]);
+    const signedTransactions = await wallet.signAllTransactions(transactions);
 
     const txids = await Promise.all(
       signedTransactions.map((signedTransaction) =>

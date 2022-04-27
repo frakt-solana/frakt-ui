@@ -8,3 +8,7 @@
 .walletInfoBtn {
   width: 50%;
 }
+.walletInfoBtnPressed {
+  background-color: var(--accent-color-3);
+  border-color: var(--accent-color-3);
+}
