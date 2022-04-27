@@ -1,29 +1,26 @@
-import { BN } from '@project-serum/anchor';
-import {
-  Liquidity,
-  LiquidityPoolKeysV4,
-  LiquiditySide,
-} from '@raydium-io/raydium-sdk';
+import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
+import BN from 'bn.js';
 
 import {
   getCurrencyAmount,
   getTokenAccount,
+  RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
+import { calcRatio } from '../components';
 
 type ProvideLiquidity = (props: {
   connection: Connection;
   wallet: WalletContextState;
   poolToken: TokenInfo;
-  poolTokenAmount: BN;
-  solAmount: BN;
+  poolTokenAmount: number;
   raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
-  fixedSide: LiquiditySide;
+  raydiumPoolInfo: RaydiumPoolInfo;
 }) => Promise<boolean>;
 
 export const provideLiquidity: ProvideLiquidity = async ({
@@ -31,9 +28,8 @@ export const provideLiquidity: ProvideLiquidity = async ({
   wallet,
   poolToken,
   poolTokenAmount,
-  solAmount,
   raydiumLiquidityPoolKeys,
-  fixedSide,
+  raydiumPoolInfo,
 }) => {
   try {
     const tokenAccounts = (
@@ -52,8 +48,15 @@ export const provideLiquidity: ProvideLiquidity = async ({
       )
     ).filter((tokenAccount) => tokenAccount);
 
-    const amountInA = getCurrencyAmount(poolToken, poolTokenAmount);
-    const amountInB = getCurrencyAmount(SOL_TOKEN, solAmount);
+    const solTokenAmount = poolTokenAmount * calcRatio(raydiumPoolInfo);
+
+    const poolTokenAmountBN = new BN(
+      poolTokenAmount * 10 ** poolToken?.decimals,
+    );
+    const solTokenAmountBN = new BN(solTokenAmount * 10 ** SOL_TOKEN?.decimals);
+
+    const amountInA = getCurrencyAmount(poolToken, poolTokenAmountBN);
+    const amountInB = getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
 
     const { transaction, signers } =
       await Liquidity.makeAddLiquidityTransaction({
@@ -65,7 +68,7 @@ export const provideLiquidity: ProvideLiquidity = async ({
         },
         amountInA,
         amountInB,
-        fixedSide,
+        fixedSide: 'b',
       });
 
     const { blockhash } = await connection.getRecentBlockhash();

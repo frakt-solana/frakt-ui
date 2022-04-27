@@ -11,5 +11,11 @@ export const StakeAndWithdrawLP: FC<StakeAndWithdrawLPProps> = ({
   visible,
   close,
 }) => {
-  return <LoadingModal visible={visible} onCancel={close} />;
+  return (
+    <LoadingModal
+      title="Please approve transaction"
+      visible={visible}
+      onCancel={close}
+    />
+  );
 };

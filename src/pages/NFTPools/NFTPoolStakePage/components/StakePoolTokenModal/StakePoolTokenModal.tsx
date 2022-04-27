@@ -40,7 +40,6 @@ export const StakePoolTokenModal: FC<StakePoolTokenModalProps> = ({
   inventoryFusionPool,
 }) => {
   const [value, setValue] = useState<string>('');
-  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
 
   const { stakeLiquidity: stakeLiquidityTxn } = useLiquidityPools();
 
@@ -78,7 +77,6 @@ export const StakePoolTokenModal: FC<StakePoolTokenModalProps> = ({
 
   const onSubmit = async () => {
     try {
-      setTransactionsLeft(1);
       openLoadingModal();
       setVisible(false);
 
@@ -91,7 +89,6 @@ export const StakePoolTokenModal: FC<StakePoolTokenModalProps> = ({
       console.log(error);
     } finally {
       closeLoadingModal();
-      setTransactionsLeft(null);
     }
   };
 
@@ -139,9 +136,9 @@ export const StakePoolTokenModal: FC<StakePoolTokenModalProps> = ({
         />
       </div>
       <LoadingModal
+        title="Please approve transaction"
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
-        subtitle={`Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`}
       />
     </>
   );

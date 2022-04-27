@@ -2,8 +2,7 @@ import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
-import BN from 'bn.js';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import {
@@ -67,21 +66,17 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
   const [baseValue, setBaseValue] = useState<string>('');
   const [solValue, setSolValue] = useState<string>('');
 
-  const [fixedSide, setFixedSide] = useState<LiquiditySide>('a');
-
   const onBaseValueChange = (value: string) => {
     setBaseValue(value);
     const ratio = calcRatio(raydiumPoolInfo);
     const amount = Number(value) * ratio;
     setSolValue(amount ? amount.toFixed(5) : '');
-    setFixedSide('a');
   };
   const onSolValueChange = (value: string) => {
     setSolValue(value);
     const ratio = calcRatio(raydiumPoolInfo);
     const amount = Number(value) / ratio;
     setBaseValue(amount ? amount.toFixed(5) : '');
-    setFixedSide('b');
   };
 
   const { balance: baseTokenBalance } = useSplTokenBalance(
@@ -120,21 +115,13 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
       openLoadingModal();
       setVisible(false);
 
-      const baseAmount = new BN(
-        parseFloat(baseValue) * 10 ** baseToken.decimals,
-      );
-      const quoteAmount = new BN(
-        parseFloat(solValue) * 10 ** SOL_TOKEN.decimals,
-      );
-
       const addRaydiumLiquidityResult = await provideLiquidity({
         connection,
         wallet,
         poolToken: baseToken,
-        poolTokenAmount: baseAmount,
-        solAmount: quoteAmount,
+        poolTokenAmount: parseFloat(baseValue),
         raydiumLiquidityPoolKeys,
-        fixedSide,
+        raydiumPoolInfo,
       });
       if (!addRaydiumLiquidityResult) {
         throw new Error('Providing liquidity failed');

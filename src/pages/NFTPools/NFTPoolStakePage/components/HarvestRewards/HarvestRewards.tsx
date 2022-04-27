@@ -8,5 +8,11 @@ interface HarvestRewardsProps {
 }
 
 export const HarvestRewards: FC<HarvestRewardsProps> = ({ visible, close }) => {
-  return <LoadingModal visible={visible} onCancel={close} />;
+  return (
+    <LoadingModal
+      title="Please approve transaction"
+      visible={visible}
+      onCancel={close}
+    />
+  );
 };

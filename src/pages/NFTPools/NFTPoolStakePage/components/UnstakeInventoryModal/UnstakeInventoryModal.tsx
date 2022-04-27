@@ -151,6 +151,7 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
         />
       </div>
       <LoadingModal
+        title="Please approve transaction"
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
       />
