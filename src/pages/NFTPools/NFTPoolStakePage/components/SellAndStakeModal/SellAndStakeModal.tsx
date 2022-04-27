@@ -70,9 +70,6 @@ export const SellAndStakeModal: FC<SellAndStakeModalProps> = ({
     try {
       openLoadingModal();
 
-      //Txn here
-      await Promise.resolve(null);
-
       const stakeResult = await sellNftAndStake({
         wallet,
         connection,
@@ -130,6 +127,7 @@ export const SellAndStakeModal: FC<SellAndStakeModalProps> = ({
         <SubmitButton text="Stake" onClick={() => onSubmit()} />
       </div>
       <LoadingModal
+        title="Please approve transaction"
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
       />
