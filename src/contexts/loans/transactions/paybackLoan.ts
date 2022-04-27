@@ -32,7 +32,6 @@ const rawPaybackLoan = async ({
     provider,
     user: wallet.publicKey,
     admin: new PublicKey(''),
-    storeNftTokenAccount: new PublicKey(loan.nftTokenAccount),
     wsolUserTokenAccount: new PublicKey(''),
     wsolAdminTokenAccount: new PublicKey(''),
     loan: new PublicKey(loan.loanPubkey),

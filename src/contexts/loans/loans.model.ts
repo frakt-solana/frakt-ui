@@ -14,7 +14,6 @@ export interface LoansContextValues {
   loading: boolean;
   paybackLoan: (params: any) => Promise<any>;
   proposeLoan: (params: any) => Promise<any>;
-  approvedLoan: (params: any) => Promise<any>;
 }
 
 export interface LoansProgramAccount {

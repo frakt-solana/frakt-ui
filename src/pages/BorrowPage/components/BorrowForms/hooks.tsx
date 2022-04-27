@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import { Form, FormInstance } from 'antd';
 
@@ -92,24 +92,6 @@ export const useBorrowForm = (
     closeConfirmModal();
     setTxnModalVisible(false);
   };
-
-  // const subscribeOnAccount = () => {};
-
-  // useEffect(() => {
-  //   const websocket = new WebSocket('');
-  //   console.log(websocket);
-  //   websocket.onopen = () => {
-  //     console.log('connected');
-  //   };
-  //   websocket.onmessage = (event) => {
-  //     console.log(event);
-  //     const data = JSON.parse(event.data);
-  //   };
-
-  //   return () => {
-  //     websocket.close();
-  //   };
-  // });
 
   const onTxnModalCancel = (): void => {
     setTxnModalVisible(false);

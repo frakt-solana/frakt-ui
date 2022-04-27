@@ -18,7 +18,6 @@ export const LoansPoolsContext = React.createContext<LoansContextValues>({
   fetchLoansData: () => Promise.resolve(null),
   paybackLoan: () => Promise.resolve(null),
   proposeLoan: () => Promise.resolve(null),
-  approvedLoan: () => Promise.resolve(null),
 });
 
 export const LoansProvider: LoansProviderType = ({ children }) => {
@@ -61,10 +60,6 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
           wallet,
         }),
         proposeLoan: proposeLoan({
-          connection,
-          wallet,
-        }),
-        approvedLoan: proposeLoan({
           connection,
           wallet,
         }),
