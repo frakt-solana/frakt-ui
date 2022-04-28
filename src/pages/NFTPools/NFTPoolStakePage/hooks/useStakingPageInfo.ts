@@ -120,7 +120,7 @@ const getStakedBalanceFromFusion = (
 ): number => {
   const account =
     fusionPool?.stakeAccounts?.find(
-      ({ stakeOwner }) => stakeOwner === walletPublicKey,
+      ({ stakeOwner, isStaked }) => stakeOwner === walletPublicKey && isStaked,
     ) || null;
 
   return Number(account?.amount) / 1e9 || 0;

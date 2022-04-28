@@ -40,9 +40,10 @@ export const GeneralWalletInfo: FC<GeneralWalletInfoProps> = ({
   activeControl,
   className,
 }) => {
-  const showInventoryWalletInfo = !!poolToken?.balance || !!userNfts?.length;
+  const showInventoryWalletInfo =
+    poolToken?.balance > 0.0001 || !!userNfts?.length;
   const showLiquidityWalletInfo =
-    !!lpToken?.balance || !!poolToken?.balance || !!userNfts?.length;
+    !!lpToken?.balance || poolToken?.balance > 0.0001 || !!userNfts?.length;
 
   return (
     <div className={classNames([styles.generalWalletInfo, className])}>

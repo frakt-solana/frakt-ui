@@ -123,6 +123,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
         raydiumLiquidityPoolKeys,
         raydiumPoolInfo,
       });
+
       if (!addRaydiumLiquidityResult) {
         throw new Error('Providing liquidity failed');
       }

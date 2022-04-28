@@ -158,13 +158,9 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
 
     const signedTransactions = await wallet.signAllTransactions(transactions);
 
-    const txids = await Promise.all(
-      signedTransactions.map((signedTransaction) =>
-        connection.sendRawTransaction(
-          signedTransaction.serialize(),
-          // { skipPreflight: true },
-        ),
-      ),
+    const txidDeposit = await connection.sendRawTransaction(
+      signedTransactions[0].serialize(),
+      // { skipPreflight: true },
     );
 
     notify({
@@ -172,9 +168,14 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
       type: NotifyType.INFO,
     });
 
-    await Promise.all(
-      txids.map((txid) => connection.confirmTransaction(txid, 'finalized')),
+    await connection.confirmTransaction(txidDeposit, 'finalized');
+
+    const txidAddLiquidity = await connection.sendRawTransaction(
+      signedTransactions[1].serialize(),
+      // { skipPreflight: true },
     );
+
+    await connection.confirmTransaction(txidAddLiquidity, 'finalized');
 
     notify({
       message: 'Liquidity provided successfully',

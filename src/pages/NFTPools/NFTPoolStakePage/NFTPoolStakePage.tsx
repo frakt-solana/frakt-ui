@@ -110,6 +110,10 @@ export const NFTPoolStakePage: FC = () => {
     liquidityFusionPool,
   });
 
+  const showStakingInfo = !!poolTokensStaked || !!lpTokensStaked;
+  const showHarvestInfo = !!stakeRewards?.length;
+  const showStaking = showStakingInfo || showHarvestInfo;
+
   return (
     <NFTPoolPageLayout
       customHeader={
@@ -175,33 +179,46 @@ export const NFTPoolStakePage: FC = () => {
                   onStakeLp={stakeLp}
                   onWithdrawLp={withdrawLp}
                 />
-                <p
-                  className={classNames(
-                    styles.subtitle,
-                    styles.subtitleStaking,
-                  )}
-                >
-                  Staking info
-                </p>
-                <StakingInfo
-                  poolToken={{
-                    ticker: poolTokenInfo?.symbol,
-                    balance: poolTokensStaked,
-                  }}
-                  lpToken={{
-                    ticker: `${poolTokenInfo?.symbol}/SOL`,
-                    balance: lpTokensStaked,
-                  }}
-                  onUnstake={toggleModal(CONTROLS.UNSTAKE_INVENTORY_MODAL)}
-                  onWithdraw={toggleModal(CONTROLS.WITHDRAW_LIQUIDITY_MODAL)}
-                  activeControl={activeControl}
-                  className={styles.stakingInfo}
-                />
-                <RewardsInfo
-                  className={styles.rewardsInfo}
-                  rewards={stakeRewards}
-                  onHarvest={harvest}
-                />
+                {showStaking && (
+                  <>
+                    <p
+                      className={classNames(
+                        styles.subtitle,
+                        styles.subtitleStaking,
+                      )}
+                    >
+                      Staking info
+                    </p>
+                    {showStakingInfo && (
+                      <StakingInfo
+                        poolToken={{
+                          ticker: poolTokenInfo?.symbol,
+                          balance: poolTokensStaked,
+                        }}
+                        lpToken={{
+                          ticker: `${poolTokenInfo?.symbol}/SOL`,
+                          balance: lpTokensStaked,
+                        }}
+                        onUnstake={toggleModal(
+                          CONTROLS.UNSTAKE_INVENTORY_MODAL,
+                        )}
+                        onWithdraw={toggleModal(
+                          CONTROLS.WITHDRAW_LIQUIDITY_MODAL,
+                        )}
+                        activeControl={activeControl}
+                        className={styles.stakingInfo}
+                      />
+                    )}
+                    {showHarvestInfo && (
+                      <RewardsInfo
+                        className={styles.rewardsInfo}
+                        rewards={stakeRewards}
+                        onHarvest={harvest}
+                      />
+                    )}
+                  </>
+                )}
+
                 <div className={styles.modalWrapper}>
                   <DepositLiquidityModal
                     visible={activeControl === CONTROLS.DEPOSIT_LIQUIDITY_MODAL}

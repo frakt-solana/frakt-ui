@@ -87,7 +87,13 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
   const onPercentChange = (nextValue: number) => {
     const lpStringValue = (lpTokenBalance * nextValue) / 100;
 
-    setLpValue(lpStringValue ? lpStringValue?.toFixed(3) : '0');
+    if (nextValue > 98) {
+      setLpValue(lpTokenBalance?.toFixed(9).slice(0, -4));
+      setPercent(nextValue);
+      return;
+    }
+
+    setLpValue(lpStringValue ? lpStringValue?.toFixed(5) : '0');
 
     setPercent(nextValue);
   };
@@ -106,7 +112,7 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
         poolToken: baseToken,
         raydiumLiquidityPoolKeys,
         raydiumPoolInfo,
-        amount: parseFloat(lpValue),
+        amount: percent > 98 ? lpTokenBalance : parseFloat(lpValue),
       });
 
       if (!result) {
@@ -141,7 +147,9 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
           value={lpValue}
           setValue={onLpValueChange}
           tokenTicker={lpTokenSymbol}
-          balance={lpTokenBalance ? lpTokenBalance?.toFixed(3) : '0'}
+          balance={
+            lpTokenBalance ? lpTokenBalance?.toFixed(9).slice(0, -4) : '0'
+          }
           error={notEnoughLpTokenError}
         />
 

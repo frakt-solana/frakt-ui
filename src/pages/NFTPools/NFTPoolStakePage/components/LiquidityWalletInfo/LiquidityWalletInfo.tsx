@@ -32,7 +32,7 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
   activeControl,
   className,
 }) => {
-  const showPoolTokenInfo = !!poolToken?.balance || !!onSellNft;
+  const showPoolTokenInfo = poolToken?.balance > 0.0001 || !!onSellNft;
   const showLpTokenInfo = !!lpToken?.balance;
 
   return (
@@ -43,7 +43,7 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
           title={poolToken?.ticker || 'Unknown'}
           balance={poolToken?.balance ? poolToken.balance.toFixed(3) : '0'}
           firstAction={
-            poolToken?.balance
+            poolToken?.balance > 0.0001
               ? {
                   label: 'Deposit',
                   action: onDepositLiquidity,

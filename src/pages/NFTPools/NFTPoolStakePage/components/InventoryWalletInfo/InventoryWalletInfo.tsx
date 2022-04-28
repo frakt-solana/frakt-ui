@@ -29,7 +29,7 @@ export const InventoryWalletInfo: FC<InventoryWalletInfoProps> = ({
         title={poolToken?.ticker || 'Unknown'}
         balance={poolToken?.balance ? poolToken.balance.toFixed(3) : '0'}
         firstAction={
-          poolToken?.balance
+          poolToken?.balance > 0.0001
             ? {
                 label: 'Stake rPWNG',
                 action: onStake,

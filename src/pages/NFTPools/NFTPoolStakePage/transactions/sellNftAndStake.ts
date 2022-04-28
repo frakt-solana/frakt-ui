@@ -116,13 +116,9 @@ export const sellNftAndStake: SellNftAndStake = async ({
 
     const signedTransactions = await wallet.signAllTransactions(transactions);
 
-    const txids = await Promise.all(
-      signedTransactions.map((signedTransaction) =>
-        connection.sendRawTransaction(
-          signedTransaction.serialize(),
-          // { skipPreflight: true },
-        ),
-      ),
+    const txidDeposit = await connection.sendRawTransaction(
+      signedTransactions[0].serialize(),
+      // { skipPreflight: true },
     );
 
     notify({
@@ -130,9 +126,14 @@ export const sellNftAndStake: SellNftAndStake = async ({
       type: NotifyType.INFO,
     });
 
-    await Promise.all(
-      txids.map((txid) => connection.confirmTransaction(txid, 'finalized')),
+    await connection.confirmTransaction(txidDeposit, 'finalized');
+
+    const txidStake = await connection.sendRawTransaction(
+      signedTransactions[1].serialize(),
+      // { skipPreflight: true },
     );
+
+    await connection.confirmTransaction(txidStake, 'finalized');
 
     notify({
       message: 'Staked successfully',
