@@ -243,6 +243,8 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
     }
   };
 
+  const poolTokensInfos =
+    poolTokensInfo?.filter((poolToken) => poolToken) || [];
   useEffect(() => {
     if (
       poolDataByMint.size &&
@@ -252,7 +254,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
       initialFetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liquidityPoolsLoading, poolDataByMint?.size, poolTokensInfo?.length]);
+  }, [liquidityPoolsLoading, poolDataByMint?.size, poolTokensInfos?.length]);
 
   return {
     loading: loading || liquidityPoolsLoading,
