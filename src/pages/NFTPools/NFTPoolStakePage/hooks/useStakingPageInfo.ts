@@ -153,7 +153,7 @@ const getPrimaryRewards = (
 ): { ticker: string; balance: number } => {
   const account =
     fusionPool?.stakeAccounts?.find(
-      ({ stakeOwner }) => stakeOwner === walletPublicKey,
+      ({ stakeOwner, isStaked }) => stakeOwner === walletPublicKey && isStaked,
     ) || null;
 
   const checkDate = moment().unix();
@@ -189,7 +189,7 @@ const getSecondaryFusionRewards = (
 ): { ticker: string; balance: number }[] => {
   const primaryStakeAccount =
     fusionPool?.stakeAccounts?.find(
-      ({ stakeOwner }) => stakeOwner === walletPublicKey,
+      ({ stakeOwner, isStaked }) => stakeOwner === walletPublicKey && isStaked,
     ) || null;
 
   const amount = Number(primaryStakeAccount?.amount) || 0;
