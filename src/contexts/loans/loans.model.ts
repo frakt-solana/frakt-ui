@@ -10,17 +10,27 @@ export type FetchDataFunc = () => Promise<void>;
 
 export interface LoansContextValues {
   fetchLoansData: FetchDataFunc;
-  loansProgramAccounts: LoansProgramAccount;
+  loansProgramAccounts: LoansProgramAccounts;
+  availableCollections: AvailableCollections[];
   loading: boolean;
   paybackLoan: (params: any) => Promise<any>;
   proposeLoan: (params: any) => Promise<any>;
 }
 
-export interface LoansProgramAccount {
+export interface LoansProgramAccounts {
   collectionInfo: CollectionInfoView[];
   deposit: DepositView[];
   liquidityPool: LiquidityPoolView[];
   loan: LoanView[];
+}
+
+export interface AvailableCollections {
+  collection_info: string;
+  creator: string;
+  description: string;
+  name: string;
+  royalty_address: string;
+  whitelisted_mints: string[];
 }
 
 export type LoansProviderType = (props: { children: ReactNode }) => JSX.Element;

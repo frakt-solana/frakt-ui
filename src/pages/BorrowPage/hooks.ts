@@ -6,6 +6,7 @@ import { useWalletModal } from '../../contexts/WalletModal';
 import { useDebounce } from '../../hooks';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useLoans } from '../../contexts/loans';
 
 export const useBorrowPage = (
   selectedNft?: UserNFT[],
@@ -30,6 +31,8 @@ export const useBorrowPage = (
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const [searchString, setSearchString] = useState<string>('');
   const { setVisible } = useWalletModal();
+  const { availableCollections } = useLoans();
+  console.log(availableCollections);
 
   useEffect(() => {
     if (
@@ -52,11 +55,23 @@ export const useBorrowPage = (
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const nfts = useMemo(() => {
+  const filteredNfts = useMemo(() => {
     return (rawNfts || []).filter(({ metadata }) =>
       metadata?.name.toUpperCase().includes(searchString),
     );
   }, [searchString, rawNfts]);
+
+  const nfts = filteredNfts.reduce((acc, nft: UserNFT) => {
+    const nftMint = nft?.mint;
+
+    const filtered = availableCollections.filter(({ whitelisted_mints }) =>
+      whitelisted_mints.includes(nftMint),
+    );
+
+    if (filtered.length) acc.push({ ...nft });
+
+    return acc;
+  }, []);
 
   return {
     currentVaultPubkey,

@@ -42,8 +42,6 @@ const rawProposeLoan = async ({
     },
   });
 
-  console.log(response);
-
   return response;
 };
 
