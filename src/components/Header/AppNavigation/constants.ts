@@ -8,10 +8,10 @@ import {
 } from '../../../icons';
 
 export const NAVIGATION_LINKS = [
-  // {
-  //   to: PATHS.TEST,
-  //   label: 'Test',
-  // },
+  {
+    to: PATHS.TEST,
+    label: 'Test',
+  },
   {
     to: PATHS.POOLS,
     label: 'Pools',
