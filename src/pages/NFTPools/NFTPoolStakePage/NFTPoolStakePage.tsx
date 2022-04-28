@@ -111,7 +111,7 @@ export const NFTPoolStakePage: FC = () => {
   });
 
   const showStakingInfo = !!poolTokensStaked || !!lpTokensStaked;
-  const showHarvestInfo = !!stakeRewards?.length;
+  const showHarvestInfo = !!stakeRewards?.find(({ balance }) => balance);
   const showStaking = showStakingInfo || showHarvestInfo;
 
   return (
