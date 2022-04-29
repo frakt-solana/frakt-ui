@@ -66,7 +66,10 @@ export const DropdownMenuDoStuff: FC = () => {
           </NavLink>
         </li>
         <li className={styles.linkList}>
-          <a href={PATHS.BORROW} className={styles.link}>
+          <a
+            href={`${PATHS.BORROW}/Hy7h6FSicyB9B3ZNGtEs64dKzQWk8TuNdG1fgX5ccWFW`}
+            className={styles.link}
+          >
             <div className={styles.content}>
               <p className={styles.title}>Borrow</p>
               <p className={styles.subtitle}>

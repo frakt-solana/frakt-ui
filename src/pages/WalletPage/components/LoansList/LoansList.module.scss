@@ -1,14 +1,3 @@
-.loader {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.emptyMessage {
-  font: var(--font-btn-mid);
-}
-
 .loansList {
   display: grid;
   grid-template-columns: repeat(5, minmax(279px, 1fr));

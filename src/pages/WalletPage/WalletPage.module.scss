@@ -43,6 +43,7 @@
   display: flex;
   width: 100%;
   gap: 30px;
+  align-items: flex-start;
 
   @media screen and (max-width: 1200px) {
     flex-direction: column;
@@ -51,4 +52,16 @@
 
 .tabsContent {
   width: 100%;
+}
+
+.loansList {
+  grid-template-columns: repeat(3, minmax(279px, 1fr));
+
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(2, minmax(158px, 1fr));
+  }
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  }
 }

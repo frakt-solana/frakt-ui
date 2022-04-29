@@ -9,7 +9,7 @@ import { Container } from '../Layout';
 interface SelectLayoutProps {
   selectedNfts: UserNFT[];
   onDeselect?: (nft: UserNFT) => void;
-  currentVaultPubkey: string;
+  currentVaultPubkey?: string;
   sidebarForm: JSX.Element;
   isCloseSidebar?: boolean;
 }

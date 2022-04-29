@@ -16,6 +16,7 @@ export type FetchDataFunc = () => Promise<void>;
 export interface LoansContextValues {
   fetchLoansData: FetchDataFunc;
   loansProgramAccounts: LoansProgramAccounts;
+  loanDataByPoolPublicKey: LoanDataByPoolPublicKey;
   availableCollections: AvailableCollections[];
   loading: boolean;
   paybackLoan: (params: PaybackLoanTransactionParams) => Promise<void>;
@@ -35,7 +36,17 @@ export interface AvailableCollections {
   description: string;
   name: string;
   royalty_address: string;
-  whitelisted_mints: string[];
+  // whitelisted_mints: string[];
+  loan_pool: string;
 }
 
 export type LoansProviderType = (props: { children: ReactNode }) => JSX.Element;
+
+export interface LoanData {
+  collectionInfo: CollectionInfoView;
+  deposits: DepositView[];
+  liquidityPool: LiquidityPoolView;
+  loans: LoanView[];
+}
+
+export type LoanDataByPoolPublicKey = Map<string, LoanData>;

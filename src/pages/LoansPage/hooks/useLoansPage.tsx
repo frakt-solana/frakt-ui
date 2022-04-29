@@ -5,6 +5,8 @@ import { Tab, useTabs } from '../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../icons';
 import styles from '../LoansPage.module.scss';
 import { useDebounce } from '../../../hooks';
+import { useUserLoans } from '../../../contexts/loans';
+import { LoanView } from '@frakters/nft-lending-v2';
 
 export enum InputControlsNames {
   SHOW_STAKED = 'showStaked',
@@ -33,7 +35,11 @@ export const useLoansPage = (): {
   tabValue: string;
   setTabValue: (value: string) => void;
   searchItems: (value?: string) => void;
+  userLoans: LoanView[];
+  userLoansLoading: boolean;
 } => {
+  const { userLoans, loading: userLoansLoading } = useUserLoans();
+
   const { control } = useForm({
     defaultValues: {
       [InputControlsNames.SHOW_STAKED]: false,
@@ -46,7 +52,7 @@ export const useLoansPage = (): {
     setValue: setTabValue,
   } = useTabs({
     tabs: LOANS_TABS,
-    defaultValue: LOANS_TABS[0].value,
+    defaultValue: LOANS_TABS[2].value,
   });
   const [, setSearchString] = useState<string>('');
 
@@ -60,6 +66,8 @@ export const useLoansPage = (): {
     loanTabs,
     tabValue,
     setTabValue,
+    userLoans,
+    userLoansLoading,
   };
 };
 
@@ -67,6 +75,7 @@ const LOANS_TABS: Tab[] = [
   {
     label: 'Lending',
     value: 'lending',
+    disabled: true,
   },
   {
     label: 'Liquidations',

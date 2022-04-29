@@ -8,8 +8,9 @@ import { ProfileCard } from './components/ProfileCard';
 import { Container } from '../../components/Layout';
 import { VaultsTab } from './components/VaultsTab';
 import { TokensTab } from './components/TokensTab';
-import { LoansTab } from './components/LoansTab';
-import styles from './styles.module.scss';
+import { LoansList } from './components/LoansList';
+import styles from './WalletPage.module.scss';
+import { useUserLoans } from '../../contexts/loans';
 
 export interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;
@@ -31,6 +32,8 @@ const WalletPage: FC = () => {
     defaultValue: POOL_TABS[0].value,
   });
 
+  const { userLoans, loading: userLoansLoading } = useUserLoans();
+
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
@@ -48,7 +51,13 @@ const WalletPage: FC = () => {
               value={tabValue}
               setValue={setTabValue}
             />
-            {tabValue === WalletTabs.LOANS && <LoansTab />}
+            {tabValue === WalletTabs.LOANS && (
+              <LoansList
+                className={styles.loansList}
+                loans={userLoans}
+                loading={userLoansLoading}
+              />
+            )}
             {tabValue === WalletTabs.TOKENS && <TokensTab />}
             {tabValue === WalletTabs.VAULTS && <VaultsTab />}
           </div>

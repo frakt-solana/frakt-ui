@@ -20,7 +20,6 @@ const BorrowPage: FC = () => {
   const { onDeselectOneNft, onSelectOneNft, selectedNft } = useSelectLayout();
 
   const {
-    currentVaultPubkey,
     isCloseSidebar,
     setIsCloseSidebar,
     setVisible,
@@ -31,7 +30,6 @@ const BorrowPage: FC = () => {
 
   return (
     <SelectLayout
-      currentVaultPubkey={currentVaultPubkey}
       selectedNfts={selectedNft}
       onDeselect={onDeselectOneNft}
       isCloseSidebar={isCloseSidebar}

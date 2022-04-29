@@ -16,3 +16,5 @@ export {
   NFTPoolInfoPage,
   NFTPoolsTestPage,
 } from './NFTPools';
+export { default as LoansPage } from './LoansPage';
+export { default as BorrowPage } from './BorrowPage';

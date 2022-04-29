@@ -1,1 +1,0 @@
-export { LoansTab } from './LoansTab';

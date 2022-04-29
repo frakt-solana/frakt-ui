@@ -6,10 +6,9 @@ import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { useLoans } from '../../contexts/loans';
-import { useDebounce } from '../../hooks';
+import { useDebounce, usePublicKeyParam } from '../../hooks';
 
 export const useBorrowPage = (): {
-  currentVaultPubkey: string;
   isCloseSidebar: boolean;
   setIsCloseSidebar: Dispatch<SetStateAction<boolean>>;
   nfts: UserNFT[];
@@ -17,19 +16,22 @@ export const useBorrowPage = (): {
   loading: boolean;
   searchItems: (search: string) => void;
 } => {
+  const { loanPoolPubkey } = useParams<{ loanPoolPubkey: string }>();
+  usePublicKeyParam(loanPoolPubkey);
+
   const { connected } = useWallet();
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const {
     nfts: rawNfts,
+    loading: userTokensLoading,
     nftsLoading,
     fetchUserNfts,
     rawUserTokensByMint,
-    loading: userTokensLoading,
   } = useUserTokens();
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const [searchString, setSearchString] = useState<string>('');
   const { setVisible } = useWalletModal();
-  const { availableCollections } = useLoans();
+  const { availableCollections, loading: loansLoading } = useLoans();
 
   useEffect(() => {
     if (
@@ -43,40 +45,45 @@ export const useBorrowPage = (): {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected, userTokensLoading, nftsLoading]);
 
-  const { vaultPubkey: currentVaultPubkey } = useParams<{
-    vaultPubkey: string;
-  }>();
-
   const searchItems = useDebounce((search: string) => {
     setItemsToShow(15);
     setSearchString(search.toUpperCase());
   }, 300);
 
+  const whitelistedNfts = useMemo(() => {
+    if (rawNfts?.length && availableCollections?.length) {
+      const availableCollection = availableCollections?.find(
+        ({ loan_pool }) => loan_pool === loanPoolPubkey,
+      );
+
+      const creator = availableCollection.creator;
+
+      return rawNfts?.filter(({ metadata }) => {
+        const nftCreator =
+          metadata?.properties?.creators?.find(({ verified }) => verified)
+            ?.address || '';
+        return nftCreator === creator;
+      });
+    }
+
+    return [];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawNfts, availableCollections]);
+
   const filteredNfts = useMemo(() => {
-    return (rawNfts || []).filter(({ metadata }) =>
+    return (whitelistedNfts || []).filter(({ metadata }) =>
       metadata?.name.toUpperCase().includes(searchString),
     );
-  }, [searchString, rawNfts]);
+  }, [searchString, whitelistedNfts]);
 
-  const nfts = filteredNfts.reduce((acc, nft: UserNFT) => {
-    const nftCreatorAddress = nft?.metadata?.properties?.creators[0]?.address;
-
-    const filtered = availableCollections.filter(({ creator }) =>
-      creator.includes(nftCreatorAddress),
-    );
-
-    if (filtered.length) acc.push({ ...nft });
-
-    return acc;
-  }, []);
+  const loading = userTokensLoading || nftsLoading || loansLoading;
 
   return {
-    currentVaultPubkey,
     isCloseSidebar,
     setIsCloseSidebar,
-    nfts,
+    nfts: filteredNfts,
     setVisible,
-    loading: nftsLoading,
+    loading,
     searchItems,
   };
 };

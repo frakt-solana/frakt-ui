@@ -7,16 +7,20 @@ import {
   LoansContextValues,
   LoansProviderType,
   AvailableCollections,
+  LoanData,
+  LoanDataByPoolPublicKey,
 } from './loans.model';
 import { proposeLoan, paybackLoan } from './transactions';
 import {
-  fetchLoansProgramAccounts,
+  fetchLoansProgramAccounts_old,
   fetchAvailableCollections,
+  fetchLoanDataByPoolPublicKey,
 } from './loans.helpers';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
   loading: true,
   loansProgramAccounts: null,
+  loanDataByPoolPublicKey: new Map<string, LoanData>(),
   availableCollections: [],
   fetchLoansData: () => Promise.resolve(null),
   paybackLoan: () => Promise.resolve(null),
@@ -27,6 +31,10 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const wallet = useWallet();
   const { connection } = useConnection();
+
+  const [loanDataByPoolPublicKey, setLoanDataByPoolPublicKey] =
+    useState<LoanDataByPoolPublicKey>(new Map<string, LoanData>());
+
   const [loansProgramAccounts, setLoansProgramAccounts] =
     useState<LoansProgramAccounts>();
 
@@ -34,13 +42,17 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     AvailableCollections[]
   >([]);
 
-  const fetchLoansData: FetchDataFunc = async (): Promise<void> => {
+  const fetchLoansData1: FetchDataFunc = async (): Promise<void> => {
     try {
-      const programAccounts = await fetchLoansProgramAccounts(connection);
-      const availableCollection = await fetchAvailableCollections();
+      const programAccounts = await fetchLoansProgramAccounts_old(connection);
 
+      const loansData = await fetchLoanDataByPoolPublicKey(connection);
+
+      const availableCollections = await fetchAvailableCollections();
+
+      setLoanDataByPoolPublicKey(loansData);
       setLoansProgramAccounts(programAccounts);
-      setAvailableCollections(availableCollection);
+      setAvailableCollections(availableCollections);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -51,7 +63,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
 
   useEffect(() => {
     if (wallet.connected) {
-      fetchLoansData();
+      fetchLoansData1();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet.connected]);
@@ -60,9 +72,10 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     <LoansPoolsContext.Provider
       value={{
         loading,
+        loanDataByPoolPublicKey,
         loansProgramAccounts,
         availableCollections,
-        fetchLoansData,
+        fetchLoansData: fetchLoansData1,
         paybackLoan: paybackLoan({
           connection,
           wallet,

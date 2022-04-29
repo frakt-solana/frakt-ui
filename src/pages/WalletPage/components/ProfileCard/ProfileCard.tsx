@@ -8,9 +8,9 @@ import {
 } from '../../../../utils/nameService';
 import { shortenAddress } from '../../../../utils/solanaUtils';
 import { PencilIcon, TwitterIcon2 } from '../../../../icons';
-import Button from '../../../../components/Button';
+// import Button from '../../../../components/Button';
 import styles from './ProfileCard.module.scss';
-import { LinkWithArrow } from '../../../../components/LinkWithArrow';
+// import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 
 export const ProfileCard: FC = () => {
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
@@ -48,13 +48,13 @@ export const ProfileCard: FC = () => {
                 ? `${nameServiceInfo?.domain} (${shortenAddress(walletPubkey)})`
                 : `${shortenAddress(walletPubkey)}`}
             </p>
-            <p className={styles.leadearboard}>
+            {/* <p className={styles.leadearboard}>
               <LinkWithArrow
                 to={`/`}
                 label="#56 in Leadearboard"
                 className={styles.myProfileLink}
               />
-            </p>
+            </p> */}
           </div>
 
           {nameServiceInfo?.twitterHandle && (
@@ -70,9 +70,9 @@ export const ProfileCard: FC = () => {
         </h3>
       </div>
 
-      <div className={styles.line} />
+      {/* <div className={styles.line} /> */}
 
-      <div className={styles.rewardInfo}>
+      {/* <div className={styles.rewardInfo}>
         <h2 className={styles.title}>Rewards</h2>
         <div className={styles.scrollContent}>
           {rewardInfoMock.map(({ amount, symbol }) => (
@@ -86,18 +86,18 @@ export const ProfileCard: FC = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-const rewardInfoMock = [
-  {
-    amount: '3454.545',
-    symbol: 'FRKX',
-  },
-  {
-    amount: '1428.182',
-    symbol: 'FRKX',
-  },
-];
+// const rewardInfoMock = [
+//   {
+//     amount: '3454.545',
+//     symbol: 'FRKX',
+//   },
+//   {
+//     amount: '1428.182',
+//     symbol: 'FRKX',
+//   },
+// ];

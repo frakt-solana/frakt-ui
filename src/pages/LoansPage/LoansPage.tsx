@@ -4,7 +4,7 @@ import { Controller } from 'react-hook-form';
 
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { LoansTab } from '../WalletPage/components/LoansTab';
+import { LoansList } from '../WalletPage/components/LoansList';
 import { SearchInput } from '../../components/SearchInput';
 import { Container } from '../../components/Layout';
 import BorrowBanner from './components/BorrowBanner';
@@ -21,8 +21,15 @@ import {
 
 const LoansPage: FC = () => {
   const { connected } = useWallet();
-  const { loanTabs, tabValue, setTabValue, searchItems, formControl } =
-    useLoansPage();
+  const {
+    loanTabs,
+    tabValue,
+    setTabValue,
+    searchItems,
+    formControl,
+    userLoans,
+    userLoansLoading,
+  } = useLoansPage();
 
   return (
     <AppLayout>
@@ -37,47 +44,54 @@ const LoansPage: FC = () => {
           <BorrowBanner />
         </div>
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
-        <div className={styles.sortWrapper}>
-          <SearchInput
-            onChange={(e) => searchItems(e.target.value || '')}
-            className={styles.search}
-            placeholder="Filter by symbol"
-          />
-          <div className={styles.filters}>
-            {connected && (
-              <ControlledToggle
-                control={formControl}
-                name={InputControlsNames.SHOW_STAKED}
-                label="Staked only"
-                className={styles.filter}
-              />
-            )}
-            <Controller
-              control={formControl}
-              name={InputControlsNames.SORT}
-              render={({ field: { ref, ...field } }) => (
-                <Select
-                  valueContainerClassName={styles.sortingSelectContainer}
-                  className={styles.sortingSelect}
-                  label="Sort by"
-                  name={InputControlsNames.SORT}
-                  options={SORT_VALUES}
-                  {...field}
-                />
-              )}
-            />
-          </div>
-        </div>
+
         {tabValue === LoanTabsNames.LENDING && (
-          <LendingPool
-            totalSupply={'1500'}
-            deposit={'5'}
-            loans={'5'}
-            apy={'30'}
-          />
+          <>
+            <div className={styles.sortWrapper}>
+              <SearchInput
+                onChange={(e) => searchItems(e.target.value || '')}
+                className={styles.search}
+                placeholder="Filter by symbol"
+              />
+              <div className={styles.filters}>
+                {connected && (
+                  <ControlledToggle
+                    control={formControl}
+                    name={InputControlsNames.SHOW_STAKED}
+                    label="Staked only"
+                    className={styles.filter}
+                  />
+                )}
+                <Controller
+                  control={formControl}
+                  name={InputControlsNames.SORT}
+                  render={({ field: { ref, ...field } }) => (
+                    <Select
+                      valueContainerClassName={styles.sortingSelectContainer}
+                      className={styles.sortingSelect}
+                      label="Sort by"
+                      name={InputControlsNames.SORT}
+                      options={SORT_VALUES}
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <LendingPool
+              totalSupply={'1500'}
+              deposit={'5'}
+              loans={'5'}
+              apy={'30'}
+            />
+          </>
         )}
         {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
-        {tabValue === LoanTabsNames.LOANS && <LoansTab />}
+        {tabValue === LoanTabsNames.LOANS && (
+          <div style={{ paddingTop: 20 }}>
+            <LoansList loans={userLoans} loading={userLoansLoading} />
+          </div>
+        )}
       </Container>
     </AppLayout>
   );
