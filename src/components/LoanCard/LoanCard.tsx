@@ -1,12 +1,13 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import moment from 'moment';
+import { LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
+import { useLoans } from '../../contexts/loans';
 import styles from './LoanCard.module.scss';
+import { useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
-import { useCountdown } from '../../hooks';
 
 interface NFTCheckboxInterface {
   className?: string;
@@ -14,15 +15,14 @@ interface NFTCheckboxInterface {
   name?: string;
   ltvPrice?: number;
   onDetailsClick?: () => void;
-  nft: any;
+  loan: LoanView;
 }
 
 const LoanCard: FC<NFTCheckboxInterface> = ({
   className,
   imageUrl,
   name,
-  ltvPrice,
-  nft,
+  loan,
 }) => {
   const {
     visible: loadingModalVisible,
@@ -30,16 +30,21 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const onGetBackLoan = () => {
+  const { paybackLoan, loansProgramAccounts } = useLoans();
+
+  const onGetBackLoan = async (): Promise<void> => {
     openLoadingModal();
+    await paybackLoan({
+      loan,
+      royaltyAddress: loansProgramAccounts.collectionInfo[0].royaltyAddress,
+    });
+
+    closeLoadingModal();
   };
 
-  const { timeLeft, leftTimeInSeconds } = useCountdown(
-    moment(nft.expiredAt).unix(),
-  );
+  const { timeLeft, leftTimeInSeconds } = useCountdown(loan.expiredAt);
 
-  const loanDurationInSeconds = nft.duration * 24 * 60 * 60;
-
+  const loanDurationInSeconds = 7 * 24 * 60 * 60;
   const progress =
     ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
 
@@ -56,7 +61,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>Borrowed</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{ltvPrice.toFixed(2)}</p>
+                <p className={styles.ltvText}>{loan?.amountToGet / 1e9}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
@@ -64,9 +69,7 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
               </div>
               <p className={styles.ltvTitle}>To repay</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>
-                  {(nft.return_amount - nft.amount).toFixed(3)}
-                </p>
+                <p className={styles.ltvText}>{loan?.amountToReturn / 1e9}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>

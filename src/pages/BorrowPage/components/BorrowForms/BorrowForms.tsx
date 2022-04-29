@@ -67,9 +67,14 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
                       onChange={(e) => onChange(e.target.value)}
                       className={styles.sidebarListItem}
                     >
-                      {STATUS_VALUES.map(({ label, value }) => (
+                      {STATUS_VALUES.map(({ label, value, disabled }) => (
                         <div key={value}>
-                          <Radio value={value} label={label} {...field} />
+                          <Radio
+                            value={value}
+                            label={label}
+                            disabled={disabled}
+                            {...field}
+                          />
                         </div>
                       ))}
                     </RadioAntd.Group>

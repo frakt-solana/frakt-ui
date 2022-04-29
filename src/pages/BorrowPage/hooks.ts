@@ -1,12 +1,12 @@
 import { useState, useMemo, Dispatch, SetStateAction, useEffect } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useParams } from 'react-router-dom';
 
+import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { useDebounce } from '../../hooks';
-import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useLoans } from '../../contexts/loans';
+import { useDebounce } from '../../hooks';
 
 export const useBorrowPage = (
   selectedNft?: UserNFT[],
@@ -32,7 +32,6 @@ export const useBorrowPage = (
   const [searchString, setSearchString] = useState<string>('');
   const { setVisible } = useWalletModal();
   const { availableCollections } = useLoans();
-  console.log(availableCollections);
 
   useEffect(() => {
     if (
@@ -62,10 +61,10 @@ export const useBorrowPage = (
   }, [searchString, rawNfts]);
 
   const nfts = filteredNfts.reduce((acc, nft: UserNFT) => {
-    const nftMint = nft?.mint;
+    const nftCreatorAddress = nft?.metadata?.properties?.creators[0]?.address;
 
-    const filtered = availableCollections.filter(({ whitelisted_mints }) =>
-      whitelisted_mints.includes(nftMint),
+    const filtered = availableCollections.filter(({ creator }) =>
+      creator.includes(nftCreatorAddress),
     );
 
     if (filtered.length) acc.push({ ...nft });

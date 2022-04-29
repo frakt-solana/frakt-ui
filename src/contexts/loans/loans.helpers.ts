@@ -2,7 +2,7 @@ import { getAllProgramAccounts } from '@frakters/nft-lending-v2';
 import { Connection, PublicKey } from '@solana/web3.js';
 
 import { LOANS_PROGRAM_PUBKEY } from './loans.constants';
-import { AvailableCollections, LoansProgramAccounts } from './loans.model';
+import { AvailableCollections } from './loans.model';
 
 export const fetchAvailableCollections = async (): Promise<
   AvailableCollections[]
@@ -21,7 +21,7 @@ export const fetchAvailableCollections = async (): Promise<
 
 export const fetchLoansProgramAccounts = async (
   connection: Connection,
-): Promise<LoansProgramAccounts> => {
+): Promise<any> => {
   return await getAllProgramAccounts(
     new PublicKey(LOANS_PROGRAM_PUBKEY),
     connection,

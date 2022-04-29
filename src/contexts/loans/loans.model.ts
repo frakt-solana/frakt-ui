@@ -5,6 +5,11 @@ import {
   LiquidityPoolView,
   LoanView,
 } from '@frakters/nft-lending-v2/lib/accounts';
+import { PublicKey } from '@solana/web3.js';
+import {
+  PaybackLoanTransactionParams,
+  ProposeLoanTransactionParams,
+} from './transactions';
 
 export type FetchDataFunc = () => Promise<void>;
 
@@ -13,15 +18,15 @@ export interface LoansContextValues {
   loansProgramAccounts: LoansProgramAccounts;
   availableCollections: AvailableCollections[];
   loading: boolean;
-  paybackLoan: (params: any) => Promise<any>;
-  proposeLoan: (params: any) => Promise<any>;
+  paybackLoan: (params: PaybackLoanTransactionParams) => Promise<void>;
+  proposeLoan: (params: ProposeLoanTransactionParams) => Promise<PublicKey>;
 }
 
 export interface LoansProgramAccounts {
   collectionInfo: CollectionInfoView[];
   deposit: DepositView[];
   liquidityPool: LiquidityPoolView[];
-  loan: LoanView[];
+  loans: LoanView[];
 }
 
 export interface AvailableCollections {

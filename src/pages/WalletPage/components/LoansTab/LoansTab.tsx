@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { LoanView } from '@frakters/nft-lending-v2/lib/accounts';
+import { LoanView } from '@frakters/nft-lending-v2';
 
 import LoanCard from '../../../../components/LoanCard';
 import { Loader } from '../../../../components/Loader';
@@ -22,12 +22,13 @@ export const LoansTab: FC = () => {
       ) : (
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
+          isLoading={loading}
           next={next}
           wrapperClassName={styles.loansList}
           emptyMessage="No suitable loans found"
         >
-          {loansProgramAccounts?.loan.map((nft: LoanView) => (
-            <LoanCard key={nft.loanPubkey} nft={nft} />
+          {loansProgramAccounts?.loans.map((loan: LoanView) => (
+            <LoanCard key={loan.loanPubkey} loan={loan} />
           ))}
         </FakeInfinityScroll>
       )}

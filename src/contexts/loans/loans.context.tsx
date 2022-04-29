@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { getAllProgramAccounts } from '@frakters/nft-lending-v2';
-import { PublicKey } from '@solana/web3.js';
 
 import {
   FetchDataFunc,
@@ -11,7 +9,6 @@ import {
   AvailableCollections,
 } from './loans.model';
 import { proposeLoan, paybackLoan } from './transactions';
-import { LOANS_PROGRAM_PUBKEY } from './loans.constants';
 import {
   fetchLoansProgramAccounts,
   fetchAvailableCollections,
@@ -39,11 +36,9 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
 
   const fetchLoansData: FetchDataFunc = async (): Promise<void> => {
     try {
-      // const programAccounts = await fetchLoansProgramAccounts(connection);
+      const programAccounts = await fetchLoansProgramAccounts(connection);
       const availableCollection = await fetchAvailableCollections();
-
-      console.log(availableCollection);
-      // setLoansProgramAccounts(programAccounts);
+      setLoansProgramAccounts(programAccounts);
       setAvailableCollections(availableCollection);
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -57,7 +52,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     if (wallet.connected) {
       fetchLoansData();
     }
-  }, [wallet.connected]);
+  });
 
   return (
     <LoansPoolsContext.Provider

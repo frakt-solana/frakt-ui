@@ -20,6 +20,7 @@ interface Option {
 interface OptionForm {
   label: string;
   value: string;
+  disabled?: boolean;
 }
 
 export enum SelectControlsNames {
@@ -87,7 +88,7 @@ export const useBorrowForm = (
 
   const onSubmit = async (nft: UserNFT) => {
     setTxnModalVisible(true);
-    const response = await proposeLoan({ nft });
+    await proposeLoan({ nft });
 
     closeConfirmModal();
     setTxnModalVisible(false);
@@ -125,11 +126,12 @@ export const RETURN_PERIOD_VALUES: Option[] = [
 
 export const STATUS_VALUES: OptionForm[] = [
   {
-    label: 'Long-term',
-    value: StatusRadioNames.LONG_TERM_FORM,
-  },
-  {
     label: 'Short-term',
     value: StatusRadioNames.SHORT_TERM_FORM,
+  },
+  {
+    label: 'Long-term',
+    value: StatusRadioNames.LONG_TERM_FORM,
+    disabled: true,
   },
 ];
