@@ -4,7 +4,7 @@ import { Form, FormInstance } from 'antd';
 
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT, useUserTokens } from '../../../../contexts/userTokens';
 import { useLoans } from '../../../../contexts/loans';
 
 interface FormValues {
@@ -81,6 +81,7 @@ export const useBorrowForm = (
     useLoadingModal();
 
   const { proposeLoan } = useLoans();
+  const { removeTokenOptimistic } = useUserTokens();
 
   const returnPeriod = watch(SelectControlsNames.RETURN_PERIOD_VALUES);
   const ltvValues = watch(SelectControlsNames.LTV_VALUES);
@@ -88,8 +89,12 @@ export const useBorrowForm = (
 
   const onSubmit = async (nft: UserNFT) => {
     setTxnModalVisible(true);
-    await proposeLoan({ nft });
 
+    const response = await proposeLoan({ nft });
+    if (response) {
+      removeTokenOptimistic([nft.mint]);
+      onCloseSidebar();
+    }
     closeConfirmModal();
     setTxnModalVisible(false);
   };

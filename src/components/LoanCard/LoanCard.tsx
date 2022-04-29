@@ -1,6 +1,6 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { LoanView } from '@frakters/nft-lending-v2';
+import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import { useLoans } from '../../contexts/loans';
@@ -8,22 +8,22 @@ import styles from './LoanCard.module.scss';
 import { useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
+import {
+  ArweaveMetadata,
+  getArweaveMetadataByMint,
+} from '../../utils/getArweaveMetadata';
 
-interface NFTCheckboxInterface {
+interface LoanCardProps {
   className?: string;
-  imageUrl?: string;
-  name?: string;
-  ltvPrice?: number;
-  onDetailsClick?: () => void;
   loan: LoanView;
 }
 
-const LoanCard: FC<NFTCheckboxInterface> = ({
-  className,
-  imageUrl,
-  name,
-  loan,
-}) => {
+export interface LoansWithMetadata extends LoanView {
+  metadata: ArweaveMetadata[];
+  collection: CollectionInfoView;
+}
+
+const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
@@ -32,17 +32,32 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
 
   const { paybackLoan, loansProgramAccounts } = useLoans();
 
+  const { timeLeft, leftTimeInSeconds } = useCountdown(loan.expiredAt);
+  const [loanWithData, setLoanWithData] = useState<LoansWithMetadata>();
+
   const onGetBackLoan = async (): Promise<void> => {
     openLoadingModal();
-    await paybackLoan({
-      loan,
-      royaltyAddress: loansProgramAccounts.collectionInfo[0].royaltyAddress,
-    });
+    await paybackLoan({ loan: loanWithData });
 
     closeLoadingModal();
   };
 
-  const { timeLeft, leftTimeInSeconds } = useCountdown(loan.expiredAt);
+  console.log(loansProgramAccounts);
+
+  useEffect(() => {
+    (async () => {
+      const metadata = await getArweaveMetadataByMint([loan.nftMint]);
+
+      const collectionInfo = loansProgramAccounts?.collectionInfos.find(
+        ({ collectionInfoPubkey }) => {
+          return collectionInfoPubkey === loan.collectionInfo;
+        },
+      );
+
+      const value = Object.values(metadata);
+      setLoanWithData({ ...loan, metadata: value, collection: collectionInfo });
+    })();
+  }, [loan, loansProgramAccounts?.collectionInfos]);
 
   const loanDurationInSeconds = 7 * 24 * 60 * 60;
   const progress =
@@ -54,14 +69,20 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
         <div className={classNames([styles.root, className])}>
           <div
             className={styles.root__image}
-            style={{ backgroundImage: `url(${imageUrl})` }}
+            style={{
+              backgroundImage: `url(${loanWithData?.metadata[0].image})`,
+            }}
           />
           <div className={styles.root__content}>
-            <p className={styles.root__title}>{name}</p>
+            <p className={styles.root__title}>
+              {loanWithData?.metadata[0].name}
+            </p>
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>Borrowed</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{loan?.amountToGet / 1e9}</p>
+                <p className={styles.ltvText}>
+                  {loanWithData?.amountToGet / 1e9}
+                </p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
@@ -69,7 +90,9 @@ const LoanCard: FC<NFTCheckboxInterface> = ({
               </div>
               <p className={styles.ltvTitle}>To repay</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{loan?.amountToReturn / 1e9}</p>
+                <p className={styles.ltvText}>
+                  {loanWithData?.amountToReturn / 1e9}
+                </p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>

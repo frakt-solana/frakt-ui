@@ -23,9 +23,9 @@ export interface LoansContextValues {
 }
 
 export interface LoansProgramAccounts {
-  collectionInfo: CollectionInfoView[];
-  deposit: DepositView[];
-  liquidityPool: LiquidityPoolView[];
+  collectionInfos: CollectionInfoView[];
+  deposits: DepositView[];
+  liquidityPools: LiquidityPoolView[];
   loans: LoanView[];
 }
 

@@ -38,6 +38,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     try {
       const programAccounts = await fetchLoansProgramAccounts(connection);
       const availableCollection = await fetchAvailableCollections();
+
       setLoansProgramAccounts(programAccounts);
       setAvailableCollections(availableCollection);
     } catch (error) {

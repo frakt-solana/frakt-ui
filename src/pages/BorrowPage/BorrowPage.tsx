@@ -82,7 +82,7 @@ const BorrowPage: FC = () => {
                   (selectedNft) => selectedNft?.mint === nft.mint,
                 )
               }
-              ltvPrice={30}
+              ltvPrice={0.5}
             />
           ))}
         </FakeInfinityScroll>

@@ -13,7 +13,9 @@ export const LoansTab: FC = () => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
   const { loading, loansProgramAccounts } = useLoans();
 
-  console.log(loading);
+  const filteredLoans = loansProgramAccounts?.loans.filter(({ loanStatus }) => {
+    return loanStatus?.activated;
+  });
 
   return (
     <>
@@ -29,7 +31,7 @@ export const LoansTab: FC = () => {
           wrapperClassName={styles.loansList}
           emptyMessage="No suitable loans found"
         >
-          {loansProgramAccounts?.loans.map((loan: LoanView) => (
+          {filteredLoans.map((loan: LoanView) => (
             <LoanCard key={loan.loanPubkey} loan={loan} />
           ))}
         </FakeInfinityScroll>

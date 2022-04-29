@@ -1,6 +1,7 @@
-import { LoanView, paybackLoan as txn } from '@frakters/nft-lending-v2';
+import { paybackLoan as txn } from '@frakters/nft-lending-v2';
 import { Provider } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
+import { LoansWithMetadata } from '../../../components/LoanCard/LoanCard';
 
 import {
   createTransactionFuncFromRaw,
@@ -11,8 +12,7 @@ import {
 import { LOANS_ADMIN_PUBKEY, LOANS_PROGRAM_PUBKEY } from '../loans.constants';
 
 export interface PaybackLoanTransactionParams {
-  loan: LoanView;
-  royaltyAddress: any;
+  loan: LoansWithMetadata;
 }
 
 export interface PaybackLoanTransactionRawParams
@@ -23,7 +23,6 @@ const rawPaybackLoan = async ({
   wallet,
   connection,
   loan,
-  royaltyAddress,
 }: PaybackLoanTransactionRawParams): Promise<void> => {
   const options = Provider.defaultOptions();
   const provider = new Provider(connection, wallet, options);
@@ -37,7 +36,7 @@ const rawPaybackLoan = async ({
     nftMint: new PublicKey(loan.nftMint),
     liquidityPool: new PublicKey(loan.liquidityPool),
     collectionInfo: new PublicKey(loan.collectionInfo),
-    royalty_address: new PublicKey(royaltyAddress),
+    royalty_address: new PublicKey(loan.collection.royaltyAddress),
     amountToReturn: loan.amountToReturn,
     sendTxn: async (transaction) => {
       await signAndConfirmTransaction({
