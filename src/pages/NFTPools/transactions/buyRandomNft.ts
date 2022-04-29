@@ -79,7 +79,7 @@ export const buyRandomNft: BuyRandomNft = async ({
             },
             amountIn,
             amountOut,
-            fixedSide: 'in',
+            fixedSide: 'out',
           });
 
         return {

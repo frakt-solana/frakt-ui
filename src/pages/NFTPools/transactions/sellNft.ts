@@ -139,7 +139,7 @@ export const sellNft: SellNft = async ({
             },
             amountIn,
             amountOut,
-            fixedSide: 'out', //? Prove
+            fixedSide: 'in',
           });
 
         return {
