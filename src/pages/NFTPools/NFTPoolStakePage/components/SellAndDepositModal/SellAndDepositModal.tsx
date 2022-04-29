@@ -149,7 +149,7 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
         })}
       >
         <ModalHeader
-          headerText="Sell NFT & Deposit"
+          headerText="Sell NFT & Stake"
           slippage={0}
           setSlippage={() => {}}
           showSlippageDropdown={false}
@@ -188,7 +188,7 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
 
         <SubmitButton
           disabled={submitButtonDisabled}
-          text="Deposit & Stake"
+          text={`Stake ${poolToken?.symbol || ''}/SOL`}
           onClick={() => onSubmit()}
         />
       </div>

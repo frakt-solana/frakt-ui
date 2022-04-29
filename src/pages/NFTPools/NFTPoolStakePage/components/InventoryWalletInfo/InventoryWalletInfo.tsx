@@ -31,7 +31,7 @@ export const InventoryWalletInfo: FC<InventoryWalletInfoProps> = ({
         firstAction={
           poolToken?.balance > 0.0001
             ? {
-                label: 'Stake rPWNG',
+                label: `Stake ${poolToken?.ticker || ''}`,
                 action: onStake,
                 btnPressedState:
                   activeControl === CONTROLS.STAKE_POOL_TOKEN_MODAL,

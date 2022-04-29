@@ -102,7 +102,7 @@ export const StakePoolTokenModal: FC<StakePoolTokenModalProps> = ({
       >
         {visible && <ModalClose onClick={() => setVisible(false)} />}
         <ModalHeader
-          headerText="Stake in Inventory"
+          headerText={`Stake ${poolToken?.symbol}`}
           slippage={0}
           setSlippage={() => {}}
           showSlippageDropdown={false}

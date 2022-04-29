@@ -3,11 +3,21 @@
   display: flex;
   justify-content: flex-end;
   gap: 0 10px;
+
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+    gap: 10px 0;
+  }
 }
 
 .walletInfoBtn {
   width: 50%;
+
+  @media screen and (max-width: 767px) {
+    width: 100%;
+  }
 }
+
 .walletInfoBtnPressed {
   background-color: var(--accent-color-3);
   border-color: var(--accent-color-3);

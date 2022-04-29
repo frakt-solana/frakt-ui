@@ -25,12 +25,34 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
       <h2 className={styles.stakingTitle}>{title}</h2>
 
       <div className={styles.stakingStats}>
-        <div className={styles.stakingStatsTitle}>Total liquidity</div>
-        <div className={styles.stakingStatsTitle}>APR</div>
-        <div className={styles.stakingStatsValue}>{totalLiquidity}</div>
+        <div
+          className={classNames(
+            styles.stakingStatsTitle,
+            styles.stakingStatsTitleLiquididty,
+          )}
+        >
+          Total liquidity
+        </div>
+        <div
+          className={classNames(
+            styles.stakingStatsTitle,
+            styles.stakingStatsTitleAPR,
+          )}
+        >
+          APR
+        </div>
+        <div
+          className={classNames(
+            styles.stakingStatsValue,
+            styles.stakingStatsValueLiquididty,
+          )}
+        >
+          {totalLiquidity}
+        </div>
         <div
           className={classNames([
             styles.stakingStatsValue,
+            styles.stakingStatsValueAPR,
             styles.stakingStatsValueGreen,
             { [styles.stakingStatsValueRed]: isRisky },
           ])}

@@ -124,7 +124,10 @@ export const SellAndStakeModal: FC<SellAndStakeModalProps> = ({
           apr={apr}
         />
 
-        <SubmitButton text="Stake" onClick={() => onSubmit()} />
+        <SubmitButton
+          text={`Stake ${poolToken?.symbol || ''}`}
+          onClick={() => onSubmit()}
+        />
       </div>
       <LoadingModal
         title="Please approve transaction"

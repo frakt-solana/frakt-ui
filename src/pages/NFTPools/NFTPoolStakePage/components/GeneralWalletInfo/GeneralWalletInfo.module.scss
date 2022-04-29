@@ -2,6 +2,10 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0 30px;
+
+  @media screen and (max-width: 767px) {
+    gap: 0 15px;
+  }
 }
 
 .inventoryWalletInfo {

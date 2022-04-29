@@ -45,7 +45,7 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
           firstAction={
             poolToken?.balance > 0.0001
               ? {
-                  label: 'Deposit',
+                  label: `Stake ${poolToken?.ticker || ''}/SOL`,
                   action: onDepositLiquidity,
                   btnPressedState:
                     activeControl === CONTROLS.DEPOSIT_LIQUIDITY_MODAL,
@@ -55,7 +55,7 @@ export const LiquidityWalletInfo: FC<LiquidityWalletInfoProps> = ({
           secondAction={
             onSellNft
               ? {
-                  label: 'Sell NFT & Deposit',
+                  label: 'Sell NFT & Stake',
                   action: onSellNft,
                   btnPressedState:
                     activeControl === CONTROLS.SELECT_NFTS_LIQUIDITY,

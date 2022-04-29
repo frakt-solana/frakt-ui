@@ -27,7 +27,7 @@ const POOL_LINKS = [
   {
     label: 'Swap',
     tab: POOL_TABS.SWAP,
-    emoji: '💱',
+    emoji: '↕️',
     // icon: SwapMarketIcon,
   },
   {
@@ -39,7 +39,7 @@ const POOL_LINKS = [
   {
     label: 'Info',
     tab: POOL_TABS.INFO,
-    emoji: '📊',
+    emoji: '📈',
     // icon: InfoIcon,
   },
 ];
@@ -57,13 +57,7 @@ export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({ className, pool }) => {
               pool?.customName || pool?.publicKey?.toBase58(),
             )}
           >
-            <span
-              style={{
-                marginRight: '5px',
-              }}
-            >
-              {emoji}
-            </span>
+            <span className={styles.emoji}>{emoji}</span>
             {label}
           </NavLink>
         </li>

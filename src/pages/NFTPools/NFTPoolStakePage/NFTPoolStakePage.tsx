@@ -252,6 +252,7 @@ export const NFTPoolStakePage: FC = () => {
                     setVisible={showHideModal(CONTROLS.STAKE_POOL_TOKEN_MODAL)}
                     poolToken={poolTokenInfo}
                     inventoryFusionPool={inventoryFusionPool}
+                    apr={inventoryAPR}
                   />
                 </div>
                 <div className={styles.modalWrapper}>

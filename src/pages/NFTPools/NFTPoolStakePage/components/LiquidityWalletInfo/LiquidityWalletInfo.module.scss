@@ -2,6 +2,10 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0 20px;
+
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: unset;
+  }
 }
 
 .subtitle {
@@ -22,6 +26,10 @@
 
 .lpTokenInfo {
   grid-column: 2 / -1;
+
+  @media screen and (max-width: 1023px) {
+    margin-top: 20px;
+  }
 }
 
 .firstColumnt {

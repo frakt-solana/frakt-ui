@@ -69,7 +69,7 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
   const onPercentChange = (nextValue: number) => {
     const lpStringValue = (poolTokensStakedAmount * nextValue) / 100;
 
-    setValue(lpStringValue ? lpStringValue?.toFixed(3) : '0');
+    setValue(lpStringValue ? lpStringValue?.toFixed(5) : '0');
 
     setPercent(nextValue);
   };
@@ -129,7 +129,7 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
           tokenImage={poolToken?.logoURI}
           tokenTicker={poolToken?.symbol}
           balance={
-            poolTokensStakedAmount ? poolTokensStakedAmount?.toFixed(3) : '0'
+            poolTokensStakedAmount ? poolTokensStakedAmount?.toFixed(5) : '0'
           }
           error={notEnoughLpTokenError}
         />

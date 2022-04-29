@@ -165,7 +165,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
       >
         {visible && <ModalClose onClick={() => setVisible(false)} />}
         <ModalHeader
-          headerText="Deposit"
+          headerText={`Stake ${baseToken?.symbol}/SOL`}
           slippage={0}
           setSlippage={() => {}}
           showSlippageDropdown={false}
@@ -206,7 +206,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
 
         <SubmitButton
           disabled={submitButtonDisabled}
-          text="Provide liquidity"
+          text="Stake"
           onClick={() => onSubmit()}
         />
       </div>
