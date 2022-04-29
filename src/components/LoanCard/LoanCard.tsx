@@ -42,8 +42,6 @@ const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
     closeLoadingModal();
   };
 
-  console.log(loansProgramAccounts);
-
   useEffect(() => {
     (async () => {
       const metadata = await getArweaveMetadataByMint([loan.nftMint]);
