@@ -13,6 +13,8 @@ export const LoansTab: FC = () => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
   const { loading, loansProgramAccounts } = useLoans();
 
+  console.log(loading);
+
   return (
     <>
       {loading ? (

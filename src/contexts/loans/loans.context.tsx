@@ -52,7 +52,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     if (wallet.connected) {
       fetchLoansData();
     }
-  });
+  }, [wallet.connected]);
 
   return (
     <LoansPoolsContext.Provider
