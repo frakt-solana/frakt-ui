@@ -8,9 +8,7 @@ import { useWalletModal } from '../../contexts/WalletModal';
 import { useLoans } from '../../contexts/loans';
 import { useDebounce } from '../../hooks';
 
-export const useBorrowPage = (
-  selectedNft?: UserNFT[],
-): {
+export const useBorrowPage = (): {
   currentVaultPubkey: string;
   isCloseSidebar: boolean;
   setIsCloseSidebar: Dispatch<SetStateAction<boolean>>;

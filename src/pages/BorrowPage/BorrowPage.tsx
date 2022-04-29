@@ -27,7 +27,7 @@ const BorrowPage: FC = () => {
     loading,
     nfts,
     searchItems,
-  } = useBorrowPage(selectedNft);
+  } = useBorrowPage();
 
   return (
     <SelectLayout

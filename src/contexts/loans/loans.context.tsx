@@ -53,6 +53,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     if (wallet.connected) {
       fetchLoansData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet.connected]);
 
   return (

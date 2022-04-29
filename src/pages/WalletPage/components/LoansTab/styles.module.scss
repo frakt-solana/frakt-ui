@@ -11,16 +11,16 @@
 
 .loansList {
   display: grid;
-  grid-template-columns: repeat(3, minmax(279px, 1fr));
+  grid-template-columns: repeat(5, minmax(279px, 1fr));
   grid-gap: 24px;
   gap: 16px;
   align-items: stretch;
 
-  @media screen and (max-width: 1440px) {
-    grid-template-columns: repeat(2, minmax(158px, 1fr));
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(3, minmax(158px, 1fr));
   }
 
-  @media screen and (max-width: 530px) {
+  @media screen and (max-width: 767px) {
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   }
 }
