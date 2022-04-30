@@ -1,2 +1,1 @@
-export const LOANS_PROGRAM_PUBKEY = process.env.LOANS_PROGRAM_PUBKEY;
-export const LOANS_ADMIN_PUBKEY = process.env.LOANS_ADMIN_PUBKEY;
+export const MOCK_LOAN_TO_VALUE = 0.2;

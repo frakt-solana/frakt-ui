@@ -1,30 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { LoanView } from '@frakters/nft-lending-v2';
 
 import {
   FetchDataFunc,
-  LoansProgramAccounts,
   LoansContextValues,
   LoansProviderType,
-  AvailableCollections,
   LoanData,
   LoanDataByPoolPublicKey,
+  RemoveLoanOptimistic,
 } from './loans.model';
-import { proposeLoan, paybackLoan } from './transactions';
-import {
-  fetchLoansProgramAccounts_old,
-  fetchAvailableCollections,
-  fetchLoanDataByPoolPublicKey,
-} from './loans.helpers';
+import { fetchLoanDataByPoolPublicKey } from './loans.helpers';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
   loading: true,
-  loansProgramAccounts: null,
   loanDataByPoolPublicKey: new Map<string, LoanData>(),
-  availableCollections: [],
   fetchLoansData: () => Promise.resolve(null),
-  paybackLoan: () => Promise.resolve(null),
-  proposeLoan: () => Promise.resolve(null),
+  removeLoanOptimistic: () => {},
 });
 
 export const LoansProvider: LoansProviderType = ({ children }) => {
@@ -35,24 +27,11 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const [loanDataByPoolPublicKey, setLoanDataByPoolPublicKey] =
     useState<LoanDataByPoolPublicKey>(new Map<string, LoanData>());
 
-  const [loansProgramAccounts, setLoansProgramAccounts] =
-    useState<LoansProgramAccounts>();
-
-  const [availableCollections, setAvailableCollections] = useState<
-    AvailableCollections[]
-  >([]);
-
-  const fetchLoansData1: FetchDataFunc = async (): Promise<void> => {
+  const fetchLoansData: FetchDataFunc = async (): Promise<void> => {
     try {
-      const programAccounts = await fetchLoansProgramAccounts_old(connection);
-
       const loansData = await fetchLoanDataByPoolPublicKey(connection);
 
-      const availableCollections = await fetchAvailableCollections();
-
       setLoanDataByPoolPublicKey(loansData);
-      setLoansProgramAccounts(programAccounts);
-      setAvailableCollections(availableCollections);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -63,27 +42,33 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
 
   useEffect(() => {
     if (wallet.connected) {
-      fetchLoansData1();
+      fetchLoansData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet.connected]);
+
+  const removeLoanOptimistic: RemoveLoanOptimistic = (loan: LoanView) => {
+    const loanPoolPubkey = loan?.liquidityPool;
+    const loanData = loanDataByPoolPublicKey.get(loanPoolPubkey);
+
+    setLoanDataByPoolPublicKey(
+      loanDataByPoolPublicKey.set(loanPoolPubkey, {
+        ...loanData,
+        loans:
+          loanData?.loans?.filter(
+            ({ loanPubkey }) => loanPubkey !== loan?.loanPubkey,
+          ) || [],
+      }),
+    );
+  };
 
   return (
     <LoansPoolsContext.Provider
       value={{
         loading,
         loanDataByPoolPublicKey,
-        loansProgramAccounts,
-        availableCollections,
-        fetchLoansData: fetchLoansData1,
-        paybackLoan: paybackLoan({
-          connection,
-          wallet,
-        }),
-        proposeLoan: proposeLoan({
-          connection,
-          wallet,
-        }),
+        fetchLoansData,
+        removeLoanOptimistic,
       }}
     >
       {children}

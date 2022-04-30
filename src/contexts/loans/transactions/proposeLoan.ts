@@ -1,57 +1,64 @@
-import { PublicKey } from '@solana/web3.js';
+import { WalletContextState } from '@solana/wallet-adapter-react';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
 import { proposeLoan as txn } from '@frakters/nft-lending-v2';
 
 import {
-  createTransactionFuncFromRaw,
+  showSolscanLinkNotification,
   signAndConfirmTransaction,
-  WalletAndConnection,
-  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { UserNFT } from '../../userTokens';
-import { LOANS_PROGRAM_PUBKEY } from '../loans.constants';
+import { notify } from '../../../utils';
+import { NotifyType } from '../../../utils/solanaUtils';
 
-export interface ProposeLoanTransactionParams {
-  nft: UserNFT;
-}
+type ProposeLoan = (props: {
+  connection: Connection;
+  wallet: WalletContextState;
+  nftMint: string;
+}) => Promise<boolean>;
 
-export interface ProposeLoanTransactionRawParams
-  extends ProposeLoanTransactionParams,
-    WalletAndConnection {}
-
-const rawProposeLoan = async ({
-  wallet,
+export const proposeLoan: ProposeLoan = async ({
   connection,
-  nft,
-}: ProposeLoanTransactionRawParams): Promise<PublicKey> => {
-  const options = Provider.defaultOptions();
-  const provider = new Provider(connection, wallet, options);
+  wallet,
+  nftMint,
+}): Promise<boolean> => {
+  try {
+    const options = Provider.defaultOptions();
+    const provider = new Provider(connection, wallet, options);
 
-  const response = await txn({
-    programId: new PublicKey(LOANS_PROGRAM_PUBKEY),
-    provider,
-    user: wallet.publicKey,
-    nftMint: new PublicKey(nft.mint),
-    sendTxn: async (transaction, signers) => {
-      await signAndConfirmTransaction({
-        transaction,
-        signers,
-        connection,
-        wallet,
+    await txn({
+      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      provider,
+      user: wallet.publicKey,
+      nftMint: new PublicKey(nftMint),
+      sendTxn: async (transaction, signers) => {
+        await signAndConfirmTransaction({
+          transaction,
+          signers,
+          connection,
+          wallet,
+        });
+      },
+    });
+
+    notify({
+      message: 'Loan proposed successfully',
+      type: NotifyType.SUCCESS,
+    });
+
+    return true;
+  } catch (error) {
+    const isNotConfirmed = showSolscanLinkNotification(error);
+
+    if (!isNotConfirmed) {
+      notify({
+        message: 'Loan proposing failed',
+        type: NotifyType.ERROR,
       });
-    },
-  });
+    }
 
-  return response;
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    return false;
+  }
 };
-
-const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawProposeLoan, {
-  onSuccessMessage: {
-    message: 'Loan created  successfully',
-  },
-  onErrorMessage: { message: 'Transaction failed' },
-});
-
-export const proposeLoan = createTransactionFuncFromRaw(
-  wrappedAsyncWithTryCatch,
-);

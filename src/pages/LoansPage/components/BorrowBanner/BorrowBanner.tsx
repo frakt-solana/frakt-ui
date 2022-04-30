@@ -12,9 +12,7 @@ const BorrowBanner: FC = () => {
         <h2 className={styles.title}>Borrow money</h2>
         <p className={styles.subtitle}>Select NFT to use as a collateral</p>
       </div>
-      <NavLink
-        to={`${PATHS.BORROW}/Hy7h6FSicyB9B3ZNGtEs64dKzQWk8TuNdG1fgX5ccWFW`}
-      >
+      <NavLink to={PATHS.BORROW}>
         <Button className={styles.btn} type="alternative">
           Borrow
         </Button>

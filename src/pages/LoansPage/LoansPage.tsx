@@ -89,7 +89,10 @@ const LoansPage: FC = () => {
         {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
         {tabValue === LoanTabsNames.LOANS && (
           <div style={{ paddingTop: 20 }}>
-            <LoansList loans={userLoans} loading={userLoansLoading} />
+            <LoansList
+              loansWithArweaveMetadata={userLoans}
+              loading={userLoansLoading}
+            />
           </div>
         )}
       </Container>

@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Form } from 'antd';
 
 import { Select } from '../../../../components/Select';
-import Slider from '../../../../components/Slider';
 import styles from './ShortTermForm.module.scss';
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -14,12 +13,7 @@ import {
 } from '../BorrowForms';
 
 export const ShortTermForm: FC = () => {
-  const { formControl, activeLine, setActiveLine, ltvValues } = useBorrowForm();
-
-  const sliderMarks = {
-    0: '0%',
-    50: '50%',
-  };
+  const { formControl, activeLine, setActiveLine } = useBorrowForm();
 
   return (
     <>
@@ -34,28 +28,6 @@ export const ShortTermForm: FC = () => {
           </div>
         </Form.Item>
         <div className={styles.line}></div>
-      </div>
-      <div className={styles.fieldWrapper}>
-        <Form.Item name={SelectControlsNames.LTV_VALUES} validateFirst>
-          <p className={styles.formTitle}>loan to value: {ltvValues}%</p>
-          <Controller
-            control={formControl}
-            name={SelectControlsNames.LTV_VALUES}
-            rules={{ required: true }}
-            render={({ field: { onChange } }) => (
-              <Slider
-                value={ltvValues}
-                tipFormatter={(value) => `${value}%`}
-                onChange={onChange}
-                className={styles.slider}
-                marks={sliderMarks}
-                step={10}
-                max={50}
-                disabled
-              />
-            )}
-          />
-        </Form.Item>
       </div>
       <div className={styles.fieldWrapperDouble}>
         <Form.Item name={SelectControlsNames.RETURN_PERIOD_VALUES}>

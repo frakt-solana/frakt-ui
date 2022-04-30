@@ -1,9 +1,10 @@
 import { LoanView } from '@frakters/nft-lending-v2';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useEffect, useState } from 'react';
 
 import { LoansPoolsContext } from './loans.context';
-import { LoansContextValues } from './loans.model';
+import { LoansContextValues, LoanWithArweaveMetadata } from './loans.model';
+import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
 export const useLoans = (): LoansContextValues => {
   const context = useContext(LoansPoolsContext);
@@ -15,15 +16,18 @@ export const useLoans = (): LoansContextValues => {
 
 type UseUserLoans = () => {
   loading: boolean;
-  userLoans: LoanView[];
+  userLoans: LoanWithArweaveMetadata[];
 };
 
 export const useUserLoans: UseUserLoans = () => {
-  const { loading, loanDataByPoolPublicKey } = useLoans();
+  const { loading: loansLoading, loanDataByPoolPublicKey } = useLoans();
+  const [userLoans, setUserLoans] = useState<LoanWithArweaveMetadata[]>([]);
+  const [metadataLoading, setMetadataLoading] = useState<boolean>(false);
+
   const wallet = useWallet();
 
-  const userLoans = useMemo(() => {
-    if (loanDataByPoolPublicKey?.size && !loading && wallet.connected) {
+  const loans = useMemo(() => {
+    if (loanDataByPoolPublicKey?.size && !loansLoading && wallet.connected) {
       return Array.from(loanDataByPoolPublicKey.values()).reduce(
         (loans: LoanView[], loanData) => {
           const userLoans =
@@ -39,12 +43,45 @@ export const useUserLoans: UseUserLoans = () => {
       );
     }
 
-    return null;
+    return [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loanDataByPoolPublicKey?.size, loading, wallet.connected]);
+  }, [loanDataByPoolPublicKey?.size, loansLoading, wallet.connected]);
+
+  const fetchMetadataAndInitialize = async () => {
+    try {
+      setMetadataLoading(true);
+      const mints = loans.map(({ nftMint }) => nftMint);
+      const metadataByMint = await getArweaveMetadataByMint(mints);
+
+      const userLoans = loans.map((loan) => {
+        const metadata = metadataByMint[loan?.nftMint] || null;
+
+        return {
+          loan,
+          metadata,
+        };
+      });
+
+      setUserLoans(userLoans);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setMetadataLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (loans.length) {
+      fetchMetadataAndInitialize();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loans.length]);
+
+  const loading = wallet.connected ? loansLoading || metadataLoading : false;
 
   return {
     loading,
-    userLoans,
+    userLoans: wallet.connected ? userLoans : [],
   };
 };

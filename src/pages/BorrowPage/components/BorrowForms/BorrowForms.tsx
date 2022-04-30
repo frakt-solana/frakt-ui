@@ -18,7 +18,7 @@ import {
 } from './hooks';
 
 interface BorrowFormsProps {
-  selectedNft?: UserNFT[];
+  selectedNft?: UserNFT;
   ltvPrice?: number;
   onCloseSidebar?: () => void;
 }
@@ -41,7 +41,7 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
     onSubmit,
   } = useBorrowForm(onCloseSidebar);
 
-  const nameSelectedNft = selectedNft[0]?.metadata.name;
+  const nameSelectedNft = selectedNft.metadata.name;
   const loanPeriod = returnPeriod.value;
 
   const confirmText = `You are about to use your ${nameSelectedNft} as collateral in loan ${
@@ -82,10 +82,10 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
                 />
               </div>
             </RadioAntd.Group>
-            {formStatus === StatusRadioNames.LONG_TERM_FORM && <LongTermForm />}
             {formStatus === StatusRadioNames.SHORT_TERM_FORM && (
               <ShortTermForm />
             )}
+            {formStatus === StatusRadioNames.LONG_TERM_FORM && <LongTermForm />}
           </div>
         </Form>
       </div>
@@ -101,7 +101,7 @@ export const BorrowForms: FC<BorrowFormsProps> = ({
       <ConfirmModal
         visible={confirmModalVisible}
         onCancel={closeConfirmModal}
-        onSubmit={() => onSubmit(selectedNft[0])}
+        onSubmit={() => onSubmit(selectedNft)}
         subtitle={confirmText}
       />
       <LoadingModal

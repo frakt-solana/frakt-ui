@@ -41,7 +41,7 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: `${PATHS.BORROW}/:loanPoolPubkey`,
+    path: PATHS.BORROW,
     component: BorrowPage,
   },
   {

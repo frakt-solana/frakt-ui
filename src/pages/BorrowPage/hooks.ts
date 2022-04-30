@@ -1,12 +1,11 @@
 import { useState, useMemo, Dispatch, SetStateAction, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useParams } from 'react-router-dom';
 
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useWalletModal } from '../../contexts/WalletModal';
 import { useLoans } from '../../contexts/loans';
-import { useDebounce, usePublicKeyParam } from '../../hooks';
+import { useDebounce } from '../../hooks';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
@@ -16,8 +15,8 @@ export const useBorrowPage = (): {
   loading: boolean;
   searchItems: (search: string) => void;
 } => {
-  const { loanPoolPubkey } = useParams<{ loanPoolPubkey: string }>();
-  usePublicKeyParam(loanPoolPubkey);
+  //? Hardcoded util multiple loanPools not implemented
+  const loanPoolPubkey = 'Hy7h6FSicyB9B3ZNGtEs64dKzQWk8TuNdG1fgX5ccWFW';
 
   const { connected } = useWallet();
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
@@ -31,7 +30,7 @@ export const useBorrowPage = (): {
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const [searchString, setSearchString] = useState<string>('');
   const { setVisible } = useWalletModal();
-  const { availableCollections, loading: loansLoading } = useLoans();
+  const { loanDataByPoolPublicKey, loading: loansLoading } = useLoans();
 
   useEffect(() => {
     if (
@@ -51,24 +50,22 @@ export const useBorrowPage = (): {
   }, 300);
 
   const whitelistedNfts = useMemo(() => {
-    if (rawNfts?.length && availableCollections?.length) {
-      const availableCollection = availableCollections?.find(
-        ({ loan_pool }) => loan_pool === loanPoolPubkey,
-      );
-
-      const creator = availableCollection.creator;
+    if (rawNfts?.length && loanDataByPoolPublicKey?.size) {
+      const creators = loanDataByPoolPublicKey
+        .get(loanPoolPubkey)
+        ?.collectionsInfo?.map(({ creator }) => creator);
 
       return rawNfts?.filter(({ metadata }) => {
         const nftCreator =
           metadata?.properties?.creators?.find(({ verified }) => verified)
             ?.address || '';
-        return nftCreator === creator;
+        return creators.includes(nftCreator);
       });
     }
 
     return [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawNfts, availableCollections]);
+  }, [rawNfts, loanDataByPoolPublicKey?.size]);
 
   const filteredNfts = useMemo(() => {
     return (whitelistedNfts || []).filter(({ metadata }) =>
@@ -83,7 +80,7 @@ export const useBorrowPage = (): {
     setIsCloseSidebar,
     nfts: filteredNfts,
     setVisible,
-    loading,
+    loading: connected ? loading : false,
     searchItems,
   };
 };

@@ -5,48 +5,32 @@ import {
   LiquidityPoolView,
   LoanView,
 } from '@frakters/nft-lending-v2/lib/accounts';
-import { PublicKey } from '@solana/web3.js';
-import {
-  PaybackLoanTransactionParams,
-  ProposeLoanTransactionParams,
-} from './transactions';
+
+import { ArweaveMetadata } from '../../utils/getArweaveMetadata';
 
 export type FetchDataFunc = () => Promise<void>;
 
 export interface LoansContextValues {
   fetchLoansData: FetchDataFunc;
-  loansProgramAccounts: LoansProgramAccounts;
   loanDataByPoolPublicKey: LoanDataByPoolPublicKey;
-  availableCollections: AvailableCollections[];
+  removeLoanOptimistic: RemoveLoanOptimistic;
   loading: boolean;
-  paybackLoan: (params: PaybackLoanTransactionParams) => Promise<void>;
-  proposeLoan: (params: ProposeLoanTransactionParams) => Promise<PublicKey>;
-}
-
-export interface LoansProgramAccounts {
-  collectionInfos: CollectionInfoView[];
-  deposits: DepositView[];
-  liquidityPools: LiquidityPoolView[];
-  loans: LoanView[];
-}
-
-export interface AvailableCollections {
-  collection_info: string;
-  creator: string;
-  description: string;
-  name: string;
-  royalty_address: string;
-  // whitelisted_mints: string[];
-  loan_pool: string;
 }
 
 export type LoansProviderType = (props: { children: ReactNode }) => JSX.Element;
 
 export interface LoanData {
-  collectionInfo: CollectionInfoView;
+  collectionsInfo: CollectionInfoView[];
   deposits: DepositView[];
   liquidityPool: LiquidityPoolView;
   loans: LoanView[];
 }
 
 export type LoanDataByPoolPublicKey = Map<string, LoanData>;
+
+export interface LoanWithArweaveMetadata {
+  loan: LoanView;
+  metadata: ArweaveMetadata;
+}
+
+export type RemoveLoanOptimistic = (loan: LoanView) => void;

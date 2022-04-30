@@ -54,7 +54,7 @@ const WalletPage: FC = () => {
             {tabValue === WalletTabs.LOANS && (
               <LoansList
                 className={styles.loansList}
-                loans={userLoans}
+                loansWithArweaveMetadata={userLoans}
                 loading={userLoansLoading}
               />
             )}

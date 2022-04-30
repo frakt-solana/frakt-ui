@@ -1,65 +1,94 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
-import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
-import { useLoans } from '../../contexts/loans';
+import {
+  LoanWithArweaveMetadata,
+  useLoans,
+  paybackLoan as paybackLoanTx,
+  getLoanCollectionInfo,
+} from '../../contexts/loans';
 import styles from './LoanCard.module.scss';
 import { useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
-import {
-  ArweaveMetadata,
-  getArweaveMetadataByMint,
-} from '../../utils/getArweaveMetadata';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 interface LoanCardProps {
   className?: string;
-  loan: LoanView;
+  loanWithArweaveMetadata: LoanWithArweaveMetadata;
 }
 
-export interface LoansWithMetadata extends LoanView {
-  metadata: ArweaveMetadata[];
-  collection: CollectionInfoView;
-}
+const usePaybackLoan = () => {
+  const wallet = useWallet();
+  const { connection } = useConnection();
+  const { removeLoanOptimistic } = useLoans();
 
-const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const { paybackLoan, loansProgramAccounts } = useLoans();
+  const paybackLoan = async (
+    loan: LoanView,
+    collectionInfo: CollectionInfoView,
+  ) => {
+    try {
+      openLoadingModal();
 
-  const { timeLeft, leftTimeInSeconds } = useCountdown(loan.expiredAt);
-  const [loanWithData, setLoanWithData] = useState<LoansWithMetadata>();
+      const result = await paybackLoanTx({
+        connection,
+        wallet,
+        loan,
+        collectionInfo,
+      });
 
-  const onGetBackLoan = async (): Promise<void> => {
-    openLoadingModal();
-    await paybackLoan({ loan: loanWithData });
+      if (!result) {
+        throw new Error('Loan failed');
+      }
 
-    closeLoadingModal();
+      removeLoanOptimistic(loan);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      closeLoadingModal();
+    }
   };
 
-  useEffect(() => {
-    (async () => {
-      const metadata = await getArweaveMetadataByMint([loan.nftMint]);
+  return {
+    paybackLoan,
+    closeLoadingModal,
+    loadingModalVisible,
+  };
+};
 
-      const collectionInfo = loansProgramAccounts?.collectionInfos.find(
-        ({ collectionInfoPubkey }) => {
-          return collectionInfoPubkey === loan.collectionInfo;
-        },
-      );
+const LoanCard: FC<LoanCardProps> = ({
+  className,
+  loanWithArweaveMetadata,
+}) => {
+  const { loan, metadata } = loanWithArweaveMetadata;
 
-      const value = Object.values(metadata);
-      setLoanWithData({ ...loan, metadata: value, collection: collectionInfo });
-    })();
-  }, [loan, loansProgramAccounts?.collectionInfos]);
+  const { loanDataByPoolPublicKey } = useLoans();
+  const collectionInfo = getLoanCollectionInfo(
+    loanDataByPoolPublicKey.get(loan?.liquidityPool),
+    loan.collectionInfo,
+  );
 
-  const loanDurationInSeconds = 7 * 24 * 60 * 60;
+  const { paybackLoan, closeLoadingModal, loadingModalVisible } =
+    usePaybackLoan();
+
+  const { timeLeft, leftTimeInSeconds } = useCountdown(loan.expiredAt);
+
+  const loanDurationInSeconds = loan.expiredAt - loan.startedAt;
   const progress =
     ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
+
+  const onPayback = () => {
+    paybackLoan(loan, collectionInfo);
+  };
 
   return (
     <>
@@ -68,19 +97,15 @@ const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
           <div
             className={styles.root__image}
             style={{
-              backgroundImage: `url(${loanWithData?.metadata[0].image})`,
+              backgroundImage: `url(${metadata?.image})`,
             }}
           />
           <div className={styles.root__content}>
-            <p className={styles.root__title}>
-              {loanWithData?.metadata[0].name}
-            </p>
+            <p className={styles.root__title}>{metadata?.name}</p>
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>Borrowed</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>
-                  {loanWithData?.amountToGet / 1e9}
-                </p>
+                <p className={styles.ltvText}>{loan?.amountToGet / 1e9}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
@@ -88,9 +113,7 @@ const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
               </div>
               <p className={styles.ltvTitle}>To repay</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>
-                  {loanWithData?.amountToReturn / 1e9}
-                </p>
+                <p className={styles.ltvText}>{loan?.amountToReturn / 1e9}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
@@ -116,7 +139,7 @@ const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
             <Button
               type="alternative"
               className={styles.btn}
-              onClick={onGetBackLoan}
+              onClick={onPayback}
             >
               Repay
             </Button>

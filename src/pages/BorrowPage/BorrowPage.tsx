@@ -17,7 +17,7 @@ const BorrowPage: FC = () => {
   const [search, setSearch] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(15);
 
-  const { onDeselectOneNft, onSelectOneNft, selectedNft } = useSelectLayout();
+  const { onDeselect, onSelect, selectedNfts } = useSelectLayout();
 
   const {
     isCloseSidebar,
@@ -30,12 +30,12 @@ const BorrowPage: FC = () => {
 
   return (
     <SelectLayout
-      selectedNfts={selectedNft}
-      onDeselect={onDeselectOneNft}
+      selectedNfts={selectedNfts}
+      onDeselect={onDeselect}
       isCloseSidebar={isCloseSidebar}
       sidebarForm={
         <BorrowForms
-          selectedNft={selectedNft}
+          selectedNft={selectedNfts?.[0]}
           onCloseSidebar={() => setIsCloseSidebar(true)}
         />
       }
@@ -72,15 +72,15 @@ const BorrowPage: FC = () => {
           {nfts.map((nft) => (
             <NFTCheckbox
               key={nft.mint}
-              onClick={() => onSelectOneNft(nft)}
+              onClick={() => onSelect(nft)}
               imageUrl={nft.metadata.image}
               name={nft.metadata.name}
               selected={
-                !!selectedNft.find(
+                !!selectedNfts.find(
                   (selectedNft) => selectedNft?.mint === nft.mint,
                 )
               }
-              ltvPrice={0.5}
+              ltv={0.2}
             />
           ))}
         </FakeInfinityScroll>

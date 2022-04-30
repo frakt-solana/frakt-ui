@@ -5,8 +5,7 @@ import { Tab, useTabs } from '../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../icons';
 import styles from '../LoansPage.module.scss';
 import { useDebounce } from '../../../hooks';
-import { useUserLoans } from '../../../contexts/loans';
-import { LoanView } from '@frakters/nft-lending-v2';
+import { LoanWithArweaveMetadata, useUserLoans } from '../../../contexts/loans';
 
 export enum InputControlsNames {
   SHOW_STAKED = 'showStaked',
@@ -35,7 +34,7 @@ export const useLoansPage = (): {
   tabValue: string;
   setTabValue: (value: string) => void;
   searchItems: (value?: string) => void;
-  userLoans: LoanView[];
+  userLoans: LoanWithArweaveMetadata[];
   userLoansLoading: boolean;
 } => {
   const { userLoans, loading: userLoansLoading } = useUserLoans();

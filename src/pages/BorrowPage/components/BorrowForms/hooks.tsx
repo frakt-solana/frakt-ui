@@ -5,7 +5,8 @@ import { Form, FormInstance } from 'antd';
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
 import { UserNFT, useUserTokens } from '../../../../contexts/userTokens';
-import { useLoans } from '../../../../contexts/loans';
+import { proposeLoan } from '../../../../contexts/loans';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 interface FormValues {
   LTV: string;
@@ -59,6 +60,9 @@ export const useBorrowForm = (
   closeLoadingModal: () => void;
   formStatus: string;
 } => {
+  const wallet = useWallet();
+  const { connection } = useConnection();
+
   const [txnModalVisible, setTxnModalVisible] = useState<boolean>(false);
   const [activeLine, setActiveLine] = useState<string>('');
   const [form] = Form.useForm<FormValues>();
@@ -80,7 +84,6 @@ export const useBorrowForm = (
   const { visible: loadingModalVisible, close: closeLoadingModal } =
     useLoadingModal();
 
-  const { proposeLoan } = useLoans();
   const { removeTokenOptimistic } = useUserTokens();
 
   const returnPeriod = watch(SelectControlsNames.RETURN_PERIOD_VALUES);
@@ -88,15 +91,28 @@ export const useBorrowForm = (
   const formStatus = watch(SelectControlsNames.SHOW_FORM_STATUS);
 
   const onSubmit = async (nft: UserNFT) => {
-    setTxnModalVisible(true);
+    try {
+      setTxnModalVisible(true);
 
-    const response = await proposeLoan({ nft });
-    if (response) {
+      const result = await proposeLoan({
+        nftMint: nft?.mint,
+        connection,
+        wallet,
+      });
+
+      if (!result) {
+        throw new Error('Loan proposing failed');
+      }
+
       removeTokenOptimistic([nft.mint]);
       onCloseSidebar();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      closeConfirmModal();
+      setTxnModalVisible(false);
     }
-    closeConfirmModal();
-    setTxnModalVisible(false);
   };
 
   const onTxnModalCancel = (): void => {

@@ -1,22 +1,22 @@
 import { FC } from 'react';
-import { LoanView } from '@frakters/nft-lending-v2';
+import classNames from 'classnames';
 
 import LoanCard from '../../../../components/LoanCard';
 import styles from './LoansList.module.scss';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../../components/FakeInfinityScroll';
-import classNames from 'classnames';
+import { LoanWithArweaveMetadata } from '../../../../contexts/loans';
 
 interface LoansListProps {
   className?: string;
-  loans?: LoanView[];
+  loansWithArweaveMetadata?: LoanWithArweaveMetadata[];
   loading?: boolean;
 }
 
 export const LoansList: FC<LoansListProps> = ({
   className,
-  loans = [],
+  loansWithArweaveMetadata = [],
   loading = false,
 }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
@@ -29,8 +29,8 @@ export const LoansList: FC<LoansListProps> = ({
       wrapperClassName={classNames(styles.loansList, className)}
       emptyMessage="Loans not found"
     >
-      {loans?.map((loan: LoanView) => (
-        <LoanCard key={loan.loanPubkey} loan={loan} />
+      {loansWithArweaveMetadata.map((loanWithArweaveMetadata, idx) => (
+        <LoanCard key={idx} loanWithArweaveMetadata={loanWithArweaveMetadata} />
       ))}
     </FakeInfinityScroll>
   );
