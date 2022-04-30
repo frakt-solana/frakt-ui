@@ -1,0 +1,36 @@
+.fieldWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px 0;
+}
+
+.valueField {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--gray-color-3);
+}
+
+.valueFieldTitle {
+  color: var(--gray-color-3);
+  font: var(--font-text-5);
+  text-transform: uppercase;
+}
+
+.valueFieldValueContainer {
+  display: flex;
+  align-items: center;
+  font: var(--font-text-3);
+  color: var(--white-color);
+}
+
+.valueFieldValue {
+  margin-right: 5px;
+}
+
+.valueFieldTokenIcon {
+  height: 25px;
+  width: 25px;
+  margin-bottom: 3px;
+}

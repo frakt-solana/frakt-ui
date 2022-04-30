@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { SearchInput } from '../../components/SearchInput';
 import NFTCheckbox from '../../components/NFTCheckbox';
-import BorrowForms from './components/BorrowForms';
+import { BorrowForm } from './components/BorrowForm';
 import FakeInfinityScroll, {
   useFakeInfinityScroll,
 } from '../../components/FakeInfinityScroll';
@@ -34,9 +34,10 @@ const BorrowPage: FC = () => {
       onDeselect={onDeselect}
       isCloseSidebar={isCloseSidebar}
       sidebarForm={
-        <BorrowForms
+        <BorrowForm
           selectedNft={selectedNfts?.[0]}
           onCloseSidebar={() => setIsCloseSidebar(true)}
+          ltvPrice={0.2}
         />
       }
     >
