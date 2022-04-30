@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { useLoans } from '../../contexts/loans';
+import { LoanData, useLoans } from '../../contexts/loans';
 import { useDebounce } from '../../hooks';
 
 export const useBorrowPage = (): {
@@ -14,6 +14,7 @@ export const useBorrowPage = (): {
   setVisible: (nextState: boolean) => void;
   loading: boolean;
   searchItems: (search: string) => void;
+  loanData: LoanData;
 } => {
   //? Hardcoded util multiple loanPools not implemented
   const loanPoolPubkey = 'Hy7h6FSicyB9B3ZNGtEs64dKzQWk8TuNdG1fgX5ccWFW';
@@ -49,11 +50,11 @@ export const useBorrowPage = (): {
     setSearchString(search.toUpperCase());
   }, 300);
 
+  const loanData = loanDataByPoolPublicKey.get(loanPoolPubkey);
+
   const whitelistedNfts = useMemo(() => {
     if (rawNfts?.length && loanDataByPoolPublicKey?.size) {
-      const creators = loanDataByPoolPublicKey
-        .get(loanPoolPubkey)
-        ?.collectionsInfo?.map(({ creator }) => creator);
+      const creators = loanData?.collectionsInfo?.map(({ creator }) => creator);
 
       return rawNfts?.filter(({ metadata }) => {
         const nftCreator =
@@ -82,5 +83,6 @@ export const useBorrowPage = (): {
     setVisible,
     loading: connected ? loading : false,
     searchItems,
+    loanData,
   };
 };

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
@@ -7,16 +7,19 @@ import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { ShortTermFields } from '../ShortTermFields';
 import { useBorrowForm } from './hooks';
+import { getReturnPrice, LoanData } from '../../../../contexts/loans';
 
 interface BorrowFormProps {
   selectedNft?: UserNFT;
-  ltvPrice?: number;
+  ltv?: number;
   onCloseSidebar?: () => void;
+  loanData: LoanData;
 }
 
 export const BorrowForm: FC<BorrowFormProps> = ({
   selectedNft,
-  ltvPrice = 0,
+  ltv = 0,
+  loanData,
   onCloseSidebar,
 }) => {
   const {
@@ -31,15 +34,23 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   const selectedNftName = selectedNft.metadata.name;
   const loanPeriodDays = 7;
 
-  const confirmText = `You are about to use your ${selectedNftName} as collateral in loan that you claim to return in ${loanPeriodDays} days and repay is ${ltvPrice?.toFixed(
-    2,
+  const returnPrice = useMemo(() => {
+    if (loanData && ltv && selectedNft) {
+      return getReturnPrice({ ltv, loanData, nft: selectedNft });
+    }
+
+    return 0;
+  }, [loanData, ltv, selectedNft]);
+
+  const confirmText = `You are about to use your ${selectedNftName} as collateral in loan that you claim to return in ${loanPeriodDays} days and repay is ${returnPrice?.toFixed(
+    3,
   )} SOL.\nWant to proceed?`;
 
   return (
     <>
       <div className={styles.details}>
         <p className={styles.detailsTitle}>Loan settings</p>
-        <ShortTermFields />
+        <ShortTermFields ltv={ltv} returnPrice={returnPrice} />
       </div>
       <div className={styles.continueBtnContainer}>
         <Button
@@ -57,10 +68,9 @@ export const BorrowForm: FC<BorrowFormProps> = ({
         subtitle={confirmText}
       />
       <LoadingModal
-        subtitle="In order to transfer the NFT/s approval is needed."
+        title="Please approve transaction"
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
-        className={styles.modal}
       />
     </>
   );

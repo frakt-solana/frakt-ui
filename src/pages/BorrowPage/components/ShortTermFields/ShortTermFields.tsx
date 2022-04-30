@@ -3,13 +3,21 @@ import { FC } from 'react';
 import styles from './ShortTermFields.module.scss';
 import { SOL_TOKEN } from '../../../../utils';
 
-export const ShortTermFields: FC = () => {
+interface ShortTermFields {
+  ltv?: number;
+  returnPrice?: number;
+}
+
+export const ShortTermFields: FC<ShortTermFields> = ({
+  ltv = 0,
+  returnPrice = 0,
+}) => {
   return (
     <div className={styles.fieldWrapper}>
       <div className={styles.valueField}>
         <p className={styles.valueFieldTitle}>LTV</p>
         <div className={styles.valueFieldValueContainer}>
-          <p className={styles.valueFieldValue}>10.00</p>
+          <p className={styles.valueFieldValue}>{ltv?.toFixed(3)}</p>
           <img className={styles.valueFieldTokenIcon} src={SOL_TOKEN.logoURI} />
           <p>{SOL_TOKEN.symbol}</p>
         </div>
@@ -25,7 +33,7 @@ export const ShortTermFields: FC = () => {
       <div className={styles.valueField}>
         <p className={styles.valueFieldTitle}>Repay value</p>
         <div className={styles.valueFieldValueContainer}>
-          <p className={styles.valueFieldValue}>10.00</p>
+          <p className={styles.valueFieldValue}>{returnPrice?.toFixed(3)}</p>
           <img className={styles.valueFieldTokenIcon} src={SOL_TOKEN.logoURI} />
           <p>{SOL_TOKEN.symbol}</p>
         </div>

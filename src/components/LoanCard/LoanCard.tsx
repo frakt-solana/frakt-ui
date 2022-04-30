@@ -147,6 +147,7 @@ const LoanCard: FC<LoanCardProps> = ({
         </div>
       </div>
       <LoadingModal
+        title="Please approve transaction"
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
       />

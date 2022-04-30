@@ -4,6 +4,7 @@ import {
 } from '@frakters/nft-lending-v2';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { groupBy } from 'lodash';
+import { UserNFT } from '../userTokens';
 
 import { LoanData, LoanDataByPoolPublicKey } from './loans.model';
 
@@ -44,4 +45,33 @@ export const getLoanCollectionInfo = (
     ({ collectionInfoPubkey }) =>
       collectionInfoPubkey === collectionInfoPublicKey,
   );
+};
+
+type GetReturnPrice = (props: {
+  ltv: number;
+  nft?: UserNFT;
+  loanData: LoanData;
+}) => number;
+
+export const getReturnPrice: GetReturnPrice = ({ ltv, loanData, nft }) => {
+  const PERCENT_PRECISION = 100;
+
+  const nftCreator =
+    nft?.metadata?.properties?.creators?.find(({ verified }) => verified)
+      ?.address || '';
+
+  const royaltyFeeRaw =
+    loanData?.collectionsInfo?.find(({ creator }) => creator === nftCreator)
+      ?.royaltyFee || 0;
+
+  const rewardInterestRateRaw =
+    loanData?.liquidityPool?.rewardInterestRate || 0;
+
+  const feeInterestRateRaw = loanData?.liquidityPool?.feeInterestRate || 0;
+
+  const feesPercent =
+    (royaltyFeeRaw + rewardInterestRateRaw + feeInterestRateRaw) /
+    (100 * PERCENT_PRECISION);
+
+  return ltv + ltv * feesPercent;
 };
