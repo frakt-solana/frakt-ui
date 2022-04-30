@@ -1,28 +1,23 @@
-import { FC, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useConnection } from '@solana/wallet-adapter-react';
+import { FC } from 'react';
 
-import {
-  getOwnerAvatar,
-  useNameServiceInfo,
-} from '../../../../utils/nameService';
+import { getOwnerAvatar } from '../../../../utils/nameService';
 import { shortenAddress } from '../../../../utils/solanaUtils';
-import { PencilIcon, TwitterIcon2 } from '../../../../icons';
+import { /* PencilIcon, */ TwitterIcon2 } from '../../../../icons';
 // import Button from '../../../../components/Button';
 import styles from './ProfileCard.module.scss';
 // import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 
-export const ProfileCard: FC = () => {
-  const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
-    useNameServiceInfo();
-  const { walletPubkey } = useParams<{ walletPubkey: string }>();
-  const { connection } = useConnection();
+interface ProfileCard {
+  name?: string;
+  twitterName?: string;
+  walletPubkey: string;
+}
 
-  useEffect(() => {
-    walletPubkey && getNameServiceInfo(walletPubkey, connection);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletPubkey]);
-
+export const ProfileCard: FC<ProfileCard> = ({
+  name,
+  walletPubkey,
+  twitterName,
+}) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.userInfo}>
@@ -31,36 +26,25 @@ export const ProfileCard: FC = () => {
           <div
             className={styles.ownerAvatar}
             style={{
-              backgroundImage: `url(${getOwnerAvatar(
-                nameServiceInfo.twitterHandle,
-              )})`,
+              backgroundImage: `url(${getOwnerAvatar(twitterName)})`,
             }}
           >
-            <div className={styles.editAvatarIcon}>
+            {/* <div className={styles.editAvatarIcon}>
               <PencilIcon />
-            </div>
+            </div> */}
           </div>
 
           <div className={styles.ownerInfo}>
-            <p>UserName4123</p>
+            {!!name && <p>{name}</p>}
             <p className={styles.ownerAddress}>
-              {nameServiceInfo?.domain
-                ? `${nameServiceInfo?.domain} (${shortenAddress(walletPubkey)})`
-                : `${shortenAddress(walletPubkey)}`}
+              {shortenAddress(walletPubkey)}
             </p>
-            {/* <p className={styles.leadearboard}>
-              <LinkWithArrow
-                to={`/`}
-                label="#56 in Leadearboard"
-                className={styles.myProfileLink}
-              />
-            </p> */}
           </div>
 
-          {nameServiceInfo?.twitterHandle && (
+          {twitterName && (
             <a
               className={styles.ownerTwitter}
-              href={`https://twitter.com/${nameServiceInfo.twitterHandle}`}
+              href={`https://twitter.com/${twitterName}`}
               target="_blank"
               rel="noopener noreferrer"
             >

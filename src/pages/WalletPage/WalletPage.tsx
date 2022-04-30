@@ -1,6 +1,4 @@
 import { FC } from 'react';
-import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Tab, Tabs, useTabs } from '../../components/Tabs';
@@ -11,10 +9,11 @@ import { TokensTab } from './components/TokensTab';
 import { LoansList } from './components/LoansList';
 import styles from './WalletPage.module.scss';
 import { useUserLoans } from '../../contexts/loans';
-
-export interface TokenInfoWithAmount extends TokenInfo {
-  amountBN: BN;
-}
+import { useParams } from 'react-router-dom';
+import { usePublicKeyParam } from '../../hooks';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useNameService, useWalletTokens, useWalletVaults } from './hooks';
+import { shortenAddress } from '../../utils/solanaUtils';
 
 export enum WalletTabs {
   TOKENS = 'tokens',
@@ -22,28 +21,91 @@ export enum WalletTabs {
   LOANS = 'loans',
 }
 
-const WalletPage: FC = () => {
+const useWalletPage = () => {
+  const { walletPubkey } = useParams<{ walletPubkey: string }>();
+  usePublicKeyParam(walletPubkey);
+
+  const wallet = useWallet();
+
+  const { nameServiceInfo } = useNameService({ walletPubkey });
+
+  const isMyProfile = walletPubkey === wallet.publicKey?.toBase58();
+
+  const { userLoans, loading: userLoansLoading } = useUserLoans();
+
+  const {
+    walletVaults,
+    walletUnfinishedVaults,
+    loading: vaultsLoading,
+  } = useWalletVaults({ walletPubkey });
+
+  const { userTokens, loading: userTokensLoading } = useWalletTokens({
+    walletPubkey,
+  });
+
   const {
     tabs,
     value: tabValue,
     setValue: setTabValue,
   } = useTabs({
-    tabs: POOL_TABS,
-    defaultValue: POOL_TABS[0].value,
+    tabs: isMyProfile ? POOL_TABS_MY : POOL_TABS,
+    defaultValue: (isMyProfile ? POOL_TABS_MY : POOL_TABS)[0].value,
   });
 
-  const { userLoans, loading: userLoansLoading } = useUserLoans();
+  const pageTitle = isMyProfile
+    ? 'My profile'
+    : `${shortenAddress(walletPubkey)} profile`;
+
+  return {
+    tabs,
+    tabValue,
+    setTabValue,
+    userLoans,
+    userLoansLoading,
+    isMyProfile,
+    pageTitle,
+    userTokens,
+    userTokensLoading,
+    walletVaults,
+    walletUnfinishedVaults,
+    vaultsLoading,
+    nameServiceInfo,
+    walletPubkey,
+  };
+};
+
+const WalletPage: FC = () => {
+  const {
+    tabs,
+    tabValue,
+    setTabValue,
+    pageTitle,
+    userLoans,
+    userLoansLoading,
+    userTokens,
+    userTokensLoading,
+    walletVaults,
+    walletUnfinishedVaults,
+    vaultsLoading,
+    isMyProfile,
+    nameServiceInfo,
+    walletPubkey,
+  } = useWalletPage();
 
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
         <div className={styles.pageHeader}>
           <div className={styles.titleContainer}>
-            <h2 className={styles.title}>My profile</h2>
+            <h2 className={styles.title}>{pageTitle}</h2>
           </div>
         </div>
         <div className={styles.content}>
-          <ProfileCard />
+          <ProfileCard
+            walletPubkey={walletPubkey}
+            name={nameServiceInfo?.domain}
+            twitterName={nameServiceInfo?.twitterHandle}
+          />
           <div className={styles.tabsContent}>
             <Tabs
               className={styles.tabs}
@@ -58,8 +120,17 @@ const WalletPage: FC = () => {
                 loading={userLoansLoading}
               />
             )}
-            {tabValue === WalletTabs.TOKENS && <TokensTab />}
-            {tabValue === WalletTabs.VAULTS && <VaultsTab />}
+            {tabValue === WalletTabs.TOKENS && (
+              <TokensTab userTokens={userTokens} loading={userTokensLoading} />
+            )}
+            {tabValue === WalletTabs.VAULTS && (
+              <VaultsTab
+                vaults={walletVaults}
+                unfinishedVaults={walletUnfinishedVaults}
+                loading={vaultsLoading}
+                isMyProfile={isMyProfile}
+              />
+            )}
           </div>
         </div>
       </Container>
@@ -71,10 +142,6 @@ export default WalletPage;
 
 const POOL_TABS: Tab[] = [
   {
-    label: 'Loans',
-    value: 'loans',
-  },
-  {
     label: 'Tokens',
     value: 'tokens',
   },
@@ -82,4 +149,12 @@ const POOL_TABS: Tab[] = [
     label: 'Vaults',
     value: 'vaults',
   },
+];
+
+const POOL_TABS_MY: Tab[] = [
+  {
+    label: 'Loans',
+    value: 'loans',
+  },
+  ...POOL_TABS,
 ];

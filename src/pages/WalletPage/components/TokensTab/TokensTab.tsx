@@ -1,65 +1,25 @@
-import { FC, useEffect, useState } from 'react';
-import { useConnection } from '@solana/wallet-adapter-react';
-import { useHistory, useParams } from 'react-router-dom';
-import { getAllUserTokens } from 'solana-nft-metadata';
+import { FC } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
 
-import { useTokenListContext } from '../../../../contexts/TokenList';
-import { TokenInfoWithAmount } from '../../WalletPage';
 import { Loader } from '../../../../components/Loader';
-import { PATHS } from '../../../../constants';
 import { FRKT_TOKEN } from '../../../../utils';
 import { TokenCard } from '../TokenCard';
 import styles from './styles.module.scss';
+import BN from 'bn.js';
 
-export const TokensTab: FC = () => {
-  const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
-  const history = useHistory();
-  const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
-  const { walletPubkey } = useParams<{ walletPubkey: string }>();
-  const { connection } = useConnection();
+export interface TokenInfoWithAmount extends TokenInfo {
+  amountBN: BN;
+}
 
-  const fetchUserTokens = async (): Promise<void> => {
-    try {
-      //? Checking if wallet valid
-      new PublicKey(walletPubkey);
+interface TokensTab {
+  userTokens: TokenInfoWithAmount[];
+  loading: boolean;
+}
 
-      const userTokens = await getAllUserTokens(new PublicKey(walletPubkey), {
-        connection,
-      });
-
-      setUserTokens(
-        userTokens
-          .reduce((acc, tokenView) => {
-            const tokenInfo: TokenInfo = fraktionTokensMap.get(
-              String(tokenView.mint),
-            );
-            return tokenInfo
-              ? [...acc, { ...tokenInfo, amountBN: tokenView.amountBN }]
-              : acc;
-          }, [])
-          .sort(
-            (tokenA: TokenInfoWithAmount, tokenB: TokenInfoWithAmount) =>
-              tokenA.amountBN.toNumber() - tokenB.amountBN.toNumber(),
-          ),
-      );
-    } catch (err) {
-      history.replace(PATHS.ROOT);
-      // eslint-disable-next-line no-console
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    !tokensLoading && fetchUserTokens();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokensLoading]);
-
+export const TokensTab: FC<TokensTab> = ({ userTokens, loading }) => {
   return (
     <>
-      {tokensLoading ? (
+      {loading ? (
         <div className={styles.loader}>
           <Loader size={'large'} />
         </div>

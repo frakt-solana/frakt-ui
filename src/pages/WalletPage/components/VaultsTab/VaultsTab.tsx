@@ -1,58 +1,68 @@
-import { FC, useMemo } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { FC, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 import { Loader } from '../../../../components/Loader';
 import VaultCard from '../../../../components/VaultCard';
 import { PATHS } from '../../../../constants';
 import styles from './styles.module.scss';
-import {
-  useFraktion,
-  useFraktionInitialFetch,
-  useFraktionPolling,
-  VaultData,
-  VaultState,
-} from '../../../../contexts/fraktion';
+import { VaultData } from '../../../../contexts/fraktion';
+import Toggle from '../../../../components/Toggle';
 
-export const VaultsTab: FC = () => {
-  const { walletPubkey } = useParams<{ walletPubkey: string }>();
-  const { vaults, loading: vaultsLoading } = useFraktion();
+interface VaultsTabProps {
+  vaults: VaultData[];
+  unfinishedVaults: VaultData[];
+  loading: boolean;
+  isMyProfile?: boolean;
+}
 
-  useFraktionInitialFetch();
-  useFraktionPolling();
+export const VaultsTab: FC<VaultsTabProps> = ({
+  vaults,
+  unfinishedVaults,
+  loading,
+  isMyProfile = false,
+}) => {
+  const [showUnfinished, setShowUnfinished] = useState<boolean>(false);
 
-  const userVaults = useMemo(() => {
-    return vaults
-      .filter(
-        (vault) =>
-          vault.authority === walletPubkey &&
-          vault.state !== VaultState.Inactive &&
-          vault.state !== VaultState.Archived,
-      )
-      .sort(
-        (vaultA: VaultData, vaultB: VaultData) => vaultB.state - vaultA.state,
-      );
-  }, [vaults, walletPubkey]);
+  const onToggleUnfinishedClick = () => {
+    setShowUnfinished(!showUnfinished);
+  };
+
+  const noVaults = showUnfinished ? !unfinishedVaults.length : !vaults.length;
+
+  const showToggle = isMyProfile && !!unfinishedVaults.length;
 
   return (
     <>
-      {vaultsLoading ? (
+      {loading ? (
         <div className={styles.loader}>
           <Loader size={'large'} />
         </div>
       ) : (
         <>
-          <div className={styles.vaults}>
-            {!userVaults.length && (
-              <p className={styles.emptyMessage}>No vaults found</p>
+          <div className={styles.wrapper}>
+            {showToggle && (
+              <div className={styles.filters}>
+                <Toggle
+                  value={showUnfinished}
+                  label="Show unfinished"
+                  className={styles.filter}
+                  onChange={onToggleUnfinishedClick}
+                />
+              </div>
             )}
-            {userVaults.map((vault) => (
-              <NavLink
-                key={vault.vaultPubkey}
-                to={`${PATHS.VAULT}/${vault.vaultPubkey}`}
-              >
-                <VaultCard vaultData={vault} />
-              </NavLink>
-            ))}
+
+            {noVaults && <p className={styles.emptyMessage}>No vaults found</p>}
+
+            <div className={styles.vaults}>
+              {(showUnfinished ? unfinishedVaults : vaults).map((vault) => (
+                <NavLink
+                  key={vault.vaultPubkey}
+                  to={`${PATHS.VAULT}/${vault.vaultPubkey}`}
+                >
+                  <VaultCard vaultData={vault} />
+                </NavLink>
+              ))}
+            </div>
           </div>
         </>
       )}

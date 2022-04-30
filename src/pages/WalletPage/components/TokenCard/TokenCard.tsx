@@ -6,7 +6,7 @@ import { decimalBNToString } from '../../../../utils';
 import Button from '../../../../components/Button';
 import styles from './TokenCard.module.scss';
 import { createPoolLink, PATHS, POOL_TABS } from '../../../../constants';
-import { TokenInfoWithAmount } from '../../WalletPage';
+import { TokenInfoWithAmount } from '../TokensTab/TokensTab';
 
 interface TokenCardProps {
   token: TokenInfoWithAmount;
