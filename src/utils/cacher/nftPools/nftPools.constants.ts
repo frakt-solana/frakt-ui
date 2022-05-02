@@ -6,7 +6,7 @@ export const HIDDEN_POOLS = [
   // 'HfEJXp9YNdrrPuqAoaeKzL3pyCvsdnVQxHXpf7KVTsjY', //? Solpunks
   // 'EHNimBvyzYB8qJvpXzaGudDZ3eNUnezyCMLxigXvTqwU', //? Blockasset legends
   '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv', //? Sol Patrol
-  'GaTnrfAh8JsNxpVi8oKCoyeWwXySCju55GJfTaVTrGep', //? Turtles
+  // 'GaTnrfAh8JsNxpVi8oKCoyeWwXySCju55GJfTaVTrGep', //? Turtles
 ];
 
 export const CUSTOM_POOLS_NAMES = {
@@ -17,5 +17,5 @@ export const CUSTOM_POOLS_NAMES = {
   HfEJXp9YNdrrPuqAoaeKzL3pyCvsdnVQxHXpf7KVTsjY: 'solpunks',
   EHNimBvyzYB8qJvpXzaGudDZ3eNUnezyCMLxigXvTqwU: 'blockasset_legends',
   '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv': 'sol_patrol',
-  GaTnrfAh8JsNxpVi8oKCoyeWwXySCju55GJfTaVTrGep: 'turtles', //? Turtles
+  GaTnrfAh8JsNxpVi8oKCoyeWwXySCju55GJfTaVTrGep: 'turtles',
 };
