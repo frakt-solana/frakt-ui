@@ -80,6 +80,7 @@ const BorrowPage: FC = () => {
             className={styles.acceptedCollectionsLink}
             label="Check collections accepted for loans"
             to={ACCEPTED_FOR_LOANS_COLLECTIONS_LINK}
+            externalLink
           />
         </div>
       )}
