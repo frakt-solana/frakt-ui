@@ -12,6 +12,10 @@ import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
 import { MOCK_LOAN_TO_VALUE, MOCK_VALUATION } from '../../contexts/loans';
+import { LinkWithArrow } from '../../components/LinkWithArrow';
+
+const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
+  'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
 
 const BorrowPage: FC = () => {
   const { connected } = useWallet();
@@ -58,7 +62,8 @@ const BorrowPage: FC = () => {
         className={styles.search}
         placeholder="Search by NFT name"
       />
-      {!connected ? (
+
+      {!connected && (
         <Button
           type="secondary"
           className={styles.connectBtn}
@@ -66,13 +71,26 @@ const BorrowPage: FC = () => {
         >
           Connect wallet
         </Button>
-      ) : (
+      )}
+
+      {connected && !nfts?.length && !loading && (
+        <div className={styles.noSuiableMessageWrapper}>
+          <p className={styles.noSuiableMessage}>No suitable NFTs found</p>
+          <LinkWithArrow
+            className={styles.acceptedCollectionsLink}
+            label="Check collections accepted for loans"
+            to={ACCEPTED_FOR_LOANS_COLLECTIONS_LINK}
+          />
+        </div>
+      )}
+
+      {connected && (
         <FakeInfinityScroll
           itemsToShow={itemsToShow}
           next={next}
           isLoading={loading}
           wrapperClassName={styles.nftsList}
-          emptyMessage="No suitable NFTs found"
+          emptyMessage=""
         >
           {nfts.map((nft) => (
             <NFTCheckbox

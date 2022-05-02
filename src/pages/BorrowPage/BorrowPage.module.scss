@@ -28,3 +28,28 @@
   gap: 32px;
   align-items: stretch;
 }
+
+.noSuiableMessageWrapper {
+  color: var(--white-color);
+}
+
+.noSuiableMessage {
+  font: var(--font-btn-mid);
+  margin-bottom: 6px;
+}
+
+.acceptedCollectionsLink {
+  color: var(--accent-color-1);
+
+  &::after {
+    background-color: var(--accent-color-1);
+  }
+
+  &:hover {
+    color: var(--accent-color-1);
+  }
+
+  svg path {
+    fill: var(--accent-color-1);
+  }
+}
