@@ -12,6 +12,7 @@ import { getReturnPrice, LoanData } from '../../../../contexts/loans';
 interface BorrowFormProps {
   selectedNft?: UserNFT;
   ltv?: number;
+  valuation?: number;
   onCloseSidebar?: () => void;
   loanData: LoanData;
 }
@@ -19,6 +20,7 @@ interface BorrowFormProps {
 export const BorrowForm: FC<BorrowFormProps> = ({
   selectedNft,
   ltv = 0,
+  valuation = 0,
   loanData,
   onCloseSidebar,
 }) => {
@@ -50,7 +52,11 @@ export const BorrowForm: FC<BorrowFormProps> = ({
     <>
       <div className={styles.details}>
         <p className={styles.detailsTitle}>Loan settings</p>
-        <ShortTermFields ltv={ltv} returnPrice={returnPrice} />
+        <ShortTermFields
+          valuation={valuation}
+          ltv={ltv}
+          returnPrice={returnPrice}
+        />
       </div>
       <div className={styles.continueBtnContainer}>
         <Button

@@ -11,7 +11,7 @@ import FakeInfinityScroll, {
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
-import { MOCK_LOAN_TO_VALUE } from '../../contexts/loans';
+import { MOCK_LOAN_TO_VALUE, MOCK_VALUATION } from '../../contexts/loans';
 
 const BorrowPage: FC = () => {
   const { connected } = useWallet();
@@ -39,6 +39,7 @@ const BorrowPage: FC = () => {
         <BorrowForm
           selectedNft={selectedNfts?.[0]}
           onCloseSidebar={() => setIsCloseSidebar(true)}
+          valuation={MOCK_VALUATION}
           ltv={MOCK_LOAN_TO_VALUE}
           loanData={loanData}
         />
