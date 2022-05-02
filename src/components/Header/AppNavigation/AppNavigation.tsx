@@ -66,14 +66,14 @@ export const DropdownMenuDoStuff: FC = () => {
           </NavLink>
         </li>
         <li className={styles.linkList}>
-          <a href={PATHS.BORROW} className={styles.link}>
+          <NavLink className={styles.link} to={PATHS.BORROW}>
             <div className={styles.content}>
               <p className={styles.title}>Borrow</p>
               <p className={styles.subtitle}>
                 take loan using NFT as collateral
               </p>
             </div>
-          </a>
+          </NavLink>
         </li>
       </ul>
     </Dropdown>

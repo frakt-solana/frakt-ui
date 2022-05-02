@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import React, { useState } from 'react';
+import { useConnection } from '@solana/wallet-adapter-react';
 import { LoanView } from '@frakters/nft-lending-v2';
 
 import {
@@ -13,15 +13,14 @@ import {
 import { fetchLoanDataByPoolPublicKey } from './loans.helpers';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
-  loading: true,
+  loading: false,
   loanDataByPoolPublicKey: new Map<string, LoanData>(),
-  fetchLoansData: () => Promise.resolve(null),
+  initialFetch: () => Promise.resolve(null),
   removeLoanOptimistic: () => {},
 });
 
 export const LoansProvider: LoansProviderType = ({ children }) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const wallet = useWallet();
+  const [loading, setLoading] = useState<boolean>(false);
   const { connection } = useConnection();
 
   const [loanDataByPoolPublicKey, setLoanDataByPoolPublicKey] =
@@ -39,13 +38,6 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (wallet.connected) {
-      fetchLoansData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallet.connected]);
 
   const removeLoanOptimistic: RemoveLoanOptimistic = (loan: LoanView) => {
     const loanPoolPubkey = loan?.liquidityPool;
@@ -67,7 +59,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
       value={{
         loading,
         loanDataByPoolPublicKey,
-        fetchLoansData,
+        initialFetch: fetchLoansData,
         removeLoanOptimistic,
       }}
     >

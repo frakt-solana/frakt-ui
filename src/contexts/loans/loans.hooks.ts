@@ -14,6 +14,17 @@ export const useLoans = (): LoansContextValues => {
   return context;
 };
 
+export const useLoansInitialFetch = (): void => {
+  const { loading, loanDataByPoolPublicKey, initialFetch } = useLoans();
+
+  useEffect(() => {
+    if (!loading && !loanDataByPoolPublicKey.size) {
+      initialFetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+};
+
 type UseUserLoans = () => {
   loading: boolean;
   userLoans: LoanWithArweaveMetadata[];

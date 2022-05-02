@@ -5,7 +5,11 @@ import { Tab, useTabs } from '../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../icons';
 import styles from '../LoansPage.module.scss';
 import { useDebounce } from '../../../hooks';
-import { LoanWithArweaveMetadata, useUserLoans } from '../../../contexts/loans';
+import {
+  LoanWithArweaveMetadata,
+  useLoansInitialFetch,
+  useUserLoans,
+} from '../../../contexts/loans';
 
 export enum InputControlsNames {
   SHOW_STAKED = 'showStaked',
@@ -37,6 +41,7 @@ export const useLoansPage = (): {
   userLoans: LoanWithArweaveMetadata[];
   userLoansLoading: boolean;
 } => {
+  useLoansInitialFetch();
   const { userLoans, loading: userLoansLoading } = useUserLoans();
 
   const { control } = useForm({

@@ -11,7 +11,7 @@ import { ArweaveMetadata } from '../../utils/getArweaveMetadata';
 export type FetchDataFunc = () => Promise<void>;
 
 export interface LoansContextValues {
-  fetchLoansData: FetchDataFunc;
+  initialFetch: FetchDataFunc;
   loanDataByPoolPublicKey: LoanDataByPoolPublicKey;
   removeLoanOptimistic: RemoveLoanOptimistic;
   loading: boolean;

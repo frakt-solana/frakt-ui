@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { LoanData, useLoans } from '../../contexts/loans';
+import { LoanData, useLoans, useLoansInitialFetch } from '../../contexts/loans';
 import { useDebounce } from '../../hooks';
 
 export const useBorrowPage = (): {
@@ -19,6 +19,7 @@ export const useBorrowPage = (): {
   //? Hardcoded util multiple loanPools not implemented
   const loanPoolPubkey = 'Hy7h6FSicyB9B3ZNGtEs64dKzQWk8TuNdG1fgX5ccWFW';
 
+  useLoansInitialFetch();
   const { connected } = useWallet();
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const {
