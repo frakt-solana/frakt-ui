@@ -4,7 +4,6 @@ import { Controller } from 'react-hook-form';
 
 import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { LoansList } from '../WalletPage/components/LoansList';
 import { SearchInput } from '../../components/SearchInput';
 import { Container } from '../../components/Layout';
 import BorrowBanner from './components/BorrowBanner';
@@ -18,6 +17,7 @@ import {
   SORT_VALUES,
   useLoansPage,
 } from './hooks';
+import { MyLoansTab } from './components/MyLoansTab';
 
 const LoansPage: FC = () => {
   const { connected } = useWallet();
@@ -78,22 +78,12 @@ const LoansPage: FC = () => {
                 />
               </div>
             </div>
-            <LendingPool
-              totalSupply={'1500'}
-              deposit={'5'}
-              loans={'5'}
-              apy={'30'}
-            />
+            <LendingPool totalSupply="1500" deposit="5" loans="5" apy="30" />
           </>
         )}
         {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
         {tabValue === LoanTabsNames.LOANS && (
-          <div style={{ paddingTop: 20 }}>
-            <LoansList
-              loansWithArweaveMetadata={userLoans}
-              loading={userLoansLoading}
-            />
-          </div>
+          <MyLoansTab userLoans={userLoans} loading={userLoansLoading} />
         )}
       </Container>
     </AppLayout>
