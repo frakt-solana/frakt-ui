@@ -4,7 +4,6 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
-import { useTokenListContext } from '../../../contexts/TokenList';
 import { SOL_TOKEN } from '../../../utils';
 import {
   useFraktion,
@@ -28,9 +27,7 @@ export type FormFieldValues = {
   [InputControlsNames.PAY_VALUE]: string;
 };
 
-export const useSwapForm = (
-  defaultTokenMint: string,
-): {
+export const useSwapForm = (): {
   formControl: Control<FormFieldValues>;
   onPayTokenChange: (nextToken: TokenInfo) => void;
   onReceiveTokenChange: (nextToken: TokenInfo) => void;
@@ -49,9 +46,9 @@ export const useSwapForm = (
   confirmModalVisible: boolean;
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
+  prisma: any;
 } => {
-  const { tokensList } = useTokenListContext();
-  const { poolDataByMint, prismaSwap, prisma } = useLiquidityPools();
+  const { prismaSwap, prisma } = useLiquidityPools();
   const { connected } = useWallet();
   const { vaults } = useFraktion();
   useFraktionInitialFetch();
@@ -59,8 +56,7 @@ export const useSwapForm = (
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
-      [InputControlsNames.RECEIVE_TOKEN]:
-        poolDataByMint.get(defaultTokenMint)?.tokenInfo || null,
+      [InputControlsNames.RECEIVE_TOKEN]: SOL_TOKEN,
       [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.PAY_TOKEN]: SOL_TOKEN,
       [InputControlsNames.RECEIVE_VALUE]: '',
@@ -90,12 +86,12 @@ export const useSwapForm = (
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const onPayTokenChange = (nextToken: TokenInfo) => {
+  const onPayTokenChange = (nextToken: TokenInfo): void => {
     setValue(InputControlsNames.PAY_VALUE, '');
     setValue(InputControlsNames.PAY_TOKEN, nextToken);
   };
 
-  const onReceiveTokenChange = (nextToken: TokenInfo) => {
+  const onReceiveTokenChange = (nextToken: TokenInfo): void => {
     setValue(InputControlsNames.RECEIVE_VALUE, '');
     setValue(InputControlsNames.RECEIVE_TOKEN, nextToken);
   };
@@ -126,21 +122,17 @@ export const useSwapForm = (
   useEffect(() => {
     if (prisma?.user && routes) {
       const amount = String(routes?.amountOut * Number(payValue));
-      console.log(routes);
-      setTokenPriceImpact(routes.priceImpact.toFixed(2));
-      setTokenMinAmountOut(routes.minimumReceived.toFixed(2));
       setValue(InputControlsNames.RECEIVE_VALUE, amount);
     } else {
       setValue(InputControlsNames.RECEIVE_VALUE, '');
     }
-  }, [payValue, payToken, receiveToken]);
+  }, [payValue, payToken, receiveToken, receiveValue, setValue]);
 
   useEffect(() => {
     (async () => {
       if (prisma?.user && payToken?.address && receiveToken?.address) {
         await prisma.loadRoutes(payToken?.address, receiveToken?.address);
         const routes = prisma.getRoutes(1)[0];
-        console.log(routes);
         setRoutes(routes);
       }
     })();
@@ -185,7 +177,7 @@ export const useSwapForm = (
     await prismaSwap({
       receiveToken: receiveToken.address,
       payToken: payToken.address,
-      tokensList,
+      tokensList: prisma?.tokenList?.tokens,
       payValue,
       slippage,
     });
@@ -212,5 +204,6 @@ export const useSwapForm = (
     confirmModalVisible,
     openConfirmModal,
     closeConfirmModal,
+    prisma,
   };
 };

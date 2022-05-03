@@ -9,12 +9,10 @@ import { ChangeSidesButton } from './ChangeSidesButton';
 import { SettingsModal } from './SettingsModal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useSwapForm } from './hooks/useSwapForm';
 import { ConfirmModal } from '../ConfirmModal';
 import { LoadingModal } from '../LoadingModal';
-import { useTokenListContext } from '../../contexts/TokenList';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
@@ -43,9 +41,8 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     closeConfirmModal,
     loadingModalVisible,
     closeLoadingModal,
-  } = useSwapForm(defaultTokenMint);
-
-  const { tokensList } = useTokenListContext();
+    prisma,
+  } = useSwapForm();
 
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
@@ -78,7 +75,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             className={styles.input}
             value={value}
             onValueChange={onChange}
-            tokensList={tokensList}
+            tokensList={prisma?.tokenList?.tokens}
             currentToken={payToken}
             onTokenChange={onPayTokenChange}
             modalTitle="Pay"
@@ -98,7 +95,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             value={value}
             onValueChange={onChange}
             currentToken={receiveToken}
-            tokensList={tokensList}
+            tokensList={prisma?.tokenList?.tokens}
             onTokenChange={onReceiveTokenChange}
             modalTitle="Receive"
             label="Receive"

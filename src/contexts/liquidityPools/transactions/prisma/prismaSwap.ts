@@ -26,11 +26,13 @@ export const rawPrismaSwap = async ({
   connection,
   tokensList,
   payValue,
+  slippage = '1',
 }: PrismaSwapTransactionRawParams): Promise<void> => {
   const initPrism = async () => {
     return await Prism.init({
       user: wallet.publicKey,
       connection: connection,
+      slippage: Number(slippage),
       tokenList: { tokens: tokensList },
     });
   };
