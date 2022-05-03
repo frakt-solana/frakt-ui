@@ -74,7 +74,7 @@ export const getFeePercent: GetFeePercent = ({ loanData, nft }) => {
 
 const TENSOR_COLLECTIONS_BASE = 'https://api.tensor.so/sol/collections';
 
-export const getTensorNftPrice = async (
+export const getNftMarketLowerPriceByCreator = async (
   creatorAddress: string,
 ): Promise<number | null> => {
   try {
