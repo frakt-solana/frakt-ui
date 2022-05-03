@@ -96,23 +96,28 @@ const BorrowPage: FC = () => {
           wrapperClassName={styles.nftsList}
           emptyMessage=""
         >
-          {nfts.map((nft) => (
-            <NFTCheckbox
-              key={nft.mint}
-              onClick={() => onSelect(nft)}
-              imageUrl={nft.metadata.image}
-              name={nft.metadata.name}
-              selected={
-                !!selectedNfts.find(
-                  (selectedNft) => selectedNft?.mint === nft.mint,
-                )
-              }
-              ltv={
-                ltvByCreator[getNftCreator(nft)] / 10 ** SOL_TOKEN.decimals ||
-                null
-              }
-            />
-          ))}
+          {nfts.map((nft) => {
+            const creator = getNftCreator(nft);
+
+            const loanValue =
+              (priceByCreator[creator] * ltvByCreator[creator]) /
+              10 ** SOL_TOKEN.decimals;
+
+            return (
+              <NFTCheckbox
+                key={nft.mint}
+                onClick={() => onSelect(nft)}
+                imageUrl={nft.metadata.image}
+                name={nft.metadata.name}
+                selected={
+                  !!selectedNfts.find(
+                    (selectedNft) => selectedNft?.mint === nft.mint,
+                  )
+                }
+                loanValue={loanValue || null}
+              />
+            );
+          })}
         </FakeInfinityScroll>
       )}
     </SelectLayout>

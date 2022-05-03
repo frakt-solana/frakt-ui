@@ -8,7 +8,7 @@ import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { ShortTermFields } from '../ShortTermFields';
 import { useBorrowForm } from './hooks';
-import { getReturnPrice, LoanData } from '../../../../contexts/loans';
+import { getFeePercent, LoanData } from '../../../../contexts/loans';
 import { getNftCreator, SOL_TOKEN } from '../../../../utils';
 
 interface BorrowFormProps {
@@ -28,9 +28,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   onDeselect,
   interestRateDiscountPercent = 0,
 }) => {
-  const ltv = ltvByCreator[getNftCreator(selectedNft)] || null;
+  const nftCreator = getNftCreator(selectedNft);
 
-  const valuation = priceByCreator[getNftCreator(selectedNft)] || null;
+  const valuation =
+    priceByCreator[nftCreator] / 10 ** SOL_TOKEN.decimals || null;
+  const ltv = ltvByCreator[nftCreator] || null;
+  const loanValue = valuation * ltv || null;
 
   const {
     openConfirmModal,
@@ -44,19 +47,20 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   const selectedNftName = selectedNft.metadata.name;
   const loanPeriodDays = 7;
 
-  const returnPrice = useMemo(() => {
-    if (loanData && ltv && selectedNft) {
-      return getReturnPrice({
-        ltv: ltv / 10 ** SOL_TOKEN.decimals,
+  const fee = useMemo(() => {
+    if (loanData && selectedNft) {
+      return getFeePercent({
         loanData,
         nft: selectedNft,
-        interestRateDiscountPercent,
       });
     }
 
     return 0;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loanData, ltv, selectedNft]);
+  }, [loanData, selectedNft]);
+
+  const feeWithDiscount = fee * (1 - interestRateDiscountPercent / 100);
+  const returnPrice = loanValue + loanValue * feeWithDiscount;
 
   const confirmText = `You are about to use your ${selectedNftName} as collateral in loan that you claim to return in ${loanPeriodDays} days and repay is ${returnPrice?.toFixed(
     3,
@@ -67,11 +71,12 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   return (
     <>
       <div className={styles.details}>
-        <p className={styles.detailsTitle}>Loan settings</p>
+        <p className={styles.detailsTitle}>Loan info</p>
         <ShortTermFields
-          valuation={valuation / 10 ** SOL_TOKEN.decimals || null}
-          ltv={ltv / 10 ** SOL_TOKEN.decimals || null}
-          returnPrice={returnPrice}
+          valuation={valuation}
+          ltv={ltv}
+          fee={fee}
+          feeDiscountPercent={interestRateDiscountPercent}
         />
       </div>
       <div className={styles.continueBtnContainer}>

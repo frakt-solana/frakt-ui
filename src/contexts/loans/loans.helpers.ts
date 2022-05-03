@@ -47,19 +47,9 @@ export const getLoanCollectionInfo = (
   );
 };
 
-type GetReturnPrice = (props: {
-  ltv: number;
-  nft?: UserNFT;
-  loanData: LoanData;
-  interestRateDiscountPercent?: number;
-}) => number;
+type GetFeePercent = (props: { nft?: UserNFT; loanData: LoanData }) => number;
 
-export const getReturnPrice: GetReturnPrice = ({
-  ltv,
-  loanData,
-  nft,
-  interestRateDiscountPercent = 0,
-}) => {
+export const getFeePercent: GetFeePercent = ({ loanData, nft }) => {
   const PERCENT_PRECISION = 100;
 
   const nftCreator =
@@ -79,10 +69,7 @@ export const getReturnPrice: GetReturnPrice = ({
     (royaltyFeeRaw + rewardInterestRateRaw + feeInterestRateRaw) /
     (100 * PERCENT_PRECISION);
 
-  const feesWithDiscount =
-    feesPercent * (1 - interestRateDiscountPercent / 100);
-
-  return ltv + ltv * feesWithDiscount;
+  return feesPercent || 0;
 };
 
 const TENSOR_COLLECTIONS_BASE = 'https://api.tensor.so/sol/collections';

@@ -10,7 +10,7 @@ interface NFTCheckboxInterface {
   imageUrl?: string;
   name: string;
   onClick?: () => void;
-  ltv?: number;
+  loanValue?: number;
 }
 
 const NFTCheckbox = ({
@@ -19,7 +19,7 @@ const NFTCheckbox = ({
   imageUrl,
   name,
   onClick,
-  ltv,
+  loanValue,
 }: NFTCheckboxInterface): JSX.Element => {
   return (
     <div className={styles.wrapper}>
@@ -37,11 +37,11 @@ const NFTCheckbox = ({
         />
         <div className={styles.root__content}>
           <p className={styles.root__title}>{name}</p>
-          {ltv && (
+          {loanValue && (
             <div className={styles.ltvWrapper}>
-              <p className={styles.ltvTitle}>LTV</p>
+              <p className={styles.ltvTitle}>Loan value</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{ltv.toFixed(2)}</p>
+                <p className={styles.ltvText}>{loanValue.toFixed(2)}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>

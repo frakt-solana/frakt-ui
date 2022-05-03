@@ -143,8 +143,7 @@ export const useBorrowPage = (): {
     ) {
       return Object.fromEntries(
         loanData?.collectionsInfo?.map(({ creator, loanToValue }) => {
-          const price = priceByCreator[creator];
-          const ltv = price * (loanToValue / 1e4) || null;
+          const ltv = loanToValue / 1e4 || null;
 
           return [creator, ltv];
         }),
