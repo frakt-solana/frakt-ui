@@ -5,6 +5,9 @@ import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
 import classNames from 'classnames';
 import { SearchInput } from '../SearchInput';
+import FakeInfinityScroll, {
+  useFakeInfinityScroll,
+} from '../FakeInfinityScroll';
 
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (token: TokenInfo) => void;
@@ -26,6 +29,8 @@ export const SelectTokenModal = ({
 }: SelectTokenModalProps): JSX.Element => {
   const [search, setSearch] = useState<string>('');
   const searchUp = search.toUpperCase();
+  const { itemsToShow, next } = useFakeInfinityScroll(9);
+
   const filterTokens = () => {
     return tokensList.filter(({ symbol }) =>
       symbol.toUpperCase().includes(searchUp),
@@ -52,7 +57,12 @@ export const SelectTokenModal = ({
         placeholder="SOL"
         {...props}
       />
-      <div className={styles.tokenList}>
+      <FakeInfinityScroll
+        itemsToShow={itemsToShow}
+        next={next}
+        emptyMessage="No token found"
+        wrapperClassName={styles.tokenList}
+      >
         {filterTokens().map((token) => (
           <div
             key={token.address}
@@ -74,7 +84,7 @@ export const SelectTokenModal = ({
             {balances[token?.address] || ''}
           </div>
         ))}
-      </div>
+      </FakeInfinityScroll>
     </Modal>
   );
 };

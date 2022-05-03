@@ -20,6 +20,7 @@ import {
   PoolDataByMint,
 } from './liquidityPools.model';
 import { prismaSwap } from './transactions/prisma';
+import { Prism } from '@prism-hq/prism-ag';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
@@ -34,6 +35,7 @@ export const LiquidityPoolsContext =
     harvestLiquidity: () => Promise.resolve(null),
     stakeLiquidity: () => Promise.resolve(null),
     unstakeLiquidity: () => Promise.resolve(null),
+    prisma: null,
   });
 
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
@@ -44,9 +46,13 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingPrism, setLoadingPrism] = useState<boolean>(true);
   const [poolDataByMint, setPoolDataByMint] = useState<PoolDataByMint>(
     new Map(),
   );
+  const { tokensList } = useTokenListContext();
+
+  const [prisma, setPrisma] = useState<any>();
 
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
@@ -63,15 +69,43 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
     }
   };
 
+  const fetchPrismaData = async () => {
+    try {
+      const initPrism = async () => {
+        return await Prism.init({
+          user: wallet.publicKey,
+          connection: connection,
+          tokenList: { tokens: tokensList },
+        });
+      };
+
+      const prisma = await initPrism();
+      console.log(prisma);
+      setPrisma(prisma);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setLoadingPrism(false);
+    }
+  };
+
   useEffect(() => {
     fraktionTokensMap.size && fetchPoolData(fraktionTokensMap);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fraktionTokensMap.size]);
 
+  useEffect(() => {
+    if (wallet.connected) {
+      fetchPrismaData();
+    }
+  }, [wallet.connected]);
+
   return (
     <LiquidityPoolsContext.Provider
       value={{
-        loading,
+        loading: loadingPrism && loading,
+        prisma,
         poolDataByMint,
         fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap({

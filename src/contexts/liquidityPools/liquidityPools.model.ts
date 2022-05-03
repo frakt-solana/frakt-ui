@@ -41,6 +41,7 @@ export interface LiquidityPoolsContextValues {
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,
   ) => Promise<boolean | null>;
+  prisma: any;
 }
 
 export interface LiquidityPoolKeysV4String {

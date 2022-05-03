@@ -10,11 +10,11 @@ import { SettingsModal } from './SettingsModal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
-import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useSwapForm } from './hooks/useSwapForm';
 import { ConfirmModal } from '../ConfirmModal';
 import { LoadingModal } from '../LoadingModal';
+import { useTokenListContext } from '../../contexts/TokenList';
 
 interface SwapFormInterface {
   defaultTokenMint: string;
@@ -45,11 +45,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     closeLoadingModal,
   } = useSwapForm(defaultTokenMint);
 
-  const { poolDataByMint } = useLiquidityPools();
-
-  const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
-    ({ tokenInfo }) => tokenInfo,
-  );
+  const { tokensList } = useTokenListContext();
 
   const [slippageModalVisible, setSlippageModalVisible] =
     useState<boolean>(false);
@@ -82,15 +78,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             className={styles.input}
             value={value}
             onValueChange={onChange}
-            tokensList={
-              payToken?.address === SOL_TOKEN.address
-                ? [SOL_TOKEN]
-                : rawPoolsInfo
-            }
+            tokensList={tokensList}
             currentToken={payToken}
-            onTokenChange={
-              payToken?.address === SOL_TOKEN.address ? null : onPayTokenChange
-            }
+            onTokenChange={onPayTokenChange}
             modalTitle="Pay"
             label="Pay"
             showMaxButton
@@ -108,16 +98,8 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             value={value}
             onValueChange={onChange}
             currentToken={receiveToken}
-            tokensList={
-              receiveToken?.address === SOL_TOKEN.address
-                ? [SOL_TOKEN]
-                : rawPoolsInfo
-            }
-            onTokenChange={
-              receiveToken?.address === SOL_TOKEN.address
-                ? null
-                : onReceiveTokenChange
-            }
+            tokensList={tokensList}
+            onTokenChange={onReceiveTokenChange}
             modalTitle="Receive"
             label="Receive"
             disabled
