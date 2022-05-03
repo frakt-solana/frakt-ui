@@ -37,8 +37,17 @@ export const useUserLoans: UseUserLoans = () => {
 
   const wallet = useWallet();
 
+  const amountOfLoans = useMemo(() => {
+    return (
+      Array.from(loanDataByPoolPublicKey.values()).reduce(
+        (acc, { loans }) => acc + loans.length,
+        0,
+      ) || 0
+    );
+  }, [loanDataByPoolPublicKey]);
+
   const loans = useMemo(() => {
-    if (loanDataByPoolPublicKey?.size && !loansLoading && wallet.connected) {
+    if (amountOfLoans && !loansLoading && wallet.connected) {
       return Array.from(loanDataByPoolPublicKey.values()).reduce(
         (loans: LoanView[], loanData) => {
           const userLoans =
@@ -56,7 +65,7 @@ export const useUserLoans: UseUserLoans = () => {
 
     return [];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loanDataByPoolPublicKey?.size, loansLoading, wallet.connected]);
+  }, [amountOfLoans, loansLoading, wallet.connected]);
 
   const fetchMetadataAndInitialize = async () => {
     try {

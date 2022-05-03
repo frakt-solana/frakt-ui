@@ -1,4 +1,5 @@
 import { FC, useMemo } from 'react';
+import { Dictionary } from 'lodash';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
@@ -8,22 +9,29 @@ import styles from './BorrowForm.module.scss';
 import { ShortTermFields } from '../ShortTermFields';
 import { useBorrowForm } from './hooks';
 import { getReturnPrice, LoanData } from '../../../../contexts/loans';
+import { getNftCreator, SOL_TOKEN } from '../../../../utils';
 
 interface BorrowFormProps {
   selectedNft?: UserNFT;
-  ltv?: number;
-  valuation?: number;
-  onCloseSidebar?: () => void;
+  priceByCreator?: Dictionary<number | null>;
+  ltvByCreator?: Dictionary<number | null>;
+  onDeselect?: () => void;
   loanData: LoanData;
+  interestRateDiscountPercent?: number;
 }
 
 export const BorrowForm: FC<BorrowFormProps> = ({
   selectedNft,
-  ltv = 0,
-  valuation = 0,
+  priceByCreator = {},
+  ltvByCreator = {},
   loanData,
-  onCloseSidebar,
+  onDeselect,
+  interestRateDiscountPercent = 0,
 }) => {
+  const ltv = ltvByCreator[getNftCreator(selectedNft)] || null;
+
+  const valuation = priceByCreator[getNftCreator(selectedNft)] || null;
+
   const {
     openConfirmModal,
     confirmModalVisible,
@@ -31,30 +39,38 @@ export const BorrowForm: FC<BorrowFormProps> = ({
     loadingModalVisible,
     closeLoadingModal,
     onSubmit,
-  } = useBorrowForm({ onCloseSidebar });
+  } = useBorrowForm({ onDeselect, proposedNftPrice: valuation });
 
   const selectedNftName = selectedNft.metadata.name;
   const loanPeriodDays = 7;
 
   const returnPrice = useMemo(() => {
     if (loanData && ltv && selectedNft) {
-      return getReturnPrice({ ltv, loanData, nft: selectedNft });
+      return getReturnPrice({
+        ltv: ltv / 10 ** SOL_TOKEN.decimals,
+        loanData,
+        nft: selectedNft,
+        interestRateDiscountPercent,
+      });
     }
 
     return 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loanData, ltv, selectedNft]);
 
   const confirmText = `You are about to use your ${selectedNftName} as collateral in loan that you claim to return in ${loanPeriodDays} days and repay is ${returnPrice?.toFixed(
     3,
   )} SOL.\nWant to proceed?`;
 
+  const submitButtonDisabled = !returnPrice || !ltv || !valuation;
+
   return (
     <>
       <div className={styles.details}>
         <p className={styles.detailsTitle}>Loan settings</p>
         <ShortTermFields
-          valuation={valuation}
-          ltv={ltv}
+          valuation={valuation / 10 ** SOL_TOKEN.decimals || null}
+          ltv={ltv / 10 ** SOL_TOKEN.decimals || null}
           returnPrice={returnPrice}
         />
       </div>
@@ -63,6 +79,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
           onClick={openConfirmModal}
           type="alternative"
           className={styles.continueBtn}
+          disabled={submitButtonDisabled}
         >
           Borrow
         </Button>

@@ -47,6 +47,7 @@ export const paybackLoan: PaybackLoan = async ({
           transaction,
           connection,
           wallet,
+          commitment: 'finalized',
         });
       },
     });

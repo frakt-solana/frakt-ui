@@ -9,7 +9,7 @@
     "@frakters/community-pools-client-library-v2": "^1.0.14",
     "@frakters/fraktionalizer-client-library": "^2.3.2",
     "@frakters/frkt-multiple-reward": "^1.0.28",
-    "@frakters/nft-lending-v2": "^0.1.7",
+    "@frakters/nft-lending-v2": "^0.1.13",
     "@project-serum/anchor": "^0.22.1",
     "@project-serum/serum": "^0.13.60",
     "@project-serum/sol-wallet-adapter": "^0.2.5",

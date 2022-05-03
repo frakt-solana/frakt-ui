@@ -11,8 +11,8 @@ import FakeInfinityScroll, {
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
-import { MOCK_LOAN_TO_VALUE, MOCK_VALUATION } from '../../contexts/loans';
 import { LinkWithArrow } from '../../components/LinkWithArrow';
+import { getNftCreator, SOL_TOKEN } from '../../utils';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
@@ -26,12 +26,14 @@ const BorrowPage: FC = () => {
 
   const {
     isCloseSidebar,
-    setIsCloseSidebar,
     setVisible,
     loading,
     nfts,
     searchItems,
     loanData,
+    priceByCreator,
+    ltvByCreator,
+    interestRateDiscountPercent,
   } = useBorrowPage();
 
   return (
@@ -42,10 +44,11 @@ const BorrowPage: FC = () => {
       sidebarForm={
         <BorrowForm
           selectedNft={selectedNfts?.[0]}
-          onCloseSidebar={() => setIsCloseSidebar(true)}
-          valuation={MOCK_VALUATION}
-          ltv={MOCK_LOAN_TO_VALUE}
+          onDeselect={onDeselect}
+          priceByCreator={priceByCreator}
+          ltvByCreator={ltvByCreator}
           loanData={loanData}
+          interestRateDiscountPercent={interestRateDiscountPercent}
         />
       }
     >
@@ -104,7 +107,10 @@ const BorrowPage: FC = () => {
                   (selectedNft) => selectedNft?.mint === nft.mint,
                 )
               }
-              ltv={MOCK_LOAN_TO_VALUE}
+              ltv={
+                ltvByCreator[getNftCreator(nft)] / 10 ** SOL_TOKEN.decimals ||
+                null
+              }
             />
           ))}
         </FakeInfinityScroll>

@@ -4,7 +4,10 @@ import { UserNFT, useUserTokens } from '../../../../contexts/userTokens';
 import { proposeLoan } from '../../../../contexts/loans';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
-type UseBorrowForm = (props: { onCloseSidebar?: () => void }) => {
+type UseBorrowForm = (props: {
+  onDeselect?: () => void;
+  proposedNftPrice?: number;
+}) => {
   openConfirmModal: () => void;
   confirmModalVisible: boolean;
   closeConfirmModal: () => void;
@@ -14,7 +17,8 @@ type UseBorrowForm = (props: { onCloseSidebar?: () => void }) => {
 };
 
 export const useBorrowForm: UseBorrowForm = ({
-  onCloseSidebar,
+  onDeselect,
+  proposedNftPrice = 0,
 }): {
   openConfirmModal;
   confirmModalVisible;
@@ -48,6 +52,7 @@ export const useBorrowForm: UseBorrowForm = ({
         nftMint: nft?.mint,
         connection,
         wallet,
+        proposedNftPrice,
       });
 
       if (!result) {
@@ -55,7 +60,7 @@ export const useBorrowForm: UseBorrowForm = ({
       }
 
       removeTokenOptimistic([nft.mint]);
-      onCloseSidebar && onCloseSidebar();
+      onDeselect?.();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

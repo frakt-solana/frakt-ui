@@ -51,9 +51,15 @@ type GetReturnPrice = (props: {
   ltv: number;
   nft?: UserNFT;
   loanData: LoanData;
+  interestRateDiscountPercent?: number;
 }) => number;
 
-export const getReturnPrice: GetReturnPrice = ({ ltv, loanData, nft }) => {
+export const getReturnPrice: GetReturnPrice = ({
+  ltv,
+  loanData,
+  nft,
+  interestRateDiscountPercent = 0,
+}) => {
   const PERCENT_PRECISION = 100;
 
   const nftCreator =
@@ -73,5 +79,27 @@ export const getReturnPrice: GetReturnPrice = ({ ltv, loanData, nft }) => {
     (royaltyFeeRaw + rewardInterestRateRaw + feeInterestRateRaw) /
     (100 * PERCENT_PRECISION);
 
-  return ltv + ltv * feesPercent;
+  const feesWithDiscount =
+    feesPercent * (1 - interestRateDiscountPercent / 100);
+
+  return ltv + ltv * feesWithDiscount;
+};
+
+const TENSOR_COLLECTIONS_BASE = 'https://api.tensor.so/sol/collections';
+
+export const getTensorNftPrice = async (
+  creatorAddress: string,
+): Promise<number | null> => {
+  try {
+    const url = `${TENSOR_COLLECTIONS_BASE}/${creatorAddress}/floor`;
+
+    const responseData = await (await fetch(url)).json();
+
+    return responseData?.lower || null;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    return null;
+  }
 };

@@ -43,7 +43,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     const loanPoolPubkey = loan?.liquidityPool;
     const loanData = loanDataByPoolPublicKey.get(loanPoolPubkey);
 
-    setLoanDataByPoolPublicKey(
+    const nextLoanDataByPoolPublicKey = new Map(
       loanDataByPoolPublicKey.set(loanPoolPubkey, {
         ...loanData,
         loans:
@@ -52,6 +52,8 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
           ) || [],
       }),
     );
+
+    setLoanDataByPoolPublicKey(nextLoanDataByPoolPublicKey);
   };
 
   return (

@@ -90,6 +90,13 @@ const LoanCard: FC<LoanCardProps> = ({
     paybackLoan(loan, collectionInfo);
   };
 
+  const amountToGet = loan?.amountToGet
+    ? (loan?.amountToGet / 10 ** SOL_TOKEN.decimals).toFixed(2)
+    : '';
+  const amountToReturn = loan?.amountToReturn
+    ? (loan?.amountToReturn / 10 ** SOL_TOKEN.decimals).toFixed(2)
+    : '';
+
   return (
     <>
       <div className={styles.wrapper}>
@@ -105,7 +112,7 @@ const LoanCard: FC<LoanCardProps> = ({
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>Borrowed</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{loan?.amountToGet / 1e9}</p>
+                <p className={styles.ltvText}>{amountToGet}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
@@ -113,7 +120,7 @@ const LoanCard: FC<LoanCardProps> = ({
               </div>
               <p className={styles.ltvTitle}>To repay</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{loan?.amountToReturn / 1e9}</p>
+                <p className={styles.ltvText}>{amountToReturn}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>

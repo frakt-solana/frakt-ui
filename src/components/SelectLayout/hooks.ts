@@ -5,7 +5,7 @@ import { useDebounce } from '../../hooks';
 import { useFakeInfinityScroll } from '../FakeInfinityScroll';
 
 export const useSelectLayout = (): {
-  onDeselect: (nft: UserNFT) => void;
+  onDeselect: (nft?: UserNFT) => void;
   selectedNfts: UserNFT[];
   setSelectedNfts: Dispatch<SetStateAction<UserNFT[]>>;
   onMultiSelect: (nft: UserNFT) => void;
