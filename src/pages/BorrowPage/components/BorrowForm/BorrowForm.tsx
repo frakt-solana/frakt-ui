@@ -9,7 +9,7 @@ import styles from './BorrowForm.module.scss';
 import { ShortTermFields } from '../ShortTermFields';
 import { useBorrowForm } from './hooks';
 import { getFeePercent, LoanData } from '../../../../contexts/loans';
-import { getNftCreator, SOL_TOKEN } from '../../../../utils';
+import { getNftCreators, SOL_TOKEN } from '../../../../utils';
 
 interface BorrowFormProps {
   selectedNft?: UserNFT;
@@ -28,12 +28,19 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   onDeselect,
   interestRateDiscountPercent = 0,
 }) => {
-  const nftCreator = getNftCreator(selectedNft);
+  const nftVerifiedCreators = getNftCreators(selectedNft);
 
   const valuation =
-    priceByCreator[nftCreator] / 10 ** SOL_TOKEN.decimals || null;
-  const ltv = ltvByCreator[nftCreator] || null;
-  const loanValue = valuation * ltv || null;
+    Object.entries(priceByCreator)?.find(([creator]) =>
+      nftVerifiedCreators.includes(creator),
+    )?.[1] || 0;
+
+  const ltv =
+    Object.entries(ltvByCreator)?.find(([creator]) =>
+      nftVerifiedCreators.includes(creator),
+    )?.[1] || 0;
+
+  const loanValue = (valuation / 10 ** SOL_TOKEN.decimals) * ltv || null;
 
   const {
     openConfirmModal,
@@ -44,7 +51,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
     onSubmit,
   } = useBorrowForm({
     onDeselect,
-    proposedNftPrice: priceByCreator[nftCreator],
+    proposedNftPrice: valuation,
   });
 
   const selectedNftName = selectedNft.metadata.name;
@@ -76,7 +83,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
       <div className={styles.details}>
         <p className={styles.detailsTitle}>Loan info</p>
         <ShortTermFields
-          valuation={valuation}
+          valuation={valuation / 10 ** SOL_TOKEN.decimals}
           ltv={ltv}
           fee={fee}
           feeDiscountPercent={interestRateDiscountPercent}

@@ -12,7 +12,7 @@ import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
 import { LinkWithArrow } from '../../components/LinkWithArrow';
-import { getNftCreator, SOL_TOKEN } from '../../utils';
+import { getNftCreators, SOL_TOKEN } from '../../utils';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
@@ -97,11 +97,19 @@ const BorrowPage: FC = () => {
           emptyMessage=""
         >
           {nfts.map((nft) => {
-            const creator = getNftCreator(nft);
+            const verifiedCreators = getNftCreators(nft);
 
-            const loanValue =
-              (priceByCreator[creator] * ltvByCreator[creator]) /
-              10 ** SOL_TOKEN.decimals;
+            const nftPrice =
+              Object.entries(priceByCreator)?.find(([creator]) =>
+                verifiedCreators.includes(creator),
+              )?.[1] || 0;
+
+            const ltv =
+              Object.entries(ltvByCreator)?.find(([creator]) =>
+                verifiedCreators.includes(creator),
+              )?.[1] || 0;
+
+            const loanValue = (nftPrice * ltv) / 10 ** SOL_TOKEN.decimals;
 
             return (
               <NFTCheckbox

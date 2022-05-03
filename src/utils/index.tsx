@@ -148,3 +148,11 @@ export const getNftCreator = (nft: UserNFT): string => {
       ?.address || ''
   );
 };
+
+export const getNftCreators = (nft: UserNFT): string[] => {
+  return (
+    nft?.metadata?.properties?.creators
+      ?.filter(({ verified }) => verified)
+      ?.map(({ address }) => address) || []
+  );
+};

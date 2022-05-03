@@ -72,13 +72,14 @@ export const getFeePercent: GetFeePercent = ({ loanData, nft }) => {
   return feesPercent || 0;
 };
 
-const TENSOR_COLLECTIONS_BASE = 'https://api.tensor.so/sol/collections';
+const ORACLE_URL_BASE =
+  'https://nft-lending-v2-node.herokuapp.com/v1/getpricebycreator';
 
 export const getNftMarketLowerPriceByCreator = async (
   creatorAddress: string,
 ): Promise<number | null> => {
   try {
-    const url = `${TENSOR_COLLECTIONS_BASE}/${creatorAddress}/floor`;
+    const url = `${ORACLE_URL_BASE}/${creatorAddress}`;
 
     const responseData = await (await fetch(url)).json();
 
