@@ -42,7 +42,10 @@ export const BorrowForm: FC<BorrowFormProps> = ({
     loadingModalVisible,
     closeLoadingModal,
     onSubmit,
-  } = useBorrowForm({ onDeselect, proposedNftPrice: valuation });
+  } = useBorrowForm({
+    onDeselect,
+    proposedNftPrice: priceByCreator[nftCreator],
+  });
 
   const selectedNftName = selectedNft.metadata.name;
   const loanPeriodDays = 7;
