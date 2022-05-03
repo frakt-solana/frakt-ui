@@ -72,9 +72,9 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   const feeWithDiscount = fee * (1 - interestRateDiscountPercent / 100);
   const returnPrice = loanValue + loanValue * feeWithDiscount;
 
-  const confirmText = `You are about to use your ${selectedNftName} as collateral in loan that you claim to return in ${loanPeriodDays} days and repay is ${returnPrice?.toFixed(
+  const confirmText = `You are about to use ${selectedNftName} as collateral for an instant loan of ${returnPrice?.toFixed(
     3,
-  )} SOL.\nWant to proceed?`;
+  )} SOL (incl. interest rate if applicable) that you commit to repay in full within ${loanPeriodDays} days. Proceed?`;
 
   const submitButtonDisabled = !returnPrice || !ltv || !valuation;
 
@@ -104,6 +104,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
         onCancel={closeConfirmModal}
         onSubmit={() => onSubmit(selectedNft)}
         subtitle={confirmText}
+        btnAgree="Let's go"
       />
       <LoadingModal
         title="Please approve transaction"
