@@ -9,8 +9,8 @@ import {
   UserTokensValues,
 } from './userTokens.model';
 import {
-  // fetchWalletNFTsFromQuickNode,
-  fetchWalletNFTsUsingArweave,
+  fetchWalletNFTsFromQuickNode,
+  // fetchWalletNFTsUsingArweave,
 } from './userTokens.helpers';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
@@ -65,10 +65,10 @@ export const UserTokensProvider = ({
     if (isArray(nfts)) return;
     setNftsLoading(true);
     try {
-      // const userNFTs = await fetchWalletNFTsFromQuickNode(
-      //   publicKey?.toBase58(),
-      // );
-      const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
+      const userNFTs = await fetchWalletNFTsFromQuickNode(
+        publicKey?.toBase58(),
+      );
+      // const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
 
       setNfts(userNFTs);
     } catch (error) {
