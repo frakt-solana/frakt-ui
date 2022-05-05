@@ -2,7 +2,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useState } from 'react';
-import { getAllUserTokens } from 'solana-nft-metadata';
+import { getAllUserTokens } from '../../utils/accounts';
 
 import {
   useFraktion,
@@ -87,8 +87,9 @@ export const useWalletTokens: UseWalletTokens = ({ walletPubkey }) => {
     try {
       setLoading(true);
 
-      const userTokens = await getAllUserTokens(new PublicKey(walletPubkey), {
+      const userTokens = await getAllUserTokens({
         connection,
+        walletPublicKey: new PublicKey(walletPubkey),
       });
 
       setUserTokens(
