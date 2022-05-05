@@ -49,6 +49,7 @@ export const proposeLoan: ProposeLoan = async ({
       (accountInfo) => {
         const loanAccountData = decodeLoan(
           accountInfo.data,
+          connection,
           new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
         );
 
