@@ -19,3 +19,19 @@ export interface AccountInfoParsed {
   publicKey: PublicKey;
   accountInfo: AccountInfoData;
 }
+
+export interface TokenView {
+  tokenAccountPubkey: string;
+  mint: string;
+  owner: string;
+  amount: number;
+  amountBN: BN;
+  delegateOption: boolean;
+  delegate: string;
+  state: number;
+  isNativeOption: boolean;
+  isNative: number;
+  delegatedAmount: number;
+  closeAuthorityOption: boolean;
+  closeAuthority: string;
+}

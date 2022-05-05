@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { getAllUserTokens } from 'solana-nft-metadata';
 import { keyBy, isArray } from 'lodash';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
@@ -8,10 +7,8 @@ import {
   UserNFT,
   UserTokensValues,
 } from './userTokens.model';
-import {
-  fetchWalletNFTsFromQuickNode,
-  // fetchWalletNFTsUsingArweave,
-} from './userTokens.helpers';
+import { fetchNftsWithFallback } from './userTokens.helpers';
+import { getAllUserTokens } from '../../utils/accounts';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
   nfts: [],
@@ -46,7 +43,8 @@ export const UserTokensProvider = ({
   const fetchTokens = async () => {
     setLoading(true);
     try {
-      const userTokens = await getAllUserTokens(publicKey, {
+      const userTokens = await getAllUserTokens({
+        walletPublicKey: publicKey,
         connection,
       });
 
@@ -65,12 +63,23 @@ export const UserTokensProvider = ({
     if (isArray(nfts)) return;
     setNftsLoading(true);
     try {
-      const userNFTs = await fetchWalletNFTsFromQuickNode(
-        publicKey?.toBase58(),
-      );
-      // const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
+      const frozenNFTsMints = Object.entries(rawUserTokensByMint)
+        ?.filter(([, token]) => {
+          //? token.state === 2 for freezed accounts
+          return token.amount === 1 && token.state === 2;
+        })
+        ?.map(([mint]) => mint);
 
-      setNfts(userNFTs);
+      const userNFTs = await fetchNftsWithFallback({
+        walletPublicKey: publicKey,
+        rawUserTokensByMint,
+      });
+
+      const userNFTsNotFrozen = userNFTs?.filter(
+        ({ mint }) => !frozenNFTsMints.includes(mint),
+      );
+
+      setNfts(userNFTsNotFrozen);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

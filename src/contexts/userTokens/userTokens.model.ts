@@ -1,4 +1,4 @@
-import { TokenView } from 'solana-nft-metadata';
+import { TokenView } from '../../utils/accounts';
 
 import {
   ArweaveAttribute,
