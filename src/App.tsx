@@ -10,6 +10,7 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
+import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
@@ -20,6 +21,8 @@ import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
+import { FC } from 'react';
+import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 
 const wallets = [
   getPhantomWallet(),
@@ -29,28 +32,31 @@ const wallets = [
   getSolletExtensionWallet({ network: NETWORK as WalletAdapterNetwork }),
 ];
 
-function App(): JSX.Element {
+const App: FC = () => {
   return (
     <ConnectionProvider endpoint={ENDPOINT}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <TokenListContextProvider>
-            <UserTokensProvider>
-              <LiquidityPoolsProvider>
-                <FraktionProvider>
-                  <NftPoolsProvider>
-                    <LoansProvider>
-                      <Router />
-                    </LoansProvider>
-                  </NftPoolsProvider>
-                </FraktionProvider>
-              </LiquidityPoolsProvider>
-            </UserTokensProvider>
-          </TokenListContextProvider>
+          <IntercomProvider appId={INTERCOM_APP_ID}>
+            <TokenListContextProvider>
+              <UserTokensProvider>
+                <LiquidityPoolsProvider>
+                  <FraktionProvider>
+                    <NftPoolsProvider>
+                      <LoansProvider>
+                        <Router />
+                      </LoansProvider>
+                    </NftPoolsProvider>
+                  </FraktionProvider>
+                </LiquidityPoolsProvider>
+              </UserTokensProvider>
+            </TokenListContextProvider>
+            <IntercomService />
+          </IntercomProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
-}
+};
 
 export default App;
