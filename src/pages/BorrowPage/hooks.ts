@@ -13,7 +13,7 @@ import {
   useLoansInitialFetch,
 } from '../../contexts/loans';
 import { useDebounce } from '../../hooks';
-import { getNftCreator } from '../../utils';
+import { getNftCreators } from '../../utils';
 
 const usePriceByCreator = (creatorsArray = []) => {
   const [priceByCreator, setPriceByCreator] = useState<
@@ -100,17 +100,21 @@ export const useBorrowPage = (): {
 
   const interestRateDiscountPercent = useMemo(() => {
     if (rawNfts?.length && !nftsLoading) {
-      const amountOfFraktsAndGnomies = rawNfts.reduce((amount, nft) => {
-        const creator = getNftCreator(nft);
+      const amountOfDiscountNfts = rawNfts.reduce((amount, nft) => {
+        const creators = getNftCreators(nft);
 
-        if (DISCOUNT_NFT_CREATORS.includes(creator)) {
+        const isDiscountNft = !!DISCOUNT_NFT_CREATORS?.find((creator) =>
+          creators.includes(creator),
+        );
+
+        if (isDiscountNft) {
           return amount + 1;
         }
 
         return amount;
       }, 0);
 
-      return amountOfFraktsAndGnomies > 100 ? 100 : amountOfFraktsAndGnomies;
+      return amountOfDiscountNfts > 100 ? 100 : amountOfDiscountNfts;
     }
 
     return 0;
