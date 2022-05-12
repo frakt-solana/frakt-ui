@@ -33,6 +33,16 @@ export const DropdownMenuMore: FC = () => {
             Trade
           </a>
         </li>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={process.env.FRAKT_STAKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Staking
+          </a>
+        </li>
         {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
           <li key={idx}>
             <a
