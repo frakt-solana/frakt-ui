@@ -45,10 +45,6 @@ export const SellingModal: FC<SellingModalProps> = ({
 
   const isSolTokenSelected = token === Token.SOL;
 
-  const toggleModalDown = () => {
-    setIsModalDown(!isModalDown);
-  };
-
   const slippageText =
     token === Token.SOL
       ? `* Min total (with slippage) = ${(
@@ -70,7 +66,6 @@ export const SellingModal: FC<SellingModalProps> = ({
       })}
     >
       <ModalHeader
-        onHeaderClick={toggleModalDown}
         headerText="You're selling"
         slippage={slippage}
         setSlippage={setSlippage}

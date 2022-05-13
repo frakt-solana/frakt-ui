@@ -87,7 +87,6 @@ export const SwapModal: FC<SwapModalProps> = ({
         name={nft?.metadata.name}
         collectionName={nft?.collectionName}
         image={nft?.metadata.image}
-        onHeaderClick={() => setIsModalDown(!isModalDown)}
         onDeselect={onDeselect}
         slippage={slippage}
         setSlippage={setSlippage}
