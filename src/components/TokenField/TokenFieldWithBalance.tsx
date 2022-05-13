@@ -1,10 +1,11 @@
-import BN from 'bn.js';
+import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { AccountInfo } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { AccountInfo } from '@solana/web3.js';
+import BN from 'bn.js';
 
-import { decimalBNToString, SOL_TOKEN } from '../../utils';
 import { RawUserTokensByMint, useUserTokens } from '../../contexts/userTokens';
+import { decimalBNToString, SOL_TOKEN } from '../../utils';
 import TokenField, { TokenFieldProps } from './TokenField';
 import { useNativeAccount } from '../../utils/accounts';
 
@@ -46,7 +47,7 @@ interface TokenFieldWithBalanceProps extends TokenFieldProps {
   lpBalance?: number;
 }
 
-export const TokenFieldWithBalance = ({
+export const TokenFieldWithBalance: FC<TokenFieldWithBalanceProps> = ({
   tokensList = [],
   onTokenChange,
   currentToken,
@@ -62,7 +63,7 @@ export const TokenFieldWithBalance = ({
   disabled = false,
   lpBalance,
   lpTokenSymbol,
-}: TokenFieldWithBalanceProps): JSX.Element => {
+}) => {
   const { connected } = useWallet();
   const { rawUserTokensByMint } = useUserTokens();
   const { account } = useNativeAccount();

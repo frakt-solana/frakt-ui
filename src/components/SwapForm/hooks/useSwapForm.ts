@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
@@ -12,6 +12,7 @@ import {
 } from '../../../contexts/fraktion';
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
+import { useLazyPoolInfo } from './useLazyPoolInfo';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -35,20 +36,20 @@ export const useSwapForm = (): {
   isSwapBtnEnabled: boolean;
   receiveToken: TokenInfo;
   payToken: TokenInfo;
-  slippage: string;
+  slippage: number;
   tokenMinAmount: string;
   tokenPriceImpact: string;
   valuationDifference: string;
   loadingModalVisible: boolean;
   closeLoadingModal: () => void;
-  setSlippage: (nextValue: string) => void;
+  setSlippage: (nextValue: number) => void;
   handleSwap: () => void;
   confirmModalVisible: boolean;
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
-  prisma: any;
 } => {
   const { prismaSwap, prisma } = useLiquidityPools();
+  const { fetchPoolInfo } = useLazyPoolInfo();
   const { connected } = useWallet();
   const { vaults } = useFraktion();
   useFraktionInitialFetch();
@@ -56,9 +57,9 @@ export const useSwapForm = (): {
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
-      [InputControlsNames.RECEIVE_TOKEN]: SOL_TOKEN,
-      [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.PAY_TOKEN]: SOL_TOKEN,
+      [InputControlsNames.RECEIVE_TOKEN]: null,
+      [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.RECEIVE_VALUE]: '',
     },
   });
@@ -71,9 +72,11 @@ export const useSwapForm = (): {
 
   const { receiveToken, payValue, payToken, receiveValue } = watch();
 
-  const [slippage, setSlippage] = useState<string>('1');
+  const [slippage, setSlippage] = useState<number>(1);
   const [tokenMinAmount, setTokenMinAmountOut] = useState<string>('');
   const [tokenPriceImpact, setTokenPriceImpact] = useState<string>('');
+
+  const intervalRef = useRef<any>();
 
   useEffect(() => {
     register(InputControlsNames.PAY_VALUE);
@@ -136,6 +139,26 @@ export const useSwapForm = (): {
         setRoutes(routes);
       }
     })();
+  }, [payToken, receiveToken]);
+
+  useEffect(() => {
+    clearInterval(intervalRef.current);
+    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
+      intervalRef.current = setInterval(() => {
+        fetchPoolInfo(payToken.address, receiveToken.address);
+      }, 5000);
+    }
+
+    return () => clearInterval(intervalRef.current);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payToken, receiveToken]);
+
+  useEffect(() => {
+    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
+      fetchPoolInfo(payToken.address, receiveToken.address);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payToken, receiveToken]);
 
   const isSwapBtnEnabled = connected && Number(payValue) > 0;
@@ -204,6 +227,5 @@ export const useSwapForm = (): {
     confirmModalVisible,
     openConfirmModal,
     closeConfirmModal,
-    prisma,
   };
 };

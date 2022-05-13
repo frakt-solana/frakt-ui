@@ -80,7 +80,6 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       };
 
       const prisma = await initPrism();
-      console.log(prisma);
       setPrisma(prisma);
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -99,7 +98,8 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
     if (wallet.connected) {
       fetchPrismaData();
     }
-  }, [wallet.connected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <LiquidityPoolsContext.Provider

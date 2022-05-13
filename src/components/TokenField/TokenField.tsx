@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './styles.module.scss';
-import { ChevronDownIcon } from '../../icons';
-import { SelectTokenModal } from '../SelectTokenModal';
-import NumericInput from '../NumericInput';
+import React, { FC, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
+import classNames from 'classnames';
+
+import { SelectTokenModal } from '../SelectTokenModal';
+import { ChevronDownIcon } from '../../icons';
+import NumericInput from '../NumericInput';
+import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
 
 export interface TokenFieldProps {
@@ -29,7 +30,7 @@ export interface TokenFieldProps {
   disabled?: boolean;
 }
 
-const TokenField = ({
+const TokenField: FC<TokenFieldProps> = ({
   tokensList,
   onTokenChange,
   currentToken,
@@ -47,7 +48,7 @@ const TokenField = ({
   lpTokenSymbol,
   placeholder = '0.0',
   disabled = false,
-}: TokenFieldProps): JSX.Element => {
+}) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -155,7 +156,7 @@ interface TokenFieldFormProps
   maxLength?: number;
 }
 
-export const TokenFieldForm: React.FC<TokenFieldFormProps> = ({
+export const TokenFieldForm: FC<TokenFieldFormProps> = ({
   onChange,
   value,
   ...props

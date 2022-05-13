@@ -30,7 +30,7 @@ export const SwapTab: FC<SwapTabProps> = ({
   ) : (
     <div className={styles.swapTab}>
       {poolDataByMint.has(fractionMint) ? (
-        <SwapForm defaultTokenMint={fractionMint} />
+        <SwapForm />
       ) : (
         <>
           <p>{"Looks like this vault doesn't have a liquidity pool"}</p>

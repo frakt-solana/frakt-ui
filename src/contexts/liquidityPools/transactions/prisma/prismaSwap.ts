@@ -12,7 +12,7 @@ export interface PrismaSwapTransactionParams {
   payToken: string;
   payValue: string;
   tokensList: TokenInfo[];
-  slippage?: string;
+  slippage?: number;
 }
 
 export interface PrismaSwapTransactionRawParams
@@ -26,13 +26,13 @@ export const rawPrismaSwap = async ({
   connection,
   tokensList,
   payValue,
-  slippage = '1',
+  slippage = 1,
 }: PrismaSwapTransactionRawParams): Promise<void> => {
   const initPrism = async () => {
     return await Prism.init({
       user: wallet.publicKey,
       connection: connection,
-      slippage: Number(slippage),
+      slippage: slippage,
       tokenList: { tokens: tokensList },
     });
   };

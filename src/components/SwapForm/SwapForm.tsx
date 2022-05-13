@@ -1,27 +1,24 @@
 import { FC, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-import SettingsIcon from '../../icons/SettingsIcon';
 import Button from '../Button';
 import { TokenFieldWithBalance } from '../TokenField';
 import styles from './styles.module.scss';
 import { ChangeSidesButton } from './ChangeSidesButton';
-import { SettingsModal } from './SettingsModal';
 import Tooltip from '../Tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useSwapForm } from './hooks/useSwapForm';
 import { ConfirmModal } from '../ConfirmModal';
 import { LoadingModal } from '../LoadingModal';
-
-interface SwapFormInterface {
-  defaultTokenMint: string;
-}
+import { useTokenListContext } from '../../contexts/TokenList';
+import { SlippageDropdown } from '../../pages/NFTPools/components/ModalParts';
+import { useLiquidityPools } from '../../contexts/liquidityPools';
 
 const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
 const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
-const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
+const SwapForm: FC = () => {
   const {
     isSwapBtnEnabled,
     receiveToken,
@@ -41,11 +38,16 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     closeConfirmModal,
     loadingModalVisible,
     closeLoadingModal,
-    prisma,
   } = useSwapForm();
 
-  const [slippageModalVisible, setSlippageModalVisible] =
-    useState<boolean>(false);
+  const { tokensList } = useTokenListContext();
+  const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
+
+  const { poolDataByMint } = useLiquidityPools();
+
+  const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
+    ({ tokenInfo }) => tokenInfo,
+  );
 
   const swapTokens = () => {
     if (
@@ -61,11 +63,14 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   return (
     <div>
       <div className={styles.settings}>
-        <SettingsIcon
-          width={24}
-          styles={{ cursor: 'pointer' }}
-          onClick={() => setSlippageModalVisible(true)}
+        <SlippageDropdown
+          slippage={slippage.toString()}
+          setSlippage={(slippage) => setSlippage(parseFloat(slippage))}
+          isSlippageDropdpwnVisible={isSlippageVisible}
+          setIsSlippageDropdpwnVisible={setIsSlippageVisible}
+          posRight
         />
+        <p>Slippage settings</p>
       </div>
       <Controller
         control={formControl}
@@ -75,7 +80,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             className={styles.input}
             value={value}
             onValueChange={onChange}
-            tokensList={prisma?.tokenList?.tokens}
+            tokensList={tokensList}
             currentToken={payToken}
             onTokenChange={onPayTokenChange}
             modalTitle="Pay"
@@ -95,7 +100,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             value={value}
             onValueChange={onChange}
             currentToken={receiveToken}
-            tokensList={prisma?.tokenList?.tokens}
+            tokensList={rawPoolsInfo}
             onTokenChange={onReceiveTokenChange}
             modalTitle="Receive"
             label="Receive"
@@ -177,12 +182,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
       >
         Swap
       </Button>
-      <SettingsModal
-        visible={slippageModalVisible}
-        slippage={slippage}
-        setSlippage={setSlippage}
-        onCancel={() => setSlippageModalVisible(false)}
-      />
       <ConfirmModal
         title={`Continue with\n current price?`}
         visible={confirmModalVisible}

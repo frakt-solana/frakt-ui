@@ -18,14 +18,15 @@
   margin-bottom: 36px;
 }
 
+.settingIcon {
+  cursor: pointer;
+}
+
 .settings {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 12px;
-
-  svg {
-    cursor: pointer;
-  }
 }
 
 .input {
@@ -102,75 +103,4 @@
   svg {
     transform: rotate(90deg);
   }
-}
-
-.settingsModal {
-  &__title {
-    font: var(--font-btn-mid);
-    margin-bottom: 8px;
-  }
-
-  &__slippageInputs {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px 30px;
-    grid-gap: 15px 30px;
-  }
-
-  &__inputWrapper {
-    width: 140px;
-    position: relative;
-
-    &::before {
-      content: '%';
-      position: absolute;
-      display: block;
-      right: 1px;
-      bottom: 1px;
-      font-size: 24px;
-      padding: 9px 15px 9px 16px;
-      height: calc(100% - 2px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--black-color);
-      z-index: 2;
-    }
-  }
-
-  &__btn {
-    background: var(--black-color);
-    transition: background var(--transition-1), border-color var(--transition-1);
-    color: var(--white-color);
-    border: 1px solid var(--gray-color-3);
-    min-width: 120px;
-    cursor: pointer;
-    height: 59px;
-
-    &:hover {
-      background: var(--accent-color-3);
-      border-color: var(--accent-color-3);
-    }
-
-    &_active {
-      background: var(--accent-color-1);
-      border-color: var(--accent-color-1);
-      pointer-events: none;
-    }
-  }
-
-  &__slippageErrors {
-    padding-top: 12px;
-    color: var(--red-color);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-}
-
-body .settingsModal__input {
-  position: relative;
-  width: 140px;
-  height: 59px;
 }

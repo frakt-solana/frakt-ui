@@ -1,15 +1,13 @@
-import { WSOL } from '@raydium-io/raydium-sdk';
+import { FC } from 'react';
 
+import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { AppLayout } from '../../components/Layout/AppLayout';
-import styles from './styles.module.scss';
 import SwapForm from '../../components/SwapForm';
 import { Loader } from '../../components/Loader';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
+import styles from './styles.module.scss';
 
-const SwapPage = (): JSX.Element => {
-  const { loading: poolsDataLoading } = useLiquidityPools();
-
-  const loading = poolsDataLoading;
+const SwapPage: FC = () => {
+  const { loading } = useLiquidityPools();
 
   return (
     <AppLayout contentClassName={styles.exchange}>
@@ -23,7 +21,7 @@ const SwapPage = (): JSX.Element => {
             <Loader size={'large'} />
           </div>
         ) : (
-          <SwapForm defaultTokenMint={WSOL.mint} />
+          <SwapForm />
         )}
       </div>
     </AppLayout>
