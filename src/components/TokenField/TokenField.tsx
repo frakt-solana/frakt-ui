@@ -135,7 +135,6 @@ const TokenField: FC<TokenFieldProps> = ({
           <SelectTokenModal
             title={modalTitle}
             visible={isModalOpen}
-            tokensList={tokensList}
             balances={balances}
             onChange={onTokenChange}
             onCancel={() => setIsModalOpen(false)}

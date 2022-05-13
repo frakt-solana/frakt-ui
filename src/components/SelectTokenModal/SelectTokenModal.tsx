@@ -10,10 +10,11 @@ import FakeInfinityScroll, {
 } from '../FakeInfinityScroll';
 import { useDebounce } from '../../hooks';
 import { CloseModalIcon } from '../../icons';
+import { useTokenListContext } from '../../contexts/TokenList';
+import { useLiquidityPools } from '../../contexts/liquidityPools';
 
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (token: TokenInfo) => void;
-  tokensList: TokenInfo[];
   balances?: {
     [key: string]: string;
   };
@@ -21,7 +22,6 @@ interface SelectTokenModalProps extends ModalProps {
 
 export const SelectTokenModal: FC<SelectTokenModalProps> = ({
   title,
-  tokensList,
   className,
   onChange,
   visible,
@@ -32,6 +32,8 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
   const [searchString, setSearchString] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(20);
 
+  const { tokensList } = useTokenListContext();
+
   const filterTokens = () => {
     return tokensList.filter(({ symbol }) =>
       symbol.toUpperCase().includes(searchString),
@@ -40,11 +42,19 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
-  }, 1000);
+  }, 300);
 
   useEffect(() => {
     setSearchString('');
   }, [visible]);
+
+  const { poolDataByMint } = useLiquidityPools();
+
+  const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
+    ({ tokenInfo }) => tokenInfo,
+  );
+
+  const filteredTokensList = searchString ? filterTokens() : rawPoolsInfo;
 
   return (
     <Modal
@@ -73,7 +83,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
         emptyMessage="No token found"
         wrapperClassName={styles.tokenList}
       >
-        {filterTokens().map((token) => (
+        {filteredTokensList.map((token) => (
           <div
             key={token.address}
             className={styles.row}

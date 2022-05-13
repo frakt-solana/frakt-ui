@@ -40,7 +40,6 @@ const SwapForm: FC = () => {
     closeLoadingModal,
   } = useSwapForm();
 
-  const { tokensList } = useTokenListContext();
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 
   const { poolDataByMint } = useLiquidityPools();
@@ -80,7 +79,7 @@ const SwapForm: FC = () => {
             className={styles.input}
             value={value}
             onValueChange={onChange}
-            tokensList={tokensList}
+            tokensList={rawPoolsInfo}
             currentToken={payToken}
             onTokenChange={onPayTokenChange}
             modalTitle="Pay"
