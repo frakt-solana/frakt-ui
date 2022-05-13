@@ -99,7 +99,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       fetchPrismaData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [wallet.connected]);
 
   return (
     <LiquidityPoolsContext.Provider

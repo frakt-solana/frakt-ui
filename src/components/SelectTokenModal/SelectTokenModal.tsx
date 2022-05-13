@@ -30,7 +30,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
   ...props
 }) => {
   const [searchString, setSearchString] = useState<string>('');
-  const { itemsToShow, next } = useFakeInfinityScroll(9);
+  const { itemsToShow, next } = useFakeInfinityScroll(20);
 
   const filterTokens = () => {
     return tokensList.filter(({ symbol }) =>
