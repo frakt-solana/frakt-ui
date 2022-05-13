@@ -39,15 +39,9 @@ export const SellingModal: FC<SellingModalProps> = ({
   const priceSOL =
     parseFloat(poolTokenPrice) * ((100 - SELL_COMMISSION_PERCENT) / 100);
 
-  const [isModalDown, setIsModalDown] = useState<boolean>(false);
-
   const [token, setToken] = useState<Token>(Token.SOL);
 
   const isSolTokenSelected = token === Token.SOL;
-
-  const toggleModalDown = () => {
-    setIsModalDown(!isModalDown);
-  };
 
   const slippageText =
     token === Token.SOL
@@ -63,14 +57,11 @@ export const SellingModal: FC<SellingModalProps> = ({
 
   return (
     <div
-      className={classNames({
-        [styles.wrapper]: true,
+      className={classNames(styles.wrapper, {
         [styles.visible]: !!nft,
-        [styles.modalDown]: isModalDown && !!nft,
       })}
     >
       <ModalHeader
-        onHeaderClick={toggleModalDown}
         headerText="You're selling"
         slippage={slippage}
         setSlippage={setSlippage}
