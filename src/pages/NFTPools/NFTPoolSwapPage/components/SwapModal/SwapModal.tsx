@@ -50,8 +50,6 @@ export const SwapModal: FC<SwapModalProps> = ({
 
   const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
 
-  const [isModalDown, setIsModalDown] = useState<boolean>(false);
-
   const [token, setToken] = useState<Token>(Token.SOL);
 
   useEffect(() => {
@@ -80,14 +78,12 @@ export const SwapModal: FC<SwapModalProps> = ({
     <div
       className={classNames(styles.wrapper, {
         [styles.visible]: !!nft,
-        [styles.modalDown]: isModalDown && !!nft,
       })}
     >
       <SwapModalItem
         name={nft?.metadata.name}
         collectionName={nft?.collectionName}
         image={nft?.metadata.image}
-        onHeaderClick={() => setIsModalDown(!isModalDown)}
         onDeselect={onDeselect}
         slippage={slippage}
         setSlippage={setSlippage}
