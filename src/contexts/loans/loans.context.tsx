@@ -103,7 +103,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
           return [...loans, ...userLoans];
         }, [])
         .sort(
-          (userLoanA, userLoanB) => userLoanB.finishedAt - userLoanA.finishedAt,
+          (userLoanA, userLoanB) => userLoanA.expiredAt - userLoanB.expiredAt,
         );
     }
 
