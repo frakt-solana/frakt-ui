@@ -167,13 +167,13 @@ export const useSwapForm = (): {
   useEffect(() => {
     (async () => {
       if (prism && payToken?.address && receiveToken?.address) {
-        await prism.loadRoutes(payToken?.address, receiveToken?.address);
         if (!debouncePayValue) {
           setValue(InputControlsNames.RECEIVE_VALUE, '');
           setValue(InputControlsNames.TOKEN_MIN_AMOUNT, '');
           setTokenPriceImpact('');
           setRoute(null);
         } else {
+          await prism.loadRoutes(payToken?.address, receiveToken?.address);
           const bestRoute = prism.getRoutes(debouncePayValue)[0];
           setRoute(bestRoute);
         }
