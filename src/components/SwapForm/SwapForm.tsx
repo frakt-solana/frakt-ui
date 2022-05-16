@@ -11,7 +11,6 @@ import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useSwapForm } from './hooks/useSwapForm';
 import { ConfirmModal } from '../ConfirmModal';
 import { LoadingModal } from '../LoadingModal';
-import { useTokenListContext } from '../../contexts/TokenList';
 import { SlippageDropdown } from '../../pages/NFTPools/components/ModalParts';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 
@@ -122,7 +121,7 @@ const SwapForm: FC = () => {
         </span>
         <span className={styles.info__value}>{`${slippage}%`}</span>
       </div>
-      {tokenMinAmount && (
+      {!!tokenMinAmount && (
         <div className={styles.info}>
           <span className={styles.info__title}>
             <span className={styles.info__titleName}>Minimum Received</span>

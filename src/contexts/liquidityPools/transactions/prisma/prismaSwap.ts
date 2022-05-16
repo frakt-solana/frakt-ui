@@ -1,5 +1,4 @@
 import { Prism } from '@prism-hq/prism-ag';
-
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import {
@@ -8,7 +7,7 @@ import {
   WalletAndConnection,
 } from '../../../../utils/transactions';
 
-export interface PrismaSwapTransactionParams {
+export interface PrismSwapTransactionParams {
   receiveToken: string;
   payToken: string;
   payValue: string;
@@ -16,11 +15,11 @@ export interface PrismaSwapTransactionParams {
   slippage?: number;
 }
 
-export interface PrismaSwapTransactionRawParams
-  extends PrismaSwapTransactionParams,
+export interface PrismSwapTransactionRawParams
+  extends PrismSwapTransactionParams,
     WalletAndConnection {}
 
-export const rawPrismaSwap = async ({
+export const rawPrismSwap = async ({
   receiveToken,
   payToken,
   wallet,
@@ -28,7 +27,7 @@ export const rawPrismaSwap = async ({
   tokensList,
   payValue,
   slippage = 1,
-}: PrismaSwapTransactionRawParams): Promise<void> => {
+}: PrismSwapTransactionRawParams): Promise<void> => {
   const initPrism = async () => {
     return await Prism.init({
       user: wallet.publicKey,
@@ -38,23 +37,21 @@ export const rawPrismaSwap = async ({
     });
   };
 
-  const prisma = await initPrism();
+  const prism = await initPrism();
 
-  await prisma.setSigner(wallet);
-  await prisma.loadRoutes(payToken, receiveToken);
+  await prism.setSigner(wallet);
+  await prism.loadRoutes(payToken, receiveToken);
 
-  const routes = await prisma.getRoutes(Number(payValue));
+  const routes = await prism.getRoutes(Number(payValue));
 
-  await prisma.swap(routes[0]);
+  await prism.swap(routes[0]);
 };
 
-const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawPrismaSwap, {
+const wrappedAsyncWithTryCatch = wrapTxnWithTryCatch(rawPrismSwap, {
   onSuccessMessage: {
     message: 'Swap made successfully',
   },
   onErrorMessage: { message: 'Swap failed' },
 });
 
-export const prismaSwap = createTransactionFuncFromRaw(
-  wrappedAsyncWithTryCatch,
-);
+export const prismSwap = createTransactionFuncFromRaw(wrappedAsyncWithTryCatch);

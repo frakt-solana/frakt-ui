@@ -1,7 +1,8 @@
+import { ReactNode } from 'react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { Prism } from '@prism-hq/prism-ag';
 import BN from 'bn.js';
-import { ReactNode } from 'react';
 
 import {
   StakeLiquidityTransactionParams,
@@ -19,7 +20,7 @@ import {
   SecondaryRewardView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
-import { PrismaSwapTransactionParams } from './transactions/prisma';
+import { PrismSwapTransactionParams } from './transactions/prisma';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
@@ -28,7 +29,7 @@ export interface LiquidityPoolsContextValues {
     raydiumPoolConfigs: LiquidityPoolKeysV4[],
   ) => Promise<RaydiumPoolInfo[]>;
   raydiumSwap: (params: SwapTransactionParams) => Promise<boolean | void>;
-  prismaSwap: (params: PrismaSwapTransactionParams) => Promise<void>;
+  prismSwap: (params: PrismSwapTransactionParams) => Promise<void>;
   createRaydiumLiquidityPool: (params: any) => Promise<void>;
   addRaydiumLiquidity: (
     params: AddLiquidityTransactionParams,
@@ -41,7 +42,7 @@ export interface LiquidityPoolsContextValues {
   unstakeLiquidity: (
     params: UnstakeLiquidityTransactionParams,
   ) => Promise<boolean | null>;
-  prisma: any;
+  prism: Prism;
 }
 
 export interface LiquidityPoolKeysV4String {

@@ -30,8 +30,8 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
   ...props
 }) => {
   const [searchString, setSearchString] = useState<string>('');
-  const { itemsToShow, next } = useFakeInfinityScroll(20);
-
+  const { itemsToShow, next } = useFakeInfinityScroll();
+  const { poolDataByMint } = useLiquidityPools();
   const { tokensList } = useTokenListContext();
 
   const filterTokens = () => {
@@ -42,13 +42,11 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
-  }, 300);
+  }, 100);
 
   useEffect(() => {
     setSearchString('');
   }, [visible]);
-
-  const { poolDataByMint } = useLiquidityPools();
 
   const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
     ({ tokenInfo }) => tokenInfo,
@@ -76,6 +74,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
         onChange={(event) => searchItems(event.target.value || '')}
         className={styles.input}
         placeholder="Search token by name"
+        value={searchString}
       />
       <FakeInfinityScroll
         itemsToShow={itemsToShow}

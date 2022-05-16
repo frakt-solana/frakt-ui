@@ -13,12 +13,14 @@ import {
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
 import { useLazyPoolInfo } from './useLazyPoolInfo';
+import { useTokenListContext } from '../../../contexts/TokenList';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
   RECEIVE_VALUE = 'receiveValue',
   PAY_TOKEN = 'payToken',
   PAY_VALUE = 'payValue',
+  TOKEN_MIN_AMOUNT = 'tokenMinAmount',
 }
 
 export type FormFieldValues = {
@@ -26,6 +28,7 @@ export type FormFieldValues = {
   [InputControlsNames.RECEIVE_VALUE]: string;
   [InputControlsNames.PAY_TOKEN]: TokenInfo;
   [InputControlsNames.PAY_VALUE]: string;
+  [InputControlsNames.TOKEN_MIN_AMOUNT]: number;
 };
 
 export const useSwapForm = (): {
@@ -37,7 +40,7 @@ export const useSwapForm = (): {
   receiveToken: TokenInfo;
   payToken: TokenInfo;
   slippage: number;
-  tokenMinAmount: string;
+  tokenMinAmount: number;
   tokenPriceImpact: string;
   valuationDifference: string;
   loadingModalVisible: boolean;
@@ -48,8 +51,12 @@ export const useSwapForm = (): {
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
 } => {
-  const { prismaSwap, prisma } = useLiquidityPools();
+  const { prismSwap, prism } = useLiquidityPools();
   const { fetchPoolInfo } = useLazyPoolInfo();
+  const { poolDataByMint } = useLiquidityPools();
+
+  const { tokensList } = useTokenListContext();
+
   const { connected } = useWallet();
   const { vaults } = useFraktion();
   useFraktionInitialFetch();
@@ -61,6 +68,7 @@ export const useSwapForm = (): {
       [InputControlsNames.RECEIVE_TOKEN]: null,
       [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.RECEIVE_VALUE]: '',
+      [InputControlsNames.TOKEN_MIN_AMOUNT]: null,
     },
   });
 
@@ -70,17 +78,22 @@ export const useSwapForm = (): {
     close: closeConfirmModal,
   } = useConfirmModal();
 
-  const { receiveToken, payValue, payToken, receiveValue } = watch();
+  const { receiveToken, payValue, payToken, receiveValue, tokenMinAmount } =
+    watch();
 
   const [slippage, setSlippage] = useState<number>(1);
-  const [tokenMinAmount, setTokenMinAmountOut] = useState<string>('');
   const [tokenPriceImpact, setTokenPriceImpact] = useState<string>('');
 
   const intervalRef = useRef<any>();
 
+  const isPoolToken = poolDataByMint.has(
+    receiveToken?.address || payToken?.address,
+  );
+
   useEffect(() => {
     register(InputControlsNames.PAY_VALUE);
     register(InputControlsNames.RECEIVE_VALUE);
+    register(InputControlsNames.TOKEN_MIN_AMOUNT);
   }, [register]);
 
   const {
@@ -120,30 +133,36 @@ export const useSwapForm = (): {
     setValue(InputControlsNames.RECEIVE_TOKEN, payTokenBuf);
   };
 
-  const [routes, setRoutes] = useState<any>();
+  const [route, setRoute] = useState<any>();
 
   useEffect(() => {
-    if (prisma?.user && routes) {
-      const amount = String(routes?.amountOut * Number(payValue));
-      setValue(InputControlsNames.RECEIVE_VALUE, amount);
-    } else {
-      setValue(InputControlsNames.RECEIVE_VALUE, '');
+    if (prism && route) {
+      const amountOut = route?.amountOut * Number(payValue);
+      const tokenMinAmount = amountOut - (amountOut / 100) * slippage;
+
+      setValue(InputControlsNames.TOKEN_MIN_AMOUNT, tokenMinAmount);
+      setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
     }
-  }, [payValue, payToken, receiveToken, receiveValue, setValue]);
+  }, [route, payValue, payToken, receiveToken, receiveValue, setValue]);
 
   useEffect(() => {
     (async () => {
-      if (prisma?.user && payToken?.address && receiveToken?.address) {
-        await prisma.loadRoutes(payToken?.address, receiveToken?.address);
-        const routes = prisma.getRoutes(1)[0];
-        setRoutes(routes);
+      if (prism && payToken?.address && receiveToken?.address) {
+        await prism.loadRoutes(payToken?.address, receiveToken?.address);
+        const bestRoute = prism.getRoutes(1)[0];
+        setRoute(bestRoute);
       }
     })();
-  }, [payToken, receiveToken]);
+  }, [payToken, receiveToken, prism]);
 
   useEffect(() => {
     clearInterval(intervalRef.current);
-    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
+    if (
+      isPoolToken &&
+      payToken &&
+      receiveToken &&
+      payToken.address !== receiveToken.address
+    ) {
       intervalRef.current = setInterval(() => {
         fetchPoolInfo(payToken.address, receiveToken.address);
       }, 5000);
@@ -155,7 +174,12 @@ export const useSwapForm = (): {
   }, [payToken, receiveToken]);
 
   useEffect(() => {
-    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
+    if (
+      isPoolToken &&
+      payToken &&
+      receiveToken &&
+      payToken.address !== receiveToken.address
+    ) {
       fetchPoolInfo(payToken.address, receiveToken.address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -197,10 +221,10 @@ export const useSwapForm = (): {
     closeConfirmModal();
     openLoadingModal();
 
-    await prismaSwap({
+    await prismSwap({
       receiveToken: receiveToken.address,
       payToken: payToken.address,
-      tokensList: prisma?.tokenList?.tokens,
+      tokensList,
       payValue,
       slippage,
     });
