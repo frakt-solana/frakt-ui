@@ -14,6 +14,7 @@ import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
 import { useLazyPoolInfo } from './useLazyPoolInfo';
 import { useTokenListContext } from '../../../contexts/TokenList';
+import { useDebounce } from '../../../hooks';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -134,21 +135,30 @@ export const useSwapForm = (): {
   };
 
   const [route, setRoute] = useState<any>();
+  const [debouncePayValue, setDebouncePayValue] = useState<number>(0);
+
+  const searchItems = useDebounce((payValue: number) => {
+    setDebouncePayValue(payValue);
+  }, 600);
+
+  useEffect(() => {
+    searchItems(payValue);
+  }, [payValue, searchItems]);
 
   useEffect(() => {
     if (prism && route) {
-      const amountOut = route?.amountOut * Number(payValue);
-      const tokenMinAmount = amountOut - (amountOut / 100) * slippage;
+      const { amountOut, minimumReceived, priceImpact } = route;
 
-      setValue(InputControlsNames.TOKEN_MIN_AMOUNT, tokenMinAmount);
+      setTokenPriceImpact(Math.min(100, priceImpact).toFixed(2));
       setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
+      setValue(InputControlsNames.TOKEN_MIN_AMOUNT, minimumReceived);
     }
   }, [
+    debouncePayValue,
+    searchItems,
     route,
-    payValue,
     payToken,
     receiveToken,
-    receiveValue,
     setValue,
     slippage,
     prism,
@@ -158,11 +168,18 @@ export const useSwapForm = (): {
     (async () => {
       if (prism && payToken?.address && receiveToken?.address) {
         await prism.loadRoutes(payToken?.address, receiveToken?.address);
-        const bestRoute = prism.getRoutes(1)[0];
-        setRoute(bestRoute);
+        if (!debouncePayValue) {
+          setValue(InputControlsNames.RECEIVE_VALUE, '');
+          setValue(InputControlsNames.TOKEN_MIN_AMOUNT, '');
+          setTokenPriceImpact('');
+          setRoute(null);
+        } else {
+          const bestRoute = prism.getRoutes(debouncePayValue)[0];
+          setRoute(bestRoute);
+        }
       }
     })();
-  }, [payToken, receiveToken, prism]);
+  }, [payToken, receiveToken, prism, debouncePayValue, setValue]);
 
   useEffect(() => {
     clearInterval(intervalRef.current);

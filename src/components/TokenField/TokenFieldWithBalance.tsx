@@ -8,6 +8,7 @@ import { RawUserTokensByMint, useUserTokens } from '../../contexts/userTokens';
 import { decimalBNToString, SOL_TOKEN } from '../../utils';
 import TokenField, { TokenFieldProps } from './TokenField';
 import { useNativeAccount } from '../../utils/accounts';
+import { useTokenListContext } from '../../contexts/TokenList';
 
 const getTokenBalance = (
   token: TokenInfo,
@@ -65,10 +66,17 @@ export const TokenFieldWithBalance: FC<TokenFieldWithBalanceProps> = ({
   lpTokenSymbol,
 }) => {
   const { connected } = useWallet();
+  const { tokensList: defaultTokenList } = useTokenListContext();
   const { rawUserTokensByMint } = useUserTokens();
   const { account } = useNativeAccount();
 
-  const balances = getMintBalanceMap(tokensList, account, rawUserTokensByMint);
+  const isTokenList = tokensList ? tokensList : defaultTokenList;
+
+  const balances = getMintBalanceMap(
+    defaultTokenList,
+    account,
+    rawUserTokensByMint,
+  );
 
   const balance = balances[currentToken?.address] || 0;
 
@@ -78,7 +86,7 @@ export const TokenFieldWithBalance: FC<TokenFieldWithBalanceProps> = ({
 
   return (
     <TokenField
-      tokensList={tokensList}
+      tokensList={isTokenList}
       onTokenChange={onTokenChange}
       currentToken={currentToken}
       value={value}
