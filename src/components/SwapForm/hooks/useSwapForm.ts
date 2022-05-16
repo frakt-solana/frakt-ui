@@ -143,7 +143,16 @@ export const useSwapForm = (): {
       setValue(InputControlsNames.TOKEN_MIN_AMOUNT, tokenMinAmount);
       setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
     }
-  }, [route, payValue, payToken, receiveToken, receiveValue, setValue]);
+  }, [
+    route,
+    payValue,
+    payToken,
+    receiveToken,
+    receiveValue,
+    setValue,
+    slippage,
+    prism,
+  ]);
 
   useEffect(() => {
     (async () => {
