@@ -20,6 +20,7 @@ export interface RawUserTokensByMint {
 
 export interface UserTokensValues {
   nfts: UserNFT[];
+  allNfts: UserNFT[]; //? Includes frozen nfts
   rawUserTokensByMint: RawUserTokensByMint;
   loading: boolean;
   nftsLoading: boolean;

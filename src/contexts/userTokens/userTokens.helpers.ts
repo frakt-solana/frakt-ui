@@ -1,5 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 
+import { TokenView } from '../../utils/accounts';
+
 import {
   getArweaveMetadataByMint,
   NFTCreator,
@@ -144,3 +146,6 @@ export const fetchNftsWithFallback: fetchNftsWithFallback = async ({
 
   return userNFTs || [];
 };
+
+//? token.state === 2 for freezed accounts
+export const isTokenFrozen = (token: TokenView): boolean => token.state === 2;

@@ -76,6 +76,7 @@ export const useBorrowPage = (): {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const {
     nfts: rawNfts,
+    allNfts: rawNftsWithFrozen,
     loading: userTokensLoading,
     nftsLoading,
     fetchUserNfts,
@@ -99,8 +100,8 @@ export const useBorrowPage = (): {
   }, [connected, userTokensLoading, nftsLoading]);
 
   const interestRateDiscountPercent = useMemo(() => {
-    if (rawNfts?.length && !nftsLoading) {
-      const amountOfDiscountNfts = rawNfts.reduce((amount, nft) => {
+    if (rawNftsWithFrozen?.length && !nftsLoading) {
+      const amountOfDiscountNfts = rawNftsWithFrozen.reduce((amount, nft) => {
         const creators = getNftCreators(nft);
 
         const isDiscountNft = !!DISCOUNT_NFT_CREATORS?.find((creator) =>
@@ -119,7 +120,7 @@ export const useBorrowPage = (): {
 
     return 0;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawNfts?.length, nftsLoading]);
+  }, [rawNftsWithFrozen?.length, nftsLoading]);
 
   const searchItems = useDebounce((search: string) => {
     setItemsToShow(15);
