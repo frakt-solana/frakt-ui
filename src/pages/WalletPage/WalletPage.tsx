@@ -8,7 +8,11 @@ import { VaultsTab } from './components/VaultsTab';
 import { TokensTab } from './components/TokensTab';
 import { LoansList } from './components/LoansList';
 import styles from './WalletPage.module.scss';
-import { useLoansInitialFetch, useUserLoans } from '../../contexts/loans';
+import {
+  useLoans,
+  useLoansInitialFetch,
+  useLoansPolling,
+} from '../../contexts/loans';
 import { useParams } from 'react-router-dom';
 import { usePublicKeyParam } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -26,6 +30,7 @@ const useWalletPage = () => {
   usePublicKeyParam(walletPubkey);
 
   useLoansInitialFetch();
+  useLoansPolling();
 
   const wallet = useWallet();
 
@@ -33,7 +38,7 @@ const useWalletPage = () => {
 
   const isMyProfile = walletPubkey === wallet.publicKey?.toBase58();
 
-  const { userLoans, loading: userLoansLoading } = useUserLoans();
+  const { userLoans, userLoansLoading } = useLoans();
 
   const {
     walletVaults,

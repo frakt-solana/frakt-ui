@@ -12,9 +12,15 @@ export type FetchDataFunc = () => Promise<void>;
 
 export interface LoansContextValues {
   initialFetch: FetchDataFunc;
+  refetch: FetchDataFunc;
   loanDataByPoolPublicKey: LoanDataByPoolPublicKey;
   removeLoanOptimistic: RemoveLoanOptimistic;
   loading: boolean;
+  isPolling: boolean;
+  startPolling: () => void;
+  stopPolling: () => void;
+  userLoans: LoanWithArweaveMetadata[];
+  userLoansLoading: boolean;
 }
 
 export type LoansProviderType = (props: { children: ReactNode }) => JSX.Element;

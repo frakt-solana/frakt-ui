@@ -7,8 +7,9 @@ import styles from '../LoansPage.module.scss';
 import { useDebounce } from '../../../hooks';
 import {
   LoanWithArweaveMetadata,
+  useLoans,
   useLoansInitialFetch,
-  useUserLoans,
+  useLoansPolling,
 } from '../../../contexts/loans';
 
 export enum InputControlsNames {
@@ -42,7 +43,8 @@ export const useLoansPage = (): {
   userLoansLoading: boolean;
 } => {
   useLoansInitialFetch();
-  const { userLoans, loading: userLoansLoading } = useUserLoans();
+  useLoansPolling();
+  const { userLoans, userLoansLoading } = useLoans();
 
   const { control } = useForm({
     defaultValues: {
