@@ -1,20 +1,16 @@
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../../utils';
-import {
-  useFraktion,
-  useFraktionInitialFetch,
-  useFraktionPolling,
-} from '../../../contexts/fraktion';
+
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
-import { useLazyPoolInfo } from './useLazyPoolInfo';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { useDebounce } from '../../../hooks';
+import { usePrism } from '../../../contexts/prism/prism.hooks';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -44,8 +40,7 @@ export const useSwapForm = (
   payToken: TokenInfo;
   slippage: number;
   tokenMinAmount: number;
-  tokenPriceImpact: string;
-  valuationDifference: string;
+  tokenPriceImpact: number;
   loadingModalVisible: boolean;
   closeLoadingModal: () => void;
   setSlippage: (nextValue: number) => void;
@@ -54,16 +49,10 @@ export const useSwapForm = (
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
 } => {
-  const { prismSwap, prism } = useLiquidityPools();
-  const { fetchPoolInfo } = useLazyPoolInfo();
+  const { prismSwap, prism } = usePrism();
   const { poolDataByMint } = useLiquidityPools();
-
   const { tokensList } = useTokenListContext();
-
   const { connected } = useWallet();
-  const { vaults } = useFraktion();
-  useFraktionInitialFetch();
-  useFraktionPolling();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -86,13 +75,7 @@ export const useSwapForm = (
     watch();
 
   const [slippage, setSlippage] = useState<number>(1);
-  const [tokenPriceImpact, setTokenPriceImpact] = useState<string>('');
-
-  const intervalRef = useRef<any>();
-
-  const isPoolToken = poolDataByMint.has(
-    receiveToken?.address || payToken?.address,
-  );
+  const [tokenPriceImpact, setTokenPriceImpact] = useState<number>(0);
 
   useEffect(() => {
     register(InputControlsNames.PAY_VALUE);
@@ -116,17 +99,6 @@ export const useSwapForm = (
     setValue(InputControlsNames.RECEIVE_TOKEN, nextToken);
   };
 
-  const vaultInfo = useMemo(() => {
-    if (receiveToken && payToken) {
-      const token =
-        payToken.address === SOL_TOKEN.address ? receiveToken : payToken;
-
-      return vaults.find(({ fractionMint }) => fractionMint === token.address);
-    } else {
-      return null;
-    }
-  }, [vaults, receiveToken, payToken]);
-
   const changeSides = () => {
     const payValueBuf = payValue;
     const payTokenBuf = payToken;
@@ -142,9 +114,12 @@ export const useSwapForm = (
 
   const searchItems = useDebounce((payValue: number) => {
     setDebouncePayValue(payValue);
-  }, 300);
+  }, 600);
 
   useEffect(() => {
+    if (!payValue) {
+      setTokenPriceImpact(0);
+    }
     searchItems(payValue);
   }, [payValue, searchItems]);
 
@@ -161,7 +136,8 @@ export const useSwapForm = (
       setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
       setValue(InputControlsNames.TOKEN_MIN_AMOUNT, minimumReceived);
     }
-  }, [route, payToken, receiveToken, setValue, slippage, prism, payValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route, payToken, receiveToken, payValue]);
 
   useEffect(() => {
     (async () => {
@@ -171,83 +147,24 @@ export const useSwapForm = (
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken, prism, setValue]);
+  }, [payToken, receiveToken]);
 
   useEffect(() => {
     (async () => {
-      if (prism && payToken?.address && receiveToken?.address) {
-        if (!payValue) {
-          setTokenPriceImpact('');
-        } else {
-          const bestRoute = await loadRoutes(debouncePayValue);
-          setTokenPriceImpact(Math.min(100, bestRoute?.priceImpact).toFixed(2));
-        }
+      if (
+        prism &&
+        payToken?.address &&
+        receiveToken?.address &&
+        debouncePayValue
+      ) {
+        const bestRoute = await loadRoutes(debouncePayValue);
+        setTokenPriceImpact(Math.min(100, bestRoute?.priceImpact));
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken, prism, debouncePayValue, setValue]);
-
-  useEffect(() => {
-    clearInterval(intervalRef.current);
-    if (
-      isPoolToken &&
-      payToken &&
-      receiveToken &&
-      payToken.address !== receiveToken.address
-    ) {
-      intervalRef.current = setInterval(() => {
-        fetchPoolInfo(payToken.address, receiveToken.address);
-      }, 5000);
-    }
-
-    return () => clearInterval(intervalRef.current);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken]);
-
-  useEffect(() => {
-    if (
-      isPoolToken &&
-      payToken &&
-      receiveToken &&
-      payToken.address !== receiveToken.address
-    ) {
-      fetchPoolInfo(payToken.address, receiveToken.address);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken]);
+  }, [payToken, receiveToken, debouncePayValue]);
 
   const isSwapBtnEnabled = connected && Number(payValue) > 0;
-
-  const valuationDifference: string = useMemo(() => {
-    if (!vaultInfo) {
-      return '';
-    }
-
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    if (isBuy) {
-      const amountMarket = Number(receiveValue);
-
-      const amountLocked =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
-
-      const difference = (amountMarket / amountLocked) * 100 - 100;
-
-      return isNaN(difference) ? '0' : difference.toFixed(2);
-    } else {
-      const amountMarketSOL = Number(receiveValue);
-
-      const amountLockedSOL =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
-
-      const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
-
-      return isNaN(difference) ? '0' : difference.toFixed(2);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo, payValue, receiveValue, payToken, receiveToken]);
 
   const handleSwap = async () => {
     closeConfirmModal();
@@ -278,7 +195,6 @@ export const useSwapForm = (
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
-    valuationDifference,
     handleSwap,
     confirmModalVisible,
     openConfirmModal,

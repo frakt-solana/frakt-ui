@@ -14,7 +14,6 @@ import { LoadingModal } from '../LoadingModal';
 import { SlippageDropdown } from '../../pages/NFTPools/components/ModalParts';
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 
-const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
 const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 interface SwapFormInterface {
@@ -34,7 +33,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
-    valuationDifference,
     handleSwap,
     confirmModalVisible,
     openConfirmModal,
@@ -44,7 +42,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   } = useSwapForm(defaultTokenMint);
 
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
-
   const { poolDataByMint } = useLiquidityPools();
 
   const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
@@ -52,10 +49,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   );
 
   const swapTokens = () => {
-    if (
-      Math.abs(Number(tokenPriceImpact)) > PRICE_IMPACT_WRANING_TRESHOLD ||
-      Math.abs(Number(valuationDifference)) > MAX_PERCENT_VALUATION_DIFFERENCE
-    ) {
+    if (Math.abs(Number(tokenPriceImpact)) > PRICE_IMPACT_WRANING_TRESHOLD) {
       openConfirmModal();
       return;
     }
@@ -140,11 +134,11 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             </span>
           </span>
           <span className={styles.info__value}>
-            {tokenMinAmount} {receiveToken?.symbol || ''}
+            {tokenMinAmount.toFixed(4)} {receiveToken?.symbol || ''}
           </span>
         </div>
       )}
-      {tokenPriceImpact && (
+      {!!tokenPriceImpact && (
         <div className={styles.info}>
           <span className={styles.info__title}>
             <span className={styles.info__titleName}>Price Impact</span>
@@ -156,24 +150,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
               <QuestionCircleOutlined />
             </Tooltip>
           </span>
-          <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
-        </div>
-      )}
-      {valuationDifference && (
-        <div className={styles.info}>
-          <span className={styles.info__title}>
-            <span className={styles.info__titleName}>Valuation Difference</span>
-            <Tooltip
-              placement="top"
-              trigger="hover"
-              overlay="Swap price difference from the initial price per fraktion set for buyout"
-            >
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </span>
-          <span
-            className={styles.info__value}
-          >{`${valuationDifference}%`}</span>
+          <span className={styles.info__value}>{`${tokenPriceImpact.toFixed(
+            2,
+          )}%`}</span>
         </div>
       )}
       <Button

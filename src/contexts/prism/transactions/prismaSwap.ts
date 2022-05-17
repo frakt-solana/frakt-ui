@@ -5,7 +5,7 @@ import {
   wrapTxnWithTryCatch,
   createTransactionFuncFromRaw,
   WalletAndConnection,
-} from '../../../../utils/transactions';
+} from '../../../utils/transactions';
 
 export interface PrismSwapTransactionParams {
   receiveToken: string;

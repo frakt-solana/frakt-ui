@@ -19,6 +19,7 @@ import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
+import { PrismProvider } from './contexts/prism';
 
 const wallets = [
   getPhantomWallet(),
@@ -38,7 +39,9 @@ function App(): JSX.Element {
               <LiquidityPoolsProvider>
                 <FraktionProvider>
                   <NftPoolsProvider>
-                    <Router />
+                    <PrismProvider>
+                      <Router />
+                    </PrismProvider>
                   </NftPoolsProvider>
                 </FraktionProvider>
               </LiquidityPoolsProvider>
