@@ -127,14 +127,14 @@ export const useSwapForm = (
 
   useEffect(() => {
     if (prism && route) {
-      const amountOut = route?.amountOut * Number(payValue);
+      const amountOut = route?.amountOut * Number(debouncePayValue);
       const minimumReceived = amountOut - (amountOut / 100) * slippage;
 
       setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
       setValue(InputControlsNames.TOKEN_MIN_AMOUNT, minimumReceived);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [route, payToken, receiveToken, payValue]);
+  }, [route, payToken, receiveToken, debouncePayValue]);
 
   useEffect(() => {
     (async () => {
