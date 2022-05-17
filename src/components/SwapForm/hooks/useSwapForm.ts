@@ -16,6 +16,7 @@ export enum InputControlsNames {
   PAY_TOKEN = 'payToken',
   PAY_VALUE = 'payValue',
   TOKEN_MIN_AMOUNT = 'tokenMinAmount',
+  TOKEN_PRICE_IMPACT = 'tokenPriceImpact',
 }
 
 export type FormFieldValues = {
@@ -24,6 +25,7 @@ export type FormFieldValues = {
   [InputControlsNames.PAY_TOKEN]: TokenInfo;
   [InputControlsNames.PAY_VALUE]: string;
   [InputControlsNames.TOKEN_MIN_AMOUNT]: number;
+  [InputControlsNames.TOKEN_PRICE_IMPACT]: number;
 };
 
 export const useSwapForm = (
@@ -51,6 +53,10 @@ export const useSwapForm = (
   const { fraktionTokensMap } = useTokenListContext();
   const wallet = useWallet();
 
+  const [slippage, setSlippage] = useState<number>(1);
+  const [debouncePayValue, setDebouncePayValue] = useState<number>(0);
+  const [routersIsLoaded, setRoutersIsLoaded] = useState<string[]>([]);
+
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
       [InputControlsNames.PAY_TOKEN]: SOL_TOKEN,
@@ -58,7 +64,8 @@ export const useSwapForm = (
         fraktionTokensMap.get(defaultTokenMint) || null,
       [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.RECEIVE_VALUE]: '',
-      [InputControlsNames.TOKEN_MIN_AMOUNT]: null,
+      [InputControlsNames.TOKEN_PRICE_IMPACT]: 0,
+      [InputControlsNames.TOKEN_MIN_AMOUNT]: 0,
     },
   });
 
@@ -68,16 +75,20 @@ export const useSwapForm = (
     close: closeConfirmModal,
   } = useConfirmModal();
 
-  const { receiveToken, payValue, payToken, receiveValue, tokenMinAmount } =
-    watch();
-
-  const [slippage, setSlippage] = useState<number>(1);
-  const [tokenPriceImpact, setTokenPriceImpact] = useState<number>(0);
+  const {
+    tokenPriceImpact,
+    receiveToken,
+    payValue,
+    payToken,
+    receiveValue,
+    tokenMinAmount,
+  } = watch();
 
   useEffect(() => {
     register(InputControlsNames.PAY_VALUE);
     register(InputControlsNames.RECEIVE_VALUE);
     register(InputControlsNames.TOKEN_MIN_AMOUNT);
+    register(InputControlsNames.TOKEN_PRICE_IMPACT);
   }, [register]);
 
   const {
@@ -96,7 +107,7 @@ export const useSwapForm = (
     setValue(InputControlsNames.RECEIVE_TOKEN, nextToken);
   };
 
-  const changeSides = () => {
+  const changeSides = (): void => {
     const payValueBuf = payValue;
     const payTokenBuf = payToken;
 
@@ -106,49 +117,45 @@ export const useSwapForm = (
     setValue(InputControlsNames.RECEIVE_TOKEN, payTokenBuf);
   };
 
-  const [debouncePayValue, setDebouncePayValue] = useState<number>(0);
-
-  const searchItems = useDebounce((payValue: number) => {
+  const searchItems = useDebounce((payValue: number): void => {
     setDebouncePayValue(payValue);
   }, 400);
 
   useEffect(() => {
     if (!payValue) {
-      setTokenPriceImpact(0);
       setValue(InputControlsNames.RECEIVE_VALUE, '');
-      setValue(InputControlsNames.TOKEN_MIN_AMOUNT, '');
+      setValue(InputControlsNames.TOKEN_PRICE_IMPACT, 0);
+      setValue(InputControlsNames.TOKEN_MIN_AMOUNT, 0);
     }
     searchItems(payValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payValue, searchItems]);
 
-  const [newRender, setNewRender] = useState<string[]>([]);
-
   useEffect(() => {
     (async () => {
-      if (prism && payToken?.address && receiveToken?.address) {
+      if (prism && payToken && receiveToken) {
         await prism.loadRoutes(payToken.address, receiveToken.address);
-        setNewRender([payToken?.address, receiveToken?.address]);
+        setRoutersIsLoaded([payToken.address, receiveToken.address]);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payToken, receiveToken]);
 
   useEffect(() => {
-    if (
-      prism &&
-      payToken?.address &&
-      receiveToken?.address &&
-      debouncePayValue
-    ) {
+    if (prism && payToken && receiveToken && debouncePayValue) {
       const route = prism.getRoutes(Number(debouncePayValue))[0];
 
-      setTokenPriceImpact(Math.min(100, route?.priceImpact));
-      setValue(InputControlsNames.RECEIVE_VALUE, String(route?.amountOut));
-      setValue(InputControlsNames.TOKEN_MIN_AMOUNT, route?.minimumReceived);
+      if (route) {
+        const { priceImpact, amountOut, minimumReceived } = route;
+        const maxPriceImpact = Math.min(100, priceImpact);
+
+        setValue(InputControlsNames.TOKEN_PRICE_IMPACT, maxPriceImpact);
+        setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
+        setValue(InputControlsNames.TOKEN_MIN_AMOUNT, minimumReceived);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken, debouncePayValue, newRender]);
+  }, [payToken, receiveToken, debouncePayValue, routersIsLoaded]);
 
   const isSwapBtnEnabled = wallet.connected && Number(payValue) > 0;
 
