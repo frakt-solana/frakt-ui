@@ -11,7 +11,6 @@ import FakeInfinityScroll, {
 import { useDebounce } from '../../hooks';
 import { CloseModalIcon } from '../../icons';
 import { useTokenListContext } from '../../contexts/TokenList';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
 
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (token: TokenInfo) => void;
@@ -31,8 +30,11 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
 }) => {
   const [searchString, setSearchString] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll();
-  const { poolDataByMint } = useLiquidityPools();
-  const { tokensList } = useTokenListContext();
+  const { tokensList, fraktionTokensList } = useTokenListContext();
+
+  const poolsTokens = fraktionTokensList.filter(
+    ({ extensions }) => (extensions as any)?.poolPubkey,
+  );
 
   const filterTokens = () => {
     return tokensList.filter(({ symbol }) =>
@@ -44,11 +46,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
-    ({ tokenInfo }) => tokenInfo,
-  );
-
-  const filteredTokensList = searchString ? filterTokens() : rawPoolsInfo;
+  const filteredTokensList = searchString ? filterTokens() : poolsTokens;
 
   return (
     <Modal

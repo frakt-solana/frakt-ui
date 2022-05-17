@@ -12,7 +12,7 @@ import { useSwapForm } from './hooks/useSwapForm';
 import { ConfirmModal } from '../ConfirmModal';
 import { LoadingModal } from '../LoadingModal';
 import { SlippageDropdown } from '../../pages/NFTPools/components/ModalParts';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
+import { useTokenListContext } from '../../contexts/TokenList';
 
 const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
@@ -42,10 +42,11 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   } = useSwapForm(defaultTokenMint);
 
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
-  const { poolDataByMint } = useLiquidityPools();
 
-  const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
-    ({ tokenInfo }) => tokenInfo,
+  const { fraktionTokensList } = useTokenListContext();
+
+  const poolsTokens = fraktionTokensList.filter(
+    ({ extensions }) => (extensions as any)?.poolPubkey,
   );
 
   const swapTokens = () => {
@@ -76,7 +77,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             className={styles.input}
             value={value}
             onValueChange={onChange}
-            tokensList={rawPoolsInfo}
+            tokensList={poolsTokens}
             currentToken={payToken}
             onTokenChange={onPayTokenChange}
             modalTitle="Pay"
@@ -96,7 +97,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             value={value}
             onValueChange={onChange}
             currentToken={receiveToken}
-            tokensList={rawPoolsInfo}
+            tokensList={poolsTokens}
             onTokenChange={onReceiveTokenChange}
             modalTitle="Receive"
             label="Receive"
