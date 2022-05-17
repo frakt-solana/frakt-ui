@@ -3,12 +3,10 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 
-import { useLiquidityPools } from '../../../contexts/liquidityPools';
-import { SOL_TOKEN } from '../../../utils';
-
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
 import { useTokenListContext } from '../../../contexts/TokenList';
+import { SOL_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
 import { usePrism } from '../../../contexts/prism/prism.hooks';
 
@@ -50,15 +48,14 @@ export const useSwapForm = (
   closeConfirmModal: () => void;
 } => {
   const { prismSwap, prism } = usePrism();
-  const { poolDataByMint } = useLiquidityPools();
-  const { tokensList } = useTokenListContext();
+  const { tokensList, fraktionTokensMap } = useTokenListContext();
   const { connected } = useWallet();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
       [InputControlsNames.PAY_TOKEN]: SOL_TOKEN,
       [InputControlsNames.RECEIVE_TOKEN]:
-        poolDataByMint.get(defaultTokenMint)?.tokenInfo || null,
+        fraktionTokensMap.get(defaultTokenMint) || null,
       [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.RECEIVE_VALUE]: '',
       [InputControlsNames.TOKEN_MIN_AMOUNT]: null,

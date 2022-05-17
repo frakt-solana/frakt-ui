@@ -1,14 +1,14 @@
 import { FC } from 'react';
 import { WSOL } from '@raydium-io/raydium-sdk';
 
-import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import SwapForm from '../../components/SwapForm';
 import { Loader } from '../../components/Loader';
 import styles from './styles.module.scss';
+import { usePrism } from '../../contexts/prism/prism.hooks';
 
 const SwapPage: FC = () => {
-  const { loading } = useLiquidityPools();
+  const { loading } = usePrism();
 
   return (
     <AppLayout contentClassName={styles.exchange}>
