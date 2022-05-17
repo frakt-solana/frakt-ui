@@ -1,0 +1,174 @@
+.description {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  .ownerTwitter {
+    margin-left: 16px;
+    opacity: 1;
+    transition: opacity var(--transition-1);
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+
+  .twitterIcon {
+    margin-top: 4px;
+  }
+
+  .ownerAvatar {
+    width: 100px;
+    height: 100px;
+    background: var(--gray-color-3) no-repeat center;
+    background-size: cover;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .editAvatarIcon {
+    cursor: pointer;
+    position: absolute;
+    bottom: -4px;
+    right: 0;
+  }
+
+  .ownerAddress {
+    font: var(--font-text-3);
+    margin: 10px 0 20px;
+  }
+
+  @media screen and (max-width: 1023px) {
+    font-size: 20px;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 18px;
+  }
+}
+
+.wrapper {
+  background: #191919;
+  border: 1px solid var(--color-gray-4);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 30px;
+  min-width: 500px;
+  max-width: 500px;
+  width: 100%;
+
+  @media screen and (max-width: 1200px) {
+    display: flex;
+    justify-content: space-between;
+    min-width: unset;
+    max-width: unset;
+    height: 210px;
+  }
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+.title {
+  font: var(--font-text-2);
+  margin-bottom: 20px;
+}
+
+.ownerInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.line {
+  background: var(--gray-color-3);
+  margin: 30px 0;
+  height: 1px;
+  width: 100%;
+
+  @media screen and (max-width: 1200px) {
+    margin: 0 30px;
+    width: 1px;
+    height: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    margin: 20px 0;
+    height: 1px;
+    width: 100%;
+  }
+}
+
+.rewardWrapper {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid var(--color-gray-4);
+  padding: 10px;
+  margin-bottom: 10px;
+
+  span {
+    font: var(--font-text-3);
+  }
+}
+
+.btn {
+  padding: 5px 16px;
+  height: 23px;
+  font: var(--font-btn-smallest);
+}
+
+.userInfo {
+  width: 100%;
+}
+
+.rewardInfo {
+  width: 100%;
+}
+
+.scrollContent {
+  overflow: auto;
+  height: 110px;
+  width: 100%;
+
+  &::-webkit-scrollbar {
+    width: 9px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--color-gray-4);
+  }
+}
+
+.leadearboard {
+  color: var(--accent-color-1);
+  cursor: pointer;
+  margin-bottom: 3px;
+  transition: opacity var(--transition-1);
+}
+
+.myProfileLink {
+  color: var(--accent-color-1);
+  margin-top: 3px;
+  font: var(--font-text-5);
+  font-weight: 400;
+
+  &::after {
+    background-color: var(--accent-color-1);
+  }
+
+  &:hover {
+    color: var(--accent-color-1);
+  }
+
+  svg {
+    margin-left: 5px;
+    margin-bottom: 1px;
+    width: 10px;
+    height: 10px;
+  }
+
+  svg path {
+    fill: var(--accent-color-1);
+  }
+}

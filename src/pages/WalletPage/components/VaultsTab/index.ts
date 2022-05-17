@@ -1,0 +1,1 @@
+export { VaultsTab } from './VaultsTab';

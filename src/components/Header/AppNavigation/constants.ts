@@ -13,6 +13,10 @@ export const NAVIGATION_LINKS = [
   //   label: 'Test',
   // },
   {
+    to: PATHS.LOANS,
+    label: 'Loans',
+  },
+  {
     to: PATHS.POOLS,
     label: 'Pools',
   },

@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import { CountdownIcon } from '../../icons';
-import { useAuctionCountdown } from '../../contexts/fraktion';
+import { useCountdown } from '../../hooks';
 
 interface AuctionCountdownProps {
   endTime: number;
@@ -13,7 +13,7 @@ export const AuctionCountdown = ({
   endTime,
   className,
 }: AuctionCountdownProps): JSX.Element => {
-  const { timeLeft, leftTimeInSeconds } = useAuctionCountdown(endTime);
+  const { timeLeft, leftTimeInSeconds } = useCountdown(endTime);
 
   if (leftTimeInSeconds < 0) return null;
 

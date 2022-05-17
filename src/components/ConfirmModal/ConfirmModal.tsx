@@ -14,7 +14,7 @@ interface ConfirmModalProps {
   btnCancel?: string;
 }
 
-const ConfirmModal: FC<ConfirmModalProps> = ({
+export const ConfirmModal: FC<ConfirmModalProps> = ({
   visible,
   onCancel,
   title = 'Please confirm',
@@ -46,5 +46,3 @@ const ConfirmModal: FC<ConfirmModalProps> = ({
     </Modal>
   );
 };
-
-export default ConfirmModal;

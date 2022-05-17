@@ -6,6 +6,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
+import { UserNFT } from '../contexts/userTokens';
 
 export const notify: Notify = ({
   message = '',
@@ -139,4 +140,19 @@ export const swapStringKeysAndValues = (
   const swapped = Object.entries(obj).map(([key, value]) => [value, key]);
 
   return Object.fromEntries(swapped);
+};
+
+export const getNftCreator = (nft: UserNFT): string => {
+  return (
+    nft?.metadata?.properties?.creators?.find(({ verified }) => verified)
+      ?.address || ''
+  );
+};
+
+export const getNftCreators = (nft: UserNFT): string[] => {
+  return (
+    nft?.metadata?.properties?.creators
+      ?.filter(({ verified }) => verified)
+      ?.map(({ address }) => address) || []
+  );
 };

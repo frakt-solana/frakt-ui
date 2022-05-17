@@ -20,6 +20,7 @@ export interface RawUserTokensByMint {
 
 export interface UserTokensValues {
   nfts: UserNFT[];
+  allNfts: UserNFT[]; //? Includes frozen nfts
   rawUserTokensByMint: RawUserTokensByMint;
   loading: boolean;
   nftsLoading: boolean;
@@ -48,14 +49,16 @@ export interface QNFetchNFTData {
   traits: ArweaveAttribute[];
 }
 
+export interface QNFetchResult {
+  assets: QNFetchNFTData[];
+  owner: string;
+  pageNumber: number;
+  totalItems: number;
+  totalPages: number;
+}
+
 export interface QNFetchResponseData {
   id: number;
   jsonrpc: string;
-  result: {
-    assets: QNFetchNFTData[];
-    owner: string;
-    pageNumber: number;
-    totalItems: number;
-    totalPages: number;
-  };
+  result: QNFetchResult;
 }

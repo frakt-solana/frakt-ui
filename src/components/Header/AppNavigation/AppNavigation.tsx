@@ -33,6 +33,16 @@ export const DropdownMenuMore: FC = () => {
             Trade
           </a>
         </li>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={process.env.FRAKT_STAKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Staking
+          </a>
+        </li>
         {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
           <li key={idx}>
             <a
@@ -66,19 +76,14 @@ export const DropdownMenuDoStuff: FC = () => {
           </NavLink>
         </li>
         <li className={styles.linkList}>
-          <a
-            href={PATHS.BORROW}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.link}
-          >
+          <NavLink className={styles.link} to={PATHS.BORROW}>
             <div className={styles.content}>
               <p className={styles.title}>Borrow</p>
               <p className={styles.subtitle}>
                 take loan using NFT as collateral
               </p>
             </div>
-          </a>
+          </NavLink>
         </li>
       </ul>
     </Dropdown>
@@ -98,18 +103,6 @@ export const AppNavigation: FC<AppNavigationProps> = ({
         className,
       )}
     >
-      {!withoutLinks && (
-        <li className={styles.navigationItem}>
-          <a
-            href={PATHS.BORROW}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.navigationLink}
-          >
-            Loans
-          </a>
-        </li>
-      )}
       {!withoutLinks &&
         NAVIGATION_LINKS.map(({ label, to }, idx) => (
           <li key={idx} className={styles.navigationItem}>

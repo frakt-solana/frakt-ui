@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import styles from './styles.module.scss';
 import { NavLink } from 'react-router-dom';
 import Button from '../../../../../components/Button';
-import { PATHS } from '../../../../../constants';
 
 interface BlockContentProps {
   className?: string;
@@ -11,7 +10,6 @@ interface BlockContentProps {
   title: string;
   text: string;
   to?: string;
-  linkToGnomies?: boolean;
 }
 
 export const BlockContent: FC<BlockContentProps> = ({
@@ -20,7 +18,6 @@ export const BlockContent: FC<BlockContentProps> = ({
   title,
   text,
   to = '',
-  linkToGnomies,
 }) => {
   return (
     <div className={classNames(className, styles.wrapper)}>
@@ -28,28 +25,19 @@ export const BlockContent: FC<BlockContentProps> = ({
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.text}>{text}</p>
 
-      {/* //! Temporary Solution */}
-      {!linkToGnomies ? (
-        <>
-          {!to ? (
-            <Button type="alternative" className={styles.btn} disabled>
-              Soon
-            </Button>
-          ) : (
-            <NavLink to={to}>
-              <Button type="alternative" className={styles.btn}>
-                Try it out
-              </Button>
-            </NavLink>
-          )}
-        </>
-      ) : (
-        <a href={PATHS.BORROW} target="_blank" rel="noreferrer">
-          <Button type="alternative" className={styles.btn}>
-            Try it out
+      <>
+        {!to ? (
+          <Button type="alternative" className={styles.btn} disabled>
+            Soon
           </Button>
-        </a>
-      )}
+        ) : (
+          <NavLink to={to}>
+            <Button type="alternative" className={styles.btn}>
+              Try it out
+            </Button>
+          </NavLink>
+        )}
+      </>
     </div>
   );
 };

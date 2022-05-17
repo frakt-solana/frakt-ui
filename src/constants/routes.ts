@@ -18,6 +18,8 @@ import {
   NFTPoolSwapPage,
   NFTPoolInfoPage,
   // NFTPoolsTestPage,
+  LoansPage,
+  BorrowPage,
 } from '../pages';
 
 interface Route {
@@ -32,6 +34,16 @@ export const routes: Route[] = [
   //   path: PATHS.TEST,
   //   component: NFTPoolsTestPage,
   // },
+  {
+    exact: true,
+    path: PATHS.LOANS,
+    component: LoansPage,
+  },
+  {
+    exact: true,
+    path: PATHS.BORROW,
+    component: BorrowPage,
+  },
   {
     exact: true,
     path: PATHS.ROOT,
