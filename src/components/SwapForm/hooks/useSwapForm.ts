@@ -32,7 +32,9 @@ export type FormFieldValues = {
   [InputControlsNames.TOKEN_MIN_AMOUNT]: number;
 };
 
-export const useSwapForm = (): {
+export const useSwapForm = (
+  defaultTokenMint: string,
+): {
   formControl: Control<FormFieldValues>;
   onPayTokenChange: (nextToken: TokenInfo) => void;
   onReceiveTokenChange: (nextToken: TokenInfo) => void;
@@ -66,7 +68,8 @@ export const useSwapForm = (): {
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
       [InputControlsNames.PAY_TOKEN]: SOL_TOKEN,
-      [InputControlsNames.RECEIVE_TOKEN]: null,
+      [InputControlsNames.RECEIVE_TOKEN]:
+        poolDataByMint.get(defaultTokenMint)?.tokenInfo || null,
       [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.RECEIVE_VALUE]: '',
       [InputControlsNames.TOKEN_MIN_AMOUNT]: null,
@@ -139,46 +142,49 @@ export const useSwapForm = (): {
 
   const searchItems = useDebounce((payValue: number) => {
     setDebouncePayValue(payValue);
-  }, 600);
+  }, 300);
 
   useEffect(() => {
     searchItems(payValue);
   }, [payValue, searchItems]);
 
+  const loadRoutes = async (value: number) => {
+    await prism.loadRoutes(payToken?.address, receiveToken?.address);
+    return prism.getRoutes(value)[0];
+  };
+
   useEffect(() => {
     if (prism && route) {
-      const { amountOut, minimumReceived, priceImpact } = route;
+      const amountOut = route?.amountOut * Number(payValue);
+      const minimumReceived = amountOut - (amountOut / 100) * slippage;
 
-      setTokenPriceImpact(Math.min(100, priceImpact).toFixed(2));
       setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
       setValue(InputControlsNames.TOKEN_MIN_AMOUNT, minimumReceived);
     }
-  }, [
-    debouncePayValue,
-    searchItems,
-    route,
-    payToken,
-    receiveToken,
-    setValue,
-    slippage,
-    prism,
-  ]);
+  }, [route, payToken, receiveToken, setValue, slippage, prism, payValue]);
 
   useEffect(() => {
     (async () => {
       if (prism && payToken?.address && receiveToken?.address) {
-        if (!debouncePayValue) {
-          setValue(InputControlsNames.RECEIVE_VALUE, '');
-          setValue(InputControlsNames.TOKEN_MIN_AMOUNT, '');
+        const bestRoute = await loadRoutes(1);
+        setRoute(bestRoute);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payToken, receiveToken, prism, setValue]);
+
+  useEffect(() => {
+    (async () => {
+      if (prism && payToken?.address && receiveToken?.address) {
+        if (!payValue) {
           setTokenPriceImpact('');
-          setRoute(null);
         } else {
-          await prism.loadRoutes(payToken?.address, receiveToken?.address);
-          const bestRoute = prism.getRoutes(debouncePayValue)[0];
-          setRoute(bestRoute);
+          const bestRoute = await loadRoutes(debouncePayValue);
+          setTokenPriceImpact(Math.min(100, bestRoute?.priceImpact).toFixed(2));
         }
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payToken, receiveToken, prism, debouncePayValue, setValue]);
 
   useEffect(() => {

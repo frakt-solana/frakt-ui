@@ -17,7 +17,11 @@ import { useLiquidityPools } from '../../contexts/liquidityPools';
 const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
 const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
-const SwapForm: FC = () => {
+interface SwapFormInterface {
+  defaultTokenMint?: string;
+}
+
+const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const {
     isSwapBtnEnabled,
     receiveToken,
@@ -37,7 +41,7 @@ const SwapForm: FC = () => {
     closeConfirmModal,
     loadingModalVisible,
     closeLoadingModal,
-  } = useSwapForm();
+  } = useSwapForm(defaultTokenMint);
 
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 

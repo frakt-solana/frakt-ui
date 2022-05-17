@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { WSOL } from '@raydium-io/raydium-sdk';
 
 import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -21,7 +22,7 @@ const SwapPage: FC = () => {
             <Loader size={'large'} />
           </div>
         ) : (
-          <SwapForm />
+          <SwapForm defaultTokenMint={WSOL.mint} />
         )}
       </div>
     </AppLayout>
