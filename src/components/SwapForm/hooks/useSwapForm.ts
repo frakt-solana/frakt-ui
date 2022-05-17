@@ -47,9 +47,9 @@ export const useSwapForm = (
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
 } => {
-  const { prismSwap, prism } = usePrism();
-  const { tokensList, fraktionTokensMap } = useTokenListContext();
-  const { connected } = useWallet();
+  const { prism } = usePrism();
+  const { fraktionTokensMap } = useTokenListContext();
+  const wallet = useWallet();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
@@ -150,19 +150,18 @@ export const useSwapForm = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payToken, receiveToken, debouncePayValue, newRender]);
 
-  const isSwapBtnEnabled = connected && Number(payValue) > 0;
+  const isSwapBtnEnabled = wallet.connected && Number(payValue) > 0;
 
-  const handleSwap = async () => {
+  const handleSwap = async (): Promise<void> => {
     closeConfirmModal();
     openLoadingModal();
 
-    await prismSwap({
-      receiveToken: receiveToken.address,
-      payToken: payToken.address,
-      tokensList,
-      payValue,
-      slippage,
-    });
+    const routes = await prism.getRoutes(Number(payValue));
+
+    prism.setSigner(wallet);
+    prism.setSlippage(slippage);
+
+    await prism.swap(routes[0]);
 
     closeLoadingModal();
   };

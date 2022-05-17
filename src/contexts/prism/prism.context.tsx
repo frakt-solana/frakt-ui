@@ -4,11 +4,9 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { PrismContextValues, PrismProviderType } from './prism.model';
 import { useTokenListContext } from '../TokenList';
-import { prismSwap } from './transactions';
 
 export const PrismContext = createContext<PrismContextValues>({
   loading: true,
-  prismSwap: () => Promise.resolve(null),
   prism: null,
 });
 
@@ -52,10 +50,6 @@ export const PrismProvider: PrismProviderType = ({ children }) => {
       value={{
         loading: loadingPrism,
         prism,
-        prismSwap: prismSwap({
-          connection,
-          wallet,
-        }),
       }}
     >
       {children}
