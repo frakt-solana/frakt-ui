@@ -54,9 +54,8 @@ export const useSwapForm = (
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
 } => {
-  const { prismSwap, prism } = useLiquidityPools();
+  const { poolDataByMint, prismSwap, prism } = useLiquidityPools();
   const { fetchPoolInfo } = useLazyPoolInfo();
-  const { poolDataByMint } = useLiquidityPools();
 
   const { tokensList } = useTokenListContext();
 
