@@ -10,6 +10,7 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
+import { FC } from 'react';
 import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
@@ -20,7 +21,7 @@ import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
-import { FC } from 'react';
+
 import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 
 const wallets = [
