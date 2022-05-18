@@ -6,9 +6,10 @@ import { Control, useForm } from 'react-hook-form';
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import { SOL_TOKEN } from '../../../utils';
+import { notify, SOL_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
 import { usePrism } from '../../../contexts/prism/prism.hooks';
+import { NotifyType } from '../../../utils/solanaUtils';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -160,17 +161,25 @@ export const useSwapForm = (
   const isSwapBtnEnabled = wallet.connected && Number(payValue) > 0;
 
   const handleSwap = async (): Promise<void> => {
-    closeConfirmModal();
-    openLoadingModal();
+    try {
+      closeConfirmModal();
+      openLoadingModal();
 
-    const routes = await prism.getRoutes(Number(payValue));
+      const routes = prism.getRoutes(Number(payValue));
 
-    prism.setSigner(wallet);
-    prism.setSlippage(slippage);
+      prism.setSigner(wallet);
+      prism.setSlippage(slippage);
 
-    await prism.swap(routes[0]);
+      await prism.swap(routes[0]);
 
-    closeLoadingModal();
+      notify({ message: 'Swapped successfully', type: NotifyType.SUCCESS });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      notify({ message: 'Swap failed', type: NotifyType.ERROR });
+    } finally {
+      closeLoadingModal();
+    }
   };
 
   return {

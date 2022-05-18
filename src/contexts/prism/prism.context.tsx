@@ -16,19 +16,16 @@ export const PrismProvider: PrismProviderType = ({ children }) => {
 
   const { tokensList, loading: tokensListLoading } = useTokenListContext();
   const [loadingPrism, setLoadingPrism] = useState<boolean>(true);
-  const [prism, setPrism] = useState<any>();
+  const [prism, setPrism] = useState<Prism | null>(null);
 
   const fetchPrismaData = async (): Promise<void> => {
     try {
-      const initPrism = async () => {
-        return await Prism.init({
-          user: wallet.publicKey,
-          connection: connection,
-          tokenList: { tokens: tokensList },
-        });
-      };
+      const prism = await Prism.init({
+        user: wallet.publicKey,
+        connection: connection,
+        tokenList: { tokens: tokensList },
+      });
 
-      const prism = await initPrism();
       setPrism(prism);
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -43,7 +40,7 @@ export const PrismProvider: PrismProviderType = ({ children }) => {
       fetchPrismaData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokensListLoading]);
+  }, [tokensListLoading, wallet.connected]);
 
   return (
     <PrismContext.Provider
