@@ -72,8 +72,7 @@ export const getFeePercent: GetFeePercent = ({ loanData, nft }) => {
   return feesPercent || 0;
 };
 
-const ORACLE_URL_BASE =
-  'https://nft-lending-v2-node.herokuapp.com/v1/getpricebycreator';
+const ORACLE_URL_BASE = 'https://nft-price-aggregator.herokuapp.com/creator';
 
 export const getNftMarketLowerPriceByCreator = async (
   creatorAddress: string,
@@ -83,7 +82,7 @@ export const getNftMarketLowerPriceByCreator = async (
 
     const responseData = await (await fetch(url)).json();
 
-    return responseData?.lower || null;
+    return responseData?.floor_price || null;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
