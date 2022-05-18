@@ -5,7 +5,6 @@ import {
   Page404,
   HomePage,
   SwapPage,
-  VaultPage,
   WalletPage,
   PoolsPage,
   NFTPoolsPage,
@@ -26,7 +25,7 @@ interface Route {
 
 export const routes: Route[] = [
   // {
-  //   exact: true,
+  // exact: true,
   //   path: PATHS.TEST,
   //   component: NFTPoolsTestPage,
   // },
@@ -44,11 +43,6 @@ export const routes: Route[] = [
     exact: true,
     path: PATHS.ROOT,
     component: HomePage,
-  },
-  {
-    exact: true,
-    path: `${PATHS.VAULT}${PATHS.VAULT_PUBKEY}`,
-    component: VaultPage,
   },
   {
     exact: true,
