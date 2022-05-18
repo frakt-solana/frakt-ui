@@ -5,7 +5,6 @@ import {
   Page404,
   HomePage,
   SwapPage,
-  VaultsPage,
   VaultPage,
   WalletPage,
   PoolsPage,
@@ -45,11 +44,6 @@ export const routes: Route[] = [
     exact: true,
     path: PATHS.ROOT,
     component: HomePage,
-  },
-  {
-    exact: true,
-    path: PATHS.VAULTS,
-    component: VaultsPage,
   },
   {
     exact: true,
