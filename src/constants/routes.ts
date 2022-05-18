@@ -9,9 +9,6 @@ import {
   VaultPage,
   WalletPage,
   PoolsPage,
-  FraktionalizePage,
-  CollectionsPage,
-  CollectionPage,
   NFTPoolsPage,
   NFTPoolBuyPage,
   NFTPoolSellPage,
@@ -91,23 +88,8 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: `${PATHS.FRAKTIONALIZE}${PATHS.VAULT_PUBKEY}?`,
-    component: FraktionalizePage,
-  },
-  {
-    exact: true,
     path: `${PATHS.WALLET}${PATHS.WALLET_PUBKEY}`,
     component: WalletPage,
-  },
-  {
-    exact: true,
-    path: PATHS.COLLECTIONS,
-    component: CollectionsPage,
-  },
-  {
-    exact: true,
-    path: `${PATHS.COLLECTION}${PATHS.COLLECTION_NAME}`,
-    component: CollectionPage,
   },
   {
     exact: true,
