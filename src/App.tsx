@@ -14,7 +14,6 @@ import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
-import { FraktionProvider } from './contexts/fraktion';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
@@ -41,13 +40,11 @@ const App: FC = () => {
             <TokenListContextProvider>
               <UserTokensProvider>
                 <LiquidityPoolsProvider>
-                  <FraktionProvider>
-                    <NftPoolsProvider>
-                      <LoansProvider>
-                        <Router />
-                      </LoansProvider>
-                    </NftPoolsProvider>
-                  </FraktionProvider>
+                  <NftPoolsProvider>
+                    <LoansProvider>
+                      <Router />
+                    </LoansProvider>
+                  </NftPoolsProvider>
                 </LiquidityPoolsProvider>
               </UserTokensProvider>
             </TokenListContextProvider>

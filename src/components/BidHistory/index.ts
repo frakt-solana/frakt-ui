@@ -1,1 +1,0 @@
-export { BidHistory } from './BidHistory';

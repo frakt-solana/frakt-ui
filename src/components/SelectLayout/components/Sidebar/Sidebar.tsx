@@ -8,7 +8,6 @@ import { Slider } from '../Slider';
 
 export interface SidebarProps {
   onDeselect?: (nft: UserNFT) => void;
-  currentVaultPubkey?: string;
   nfts: UserNFT[];
   sidebarForm: JSX.Element;
   isCloseSidebar: boolean;
@@ -16,19 +15,16 @@ export interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = ({
   onDeselect,
-  currentVaultPubkey,
   nfts,
   sidebarForm,
   isCloseSidebar = false,
 }) => {
   const {
     isSidebarVisible,
-    lockedNfts,
-    isBasket,
     isHeaderHidden,
     isSidebarCollapsed,
     toggleSidebarCollapse,
-  } = useSidebar(currentVaultPubkey, nfts);
+  } = useSidebar(nfts);
 
   return (
     <>
@@ -44,11 +40,10 @@ const Sidebar: FC<SidebarProps> = ({
           >
             <div className={styles.sidebar}>
               <p className={styles.nftsAmount} onClick={toggleSidebarCollapse}>
-                Your NFT{isBasket && 's'} ({nfts.length + lockedNfts.length})
+                Your NFT
               </p>
               <Slider
                 nfts={nfts}
-                lockedNFT={lockedNfts}
                 onDeselect={onDeselect}
                 className={styles.slider}
               />
