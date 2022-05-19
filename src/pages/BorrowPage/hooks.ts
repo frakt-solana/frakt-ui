@@ -69,7 +69,7 @@ export const useBorrowPage = (): {
   interestRateDiscountPercent: number;
 } => {
   //? Hardcoded util multiple loanPools not implemented
-  const loanPoolPubkey = 'Hy7h6FSicyB9B3ZNGtEs64dKzQWk8TuNdG1fgX5ccWFW';
+  const loanPoolPubkey = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
 
   useLoansInitialFetch();
   const { connected } = useWallet();
