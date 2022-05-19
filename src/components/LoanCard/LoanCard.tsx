@@ -1,5 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import {
@@ -7,13 +9,12 @@ import {
   useLoans,
   paybackLoan as paybackLoanTx,
   getLoanCollectionInfo,
+  getAmountToReturnForPriceBasedLoan,
 } from '../../contexts/loans';
 import styles from './LoanCard.module.scss';
 import { useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 interface LoanCardProps {
   className?: string;
@@ -93,9 +94,9 @@ const LoanCard: FC<LoanCardProps> = ({
   const amountToGet = loan?.amountToGet
     ? (loan?.amountToGet / 10 ** SOL_TOKEN.decimals).toFixed(2)
     : '';
-  const amountToReturn = loan?.amountToReturn
-    ? (loan?.amountToReturn / 10 ** SOL_TOKEN.decimals).toFixed(2)
-    : '';
+
+  const amountToReturn =
+    getAmountToReturnForPriceBasedLoan(loan)?.toFixed(2) || '';
 
   return (
     <>

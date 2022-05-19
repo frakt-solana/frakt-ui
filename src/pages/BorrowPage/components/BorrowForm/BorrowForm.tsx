@@ -55,7 +55,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   });
 
   const selectedNftName = selectedNft.metadata.name;
-  const loanPeriodDays = 7;
+  const loanPeriodDays = 7; //TODO get expirationTime from collectionInfo
 
   const fee = useMemo(() => {
     if (loanData && selectedNft) {
