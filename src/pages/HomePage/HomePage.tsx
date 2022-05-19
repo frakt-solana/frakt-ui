@@ -10,6 +10,7 @@ import { TestimonialsSection } from './sections/TestimonialsSection';
 import { Footer } from './sections/Footer';
 import { CustomHeader } from './CustomHeader';
 import { MainSection } from './sections/MainSection';
+import { ProvideSection } from './sections/ProvideSection';
 
 const HomePage = (): JSX.Element => {
   const sectionRef1 = useRef<HTMLParagraphElement>();
@@ -17,6 +18,7 @@ const HomePage = (): JSX.Element => {
   const sectionRef3 = useRef<HTMLParagraphElement>();
   const sectionRef4 = useRef<HTMLParagraphElement>();
   const sectionRef5 = useRef<HTMLParagraphElement>();
+  const sectionRef6 = useRef<HTMLParagraphElement>();
 
   const menuLinksData = useMemo(() => {
     return [
@@ -25,19 +27,28 @@ const HomePage = (): JSX.Element => {
       { sectionRef: sectionRef3 },
       { sectionRef: sectionRef4 },
       { sectionRef: sectionRef5 },
+      { sectionRef: sectionRef6 },
     ];
-  }, [sectionRef1, sectionRef2, sectionRef3, sectionRef4, sectionRef5]);
+  }, [
+    sectionRef1,
+    sectionRef2,
+    sectionRef3,
+    sectionRef4,
+    sectionRef5,
+    sectionRef6,
+  ]);
 
   return (
     <AppLayout customHeader={<CustomHeader menuLinksData={menuLinksData} />}>
       <MainSection />
       <Statistics />
       <FullPotentialSection navRef={sectionRef1} />
-      <OurTokensSection navRef={sectionRef2} />
+      <ProvideSection navRef={sectionRef2} />
+      <OurTokensSection navRef={sectionRef3} />
       <TestimonialsSection />
-      {/* <PartnersSection navRef={sectionRef3} /> */}
-      <TeamSection navRef={sectionRef4} />
-      <Footer navRef={sectionRef5} />
+      {/* <PartnersSection navRef={sectionRef4} /> */}
+      <TeamSection navRef={sectionRef5} />
+      <Footer navRef={sectionRef6} />
     </AppLayout>
   );
 };
