@@ -3,11 +3,14 @@ import { FC } from 'react';
 import styles from './ShortTermFields.module.scss';
 import classNames from 'classnames';
 
+const SECONDS_PER_DAY = 24 * 60 * 60;
+
 interface ShortTermFields {
   valuation?: number;
   ltv?: number;
   fee?: number;
   feeDiscountPercent?: number;
+  returnPeriodSeconds?: number;
 }
 
 export const ShortTermFields: FC<ShortTermFields> = ({
@@ -15,6 +18,7 @@ export const ShortTermFields: FC<ShortTermFields> = ({
   ltv = 0,
   fee = 0,
   feeDiscountPercent = 0,
+  returnPeriodSeconds = 7 * SECONDS_PER_DAY,
 }) => {
   const loanValue = valuation * ltv || 0;
 
@@ -23,6 +27,8 @@ export const ShortTermFields: FC<ShortTermFields> = ({
   const feeWithDiscount = fee * (1 - feeDiscountPercent / 100);
 
   const returnPrice = loanValue + loanValue * feeWithDiscount;
+
+  const returnPeriodDays = (returnPeriodSeconds / SECONDS_PER_DAY).toFixed(0);
 
   return (
     <div className={styles.fieldWrapper}>
@@ -36,7 +42,7 @@ export const ShortTermFields: FC<ShortTermFields> = ({
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>
         <p className={styles.staticValueTitle}>Return period</p>
-        <p className={styles.staticValueData}>7 Days</p>
+        <p className={styles.staticValueData}>{returnPeriodDays} Days</p>
       </div>
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>

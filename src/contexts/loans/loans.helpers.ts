@@ -5,7 +5,7 @@ import {
 } from '@frakters/nft-lending-v2';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { groupBy } from 'lodash';
-import { SOL_TOKEN } from '../../utils';
+import { getNftCreators, SOL_TOKEN } from '../../utils';
 import { UserNFT } from '../userTokens';
 
 import { LoanData, LoanDataByPoolPublicKey } from './loans.model';
@@ -54,13 +54,12 @@ type GetFeePercent = (props: { nft?: UserNFT; loanData: LoanData }) => number;
 export const getFeePercent: GetFeePercent = ({ loanData, nft }) => {
   const PERCENT_PRECISION = 100;
 
-  const nftCreator =
-    nft?.metadata?.properties?.creators?.find(({ verified }) => verified)
-      ?.address || '';
+  const nftCreators = getNftCreators(nft);
 
   const royaltyFeeRaw =
-    loanData?.collectionsInfo?.find(({ creator }) => creator === nftCreator)
-      ?.royaltyFeeTime || 0;
+    loanData?.collectionsInfo?.find(({ creator }) =>
+      nftCreators.includes(creator),
+    )?.royaltyFeeTime || 0;
 
   const rewardInterestRateRaw =
     loanData?.liquidityPool?.rewardInterestRateTime || 0;
@@ -72,6 +71,22 @@ export const getFeePercent: GetFeePercent = ({ loanData, nft }) => {
     (100 * PERCENT_PRECISION);
 
   return feesPercent || 0;
+};
+
+type GetNftReturnPeriod = (props: {
+  nft?: UserNFT;
+  loanData: LoanData;
+}) => number;
+
+export const getNftReturnPeriod: GetNftReturnPeriod = ({ loanData, nft }) => {
+  const nftCreators = getNftCreators(nft);
+
+  const returnPeriod =
+    loanData?.collectionsInfo?.find(({ creator }) =>
+      nftCreators.includes(creator),
+    )?.expirationTime || 0;
+
+  return returnPeriod;
 };
 
 const ORACLE_URL_BASE =
