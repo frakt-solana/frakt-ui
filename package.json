@@ -20,7 +20,6 @@
     "@solana/web3.js": "^1.29.2",
     "antd": "^4.6.6",
     "bn.js": "^5.2.0",
-    "borsh": "^0.6.0",
     "classnames": "^2.3.1",
     "moment": "^2.29.1",
     "rc-tooltip": "^5.1.1",
