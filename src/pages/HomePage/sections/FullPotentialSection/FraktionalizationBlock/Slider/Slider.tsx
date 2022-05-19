@@ -5,7 +5,6 @@ import SwiperCore, { Autoplay, FreeMode, Navigation, Pagination } from 'swiper';
 
 import styles from './Slider.module.scss';
 import { SLIDER_DATA } from './slidersData';
-import { PATHS } from '../../../../../../constants';
 import { MockVaultCard } from './MockVaultCard';
 
 SwiperCore.use([FreeMode, Navigation, Pagination, Autoplay]);
@@ -38,7 +37,10 @@ export const Slider: FC = () => {
             idx,
           ) => (
             <SwiperSlide key={idx} className={styles.slide}>
-              <NavLink to={PATHS.VAULTS} className={styles.slideContent}>
+              <NavLink
+                to={process.env.FRAKT_VAULTS_URL}
+                className={styles.slideContent}
+              >
                 <MockVaultCard
                   nftsAmount={nftsAmount}
                   title={title}

@@ -22,6 +22,14 @@ const getSolanaTokens = async (): Promise<TokenInfo[]> => {
   return res?.tokens?.filter(({ chainId }) => chainId === 101) || [];
 };
 
+const getFraktTokens = async (): Promise<TokenInfo[]> => {
+  const res: TokenInfo[] = await (
+    await fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL)
+  ).json();
+
+  return res?.filter(({ tags }) => tags.includes('frakt-nft-pool')) || [];
+};
+
 export const TokenListContextProvider = ({
   children = null,
 }: {
@@ -32,21 +40,22 @@ export const TokenListContextProvider = ({
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    Promise.all([
-      fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL).then((res) => res.json()),
-      getSolanaTokens(),
-    ])
-      .then(([fraktList, solanaList]) => {
+    (async () => {
+      try {
+        const [fraktList, solanaList] = await Promise.all([
+          getFraktTokens(),
+          getSolanaTokens(),
+        ]);
+
         setTokensList([...fraktList, ...solanaList]);
         setFraktionTokensList(fraktList);
-      })
-      .catch((error) => {
+      } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    })();
   }, []);
 
   //? Token map for quick lookup.

@@ -8,7 +8,11 @@ import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { ShortTermFields } from '../ShortTermFields';
 import { useBorrowForm } from './hooks';
-import { getFeePercent, LoanData } from '../../../../contexts/loans';
+import {
+  getFeePercent,
+  getNftReturnPeriod,
+  LoanData,
+} from '../../../../contexts/loans';
 import { getNftCreators, SOL_TOKEN } from '../../../../utils';
 
 interface BorrowFormProps {
@@ -55,7 +59,6 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   });
 
   const selectedNftName = selectedNft.metadata.name;
-  const loanPeriodDays = 7;
 
   const fee = useMemo(() => {
     if (loanData && selectedNft) {
@@ -69,12 +72,28 @@ export const BorrowForm: FC<BorrowFormProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loanData, selectedNft]);
 
+  const returnPeriod = useMemo(() => {
+    if (loanData && selectedNft) {
+      return getNftReturnPeriod({
+        loanData,
+        nft: selectedNft,
+      });
+    }
+
+    return 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loanData, selectedNft]);
+
   const feeWithDiscount = fee * (1 - interestRateDiscountPercent / 100);
   const returnPrice = loanValue + loanValue * feeWithDiscount;
 
+  const SECONDS_PER_DAY = 24 * 60 * 60;
+
   const confirmText = `You are about to use ${selectedNftName} as collateral for an instant loan of ${returnPrice?.toFixed(
     3,
-  )} SOL (incl. interest rate if applicable) that you commit to repay in full within ${loanPeriodDays} days. Proceed?`;
+  )} SOL (incl. interest rate if applicable) that you commit to repay in full within ${(
+    returnPeriod / SECONDS_PER_DAY
+  ).toFixed(0)} days. Proceed?`;
 
   const submitButtonDisabled = !returnPrice || !ltv || !valuation;
 
@@ -87,6 +106,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
           ltv={ltv}
           fee={fee}
           feeDiscountPercent={interestRateDiscountPercent}
+          returnPeriodSeconds={returnPeriod}
         />
       </div>
       <div className={styles.continueBtnContainer}>

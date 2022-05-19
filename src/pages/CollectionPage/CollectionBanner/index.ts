@@ -1,1 +1,0 @@
-export { CollectionBanner } from './CollectionBanner';

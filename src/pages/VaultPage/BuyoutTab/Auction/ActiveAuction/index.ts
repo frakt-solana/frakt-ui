@@ -1,1 +1,0 @@
-export { ActiveAuction } from './ActiveAuction';

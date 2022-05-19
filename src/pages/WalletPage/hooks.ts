@@ -1,74 +1,15 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
-import { useEffect, useMemo, useState } from 'react';
-import { getAllUserTokens } from '../../utils/accounts';
+import { useEffect, useState } from 'react';
 
-import {
-  useFraktion,
-  useFraktionInitialFetch,
-  VaultData,
-  VaultState,
-} from '../../contexts/fraktion';
+import { getAllUserTokens } from '../../utils/accounts';
 import { useTokenListContext } from '../../contexts/TokenList';
 import {
   NameServiceResponse,
   useNameServiceInfo,
 } from '../../utils/nameService';
 import { TokenInfoWithAmount } from './components/TokensTab/TokensTab';
-
-type UseWalletVaults = (props: { walletPubkey: string }) => {
-  walletVaults: VaultData[];
-  walletUnfinishedVaults: VaultData[];
-  loading: boolean;
-};
-
-export const useWalletVaults: UseWalletVaults = ({ walletPubkey }) => {
-  const { vaults, loading: vaultsLoading } = useFraktion();
-  useFraktionInitialFetch();
-
-  const walletVaults = useMemo(() => {
-    if (vaults?.length && walletPubkey) {
-      return vaults
-        .filter(
-          (vault) =>
-            vault.authority === walletPubkey &&
-            vault.state !== VaultState.Inactive &&
-            vault.state !== VaultState.Archived,
-        )
-        .sort(
-          (vaultA: VaultData, vaultB: VaultData) => vaultB.state - vaultA.state,
-        );
-    }
-
-    return [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaults?.length, walletPubkey]);
-
-  const walletUnfinishedVaults = useMemo(() => {
-    if (vaults?.length && walletPubkey) {
-      return vaults
-        .filter(
-          (vault) =>
-            vault.authority === walletPubkey &&
-            vault.state === VaultState.Inactive,
-        )
-        .sort(
-          (vaultA: VaultData, vaultB: VaultData) =>
-            vaultB?.createdAt - vaultA?.createdAt,
-        );
-    }
-
-    return [];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaults?.length, walletPubkey]);
-
-  return {
-    walletVaults,
-    walletUnfinishedVaults,
-    loading: vaultsLoading,
-  };
-};
 
 type UseWalletTokens = (props: { walletPubkey: string }) => {
   userTokens: TokenInfoWithAmount[];

@@ -9,14 +9,12 @@ import { Container } from '../Layout';
 interface SelectLayoutProps {
   selectedNfts: UserNFT[];
   onDeselect?: (nft: UserNFT) => void;
-  currentVaultPubkey?: string;
   sidebarForm: JSX.Element;
   isCloseSidebar?: boolean;
 }
 
 export const SelectLayout: FC<SelectLayoutProps> = ({
   children,
-  currentVaultPubkey,
   selectedNfts,
   onDeselect,
   sidebarForm,
@@ -25,7 +23,6 @@ export const SelectLayout: FC<SelectLayoutProps> = ({
   return (
     <AppLayout className={styles.positionRelative}>
       <Sidebar
-        currentVaultPubkey={currentVaultPubkey}
         nfts={selectedNfts}
         onDeselect={onDeselect}
         sidebarForm={sidebarForm}
