@@ -100,7 +100,7 @@ export const getNftMarketLowerPriceByCreator = async (
 
     const responseData = await (await fetch(url)).json();
 
-    return responseData?.lower || null;
+    return responseData?.floor_price || null;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
