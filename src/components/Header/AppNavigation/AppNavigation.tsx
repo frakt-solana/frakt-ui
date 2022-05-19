@@ -19,18 +19,13 @@ export const DropdownMenuMore: FC = () => {
     <Dropdown title="More">
       <ul>
         <li>
-          <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
-            Collections
-          </NavLink>
-        </li>
-        <li>
           <a
             className={styles.dropdownLink}
-            href={process.env.DEX_URL}
+            href={process.env.FRAKT_VAULTS_URL}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Trade
+            Vaults
           </a>
         </li>
         <li>
@@ -65,16 +60,6 @@ export const DropdownMenuDoStuff: FC = () => {
   return (
     <Dropdown title="Do stuff">
       <ul className={styles.list}>
-        <li className={styles.linkList}>
-          <NavLink className={styles.link} to={PATHS.FRAKTIONALIZE}>
-            <div className={styles.content}>
-              <p className={styles.title}>Create Vault</p>
-              <p className={styles.subtitle}>
-                fraktionalize single or multiple NFTs
-              </p>
-            </div>
-          </NavLink>
-        </li>
         <li className={styles.linkList}>
           <NavLink className={styles.link} to={PATHS.BORROW}>
             <div className={styles.content}>

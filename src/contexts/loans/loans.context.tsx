@@ -96,7 +96,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
           const userLoans =
             loanData?.loans?.filter(
               ({ loanStatus, user }) =>
-                !!loanStatus?.activated &&
+                loanStatus === 'activated' &&
                 user === wallet.publicKey?.toBase58(),
             ) || [];
 

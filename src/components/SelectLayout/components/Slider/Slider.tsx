@@ -15,19 +15,10 @@ const sliderBreakpoints = {
 interface SliderProps {
   nfts: UserNFT[];
   onDeselect?: (nft: UserNFT) => void;
-  lockedNFT: {
-    nftImage: string;
-    nftMint: string;
-  }[];
   className?: string;
 }
 
-export const Slider: FC<SliderProps> = ({
-  lockedNFT,
-  onDeselect,
-  nfts,
-  className,
-}) => {
+export const Slider: FC<SliderProps> = ({ onDeselect, nfts, className }) => {
   return (
     <Swiper
       className={classNames(styles.nftSlider, className)}
@@ -36,13 +27,6 @@ export const Slider: FC<SliderProps> = ({
       navigation={true}
       scrollbar={{ draggable: true }}
     >
-      {lockedNFT.map(({ nftImage, nftMint }) => (
-        <SwiperSlide
-          key={nftMint}
-          className={styles.image}
-          style={{ backgroundImage: `url(${nftImage})` }}
-        />
-      ))}
       {nfts.map((nft, idx) => (
         <SwiperSlide
           key={idx}
