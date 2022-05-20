@@ -34,6 +34,7 @@ export const proposeLoan: ProposeLoan = async ({
       user: wallet.publicKey,
       nftMint: new PublicKey(nftMint),
       proposedNftPrice: proposedNftPrice,
+      isPriceBased: false,
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
           transaction,

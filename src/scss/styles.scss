@@ -39,15 +39,3 @@ h5 {
     text-decoration: underline;
   }
 }
-
-.itemForIntersectionMenu {
-  position: absolute;
-  z-index: -1;
-  opacity: 0;
-  max-height: 100vh;
-  height: 100vh;
-  top: 10px;
-  left: 0;
-  font-size: 1px;
-  width: 1px;
-}

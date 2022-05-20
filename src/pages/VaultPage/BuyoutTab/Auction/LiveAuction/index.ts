@@ -1,1 +1,0 @@
-export { LiveAuction } from './LiveAuction';

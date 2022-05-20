@@ -10,11 +10,11 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
+import { FC } from 'react';
 import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
-import { FraktionProvider } from './contexts/fraktion';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
@@ -22,7 +22,7 @@ import { HealthModalProvider } from './contexts/HealthModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
-import { FC } from 'react';
+
 import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 
 const wallets = [

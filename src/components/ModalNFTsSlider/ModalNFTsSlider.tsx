@@ -1,13 +1,11 @@
 import { FC, useRef } from 'react';
 import { Modal } from 'antd';
-import { Dictionary } from 'lodash';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 
 import { CloseModalIcon } from '../../icons/CloseModalIcon';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 
 import { UserNFT } from '../../contexts/userTokens';
-import { CollectionData } from '../../utils/collections';
 import { SlideContent } from './components';
 import styles from './styles.module.scss';
 
@@ -18,7 +16,6 @@ interface ModalNFTsSliderProps {
   currentSlide: number;
   className?: string;
   nfts: UserNFT[];
-  collectionByNftMint?: Dictionary<CollectionData>;
   onSliderNavClick: () => void;
   setIsModalVisible: (status: boolean) => void;
   setSwiper: (swiper: SwiperCore) => void;
@@ -29,7 +26,6 @@ const MAX_NFTS_LENGTH = 20;
 export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
   className,
   nfts: rawNfts,
-  collectionByNftMint = {},
   isModalVisible,
   currentSlide,
   setIsModalVisible,
@@ -76,11 +72,7 @@ export const ModalNFTsSlider: FC<ModalNFTsSliderProps> = ({
         >
           {nfts.map((nft) => (
             <SwiperSlide key={nft.mint}>
-              <SlideContent
-                key={nft.mint}
-                nft={nft}
-                collection={collectionByNftMint[nft.mint]}
-              />
+              <SlideContent key={nft.mint} nft={nft} />
             </SwiperSlide>
           ))}
         </Swiper>

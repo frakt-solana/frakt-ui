@@ -1,21 +1,17 @@
 import { FC } from 'react';
-import { NavLink } from 'react-router-dom';
 
 import { UserNFT } from '../../../../contexts/userTokens';
 import { CopyClipboardIcon } from '../../../../icons';
 import { copyToClipboard } from '../../../../utils';
-import { CollectionData } from '../../../../utils/collections';
 import { shortenAddress } from '../../../../utils/solanaUtils';
 import Tooltip from '../../../Tooltip';
-import { PATHS } from '../../../../constants';
 import styles from './styles.module.scss';
 
 interface SlideContent {
   nft: UserNFT;
-  collection?: CollectionData;
 }
 
-export const SlideContent: FC<SlideContent> = ({ nft, collection }) => {
+export const SlideContent: FC<SlideContent> = ({ nft }) => {
   const { metadata } = nft;
 
   return (
@@ -25,20 +21,6 @@ export const SlideContent: FC<SlideContent> = ({ nft, collection }) => {
         className={styles.slideImage}
       />
       <div className={styles.slideInfoBlock}>
-        {!!collection && (
-          <NavLink
-            to={`${PATHS.COLLECTION}/${collection?.name}`}
-            className={styles.collectionLink}
-          >
-            <div
-              className={styles.collectionIcon}
-              style={{
-                backgroundImage: `url(${collection?.image})`,
-              }}
-            />
-            <p className={styles.collectionName}>{collection?.image}</p>
-          </NavLink>
-        )}
         <h5 className={styles.nftTitle}>{metadata.name}</h5>
         {!!metadata.description && (
           <p className={styles.NftDescription}>{metadata.description}</p>

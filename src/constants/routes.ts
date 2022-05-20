@@ -5,13 +5,8 @@ import {
   Page404,
   HomePage,
   SwapPage,
-  VaultsPage,
-  VaultPage,
   WalletPage,
   PoolsPage,
-  FraktionalizePage,
-  CollectionsPage,
-  CollectionPage,
   NFTPoolsPage,
   NFTPoolBuyPage,
   NFTPoolSellPage,
@@ -30,7 +25,7 @@ interface Route {
 
 export const routes: Route[] = [
   // {
-  //   exact: true,
+  // exact: true,
   //   path: PATHS.TEST,
   //   component: NFTPoolsTestPage,
   // },
@@ -48,16 +43,6 @@ export const routes: Route[] = [
     exact: true,
     path: PATHS.ROOT,
     component: HomePage,
-  },
-  {
-    exact: true,
-    path: PATHS.VAULTS,
-    component: VaultsPage,
-  },
-  {
-    exact: true,
-    path: `${PATHS.VAULT}${PATHS.VAULT_PUBKEY}`,
-    component: VaultPage,
   },
   {
     exact: true,
@@ -91,23 +76,8 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: `${PATHS.FRAKTIONALIZE}${PATHS.VAULT_PUBKEY}?`,
-    component: FraktionalizePage,
-  },
-  {
-    exact: true,
     path: `${PATHS.WALLET}${PATHS.WALLET_PUBKEY}`,
     component: WalletPage,
-  },
-  {
-    exact: true,
-    path: PATHS.COLLECTIONS,
-    component: CollectionsPage,
-  },
-  {
-    exact: true,
-    path: `${PATHS.COLLECTION}${PATHS.COLLECTION_NAME}`,
-    component: CollectionPage,
   },
   {
     exact: true,

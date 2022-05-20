@@ -1,9 +1,11 @@
 import {
   CollectionInfoView,
   getAllProgramAccounts,
+  LoanView,
 } from '@frakters/nft-lending-v2';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { groupBy } from 'lodash';
+import { getNftCreators, SOL_TOKEN } from '../../utils';
 import { UserNFT } from '../userTokens';
 
 import { LoanData, LoanDataByPoolPublicKey } from './loans.model';
@@ -52,24 +54,39 @@ type GetFeePercent = (props: { nft?: UserNFT; loanData: LoanData }) => number;
 export const getFeePercent: GetFeePercent = ({ loanData, nft }) => {
   const PERCENT_PRECISION = 100;
 
-  const nftCreator =
-    nft?.metadata?.properties?.creators?.find(({ verified }) => verified)
-      ?.address || '';
+  const nftCreators = getNftCreators(nft);
 
   const royaltyFeeRaw =
-    loanData?.collectionsInfo?.find(({ creator }) => creator === nftCreator)
-      ?.royaltyFee || 0;
+    loanData?.collectionsInfo?.find(({ creator }) =>
+      nftCreators.includes(creator),
+    )?.royaltyFeeTime || 0;
 
   const rewardInterestRateRaw =
-    loanData?.liquidityPool?.rewardInterestRate || 0;
+    loanData?.liquidityPool?.rewardInterestRateTime || 0;
 
-  const feeInterestRateRaw = loanData?.liquidityPool?.feeInterestRate || 0;
+  const feeInterestRateRaw = loanData?.liquidityPool?.feeInterestRateTime || 0;
 
   const feesPercent =
     (royaltyFeeRaw + rewardInterestRateRaw + feeInterestRateRaw) /
     (100 * PERCENT_PRECISION);
 
   return feesPercent || 0;
+};
+
+type GetNftReturnPeriod = (props: {
+  nft?: UserNFT;
+  loanData: LoanData;
+}) => number;
+
+export const getNftReturnPeriod: GetNftReturnPeriod = ({ loanData, nft }) => {
+  const nftCreators = getNftCreators(nft);
+
+  const returnPeriod =
+    loanData?.collectionsInfo?.find(({ creator }) =>
+      nftCreators.includes(creator),
+    )?.expirationTime || 0;
+
+  return returnPeriod;
 };
 
 const ORACLE_URL_BASE = 'https://nft-price-aggregator.herokuapp.com/creator';
@@ -89,4 +106,13 @@ export const getNftMarketLowerPriceByCreator = async (
 
     return null;
   }
+};
+
+export const getAmountToReturnForPriceBasedLoan = (loan: LoanView): number => {
+  const { amountToGet, rewardAmount, feeAmount, royaltyAmount } = loan;
+
+  return (
+    (amountToGet + rewardAmount + feeAmount + royaltyAmount) /
+    10 ** SOL_TOKEN.decimals
+  );
 };

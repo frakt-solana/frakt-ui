@@ -1,1 +1,0 @@
-export { Auction } from './Auction';

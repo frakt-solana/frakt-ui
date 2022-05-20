@@ -40,8 +40,7 @@ export const paybackLoan: PaybackLoan = async ({
       nftMint: new PublicKey(loan.nftMint),
       liquidityPool: new PublicKey(loan.liquidityPool),
       collectionInfo: new PublicKey(loan.collectionInfo),
-      royalty_address: new PublicKey(collectionInfo.royaltyAddress),
-      amountToReturn: loan.amountToReturn,
+      royaltyAddress: new PublicKey(collectionInfo.royaltyAddress),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,

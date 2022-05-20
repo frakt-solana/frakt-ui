@@ -1,1 +1,0 @@
-export { VaultsTab } from './VaultsTab';

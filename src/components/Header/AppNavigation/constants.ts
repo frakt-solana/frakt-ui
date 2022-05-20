@@ -21,10 +21,6 @@ export const NAVIGATION_LINKS = [
     label: 'Pools',
   },
   {
-    to: PATHS.VAULTS,
-    label: 'Vaults',
-  },
-  {
     to: PATHS.SWAP,
     label: 'Swap',
   },
