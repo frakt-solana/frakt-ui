@@ -53,3 +53,32 @@
     fill: var(--accent-color-1);
   }
 }
+
+.loader {
+  padding-top: 32px;
+  display: flex;
+  justify-content: center;
+  font: var(--font-text-2);
+
+  &::after {
+    animation: dots 2s linear infinite;
+    width: 16px;
+    content: '...';
+  }
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    content: '.';
+  }
+  40% {
+    content: '..';
+  }
+  60% {
+    content: '...';
+  }
+  100% {
+    content: '';
+  }
+}

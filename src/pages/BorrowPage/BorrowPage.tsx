@@ -95,6 +95,7 @@ const BorrowPage: FC = () => {
           isLoading={loading}
           wrapperClassName={styles.nftsList}
           emptyMessage=""
+          customLoader={<p className={styles.loader}>loading your jpegs</p>}
         >
           {nfts.map((nft) => {
             const verifiedCreators = getNftCreators(nft);
