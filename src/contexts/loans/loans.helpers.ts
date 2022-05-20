@@ -4,7 +4,7 @@ import {
   LoanView,
 } from '@frakters/nft-lending-v2';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { groupBy } from 'lodash';
+import { groupBy, Dictionary } from 'lodash';
 import { getNftCreators, SOL_TOKEN } from '../../utils';
 import { UserNFT } from '../userTokens';
 
@@ -89,13 +89,13 @@ export const getNftReturnPeriod: GetNftReturnPeriod = ({ loanData, nft }) => {
   return returnPeriod;
 };
 
-const ORACLE_URL_BASE = 'https://nft-price-aggregator.herokuapp.com/creator';
+const ORACLE_URL_BASE = 'https://nft-price-aggregator.herokuapp.com';
 
 export const getNftMarketLowerPriceByCreator = async (
   creatorAddress: string,
 ): Promise<number | null> => {
   try {
-    const url = `${ORACLE_URL_BASE}/${creatorAddress}`;
+    const url = `${ORACLE_URL_BASE}/creator/${creatorAddress}`;
 
     const responseData = await (await fetch(url)).json();
 
@@ -107,6 +107,34 @@ export const getNftMarketLowerPriceByCreator = async (
     return null;
   }
 };
+
+type GetNftMarketLowerPricesByCreators = (
+  creatorsAddresses: string[],
+) => Promise<Dictionary<number>>;
+
+export const getNftMarketLowerPricesByCreators: GetNftMarketLowerPricesByCreators =
+  async (creatorsAddresses = []) => {
+    try {
+      const url = `${ORACLE_URL_BASE}/creators`;
+
+      const responseData: Dictionary<number> = await (
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(creatorsAddresses),
+        })
+      ).json();
+
+      return responseData;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+
+      return {};
+    }
+  };
 
 export const getAmountToReturnForPriceBasedLoan = (loan: LoanView): number => {
   const { amountToGet, rewardAmount, feeAmount, royaltyAmount } = loan;

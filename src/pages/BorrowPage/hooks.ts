@@ -7,7 +7,7 @@ import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useWalletModal } from '../../contexts/WalletModal';
 import {
   DISCOUNT_NFT_CREATORS,
-  getNftMarketLowerPriceByCreator,
+  getNftMarketLowerPricesByCreators,
   LoanData,
   useLoans,
   useLoansInitialFetch,
@@ -25,13 +25,8 @@ const usePriceByCreator = (creatorsArray = []) => {
     try {
       setLoading(true);
 
-      const prices = await Promise.all(
-        creatorsArray.map((creator) =>
-          getNftMarketLowerPriceByCreator(creator),
-        ),
-      );
-      const priceByCreator = Object.fromEntries(
-        creatorsArray.map((creator, idx) => [creator, prices?.[idx]]),
+      const priceByCreator = await getNftMarketLowerPricesByCreators(
+        creatorsArray,
       );
 
       setPriceByCreator(priceByCreator);
