@@ -38,7 +38,7 @@ export const TokenListContextProvider = ({
   const [tokensList, setTokensList] = useState<TokenInfo[]>([]);
   const [fraktionTokensList, setFraktionTokensList] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const uniqTokenList: string[] = [];
+  const uniqTokenList: string[] = []; // TODO: remove changes in TokensLists context
 
   const tokenListWithoutDublicate = tokensList.filter(({ address }) => {
     const isDuplicate = uniqTokenList.includes(address);
