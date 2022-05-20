@@ -1,0 +1,24 @@
+.warning {
+  background-color: #FF9D66;
+}
+
+.error {
+  background-color: #FF6666;
+}
+
+.close {
+  position: absolute;
+  right: 12px;
+  background-color: black;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid grey;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.icon {
+  margin-top: 5px;
+  margin-left: 5px;
+}

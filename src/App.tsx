@@ -18,6 +18,7 @@ import { FraktionProvider } from './contexts/fraktion';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
+import { HealthModalProvider } from './contexts/HealthModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
@@ -37,22 +38,24 @@ const App: FC = () => {
     <ConnectionProvider endpoint={ENDPOINT}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <IntercomProvider appId={INTERCOM_APP_ID}>
-            <TokenListContextProvider>
-              <UserTokensProvider>
-                <LiquidityPoolsProvider>
-                  <FraktionProvider>
-                    <NftPoolsProvider>
-                      <LoansProvider>
-                        <Router />
-                      </LoansProvider>
-                    </NftPoolsProvider>
-                  </FraktionProvider>
-                </LiquidityPoolsProvider>
-              </UserTokensProvider>
-            </TokenListContextProvider>
-            <IntercomService />
-          </IntercomProvider>
+          <HealthModalProvider>
+            <IntercomProvider appId={INTERCOM_APP_ID}>
+              <TokenListContextProvider>
+                <UserTokensProvider>
+                  <LiquidityPoolsProvider>
+                    <FraktionProvider>
+                      <NftPoolsProvider>
+                        <LoansProvider>
+                          <Router />
+                        </LoansProvider>
+                      </NftPoolsProvider>
+                    </FraktionProvider>
+                  </LiquidityPoolsProvider>
+                </UserTokensProvider>
+              </TokenListContextProvider>
+              <IntercomService />
+            </IntercomProvider>
+          </HealthModalProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

@@ -27,6 +27,7 @@
     "classnames": "^2.3.1",
     "immutable-tuple": "^0.4.10",
     "moment": "^2.29.1",
+    "ramda": "^0.28.0",
     "rc-tooltip": "^5.1.1",
     "react": "^17.0.2",
     "react-countup": "^6.1.0",
