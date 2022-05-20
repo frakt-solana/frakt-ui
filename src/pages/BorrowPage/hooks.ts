@@ -188,7 +188,7 @@ export const useBorrowPage = (): {
         metadata?.name.toUpperCase().includes(searchString),
       )
       .sort(({ metadata: metadataA }, { metadata: metadataB }) =>
-        metadataB?.collectionName?.localeCompare(metadataA?.collectionName),
+        metadataB?.name?.localeCompare(metadataA?.name),
       );
   }, [searchString, whitelistedNfts]);
 
