@@ -7,7 +7,10 @@ import {
   UserNFT,
   UserTokensValues,
 } from './userTokens.model';
-import { fetchNftsWithFallback, isTokenFrozen } from './userTokens.helpers';
+import {
+  fetchWalletNFTsUsingArweave,
+  isTokenFrozen,
+} from './userTokens.helpers';
 import { getAllUserTokens } from '../../utils/accounts';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
@@ -73,10 +76,7 @@ export const UserTokensProvider = ({
         .filter((token) => isTokenFrozen(token))
         .map(({ mint }) => mint);
 
-      const userNFTs = await fetchNftsWithFallback({
-        walletPublicKey: publicKey,
-        rawUserTokensByMint,
-      });
+      const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
 
       const userNFTsFrozen = userNFTs?.filter(({ mint }) =>
         frozenNFTsMints.includes(mint),
