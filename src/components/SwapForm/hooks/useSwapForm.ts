@@ -151,7 +151,7 @@ export const useSwapForm = (
 
   useEffect(() => {
     if (prism && payToken && receiveToken && debouncePayValue) {
-      const route = prism.getRoutes(Number(debouncePayValue))[0];
+      const route = prism.getRoutes(Number(payValue))[0];
 
       if (route) {
         const { priceImpact, amountOut, minimumReceived } = route;
@@ -163,7 +163,7 @@ export const useSwapForm = (
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken, debouncePayValue, routersIsLoaded]);
+  }, [debouncePayValue, routersIsLoaded]);
 
   const isSwapBtnEnabled =
     (prism as any)?.user &&
