@@ -10,13 +10,14 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
+import { tokenAuthFetchMiddleware } from '@strata-foundation/web3-token-auth';
 import { FC } from 'react';
 // import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
 import { TokenListContextProvider } from './contexts/TokenList';
-import { ENDPOINT, NETWORK } from './config';
+import { ENDPOINT, NETWORK, JWT_ENDPOINT } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
@@ -31,9 +32,21 @@ const wallets = [
   getSolletExtensionWallet({ network: NETWORK as WalletAdapterNetwork }),
 ];
 
+const getToken = (): Promise<string> =>
+  new Promise((resolve) => {
+    fetch(JWT_ENDPOINT)
+      .then((res) => res.json())
+      .then((content) => {
+        resolve(content?.access_token);
+      });
+  });
+
 const App: FC = () => {
   return (
-    <ConnectionProvider endpoint={ENDPOINT}>
+    <ConnectionProvider
+      config={{ fetchMiddleware: tokenAuthFetchMiddleware({ getToken }) }}
+      endpoint={ENDPOINT}
+    >
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
