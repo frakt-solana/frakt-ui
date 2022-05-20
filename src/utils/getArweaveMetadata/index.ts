@@ -8,16 +8,18 @@ export const getArweaveMetadataByMint = async (
   const rawMeta = await getMeta(tokenMints, ENDPOINT);
 
   const metadataByMint =
-    rawMeta?.reduce((acc, { mint, metadata, tokenData }) => {
-      acc[mint] = {
-        ...metadata,
-        properties: {
-          ...metadata?.properties,
-          creators: tokenData?.creators,
-        },
-      };
-      return acc;
-    }, {}) || {};
+    rawMeta
+      ?.filter(({ failed }) => !failed)
+      ?.reduce((acc, { mint, metadata, tokenData }) => {
+        acc[mint] = {
+          ...metadata,
+          properties: {
+            ...metadata?.properties,
+            creators: tokenData?.creators,
+          },
+        };
+        return acc;
+      }, {}) || {};
 
   return metadataByMint as MetadataByMint;
 };
