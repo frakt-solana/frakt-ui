@@ -183,9 +183,13 @@ export const useBorrowPage = (): {
   }, [rawNfts, loanDataByPoolPublicKey?.size]);
 
   const filteredNfts = useMemo(() => {
-    return (whitelistedNfts || []).filter(({ metadata }) =>
-      metadata?.name.toUpperCase().includes(searchString),
-    );
+    return (whitelistedNfts || [])
+      .filter(({ metadata }) =>
+        metadata?.name.toUpperCase().includes(searchString),
+      )
+      .sort(({ metadata: metadataA }, { metadata: metadataB }) =>
+        metadataB?.collectionName?.localeCompare(metadataA?.collectionName),
+      );
   }, [searchString, whitelistedNfts]);
 
   const loading =
