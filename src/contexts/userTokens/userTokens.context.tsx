@@ -7,11 +7,15 @@ import {
   UserNFT,
   UserTokensValues,
 } from './userTokens.model';
-import { fetchNftsWithFallback } from './userTokens.helpers';
+import {
+  fetchWalletNFTsUsingArweave,
+  isTokenFrozen,
+} from './userTokens.helpers';
 import { getAllUserTokens } from '../../utils/accounts';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
   nfts: [],
+  allNfts: [],
   rawUserTokensByMint: {},
   loading: false,
   nftsLoading: false,
@@ -33,6 +37,7 @@ export const UserTokensProvider = ({
 
   const [nftsLoading, setNftsLoading] = useState<boolean>(false);
   const [nfts, setNfts] = useState<UserNFT[]>(null);
+  const [allNfts, setAllNfts] = useState<UserNFT[]>(null);
 
   const clearTokens = () => {
     setNfts(null);
@@ -63,23 +68,26 @@ export const UserTokensProvider = ({
     if (isArray(nfts)) return;
     setNftsLoading(true);
     try {
-      const frozenNFTsMints = Object.entries(rawUserTokensByMint)
-        ?.filter(([, token]) => {
-          //? token.state === 2 for freezed accounts
-          return token.amount === 1 && token.state === 2;
-        })
-        ?.map(([mint]) => mint);
+      const possibleNftTokens = Object.entries(rawUserTokensByMint)
+        ?.filter(([, token]) => token.amount === 1)
+        .map(([, token]) => token);
 
-      const userNFTs = await fetchNftsWithFallback({
-        walletPublicKey: publicKey,
-        rawUserTokensByMint,
-      });
+      const frozenNFTsMints = possibleNftTokens
+        .filter((token) => isTokenFrozen(token))
+        .map(({ mint }) => mint);
+
+      const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
+
+      const userNFTsFrozen = userNFTs?.filter(({ mint }) =>
+        frozenNFTsMints.includes(mint),
+      );
 
       const userNFTsNotFrozen = userNFTs?.filter(
         ({ mint }) => !frozenNFTsMints.includes(mint),
       );
 
       setNfts(userNFTsNotFrozen);
+      setAllNfts([...userNFTsNotFrozen, ...userNFTsFrozen]);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -113,6 +121,7 @@ export const UserTokensProvider = ({
     <UserTokensContext.Provider
       value={{
         nfts,
+        allNfts,
         rawUserTokensByMint,
         loading,
         refetch: fetchTokens,

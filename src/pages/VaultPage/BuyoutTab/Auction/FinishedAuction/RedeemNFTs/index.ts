@@ -1,1 +1,0 @@
-export { RedeemNFTs } from './RedeemNFTs';

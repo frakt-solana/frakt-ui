@@ -1,0 +1,25 @@
+.wrapper {
+  padding-top: 20px;
+}
+
+.connectWallet {
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.connectWalletText {
+  font: var(--font-text-1);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.connectWalletBtn {
+  width: 222px;
+  height: 48px;
+  padding: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

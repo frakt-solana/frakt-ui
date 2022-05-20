@@ -1,1 +1,0 @@
-export { TradeTab } from './TradeTab';

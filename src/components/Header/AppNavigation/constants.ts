@@ -13,12 +13,12 @@ export const NAVIGATION_LINKS = [
   //   label: 'Test',
   // },
   {
-    to: PATHS.POOLS,
-    label: 'Pools',
+    to: PATHS.LOANS,
+    label: 'Loans',
   },
   {
-    to: PATHS.VAULTS,
-    label: 'Vaults',
+    to: PATHS.POOLS,
+    label: 'Pools',
   },
   {
     to: PATHS.SWAP,

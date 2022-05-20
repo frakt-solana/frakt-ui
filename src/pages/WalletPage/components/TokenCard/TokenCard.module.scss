@@ -1,0 +1,46 @@
+.token {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  border: 1px solid var(--gray-color-3);
+  cursor: pointer;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border-color: var(--accent-color-1);
+  }
+
+  &__info {
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  &__logo {
+    border-radius: 50%;
+    height: 48px;
+    width: 48px;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    margin-bottom: 2px;
+    font: var(--font-btn-small);
+    color: var(--white-color);
+  }
+
+  &__balance {
+    font: var(--font-btn-small);
+    color: var(--gray-color-3);
+  }
+
+  &__btn {
+    padding: 0 24px;
+    width: 158px;
+
+    @media screen and (max-width: 400px) {
+      display: none;
+    }
+  }
+}

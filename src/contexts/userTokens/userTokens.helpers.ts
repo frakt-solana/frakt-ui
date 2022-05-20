@@ -1,5 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 
+import { TokenView } from '../../utils/accounts';
+
 import {
   getArweaveMetadataByMint,
   NFTCreator,
@@ -8,60 +10,89 @@ import {
   QNFetchResponseData,
   UserNFT,
   RawUserTokensByMint,
+  QNFetchNFTData,
 } from './userTokens.model';
+
+const parseQuickNodeNFTs = (qnNftData: QNFetchNFTData[]): UserNFT[] => {
+  const userNFTs: UserNFT[] = qnNftData.map((nft) => {
+    const {
+      collectionName,
+      creators,
+      description,
+      imageUrl,
+      name,
+      traits,
+      tokenAddress,
+    } = nft;
+
+    const parsedCreators: NFTCreator[] = creators.map(
+      ({ address, share, verified }) => ({
+        address,
+        share: share || 0,
+        verified: !!verified,
+      }),
+    );
+
+    return {
+      mint: tokenAddress,
+      metadata: {
+        name,
+        symbol: 'Unknown',
+        description,
+        collectionName,
+        image: imageUrl,
+        attributes: traits,
+        properties: {
+          creators: parsedCreators,
+        },
+      },
+    };
+  });
+
+  return userNFTs;
+};
+
+const fetchAllWalletNftsQN = async (
+  wallet: string,
+  startPage = 1,
+  previousNfts: UserNFT[] = [],
+): Promise<UserNFT[]> => {
+  const requestBody = {
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'qn_fetchNFTs',
+    params: {
+      wallet,
+      page: startPage,
+      perPage: 40,
+    },
+  };
+
+  const { result }: QNFetchResponseData = await (
+    await fetch(process.env.RPC_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+    })
+  ).json();
+
+  const nfts = parseQuickNodeNFTs(result?.assets || []);
+
+  const userNFTs = [...previousNfts, ...nfts];
+
+  if (nfts.length !== 0 && result.totalPages !== result.pageNumber) {
+    return await fetchAllWalletNftsQN(wallet, startPage + 1, userNFTs);
+  }
+
+  return userNFTs;
+};
 
 export const fetchWalletNFTsFromQuickNode = async (
   walletAddress: string,
 ): Promise<UserNFT[] | null> => {
   try {
-    const data: QNFetchResponseData = await (
-      await fetch(`${process.env.RPC_ENDPOINT}`, {
-        method: 'POST',
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'qn_fetchNFTs',
-          params: [walletAddress, []],
-        }),
-      })
-    ).json();
+    const userNfts = await fetchAllWalletNftsQN(walletAddress);
 
-    const userNFTs: UserNFT[] = data?.result?.assets.map((nft) => {
-      const {
-        collectionName,
-        creators,
-        description,
-        imageUrl,
-        name,
-        traits,
-        tokenAddress,
-      } = nft;
-
-      const parsedCreators: NFTCreator[] = creators.map(
-        ({ address, share, verified }) => ({
-          address,
-          share: share || 0,
-          verified: !!verified,
-        }),
-      );
-
-      return {
-        mint: tokenAddress,
-        metadata: {
-          name,
-          symbol: 'Unknown',
-          description,
-          collectionName,
-          image: imageUrl,
-          attributes: traits,
-          properties: {
-            creators: parsedCreators,
-          },
-        },
-      };
-    });
-
-    return userNFTs;
+    return userNfts || [];
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -115,3 +146,6 @@ export const fetchNftsWithFallback: fetchNftsWithFallback = async ({
 
   return userNFTs || [];
 };
+
+//? token.state === 2 for freezed accounts
+export const isTokenFrozen = (token: TokenView): boolean => token.state === 2;

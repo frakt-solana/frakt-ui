@@ -5,19 +5,16 @@ import {
   Page404,
   HomePage,
   SwapPage,
-  VaultsPage,
-  VaultPage,
   WalletPage,
   PoolsPage,
-  FraktionalizePage,
-  CollectionsPage,
-  CollectionPage,
   NFTPoolsPage,
   NFTPoolBuyPage,
   NFTPoolSellPage,
   NFTPoolSwapPage,
   NFTPoolInfoPage,
   // NFTPoolsTestPage,
+  LoansPage,
+  BorrowPage,
 } from '../pages';
 
 interface Route {
@@ -28,24 +25,24 @@ interface Route {
 
 export const routes: Route[] = [
   // {
-  //   exact: true,
+  // exact: true,
   //   path: PATHS.TEST,
   //   component: NFTPoolsTestPage,
   // },
   {
     exact: true,
+    path: PATHS.LOANS,
+    component: LoansPage,
+  },
+  {
+    exact: true,
+    path: PATHS.BORROW,
+    component: BorrowPage,
+  },
+  {
+    exact: true,
     path: PATHS.ROOT,
     component: HomePage,
-  },
-  {
-    exact: true,
-    path: PATHS.VAULTS,
-    component: VaultsPage,
-  },
-  {
-    exact: true,
-    path: `${PATHS.VAULT}${PATHS.VAULT_PUBKEY}`,
-    component: VaultPage,
   },
   {
     exact: true,
@@ -79,23 +76,8 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: `${PATHS.FRAKTIONALIZE}${PATHS.VAULT_PUBKEY}?`,
-    component: FraktionalizePage,
-  },
-  {
-    exact: true,
     path: `${PATHS.WALLET}${PATHS.WALLET_PUBKEY}`,
     component: WalletPage,
-  },
-  {
-    exact: true,
-    path: PATHS.COLLECTIONS,
-    component: CollectionsPage,
-  },
-  {
-    exact: true,
-    path: `${PATHS.COLLECTION}${PATHS.COLLECTION_NAME}`,
-    component: CollectionPage,
   },
   {
     exact: true,
