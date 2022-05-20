@@ -11,7 +11,7 @@ import {
   WalletProvider,
 } from '@solana/wallet-adapter-react';
 import { FC } from 'react';
-import { IntercomProvider } from 'react-use-intercom';
+// import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
@@ -21,8 +21,7 @@ import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
-
-import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
+// import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 
 const wallets = [
   getPhantomWallet(),
@@ -37,20 +36,20 @@ const App: FC = () => {
     <ConnectionProvider endpoint={ENDPOINT}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <IntercomProvider appId={INTERCOM_APP_ID}>
-            <TokenListContextProvider>
-              <UserTokensProvider>
-                <LiquidityPoolsProvider>
-                  <NftPoolsProvider>
-                    <LoansProvider>
-                      <Router />
-                    </LoansProvider>
-                  </NftPoolsProvider>
-                </LiquidityPoolsProvider>
-              </UserTokensProvider>
-            </TokenListContextProvider>
-            <IntercomService />
-          </IntercomProvider>
+          {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
+          <TokenListContextProvider>
+            <UserTokensProvider>
+              <LiquidityPoolsProvider>
+                <NftPoolsProvider>
+                  <LoansProvider>
+                    <Router />
+                  </LoansProvider>
+                </NftPoolsProvider>
+              </LiquidityPoolsProvider>
+            </UserTokensProvider>
+          </TokenListContextProvider>
+          {/* <IntercomService /> */}
+          {/* </IntercomProvider> */}
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
