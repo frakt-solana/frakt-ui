@@ -89,8 +89,7 @@ export const getNftReturnPeriod: GetNftReturnPeriod = ({ loanData, nft }) => {
   return returnPeriod;
 };
 
-const ORACLE_URL_BASE =
-  'https://nft-lending-v2-node.herokuapp.com/v1/getpricebycreator';
+const ORACLE_URL_BASE = 'https://nft-price-aggregator.herokuapp.com/creator';
 
 export const getNftMarketLowerPriceByCreator = async (
   creatorAddress: string,
