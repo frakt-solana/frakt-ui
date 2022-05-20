@@ -43,13 +43,11 @@ const App: FC = () => {
               <TokenListContextProvider>
                 <UserTokensProvider>
                   <LiquidityPoolsProvider>
-                    <FraktionProvider>
-                      <NftPoolsProvider>
-                        <LoansProvider>
-                          <Router />
-                        </LoansProvider>
-                      </NftPoolsProvider>
-                    </FraktionProvider>
+                     <NftPoolsProvider>
+                       <LoansProvider>
+                         <Router />
+                       </LoansProvider>
+                     </NftPoolsProvider>
                   </LiquidityPoolsProvider>
                 </UserTokensProvider>
               </TokenListContextProvider>
