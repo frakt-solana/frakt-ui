@@ -11,7 +11,7 @@ import FakeInfinityScroll, {
 import { useDebounce } from '../../hooks';
 import { CloseModalIcon } from '../../icons';
 import { useTokenListContext } from '../../contexts/TokenList';
-import { SOL_TOKEN, USDC_TOKEN, USDT_TOKEN } from '../../utils';
+import { useSwapForm } from '../SwapForm/hooks/useSwapForm';
 
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (token: TokenInfo) => void;
@@ -31,18 +31,8 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
 }) => {
   const [searchString, setSearchString] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll();
-  const { tokensList, fraktionTokensList } = useTokenListContext();
-
-  const poolsTokens = fraktionTokensList.filter(
-    ({ extensions }) => (extensions as any)?.poolPubkey,
-  );
-
-  const poolsTokensWithTopCoin = [
-    SOL_TOKEN,
-    USDT_TOKEN,
-    USDC_TOKEN,
-    ...poolsTokens,
-  ];
+  const { tokensList } = useTokenListContext();
+  const { swapTokenList } = useSwapForm();
 
   const filterTokens = () => {
     return tokensList.filter(({ symbol }) =>
@@ -54,9 +44,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const filteredTokensList = searchString
-    ? filterTokens()
-    : poolsTokensWithTopCoin;
+  const filteredTokensList = searchString ? filterTokens() : swapTokenList;
 
   return (
     <Modal

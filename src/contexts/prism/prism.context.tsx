@@ -15,13 +15,12 @@ export const PrismProvider: PrismProviderType = ({ children }) => {
   const { connection } = useConnection();
 
   const { tokensList, loading: tokensListLoading } = useTokenListContext();
-  const [loadingPrism, setLoadingPrism] = useState<boolean>(true);
+  const [prismInitialised, setPrismInitialised] = useState<boolean>(false);
   const [prism, setPrism] = useState<Prism | null>(null);
 
   const fetchPrismaData = async (): Promise<void> => {
     try {
       const prism = await Prism.init({
-        user: wallet.publicKey,
         connection: connection,
         tokenList: { tokens: tokensList },
       });
@@ -31,9 +30,13 @@ export const PrismProvider: PrismProviderType = ({ children }) => {
       // eslint-disable-next-line no-console
       console.error(error);
     } finally {
-      setLoadingPrism(false);
+      setPrismInitialised(false);
     }
   };
+
+  useEffect(() => {
+    if (wallet && wallet.publicKey && prism) prism.setSigner(wallet);
+  }, [wallet, prism]);
 
   useEffect(() => {
     if (!tokensListLoading) {
@@ -45,7 +48,7 @@ export const PrismProvider: PrismProviderType = ({ children }) => {
   return (
     <PrismContext.Provider
       value={{
-        loading: loadingPrism,
+        loading: prismInitialised,
         prism,
       }}
     >

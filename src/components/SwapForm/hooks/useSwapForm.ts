@@ -6,7 +6,7 @@ import { Control, useForm } from 'react-hook-form';
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import { notify, SOL_TOKEN } from '../../../utils';
+import { notify, SOL_TOKEN, USDC_TOKEN, USDT_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
 import { usePrism } from '../../../contexts/prism/prism.hooks';
 import { NotifyType } from '../../../utils/solanaUtils';
@@ -30,7 +30,7 @@ export type FormFieldValues = {
 };
 
 export const useSwapForm = (
-  defaultTokenMint: string,
+  defaultTokenMint?: string,
 ): {
   formControl: Control<FormFieldValues>;
   onPayTokenChange: (nextToken: TokenInfo) => void;
@@ -49,9 +49,10 @@ export const useSwapForm = (
   confirmModalVisible: boolean;
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
+  swapTokenList: TokenInfo[];
 } => {
   const { prism } = usePrism();
-  const { fraktionTokensMap } = useTokenListContext();
+  const { fraktionTokensMap, fraktionTokensList } = useTokenListContext();
   const wallet = useWallet();
 
   const [slippage, setSlippage] = useState<number>(1);
@@ -69,6 +70,12 @@ export const useSwapForm = (
       [InputControlsNames.TOKEN_MIN_AMOUNT]: 0,
     },
   });
+
+  const poolsTokens = fraktionTokensList.filter(
+    ({ extensions }) => (extensions as any)?.poolPubkey,
+  );
+
+  const swapTokenList = [SOL_TOKEN, USDT_TOKEN, USDC_TOKEN, ...poolsTokens];
 
   const {
     visible: confirmModalVisible,
@@ -140,16 +147,10 @@ export const useSwapForm = (
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken]);
+  }, [payToken, receiveToken, prism]);
 
   useEffect(() => {
-    if (
-      prism &&
-      payToken &&
-      receiveToken &&
-      debouncePayValue &&
-      routersIsLoaded
-    ) {
+    if (prism && payToken && receiveToken && debouncePayValue) {
       const route = prism.getRoutes(Number(debouncePayValue))[0];
 
       if (route) {
@@ -164,7 +165,11 @@ export const useSwapForm = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payToken, receiveToken, debouncePayValue, routersIsLoaded]);
 
-  const isSwapBtnEnabled = wallet.connected && Number(payValue) > 0;
+  const isSwapBtnEnabled =
+    (prism as any)?.user &&
+    routersIsLoaded.length &&
+    wallet.connected &&
+    Number(payValue) > 0;
 
   const handleSwap = async (): Promise<void> => {
     try {
@@ -173,7 +178,6 @@ export const useSwapForm = (
 
       const routes = prism.getRoutes(Number(payValue));
 
-      prism.setSigner(wallet);
       prism.setSlippage(slippage);
 
       await prism.swap(routes[0]);
@@ -206,5 +210,6 @@ export const useSwapForm = (
     confirmModalVisible,
     openConfirmModal,
     closeConfirmModal,
+    swapTokenList,
   };
 };

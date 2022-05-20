@@ -4,7 +4,6 @@ import { Controller } from 'react-hook-form';
 import Button from '../Button';
 import { SlippageDropdown } from '../../pages/NFTPools/components/ModalParts';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
-import { useTokenListContext } from '../../contexts/TokenList';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { ChangeSidesButton } from './ChangeSidesButton';
 import { TokenFieldWithBalance } from '../TokenField';
@@ -39,15 +38,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     closeConfirmModal,
     loadingModalVisible,
     closeLoadingModal,
+    swapTokenList,
   } = useSwapForm(defaultTokenMint);
 
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
-
-  const { fraktionTokensList } = useTokenListContext();
-
-  const poolsTokens = fraktionTokensList.filter(
-    ({ extensions }) => (extensions as any)?.poolPubkey,
-  );
 
   const swapTokens = () => {
     if (Math.abs(Number(tokenPriceImpact)) > PRICE_IMPACT_WRANING_TRESHOLD) {
@@ -77,7 +71,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             className={styles.input}
             value={value}
             onValueChange={onChange}
-            tokensList={poolsTokens}
+            tokensList={swapTokenList}
             currentToken={payToken}
             onTokenChange={onPayTokenChange}
             modalTitle="Pay"
@@ -97,7 +91,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             value={value}
             onValueChange={onChange}
             currentToken={receiveToken}
-            tokensList={poolsTokens}
+            tokensList={swapTokenList}
             onTokenChange={onReceiveTokenChange}
             modalTitle="Receive"
             label="Receive"
