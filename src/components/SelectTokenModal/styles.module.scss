@@ -1,5 +1,12 @@
 .input {
-  margin-bottom: 64px;
+  margin-bottom: 20px;
+  font: var(--font-text-3);
+}
+
+.modal {
+  .ant-modal-body {
+    padding: 0 20px 30px 30px;
+  }
 }
 
 .icon {
@@ -7,7 +14,6 @@
   height: 24px;
   background: var(--gray-color-3);
   border-radius: 24px;
-  margin-top: 4px;
   flex-shrink: 0;
   background-size: cover;
   margin-right: 8px;
@@ -15,6 +21,7 @@
 
 .title {
   display: flex;
+  align-items: center;
 }
 
 .row {
@@ -24,10 +31,15 @@
   display: flex;
   justify-content: space-between;
   font-size: 24px;
+  font: var(--font-text-3);
   width: 100%;
-  height: 32px;
+  padding: 10px 8.5px;
   &:not(:last-child) {
-    margin-bottom: 32px;
+    border-bottom: 1px solid var(--color-gray-4);
+  }
+  &:hover {
+    background: var(--color-gray-7);
+    transition: var(--transition-1);
   }
 }
 
@@ -35,6 +47,66 @@
   height: 284px;
   overflow-y: scroll;
   overflow-x: hidden;
-  margin-right: -23px;
-  padding-right: 12px;
+  padding-right: 5px;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-color-3);
+  }
+}
+
+.closeModalSection {
+  height: 43px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--gray-color-3);
+  background: var(--black-color);
+  border-radius: 30px;
+  position: absolute;
+  top: -70px;
+  right: 0;
+
+  @media screen and (max-width: 1023px) {
+    top: -60px;
+  }
+
+  @media screen and (max-width: 550px) {
+    top: -55px;
+    height: 35px;
+    padding-left: 10px;
+  }
+}
+
+.closeModalIcon {
+  height: 43px;
+  width: 43px;
+  border: 1px solid var(--gray-color-3);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: -1px;
+  cursor: pointer;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border: 1px solid var(--white-color);
+  }
+
+  @media screen and (max-width: 550px) {
+    font-size: 18px;
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.closeIcon {
+  width: 23px;
+
+  @media screen and (max-width: 470px) {
+    width: 15px;
+  }
 }

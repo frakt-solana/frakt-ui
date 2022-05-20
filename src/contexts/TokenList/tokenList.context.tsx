@@ -38,6 +38,17 @@ export const TokenListContextProvider = ({
   const [tokensList, setTokensList] = useState<TokenInfo[]>([]);
   const [fraktionTokensList, setFraktionTokensList] = useState<TokenInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const uniqTokenList: string[] = [];
+
+  const tokenListWithoutDublicate = tokensList.filter(({ address }) => {
+    const isDuplicate = uniqTokenList.includes(address);
+
+    if (!isDuplicate) {
+      uniqTokenList.push(address);
+      return true;
+    }
+    return false;
+  });
 
   useEffect(() => {
     (async () => {
@@ -92,7 +103,7 @@ export const TokenListContextProvider = ({
         tokensMap,
         loading,
         tokensList,
-        fraktionTokensList,
+        fraktionTokensList: tokenListWithoutDublicate,
         fraktionTokensMap,
       }}
     >

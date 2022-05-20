@@ -30,7 +30,7 @@ export const SOL_TOKEN: TokenInfo = {
   decimals: 9,
   symbol: 'SOL',
   logoURI:
-    'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
   extensions: {
     coingeckoId: 'solana',
   },
@@ -50,6 +50,38 @@ export const FRKT_TOKEN: TokenInfo = {
     website: 'https://frakt.xyz/',
   },
   tags: ['utility-token'],
+};
+
+export const USDT_TOKEN = {
+  chainId: 101,
+  address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  symbol: 'USDT',
+  name: 'USDT',
+  decimals: 6,
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.svg',
+  tags: ['stablecoin'],
+  extensions: {
+    coingeckoId: 'tether',
+    serumV3Usdc: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
+    website: 'https://tether.to/',
+  },
+};
+
+export const USDC_TOKEN = {
+  chainId: 101,
+  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  symbol: 'USDC',
+  name: 'USD Coin',
+  decimals: 6,
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
+  tags: ['stablecoin'],
+  extensions: {
+    coingeckoId: 'usd-coin',
+    serumV3Usdt: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
+    website: 'https://www.centre.io/',
+  },
 };
 
 export const decimalBNToString = (
