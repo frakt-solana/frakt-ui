@@ -2,7 +2,7 @@ import { useState, createContext, useEffect } from 'react';
 import { Prism } from '@prism-hq/prism-ag';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
-import { PrismContextValues, PrismProviderType } from './prism.model';
+import { PrismContextValues, PrismProviderValues } from './prism.model';
 import { useTokenListContext } from '../TokenList';
 
 export const PrismContext = createContext<PrismContextValues>({
@@ -10,7 +10,7 @@ export const PrismContext = createContext<PrismContextValues>({
   prism: null,
 });
 
-export const PrismProvider: PrismProviderType = ({ children }) => {
+export const PrismProvider: PrismProviderValues = ({ children }) => {
   const wallet = useWallet();
   const { connection } = useConnection();
 

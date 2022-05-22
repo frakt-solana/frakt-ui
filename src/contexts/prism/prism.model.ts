@@ -6,7 +6,7 @@ export interface PrismContextValues {
   prism: Prism;
 }
 
-export type PrismProviderType = ({
+export type PrismProviderValues = ({
   children,
 }: {
   children: ReactNode;
