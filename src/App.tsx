@@ -21,8 +21,8 @@ import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
-import { PrismProvider } from './contexts/prism';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
+import { PrismProvider } from './contexts/prism';
 
 const wallets = [
   getPhantomWallet(),
