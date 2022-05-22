@@ -28,15 +28,16 @@ export const Slider: FC<SliderProps> = ({ onDeselect, nfts, className }) => {
       scrollbar={{ draggable: true }}
     >
       {nfts.map((nft, idx) => (
-        <SwiperSlide
-          key={idx}
-          className={styles.image}
-          style={{ backgroundImage: `url(${nft?.metadata?.image})` }}
-        >
-          <button
-            className={styles.removeBtn}
-            onClick={() => onDeselect(nft)}
-          />
+        <SwiperSlide key={idx}>
+          <div
+            className={styles.image}
+            style={{ backgroundImage: `url(${nft?.metadata?.image})` }}
+          >
+            <button
+              className={styles.removeBtn}
+              onClick={() => onDeselect(nft)}
+            />
+          </div>
         </SwiperSlide>
       ))}
     </Swiper>

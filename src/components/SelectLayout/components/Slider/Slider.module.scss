@@ -78,9 +78,10 @@
   width: 69px;
   height: 69px;
   background-color: var(--gray-color-7);
+  object-fit: fill;
+  position: relative;
   background-size: cover;
   background-repeat: no-repeat;
-  position: relative;
 }
 
 .removeBtn {

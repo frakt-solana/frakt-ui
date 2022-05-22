@@ -18,7 +18,7 @@ interface FakeInfinityScrollProps {
   emptyMessage?: string;
   emptyMessageClassName?: string;
   isLoading?: boolean;
-  loaderWrapperClassName?: string;
+  customLoader?: JSX.Element;
   children: JSX.Element[];
 }
 
@@ -44,18 +44,20 @@ const FakeInfinityScroll = ({
   itemsToShow = 20,
   next,
   wrapperClassName,
-  loaderWrapperClassName,
   isLoading = false,
   emptyMessage = 'No items found',
   emptyMessageClassName,
   children,
   infinityScrollProps,
+  customLoader,
 }: FakeInfinityScrollProps): JSX.Element => {
   if (isLoading) {
     return (
-      <div className={classNames(styles.loader, loaderWrapperClassName)}>
-        <Loader size={'large'} />
-      </div>
+      customLoader || (
+        <div className={styles.loader}>
+          <Loader size={'large'} />
+        </div>
+      )
     );
   }
 
