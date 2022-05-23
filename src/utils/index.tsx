@@ -30,7 +30,7 @@ export const SOL_TOKEN: TokenInfo = {
   decimals: 9,
   symbol: 'SOL',
   logoURI:
-    'https://sdk.raydium.io/icons/So11111111111111111111111111111111111111112.png',
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
   extensions: {
     coingeckoId: 'solana',
   },

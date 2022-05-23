@@ -57,12 +57,12 @@ export const proposeLoan: ProposeLoan = async ({
 
         if (loanAccountData?.loanStatus?.activated) {
           notify({
-            message: 'Loan has been created',
+            message: 'Your loan was successfully funded!',
             type: NotifyType.SUCCESS,
           });
         } else if (loanAccountData?.loanStatus?.rejected) {
           notify({
-            message: 'Loan has been rejected',
+            message: 'Loan funding failed. Please get in touch with us',
             type: NotifyType.ERROR,
           });
         }
@@ -71,7 +71,8 @@ export const proposeLoan: ProposeLoan = async ({
     );
 
     notify({
-      message: 'Loan proposed successfully',
+      message:
+        'We are collateralizing your jpeg. It should take less than a minute',
       type: NotifyType.SUCCESS,
     });
 
@@ -81,7 +82,7 @@ export const proposeLoan: ProposeLoan = async ({
 
     if (!isNotConfirmed) {
       notify({
-        message: 'Loan proposing failed',
+        message: 'The transaction just failed :( Give it another try',
         type: NotifyType.ERROR,
       });
     }

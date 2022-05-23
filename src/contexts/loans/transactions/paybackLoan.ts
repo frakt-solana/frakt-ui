@@ -52,7 +52,7 @@ export const paybackLoan: PaybackLoan = async ({
     });
 
     notify({
-      message: 'Payback made successfully',
+      message: 'Paid back successfully!',
       type: NotifyType.SUCCESS,
     });
 
@@ -62,7 +62,7 @@ export const paybackLoan: PaybackLoan = async ({
 
     if (!isNotConfirmed) {
       notify({
-        message: 'Payback failed',
+        message: 'The transaction just failed :( Give it another try',
         type: NotifyType.ERROR,
       });
     }
