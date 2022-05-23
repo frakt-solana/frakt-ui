@@ -1,12 +1,11 @@
 import { FC } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
 import { Controller } from 'react-hook-form';
 
-import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { SearchInput } from '../../components/SearchInput';
-import { Container } from '../../components/Layout';
+import { MyLoansTab } from './components/MyLoansTab';
 import BorrowBanner from './components/BorrowBanner';
+import { Container } from '../../components/Layout';
 import LendingPool from './components/LendingPool';
 import { Select } from '../../components/Select';
 import styles from './LoansPage.module.scss';
@@ -17,10 +16,8 @@ import {
   SORT_VALUES,
   useLoansPage,
 } from './hooks';
-import { MyLoansTab } from './components/MyLoansTab';
 
 const LoansPage: FC = () => {
-  const { connected } = useWallet();
   const {
     loanTabs,
     tabValue,
@@ -29,6 +26,7 @@ const LoansPage: FC = () => {
     formControl,
     userLoans,
     userLoansLoading,
+    loansPoolData,
   } = useLoansPage();
 
   return (
@@ -44,7 +42,6 @@ const LoansPage: FC = () => {
           <BorrowBanner />
         </div>
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
-
         {tabValue === LoanTabsNames.LENDING && (
           <>
             <div className={styles.sortWrapper}>
@@ -53,32 +50,24 @@ const LoansPage: FC = () => {
                 className={styles.search}
                 placeholder="Filter by symbol"
               />
-              <div className={styles.filters}>
-                {connected && (
-                  <ControlledToggle
-                    control={formControl}
-                    name={InputControlsNames.SHOW_STAKED}
-                    label="Staked only"
-                    className={styles.filter}
+              <Controller
+                control={formControl}
+                name={InputControlsNames.SORT}
+                render={({ field: { ref, ...field } }) => (
+                  <Select
+                    valueContainerClassName={styles.sortingSelectContainer}
+                    className={styles.sortingSelect}
+                    label="Sort by"
+                    name={InputControlsNames.SORT}
+                    options={SORT_VALUES}
+                    {...field}
                   />
                 )}
-                <Controller
-                  control={formControl}
-                  name={InputControlsNames.SORT}
-                  render={({ field: { ref, ...field } }) => (
-                    <Select
-                      valueContainerClassName={styles.sortingSelectContainer}
-                      className={styles.sortingSelect}
-                      label="Sort by"
-                      name={InputControlsNames.SORT}
-                      options={SORT_VALUES}
-                      {...field}
-                    />
-                  )}
-                />
-              </div>
+              />
             </div>
-            <LendingPool totalSupply="1500" deposit="5" loans="5" apy="30" />
+            {!!loansPoolData?.apr && (
+              <LendingPool loansPoolData={loansPoolData} />
+            )}
           </>
         )}
         {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}

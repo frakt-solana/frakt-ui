@@ -35,7 +35,7 @@
   gap: 20px;
   flex-grow: 1;
 
-  @media screen and (max-width: 1140px) {
+  @media screen and (max-width: 970px) {
     align-items: start;
     flex-direction: column;
   }
@@ -187,10 +187,4 @@
 
 .reward {
   font: var(--font-text-3);
-}
-
-.equivalent {
-  color: var(--color-gray-4);
-  font: var(--font-secondary);
-  margin-top: 5px;
 }

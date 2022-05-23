@@ -23,6 +23,9 @@ export const notify: Notify = ({
 
 export const DECIMALS_PER_FRKT = 1e8;
 
+//? Using for fetching prices of tokens in USD
+export const COINGECKO_URL = process.env.COINGECKO_URL;
+
 export const SOL_TOKEN: TokenInfo = {
   chainId: 101,
   address: WSOL.mint,
@@ -155,4 +158,18 @@ export const getNftCreators = (nft: UserNFT): string[] => {
       ?.filter(({ verified }) => verified)
       ?.map(({ address }) => address) || []
   );
+};
+
+export const fetchSolanaPriceUSD = async (): Promise<number> => {
+  try {
+    const result = await (
+      await fetch(`${COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`)
+    ).json();
+
+    return result?.solana?.usd || 0;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('coingecko api error: ', error);
+    return 0;
+  }
 };

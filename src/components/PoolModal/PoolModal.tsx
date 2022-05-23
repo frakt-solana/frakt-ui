@@ -3,32 +3,45 @@ import { Controller } from 'react-hook-form';
 import { Form } from 'antd';
 
 import { InputControlsNames, TabsNames, usePoolModal } from './usePoolModal';
+import { SOL_TOKEN, getSolBalanceValue } from '../../utils';
+import { useNativeAccount } from '../../utils/accounts';
 import { TokenFieldWithBalance } from '../TokenField';
 import { CloseModalIcon } from '../../icons';
 import styles from './PoolModal.module.scss';
-import { SOL_TOKEN } from '../../utils';
-import { Tabs, useTabs } from '../Tabs';
 import { Modal } from '../Modal';
 import Slider from '../Slider';
 import Button from '../Button';
+import { Tabs } from '../Tabs';
 
 interface PoolModalProps {
   visible: boolean;
   setVisible?: (visible: boolean) => void;
   onCancel: () => void;
+  apr?: number;
+  userDeposit?: number;
+  utilizationRate?: number;
 }
 
-export const PoolModal: FC<PoolModalProps> = ({ visible, onCancel }) => {
+export const PoolModal: FC<PoolModalProps> = ({
+  visible,
+  onCancel,
+  apr,
+  userDeposit,
+  utilizationRate,
+}) => {
   const {
-    tabs: poolTabs,
-    value: tabValue,
-    setValue: setTabValue,
-  } = useTabs({
-    tabs: POOLS_TABS,
-    defaultValue: POOLS_TABS[0].value,
-  });
+    formControl,
+    depositValue,
+    withdrawValue,
+    depositLiquidity,
+    unstakeLiquidity,
+    poolTabs,
+    tabValue,
+    setTabValue,
+  } = usePoolModal();
 
-  const { formControl, depositValue } = usePoolModal();
+  const { account } = useNativeAccount();
+  const solBalance = getSolBalanceValue(account);
 
   return (
     <Modal
@@ -63,7 +76,7 @@ export const PoolModal: FC<PoolModalProps> = ({ visible, onCancel }) => {
                   value={String(depositValue)}
                   onValueChange={onChange}
                   currentToken={SOL_TOKEN}
-                  label="Your deposit: 250 SOL ≈ $ 25.000"
+                  label={`Your deposit: ${userDeposit} SOL`}
                 />
               )}
             />
@@ -76,71 +89,73 @@ export const PoolModal: FC<PoolModalProps> = ({ visible, onCancel }) => {
               render={({ field: { onChange } }) => (
                 <Slider
                   value={depositValue}
-                  tipFormatter={(value) => `${value}%`}
+                  tipFormatter={(value) => `${value} SOL`}
                   onChange={onChange}
                   className={styles.slider}
-                  step={1}
-                  max={100}
+                  step={0.1}
+                  max={Number(solBalance)}
                 />
               )}
             />
           </Form.Item>
           <div className={styles.info}>
-            <span className={styles.infoTitle}>Reserve deposit limit</span>
-            <span className={styles.infoValue}>2.000 SOL</span>
-          </div>
-          <div className={styles.info}>
-            <span className={styles.infoTitle}>User borrow limit</span>
-            <span className={styles.infoValue}>$ 200.000</span>
-          </div>
-          <div className={styles.info}>
-            <span className={styles.infoTitle}>Deposit APY</span>
-            <span className={styles.infoValue}>50%</span>
+            <span className={styles.infoTitle}>Deposit APR</span>
+            <span className={styles.infoValue}>{apr.toFixed(2)}%</span>
           </div>
           <div className={styles.info}>
             <span className={styles.infoTitle}>Utilization</span>
-            <span className={styles.infoValue}>50%</span>
+            <span className={styles.infoValue}>
+              {utilizationRate.toFixed(2)}%
+            </span>
           </div>
-          <Button type="alternative" className={styles.btn}>
+          <Button
+            onClick={depositLiquidity}
+            className={styles.btn}
+            type="alternative"
+          >
             Deposit
           </Button>
         </>
       )}
       {tabValue === TabsNames.WITHDRAW && (
         <>
-          <Form.Item name={InputControlsNames.DEPOSIT_VALUE}>
+          <Form.Item name={InputControlsNames.WITHDRAW_VALUE}>
             <Controller
               control={formControl}
-              name={InputControlsNames.DEPOSIT_VALUE}
+              name={InputControlsNames.WITHDRAW_VALUE}
               render={({ field: { onChange } }) => (
                 <TokenFieldWithBalance
                   className={styles.input}
-                  value={String(depositValue)}
+                  value={String(withdrawValue)}
                   onValueChange={onChange}
                   currentToken={SOL_TOKEN}
-                  label="Your deposit: 250 SOL ≈ $ 25.000"
+                  label={`Your deposit: ${userDeposit} SOL`}
                 />
               )}
             />
           </Form.Item>
-          <Form.Item name={InputControlsNames.DEPOSIT_VALUE}>
+          <Form.Item name={InputControlsNames.WITHDRAW_VALUE}>
             <Controller
               control={formControl}
-              name={InputControlsNames.DEPOSIT_VALUE}
+              name={InputControlsNames.WITHDRAW_VALUE}
               rules={{ required: true }}
               render={({ field: { onChange } }) => (
                 <Slider
-                  value={depositValue}
-                  tipFormatter={(value) => `${value}%`}
+                  value={withdrawValue}
+                  tipFormatter={(value) => `${value} SOL`}
                   onChange={onChange}
                   className={styles.slider}
-                  step={1}
-                  max={100}
+                  step={0.1}
+                  max={userDeposit}
                 />
               )}
             />
           </Form.Item>
-          <Button type="alternative" className={styles.btn}>
+          <Button
+            onClick={unstakeLiquidity}
+            className={styles.btn}
+            type="alternative"
+          >
             Confirm
           </Button>
         </>
@@ -148,14 +163,3 @@ export const PoolModal: FC<PoolModalProps> = ({ visible, onCancel }) => {
     </Modal>
   );
 };
-
-const POOLS_TABS = [
-  {
-    label: 'Deposit',
-    value: 'deposit',
-  },
-  {
-    label: 'Withdraw',
-    value: 'withdraw',
-  },
-];

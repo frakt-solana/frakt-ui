@@ -7,7 +7,6 @@ import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
   fetchProgramAccounts,
   fetchRaydiumPoolsInfoMap,
-  fetchSolanaPriceUSD,
   mapFusionPoolInfo,
 } from './liquidityPools.helpers';
 import {
@@ -16,6 +15,7 @@ import {
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
 import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
+import { fetchSolanaPriceUSD } from '../../utils';
 
 export const useLiquidityPools = (): LiquidityPoolsContextValues => {
   const context = useContext(LiquidityPoolsContext);

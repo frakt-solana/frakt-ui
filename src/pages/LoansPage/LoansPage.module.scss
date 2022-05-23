@@ -43,19 +43,6 @@
   }
 }
 
-.filters {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 15px 30px;
-
-  @media screen and (max-width: 1023px) {
-    width: 100%;
-    margin-bottom: 35px;
-  }
-}
-
 .sortingSelect {
   width: unset;
   margin-left: 8px;

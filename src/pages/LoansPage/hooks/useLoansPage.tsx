@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { Tab, useTabs } from '../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../icons';
 import styles from '../LoansPage.module.scss';
 import { useDebounce } from '../../../hooks';
 import {
+  calcLoanApr,
+  calcLoansPoolReward,
+  calcUtilizationRateInPercent,
+  harvestLiquidity as harvestTxn,
   LoanWithArweaveMetadata,
   useLoans,
   useLoansInitialFetch,
@@ -33,18 +38,33 @@ export type FormFieldValues = {
   [InputControlsNames.SORT]: SortValue;
 };
 
+export interface LoansPoolData {
+  userDeposit: number;
+  apr: number;
+  totalSupply: number;
+  userLoans: number;
+  utilizationRate: number;
+  reward: number;
+}
+
 export const useLoansPage = (): {
   formControl: Control<FormFieldValues>;
   loanTabs: Tab[];
   tabValue: string;
   setTabValue: (value: string) => void;
   searchItems: (value?: string) => void;
+  harvestLiquidity: () => void;
   userLoans: LoanWithArweaveMetadata[];
   userLoansLoading: boolean;
+  loansPoolData: LoansPoolData;
 } => {
   useLoansInitialFetch();
   useLoansPolling();
-  const { userLoans, userLoansLoading } = useLoans();
+
+  const { userLoans, userLoansLoading, loanDataByPoolPublicKey } = useLoans();
+
+  const wallet = useWallet();
+  const { connection } = useConnection();
 
   const { control } = useForm({
     defaultValues: {
@@ -66,6 +86,49 @@ export const useLoansPage = (): {
     setSearchString(search.toUpperCase());
   }, 300);
 
+  const currentPool = Array.from(loanDataByPoolPublicKey.values());
+
+  const loansPoolData = currentPool.reduce((acc, loanData) => {
+    const currentUser = wallet.publicKey?.toBase58();
+
+    if (loanData) {
+      const { liquidityPool, loans, deposits } = loanData;
+
+      const userLoans =
+        loans.filter(({ user }) => user === currentUser).length || 0;
+
+      const userDeposit = deposits.find(({ user }) => user === currentUser);
+
+      const amountUserDeposit = userDeposit?.amount / 1e9 || 0;
+
+      const totalSupply = liquidityPool?.amountOfStaked / 1e9 || 0;
+
+      const apr = calcLoanApr(liquidityPool);
+
+      const utilizationRate = calcUtilizationRateInPercent(liquidityPool);
+      const reward = calcLoansPoolReward(liquidityPool, userDeposit);
+
+      acc.push({
+        apr,
+        userLoans,
+        totalSupply,
+        userDeposit: amountUserDeposit,
+        utilizationRate,
+        reward,
+      });
+    }
+
+    return acc[0];
+  }, []);
+
+  const harvestLiquidity = async (): Promise<void> => {
+    await harvestTxn({
+      connection,
+      wallet,
+      liquidityPool: currentPool[0].liquidityPool.liquidityPoolPubkey,
+    });
+  };
+
   return {
     formControl: control,
     searchItems,
@@ -74,6 +137,8 @@ export const useLoansPage = (): {
     setTabValue,
     userLoans,
     userLoansLoading,
+    loansPoolData,
+    harvestLiquidity,
   };
 };
 
@@ -81,7 +146,6 @@ const LOANS_TABS: Tab[] = [
   {
     label: 'Lending',
     value: 'lending',
-    disabled: true,
   },
   {
     label: 'Liquidations',

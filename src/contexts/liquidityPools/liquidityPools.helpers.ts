@@ -20,7 +20,7 @@ import {
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 
 import { SOL_TOKEN } from '../../utils';
-import { BLOCKED_POOLS_IDS, COINGECKO_URL } from './liquidityPools.constants';
+import { BLOCKED_POOLS_IDS } from './liquidityPools.constants';
 import {
   FetchPoolDataByMint,
   PoolData,
@@ -142,20 +142,6 @@ export const fetchRaydiumPoolsInfoMap = async (
   });
 
   return raydiumPoolInfoMap;
-};
-
-export const fetchSolanaPriceUSD = async (): Promise<number> => {
-  try {
-    const result = await (
-      await fetch(`${COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`)
-    ).json();
-
-    return result?.solana?.usd || 0;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('coingecko api error: ', error);
-    return 0;
-  }
 };
 
 export const getTokenAccount = async ({
