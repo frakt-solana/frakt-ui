@@ -1,19 +1,20 @@
-import React, { FC, useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { FC, useState, useEffect } from 'react';
 import { cond, propEq, always, T } from 'ramda';
+
+import { LinkWithArrow } from '../../components/LinkWithArrow';
 import {
-  HealthModalContextInterface,
+  HealthModalContextValues,
   HealthModalProviderProps,
 } from './healthModal.model';
-import { useHealth } from '../../utils/health/health.hooks';
-import { SolanaNetworkHealth } from '../../utils/health/health.model';
+import { useHealth, SolanaNetworkHealth } from '../../utils/health';
 
-export const HealthModalContext =
-  React.createContext<HealthModalContextInterface>({
+export const HealthModalContext = React.createContext<HealthModalContextValues>(
+  {
     visible: false,
     setVisible: () => {},
     config: null,
-  });
+  },
+);
 
 export const HealthModalProvider: FC<HealthModalProviderProps> = ({
   children,
@@ -31,14 +32,14 @@ export const HealthModalProvider: FC<HealthModalProviderProps> = ({
             mode: 'error',
             content: (
               <div>
-                Solana feels really bad at the moment. We strongly recommend not
-                to make any transactions at the moment.{' '}
-                <Link
-                  to={{ pathname: 'https://explorer.solana.com/' }}
-                  target="_blank"
-                >
-                  Check Solana health
-                </Link>
+                🤕 Solana feels really bad at the moment. We strongly recommend
+                not to make any transactions at the moment.{' '}
+                <LinkWithArrow
+                  to="https://explorer.solana.com/"
+                  label="Check Solana health"
+                  externalLink
+                  invert
+                />
               </div>
             ),
           }),
@@ -49,14 +50,14 @@ export const HealthModalProvider: FC<HealthModalProviderProps> = ({
             mode: 'warning',
             content: (
               <div>
-                Solana feels bad at the moment. Your transactions may fail with
-                a high probability.{' '}
-                <Link
-                  to={{ pathname: 'https://explorer.solana.com/' }}
-                  target="_blank"
-                >
-                  Check Solana health
-                </Link>
+                🤒 Solana feels bad at the moment. Your transactions may fail
+                with a high probability.{' '}
+                <LinkWithArrow
+                  to="https://explorer.solana.com/"
+                  label="Check Solana health"
+                  externalLink
+                  invert
+                />
               </div>
             ),
           }),
@@ -81,10 +82,4 @@ export const HealthModalProvider: FC<HealthModalProviderProps> = ({
       {children}
     </HealthModalContext.Provider>
   );
-};
-
-export const useHealthModal = (): HealthModalContextInterface => {
-  const { setVisible, visible, config } = useContext(HealthModalContext);
-
-  return { setVisible, visible, config };
 };

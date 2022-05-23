@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { CloseIcon } from '../../icons';
 
+import { CloseIcon } from '../../icons';
 import styles from './styles.module.scss';
 
 interface NotificationBarProps {

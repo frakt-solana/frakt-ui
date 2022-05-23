@@ -1,2 +1,2 @@
 import { NotificationBar } from './NotificationBar';
-export default NotificationBar;
+export { NotificationBar as default };

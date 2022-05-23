@@ -1,7 +1,13 @@
-enum SolanaNetworkHealth {
+export enum SolanaNetworkHealth {
   Down = 'Down',
   Slow = 'Slow',
   Good = 'Good',
 }
 
-export { SolanaNetworkHealth };
+export interface PingDataValues {
+  loss: string;
+}
+export interface SolanaNetworkHealthValues {
+  loss: number | null;
+  health: SolanaNetworkHealth;
+}

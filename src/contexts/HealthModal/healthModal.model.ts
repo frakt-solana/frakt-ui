@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-export interface HealthModalContextInterface {
+export interface HealthModalContextValues {
   visible: boolean;
   setVisible: (nextState: boolean) => void;
   config: { mode: 'warning' | 'error'; content: JSX.Element } | null;

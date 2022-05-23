@@ -10,32 +10,45 @@ import {
   split,
   map,
 } from 'ramda';
-import { SolanaNetworkHealth } from './health.model';
+
+import {
+  PingDataValues,
+  SolanaNetworkHealth,
+  SolanaNetworkHealthValues,
+} from './health.model';
 
 const SOLANA_SLOW_LOSS_CUTOFF = 25;
 const SOLANA_DOWN_LOSS_CUTOFF = 50;
 
-const average = converge(divide, [sum, length]);
-const convertPercentToNumber = compose(Number, head, split('.'));
+const average = converge<any, any, any>(divide, [sum, length]);
+const convertPercentToNumber: (string) => number = compose(
+  Number,
+  head,
+  split('.'),
+);
 
-async function getRecentAverageLoss(minutesLookback: number) {
-  const pingData = await (
+async function getRecentAverageLoss(minutesLookback: number): Promise<number> {
+  const pingData: Array<[PingDataValues]> = await (
     await fetch('https://ping.solana.com/mainnet-beta/last6hours')
   ).json();
-  return compose(
-    average,
-    map(convertPercentToNumber),
-    pluck('loss'),
-    take(minutesLookback),
-  )(pingData);
+
+  const getData = compose<
+    any[],
+    Array<PingDataValues>,
+    Array<string>,
+    Array<number>,
+    any
+  >(average, map(convertPercentToNumber), pluck('loss'), take(minutesLookback));
+
+  return getData(pingData);
 }
 
-export default async function getSolanaNetworkHealth(
+const getSolanaNetworkHealth = async (
   minutesLookback: number,
   solanaSlowLossCutoff = SOLANA_SLOW_LOSS_CUTOFF,
   solanaDownLossCutoff = SOLANA_DOWN_LOSS_CUTOFF,
-) {
-  const loss = await getRecentAverageLoss(minutesLookback);
+): Promise<SolanaNetworkHealthValues> => {
+  const loss: number = await getRecentAverageLoss(minutesLookback);
 
   if (loss === null) {
     return { health: SolanaNetworkHealth.Down, loss: null };
@@ -47,4 +60,6 @@ export default async function getSolanaNetworkHealth(
     return { health: SolanaNetworkHealth.Slow, loss };
   }
   return { health: SolanaNetworkHealth.Good, loss };
-}
+};
+
+export { getSolanaNetworkHealth as default };
