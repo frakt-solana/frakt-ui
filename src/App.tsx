@@ -41,7 +41,7 @@ const App: FC = () => {
   return (
     <ConnectionProvider
       config={
-        IS_DEVELOPMENT
+        !IS_DEVELOPMENT
           ? { fetchMiddleware: tokenAuthFetchMiddleware({ getToken }) }
           : null
       }
