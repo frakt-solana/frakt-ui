@@ -17,7 +17,7 @@ import { FC } from 'react';
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
 import { TokenListContextProvider } from './contexts/TokenList';
-import { ENDPOINT, IS_DEVELOPMENT, JWT_ENDPOINT } from './config';
+import { ENDPOINT, /* IS_DEVELOPMENT ,*/ JWT_ENDPOINT } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
@@ -40,11 +40,7 @@ const getToken = async (): Promise<string> => {
 const App: FC = () => {
   return (
     <ConnectionProvider
-      config={
-        !IS_DEVELOPMENT
-          ? { fetchMiddleware: tokenAuthFetchMiddleware({ getToken }) }
-          : null
-      }
+      config={{ fetchMiddleware: tokenAuthFetchMiddleware({ getToken }) }}
       endpoint={ENDPOINT}
     >
       <WalletProvider wallets={wallets} autoConnect>
