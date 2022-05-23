@@ -76,7 +76,10 @@ export const UserTokensProvider = ({
         .filter((token) => isTokenFrozen(token))
         .map(({ mint }) => mint);
 
-      const userNFTs = await fetchWalletNFTsUsingArweave(rawUserTokensByMint);
+      const userNFTs = await fetchWalletNFTsUsingArweave(
+        rawUserTokensByMint,
+        connection,
+      );
 
       const userNFTsFrozen = userNFTs?.filter(({ mint }) =>
         frozenNFTsMints.includes(mint),

@@ -17,7 +17,7 @@ import { FC } from 'react';
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
 import { TokenListContextProvider } from './contexts/TokenList';
-import { ENDPOINT, NETWORK, JWT_ENDPOINT } from './config';
+import { ENDPOINT, IS_DEVELOPMENT, JWT_ENDPOINT } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
@@ -28,23 +28,23 @@ const wallets = [
   getPhantomWallet(),
   getSolflareWallet(),
   getLedgerWallet(),
-  getSolletWallet({ network: NETWORK as WalletAdapterNetwork }),
-  getSolletExtensionWallet({ network: NETWORK as WalletAdapterNetwork }),
+  getSolletWallet({ network: WalletAdapterNetwork.Mainnet }),
+  getSolletExtensionWallet({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
-const getToken = (): Promise<string> =>
-  new Promise((resolve) => {
-    fetch(JWT_ENDPOINT)
-      .then((res) => res.json())
-      .then((content) => {
-        resolve(content?.access_token);
-      });
-  });
+const getToken = async (): Promise<string> => {
+  const content = await (await fetch(JWT_ENDPOINT)).json();
+  return content?.access_token;
+};
 
 const App: FC = () => {
   return (
     <ConnectionProvider
-      config={{ fetchMiddleware: tokenAuthFetchMiddleware({ getToken }) }}
+      config={
+        IS_DEVELOPMENT
+          ? { fetchMiddleware: tokenAuthFetchMiddleware({ getToken }) }
+          : null
+      }
       endpoint={ENDPOINT}
     >
       <WalletProvider wallets={wallets} autoConnect>
