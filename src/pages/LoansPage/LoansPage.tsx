@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Controller } from 'react-hook-form';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { SearchInput } from '../../components/SearchInput';
@@ -7,15 +6,9 @@ import { MyLoansTab } from './components/MyLoansTab';
 import BorrowBanner from './components/BorrowBanner';
 import { Container } from '../../components/Layout';
 import LendingPool from './components/LendingPool';
-import { Select } from '../../components/Select';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
-import {
-  InputControlsNames,
-  LoanTabsNames,
-  SORT_VALUES,
-  useLoansPage,
-} from './hooks';
+import { LoanTabsNames, useLoansPage } from './hooks';
 
 const LoansPage: FC = () => {
   const {
@@ -23,7 +16,6 @@ const LoansPage: FC = () => {
     tabValue,
     setTabValue,
     searchItems,
-    formControl,
     userLoans,
     userLoansLoading,
     loansPoolData,
@@ -50,7 +42,7 @@ const LoansPage: FC = () => {
                 className={styles.search}
                 placeholder="Filter by symbol"
               />
-              <Controller
+              {/* <Controller
                 control={formControl}
                 name={InputControlsNames.SORT}
                 render={({ field: { ref, ...field } }) => (
@@ -63,7 +55,7 @@ const LoansPage: FC = () => {
                     {...field}
                   />
                 )}
-              />
+              /> */}
             </div>
             {!!loansPoolData?.apr && (
               <LendingPool loansPoolData={loansPoolData} />
