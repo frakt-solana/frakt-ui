@@ -7,8 +7,8 @@ import { ArrowDownSmallIcon } from '../../../icons';
 import styles from '../LoansPage.module.scss';
 import { useDebounce } from '../../../hooks';
 import {
-  calcLoanApr,
-  calcLoansPoolReward,
+  calcLoanPoolApr,
+  calcLoanPoolReward,
   calcUtilizationRateInPercent,
   harvestLiquidity as harvestTxn,
   LoanWithArweaveMetadata,
@@ -39,12 +39,12 @@ export type FormFieldValues = {
 };
 
 export interface LoansPoolData {
-  userDeposit: number;
-  apr: number;
-  totalSupply: number;
-  userLoans: number;
-  utilizationRate: number;
-  reward: number;
+  apr?: number;
+  userDeposit?: number;
+  totalSupply?: number;
+  userLoans?: number;
+  utilizationRate?: number;
+  loanPoolReward?: number;
 }
 
 export const useLoansPage = (): {
@@ -88,7 +88,7 @@ export const useLoansPage = (): {
 
   const currentPool = Array.from(loanDataByPoolPublicKey.values());
 
-  const loansPoolData = currentPool.reduce((acc, loanData) => {
+  const loansPoolData = currentPool.reduce((_, loanData) => {
     const currentUser = wallet.publicKey?.toBase58();
 
     if (loanData) {
@@ -103,23 +103,21 @@ export const useLoansPage = (): {
 
       const totalSupply = liquidityPool?.amountOfStaked / 1e9 || 0;
 
-      const apr = calcLoanApr(liquidityPool);
+      const apr = calcLoanPoolApr(liquidityPool);
 
       const utilizationRate = calcUtilizationRateInPercent(liquidityPool);
-      const reward = calcLoansPoolReward(liquidityPool, userDeposit);
+      const loanPoolReward = calcLoanPoolReward(liquidityPool, userDeposit);
 
-      acc.push({
+      return {
         apr,
         userLoans,
         totalSupply,
         userDeposit: amountUserDeposit,
         utilizationRate,
-        reward,
-      });
+        loanPoolReward,
+      };
     }
-
-    return acc[0];
-  }, []);
+  }, {});
 
   const harvestLiquidity = async (): Promise<void> => {
     await harvestTxn({

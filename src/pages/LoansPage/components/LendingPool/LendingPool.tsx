@@ -16,8 +16,14 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
   const [poolModalVisible, setPoolModalVisible] = useState<boolean>(false);
   const { connected } = useWallet();
 
-  const { userDeposit, apr, totalSupply, userLoans, utilizationRate, reward } =
-    loansPoolData;
+  const {
+    userDeposit,
+    apr,
+    totalSupply,
+    userLoans,
+    utilizationRate,
+    loanPoolReward,
+  } = loansPoolData;
 
   const { harvestLiquidity } = useLoansPage();
 
@@ -28,7 +34,9 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
           {connected && (
             <>
               <div className={styles.rewards}>
-                <p className={styles.reward}>{reward?.toFixed(6)} SOL</p>
+                <p className={styles.reward}>
+                  {loanPoolReward?.toFixed(6)} SOL
+                </p>
               </div>
               <Button
                 onClick={harvestLiquidity}
@@ -43,15 +51,18 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
         <div className={styles.poolCard}>
           <div className={styles.tokenInfo}>
             <div>
-              <img src={SOL_TOKEN.logoURI} className={styles.image} />
               <img
-                src={SOL_TOKEN.logoURI}
-                style={{ marginLeft: '-30px' }}
+                src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/dapeM1DJj3xf2rC5o3Gcz1Cg3Rdu2ayZae9nGcsRRZT/logo.png"
                 className={styles.image}
               />
               <img
-                style={{ marginLeft: '-30px' }}
-                src={SOL_TOKEN.logoURI}
+                src="https://arweave.net/QTbFKiBGSYIJJna0QafYgAxNyAtuhwssEJliiJa0eyE?ext=png"
+                style={{ marginLeft: '-25px' }}
+                className={styles.image}
+              />
+              <img
+                src="https://arweave.net/2OINffkTFvUwtPFfNKkNzQ7h8m-1UZsqQkr6bXKIH70"
+                style={{ marginLeft: '-25px' }}
                 className={styles.image}
               />
               <img src={SOL_TOKEN.logoURI} className={styles.image} />

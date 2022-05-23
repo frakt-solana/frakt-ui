@@ -1,6 +1,6 @@
 import { DepositView, LiquidityPoolView } from '@frakters/nft-lending-v2';
 
-export const calcLoansPoolReward = (
+export const calcLoanPoolReward = (
   liquidityPool: LiquidityPoolView,
   userDeposit: DepositView,
 ): number => {
@@ -25,17 +25,17 @@ export const calcLoansPoolReward = (
 export const calcUtilizationRateInPercent = (
   liquidityPool: LiquidityPoolView,
 ): number => {
-  if (!liquidityPool?.apr) return 0;
+  if (!liquidityPool?.liquidityAmount) return 0;
 
   const { liquidityAmount, amountOfStaked } = liquidityPool;
   return liquidityAmount / amountOfStaked / 100;
 };
 
-export const calcLoanApr = (liquidityPool: LiquidityPoolView): number => {
+export const calcLoanPoolApr = (liquidityPool: LiquidityPoolView): number => {
   if (!liquidityPool?.apr) return 0;
 
-  const TIME_IN_YEAR = 31536000;
+  const SECONDS_IN_YEAR = 31536000;
   const { apr, period } = liquidityPool;
 
-  return (apr / 1e2 / period) * TIME_IN_YEAR;
+  return (apr / 1e2 / period) * SECONDS_IN_YEAR;
 };
