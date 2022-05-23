@@ -32,11 +32,12 @@ export const HealthModalProvider: FC<HealthModalProviderProps> = ({
             mode: 'error',
             content: (
               <div>
-                🤕 Solana feels really bad at the moment. We strongly recommend
-                not to make any transactions at the moment.{' '}
+                🤕 Solana feels <span style={{ fontWeight: 600 }}>really</span>{' '}
+                bad at the moment. We strongly recommend not to make any
+                transactions at the moment.{' '}
                 <LinkWithArrow
                   to="https://explorer.solana.com/"
-                  label="Check Solana health"
+                  label="Check Solana health here"
                   externalLink
                   invert
                 />
@@ -50,11 +51,10 @@ export const HealthModalProvider: FC<HealthModalProviderProps> = ({
             mode: 'warning',
             content: (
               <div>
-                🤒 Solana feels bad at the moment. Your transactions may fail
-                with a high probability.{' '}
+                🤒 Your on-chain actions have an increased chance of failing.{' '}
                 <LinkWithArrow
                   to="https://explorer.solana.com/"
-                  label="Check Solana health"
+                  label="Check Solana health here"
                   externalLink
                   invert
                 />
