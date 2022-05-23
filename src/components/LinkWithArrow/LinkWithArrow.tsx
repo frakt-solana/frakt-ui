@@ -10,6 +10,7 @@ interface LinkWithArrowProps {
   to: string;
   label: string;
   className?: string;
+  invert?: boolean;
 }
 
 export const LinkWithArrow: FC<LinkWithArrowProps> = ({
@@ -17,21 +18,35 @@ export const LinkWithArrow: FC<LinkWithArrowProps> = ({
   to,
   label,
   className,
+  invert,
 }) => {
   return externalLink ? (
     <a
-      className={classNames(styles.root, className)}
+      className={classNames(styles.root, className, {
+        [styles.invert]: invert,
+      })}
       href={to}
       target="_blank"
       rel="noopener noreferrer"
     >
       {label}
-      <ArrowRightTop className={styles.icon} />
+      <ArrowRightTop
+        className={styles.icon}
+        fill={invert ? 'black' : 'white'}
+      />
     </a>
   ) : (
-    <NavLink className={classNames(styles.root, className)} to={to}>
+    <NavLink
+      className={classNames(styles.root, className, {
+        [styles.invert]: invert,
+      })}
+      to={to}
+    >
       {label}
-      <ArrowRightTop className={styles.icon} />
+      <ArrowRightTop
+        className={styles.icon}
+        fill={invert ? 'black' : 'white'}
+      />
     </NavLink>
   );
 };
