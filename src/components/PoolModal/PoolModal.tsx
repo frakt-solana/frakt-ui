@@ -1,15 +1,12 @@
 import { FC } from 'react';
-import { Controller } from 'react-hook-form';
-import { Form } from 'antd';
 
-import { InputControlsNames, TabsNames, usePoolModal } from './usePoolModal';
-import { SOL_TOKEN, getSolBalanceValue } from '../../utils';
-import { useNativeAccount } from '../../utils/accounts';
+import { TabsNames, usePoolModal } from './usePoolModal';
 import { TokenFieldWithBalance } from '../TokenField';
 import { CloseModalIcon } from '../../icons';
 import styles from './PoolModal.module.scss';
+import { SOL_TOKEN } from '../../utils';
+import { Slider } from '../Slider';
 import { Modal } from '../Modal';
-import Slider from '../Slider';
 import Button from '../Button';
 import { Tabs } from '../Tabs';
 
@@ -29,18 +26,20 @@ export const PoolModal: FC<PoolModalProps> = ({
   utilizationRate,
 }) => {
   const {
-    formControl,
-    depositValue,
     withdrawValue,
+    depositValue,
     depositLiquidity,
     unstakeLiquidity,
     poolTabs,
     tabValue,
     setTabValue,
-  } = usePoolModal(visible);
-
-  const { account } = useNativeAccount();
-  const solWalletBalance = getSolBalanceValue(account);
+    percentValue,
+    onDepositValueChange,
+    onDepositPercentChange,
+    onWithdrawValueChange,
+    onWithdrawPercentChange,
+    solWalletBalance,
+  } = usePoolModal(visible, userDeposit);
 
   return (
     <Modal
@@ -65,38 +64,19 @@ export const PoolModal: FC<PoolModalProps> = ({
       />
       {tabValue === TabsNames.DEPOSIT && (
         <>
-          <Form.Item name={InputControlsNames.DEPOSIT_VALUE}>
-            <Controller
-              control={formControl}
-              name={InputControlsNames.DEPOSIT_VALUE}
-              render={({ field: { onChange } }) => (
-                <TokenFieldWithBalance
-                  className={styles.input}
-                  value={String(depositValue)}
-                  onValueChange={onChange}
-                  currentToken={SOL_TOKEN}
-                  label={`Wallet balance: ${solWalletBalance} SOL`}
-                />
-              )}
-            />
-          </Form.Item>
-          <Form.Item name={InputControlsNames.DEPOSIT_VALUE}>
-            <Controller
-              control={formControl}
-              name={InputControlsNames.DEPOSIT_VALUE}
-              rules={{ required: true }}
-              render={({ field: { onChange } }) => (
-                <Slider
-                  value={depositValue}
-                  tipFormatter={(value) => `${value} SOL`}
-                  onChange={onChange}
-                  className={styles.slider}
-                  step={0.1}
-                  max={Number(solWalletBalance)}
-                />
-              )}
-            />
-          </Form.Item>
+          <TokenFieldWithBalance
+            value={depositValue}
+            onValueChange={onDepositValueChange}
+            currentToken={SOL_TOKEN}
+            tokensList={[SOL_TOKEN]}
+            label={`Your deposit: ${userDeposit} SOL`}
+            showMaxButton
+          />
+          <Slider
+            value={percentValue}
+            setValue={solWalletBalance && onDepositPercentChange}
+            className={styles.slider}
+          />
           <div className={styles.info}>
             <span className={styles.infoTitle}>Deposit APR</span>
             <span className={styles.infoValue}>{apr.toFixed(2)}%</span>
@@ -118,38 +98,19 @@ export const PoolModal: FC<PoolModalProps> = ({
       )}
       {tabValue === TabsNames.WITHDRAW && (
         <>
-          <Form.Item name={InputControlsNames.WITHDRAW_VALUE}>
-            <Controller
-              control={formControl}
-              name={InputControlsNames.WITHDRAW_VALUE}
-              render={({ field: { onChange } }) => (
-                <TokenFieldWithBalance
-                  className={styles.input}
-                  value={String(withdrawValue)}
-                  onValueChange={onChange}
-                  currentToken={SOL_TOKEN}
-                  label={`Your deposit: ${userDeposit} SOL`}
-                />
-              )}
-            />
-          </Form.Item>
-          <Form.Item name={InputControlsNames.WITHDRAW_VALUE}>
-            <Controller
-              control={formControl}
-              name={InputControlsNames.WITHDRAW_VALUE}
-              rules={{ required: true }}
-              render={({ field: { onChange } }) => (
-                <Slider
-                  value={withdrawValue}
-                  tipFormatter={(value) => `${value} SOL`}
-                  onChange={onChange}
-                  className={styles.slider}
-                  step={0.1}
-                  max={userDeposit}
-                />
-              )}
-            />
-          </Form.Item>
+          <TokenFieldWithBalance
+            value={withdrawValue}
+            onValueChange={onWithdrawValueChange}
+            currentToken={SOL_TOKEN}
+            label={`Your deposit: ${userDeposit} SOL`}
+            lpBalance={userDeposit}
+            showMaxButton
+          />
+          <Slider
+            value={percentValue}
+            setValue={userDeposit && onWithdrawPercentChange}
+            className={styles.slider}
+          />
           <Button
             onClick={unstakeLiquidity}
             className={styles.btn}

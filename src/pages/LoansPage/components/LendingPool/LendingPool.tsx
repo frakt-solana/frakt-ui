@@ -9,6 +9,7 @@ import styles from './LendingPool.module.scss';
 import { SOL_TOKEN } from '../../../../utils';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import { useWalletModal } from '../../../../contexts/WalletModal';
+import Tooltip from '../../../../components/Tooltip';
 
 const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
 
@@ -50,17 +51,25 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
             <>
               <div className={styles.rewards}>
                 <p className={styles.reward}>
-                  {loanPoolReward?.toFixed(3)} SOL
+                  Pending Rewards: {loanPoolReward?.toFixed(3)} SOL
                 </p>
               </div>
-              <Button
-                onClick={harvestLiquidity}
-                className={classNames(styles.btn, styles.btnHarvest)}
-                disabled={isDisabledBtn}
-                type="tertiary"
+
+              <Tooltip
+                placement="top"
+                overlay="Harvest is available from 0.001 SOL"
               >
-                Harvest
-              </Button>
+                <div>
+                  <Button
+                    onClick={harvestLiquidity}
+                    className={classNames(styles.btn, styles.btnHarvest)}
+                    disabled={isDisabledBtn}
+                    type="tertiary"
+                  >
+                    Harvest
+                  </Button>
+                </div>
+              </Tooltip>
             </>
           )}
         </div>
