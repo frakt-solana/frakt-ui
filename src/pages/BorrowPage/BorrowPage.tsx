@@ -1,5 +1,4 @@
-import { FC, useState, useEffect } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { FC, useState } from 'react';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { SearchInput } from '../../components/SearchInput';
@@ -18,18 +17,9 @@ const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
 
 const BorrowPage: FC = () => {
-  const { connected } = useWallet();
   const [search, setSearch] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(15);
-
-  const { onDeselect, onSelect, selectedNfts, setSelectedNfts } =
-    useSelectLayout();
-
-  useEffect(() => {
-    if (!connected && selectedNfts.length) {
-      setSelectedNfts([]);
-    }
-  }, [connected, selectedNfts, setSelectedNfts]);
+  const { connected, onDeselect, onSelect, selectedNfts } = useSelectLayout();
 
   const {
     isCloseSidebar,
