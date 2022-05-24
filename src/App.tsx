@@ -16,7 +16,7 @@ import { FC } from 'react';
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
 import { TokenListContextProvider } from './contexts/TokenList';
-import { ENDPOINT, NETWORK } from './config';
+import { ENDPOINT } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
 import { HealthModalProvider } from './contexts/HealthModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
@@ -28,8 +28,8 @@ const wallets = [
   getPhantomWallet(),
   getSolflareWallet(),
   getLedgerWallet(),
-  getSolletWallet({ network: NETWORK as WalletAdapterNetwork }),
-  getSolletExtensionWallet({ network: NETWORK as WalletAdapterNetwork }),
+  getSolletWallet({ network: WalletAdapterNetwork.Mainnet }),
+  getSolletExtensionWallet({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
 const App: FC = () => {

@@ -117,7 +117,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
         setMetadataLoading(true);
       }
       const mints = userLoansWithoutMetadata.map(({ nftMint }) => nftMint);
-      const metadataByMint = await getArweaveMetadataByMint(mints);
+      const metadataByMint = await getArweaveMetadataByMint(mints, connection);
 
       const fetchedUserLoans = userLoansWithoutMetadata.map((loan) => {
         const metadata = metadataByMint[loan?.nftMint] || null;

@@ -1,11 +1,13 @@
-import { ENDPOINT } from '../../config';
+import { Connection } from '@solana/web3.js';
+
 import { getMeta } from './lib';
 import { MetadataByMint } from './arweave.model';
 
 export const getArweaveMetadataByMint = async (
   tokenMints: string[],
+  connection: Connection,
 ): Promise<MetadataByMint> => {
-  const rawMeta = await getMeta(tokenMints, ENDPOINT);
+  const rawMeta = await getMeta(tokenMints, connection);
 
   const metadataByMint =
     rawMeta

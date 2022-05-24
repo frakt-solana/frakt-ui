@@ -7,6 +7,7 @@ import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
 import { UserNFT } from '../contexts/userTokens';
+import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../config';
 
 export const notify: Notify = ({
   message = '',
@@ -41,7 +42,7 @@ export const SOL_TOKEN: TokenInfo = {
 
 export const FRKT_TOKEN: TokenInfo = {
   chainId: 101,
-  address: 'ErGB9xa24Szxbk1M28u2Tx8rKPqzL6BroNkkzk5rG4zj',
+  address: FRKT_TOKEN_MINT_PUBLIC_KEY,
   name: 'FRAKT Token',
   decimals: 8,
   symbol: 'FRKT',
