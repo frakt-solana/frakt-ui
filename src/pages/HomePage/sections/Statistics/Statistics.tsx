@@ -33,16 +33,17 @@ const Statistics: FC = () => {
   const { loading, stats } = useStats();
 
   const lockedNFTRef = useRef(null);
-  const { update: updateLockedNFTCount } = useCountUp({
-    ref: lockedNFTRef,
-    start: 0,
-    end: 0,
-    startOnMount: false,
-    duration: 2,
-    separator: ',',
-  });
+  const { update: updateLockedNFTCount, reset: resetLockedNFTCount } =
+    useCountUp({
+      ref: lockedNFTRef,
+      start: 0,
+      end: 0,
+      startOnMount: false,
+      duration: 2,
+      separator: ',',
+    });
   const tvlRef = useRef(null);
-  const { update: updateTvlCount } = useCountUp({
+  const { update: updateTvlCount, reset: resetTvlCount } = useCountUp({
     ref: tvlRef,
     start: 0,
     end: 0,
@@ -63,6 +64,11 @@ const Statistics: FC = () => {
     if (!loading && isLockedNFTRef) {
       updateLockedNFTCount(stats.nftsLocked);
     }
+
+    return () => {
+      resetLockedNFTCount();
+      resetTvlCount();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, isTvlRefVisible, isLockedNFTRef]);
 
