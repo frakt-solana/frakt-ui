@@ -41,6 +41,9 @@ export const PoolModal: FC<PoolModalProps> = ({
     solWalletBalance,
   } = usePoolModal(visible, userDeposit);
 
+  const notEnoughDepositError = userDeposit < Number(withdrawValue);
+  const notEnoughBalanceError = Number(solWalletBalance) < Number(depositValue);
+
   return (
     <Modal
       visible={!!visible}
@@ -71,7 +74,13 @@ export const PoolModal: FC<PoolModalProps> = ({
             tokensList={[SOL_TOKEN]}
             label={`Your deposit: ${userDeposit} SOL`}
             showMaxButton
+            error={notEnoughBalanceError}
           />
+          <div className={styles.errors}>
+            {notEnoughBalanceError && (
+              <p>Your balance: {solWalletBalance} SOL</p>
+            )}
+          </div>
           <Slider
             value={percentValue}
             setValue={solWalletBalance && onDepositPercentChange}
@@ -91,6 +100,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             onClick={depositLiquidity}
             className={styles.btn}
             type="alternative"
+            disabled={notEnoughBalanceError}
           >
             Deposit
           </Button>
@@ -104,17 +114,23 @@ export const PoolModal: FC<PoolModalProps> = ({
             currentToken={SOL_TOKEN}
             label={`Your deposit: ${userDeposit} SOL`}
             lpBalance={userDeposit}
+            error={notEnoughDepositError}
             showMaxButton
           />
+          <div className={styles.errors}>
+            {notEnoughDepositError && <p>Your balance: {userDeposit} SOL</p>}
+          </div>
           <Slider
             value={percentValue}
             setValue={userDeposit && onWithdrawPercentChange}
             className={styles.slider}
           />
+
           <Button
             onClick={unstakeLiquidity}
             className={styles.btn}
             type="alternative"
+            disabled={notEnoughDepositError}
           >
             Confirm
           </Button>

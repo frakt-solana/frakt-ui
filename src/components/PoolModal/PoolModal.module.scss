@@ -31,7 +31,7 @@
 }
 
 .slider {
-  margin: 30px 0 40px;
+  margin: 20px 0 40px;
 }
 
 .closeModalIcon {
@@ -90,4 +90,13 @@
 
 .infoValue {
   order: 3;
+}
+
+.errors {
+  padding-top: 10px;
+  font: var(--font-text-6);
+  color: var(--red-error-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
