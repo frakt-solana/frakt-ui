@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
@@ -22,7 +22,14 @@ const BorrowPage: FC = () => {
   const [search, setSearch] = useState<string>('');
   const { itemsToShow, next } = useFakeInfinityScroll(15);
 
-  const { onDeselect, onSelect, selectedNfts } = useSelectLayout();
+  const { onDeselect, onSelect, selectedNfts, setSelectedNfts } =
+    useSelectLayout();
+
+  useEffect(() => {
+    if (!connected && selectedNfts.length) {
+      setSelectedNfts([]);
+    }
+  }, [connected, selectedNfts, setSelectedNfts]);
 
   const {
     isCloseSidebar,
