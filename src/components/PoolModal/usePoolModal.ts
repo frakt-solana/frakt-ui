@@ -22,7 +22,9 @@ export type FormFieldValues = {
   [InputControlsNames.WITHDRAW_VALUE]: number;
 };
 
-export const usePoolModal = (): {
+export const usePoolModal = (
+  visible: string,
+): {
   depositValue: number;
   withdrawValue: number;
   depositLiquidity: () => void;
@@ -47,10 +49,11 @@ export const usePoolModal = (): {
     tabs: poolTabs,
     value: tabValue,
     setValue: setTabValue,
-  } = useTabs({
-    tabs: POOLS_TABS,
-    defaultValue: POOLS_TABS[0].value,
-  });
+  } = useTabs({ tabs: POOLS_TABS });
+
+  useEffect(() => {
+    setTabValue(visible);
+  }, [visible, setTabValue]);
 
   const liquidityPool = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
 

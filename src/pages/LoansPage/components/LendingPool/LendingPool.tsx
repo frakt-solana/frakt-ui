@@ -7,13 +7,17 @@ import { LoansPoolData, useLoansPage } from '../../hooks';
 import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
 import { SOL_TOKEN } from '../../../../utils';
+import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
+import { useWalletModal } from '../../../../contexts/WalletModal';
+
+const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
 
 interface LendingPoolProps {
   loansPoolData: LoansPoolData;
 }
 
 const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
-  const [poolModalVisible, setPoolModalVisible] = useState<boolean>(false);
+  const [poolModalVisible, setPoolModalVisible] = useState<TabsNames>(null);
   const { connected } = useWallet();
 
   const {
@@ -26,6 +30,17 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
   } = loansPoolData;
 
   const { harvestLiquidity } = useLoansPage();
+  const { setVisible } = useWalletModal();
+
+  const openPoolModal = (tab: TabsNames) => {
+    if (!connected) {
+      setVisible(true);
+    } else {
+      setPoolModalVisible(tab);
+    }
+  };
+
+  const isDisabledBtn = loanPoolReward < MIN_AVAILABLE_VALUE_FOR_HARVEST;
 
   return (
     <>
@@ -35,12 +50,13 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
             <>
               <div className={styles.rewards}>
                 <p className={styles.reward}>
-                  {loanPoolReward?.toFixed(6)} SOL
+                  {loanPoolReward?.toFixed(3)} SOL
                 </p>
               </div>
               <Button
                 onClick={harvestLiquidity}
                 className={classNames(styles.btn, styles.btnHarvest)}
+                disabled={isDisabledBtn}
                 type="tertiary"
               >
                 Harvest
@@ -94,14 +110,14 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
               <Button
                 className={styles.btn}
                 type="tertiary"
-                onClick={() => setPoolModalVisible(true)}
+                onClick={() => openPoolModal(TabsNames.WITHDRAW)}
               >
                 Withdraw
               </Button>
               <Button
                 className={styles.btn}
                 type="alternative"
-                onClick={() => setPoolModalVisible(true)}
+                onClick={() => openPoolModal(TabsNames.DEPOSIT)}
               >
                 Deposit
               </Button>
@@ -111,7 +127,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
       </div>
       <PoolModal
         visible={poolModalVisible}
-        onCancel={() => setPoolModalVisible(false)}
+        onCancel={() => setPoolModalVisible(null)}
         apr={apr}
         userDeposit={userDeposit}
         utilizationRate={utilizationRate}

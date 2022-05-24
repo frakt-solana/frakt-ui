@@ -14,8 +14,7 @@ import Button from '../Button';
 import { Tabs } from '../Tabs';
 
 interface PoolModalProps {
-  visible: boolean;
-  setVisible?: (visible: boolean) => void;
+  visible: string;
   onCancel: () => void;
   apr?: number;
   userDeposit?: number;
@@ -38,14 +37,14 @@ export const PoolModal: FC<PoolModalProps> = ({
     poolTabs,
     tabValue,
     setTabValue,
-  } = usePoolModal();
+  } = usePoolModal(visible);
 
   const { account } = useNativeAccount();
-  const solBalance = getSolBalanceValue(account);
+  const solWalletBalance = getSolBalanceValue(account);
 
   return (
     <Modal
-      visible={visible}
+      visible={!!visible}
       centered
       onCancel={onCancel}
       width={500}
@@ -76,7 +75,7 @@ export const PoolModal: FC<PoolModalProps> = ({
                   value={String(depositValue)}
                   onValueChange={onChange}
                   currentToken={SOL_TOKEN}
-                  label={`Your deposit: ${userDeposit} SOL`}
+                  label={`Wallet balance: ${solWalletBalance} SOL`}
                 />
               )}
             />
@@ -93,7 +92,7 @@ export const PoolModal: FC<PoolModalProps> = ({
                   onChange={onChange}
                   className={styles.slider}
                   step={0.1}
-                  max={Number(solBalance)}
+                  max={Number(solWalletBalance)}
                 />
               )}
             />

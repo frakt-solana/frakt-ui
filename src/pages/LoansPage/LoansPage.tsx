@@ -1,7 +1,6 @@
 import { FC } from 'react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import { SearchInput } from '../../components/SearchInput';
 import { MyLoansTab } from './components/MyLoansTab';
 import BorrowBanner from './components/BorrowBanner';
 import { Container } from '../../components/Layout';
@@ -9,13 +8,13 @@ import LendingPool from './components/LendingPool';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
 import { LoanTabsNames, useLoansPage } from './hooks';
+import { Loader } from '../../components/Loader';
 
 const LoansPage: FC = () => {
   const {
     loanTabs,
     tabValue,
     setTabValue,
-    searchItems,
     userLoans,
     userLoansLoading,
     loansPoolData,
@@ -36,29 +35,14 @@ const LoansPage: FC = () => {
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
         {tabValue === LoanTabsNames.LENDING && (
           <>
-            <div className={styles.sortWrapper}>
-              <SearchInput
-                onChange={(e) => searchItems(e.target.value || '')}
-                className={styles.search}
-                placeholder="Filter by symbol"
-              />
-              {/* <Controller
-                control={formControl}
-                name={InputControlsNames.SORT}
-                render={({ field: { ref, ...field } }) => (
-                  <Select
-                    valueContainerClassName={styles.sortingSelectContainer}
-                    className={styles.sortingSelect}
-                    label="Sort by"
-                    name={InputControlsNames.SORT}
-                    options={SORT_VALUES}
-                    {...field}
-                  />
-                )}
-              /> */}
-            </div>
-            {!!loansPoolData?.apr && (
-              <LendingPool loansPoolData={loansPoolData} />
+            {loansPoolData?.apr ? (
+              <div className={styles.sortWrapper}>
+                <LendingPool loansPoolData={loansPoolData} />
+              </div>
+            ) : (
+              <div className={styles.loader}>
+                <Loader size={'large'} />
+              </div>
             )}
           </>
         )}

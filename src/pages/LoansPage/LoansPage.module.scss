@@ -35,39 +35,9 @@
   }
 }
 
-.search {
-  max-width: 375px;
-
-  @media screen and (max-width: 1023px) {
-    margin-bottom: 28px;
-  }
-}
-
-.sortingSelect {
-  width: unset;
-  margin-left: 8px;
-}
-
-.sortingSelectContainer {
-  svg {
-    position: relative;
-    top: 2px;
-    path {
-      stroke: var(--accent-color-1);
-    }
-  }
-}
-
-.arrowUp,
-.arrowDown {
-  position: relative;
-  top: 2px;
-
-  path {
-    stroke: var(--white-color);
-  }
-}
-
-.arrowDown {
-  transform: rotate(180deg);
+.loader {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
