@@ -61,6 +61,18 @@ export const usePoolModal = (
 
   const { depositValue, withdrawValue, percentValue } = watch();
 
+  const POOLS_TABS = [
+    {
+      label: 'Deposit',
+      value: 'deposit',
+    },
+    {
+      label: 'Withdraw',
+      value: 'withdraw',
+      disabled: !userDeposit,
+    },
+  ];
+
   const {
     tabs: poolTabs,
     value: tabValue,
@@ -124,7 +136,7 @@ export const usePoolModal = (
     balance: string | number,
   ): string => {
     const value = (nextValue * Number(balance)) / 100;
-    return value ? value?.toFixed(3) : '0';
+    return value ? value?.toFixed(2) : '0';
   };
 
   const depositLiquidity = async (): Promise<void> => {
@@ -165,14 +177,3 @@ export const usePoolModal = (
     solWalletBalance,
   };
 };
-
-const POOLS_TABS = [
-  {
-    label: 'Deposit',
-    value: 'deposit',
-  },
-  {
-    label: 'Withdraw',
-    value: 'withdraw',
-  },
-];

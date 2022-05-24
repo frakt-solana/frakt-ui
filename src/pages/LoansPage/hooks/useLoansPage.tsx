@@ -69,7 +69,9 @@ export const useLoansPage = (): {
       const { liquidityPool, loans, deposits } = loanData;
 
       const userLoans =
-        loans.filter(({ user }) => user === currentUser).length || 0;
+        loans
+          .filter(({ user }) => user === currentUser)
+          .filter(({ loanStatus }) => loanStatus === 'activated').length || 0;
 
       const userDeposit = deposits.find(({ user }) => user === currentUser);
 

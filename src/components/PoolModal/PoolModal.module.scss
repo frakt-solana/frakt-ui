@@ -31,7 +31,7 @@
 }
 
 .slider {
-  margin: 20px 0 40px;
+  margin: 15px 0 25px;
 }
 
 .closeModalIcon {
@@ -93,7 +93,8 @@
 }
 
 .errors {
-  padding-top: 10px;
+  margin-top: 10px;
+  height: 16px;
   font: var(--font-text-6);
   color: var(--red-error-color);
   display: flex;

@@ -72,14 +72,12 @@ export const PoolModal: FC<PoolModalProps> = ({
             onValueChange={onDepositValueChange}
             currentToken={SOL_TOKEN}
             tokensList={[SOL_TOKEN]}
-            label={`Your deposit: ${userDeposit} SOL`}
+            label={' '}
             showMaxButton
             error={notEnoughBalanceError}
           />
           <div className={styles.errors}>
-            {notEnoughBalanceError && (
-              <p>Your balance: {solWalletBalance} SOL</p>
-            )}
+            {notEnoughBalanceError && <p>Not enough SOL</p>}
           </div>
           <Slider
             value={percentValue}
@@ -118,7 +116,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             showMaxButton
           />
           <div className={styles.errors}>
-            {notEnoughDepositError && <p>Your balance: {userDeposit} SOL</p>}
+            {notEnoughDepositError && <p>Not enough SOL</p>}
           </div>
           <Slider
             value={percentValue}
