@@ -2,8 +2,13 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { POOLS, POOL_TABS } from './constants';
 import { routes } from './constants/routes';
+import { useNotification } from './hooks/useNotification';
+import { useAppInit } from './hooks/useAppInit';
 
 export const Router = (): JSX.Element => {
+  useAppInit();
+  useNotification();
+
   return (
     <BrowserRouter>
       <Switch>

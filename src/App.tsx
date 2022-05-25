@@ -20,7 +20,6 @@ import { UserTokensProvider } from './contexts/userTokens';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT, NETWORK } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
-import { HealthModalProvider } from './contexts/HealthModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
@@ -40,22 +39,20 @@ const App: FC = () => {
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets} autoConnect>
           <WalletModalProvider>
-            <HealthModalProvider>
-              {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
-              <TokenListContextProvider>
-                <UserTokensProvider>
-                  <LiquidityPoolsProvider>
-                    <NftPoolsProvider>
-                      <LoansProvider>
-                        <Router />
-                      </LoansProvider>
-                    </NftPoolsProvider>
-                  </LiquidityPoolsProvider>
-                </UserTokensProvider>
-              </TokenListContextProvider>
-              {/* <IntercomService /> */}
-              {/* </IntercomProvider> */}
-            </HealthModalProvider>
+            {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
+            <TokenListContextProvider>
+              <UserTokensProvider>
+                <LiquidityPoolsProvider>
+                  <NftPoolsProvider>
+                    <LoansProvider>
+                      <Router />
+                    </LoansProvider>
+                  </NftPoolsProvider>
+                </LiquidityPoolsProvider>
+              </UserTokensProvider>
+            </TokenListContextProvider>
+            {/* <IntercomService /> */}
+            {/* </IntercomProvider> */}
           </WalletModalProvider>
         </WalletProvider>
       </ConnectionProvider>
