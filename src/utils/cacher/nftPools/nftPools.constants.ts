@@ -8,9 +8,9 @@ export const VISIBLE_POOLS = [
   '2pCdQHULNgwesN7dQdRW93GFsLb99GpNC4wT9V1jvUvB', //? Zaysan Raptors
   'CUvaGx32Z1p9Wia2Xheod37ii62byAxhNv8r2UJX729Y', //? Frakt
   'FvKPzBfDx6AgBhkwweFnth2g9Mfd21vT9Lr7yoxUQsp8', //? Gnomies
-  // '8ezfmbfr5rRNrvM1z4ZqWTjf9mbcpozpgFxgSbmmR2c2', //? Aiternate
-  // '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv', //? Sol Patrol
-  // '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr', //? thugbirds
+  '8ezfmbfr5rRNrvM1z4ZqWTjf9mbcpozpgFxgSbmmR2c2', //? Aiternate
+  '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv', //? Sol Patrol
+  '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr', //? thugbirds
 ];
 
 export const CUSTOM_POOLS_URLS = {
