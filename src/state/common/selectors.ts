@@ -30,9 +30,10 @@ export enum SolanaNetworkHealth {
 }
 
 const isNumber = (value) => typeof value === 'number';
+const isNumberArray = (value) => Array.isArray(value) && value.every(isNumber);
 const isFullString = (value) => typeof value === 'string' && !!value.length;
 const average = ifElse(
-  isNumber,
+  isNumberArray,
   converge<any, any, any>(divide, [sum, length]),
   identity,
 );
