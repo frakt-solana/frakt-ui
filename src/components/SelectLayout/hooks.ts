@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import { useDebounce } from '../../hooks';
@@ -13,7 +14,9 @@ export const useSelectLayout = (): {
   nfts: UserNFT[];
   searchItems: (search: string) => void;
   loading: boolean;
+  connected: boolean;
 } => {
+  const { connected } = useWallet();
   const { nfts: rawNfts, nftsLoading: loading } = useUserTokens();
 
   const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
@@ -57,6 +60,12 @@ export const useSelectLayout = (): {
     );
   }, [searchString, rawNfts]);
 
+  useEffect(() => {
+    if (!connected && selectedNfts.length) {
+      setSelectedNfts([]);
+    }
+  }, [connected, selectedNfts, setSelectedNfts]);
+
   return {
     onDeselect,
     selectedNfts,
@@ -66,5 +75,6 @@ export const useSelectLayout = (): {
     nfts,
     searchItems,
     loading,
+    connected,
   };
 };

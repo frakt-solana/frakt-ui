@@ -1,7 +1,6 @@
-import { PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 
 import { TokenView } from '../../utils/accounts';
-
 import {
   getArweaveMetadataByMint,
   NFTCreator,
@@ -52,6 +51,7 @@ const parseQuickNodeNFTs = (qnNftData: QNFetchNFTData[]): UserNFT[] => {
   return userNFTs;
 };
 
+//TODO: Broken because of JWT autorization
 const fetchAllWalletNftsQN = async (
   wallet: string,
   startPage = 1,
@@ -103,13 +103,14 @@ export const fetchWalletNFTsFromQuickNode = async (
 
 export const fetchWalletNFTsUsingArweave = async (
   rawUserTokensByMint: RawUserTokensByMint,
+  connection: Connection,
 ): Promise<UserNFT[] | null> => {
   try {
     const mints = Object.entries(rawUserTokensByMint)
       .filter(([, tokenView]) => tokenView.amount === 1)
       .map(([mint]) => mint);
 
-    const arweaveMetadata = await getArweaveMetadataByMint(mints);
+    const arweaveMetadata = await getArweaveMetadataByMint(mints, connection);
 
     const userNFTs = Object.entries(arweaveMetadata).map(
       ([mint, metadata]) => ({
@@ -130,18 +131,22 @@ export const fetchWalletNFTsUsingArweave = async (
 type fetchNftsWithFallback = (props: {
   walletPublicKey: PublicKey;
   rawUserTokensByMint: RawUserTokensByMint;
+  connection: Connection;
 }) => Promise<UserNFT[]>;
 
 export const fetchNftsWithFallback: fetchNftsWithFallback = async ({
   walletPublicKey,
   rawUserTokensByMint,
+  connection,
 }) => {
   const userNFTs = await fetchWalletNFTsFromQuickNode(
     walletPublicKey?.toBase58(),
   );
 
   if (!userNFTs) {
-    return (await fetchWalletNFTsUsingArweave(rawUserTokensByMint)) || [];
+    return (
+      (await fetchWalletNFTsUsingArweave(rawUserTokensByMint, connection)) || []
+    );
   }
 
   return userNFTs || [];
