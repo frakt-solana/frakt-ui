@@ -17,7 +17,7 @@ const LoansPage: FC = () => {
     setTabValue,
     userLoans,
     userLoansLoading,
-    loansPoolData,
+    loansPoolInfo,
   } = useLoansPage();
 
   return (
@@ -35,9 +35,9 @@ const LoansPage: FC = () => {
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
         {tabValue === LoanTabsNames.LENDING && (
           <>
-            {loansPoolData?.apr ? (
+            {loansPoolInfo?.apr ? (
               <div className={styles.sortWrapper}>
-                <LendingPool loansPoolData={loansPoolData} />
+                <LendingPool loansPoolInfo={loansPoolInfo} />
               </div>
             ) : (
               <div className={styles.loader}>

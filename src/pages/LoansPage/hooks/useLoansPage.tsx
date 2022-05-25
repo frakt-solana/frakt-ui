@@ -20,13 +20,13 @@ export enum LoanTabsNames {
   LOANS = 'loans',
 }
 
-export interface LoansPoolData {
+export interface LoansPoolInfo {
   apr?: number;
-  userDeposit?: number;
+  loans?: number;
   totalSupply?: number;
-  userLoans?: number;
+  depositAmount?: number;
   utilizationRate?: number;
-  loanPoolReward?: number;
+  rewardAmount?: number;
 }
 
 export const useLoansPage = (): {
@@ -37,7 +37,7 @@ export const useLoansPage = (): {
   harvestLiquidity: () => void;
   userLoans: LoanWithArweaveMetadata[];
   userLoansLoading: boolean;
-  loansPoolData: LoansPoolData;
+  loansPoolInfo: LoansPoolInfo;
 } => {
   useLoansInitialFetch();
   useLoansPolling();
@@ -62,38 +62,33 @@ export const useLoansPage = (): {
 
   const currentPool = Array.from(loanDataByPoolPublicKey.values());
 
-  const loansPoolData = currentPool.reduce((_, loanData) => {
+  const loansPoolInfo = currentPool.map((loanInfo) => {
     const currentUser = wallet.publicKey?.toBase58();
 
-    if (loanData) {
-      const { liquidityPool, loans, deposits } = loanData;
-
-      const userLoans =
-        loans
-          .filter(({ user }) => user === currentUser)
-          .filter(({ loanStatus }) => loanStatus === 'activated').length || 0;
-
-      const userDeposit = deposits.find(({ user }) => user === currentUser);
-
-      const amountUserDeposit = userDeposit?.amount / 1e9 || 0;
-
-      const totalSupply = liquidityPool?.amountOfStaked / 1e9 || 0;
+    if (loanInfo) {
+      const { liquidityPool, loans, deposits } = loanInfo;
 
       const apr = calcLoanPoolApr(liquidityPool);
 
+      const activeUserLoans = loans
+        .filter(({ user }) => user === currentUser)
+        .filter(({ loanStatus }) => loanStatus === 'activated');
+
+      const depositAccount = deposits.find(({ user }) => user === currentUser);
+
       const utilizationRate = calcUtilizationRateInPercent(liquidityPool);
-      const loanPoolReward = calcLoanPoolReward(liquidityPool, userDeposit);
+      const rewardAmount = calcLoanPoolReward(liquidityPool, depositAccount);
 
       return {
         apr,
-        userLoans,
-        totalSupply,
-        userDeposit: amountUserDeposit,
+        loans: activeUserLoans.length || 0,
+        totalSupply: liquidityPool?.amountOfStaked / 1e9 || 0,
+        depositAmount: depositAccount?.amount / 1e9 || 0,
         utilizationRate,
-        loanPoolReward,
+        rewardAmount,
       };
     }
-  }, {});
+  });
 
   const harvestLiquidity = async (): Promise<void> => {
     await harvestTxn({
@@ -110,7 +105,7 @@ export const useLoansPage = (): {
     setTabValue,
     userLoans,
     userLoansLoading,
-    loansPoolData,
+    loansPoolInfo: loansPoolInfo[0],
     harvestLiquidity,
   };
 };

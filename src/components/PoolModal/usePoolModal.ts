@@ -29,7 +29,7 @@ export type FormFieldValues = {
 
 export const usePoolModal = (
   visible: string,
-  userDeposit: number,
+  depositAmount: number,
 ): {
   depositValue: string;
   withdrawValue: string;
@@ -69,7 +69,7 @@ export const usePoolModal = (
     {
       label: 'Withdraw',
       value: 'withdraw',
-      disabled: !userDeposit,
+      disabled: !depositAmount,
     },
   ];
 
@@ -103,7 +103,7 @@ export const usePoolModal = (
   };
 
   const onWithdrawPercentChange = (nextValue: number): void => {
-    const withdrawValue = calcValueByBalance(nextValue, userDeposit);
+    const withdrawValue = calcValueByBalance(nextValue, depositAmount);
 
     setValue(InputControlsNames.WITHDRAW_VALUE, withdrawValue);
     setValue(InputControlsNames.PERCENT_VALUE, nextValue);

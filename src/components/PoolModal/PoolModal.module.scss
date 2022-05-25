@@ -31,7 +31,7 @@
 }
 
 .slider {
-  margin: 15px 0 25px;
+  padding: 15px 0 35px;
 }
 
 .closeModalIcon {
@@ -92,8 +92,11 @@
   order: 3;
 }
 
+.input {
+  margin-bottom: 10px;
+}
+
 .errors {
-  margin-top: 10px;
   height: 16px;
   font: var(--font-text-6);
   color: var(--red-error-color);

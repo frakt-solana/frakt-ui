@@ -3,32 +3,35 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import { PoolModal } from '../../../../components/PoolModal';
-import { LoansPoolData, useLoansPage } from '../../hooks';
+import { LoansPoolInfo, useLoansPage } from '../../hooks';
 import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
 import { SOL_TOKEN } from '../../../../utils';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import { useWalletModal } from '../../../../contexts/WalletModal';
 import Tooltip from '../../../../components/Tooltip';
+import DegenImage from '../mockImage/Degen.png';
+import FearImage from '../mockImage/Fear.png';
+import BredoImage from '../mockImage/Bredo.png';
 
 const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
 
 interface LendingPoolProps {
-  loansPoolData: LoansPoolData;
+  loansPoolInfo: LoansPoolInfo;
 }
 
-const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
+const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
   const [poolModalVisible, setPoolModalVisible] = useState<TabsNames>(null);
   const { connected } = useWallet();
 
   const {
-    userDeposit,
+    depositAmount,
     apr,
     totalSupply,
-    userLoans,
+    loans,
     utilizationRate,
-    loanPoolReward,
-  } = loansPoolData;
+    rewardAmount,
+  } = loansPoolInfo;
 
   const { harvestLiquidity } = useLoansPage();
   const { setVisible } = useWalletModal();
@@ -41,20 +44,19 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
     }
   };
 
-  const isDisabledBtn = loanPoolReward < MIN_AVAILABLE_VALUE_FOR_HARVEST;
+  const isDisabledBtn = rewardAmount < MIN_AVAILABLE_VALUE_FOR_HARVEST;
 
   return (
     <>
       <div className={styles.pool}>
         <div className={styles.header}>
-          {connected && !!userDeposit && (
+          {connected && !!depositAmount && (
             <>
               <div className={styles.rewards}>
                 <p className={styles.reward}>
-                  Pending Rewards: {loanPoolReward?.toFixed(3)} SOL
+                  Pending Rewards: {rewardAmount?.toFixed(3)} SOL
                 </p>
               </div>
-
               <Tooltip
                 placement="top"
                 overlay="Harvest is available from 0.001 SOL"
@@ -76,17 +78,14 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
         <div className={styles.poolCard}>
           <div className={styles.tokenInfo}>
             <div>
+              <img src={DegenImage} className={styles.image} />
               <img
-                src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/dapeM1DJj3xf2rC5o3Gcz1Cg3Rdu2ayZae9nGcsRRZT/logo.png"
-                className={styles.image}
-              />
-              <img
-                src="https://arweave.net/QTbFKiBGSYIJJna0QafYgAxNyAtuhwssEJliiJa0eyE?ext=png"
+                src={FearImage}
                 style={{ marginLeft: '-25px' }}
                 className={styles.image}
               />
               <img
-                src="https://arweave.net/2OINffkTFvUwtPFfNKkNzQ7h8m-1UZsqQkr6bXKIH70"
+                src={BredoImage}
                 style={{ marginLeft: '-25px' }}
                 className={styles.image}
               />
@@ -107,11 +106,11 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
               <>
                 <div className={styles.totalValue}>
                   <p className={styles.title}>Your deposit</p>
-                  <p className={styles.value}>{userDeposit} SOL</p>
+                  <p className={styles.value}>{depositAmount} SOL</p>
                 </div>
                 <div className={styles.totalValue}>
                   <p className={styles.title}>Your loans</p>
-                  <p className={styles.value}>{userLoans}</p>
+                  <p className={styles.value}>{loans}</p>
                 </div>
               </>
             )}
@@ -120,7 +119,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
                 className={styles.btn}
                 type="tertiary"
                 onClick={() => openPoolModal(TabsNames.WITHDRAW)}
-                disabled={connected && !userDeposit}
+                disabled={connected && !depositAmount}
               >
                 Withdraw
               </Button>
@@ -139,7 +138,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolData }) => {
         visible={poolModalVisible}
         onCancel={() => setPoolModalVisible(null)}
         apr={apr}
-        userDeposit={userDeposit}
+        depositAmount={depositAmount}
         utilizationRate={utilizationRate}
       />
     </>

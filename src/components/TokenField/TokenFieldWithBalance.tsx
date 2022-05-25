@@ -61,6 +61,7 @@ export const TokenFieldWithBalance = ({
   showMaxButton = false,
   disabled = false,
   lpBalance,
+  labelRight,
   lpTokenSymbol,
 }: TokenFieldWithBalanceProps): JSX.Element => {
   const { connected } = useWallet();
@@ -97,6 +98,7 @@ export const TokenFieldWithBalance = ({
       error={error}
       placeholder={placeholder}
       disabled={disabled}
+      labelRight={labelRight}
     />
   );
 };

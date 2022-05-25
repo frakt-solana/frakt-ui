@@ -13,16 +13,16 @@ import { Tabs } from '../Tabs';
 interface PoolModalProps {
   visible: string;
   onCancel: () => void;
-  apr?: number;
-  userDeposit?: number;
-  utilizationRate?: number;
+  apr: number;
+  depositAmount: number;
+  utilizationRate: number;
 }
 
 export const PoolModal: FC<PoolModalProps> = ({
   visible,
   onCancel,
   apr,
-  userDeposit,
+  depositAmount,
   utilizationRate,
 }) => {
   const {
@@ -39,9 +39,9 @@ export const PoolModal: FC<PoolModalProps> = ({
     onWithdrawValueChange,
     onWithdrawPercentChange,
     solWalletBalance,
-  } = usePoolModal(visible, userDeposit);
+  } = usePoolModal(visible, depositAmount);
 
-  const notEnoughDepositError = userDeposit < Number(withdrawValue);
+  const notEnoughDepositError = depositAmount < Number(withdrawValue);
   const notEnoughBalanceError = Number(solWalletBalance) < Number(depositValue);
 
   return (
@@ -68,13 +68,14 @@ export const PoolModal: FC<PoolModalProps> = ({
       {tabValue === TabsNames.DEPOSIT && (
         <>
           <TokenFieldWithBalance
+            className={styles.input}
             value={depositValue}
             onValueChange={onDepositValueChange}
             currentToken={SOL_TOKEN}
             tokensList={[SOL_TOKEN]}
-            label={' '}
             showMaxButton
             error={notEnoughBalanceError}
+            labelRight
           />
           <div className={styles.errors}>
             {notEnoughBalanceError && <p>Not enough SOL</p>}
@@ -110,17 +111,19 @@ export const PoolModal: FC<PoolModalProps> = ({
             value={withdrawValue}
             onValueChange={onWithdrawValueChange}
             currentToken={SOL_TOKEN}
-            label={`Your deposit: ${userDeposit} SOL`}
-            lpBalance={userDeposit}
+            label={`Your deposit: ${depositAmount} SOL`}
+            lpBalance={depositAmount}
             error={notEnoughDepositError}
+            className={styles.input}
             showMaxButton
+            labelRight
           />
           <div className={styles.errors}>
             {notEnoughDepositError && <p>Not enough SOL</p>}
           </div>
           <Slider
             value={percentValue}
-            setValue={userDeposit && onWithdrawPercentChange}
+            setValue={depositAmount && onWithdrawPercentChange}
             className={styles.slider}
           />
 
