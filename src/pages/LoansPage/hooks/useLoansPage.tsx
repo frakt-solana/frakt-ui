@@ -56,6 +56,8 @@ export const useLoansPage = (): {
   });
   const [, setSearchString] = useState<string>('');
 
+  const LOAN_POOL_PUBKEY = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
+
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());
   }, 300);
@@ -63,9 +65,7 @@ export const useLoansPage = (): {
   const loansPoolInfo = useMemo((): LoansPoolInfo => {
     const currentUser = wallet.publicKey?.toBase58();
 
-    const loansInfo = loanDataByPoolPublicKey.get(
-      'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN',
-    );
+    const loansInfo = loanDataByPoolPublicKey.get(LOAN_POOL_PUBKEY);
 
     if (loansInfo) {
       const { liquidityPool, loans, deposits } = loansInfo;
@@ -96,7 +96,7 @@ export const useLoansPage = (): {
     await harvestTxn({
       connection,
       wallet,
-      liquidityPool: 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN',
+      liquidityPool: LOAN_POOL_PUBKEY,
     });
   };
 
