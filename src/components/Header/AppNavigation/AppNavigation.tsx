@@ -38,6 +38,16 @@ export const DropdownMenuMore: FC = () => {
             Staking
           </a>
         </li>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={PATHS.ROADMAP}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Roadmap
+          </a>
+        </li>
         {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
           <li key={idx}>
             <a
