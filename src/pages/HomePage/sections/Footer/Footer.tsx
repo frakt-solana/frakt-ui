@@ -26,6 +26,7 @@ const ECOSYSTEM_LIST = [
   { path: PATHS.POOLS, label: 'Pools' },
   { path: PATHS.SWAP, label: 'Swap' },
   { path: PATHS.EARN, label: 'Earn' },
+  { to: PATHS.ROADMAP, label: 'Roadmap' },
 ];
 
 const LANDING_LIST = [
@@ -60,9 +61,15 @@ export const Footer: FC<FooterProps> = ({ navRef }) => {
       <div className={styles.navWrapper}>
         <h5 className={styles.navTitle}>Ecosystem</h5>
         <ul className={styles.navList}>
-          {ECOSYSTEM_LIST.map(({ path, label }, idx) => (
+          {ECOSYSTEM_LIST.map(({ path, label, to }, idx) => (
             <li key={idx} className={styles.navItem}>
-              <NavLink to={path}>{label}</NavLink>
+              {path ? (
+                <NavLink to={path}>{label}</NavLink>
+              ) : (
+                <a href={to} target="_blank" rel="noreferrer">
+                  {label}
+                </a>
+              )}
             </li>
           ))}
         </ul>

@@ -1,7 +1,12 @@
-import { HIDDEN_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
+import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
-const CACHER_URL = process.env.BFF_URL;
-export const IS_BFF_ENABLED = !!CACHER_URL;
+import { VISIBLE_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
+import {
+  convertStringLiquidityPoolKeysV4ToPublicKeys,
+  LiquidityPoolKeysV4String,
+} from './raydiumLiquidityPools';
+
+const CACHER_URL = process.env.CACHER_URL;
 
 /*
    It's a simple DAL, when cacher works on production, will create more complex DAL from this class.
@@ -19,8 +24,20 @@ class API {
 
     const nftPoolData = parseRawNftPools(rawPoolsData);
 
-    return nftPoolData.filter(
-      ({ publicKey }) => !HIDDEN_POOLS.includes(publicKey.toBase58()),
+    return nftPoolData.filter(({ publicKey }) =>
+      VISIBLE_POOLS.includes(publicKey.toBase58()),
+    );
+  }
+
+  public async getAllRaydiumPoolsConfigs(): Promise<LiquidityPoolKeysV4[]> {
+    const rawConfigs: LiquidityPoolKeysV4String[] = await (
+      await fetch(`${CACHER_URL}/liquidity`)
+    ).json();
+
+    return (
+      rawConfigs?.map((rawConfig) =>
+        convertStringLiquidityPoolKeysV4ToPublicKeys(rawConfig),
+      ) || []
     );
   }
 }

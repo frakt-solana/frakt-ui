@@ -2,10 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { TokenListContextInterface } from './tokenList.model';
-import {
-  ADDITIONAL_SWAPPABLE_TOKENS_MINTS,
-  VERIFIED_BY_FRAKT_TEAM_TOKENS_URL,
-} from './tokenList.contants';
+import { ADDITIONAL_SWAPPABLE_TOKENS_MINTS } from './tokenList.contants';
 
 export const TokenListContext = React.createContext<TokenListContextInterface>({
   tokensList: [],
@@ -24,7 +21,7 @@ const getSolanaTokens = async (): Promise<TokenInfo[]> => {
 
 const getFraktTokens = async (): Promise<TokenInfo[]> => {
   const res: TokenInfo[] = await (
-    await fetch(VERIFIED_BY_FRAKT_TEAM_TOKENS_URL)
+    await fetch(process.env.FRAKT_TOKENS_LIST)
   ).json();
 
   return res?.filter(({ tags }) => tags.includes('frakt-nft-pool')) || [];

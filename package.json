@@ -24,6 +24,7 @@
     "bn.js": "^5.2.0",
     "classnames": "^2.3.1",
     "moment": "^2.29.1",
+    "ramda": "^0.28.0",
     "rc-tooltip": "^5.1.1",
     "react": "^17.0.2",
     "react-countup": "^6.1.0",
@@ -40,11 +41,8 @@
     "swiper": "^7.4.1"
   },
   "scripts": {
-    "start": "npm run devnet",
-    "devnet": "cross-env NETWORK=devnet craco start",
-    "mainnet": "cross-env NETWORK=mainnet craco start",
-    "build": "cross-env NETWORK=mainnet GENERATE_SOURCEMAP=false craco build",
-    "build:devnet": "cross-env NETWORK=devnet GENERATE_SOURCEMAP=false craco build",
+    "start": "cross-env craco start",
+    "build": "cross-env GENERATE_SOURCEMAP=false craco build",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier-eslint --write $PWD/'**/*.{ts,tsx}'",
     "lint-staged": "lint-staged",
@@ -78,6 +76,7 @@
   },
   "devDependencies": {
     "@types/bn.js": "^4.11.6",
+    "@types/ramda": "^0.28.13",
     "@types/react": "^16.9.50",
     "@types/react-dom": "^16.9.8",
     "@types/react-helmet": "^6.1.2",
