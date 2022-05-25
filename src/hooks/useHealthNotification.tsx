@@ -8,7 +8,7 @@ import {
 } from '../state/common/selectors';
 import { commonActions } from '../state/common/actions';
 
-export const useNotification = (): void => {
+export const useHealthNotification = (): void => {
   const dispatch = useDispatch();
   const SolanaHealth = useSelector(selectSolanaHealth);
 

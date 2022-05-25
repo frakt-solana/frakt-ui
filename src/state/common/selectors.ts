@@ -12,11 +12,8 @@ import {
   split,
   pluck,
   take,
-  isNil,
   ifElse,
   identity,
-  isEmpty,
-  anyPass,
 } from 'ramda';
 
 const SOLANA_SLOW_LOSS_CUTOFF = 25;
@@ -32,16 +29,17 @@ export enum SolanaNetworkHealth {
   Good = 'Good',
 }
 
-const isNilOrEmpty = anyPass([isNil, isEmpty]);
+const isNumber = (value) => typeof value === 'number';
+const isFullString = (value) => typeof value === 'string' && !!value.length;
 const average = ifElse(
-  isNilOrEmpty,
-  identity,
+  isNumber,
   converge<any, any, any>(divide, [sum, length]),
+  identity,
 );
 const convertPercentToNumber: (string) => number = ifElse(
-  isNilOrEmpty,
-  identity,
+  isFullString,
   compose(Number, head, split('.')),
+  identity,
 );
 
 export const selectSolanaLoss = createSelector(
