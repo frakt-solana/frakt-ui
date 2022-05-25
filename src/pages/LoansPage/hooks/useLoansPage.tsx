@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { Tab, useTabs } from '../../../components/Tabs';
@@ -60,13 +60,15 @@ export const useLoansPage = (): {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const currentPool = Array.from(loanDataByPoolPublicKey.values());
-
-  const loansPoolInfo = currentPool.map((loanInfo) => {
+  const loansPoolInfo = useMemo((): LoansPoolInfo => {
     const currentUser = wallet.publicKey?.toBase58();
 
-    if (loanInfo) {
-      const { liquidityPool, loans, deposits } = loanInfo;
+    const loansInfo = loanDataByPoolPublicKey.get(
+      'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN',
+    );
+
+    if (loansInfo) {
+      const { liquidityPool, loans, deposits } = loansInfo;
 
       const apr = calcLoanPoolApr(liquidityPool);
 
@@ -88,13 +90,13 @@ export const useLoansPage = (): {
         rewardAmount,
       };
     }
-  });
+  }, [loanDataByPoolPublicKey, wallet]);
 
   const harvestLiquidity = async (): Promise<void> => {
     await harvestTxn({
       connection,
       wallet,
-      liquidityPool: currentPool[0].liquidityPool.liquidityPoolPubkey,
+      liquidityPool: 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN',
     });
   };
 
@@ -105,7 +107,7 @@ export const useLoansPage = (): {
     setTabValue,
     userLoans,
     userLoansLoading,
-    loansPoolInfo: loansPoolInfo[0],
+    loansPoolInfo,
     harvestLiquidity,
   };
 };
