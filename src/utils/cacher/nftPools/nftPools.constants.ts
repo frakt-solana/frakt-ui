@@ -11,6 +11,7 @@ export const VISIBLE_POOLS = [
   '8ezfmbfr5rRNrvM1z4ZqWTjf9mbcpozpgFxgSbmmR2c2', //? Aiternate
   '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv', //? Sol Patrol
   '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr', //? thugbirds
+  '6oufJYFSNcWEBV465FDywN2VbYftnXff9KuNnebkc8YD', //? Samo NFT
 ];
 
 export const CUSTOM_POOLS_URLS = {
@@ -26,4 +27,5 @@ export const CUSTOM_POOLS_URLS = {
   '8ezfmbfr5rRNrvM1z4ZqWTjf9mbcpozpgFxgSbmmR2c2': 'aiternate',
   '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv': 'sol_patrol',
   '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr': 'thugbirdz',
+  '6oufJYFSNcWEBV465FDywN2VbYftnXff9KuNnebkc8YD': 'samo',
 };
