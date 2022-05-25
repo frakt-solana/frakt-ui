@@ -1,4 +1,4 @@
-import { HIDDEN_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
+import { VISIBLE_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
 
 const CACHER_URL = process.env.BFF_URL;
 export const IS_BFF_ENABLED = !!CACHER_URL;
@@ -19,8 +19,8 @@ class API {
 
     const nftPoolData = parseRawNftPools(rawPoolsData);
 
-    return nftPoolData.filter(
-      ({ publicKey }) => !HIDDEN_POOLS.includes(publicKey.toBase58()),
+    return nftPoolData.filter(({ publicKey }) =>
+      VISIBLE_POOLS.includes(publicKey.toBase58()),
     );
   }
 }
