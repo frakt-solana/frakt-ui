@@ -185,7 +185,7 @@ export const useBorrowPage = (): {
   const filteredNfts = useMemo(() => {
     return (whitelistedNfts || [])
       .filter(({ metadata }) =>
-        metadata?.name.toUpperCase().includes(searchString),
+        metadata?.name?.toUpperCase().includes(searchString),
       )
       .sort(({ metadata: metadataA }, { metadata: metadataB }) =>
         metadataB?.name?.localeCompare(metadataA?.name),

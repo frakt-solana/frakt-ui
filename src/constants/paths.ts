@@ -27,4 +27,5 @@ export const PATHS = {
   TEST: '/market_test',
   BORROW: '/borrow',
   LOANS: '/loans',
+  ROADMAP: 'https://trello.com/b/jt9JRdLg/frakt-public-roadmap',
 };
