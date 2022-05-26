@@ -31,7 +31,7 @@ const fetchSolanaHealthSaga = function* () {
   }
 };
 
-const commonSagas = function* () {
+const commonSagas = function* (): Generator {
   yield all([takeLatest(commonTypes.APP_INIT, appInitSaga)]);
   yield all([
     takeLatest(commonTypes.FETCH_SOLANA_HEALTH, fetchSolanaHealthSaga),

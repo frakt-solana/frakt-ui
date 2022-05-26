@@ -15,6 +15,7 @@ import {
   ifElse,
   identity,
 } from 'ramda';
+import { isNumber, isNonEmptyString } from 'ramda-adjunct';
 
 const SOLANA_SLOW_LOSS_CUTOFF = 25;
 const SOLANA_DOWN_LOSS_CUTOFF = 50;
@@ -29,17 +30,15 @@ export enum SolanaNetworkHealth {
   Good = 'Good',
 }
 
-const isNumber = (value) => typeof value === 'number';
 const isNumberArray = (value) =>
   Array.isArray(value) && value.length && value.every(isNumber);
-const isFullString = (value) => typeof value === 'string' && !!value.length;
 const average = ifElse(
   isNumberArray,
   converge<any, any, any>(divide, [sum, length]),
   identity,
 );
 const convertPercentToNumber: (string) => number = ifElse(
-  isFullString,
+  isNonEmptyString,
   compose(Number, head, split('.')),
   identity,
 );

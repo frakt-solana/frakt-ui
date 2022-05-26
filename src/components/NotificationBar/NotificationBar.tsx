@@ -6,7 +6,7 @@ import { commonActions } from '../../state/common/actions';
 import { CloseIcon } from '../../icons';
 import styles from './styles.module.scss';
 
-export const NotificationBar = () => {
+export const NotificationBar = (): JSX.Element => {
   const dispatch = useDispatch();
   const handleClose = () => {
     dispatch(commonActions.setNotification({ isVisible: false }));

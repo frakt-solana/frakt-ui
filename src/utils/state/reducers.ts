@@ -10,7 +10,7 @@ export const createReducer = (
   types: any,
   request: string,
   customFulfilled?: () => any,
-) => {
+): [{ data: any; status: string; messages: any[] }, any] => {
   const handleFulfilled =
     typeof customFulfilled === 'function'
       ? customFulfilled
