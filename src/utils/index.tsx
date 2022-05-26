@@ -158,5 +158,5 @@ export const getNftCreators = (nft: UserNFT): string[] => {
   );
 };
 
-export const getStakingPointsURL = (address: PublicKey): string =>
-  `https://frakt-stats.herokuapp.com/staking/${address}`;
+export const getStakingPointsURL = (walletAddress: PublicKey): string =>
+  `https://frakt-stats.herokuapp.com/staking/${walletAddress}`;

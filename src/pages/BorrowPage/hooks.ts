@@ -39,7 +39,6 @@ const usePriceByCreator = (creatorsArray = []) => {
 
       setPriceByCreator(priceByCreator);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       setLoading(false);
@@ -59,26 +58,26 @@ const usePriceByCreator = (creatorsArray = []) => {
   };
 };
 
-const useStakingPoints = (publicKey: PublicKey) => {
+const useStakingPoints = (walletAddress: PublicKey) => {
   const [stakingPoints, setStakingPoints] = useState<number>(0);
 
-  const getStakingPoints = useCallback(async (publicKey) => {
+  const getStakingPoints = useCallback(async (walletAddress) => {
     try {
       const { userScore } = await (
-        await fetch(getStakingPointsURL(publicKey))
+        await fetch(getStakingPointsURL(walletAddress))
       ).json();
 
       setStakingPoints(Math.floor(userScore / 10));
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
     }
   }, []);
 
   useEffect(() => {
-    if (publicKey) {
-      void getStakingPoints(publicKey);
+    if (walletAddress) {
+      void getStakingPoints(walletAddress);
     }
-  }, [publicKey, getStakingPoints]);
+  }, [walletAddress, getStakingPoints]);
 
   return { stakingPoints };
 };
