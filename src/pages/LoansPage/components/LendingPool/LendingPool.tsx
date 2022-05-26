@@ -10,9 +10,8 @@ import { SOL_TOKEN } from '../../../../utils';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import { useWalletModal } from '../../../../contexts/WalletModal';
 import Tooltip from '../../../../components/Tooltip';
-import DegenImage from '../mockImage/Degen.png';
-import FearImage from '../mockImage/Fear.png';
-import BredoImage from '../mockImage/Bredo.png';
+import GnomieImage from '../mockImage/Gnomie.png';
+import FraktImage from '../mockImage/Frakt.png';
 
 const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
 
@@ -78,15 +77,10 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
         </div>
         <div className={styles.poolCard}>
           <div className={styles.tokenInfo}>
-            <div>
-              <img src={DegenImage} className={styles.image} />
+            <div className={styles.tokenImage}>
+              <img src={FraktImage} className={styles.image} />
               <img
-                src={FearImage}
-                style={{ marginLeft: '-25px' }}
-                className={styles.image}
-              />
-              <img
-                src={BredoImage}
+                src={GnomieImage}
                 style={{ marginLeft: '-25px' }}
                 className={styles.image}
               />

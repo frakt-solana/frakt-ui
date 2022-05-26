@@ -40,6 +40,16 @@
       height: 18px;
       width: 18px;
 
+      &::before {
+        content: attr(aria-valuenow) '%';
+        position: absolute;
+        font: var(--font-text-5);
+        color: var(--white-color);
+        transform: translateX(-13px);
+        top: -23px;
+        left: 7px;
+      }
+
       &:focus,
       &:hover {
         box-shadow: unset;
