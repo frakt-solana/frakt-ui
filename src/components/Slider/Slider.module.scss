@@ -3,6 +3,20 @@
     .ant-slider {
       margin: 0;
     }
+    .ant-slider-dot {
+      background-color: var(--color-gray-4);
+      border-color: var(--color-gray-4);
+      margin-top: -1px;
+      height: 10px;
+      width: 10px;
+    }
+    .ant-slider-mark-text {
+      font: var(--font-text-5);
+    }
+    .ant-slider-dot-active {
+      background-color: var(--accent-color-1);
+      border-color: var(--accent-color-1);
+    }
     .ant-slider-rail {
       background-color: var(--color-gray-4);
     }
@@ -22,22 +36,14 @@
       background-color: var(--accent-color-1);
       border-color: var(--accent-color-1);
       position: relative;
+      margin-top: -7px;
+      height: 18px;
+      width: 18px;
 
       &:focus,
       &:hover {
         box-shadow: unset;
         border-color: var(--accent-color-1);
-      }
-
-      &::before {
-        content: attr(aria-valuenow) '%';
-        position: absolute;
-        font: var(--font-text-5);
-        color: var(--white-color);
-        width: 40px;
-        transform: translateX(-13px);
-        bottom: -23px;
-        text-align: center;
       }
     }
     .ant-slider-handle.ant-tooltip-open {

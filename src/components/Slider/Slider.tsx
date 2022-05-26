@@ -8,12 +8,26 @@ interface SliderProps {
   value: number;
   setValue?: (nextValue: number) => void;
   className?: string;
+  marks?: { [key: number]: string };
+  step?: number;
 }
 
-export const Slider: FC<SliderProps> = ({ className, value, setValue }) => {
+export const Slider: FC<SliderProps> = ({
+  className,
+  marks,
+  value,
+  setValue,
+  step,
+}) => {
   return (
     <div className={classNames(styles.slider, className)}>
-      <SliderAntd value={value} onChange={setValue} tooltipVisible={false} />
+      <SliderAntd
+        marks={marks}
+        value={value}
+        onChange={setValue}
+        tooltipVisible={false}
+        step={step}
+      />
     </div>
   );
 };

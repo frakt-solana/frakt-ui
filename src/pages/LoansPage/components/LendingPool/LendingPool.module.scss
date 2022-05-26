@@ -93,11 +93,7 @@
 
 .statsValue {
   display: flex;
-  gap: 60px;
-
-  @media screen and (max-width: 1140px) {
-    gap: 30px;
-  }
+  gap: 30px;
 
   @media screen and (max-width: 767px) {
     order: 1;

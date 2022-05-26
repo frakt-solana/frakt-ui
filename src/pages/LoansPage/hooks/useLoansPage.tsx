@@ -27,6 +27,7 @@ export interface LoansPoolInfo {
   depositAmount?: number;
   utilizationRate?: number;
   rewardAmount?: number;
+  totalBorrowed?: number;
 }
 
 export const useLoansPage = (): {
@@ -78,6 +79,9 @@ export const useLoansPage = (): {
 
       const depositAccount = deposits.find(({ user }) => user === currentUser);
 
+      const totalBorrowed =
+        liquidityPool?.amountOfStaked - liquidityPool?.liquidityAmount;
+
       const utilizationRate = calcUtilizationRateInPercent(liquidityPool);
       const rewardAmount = calcLoanPoolReward(liquidityPool, depositAccount);
 
@@ -86,6 +90,7 @@ export const useLoansPage = (): {
         loans: activeUserLoans.length || 0,
         totalSupply: liquidityPool?.amountOfStaked / 1e9 || 0,
         depositAmount: depositAccount?.amount / 1e9 || 0,
+        totalBorrowed: totalBorrowed / 1e9 || 0,
         utilizationRate,
         rewardAmount,
       };

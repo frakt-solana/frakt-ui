@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { TabsNames, usePoolModal } from './usePoolModal';
+import { marks, TabsNames, usePoolModal } from './usePoolModal';
 import { TokenFieldWithBalance } from '../TokenField';
 import { CloseModalIcon } from '../../icons';
 import styles from './PoolModal.module.scss';
@@ -85,6 +85,8 @@ export const PoolModal: FC<PoolModalProps> = ({
             value={percentValue}
             setValue={solWalletBalance && onDepositPercentChange}
             className={styles.slider}
+            marks={marks}
+            step={5}
           />
           <div className={styles.info}>
             <span className={styles.infoTitle}>Deposit APR</span>
@@ -126,6 +128,8 @@ export const PoolModal: FC<PoolModalProps> = ({
             value={percentValue}
             setValue={depositAmount && onWithdrawPercentChange}
             className={styles.slider}
+            marks={marks}
+            step={5}
           />
 
           <Button

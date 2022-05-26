@@ -31,6 +31,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
     loans,
     utilizationRate,
     rewardAmount,
+    totalBorrowed,
   } = loansPoolInfo;
 
   const { harvestLiquidity } = useLoansPage();
@@ -95,17 +96,21 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
           </div>
           <div className={styles.statsValue}>
             <div className={styles.totalValue}>
-              <p className={styles.title}>Total supply</p>
+              <p className={styles.title}>Total liquidity</p>
               <p className={styles.value}>{totalSupply} SOL</p>
             </div>
             <div className={styles.totalValue}>
-              <p className={styles.title}>APR</p>
+              <p className={styles.title}>Deposit APR</p>
               <p className={styles.value}>{apr.toFixed(2)} %</p>
+            </div>
+            <div className={styles.totalValue}>
+              <p className={styles.title}>Total borrowed</p>
+              <p className={styles.value}>{totalBorrowed.toFixed(2)} SOL</p>
             </div>
             {connected && (
               <>
                 <div className={styles.totalValue}>
-                  <p className={styles.title}>Your deposit</p>
+                  <p className={styles.title}>Your liquidity</p>
                   <p className={styles.value}>{depositAmount} SOL</p>
                 </div>
                 <div className={styles.totalValue}>
