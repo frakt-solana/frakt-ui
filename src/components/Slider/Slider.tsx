@@ -10,6 +10,7 @@ interface SliderProps {
   className?: string;
   marks?: { [key: number]: string };
   step?: number;
+  withTooltip?: boolean;
 }
 
 export const Slider: FC<SliderProps> = ({
@@ -18,9 +19,16 @@ export const Slider: FC<SliderProps> = ({
   value,
   setValue,
   step,
+  withTooltip,
 }) => {
   return (
-    <div className={classNames(styles.slider, className)}>
+    <div
+      className={classNames(
+        withTooltip && styles.withTooltip,
+        styles.slider,
+        className,
+      )}
+    >
       <SliderAntd
         marks={marks}
         value={value}

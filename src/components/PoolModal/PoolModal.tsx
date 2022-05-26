@@ -86,6 +86,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             setValue={solWalletBalance && onDepositPercentChange}
             className={styles.slider}
             marks={marks}
+            withTooltip
             step={5}
           />
           <div className={styles.info}>
@@ -129,6 +130,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             setValue={depositAmount && onWithdrawPercentChange}
             className={styles.slider}
             marks={marks}
+            withTooltip
             step={5}
           />
 

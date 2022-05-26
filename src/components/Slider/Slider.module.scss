@@ -6,12 +6,18 @@
     .ant-slider-dot {
       background-color: var(--color-gray-4);
       border-color: var(--color-gray-4);
-      margin-top: -1px;
+      margin-top: -2px;
       height: 10px;
       width: 10px;
     }
     .ant-slider-mark-text {
       font: var(--font-text-5);
+    }
+    .ant-slider-mark-text:first-child {
+      left: 5px !important;
+    }
+    .ant-slider-mark-text:last-child {
+      left: 97.5% !important;
     }
     .ant-slider-dot-active {
       background-color: var(--accent-color-1);
@@ -19,9 +25,11 @@
     }
     .ant-slider-rail {
       background-color: var(--color-gray-4);
+      height: 2px;
     }
     .ant-slider-track {
       background-color: var(--accent-color-1);
+      height: 2px;
     }
     .ant-slider:hover .ant-slider-rail {
       background-color: var(--color-gray-4);
@@ -36,19 +44,9 @@
       background-color: var(--accent-color-1);
       border-color: var(--accent-color-1);
       position: relative;
-      margin-top: -7px;
+      margin-top: -8px;
       height: 18px;
       width: 18px;
-
-      &::before {
-        content: attr(aria-valuenow) '%';
-        position: absolute;
-        font: var(--font-text-5);
-        color: var(--white-color);
-        transform: translateX(-13px);
-        top: -23px;
-        left: 7px;
-      }
 
       &:focus,
       &:hover {
@@ -58,6 +56,42 @@
     }
     .ant-slider-handle.ant-tooltip-open {
       border-color: var(--accent-color-1);
+    }
+  }
+}
+
+.withTooltip {
+  :global {
+    .ant-slider-handle {
+      background-color: var(--accent-color-1);
+      border-color: var(--accent-color-1);
+      position: relative;
+      margin-top: -8px;
+      height: 18px;
+      width: 18px;
+
+      &::before {
+        background-color: var(--color-gray-7);
+        width: 40px;
+        height: 25px;
+        content: attr(aria-valuenow) '%';
+        position: absolute;
+        font: var(--font-text-5);
+        color: var(--white-color);
+        transform: translateX(-13px);
+        text-align: center;
+        padding: 4px 0;
+        top: -32px;
+        left: 0px;
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -1px;
+        border: 8px solid transparent;
+        border-top: 6px solid var(--color-gray-7);
+      }
     }
   }
 }
