@@ -3,7 +3,7 @@ import BN from 'bn.js';
 import { groupBy, keyBy, Dictionary } from 'lodash';
 
 import { UserNFT } from '../../../contexts/userTokens';
-import { CUSTOM_POOLS_NAMES } from './nftPools.constants';
+import { CUSTOM_POOLS_URLS } from './nftPools.constants';
 import {
   AnchorState,
   RawCommunityPool,
@@ -44,7 +44,7 @@ const parseRawCommunityPool = (
     state: parseAnchorState<CommunityPoolState>(account.state),
     tokenProgram: new PublicKey(account.tokenProgram),
     tokenTypeCount: new BN(account.tokenTypeCount, 16),
-    customName: CUSTOM_POOLS_NAMES[rawPublicKey],
+    customName: CUSTOM_POOLS_URLS[rawPublicKey],
   };
 };
 
