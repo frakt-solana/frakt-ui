@@ -6,7 +6,6 @@ import { PoolModal } from '../../../../components/PoolModal';
 import { LoansPoolInfo, useLoansPage } from '../../hooks';
 import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
-import { SOL_TOKEN } from '../../../../utils';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import { useWalletModal } from '../../../../contexts/WalletModal';
 import Tooltip from '../../../../components/Tooltip';
@@ -84,7 +83,6 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
                 style={{ marginLeft: '-25px' }}
                 className={styles.image}
               />
-              <img src={SOL_TOKEN.logoURI} className={styles.image} />
             </div>
             <div className={styles.subtitle}>Aggregated Lending Pool</div>
           </div>
