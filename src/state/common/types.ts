@@ -1,5 +1,5 @@
 export interface NotificationPayload {
-  config?: { mode: string; content: JSX.Element };
+  config?: { mode: 'error' | 'warning'; content: JSX.Element };
   isVisible: boolean;
 }
 
