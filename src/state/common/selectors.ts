@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import {
-  path,
   pathOr,
   compose,
   map,
@@ -22,11 +21,14 @@ import { SolanaHealthResponse, SolanaNetworkHealth } from './types';
 const SOLANA_SLOW_LOSS_CUTOFF = 25;
 const SOLANA_DOWN_LOSS_CUTOFF = 50;
 
-const isNumberArray = (value) =>
+const isNumberArray = (value: unknown) =>
   Array.isArray(value) && value.length && value.every(isNumber);
 const average = ifElse(
   isNumberArray,
-  converge<any, any, any>(divide, [sum, length]),
+  converge<number[], (number, numer) => number, Array<(number) => number>>(
+    divide,
+    [sum, length],
+  ),
   identity,
 );
 const convertPercentToNumber: (string) => number = ifElse(
@@ -38,17 +40,17 @@ const convertPercentToNumber: (string) => number = ifElse(
 export const selectSolanaLoss = createSelector(
   [pathOr([], ['common', 'fetchSolanaHealth', 'data'])],
   compose<
-    any[],
+    unknown[],
     Array<SolanaHealthResponse>,
     Array<string>,
     Array<number>,
-    any
+    unknown
   >(average, map(convertPercentToNumber), pluck('loss'), take(10)),
 );
 
 export const selectSolanaHealth = createSelector(
   [selectSolanaLoss],
-  (loss: any) => {
+  (loss: number | null) => {
     if (loss === null) {
       return { health: SolanaNetworkHealth.Down, loss: null };
     }
@@ -63,6 +65,6 @@ export const selectSolanaHealth = createSelector(
 );
 
 export const selectNotification = createSelector(
-  [path(['common', 'notification'])],
+  [pathOr(null, ['common', 'notification'])],
   identity,
 );

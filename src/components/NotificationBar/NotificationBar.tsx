@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import { selectNotification } from '../../state/common/selectors';
 import { commonActions } from '../../state/common/actions';
+import { initialNotificationState } from '../../state/common/reducers';
 import { CloseIcon } from '../../icons';
 import styles from './styles.module.scss';
 
@@ -11,7 +12,8 @@ export const NotificationBar = (): JSX.Element => {
   const handleClose = () => {
     dispatch(commonActions.setNotification({ isVisible: false }));
   };
-  const notification: any = useSelector(selectNotification);
+  const notification: typeof initialNotificationState =
+    useSelector(selectNotification);
 
   return (
     <div

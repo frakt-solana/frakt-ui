@@ -1,5 +1,5 @@
 export interface NotificationPayload {
-  config?: any;
+  config?: { mode: string; content: JSX.Element };
   isVisible: boolean;
 }
 
