@@ -1,21 +1,21 @@
 import { combineReducers } from 'redux';
-import { handleActions } from 'redux-actions';
+import { createReducer } from 'typesafe-actions';
 
-import { createReducer } from '../../utils/state/reducers';
+import { initialAsyncState, createHandlers } from '../../utils/state/reducers';
 import { commonTypes } from '../../state/common/actions';
 
-const [, fetchSolanaHealthReducer] = createReducer(
-  commonTypes,
-  'FETCH_SOLANA_HEALTH',
+const fetchSolanaHealthReducer = createReducer(
+  initialAsyncState,
+  createHandlers('FETCH_SOLANA_HEALTH', commonTypes),
 );
-const setNotificationReducer = handleActions(
+const setNotificationReducer = createReducer(
+  { isVisible: false, config: null },
   {
-    [commonTypes.SET_NOTIFICATION]: (state, action: any) => ({
+    [commonTypes.SET_NOTIFICATION]: (state, action) => ({
       ...state,
       ...action.payload,
     }),
   },
-  { isVisible: false, config: null },
 );
 
 export default combineReducers({

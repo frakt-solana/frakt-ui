@@ -1,26 +1,37 @@
-import { createActions } from '../../utils/state/actions';
+import { createCustomAction } from 'typesafe-actions';
 
-const namespace = 'common';
-
-const [appInitType, appInitAction] = createActions('APP_INIT', namespace);
-const [setNotificationType, setNotificationAction] = createActions(
-  'SET_NOTIFICATION',
-  namespace,
-);
-const [fetchSolanaHealthTypes, fetchSolanaHealthActions] = createActions(
-  'FETCH_SOLANA_HEALTH',
-  namespace,
-  true,
-);
+import { ServerError } from '../../utils/state';
+import { NotificationPayload, SolanaHealthResponse } from './types';
 
 export const commonTypes = {
-  ...appInitType,
-  ...setNotificationType,
-  ...fetchSolanaHealthTypes,
+  APP_INIT: 'common/APP_INIT',
+  SET_NOTIFICATION: 'common/SET_NOTIFICATION',
+  FETCH_SOLANA_HEALTH: 'common/FETCH_SOLANA_HEALTH',
+  FETCH_SOLANA_HEALTH__PENDING: 'common/FETCH_SOLANA_HEALTH__PENDING',
+  FETCH_SOLANA_HEALTH__FULFILLED: 'common/FETCH_SOLANA_HEALTH__FULFILLED',
+  FETCH_SOLANA_HEALTH__FAILED: 'common/FETCH_SOLANA_HEALTH__FAILED',
 };
 
 export const commonActions = {
-  ...appInitAction,
-  ...setNotificationAction,
-  ...fetchSolanaHealthActions,
+  appInit: createCustomAction(commonTypes.APP_INIT, () => null),
+  setNotification: createCustomAction(
+    commonTypes.SET_NOTIFICATION,
+    (data: NotificationPayload) => ({ payload: data }),
+  ),
+  fetchSolanaHealth: createCustomAction(
+    commonTypes.FETCH_SOLANA_HEALTH,
+    () => null,
+  ),
+  fetchSolanaHealthPending: createCustomAction(
+    commonTypes.FETCH_SOLANA_HEALTH__PENDING,
+    () => null,
+  ),
+  fetchSolanaHealthFulfilled: createCustomAction(
+    commonTypes.FETCH_SOLANA_HEALTH__FULFILLED,
+    (response: SolanaHealthResponse[]) => ({ payload: response }),
+  ),
+  fetchSolanaHealthFailed: createCustomAction(
+    commonTypes.FETCH_SOLANA_HEALTH__FAILED,
+    (error: ServerError) => ({ payload: error }),
+  ),
 };

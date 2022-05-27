@@ -38,11 +38,11 @@
     "react-select": "^5.2.1",
     "react-use-intercom": "^1.5.1",
     "redux": "^4.2.0",
-    "redux-actions": "^2.6.5",
     "redux-saga": "^1.1.3",
     "reselect": "^4.1.5",
     "sass": "^1.43.4",
-    "swiper": "^7.4.1"
+    "swiper": "^7.4.1",
+    "typesafe-actions": "^5.1.0"
   },
   "scripts": {
     "start": "cross-env craco start",
