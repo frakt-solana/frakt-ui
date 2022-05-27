@@ -9,8 +9,8 @@ import styles from './LendingPool.module.scss';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import { useWalletModal } from '../../../../contexts/WalletModal';
 import Tooltip from '../../../../components/Tooltip';
-import GnomieImage from '../mockImage/Gnomie.png';
-import FraktImage from '../mockImage/Frakt.png';
+import BearsImage from '../mockImage/Bears.png';
+import DegodsImage from '../mockImage/Degods.png';
 
 const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
 
@@ -77,9 +77,9 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
         <div className={styles.poolCard}>
           <div className={styles.tokenInfo}>
             <div className={styles.tokenImage}>
-              <img src={FraktImage} className={styles.image} />
+              <img src={BearsImage} className={styles.image} />
               <img
-                src={GnomieImage}
+                src={DegodsImage}
                 style={{ marginLeft: '-25px' }}
                 className={styles.image}
               />
