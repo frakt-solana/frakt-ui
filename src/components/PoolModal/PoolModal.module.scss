@@ -30,6 +30,10 @@
   }
 }
 
+.slider {
+  padding: 15px 5px 64px;
+}
+
 .closeModalIcon {
   height: 43px;
   width: 43px;
@@ -86,4 +90,17 @@
 
 .infoValue {
   order: 3;
+}
+
+.input {
+  margin-bottom: 10px;
+}
+
+.errors {
+  height: 16px;
+  font: var(--font-text-6);
+  color: var(--red-error-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }

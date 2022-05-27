@@ -1,42 +1,41 @@
-import { FC, ReactNode } from 'react';
-import { Slider as AntdSlider } from 'antd';
 import classNames from 'classnames';
+import { FC } from 'react';
+import { Slider as SliderAntd } from 'antd';
 
 import styles from './Slider.module.scss';
 
 interface SliderProps {
   value: number;
-  onChange?: (nextValue?: number) => void;
+  setValue?: (nextValue: number) => void;
+  className?: string;
   marks?: { [key: number]: string };
   step?: number;
-  max?: number;
-  className?: string;
-  tipFormatter?: (value: number) => ReactNode;
-  disabled?: boolean;
+  withTooltip?: boolean;
 }
 
-const Slider: FC<SliderProps> = ({
-  value,
-  onChange,
-  marks,
-  step,
-  max,
+export const Slider: FC<SliderProps> = ({
   className,
-  tipFormatter,
-  disabled,
+  marks,
+  value,
+  setValue,
+  step,
+  withTooltip,
 }) => {
   return (
-    <AntdSlider
-      value={value}
-      tipFormatter={tipFormatter}
-      onChange={onChange}
-      className={classNames(styles.slider, className)}
-      marks={marks}
-      step={step}
-      max={max}
-      disabled={disabled}
-    />
+    <div
+      className={classNames(
+        withTooltip && styles.withTooltip,
+        styles.slider,
+        className,
+      )}
+    >
+      <SliderAntd
+        marks={marks}
+        value={value}
+        onChange={setValue}
+        tooltipVisible={false}
+        step={step}
+      />
+    </div>
   );
 };
-
-export default Slider;

@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
+import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
   fetchProgramAccounts,
   fetchRaydiumPoolsInfoMap,
-  fetchSolanaPriceUSD,
   mapFusionPoolInfo,
   mapRawPools,
 } from './liquidityPools.helpers';
@@ -18,7 +18,7 @@ import {
   RaydiumPoolInfoMap,
 } from './liquidityPools.model';
 import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
-import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
+import { fetchSolanaPriceUSD } from '../../utils';
 
 export const useLiquidityPools = (): LiquidityPoolsContextValues => {
   const context = useContext(LiquidityPoolsContext);
