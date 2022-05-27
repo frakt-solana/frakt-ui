@@ -13,6 +13,7 @@ import { CloseModalIcon } from '../../icons';
 import { useTokenListContext } from '../../contexts/TokenList';
 import { useSwapForm } from '../SwapForm/hooks/useSwapForm';
 import { useHeaderState } from '../Layout/headerState';
+import { SOL_TOKEN, USDC_TOKEN, USDT_TOKEN } from '../../utils';
 
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (token: TokenInfo) => void;
@@ -48,6 +49,11 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
 
   const filteredTokensList = searchString ? filterTokens() : swapTokenList;
 
+  const onChangeToken = (token: TokenInfo): void => {
+    onChange(token);
+    onCancel(null);
+  };
+
   return (
     <Modal
       width={500}
@@ -69,6 +75,21 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
         className={styles.input}
         placeholder="Search token by name"
       />
+      <div className={styles.topTokensList}>
+        {[SOL_TOKEN, USDT_TOKEN, USDC_TOKEN].map((token) => (
+          <div
+            key={token.address}
+            className={styles.topCoinContent}
+            onClick={() => onChangeToken(token)}
+          >
+            <img
+              src={token.logoURI}
+              className={classNames(styles.icon, styles.smallIcon)}
+            />
+            <span className={styles.token}>{token.symbol}</span>
+          </div>
+        ))}
+      </div>
       <div
         className={styles.tokenList}
         onScroll={onContentScroll}
@@ -80,25 +101,19 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
           next={next}
           emptyMessage="No token found"
         >
-          {filteredTokensList.map((token, idx) => (
+          {filteredTokensList.map((token) => (
             <div
-              key={idx}
+              key={token.address}
               className={styles.row}
-              onClick={() => {
-                onChange(token);
-                onCancel(null);
-              }}
+              onClick={() => onChangeToken(token)}
             >
-              <div className={styles.title}>
-                <div
-                  className={styles.icon}
-                  style={{
-                    backgroundImage: `url("${token?.logoURI || ''}")`,
-                  }}
-                />{' '}
-                <span className={styles.title}>{token.symbol}</span>
+              <div className={styles.tokenInfo}>
+                <img className={styles.icon} src={token.logoURI} />
+                <span className={styles.token}>{token.symbol}</span>
               </div>
-              {balances[token?.address] || ''}
+              <span className={styles.token}>
+                {balances[token?.address] || ''}
+              </span>
             </div>
           ))}
         </FakeInfinityScroll>

@@ -6,7 +6,7 @@ import { Control, useForm } from 'react-hook-form';
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import { notify, SOL_TOKEN, USDC_TOKEN, USDT_TOKEN } from '../../../utils';
+import { notify, SOL_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
 import { usePrism } from '../../../contexts/prism/prism.hooks';
 import { NotifyType } from '../../../utils/solanaUtils';
@@ -107,13 +107,7 @@ export const useSwapForm = (
       });
   }, [tokensList]);
 
-  const swapTokenList = [
-    SOL_TOKEN,
-    USDT_TOKEN,
-    USDC_TOKEN,
-    ...sortFraktTokenByBalance,
-    ...filteredTokenList,
-  ];
+  const swapTokenList = [...sortFraktTokenByBalance, ...filteredTokenList];
 
   const {
     visible: confirmModalVisible,

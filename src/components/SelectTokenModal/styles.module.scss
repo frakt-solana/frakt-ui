@@ -1,60 +1,12 @@
-.input {
-  margin-bottom: 20px;
-  font: var(--font-text-3);
-}
-
 .modal {
   .ant-modal-body {
     padding: 0 20px 30px 30px;
   }
 }
 
-.icon {
-  width: 24px;
-  height: 24px;
-  background: var(--gray-color-3);
-  border-radius: 24px;
-  flex-shrink: 0;
-  background-size: cover;
-  margin-right: 8px;
-}
-
-.title {
-  display: flex;
-  align-items: center;
-}
-
-.row {
-  cursor: pointer;
-  line-height: 32px;
-  color: var(--white-color);
-  display: flex;
-  justify-content: space-between;
-  font-size: 24px;
+.input {
+  margin-bottom: 20px;
   font: var(--font-text-3);
-  width: 100%;
-  padding: 10px 8.5px;
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-gray-4);
-  }
-  &:hover {
-    background: var(--color-gray-7);
-    transition: var(--transition-1);
-  }
-}
-
-.tokenList {
-  height: 284px;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: var(--gray-color-3);
-  }
 }
 
 .closeModalSection {
@@ -107,5 +59,86 @@
 
   @media screen and (max-width: 470px) {
     width: 15px;
+  }
+}
+
+.topTokensList {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  padding-bottom: 20px;
+  gap: 10px;
+}
+
+.topCoinContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid var(--gray-color-3);
+  height: 30px;
+  width: 91px;
+
+  &:hover {
+    background: var(--color-gray-7);
+    transition: var(--transition-1);
+  }
+}
+
+.icon {
+  background: var(--gray-color-3);
+  border-radius: 24px;
+  background-size: cover;
+  flex-shrink: 0;
+  margin-right: 8px;
+  height: 24px;
+  width: 24px;
+}
+
+.smallIcon {
+  height: 18px;
+  width: 18px;
+}
+
+.row {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 8.5px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--color-gray-4);
+  }
+
+  &:hover {
+    background: var(--color-gray-7);
+    transition: var(--transition-1);
+  }
+}
+
+.tokenInfo {
+  display: flex;
+  align-items: center;
+}
+
+.token {
+  line-height: 32px;
+  color: var(--white-color);
+  font-size: 24px;
+  font: var(--font-text-3);
+}
+
+.tokenList {
+  height: 284px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-color-3);
   }
 }
