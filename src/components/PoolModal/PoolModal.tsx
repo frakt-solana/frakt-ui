@@ -131,7 +131,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             className={styles.slider}
             marks={marks}
             withTooltip
-            step={5}
+            step={1}
           />
 
           <Button

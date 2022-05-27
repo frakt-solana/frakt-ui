@@ -157,6 +157,7 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
           className={styles.slider}
           value={percent}
           setValue={lpTokenBalance && onPercentChange}
+          withTooltip
         />
 
         <div className={styles.errors}>

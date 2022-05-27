@@ -138,6 +138,7 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
           className={styles.slider}
           value={percent}
           setValue={poolTokensStakedAmount && onPercentChange}
+          withTooltip
         />
 
         <div className={styles.errors}>
