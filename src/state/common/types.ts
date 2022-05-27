@@ -10,3 +10,9 @@ export interface SolanaHealthResponse {
   mean_ms: number;
   ts: string;
 }
+
+export enum SolanaNetworkHealth {
+  Down = 'Down',
+  Slow = 'Slow',
+  Good = 'Good',
+}

@@ -2,11 +2,9 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { LinkWithArrow } from '../components/LinkWithArrow';
-import {
-  selectSolanaHealth,
-  SolanaNetworkHealth,
-} from '../state/common/selectors';
+import { selectSolanaHealth } from '../state/common/selectors';
 import { commonActions } from '../state/common/actions';
+import { SolanaNetworkHealth } from '../state/common/types';
 
 export const useHealthNotification = (): void => {
   const dispatch = useDispatch();

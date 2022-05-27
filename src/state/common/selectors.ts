@@ -17,18 +17,10 @@ import {
 } from 'ramda';
 import { isNumber, isNonEmptyString } from 'ramda-adjunct';
 
+import { SolanaHealthResponse, SolanaNetworkHealth } from './types';
+
 const SOLANA_SLOW_LOSS_CUTOFF = 25;
 const SOLANA_DOWN_LOSS_CUTOFF = 50;
-
-export interface PingDataValues {
-  loss: string;
-}
-
-export enum SolanaNetworkHealth {
-  Down = 'Down',
-  Slow = 'Slow',
-  Good = 'Good',
-}
 
 const isNumberArray = (value) =>
   Array.isArray(value) && value.length && value.every(isNumber);
@@ -45,12 +37,13 @@ const convertPercentToNumber: (string) => number = ifElse(
 
 export const selectSolanaLoss = createSelector(
   [pathOr([], ['common', 'fetchSolanaHealth', 'data'])],
-  compose<any[], Array<PingDataValues>, Array<string>, Array<number>, any>(
-    average,
-    map(convertPercentToNumber),
-    pluck('loss'),
-    take(10),
-  ),
+  compose<
+    any[],
+    Array<SolanaHealthResponse>,
+    Array<string>,
+    Array<number>,
+    any
+  >(average, map(convertPercentToNumber), pluck('loss'), take(10)),
 );
 
 export const selectSolanaHealth = createSelector(
