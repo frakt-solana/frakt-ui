@@ -82,7 +82,7 @@ export const useLoansPage = (): {
         liquidityPool?.amountOfStaked - liquidityPool?.liquidityAmount;
 
       const utilizationRate =
-        (totalBorrowed / liquidityPool?.amountOfStaked) * 100;
+        (totalBorrowed / liquidityPool?.amountOfStaked) * 100 || 0;
 
       const rewardAmount = calcLoanPoolReward(liquidityPool, depositAccount);
 
