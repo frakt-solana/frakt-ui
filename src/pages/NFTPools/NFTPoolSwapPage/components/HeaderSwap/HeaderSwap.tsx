@@ -12,7 +12,7 @@ interface HeaderSwapProps {
   hidden?: boolean;
 }
 
-const COMMISSION_PERCENT = 0.02;
+const COMMISSION_PERCENT = 0.05;
 
 export const HeaderSwap: FC<HeaderSwapProps> = ({
   pool,
