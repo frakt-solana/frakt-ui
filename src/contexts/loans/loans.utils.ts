@@ -22,15 +22,6 @@ export const calcLoanPoolReward = (
   );
 };
 
-export const calcUtilizationRateInPercent = (
-  liquidityPool: LiquidityPoolView,
-): number => {
-  if (!liquidityPool?.liquidityAmount) return 0;
-
-  const { liquidityAmount, amountOfStaked } = liquidityPool;
-  return liquidityAmount / amountOfStaked / 100;
-};
-
 export const calcLoanPoolApr = (liquidityPool: LiquidityPoolView): number => {
   if (!liquidityPool?.apr) return 0;
 

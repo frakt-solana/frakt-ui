@@ -6,7 +6,6 @@ import { useDebounce } from '../../../hooks';
 import {
   calcLoanPoolApr,
   calcLoanPoolReward,
-  calcUtilizationRateInPercent,
   harvestLiquidity as harvestTxn,
   LoanWithArweaveMetadata,
   useLoans,
@@ -82,7 +81,9 @@ export const useLoansPage = (): {
       const totalBorrowed =
         liquidityPool?.amountOfStaked - liquidityPool?.liquidityAmount;
 
-      const utilizationRate = calcUtilizationRateInPercent(liquidityPool);
+      const utilizationRate =
+        (totalBorrowed / liquidityPool?.amountOfStaked) * 100;
+
       const rewardAmount = calcLoanPoolReward(liquidityPool, depositAccount);
 
       return {
