@@ -32,7 +32,6 @@ export const useFakeInfinityScroll = (
   const [itemsToShow, setItemsToShow] = useState<number>(itemsPerScroll);
 
   const onScrollHandler = () => setItemsToShow((prev) => prev + itemsPerScroll);
-
   return {
     itemsToShow,
     setItemsToShow,

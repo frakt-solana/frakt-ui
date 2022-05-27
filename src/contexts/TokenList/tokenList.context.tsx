@@ -19,14 +19,6 @@ const getSolanaTokens = async (): Promise<TokenInfo[]> => {
   return res?.tokens?.filter(({ chainId }) => chainId === 101) || [];
 };
 
-const getFraktTokens = async (): Promise<TokenInfo[]> => {
-  const res: TokenInfo[] = await (
-    await fetch(process.env.FRAKT_TOKENS_LIST)
-  ).json();
-
-  return res?.filter(({ tags }) => tags.includes('frakt-nft-pool')) || [];
-};
-
 export const TokenListContextProvider = ({
   children = null,
 }: {
@@ -39,10 +31,11 @@ export const TokenListContextProvider = ({
   useEffect(() => {
     (async () => {
       try {
-        const [fraktList, solanaList] = await Promise.all([
-          getFraktTokens(),
-          getSolanaTokens(),
-        ]);
+        const solanaList = await getSolanaTokens();
+
+        const fraktList =
+          solanaList.filter(({ tags }) => tags?.includes('frakt-nft-pool')) ||
+          [];
 
         setTokensList([...fraktList, ...solanaList]);
         setFraktionTokensList(fraktList);

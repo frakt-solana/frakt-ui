@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
@@ -10,6 +10,9 @@ import { notify, SOL_TOKEN, USDC_TOKEN, USDT_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
 import { usePrism } from '../../../contexts/prism/prism.hooks';
 import { NotifyType } from '../../../utils/solanaUtils';
+import { useUserTokens } from '../../../contexts/userTokens';
+import { getTokenBalance } from '../../TokenField/TokenFieldWithBalance';
+import { useNativeAccount } from '../../../utils/accounts';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -52,8 +55,11 @@ export const useSwapForm = (
   swapTokenList: TokenInfo[];
 } => {
   const { prism } = usePrism();
-  const { fraktionTokensMap, fraktionTokensList } = useTokenListContext();
+  const { fraktionTokensMap, tokensList, fraktionTokensList } =
+    useTokenListContext();
   const wallet = useWallet();
+  const { rawUserTokensByMint } = useUserTokens();
+  const { account } = useNativeAccount();
 
   const [slippage, setSlippage] = useState<number>(1);
   const [debouncePayValue, setDebouncePayValue] = useState<number>(0);
@@ -71,11 +77,35 @@ export const useSwapForm = (
     },
   });
 
-  const poolsTokens = fraktionTokensList.filter(
-    ({ extensions }) => (extensions as any)?.poolPubkey,
-  );
+  const fraktBalance = fraktionTokensList.map((token) => {
+    const balance = getTokenBalance(token, account, rawUserTokensByMint);
+    return {
+      ...token,
+      balance: balance || 0,
+    };
+  });
 
-  const swapTokenList = [SOL_TOKEN, USDT_TOKEN, USDC_TOKEN, ...poolsTokens];
+  const topPriceIncrease = useMemo(() => {
+    return Object.values(fraktBalance)
+      .sort((a, b) => {
+        return a?.symbol.localeCompare(b.symbol);
+      })
+      .sort(({ balance: a }, { balance: b }) => {
+        return a && b
+          ? Math.abs(Number(a)) > Math.abs(Number(b))
+            ? -1
+            : 1
+          : -1;
+      });
+  }, [fraktBalance]);
+
+  const swapTokenList = [
+    SOL_TOKEN,
+    USDT_TOKEN,
+    USDC_TOKEN,
+    // ...topPriceIncrease,
+    ...tokensList,
+  ];
 
   const {
     visible: confirmModalVisible,

@@ -30,7 +30,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
   ...props
 }) => {
   const [searchString, setSearchString] = useState<string>('');
-  const { itemsToShow, next } = useFakeInfinityScroll();
+  const { next, itemsToShow } = useFakeInfinityScroll(15);
   const { tokensList } = useTokenListContext();
   const { swapTokenList } = useSwapForm();
 
