@@ -21,7 +21,7 @@ import {
   SubmitButton,
 } from '../../../components/ModalParts';
 import styles from './WithdrawLiquidityModal.module.scss';
-import { Slider } from '../../../../../components/Slider';
+import Slider from '../../../../../components/Slider';
 import { unstakeAndRemoveLiquidity } from '../../transactions';
 
 export interface WithdrawLiquidityModalProps {
@@ -156,7 +156,7 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
         <Slider
           className={styles.slider}
           value={percent}
-          setValue={lpTokenBalance && onPercentChange}
+          onChange={lpTokenBalance && onPercentChange}
         />
 
         <div className={styles.errors}>

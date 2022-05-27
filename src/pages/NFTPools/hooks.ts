@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Percent } from '@raydium-io/raydium-sdk';
+import { useParams } from 'react-router-dom';
 
 import {
   UserNFT,
@@ -25,9 +26,8 @@ import {
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
 import { PoolStats, useCachedPoolsStats } from '../PoolsPage';
-import { useParams } from 'react-router-dom';
-import { CUSTOM_POOLS_NAMES } from '../../utils/cacher/nftPools';
 import { useCachedFusionPoolsForStats } from './NFTPoolStakePage/hooks';
+import { CUSTOM_POOLS_URLS } from '../../utils/cacher/nftPools';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -382,7 +382,7 @@ export const usePoolPubkeyParam: UsePoolPubkeyParam = () => {
   const { poolPubkey: poolPubkeyOrName } = useParams<{ poolPubkey: string }>();
 
   return (
-    swapStringKeysAndValues(CUSTOM_POOLS_NAMES)[poolPubkeyOrName] ||
+    swapStringKeysAndValues(CUSTOM_POOLS_URLS)[poolPubkeyOrName] ||
     poolPubkeyOrName
   );
 };

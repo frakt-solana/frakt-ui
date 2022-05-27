@@ -13,7 +13,7 @@ import { useLiquidityPools } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
 import { useSwapForm } from './hooks/useSwapForm';
-import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import { ConfirmModal } from '../ConfirmModal';
 
 interface SwapFormInterface {
   defaultTokenMint: string;

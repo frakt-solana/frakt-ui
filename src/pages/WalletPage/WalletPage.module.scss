@@ -1,0 +1,59 @@
+.container {
+  padding-top: 64px;
+  padding-bottom: 64px;
+
+  @media screen and (max-width: 767px) {
+    max-width: 100%;
+    padding-top: 50px;
+  }
+}
+
+.pageHeader {
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  @media screen and (max-width: 767px) {
+    flex-wrap: wrap;
+  }
+}
+
+.title {
+  font: var(--font-title-2);
+  margin-bottom: 2px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+
+  @media screen and (max-width: 767px) {
+    margin-top: 20px;
+    flex-grow: 1;
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  gap: 30px;
+  align-items: flex-start;
+
+  @media screen and (max-width: 1200px) {
+    flex-direction: column;
+  }
+}
+
+.tabsContent {
+  width: 100%;
+}
+
+.loansList {
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+}

@@ -1,1 +1,0 @@
-export { NFTDoubleSlider } from './NFTDoubleSlider';

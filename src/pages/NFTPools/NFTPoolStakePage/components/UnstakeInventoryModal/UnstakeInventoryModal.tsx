@@ -19,7 +19,7 @@ import {
   SubmitButton,
 } from '../../../components/ModalParts';
 import styles from './UnstakeInventoryModal.module.scss';
-import { Slider } from '../../../../../components/Slider';
+import Slider from '../../../../../components/Slider';
 
 export interface UnstakeInventoryModalProps {
   visible?: boolean;
@@ -137,7 +137,7 @@ export const UnstakeInventoryModal: FC<UnstakeInventoryModalProps> = ({
         <Slider
           className={styles.slider}
           value={percent}
-          setValue={poolTokensStakedAmount && onPercentChange}
+          onChange={poolTokensStakedAmount && onPercentChange}
         />
 
         <div className={styles.errors}>

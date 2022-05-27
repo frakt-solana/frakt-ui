@@ -10,44 +10,53 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
+import { FC } from 'react';
+// import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
 import { UserTokensProvider } from './contexts/userTokens';
-import { FraktionProvider } from './contexts/fraktion';
 import { TokenListContextProvider } from './contexts/TokenList';
-import { ENDPOINT, NETWORK } from './config';
+import { ENDPOINT } from './config';
 import { WalletModalProvider } from './contexts/WalletModal';
+import { HealthModalProvider } from './contexts/HealthModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
+import { LoansProvider } from './contexts/loans';
+// import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 
 const wallets = [
   getPhantomWallet(),
   getSolflareWallet(),
   getLedgerWallet(),
-  getSolletWallet({ network: NETWORK as WalletAdapterNetwork }),
-  getSolletExtensionWallet({ network: NETWORK as WalletAdapterNetwork }),
+  getSolletWallet({ network: WalletAdapterNetwork.Mainnet }),
+  getSolletExtensionWallet({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
-function App(): JSX.Element {
+const App: FC = () => {
   return (
     <ConnectionProvider endpoint={ENDPOINT}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <TokenListContextProvider>
-            <UserTokensProvider>
-              <LiquidityPoolsProvider>
-                <FraktionProvider>
+          <HealthModalProvider>
+            {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
+            <TokenListContextProvider>
+              <UserTokensProvider>
+                <LiquidityPoolsProvider>
                   <NftPoolsProvider>
-                    <Router />
+                    <LoansProvider>
+                      <Router />
+                    </LoansProvider>
                   </NftPoolsProvider>
-                </FraktionProvider>
-              </LiquidityPoolsProvider>
-            </UserTokensProvider>
-          </TokenListContextProvider>
+                </LiquidityPoolsProvider>
+              </UserTokensProvider>
+            </TokenListContextProvider>
+            {/* <IntercomService /> */}
+            {/* </IntercomProvider> */}
+          </HealthModalProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
-}
+};
 
 export default App;

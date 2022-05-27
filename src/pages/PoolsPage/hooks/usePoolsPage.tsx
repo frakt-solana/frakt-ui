@@ -18,7 +18,6 @@ import { useUserTokens } from '../../../contexts/userTokens';
 import styles from '../PoolsPage.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
 import { POOL_INFO_POLLING_INTERVAL } from '../constants';
-import { Tab, useTabs } from '../../../components/Tabs';
 
 export type LpBalanceByMint = Map<string, BN>;
 
@@ -51,9 +50,6 @@ export const usePoolsPage = (): {
   fusionPoolInfoMap: FusionPoolInfoByMint;
   poolsStatsByMarketId: PoolsStatsByMarketId;
   isFusionPoolsPolling: boolean;
-  poolTabs: Tab[];
-  tabValue: string;
-  setTabValue: (value: string) => void;
 } => {
   const { control, watch } = useForm({
     defaultValues: {
@@ -61,15 +57,6 @@ export const usePoolsPage = (): {
       [InputControlsNames.SHOW_AWARDED_ONLY]: false,
       [InputControlsNames.SORT]: SORT_VALUES[0],
     },
-  });
-
-  const {
-    tabs: poolTabs,
-    value: tabValue,
-    setValue: setTabValue,
-  } = useTabs({
-    tabs: POOL_TABS,
-    defaultValue: POOL_TABS[0].value,
   });
 
   const { connected } = useWallet();
@@ -192,13 +179,8 @@ export const usePoolsPage = (): {
 
         const removeBecauseNotAwarded = showAwardedOnly && !isAwarded;
         const removeBecauseUserDoesntStake = showStaked && !userStakesInPool;
-        const removeBecauseDifferentTab = !tokenInfo.tags.includes(tabValue);
 
-        if (
-          removeBecauseNotAwarded ||
-          removeBecauseUserDoesntStake ||
-          removeBecauseDifferentTab
-        )
+        if (removeBecauseNotAwarded || removeBecauseUserDoesntStake)
           return false;
 
         return tokenInfo.symbol.toUpperCase().includes(searchString);
@@ -233,7 +215,6 @@ export const usePoolsPage = (): {
     fusionPoolInfoMap,
     fusionPoolInfoMapLoading,
     userLpBalanceByMint,
-    tabValue,
   ]);
 
   const [activePoolTokenAddress, setActivePoolTokenAddress] = useState<
@@ -283,27 +264,8 @@ export const usePoolsPage = (): {
     fusionPoolInfoMap,
     poolsStatsByMarketId,
     isFusionPoolsPolling,
-    poolTabs,
-    tabValue,
-    setTabValue,
   };
 };
-
-const POOL_TABS: Tab[] = [
-  {
-    label: 'Pools',
-    value: 'frakt-nft-pool', //? special label in TokenInfo
-  },
-  {
-    label: 'Vaults',
-    value: 'fractionalized-nft', //? special label in TokenInfo
-  },
-  {
-    label: 'Lending',
-    value: 'undefined-for-now', //? special label in TokenInfo
-    disabled: true,
-  },
-];
 
 export const SORT_VALUES: SortValue[] = [
   {
@@ -322,23 +284,6 @@ export const SORT_VALUES: SortValue[] = [
     ),
     value: 'liquidity_asc',
   },
-  // {
-  //   label: (
-  //     <span>
-  //       Trading Vol. <ArrowDownSmallIcon className={styles.arrowDown} />
-  //     </span>
-  //   ),
-  //   value: 'trading_desc',
-  // },
-  // {
-  //   label: (
-  //     <span>
-  //       Trading Vol. <ArrowDownSmallIcon className={styles.arrowUp} />
-  //     </span>
-  //   ),
-  //   value: 'trading_asc',
-  // },
-  //TODO Caclulate APR
   {
     label: (
       <span>

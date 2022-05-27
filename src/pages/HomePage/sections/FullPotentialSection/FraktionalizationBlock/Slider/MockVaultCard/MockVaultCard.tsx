@@ -2,10 +2,7 @@ import { FC, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import styles from './MockVaultCard.module.scss';
-import Badge, {
-  VAULT_BADGES_BY_STATE,
-  VerifiedBadge,
-} from '../../../../../../../components/Badge';
+import Badge, { VerifiedBadge } from '../../../../../../../components/Badge';
 
 export interface MockVaultCardProps {
   nftsAmount: string;
@@ -77,7 +74,7 @@ export const MockVaultCard: FC<MockVaultCardProps> = ({
           </div>
           <div className={styles.actions}>
             <VerifiedBadge />
-            <Badge label={VAULT_BADGES_BY_STATE[1]} className={styles.badge} />
+            <Badge label="Active" className={styles.badge} />
             <Badge label="Tradable" className={styles.badge} />
             <Badge label={nftsAmount} className={styles.badge} />
           </div>

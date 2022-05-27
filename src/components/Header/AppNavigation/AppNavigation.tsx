@@ -19,18 +19,33 @@ export const DropdownMenuMore: FC = () => {
     <Dropdown title="More">
       <ul>
         <li>
-          <NavLink className={styles.dropdownLink} to={PATHS.COLLECTIONS}>
-            Collections
-          </NavLink>
+          <a
+            className={styles.dropdownLink}
+            href={process.env.FRAKT_VAULTS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Vaults
+          </a>
         </li>
         <li>
           <a
             className={styles.dropdownLink}
-            href={process.env.DEX_URL}
+            href={process.env.FRAKT_STAKING_URL}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Trade
+            Staking
+          </a>
+        </li>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={PATHS.ROADMAP}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Roadmap
           </a>
         </li>
         {DROPDOWN_EXTERNAL_LINKS.map(({ label, href, icon: Icon }, idx) => (
@@ -56,29 +71,14 @@ export const DropdownMenuDoStuff: FC = () => {
     <Dropdown title="Do stuff">
       <ul className={styles.list}>
         <li className={styles.linkList}>
-          <NavLink className={styles.link} to={PATHS.FRAKTIONALIZE}>
-            <div className={styles.content}>
-              <p className={styles.title}>Create Vault</p>
-              <p className={styles.subtitle}>
-                fraktionalize single or multiple NFTs
-              </p>
-            </div>
-          </NavLink>
-        </li>
-        <li className={styles.linkList}>
-          <a
-            href={PATHS.BORROW}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.link}
-          >
+          <NavLink className={styles.link} to={PATHS.BORROW}>
             <div className={styles.content}>
               <p className={styles.title}>Borrow</p>
               <p className={styles.subtitle}>
                 take loan using NFT as collateral
               </p>
             </div>
-          </a>
+          </NavLink>
         </li>
       </ul>
     </Dropdown>
@@ -98,18 +98,6 @@ export const AppNavigation: FC<AppNavigationProps> = ({
         className,
       )}
     >
-      {!withoutLinks && (
-        <li className={styles.navigationItem}>
-          <a
-            href={PATHS.BORROW}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.navigationLink}
-          >
-            Loans
-          </a>
-        </li>
-      )}
       {!withoutLinks &&
         NAVIGATION_LINKS.map(({ label, to }, idx) => (
           <li key={idx} className={styles.navigationItem}>

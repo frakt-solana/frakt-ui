@@ -1,6 +1,6 @@
 import { deserializeUnchecked } from 'borsh';
-import { PublicKey } from '@solana/web3.js';
-import * as anchor from '@project-serum/anchor';
+import { Connection, PublicKey } from '@solana/web3.js';
+
 import { Metadata, StringPublicKey } from './arweave.model';
 import {
   METADATA_SCHEMA,
@@ -9,7 +9,7 @@ import {
 } from './arweave.constant';
 
 const PubKeysInternedMap = new Map<string, PublicKey>();
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const toPublicKey = (key: string | PublicKey) => {
   if (typeof key !== 'string') {
@@ -48,11 +48,11 @@ const decodeMetadata = (buffer: Buffer): Metadata => {
   return metadata;
 };
 
-async function getMetadata(pubkey: PublicKey, url: string) {
+async function getMetadata(pubkey: PublicKey, connection: Connection) {
   let metadata;
 
   try {
-    const metadataPromise = await fetchMetadataFromPDA(pubkey, url);
+    const metadataPromise = await fetchMetadataFromPDA(pubkey, connection);
 
     if (metadataPromise && metadataPromise.data.length > 0) {
       metadata = decodeMetadata(metadataPromise.data);
@@ -80,20 +80,16 @@ async function getMetadataKey(
   )[0];
 }
 
-async function fetchMetadataFromPDA(pubkey: PublicKey, url: string) {
-  const connection = new anchor.web3.Connection(url);
+async function fetchMetadataFromPDA(pubkey: PublicKey, connection: Connection) {
   const metadataKey = await getMetadataKey(pubkey.toBase58());
 
   return await connection.getAccountInfo(toPublicKey(metadataKey));
 }
 
-const createJsonObject = (url: string) => {
+const createJsonObject = (connection: Connection) => {
   const mints = [];
   return async (mint: string): Promise<unknown> => {
-    const tokenMetadata = await getMetadata(
-      new anchor.web3.PublicKey(mint),
-      url,
-    );
+    const tokenMetadata = await getMetadata(new PublicKey(mint), connection);
     if (!tokenMetadata) {
       return mints;
     }
@@ -129,5 +125,8 @@ const resolveSequentially = (mints: string[], func) => {
   }, Promise.resolve());
 };
 
-export const getMeta = async (tokens: string[], url: string): Promise<any[]> =>
-  await resolveSequentially(tokens, createJsonObject(url));
+export const getMeta = async (
+  tokens: string[],
+  connection: Connection,
+): Promise<any[]> =>
+  await resolveSequentially(tokens, createJsonObject(connection));

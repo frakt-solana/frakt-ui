@@ -1,0 +1,6 @@
+.loansList {
+  display: grid;
+  gap: 15px;
+  align-items: stretch;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+}

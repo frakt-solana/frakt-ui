@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { getAllUserTokens } from 'solana-nft-metadata';
 import { keyBy, isArray } from 'lodash';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 
@@ -9,12 +8,14 @@ import {
   UserTokensValues,
 } from './userTokens.model';
 import {
-  fetchWalletNFTsFromQuickNode,
-  // fetchWalletNFTsUsingArweave,
+  fetchWalletNFTsUsingArweave,
+  isTokenFrozen,
 } from './userTokens.helpers';
+import { getAllUserTokens } from '../../utils/accounts';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
   nfts: [],
+  allNfts: [],
   rawUserTokensByMint: {},
   loading: false,
   nftsLoading: false,
@@ -36,6 +37,7 @@ export const UserTokensProvider = ({
 
   const [nftsLoading, setNftsLoading] = useState<boolean>(false);
   const [nfts, setNfts] = useState<UserNFT[]>(null);
+  const [allNfts, setAllNfts] = useState<UserNFT[]>(null);
 
   const clearTokens = () => {
     setNfts(null);
@@ -46,7 +48,8 @@ export const UserTokensProvider = ({
   const fetchTokens = async () => {
     setLoading(true);
     try {
-      const userTokens = await getAllUserTokens(publicKey, {
+      const userTokens = await getAllUserTokens({
+        walletPublicKey: publicKey,
         connection,
       });
 
@@ -65,11 +68,29 @@ export const UserTokensProvider = ({
     if (isArray(nfts)) return;
     setNftsLoading(true);
     try {
-      const userNFTs = await fetchWalletNFTsFromQuickNode(
-        publicKey?.toBase58(),
+      const possibleNftTokens = Object.entries(rawUserTokensByMint)
+        ?.filter(([, token]) => token.amount === 1)
+        .map(([, token]) => token);
+
+      const frozenNFTsMints = possibleNftTokens
+        .filter((token) => isTokenFrozen(token))
+        .map(({ mint }) => mint);
+
+      const userNFTs = await fetchWalletNFTsUsingArweave(
+        rawUserTokensByMint,
+        connection,
       );
 
-      setNfts(userNFTs);
+      const userNFTsFrozen = userNFTs?.filter(({ mint }) =>
+        frozenNFTsMints.includes(mint),
+      );
+
+      const userNFTsNotFrozen = userNFTs?.filter(
+        ({ mint }) => !frozenNFTsMints.includes(mint),
+      );
+
+      setNfts(userNFTsNotFrozen);
+      setAllNfts([...userNFTsNotFrozen, ...userNFTsFrozen]);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -103,6 +124,7 @@ export const UserTokensProvider = ({
     <UserTokensContext.Provider
       value={{
         nfts,
+        allNfts,
         rawUserTokensByMint,
         loading,
         refetch: fetchTokens,

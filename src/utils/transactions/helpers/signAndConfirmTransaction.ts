@@ -1,5 +1,6 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, Signer, Transaction } from '@solana/web3.js';
+import { Commitment, Connection, Signer, Transaction } from '@solana/web3.js';
+
 import { notify } from '../..';
 import { NotifyType } from '../../solanaUtils';
 
@@ -8,6 +9,7 @@ interface SignAndConfirmTransactionProps {
   signers?: Signer[];
   connection: Connection;
   wallet: WalletContextState;
+  commitment?: Commitment;
 }
 
 type SignAndConfirmTransaction = (
@@ -19,6 +21,7 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   signers = [],
   connection,
   wallet,
+  commitment = 'finalized',
 }) => {
   const { blockhash } = await connection.getRecentBlockhash();
   transaction.recentBlockhash = blockhash;
@@ -40,5 +43,5 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
     type: NotifyType.INFO,
   });
 
-  await connection.confirmTransaction(txid, 'finalized');
+  await connection.confirmTransaction(txid, commitment);
 };

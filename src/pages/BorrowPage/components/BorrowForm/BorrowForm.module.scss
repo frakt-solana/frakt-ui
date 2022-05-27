@@ -1,0 +1,27 @@
+.details {
+  padding: 0 24px;
+  flex-grow: 1;
+
+  @media screen and (max-width: 1450px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.detailsTitle {
+  font: var(--font-btn-small);
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.continueBtnContainer {
+  width: 100%;
+}
+
+.continueBtn {
+  width: 100%;
+  justify-content: center;
+  font: var(--font-btn-small);
+}

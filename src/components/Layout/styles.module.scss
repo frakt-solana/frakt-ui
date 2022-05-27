@@ -31,6 +31,23 @@
   scrollbar-gutter: stable;
 }
 
+.notificationBar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.notificationBarHide {
+  bottom: -44px;
+  transition: bottom 0.2s ease-in;
+}
+
 .noise {
   position: fixed;
   top: 0;

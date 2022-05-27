@@ -6,6 +6,7 @@ import imageOne from '../../../images/landing1.png';
 import imageTwo from '../../../images/landing2.png';
 import { SolanaIcon } from '../../../../../icons';
 import { LandingInfoIcon } from '../../../svg';
+import { PATHS } from '../../../../../constants';
 
 interface LendingBlockProps {
   className?: string;
@@ -38,7 +39,7 @@ export const LendingBlock: FC<LendingBlockProps> = ({ className }) => {
         text={
           'Get instant loans against your NFTs, use that liquidity and then repay with a little interest'
         }
-        linkToGnomies
+        to={PATHS.LOANS}
       />
     </div>
   );

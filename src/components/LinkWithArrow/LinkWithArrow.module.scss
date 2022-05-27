@@ -27,6 +27,17 @@
   }
 }
 
+.invert {
+  color: black;
+  &::after {
+    background-color: black;
+  }
+  &:hover{
+    color: black;
+  }
+
+}
+
 .icon {
   margin-left: 11px;
 }
