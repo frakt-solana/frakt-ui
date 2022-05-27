@@ -77,7 +77,7 @@ export const useSwapForm = (
     },
   });
 
-  const fraktBalance = fraktionTokensList.map((token) => {
+  const fraktTokenWithBalance = fraktionTokensList.map((token: TokenInfo) => {
     const balance = getTokenBalance(token, account, rawUserTokensByMint);
     return {
       ...token,
@@ -85,26 +85,34 @@ export const useSwapForm = (
     };
   });
 
-  const topPriceIncrease = useMemo(() => {
-    return Object.values(fraktBalance)
-      .sort((a, b) => {
-        return a?.symbol.localeCompare(b.symbol);
+  const sortFraktTokenByBalance = useMemo(() => {
+    return Object.values(fraktTokenWithBalance)
+      .sort(({ symbol: symbolA }, { symbol: symbolB }) => {
+        return symbolA?.localeCompare(symbolB);
       })
-      .sort(({ balance: a }, { balance: b }) => {
-        return a && b
-          ? Math.abs(Number(a)) > Math.abs(Number(b))
+      .sort(({ balance: balanceA }, { balance: balanceB }) => {
+        return balanceA && balanceB
+          ? Math.abs(Number(balanceA)) > Math.abs(Number(balanceB))
             ? -1
             : 1
           : -1;
       });
-  }, [fraktBalance]);
+  }, [fraktTokenWithBalance]);
+
+  const filteredTokenList = useMemo(() => {
+    return tokensList
+      .filter(({ tags }) => !tags?.includes('frakt-nft-pool'))
+      .sort(({ symbol: symbolA }, { symbol: symbolB }) => {
+        return symbolA?.localeCompare(symbolB);
+      });
+  }, [tokensList]);
 
   const swapTokenList = [
     SOL_TOKEN,
     USDT_TOKEN,
     USDC_TOKEN,
-    // ...topPriceIncrease,
-    ...tokensList,
+    ...sortFraktTokenByBalance,
+    ...filteredTokenList,
   ];
 
   const {

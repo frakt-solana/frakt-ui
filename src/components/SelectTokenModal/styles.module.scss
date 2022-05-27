@@ -45,9 +45,8 @@
 
 .tokenList {
   height: 284px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  padding-right: 5px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 
   &::-webkit-scrollbar {
     width: 5px;

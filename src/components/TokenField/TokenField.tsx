@@ -7,7 +7,6 @@ import { ChevronDownIcon } from '../../icons';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
-import { useHeaderState } from '../Layout/headerState';
 
 export interface TokenFieldProps {
   tokensList?: TokenInfo[];
@@ -52,7 +51,6 @@ const TokenField: FC<TokenFieldProps> = ({
 }) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { onContentScroll } = useHeaderState();
 
   return (
     <div
@@ -135,19 +133,13 @@ const TokenField: FC<TokenFieldProps> = ({
         </div>
 
         {!!tokensList && !!onTokenChange && (
-          <div
-            className={styles.content}
-            onScroll={onContentScroll}
-            id="app-content"
-          >
-            <SelectTokenModal
-              title={modalTitle}
-              visible={isModalOpen}
-              balances={balances}
-              onChange={onTokenChange}
-              onCancel={() => setIsModalOpen(false)}
-            />
-          </div>
+          <SelectTokenModal
+            title={modalTitle}
+            visible={isModalOpen}
+            balances={balances}
+            onChange={onTokenChange}
+            onCancel={() => setIsModalOpen(false)}
+          />
         )}
       </div>
     </div>

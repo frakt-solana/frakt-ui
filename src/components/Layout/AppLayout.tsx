@@ -39,8 +39,8 @@ export const Layout: FC<LayoutProps> = ({
         customHeader={customHeader}
       />
       <div
-        // onScroll={onContentScroll}
-        // id="app-content"
+        onScroll={onContentScroll}
+        id="app-content"
         className={classNames(styles.content, contentClassName)}
       >
         {children}

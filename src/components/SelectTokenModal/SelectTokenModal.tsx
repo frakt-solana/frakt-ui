@@ -12,6 +12,7 @@ import { useDebounce } from '../../hooks';
 import { CloseModalIcon } from '../../icons';
 import { useTokenListContext } from '../../contexts/TokenList';
 import { useSwapForm } from '../SwapForm/hooks/useSwapForm';
+import { useHeaderState } from '../Layout/headerState';
 
 interface SelectTokenModalProps extends ModalProps {
   onChange?: (token: TokenInfo) => void;
@@ -33,6 +34,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
   const { next, itemsToShow } = useFakeInfinityScroll(15);
   const { tokensList } = useTokenListContext();
   const { swapTokenList } = useSwapForm();
+  const { onContentScroll } = useHeaderState();
 
   const filterTokens = () => {
     return tokensList.filter(({ symbol }) =>
@@ -67,34 +69,40 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
         className={styles.input}
         placeholder="Search token by name"
       />
-      <FakeInfinityScroll
-        itemsToShow={itemsToShow}
-        next={next}
-        emptyMessage="No token found"
-        wrapperClassName={styles.tokenList}
+      <div
+        className={styles.tokenList}
+        onScroll={onContentScroll}
+        id={`scrollBar${title}`}
       >
-        {filteredTokensList.map((token) => (
-          <div
-            key={token.address}
-            className={styles.row}
-            onClick={() => {
-              onChange(token);
-              onCancel(null);
-            }}
-          >
-            <div className={styles.title}>
-              <div
-                className={styles.icon}
-                style={{
-                  backgroundImage: `url("${token.logoURI}")`,
-                }}
-              />{' '}
-              <span className={styles.title}>{token.symbol}</span>
+        <FakeInfinityScroll
+          scrollableTargetId={`scrollBar${title}`}
+          itemsToShow={itemsToShow}
+          next={next}
+          emptyMessage="No token found"
+        >
+          {filteredTokensList.map((token, idx) => (
+            <div
+              key={idx}
+              className={styles.row}
+              onClick={() => {
+                onChange(token);
+                onCancel(null);
+              }}
+            >
+              <div className={styles.title}>
+                <div
+                  className={styles.icon}
+                  style={{
+                    backgroundImage: `url("${token?.logoURI || ''}")`,
+                  }}
+                />{' '}
+                <span className={styles.title}>{token.symbol}</span>
+              </div>
+              {balances[token?.address] || ''}
             </div>
-            {balances[token?.address] || ''}
-          </div>
-        ))}
-      </FakeInfinityScroll>
+          ))}
+        </FakeInfinityScroll>
+      </div>
     </Modal>
   );
 };

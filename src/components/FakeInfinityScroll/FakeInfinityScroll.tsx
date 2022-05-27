@@ -20,6 +20,7 @@ interface FakeInfinityScrollProps {
   isLoading?: boolean;
   customLoader?: JSX.Element;
   children: JSX.Element[];
+  scrollableTargetId?: string;
 }
 
 export const useFakeInfinityScroll = (
@@ -48,6 +49,7 @@ const FakeInfinityScroll = ({
   emptyMessageClassName,
   children,
   infinityScrollProps,
+  scrollableTargetId = 'app-content',
   customLoader,
 }: FakeInfinityScrollProps): JSX.Element => {
   if (isLoading) {
@@ -70,7 +72,7 @@ const FakeInfinityScroll = ({
 
   return (
     <InfiniteScroll
-      scrollableTarget="app-content"
+      scrollableTarget={scrollableTargetId}
       next={next}
       dataLength={itemsToShow}
       hasMore={true}

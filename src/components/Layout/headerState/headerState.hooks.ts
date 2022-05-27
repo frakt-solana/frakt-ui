@@ -17,12 +17,10 @@ export const useHeaderState: UseHeaderState = () => {
 
   const onContentScroll: OnContentScroll = (event) => {
     if (event.currentTarget.getAttribute('id') !== 'app-content') {
-      console.log(event.currentTarget.getAttribute('id') !== 'app-content');
       return;
     }
 
     const offset = event.currentTarget.scrollTop;
-    console.log(offset);
 
     if (offset > scrollTop) setPrevOffsetTop(offset);
     if (offset < prevOffsetTop) setScrollTop(offset);

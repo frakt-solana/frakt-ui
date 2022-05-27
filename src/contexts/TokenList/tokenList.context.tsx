@@ -37,7 +37,7 @@ export const TokenListContextProvider = ({
           solanaList.filter(({ tags }) => tags?.includes('frakt-nft-pool')) ||
           [];
 
-        setTokensList([...fraktList, ...solanaList]);
+        setTokensList([...solanaList]);
         setFraktionTokensList(fraktList);
       } catch (error) {
         // eslint-disable-next-line no-console
