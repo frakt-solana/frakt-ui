@@ -1,21 +1,26 @@
-import { useRef, useEffect, useState, useMemo } from 'react';
-import { Percent } from '@raydium-io/raydium-sdk';
+import { useEffect, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 
-import { useLiquidityPools } from '../../../contexts/liquidityPools';
-import { SOL_TOKEN } from '../../../utils';
-import { getOutputAmount } from '../../SwapForm/helpers';
-import { useLazyPoolInfo } from './useLazyPoolInfo';
-import BN from 'bn.js';
 import { useConfirmModal } from '../../ConfirmModal';
+import { useLoadingModal } from '../../LoadingModal';
+import { useTokenListContext } from '../../../contexts/TokenList';
+import { notify, SOL_TOKEN } from '../../../utils';
+import { useDebounce } from '../../../hooks';
+import { usePrism } from '../../../contexts/prism/prism.hooks';
+import { NotifyType } from '../../../utils/solanaUtils';
+import { useUserTokens } from '../../../contexts/userTokens';
+import { getTokenBalance } from '../../TokenField/TokenFieldWithBalance';
+import { useNativeAccount } from '../../../utils/accounts';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
   RECEIVE_VALUE = 'receiveValue',
   PAY_TOKEN = 'payToken',
   PAY_VALUE = 'payValue',
+  TOKEN_MIN_AMOUNT = 'tokenMinAmount',
+  TOKEN_PRICE_IMPACT = 'tokenPriceImpact',
 }
 
 export type FormFieldValues = {
@@ -23,10 +28,12 @@ export type FormFieldValues = {
   [InputControlsNames.RECEIVE_VALUE]: string;
   [InputControlsNames.PAY_TOKEN]: TokenInfo;
   [InputControlsNames.PAY_VALUE]: string;
+  [InputControlsNames.TOKEN_MIN_AMOUNT]: number;
+  [InputControlsNames.TOKEN_PRICE_IMPACT]: number;
 };
 
 export const useSwapForm = (
-  defaultTokenMint: string,
+  defaultTokenMint?: string,
 ): {
   formControl: Control<FormFieldValues>;
   onPayTokenChange: (nextToken: TokenInfo) => void;
@@ -35,30 +42,72 @@ export const useSwapForm = (
   isSwapBtnEnabled: boolean;
   receiveToken: TokenInfo;
   payToken: TokenInfo;
-  slippage: string;
-  tokenMinAmount: string;
-  tokenPriceImpact: string;
-  valuationDifference: string;
-  setSlippage: (nextValue: string) => void;
+  slippage: number;
+  tokenMinAmount: number;
+  tokenPriceImpact: number;
+  loadingModalVisible: boolean;
+  closeLoadingModal: () => void;
+  setSlippage: (nextValue: number) => void;
   handleSwap: () => void;
   confirmModalVisible: boolean;
   openConfirmModal: () => void;
   closeConfirmModal: () => void;
+  swapTokenList: TokenInfo[];
 } => {
-  const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
-  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
-  const { connected } = useWallet();
-  const intervalRef = useRef<any>();
+  const { prism } = usePrism();
+  const { fraktionTokensMap, tokensList, fraktionTokensList } =
+    useTokenListContext();
+  const wallet = useWallet();
+  const { rawUserTokensByMint } = useUserTokens();
+  const { account } = useNativeAccount();
+
+  const [slippage, setSlippage] = useState<number>(1);
+  const [debouncePayValue, setDebouncePayValue] = useState<number>(0);
+  const [routersIsLoaded, setRoutersIsLoaded] = useState<string[]>([]);
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {
-      [InputControlsNames.RECEIVE_TOKEN]:
-        poolDataByMint.get(defaultTokenMint)?.tokenInfo || null,
-      [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.PAY_TOKEN]: SOL_TOKEN,
+      [InputControlsNames.RECEIVE_TOKEN]:
+        fraktionTokensMap.get(defaultTokenMint) || null,
+      [InputControlsNames.PAY_VALUE]: '',
       [InputControlsNames.RECEIVE_VALUE]: '',
+      [InputControlsNames.TOKEN_PRICE_IMPACT]: 0,
+      [InputControlsNames.TOKEN_MIN_AMOUNT]: 0,
     },
   });
+
+  const fraktTokenWithBalance = fraktionTokensList.map((token: TokenInfo) => {
+    const balance = getTokenBalance(token, account, rawUserTokensByMint);
+    return {
+      ...token,
+      balance: balance || 0,
+    };
+  });
+
+  const sortFraktTokenByBalance = useMemo(() => {
+    return Object.values(fraktTokenWithBalance)
+      .sort(({ symbol: symbolA }, { symbol: symbolB }) => {
+        return symbolA?.localeCompare(symbolB);
+      })
+      .sort(({ balance: balanceA }, { balance: balanceB }) => {
+        return balanceA && balanceB
+          ? Math.abs(Number(balanceA)) > Math.abs(Number(balanceB))
+            ? -1
+            : 1
+          : -1;
+      });
+  }, [fraktTokenWithBalance]);
+
+  const filteredTokenList = useMemo(() => {
+    return tokensList
+      .filter(({ tags }) => !tags?.includes('frakt-nft-pool'))
+      .sort(({ symbol: symbolA }, { symbol: symbolB }) => {
+        return symbolA?.localeCompare(symbolB);
+      });
+  }, [tokensList]);
+
+  const swapTokenList = [...sortFraktTokenByBalance, ...filteredTokenList];
 
   const {
     visible: confirmModalVisible,
@@ -66,42 +115,39 @@ export const useSwapForm = (
     close: closeConfirmModal,
   } = useConfirmModal();
 
-  const { receiveToken, payValue, payToken, receiveValue } = watch();
-
-  const [slippage, setSlippage] = useState<string>('1');
-  const [tokenMinAmount, setTokenMinAmountOut] = useState<string>('');
-  const [tokenPriceImpact, setTokenPriceImpact] = useState<string>('');
+  const {
+    tokenPriceImpact,
+    receiveToken,
+    payValue,
+    payToken,
+    receiveValue,
+    tokenMinAmount,
+  } = watch();
 
   useEffect(() => {
     register(InputControlsNames.PAY_VALUE);
     register(InputControlsNames.RECEIVE_VALUE);
+    register(InputControlsNames.TOKEN_MIN_AMOUNT);
+    register(InputControlsNames.TOKEN_PRICE_IMPACT);
   }, [register]);
 
-  const onPayTokenChange = (nextToken: TokenInfo) => {
-    if (
-      nextToken.address !== SOL_TOKEN.address &&
-      receiveToken?.address !== SOL_TOKEN.address
-    ) {
-      setValue(InputControlsNames.RECEIVE_TOKEN, SOL_TOKEN);
-    }
+  const {
+    visible: loadingModalVisible,
+    open: openLoadingModal,
+    close: closeLoadingModal,
+  } = useLoadingModal();
+
+  const onPayTokenChange = (nextToken: TokenInfo): void => {
     setValue(InputControlsNames.PAY_VALUE, '');
     setValue(InputControlsNames.PAY_TOKEN, nextToken);
   };
 
-  const onReceiveTokenChange = (nextToken: TokenInfo) => {
-    if (
-      nextToken.address !== SOL_TOKEN.address &&
-      payToken?.address !== SOL_TOKEN.address
-    ) {
-      setValue(InputControlsNames.PAY_TOKEN, SOL_TOKEN);
-    }
+  const onReceiveTokenChange = (nextToken: TokenInfo): void => {
     setValue(InputControlsNames.RECEIVE_VALUE, '');
     setValue(InputControlsNames.RECEIVE_TOKEN, nextToken);
   };
 
-  const vaultInfo = null;
-
-  const changeSides = () => {
+  const changeSides = (): void => {
     const payValueBuf = payValue;
     const payTokenBuf = payToken;
 
@@ -111,115 +157,76 @@ export const useSwapForm = (
     setValue(InputControlsNames.RECEIVE_TOKEN, payTokenBuf);
   };
 
-  useEffect(() => {
-    clearInterval(intervalRef.current);
-    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
-      intervalRef.current = setInterval(() => {
-        fetchPoolInfo(payToken.address, receiveToken.address);
-      }, 5000);
-    }
-
-    return () => clearInterval(intervalRef.current);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken]);
+  const searchItems = useDebounce((payValue: number): void => {
+    setDebouncePayValue(payValue);
+  }, 400);
 
   useEffect(() => {
-    if (poolInfo && payToken !== receiveToken) {
-      const { poolConfig } = poolDataByMint.get(
-        payToken.address === SOL_TOKEN.address
-          ? receiveToken.address
-          : payToken.address,
-      );
-
-      const persentSlippage = new Percent(
-        Math.round(Number(slippage) * 100),
-        10_000,
-      );
-
-      const { amountOut, minAmountOut, priceImpact } = getOutputAmount({
-        poolKeys: poolConfig,
-        poolInfo,
-        payToken,
-        payAmount: Number(payValue),
-        receiveToken,
-        slippage: persentSlippage,
-      });
-
-      setTokenMinAmountOut(minAmountOut);
-      setTokenPriceImpact(priceImpact);
-      setValue(InputControlsNames.RECEIVE_VALUE, amountOut);
+    if (!payValue) {
+      setValue(InputControlsNames.RECEIVE_VALUE, '');
+      setValue(InputControlsNames.TOKEN_PRICE_IMPACT, 0);
+      setValue(InputControlsNames.TOKEN_MIN_AMOUNT, 0);
     }
+    searchItems(payValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payValue, payToken, receiveValue, receiveToken, poolInfo, setValue]);
+  }, [payValue, searchItems]);
 
   useEffect(() => {
-    if (payToken && receiveToken && payToken.address !== receiveToken.address) {
-      fetchPoolInfo(payToken.address, receiveToken.address);
+    (async () => {
+      if (prism && payToken && receiveToken) {
+        await prism.loadRoutes(payToken.address, receiveToken.address);
+        setRoutersIsLoaded([payToken.address, receiveToken.address]);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payToken, receiveToken, prism]);
+
+  useEffect(() => {
+    if (prism && payToken && receiveToken && debouncePayValue) {
+      const route = prism.getRoutes(Number(payValue))[0];
+
+      if (route) {
+        const { priceImpact, amountOut, minimumReceived } = route;
+        const maxPriceImpact = Math.min(100, priceImpact);
+
+        setValue(InputControlsNames.TOKEN_PRICE_IMPACT, maxPriceImpact);
+        setValue(InputControlsNames.RECEIVE_VALUE, String(amountOut));
+        setValue(InputControlsNames.TOKEN_MIN_AMOUNT, minimumReceived);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payToken, receiveToken]);
+  }, [debouncePayValue, routersIsLoaded]);
 
-  const isSwapBtnEnabled = poolInfo && connected && Number(payValue) > 0;
+  const isSwapBtnEnabled =
+    (prism as any)?.user &&
+    routersIsLoaded.length &&
+    wallet.connected &&
+    Number(payValue) > 0;
 
-  const valuationDifference: string = useMemo(() => {
-    if (!vaultInfo) {
-      return '';
+  const handleSwap = async (): Promise<void> => {
+    try {
+      closeConfirmModal();
+      openLoadingModal();
+
+      const routes = prism.getRoutes(Number(payValue));
+
+      prism.setSlippage(slippage);
+
+      await prism.swap(routes[0]);
+
+      notify({ message: 'Swapped successfully', type: NotifyType.SUCCESS });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      notify({ message: 'Swap failed', type: NotifyType.ERROR });
+    } finally {
+      closeLoadingModal();
     }
-
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    if (isBuy) {
-      const amountMarket = Number(receiveValue);
-
-      const amountLocked =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 2;
-
-      const difference = (amountMarket / amountLocked) * 100 - 100;
-
-      return isNaN(difference) ? '0' : difference.toFixed(2);
-    } else {
-      const amountMarketSOL = Number(receiveValue);
-
-      const amountLockedSOL =
-        (vaultInfo.lockedPricePerShare.toNumber() * Number(payValue)) / 10 ** 6;
-
-      const difference = (amountMarketSOL / amountLockedSOL) * 100 - 100;
-
-      return isNaN(difference) ? '0' : difference.toFixed(2);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vaultInfo, payValue, receiveValue, payToken, receiveToken]);
-
-  const handleSwap = async () => {
-    closeConfirmModal();
-
-    const isBuy = payToken.address === SOL_TOKEN.address;
-
-    //? Need to get suitable pool
-    const splToken = isBuy ? receiveToken : payToken;
-
-    const poolConfig = poolDataByMint.get(splToken.address).poolConfig;
-
-    const payAmount = new BN(Number(payValue) * 10 ** payToken.decimals);
-
-    const quoteAmount = new BN(
-      Number(tokenMinAmount) * 10 ** receiveToken.decimals,
-    );
-
-    await raydiumSwap({
-      baseToken: payToken,
-      baseAmount: payAmount,
-      quoteToken: receiveToken,
-      quoteAmount: quoteAmount,
-      poolConfig,
-    });
-
-    fetchPoolInfo(payToken.address, receiveToken.address);
   };
 
   return {
+    loadingModalVisible,
+    closeLoadingModal,
     formControl: control,
     isSwapBtnEnabled,
     receiveToken,
@@ -231,10 +238,10 @@ export const useSwapForm = (
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
-    valuationDifference,
     handleSwap,
     confirmModalVisible,
     openConfirmModal,
     closeConfirmModal,
+    swapTokenList,
   };
 };

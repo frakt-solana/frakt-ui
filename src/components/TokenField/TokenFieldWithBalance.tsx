@@ -8,7 +8,7 @@ import { RawUserTokensByMint, useUserTokens } from '../../contexts/userTokens';
 import TokenField, { TokenFieldProps } from './TokenField';
 import { useNativeAccount } from '../../utils/accounts';
 
-const getTokenBalance = (
+export const getTokenBalance = (
   token: TokenInfo,
   account: AccountInfo<Buffer>,
   rawUserTokensByMint: RawUserTokensByMint,
