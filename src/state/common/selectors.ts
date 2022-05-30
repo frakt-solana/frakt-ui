@@ -68,3 +68,8 @@ export const selectNotification = createSelector(
   [pathOr(null, ['common', 'notification'])],
   identity,
 );
+
+export const selectWalletModalVisible = createSelector(
+  [pathOr(false, ['common', 'walletModal', 'isVisible'])],
+  identity,
+);
