@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 
-import { TokenListContextInterface } from './tokenList.model';
 import { ADDITIONAL_SWAPPABLE_TOKENS_MINTS } from './tokenList.contants';
+import { TokenListContextInterface } from './tokenList.model';
 
 export const TokenListContext = React.createContext<TokenListContextInterface>({
   tokensList: [],
