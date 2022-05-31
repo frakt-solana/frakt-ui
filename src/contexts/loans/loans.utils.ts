@@ -18,9 +18,7 @@ export const calcLoanPoolReward = (
 
   const rewardCumulative = differentTime * apr + cumulative;
 
-  return (
-    ((rewardCumulative - stakedAtCumulative) * amount) / 1e4 / period / 1e9
-  );
+  return ((rewardCumulative - stakedAtCumulative) * amount) / 1e11 / 1e9;
 };
 
 export const calcLoanPoolApr = (liquidityPool: LiquidityPoolView): number => {
