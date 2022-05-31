@@ -1,8 +1,9 @@
 import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 
 import styles from './WalletNotConnected.module.scss';
-import { useWalletModal } from '../../../../contexts/WalletModal';
 import Button from '../../../../components/Button';
+import { commonActions } from '../../../../state/common/actions';
 
 interface WalletNotConnectedProps {
   className?: string;
@@ -13,7 +14,7 @@ export const WalletNotConnected: FC<WalletNotConnectedProps> = ({
   className,
   type,
 }) => {
-  const { setVisible } = useWalletModal();
+  const dispatch = useDispatch();
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
@@ -23,7 +24,9 @@ export const WalletNotConnected: FC<WalletNotConnectedProps> = ({
       <Button
         type="alternative"
         className={styles.connectButton}
-        onClick={() => setVisible(true)}
+        onClick={() =>
+          dispatch(commonActions.setWalletModal({ isVisible: true }))
+        }
       >
         Connect wallet
       </Button>

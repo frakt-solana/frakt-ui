@@ -2,7 +2,9 @@ export interface NotificationPayload {
   config?: { mode: 'error' | 'warning'; content: JSX.Element };
   isVisible: boolean;
 }
-
+export interface WalletModalPayload {
+  isVisible: boolean;
+}
 export interface SolanaHealthResponse {
   submitted: number;
   confirmed: number;

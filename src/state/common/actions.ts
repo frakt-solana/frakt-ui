@@ -2,12 +2,18 @@ import { Connection } from '@solana/web3.js';
 import { createCustomAction } from 'typesafe-actions';
 
 import { ServerError } from '../../utils/state';
-import { NotificationPayload, SolanaHealthResponse } from './types';
+import {
+  NotificationPayload,
+  WalletModalPayload,
+  SolanaHealthResponse,
+} from './types';
 
 export const commonTypes = {
   APP_INIT: 'common/APP_INIT',
   SET_CONNECTION: 'common/SET_CONNECTION',
   SET_NOTIFICATION: 'common/SET_NOTIFICATION',
+  SET_WALLET_MODAL: 'common/SET_WALLET_MODAL',
+  TOGGLE_WALLET_MODAL: 'common/TOGGLE_WALLET_MODAL',
   FETCH_SOLANA_HEALTH: 'common/FETCH_SOLANA_HEALTH',
   FETCH_SOLANA_HEALTH__PENDING: 'common/FETCH_SOLANA_HEALTH__PENDING',
   FETCH_SOLANA_HEALTH__FULFILLED: 'common/FETCH_SOLANA_HEALTH__FULFILLED',
@@ -26,7 +32,15 @@ export const commonActions = {
   ),
   setNotification: createCustomAction(
     commonTypes.SET_NOTIFICATION,
-    (data: NotificationPayload) => ({ payload: data }),
+    (payload: NotificationPayload) => ({ payload }),
+  ),
+  setWalletModal: createCustomAction(
+    commonTypes.SET_WALLET_MODAL,
+    (payload: WalletModalPayload) => ({ payload }),
+  ),
+  toggleWalletModal: createCustomAction(
+    commonTypes.TOGGLE_WALLET_MODAL,
+    () => null,
   ),
   fetchSolanaHealth: createCustomAction(
     commonTypes.FETCH_SOLANA_HEALTH,

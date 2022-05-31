@@ -1,21 +1,27 @@
-import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import styles from './styles.module.scss';
 import { WalletItem } from './WalletItem';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal } from '../../contexts/WalletModal';
 import CurrentUserTable from '../CurrentUserTable';
+import { commonActions } from '../../state/common/actions';
 
 interface WalletContentProps {
   className?: string;
 }
 
 const WalletContent = ({ className = '' }: WalletContentProps): JSX.Element => {
+  const dispatch = useDispatch();
   const { wallets, select, connected } = useWallet();
-  const { setVisible } = useWalletModal();
 
   return (
     <div className={`${styles.wrapper} ${className}`}>
-      <div className={styles.overlay} onClick={() => setVisible(false)} />
+      <div
+        className={styles.overlay}
+        onClick={() =>
+          dispatch(commonActions.setWalletModal({ isVisible: false }))
+        }
+      />
       <div className={`${styles.container} container`}>
         {connected ? (
           <CurrentUserTable className={styles.itemsContainer} />
@@ -26,7 +32,7 @@ const WalletContent = ({ className = '' }: WalletContentProps): JSX.Element => {
                 key={idx}
                 onClick={(): void => {
                   select(name);
-                  setVisible(false);
+                  dispatch(commonActions.setWalletModal({ isVisible: false }));
                 }}
                 imageSrc={iconUrl}
                 imageAlt={name}
