@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useHeaderState } from '../../../Layout/headerState';
-import { WhiteListedNFT } from '../../../../contexts/userTokens';
+import { UserWhiteListedNFT } from '../../../../contexts/userTokens';
 
 export const useSidebar = (
-  nfts: WhiteListedNFT[],
+  nfts: UserWhiteListedNFT[],
 ): {
   isSidebarVisible: boolean;
   isHeaderHidden: boolean;

@@ -2,14 +2,14 @@ import { FC } from 'react';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
-import { WhiteListedNFT } from '../../../../contexts/userTokens';
+import { UserWhiteListedNFT } from '../../../../contexts/userTokens';
 import { ShortTermFields } from '../ShortTermFields';
 import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { useBorrowForm } from './hooks';
 
 interface BorrowFormProps {
-  selectedNft: WhiteListedNFT;
+  selectedNft: UserWhiteListedNFT;
   onDeselect?: () => void;
 }
 

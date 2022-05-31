@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Scrollbar } from 'swiper';
 import classNames from 'classnames';
 
-import { WhiteListedNFT } from '../../../../contexts/userTokens';
+import { UserWhiteListedNFT } from '../../../../contexts/userTokens';
 import styles from './Slider.module.scss';
 
 SwiperCore.use([Navigation, Scrollbar]);
@@ -13,8 +13,8 @@ const sliderBreakpoints = {
 };
 
 interface SliderProps {
-  nfts: WhiteListedNFT[];
-  onDeselect?: (nft: WhiteListedNFT) => void;
+  nfts: UserWhiteListedNFT[];
+  onDeselect?: (nft: UserWhiteListedNFT) => void;
   className?: string;
 }
 

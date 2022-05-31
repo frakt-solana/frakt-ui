@@ -5,7 +5,7 @@ import {
   ArweaveMetadata,
 } from '../../utils/getArweaveMetadata';
 
-export interface WhiteListedNFT {
+export interface UserWhiteListedNFT {
   mint: string;
   name: string;
   imageUrl: string;
