@@ -6,7 +6,7 @@ import { proposeLoan } from '../../../../contexts/loans';
 import {
   UserNFT,
   useUserTokens,
-  UserWhiteListedNFT,
+  UserWhitelistedNFT,
 } from '../../../../contexts/userTokens';
 
 type UseBorrowForm = (props: {
@@ -18,7 +18,7 @@ type UseBorrowForm = (props: {
   closeConfirmModal: () => void;
   loadingModalVisible: boolean;
   closeLoadingModal: () => void;
-  onSubmit: (nft: UserWhiteListedNFT) => void;
+  onSubmit: (nft: UserWhitelistedNFT) => void;
 };
 
 export const useBorrowForm: UseBorrowForm = ({

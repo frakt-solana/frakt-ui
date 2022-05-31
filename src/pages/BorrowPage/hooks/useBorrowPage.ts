@@ -1,15 +1,15 @@
 import { useState, useMemo, Dispatch, SetStateAction } from 'react';
 
 import { useFakeInfinityScroll } from '../../../components/FakeInfinityScroll';
-import { UserWhiteListedNFT } from '../../../contexts/userTokens';
-import { useUserWhiteListedNFTs } from './useUserWhiteListedNFTs';
+import { UserWhitelistedNFT } from '../../../contexts/userTokens';
+import { useUserWhitelistedNFTs } from './useUserWhitelistedNFTs';
 import { useWalletModal } from '../../../contexts/WalletModal';
 import { useDebounce } from '../../../hooks';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
   setIsCloseSidebar: Dispatch<SetStateAction<boolean>>;
-  nfts: UserWhiteListedNFT[];
+  nfts: UserWhitelistedNFT[];
   setVisible: (nextState: boolean) => void;
   loading: boolean;
   searchItems: (search: string) => void;
@@ -19,8 +19,8 @@ export const useBorrowPage = (): {
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const { setVisible } = useWalletModal();
 
-  const { userWhiteListedNFTs, loading: userWhiteListedNFTsLoading } =
-    useUserWhiteListedNFTs();
+  const { userWhitelistedNFTs, loading: userWhiteListedNFTsLoading } =
+    useUserWhitelistedNFTs();
 
   const searchItems = useDebounce((search: string): void => {
     setItemsToShow(15);
@@ -28,10 +28,10 @@ export const useBorrowPage = (): {
   }, 300);
 
   const filteredNfts = useMemo(() => {
-    return (userWhiteListedNFTs || [])
+    return (userWhitelistedNFTs || [])
       .filter(({ name }) => name?.toUpperCase().includes(searchString))
       .sort(({ name: nameA }, { name: nameB }) => nameB?.localeCompare(nameA));
-  }, [searchString, userWhiteListedNFTs]);
+  }, [searchString, userWhitelistedNFTs]);
 
   const loading = userWhiteListedNFTsLoading || !filteredNfts.length;
 

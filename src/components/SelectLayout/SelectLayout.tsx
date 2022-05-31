@@ -1,14 +1,14 @@
 import { FC } from 'react';
 
 import Sidebar from './components/Sidebar';
-import { UserWhiteListedNFT } from '../../contexts/userTokens';
+import { UserWhitelistedNFT } from '../../contexts/userTokens';
 import { AppLayout } from '../Layout/AppLayout';
 import styles from './SelectLayout.module.scss';
 import { Container } from '../Layout';
 
 interface SelectLayoutProps {
-  selectedNfts: UserWhiteListedNFT[];
-  onDeselect?: (nft: UserWhiteListedNFT) => void;
+  selectedNfts: UserWhitelistedNFT[];
+  onDeselect?: (nft: UserWhitelistedNFT) => void;
   sidebarForm: JSX.Element;
   isCloseSidebar?: boolean;
 }

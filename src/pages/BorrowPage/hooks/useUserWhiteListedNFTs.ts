@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { UserWhiteListedNFT } from '../../../contexts/userTokens';
+import { UserWhitelistedNFT } from '../../../contexts/userTokens';
 
-export const useUserWhiteListedNFTs = (): {
+export const useUserWhitelistedNFTs = (): {
   loading: boolean;
-  userWhiteListedNFTs: UserWhiteListedNFT[];
+  userWhitelistedNFTs: UserWhitelistedNFT[];
 } => {
   const { connected, publicKey } = useWallet();
-  const [userWhiteListedNFTs, setUserWhiteListedNFTs] =
-    useState<UserWhiteListedNFT[]>(null);
+  const [userWhitelistedNFTs, setUserWhitelistedNFTs] =
+    useState<UserWhitelistedNFT[]>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
@@ -33,7 +33,7 @@ export const useUserWhiteListedNFTs = (): {
         return fetchNftsUser(response);
       }
 
-      setUserWhiteListedNFTs(response);
+      setUserWhitelistedNFTs(response);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -52,7 +52,7 @@ export const useUserWhiteListedNFTs = (): {
   }, [connected]);
 
   return {
-    userWhiteListedNFTs,
+    userWhitelistedNFTs,
     loading,
   };
 };
