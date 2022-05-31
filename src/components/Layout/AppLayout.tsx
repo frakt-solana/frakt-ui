@@ -5,7 +5,6 @@ import Header from '../Header';
 import NotificationBar from '../NotificationBar';
 import styles from './styles.module.scss';
 import { useWalletModal } from '../../contexts/WalletModal';
-import { useHealthModal } from '../../contexts/HealthModal';
 import { HeaderStateProvider, useHeaderState } from './headerState';
 
 interface LayoutProps {
@@ -22,7 +21,6 @@ export const Layout: FC<LayoutProps> = ({
   contentClassName = '',
 }) => {
   const { visible, setVisible } = useWalletModal();
-  const health = useHealthModal();
   const { isHeaderHidden, onContentScroll } = useHeaderState();
 
   useEffect(() => {
@@ -45,17 +43,7 @@ export const Layout: FC<LayoutProps> = ({
       >
         {children}
       </div>
-      <NotificationBar
-        mode={health?.config?.mode}
-        className={classNames(styles.notificationBar, {
-          [styles.notificationBarHide]: !health.visible,
-        })}
-        handleClose={() => {
-          health.setVisible(false);
-        }}
-      >
-        {health?.config?.content}
-      </NotificationBar>
+      <NotificationBar />
       <div className={styles.noise} />
     </div>
   );
