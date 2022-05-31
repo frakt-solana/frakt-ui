@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { AccountInfo, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -189,3 +189,6 @@ export const getNftCreators = (nft: UserNFT): string[] => {
       ?.map(({ address }) => address) || []
   );
 };
+
+export const getStakingPointsURL = (walletAddress: PublicKey): string =>
+  `https://frakt-stats.herokuapp.com/staking/${walletAddress}`;

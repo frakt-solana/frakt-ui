@@ -9,7 +9,7 @@ interface ShortTermFields {
   valuation?: string;
   ltv?: number;
   fee?: string;
-  feeDiscountPercent?: string;
+  feeDiscountPercent?: number;
   returnPeriodDays?: number;
 }
 

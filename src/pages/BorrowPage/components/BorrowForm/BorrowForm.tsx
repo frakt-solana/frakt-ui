@@ -7,6 +7,8 @@ import { ShortTermFields } from '../ShortTermFields';
 import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { useBorrowForm } from './hooks';
+import { useStakingPoints } from '../../hooks/useStakingPoints';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 interface BorrowFormProps {
   selectedNft: UserWhiteListedNFT;
@@ -39,9 +41,15 @@ export const BorrowForm: FC<BorrowFormProps> = ({
     feeDiscountPercents,
   } = selectedNft;
 
+  const { publicKey } = useWallet();
+  const { stakingPoints } = useStakingPoints(publicKey);
+
   const confirmText = `You are about to use ${name} as collateral for an instant loan of ${repayValue} SOL (incl. interest rate if applicable) that you commit to repay in full within ${returnPeriodDays} days. Proceed?`;
 
   const submitButtonDisabled = !repayValue || !ltvPercents || !valuation;
+
+  const feeDiscountPercentsWithStakingPoints =
+    Number(feeDiscountPercents) + stakingPoints;
 
   return (
     <>
@@ -53,7 +61,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
           valuation={valuation}
           ltv={ltvPercents}
           fee={fee}
-          feeDiscountPercent={feeDiscountPercents}
+          feeDiscountPercent={feeDiscountPercentsWithStakingPoints}
           returnPeriodDays={returnPeriodDays}
         />
       </div>
