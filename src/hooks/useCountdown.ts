@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
+import { useSolanaTimestamp } from './useSolanaTimestamp';
 
 type UseCountdown = (endTime: number) => {
   timeLeft: {
@@ -13,22 +14,29 @@ type UseCountdown = (endTime: number) => {
 
 export const useCountdown: UseCountdown = (endTime: number) => {
   const intervalIdRef = useRef<ReturnType<typeof setInterval>>(null);
-  const [currentTime, setCurrentTime] = useState<moment.Moment>(moment());
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
+  const solanaTimestamp = useSolanaTimestamp();
 
   const formatDateUnit = (value: number): string => {
     return value < 10 ? `0${value}` : `${value}`;
   };
 
   const endTimeMoment = moment.unix(endTime);
-  const timeDifference = moment.duration(endTimeMoment.diff(currentTime));
+  const timeDifference = moment.duration(
+    endTimeMoment.diff(moment.unix(currentTime)),
+  );
 
   useEffect(() => {
-    intervalIdRef.current = setInterval(() => {
-      setCurrentTime(moment());
-    }, 1000);
+    if (solanaTimestamp) {
+      setCurrentTime(solanaTimestamp);
+
+      intervalIdRef.current = setInterval(() => {
+        setCurrentTime((prev) => prev + 1);
+      }, 1000);
+    }
 
     return () => clearInterval(intervalIdRef.current);
-  }, []);
+  }, [solanaTimestamp]);
 
   useEffect(() => {
     timeDifference.asSeconds() < 0 && clearInterval(intervalIdRef.current);
