@@ -9,11 +9,11 @@ export const initialNotificationState = { isVisible: false, config: null };
 
 const fetchSolanaHealthReducer = createReducer(
   initialAsyncState,
-  createHandlers(commonTypes.FETCH_SOLANA_HEALTH, commonTypes),
+  createHandlers(commonTypes.FETCH_SOLANA_HEALTH),
 );
 const fetchSolanaTimestampReducer = createReducer(
   initialAsyncState,
-  createHandlers(commonTypes.FETCH_SOLANA_TIMESTAMP, commonTypes),
+  createHandlers(commonTypes.FETCH_SOLANA_TIMESTAMP),
 );
 const setConnectionReducer = createReducer(initialConnectionState, {
   [commonTypes.SET_CONNECTION]: (state, action) => ({

@@ -33,7 +33,7 @@ const fetchSolanaHealthSaga = function* () {
   }
 };
 
-const fetchSolanaTimestamp = function* () {
+const fetchSolanaTimestampSaga = function* () {
   yield put(commonActions.fetchSolanaTimestampPending());
   try {
     const connection = yield select(selectConnection);
@@ -41,7 +41,6 @@ const fetchSolanaTimestamp = function* () {
       try {
         const { absoluteSlot: lastSlot } = await connection.getEpochInfo();
         const solanaTimeUnix = await connection.getBlockTime(lastSlot);
-
         return solanaTimeUnix || moment().unix();
       } catch (error) {
         return moment().unix();
@@ -59,7 +58,7 @@ const commonSagas = function* (): Generator {
     takeLatest(commonTypes.FETCH_SOLANA_HEALTH, fetchSolanaHealthSaga),
   ]);
   yield all([
-    takeLatest(commonTypes.FETCH_SOLANA_TIMESTAMP, fetchSolanaTimestamp),
+    takeLatest(commonTypes.FETCH_SOLANA_TIMESTAMP, fetchSolanaTimestampSaga),
   ]);
 };
 
