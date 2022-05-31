@@ -17,18 +17,14 @@ export const useCountdown: UseCountdown = (endTime: number) => {
   const [currentTime, setCurrentTime] = useState<number | null>(null);
   const solanaTimestamp = useSolanaTimestamp();
 
-  console.log(solanaTimestamp);
-
   const formatDateUnit = (value: number): string => {
     return value < 10 ? `0${value}` : `${value}`;
   };
 
   const endTimeMoment = moment.unix(endTime);
   const timeDifference = moment.duration(
-    endTimeMoment.diff(moment(currentTime)),
+    endTimeMoment.diff(moment.unix(currentTime)),
   );
-
-  console.log(currentTime);
 
   useEffect(() => {
     if (solanaTimestamp) {
