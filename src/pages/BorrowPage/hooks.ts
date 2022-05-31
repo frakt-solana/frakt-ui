@@ -1,7 +1,16 @@
 import { Dictionary } from 'lodash';
-import { useState, useMemo, Dispatch, SetStateAction, useEffect } from 'react';
+import {
+  useState,
+  useMemo,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useDispatch } from 'react-redux';
+
 import { useWallet } from '@solana/wallet-adapter-react';
+import { PublicKey } from '@solana/web3.js';
 
 import { commonActions } from '../../state/common/actions';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
@@ -14,7 +23,7 @@ import {
   useLoansInitialFetch,
 } from '../../contexts/loans';
 import { useDebounce } from '../../hooks';
-import { getNftCreators } from '../../utils';
+import { getNftCreators, getStakingPointsURL } from '../../utils';
 
 const usePriceByCreator = (creatorsArray = []) => {
   const [priceByCreator, setPriceByCreator] = useState<
@@ -32,7 +41,6 @@ const usePriceByCreator = (creatorsArray = []) => {
 
       setPriceByCreator(priceByCreator);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       setLoading(false);
@@ -52,6 +60,30 @@ const usePriceByCreator = (creatorsArray = []) => {
   };
 };
 
+const useStakingPoints = (walletAddress: PublicKey) => {
+  const [stakingPoints, setStakingPoints] = useState<number>(0);
+
+  const getStakingPoints = useCallback(async (walletAddress) => {
+    try {
+      const { userScore } = await (
+        await fetch(getStakingPointsURL(walletAddress))
+      ).json();
+
+      setStakingPoints(Math.floor(userScore / 10));
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (walletAddress) {
+      void getStakingPoints(walletAddress);
+    }
+  }, [walletAddress, getStakingPoints]);
+
+  return { stakingPoints };
+};
+
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
   setIsCloseSidebar: Dispatch<SetStateAction<boolean>>;
@@ -68,8 +100,9 @@ export const useBorrowPage = (): {
   const loanPoolPubkey = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
 
   useLoansInitialFetch();
-  const { connected } = useWallet();
+  const { connected, publicKey } = useWallet();
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
+  const { stakingPoints } = useStakingPoints(publicKey);
   const {
     nfts: rawNfts,
     allNfts: rawNftsWithFrozen,
@@ -90,33 +123,34 @@ export const useBorrowPage = (): {
       !nftsLoading &&
       Object.keys(rawUserTokensByMint).length
     ) {
-      fetchUserNfts();
+      void fetchUserNfts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected, userTokensLoading, nftsLoading]);
 
   const interestRateDiscountPercent = useMemo(() => {
     if (rawNftsWithFrozen?.length && !nftsLoading) {
-      const amountOfDiscountNfts = rawNftsWithFrozen.reduce((amount, nft) => {
-        const creators = getNftCreators(nft);
+      const amountOfDiscountNfts =
+        rawNftsWithFrozen.reduce((amount, nft) => {
+          const creators = getNftCreators(nft);
 
-        const isDiscountNft = !!DISCOUNT_NFT_CREATORS?.find((creator) =>
-          creators.includes(creator),
-        );
+          const isDiscountNft = !!DISCOUNT_NFT_CREATORS?.find((creator) =>
+            creators.includes(creator),
+          );
 
-        if (isDiscountNft) {
-          return amount + 1;
-        }
+          if (isDiscountNft) {
+            return amount + 1;
+          }
 
-        return amount;
-      }, 0);
+          return amount;
+        }, 0) + stakingPoints;
 
       return amountOfDiscountNfts > 100 ? 100 : amountOfDiscountNfts;
     }
 
     return 0;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawNftsWithFrozen?.length, nftsLoading]);
+  }, [rawNftsWithFrozen?.length, nftsLoading, stakingPoints]);
 
   const searchItems = useDebounce((search: string) => {
     setItemsToShow(15);

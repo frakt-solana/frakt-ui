@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { AccountInfo, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import { WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -51,6 +51,38 @@ export const FRKT_TOKEN: TokenInfo = {
     website: 'https://frakt.xyz/',
   },
   tags: ['utility-token'],
+};
+
+export const USDT_TOKEN = {
+  chainId: 101,
+  address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  symbol: 'USDT',
+  name: 'USDT',
+  decimals: 6,
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.svg',
+  tags: ['stablecoin'],
+  extensions: {
+    coingeckoId: 'tether',
+    serumV3Usdc: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
+    website: 'https://tether.to/',
+  },
+};
+
+export const USDC_TOKEN = {
+  chainId: 101,
+  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  symbol: 'USDC',
+  name: 'USD Coin',
+  decimals: 6,
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
+  tags: ['stablecoin'],
+  extensions: {
+    coingeckoId: 'usd-coin',
+    serumV3Usdt: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
+    website: 'https://www.centre.io/',
+  },
 };
 
 export const decimalBNToString = (
@@ -157,3 +189,6 @@ export const getNftCreators = (nft: UserNFT): string[] => {
       ?.map(({ address }) => address) || []
   );
 };
+
+export const getStakingPointsURL = (walletAddress: PublicKey): string =>
+  `https://frakt-stats.herokuapp.com/staking/${walletAddress}`;

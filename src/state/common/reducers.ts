@@ -8,6 +8,7 @@ import {
 } from '../../utils/state/reducers';
 import { commonTypes } from '../../state/common/actions';
 
+export const initialConnectionState = { connection: null };
 export const initialNotificationState = { isVisible: false, config: null };
 export const initialWalletModalState = { isVisible: false };
 
@@ -15,6 +16,16 @@ const fetchSolanaHealthReducer = createReducer(
   initialAsyncState,
   createHandlers(commonTypes.FETCH_SOLANA_HEALTH),
 );
+const fetchSolanaTimestampReducer = createReducer(
+  initialAsyncState,
+  createHandlers(commonTypes.FETCH_SOLANA_TIMESTAMP),
+);
+const setConnectionReducer = createReducer(initialConnectionState, {
+  [commonTypes.SET_CONNECTION]: (state, action) => ({
+    ...state,
+    connection: action.payload,
+  }),
+});
 const setNotificationReducer = createReducer(initialNotificationState, {
   [commonTypes.SET_NOTIFICATION]: (state, action) => ({
     ...state,
@@ -34,7 +45,9 @@ const toggleWalletModalReducer = createReducer(initialWalletModalState, {
 });
 
 export default combineReducers({
+  connection: setConnectionReducer,
   fetchSolanaHealth: fetchSolanaHealthReducer,
+  fetchSolanaTimestamp: fetchSolanaTimestampReducer,
   notification: setNotificationReducer,
   walletModal: composeReducers(setWalletModalReducer, toggleWalletModalReducer),
 });

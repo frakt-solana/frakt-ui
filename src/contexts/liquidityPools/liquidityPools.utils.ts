@@ -160,14 +160,13 @@ export const calcTotalForCreateLiquidity = (
 export const calcFusionMainRewards = (
   mainRouter: MainRouterView,
   stakeAccount: StakeAccountView,
+  solanaTimestamp: number, //? Unix timestamp
 ): number => {
   if (!mainRouter || !stakeAccount) return 0;
 
-  const checkDate = Math.floor(Date.now() / 1000);
-
   const reward =
     ((Number(mainRouter.cumulative) +
-      Number(mainRouter.apr) * (checkDate - Number(mainRouter.lastTime)) -
+      Number(mainRouter.apr) * (solanaTimestamp - Number(mainRouter.lastTime)) -
       Number(stakeAccount.stakedAtCumulative)) *
       Number(stakeAccount.amount)) /
     (1e10 / Number(mainRouter.decimalsInput)) /
@@ -182,6 +181,7 @@ export const caclFusionSecondRewards = (
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
   mainRouter: MainRouterView,
+  solanaTimestamp: number, //? Unix timestamp
 ): number => {
   if (
     !stakeAccount ||
@@ -195,15 +195,12 @@ export const caclFusionSecondRewards = (
 
   if (Number(stakeAccount.stakeEnd) > 0) {
     const check_date1 = min(
-      new BN(Math.floor(Date.now() / 1000)),
+      new BN(solanaTimestamp),
       new BN(stakeAccount.stakeEnd),
     );
     check_date = min(check_date1, new BN(secondaryReward.endTime));
   } else {
-    check_date = min(
-      new BN(Math.floor(Date.now() / 1000)),
-      new BN(secondaryReward.endTime),
-    );
+    check_date = min(new BN(solanaTimestamp), new BN(secondaryReward.endTime));
   }
 
   if (secondaryReward && secondaryStakeAccount) {
