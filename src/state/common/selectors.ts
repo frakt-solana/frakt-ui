@@ -64,7 +64,17 @@ export const selectSolanaHealth = createSelector(
   },
 );
 
+export const selectSolanaTimestamp = createSelector(
+  [pathOr(null, ['common', 'fetchSolanaTimestamp', 'data'])],
+  identity,
+);
+
 export const selectNotification = createSelector(
   [pathOr(null, ['common', 'notification'])],
+  identity,
+);
+
+export const selectConnection = createSelector(
+  [pathOr(null, ['common', 'connection'])],
   identity,
 );

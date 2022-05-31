@@ -1,8 +1,10 @@
-import { all, call, takeLatest, put } from 'redux-saga/effects';
+import { selectConnection } from './selectors';
+import moment from 'moment';
+import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 
 import { commonTypes, commonActions } from './actions';
 
-const networkRequest = (params) =>
+const networkRequest = (params: any) =>
   new Promise((resolve, reject) => {
     try {
       fetch(params.url)
@@ -31,10 +33,33 @@ const fetchSolanaHealthSaga = function* () {
   }
 };
 
+const fetchSolanaTimestamp = function* () {
+  yield put(commonActions.fetchSolanaTimestampPending());
+  try {
+    const connection = yield select(selectConnection);
+    const data = yield call(async (connection) => {
+      try {
+        const { absoluteSlot: lastSlot } = await connection.getEpochInfo();
+        const solanaTimeUnix = await connection.getBlockTime(lastSlot);
+
+        return solanaTimeUnix || moment().unix();
+      } catch (error) {
+        return moment().unix();
+      }
+    }, connection);
+    yield put(commonActions.fetchSolanaTimestampFulfilled(data));
+  } catch (error) {
+    yield put(commonActions.fetchSolanaTimestampFailed(error));
+  }
+};
+
 const commonSagas = function* (): Generator {
   yield all([takeLatest(commonTypes.APP_INIT, appInitSaga)]);
   yield all([
     takeLatest(commonTypes.FETCH_SOLANA_HEALTH, fetchSolanaHealthSaga),
+  ]);
+  yield all([
+    takeLatest(commonTypes.FETCH_SOLANA_TIMESTAMP, fetchSolanaTimestamp),
   ]);
 };
 
