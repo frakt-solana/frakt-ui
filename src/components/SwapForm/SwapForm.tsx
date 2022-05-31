@@ -1,26 +1,23 @@
 import { FC, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-import SettingsIcon from '../../icons/SettingsIcon';
 import Button from '../Button';
-import { TokenFieldWithBalance } from '../TokenField';
-import styles from './styles.module.scss';
-import { ChangeSidesButton } from './ChangeSidesButton';
-import { SettingsModal } from './SettingsModal';
-import Tooltip from '../Tooltip';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
-import { SOL_TOKEN } from '../../utils';
+import { SlippageDropdown } from '../../pages/NFTPools/components/ModalParts';
 import { InputControlsNames } from '../SwapForm/hooks/useSwapForm';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { ChangeSidesButton } from './ChangeSidesButton';
+import { TokenFieldWithBalance } from '../TokenField';
 import { useSwapForm } from './hooks/useSwapForm';
 import { ConfirmModal } from '../ConfirmModal';
+import { LoadingModal } from '../LoadingModal';
+import styles from './styles.module.scss';
+import Tooltip from '../Tooltip';
+
+const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 interface SwapFormInterface {
-  defaultTokenMint: string;
+  defaultTokenMint?: string;
 }
-
-const MAX_PERCENT_VALUATION_DIFFERENCE = 15;
-const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
 const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   const {
@@ -35,27 +32,19 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     setSlippage,
     tokenMinAmount,
     tokenPriceImpact,
-    valuationDifference,
     handleSwap,
     confirmModalVisible,
     openConfirmModal,
     closeConfirmModal,
+    loadingModalVisible,
+    closeLoadingModal,
+    swapTokenList,
   } = useSwapForm(defaultTokenMint);
 
-  const { poolDataByMint } = useLiquidityPools();
-
-  const rawPoolsInfo = Array.from(poolDataByMint.values()).map(
-    ({ tokenInfo }) => tokenInfo,
-  );
-
-  const [slippageModalVisible, setSlippageModalVisible] =
-    useState<boolean>(false);
+  const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 
   const swapTokens = () => {
-    if (
-      Math.abs(Number(tokenPriceImpact)) > PRICE_IMPACT_WRANING_TRESHOLD ||
-      Math.abs(Number(valuationDifference)) > MAX_PERCENT_VALUATION_DIFFERENCE
-    ) {
+    if (Math.abs(Number(tokenPriceImpact)) > PRICE_IMPACT_WRANING_TRESHOLD) {
       openConfirmModal();
       return;
     }
@@ -65,11 +54,14 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
   return (
     <div>
       <div className={styles.settings}>
-        <SettingsIcon
-          width={24}
-          styles={{ cursor: 'pointer' }}
-          onClick={() => setSlippageModalVisible(true)}
+        <SlippageDropdown
+          slippage={slippage.toString()}
+          setSlippage={(slippage) => setSlippage(parseFloat(slippage))}
+          isSlippageDropdpwnVisible={isSlippageVisible}
+          setIsSlippageDropdpwnVisible={setIsSlippageVisible}
+          posRight
         />
+        <p>Slippage settings</p>
       </div>
       <Controller
         control={formControl}
@@ -79,15 +71,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             className={styles.input}
             value={value}
             onValueChange={onChange}
-            tokensList={
-              payToken?.address === SOL_TOKEN.address
-                ? [SOL_TOKEN]
-                : rawPoolsInfo
-            }
+            tokensList={swapTokenList}
             currentToken={payToken}
-            onTokenChange={
-              payToken?.address === SOL_TOKEN.address ? null : onPayTokenChange
-            }
+            onTokenChange={onPayTokenChange}
             modalTitle="Pay"
             label="Pay"
             showMaxButton
@@ -105,16 +91,8 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             value={value}
             onValueChange={onChange}
             currentToken={receiveToken}
-            tokensList={
-              receiveToken?.address === SOL_TOKEN.address
-                ? [SOL_TOKEN]
-                : rawPoolsInfo
-            }
-            onTokenChange={
-              receiveToken?.address === SOL_TOKEN.address
-                ? null
-                : onReceiveTokenChange
-            }
+            tokensList={swapTokenList}
+            onTokenChange={onReceiveTokenChange}
             modalTitle="Receive"
             label="Receive"
             disabled
@@ -136,7 +114,7 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         </span>
         <span className={styles.info__value}>{`${slippage}%`}</span>
       </div>
-      {tokenMinAmount && (
+      {!!tokenMinAmount && (
         <div className={styles.info}>
           <span className={styles.info__title}>
             <span className={styles.info__titleName}>Minimum Received</span>
@@ -151,11 +129,11 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
             </span>
           </span>
           <span className={styles.info__value}>
-            {tokenMinAmount} {receiveToken?.symbol || ''}
+            {tokenMinAmount.toFixed(4)} {receiveToken?.symbol || ''}
           </span>
         </div>
       )}
-      {tokenPriceImpact && (
+      {!!tokenPriceImpact && (
         <div className={styles.info}>
           <span className={styles.info__title}>
             <span className={styles.info__titleName}>Price Impact</span>
@@ -167,24 +145,9 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
               <QuestionCircleOutlined />
             </Tooltip>
           </span>
-          <span className={styles.info__value}>{`${tokenPriceImpact}%`}</span>
-        </div>
-      )}
-      {valuationDifference && (
-        <div className={styles.info}>
-          <span className={styles.info__title}>
-            <span className={styles.info__titleName}>Valuation Difference</span>
-            <Tooltip
-              placement="top"
-              trigger="hover"
-              overlay="Swap price difference from the initial price per fraktion set for buyout"
-            >
-              <QuestionCircleOutlined />
-            </Tooltip>
-          </span>
-          <span
-            className={styles.info__value}
-          >{`${valuationDifference}%`}</span>
+          <span className={styles.info__value}>{`${tokenPriceImpact.toFixed(
+            2,
+          )}%`}</span>
         </div>
       )}
       <Button
@@ -195,12 +158,6 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
       >
         Swap
       </Button>
-      <SettingsModal
-        visible={slippageModalVisible}
-        slippage={slippage}
-        setSlippage={setSlippage}
-        onCancel={() => setSlippageModalVisible(false)}
-      />
       <ConfirmModal
         title={`Continue with\n current price?`}
         visible={confirmModalVisible}
@@ -213,6 +170,10 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
         overpriced/underpriced.\n
         Do you wish to perform the swap anyway?`}
         onSubmit={handleSwap}
+      />
+      <LoadingModal
+        visible={loadingModalVisible}
+        onCancel={closeLoadingModal}
       />
     </div>
   );

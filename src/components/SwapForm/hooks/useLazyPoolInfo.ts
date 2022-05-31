@@ -1,4 +1,3 @@
-import { WSOL } from '@raydium-io/raydium-sdk';
 import { useState } from 'react';
 
 import {
@@ -27,13 +26,13 @@ export const useLazyPoolInfo = (): {
     try {
       setLoading(true);
 
-      //? Token mint (not SOL)
-      const tokenMint =
-        payTokenMint === WSOL.mint ? receiveTokenMint : payTokenMint;
+      const poolTokenIsPay = poolDataByMint.has(payTokenMint);
+
+      const tokenMint = poolTokenIsPay ? payTokenMint : receiveTokenMint;
 
       const poolData = poolDataByMint.get(tokenMint);
 
-      const info = (await fetchRaydiumPoolsInfo([poolData.poolConfig]))[0];
+      const info = (await fetchRaydiumPoolsInfo([poolData?.poolConfig]))[0];
 
       setPoolInfo(info);
     } catch (err) {

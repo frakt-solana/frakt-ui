@@ -24,6 +24,7 @@ import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
+import { PrismProvider } from './contexts/prism';
 
 const wallets = [
   getPhantomWallet(),
@@ -45,7 +46,9 @@ const App: FC = () => {
                 <LiquidityPoolsProvider>
                   <NftPoolsProvider>
                     <LoansProvider>
-                      <Router />
+                      <PrismProvider>
+                        <Router />
+                      </PrismProvider>
                     </LoansProvider>
                   </NftPoolsProvider>
                 </LiquidityPoolsProvider>
