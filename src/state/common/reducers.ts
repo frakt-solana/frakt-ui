@@ -13,7 +13,7 @@ export const initialWalletModalState = { isVisible: false };
 
 const fetchSolanaHealthReducer = createReducer(
   initialAsyncState,
-  createHandlers(commonTypes.FETCH_SOLANA_HEALTH, commonTypes),
+  createHandlers(commonTypes.FETCH_SOLANA_HEALTH),
 );
 const setNotificationReducer = createReducer(initialNotificationState, {
   [commonTypes.SET_NOTIFICATION]: (state, action) => ({
