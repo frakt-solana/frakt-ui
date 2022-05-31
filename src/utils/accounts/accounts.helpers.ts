@@ -75,9 +75,13 @@ export const getAllUserTokens: getAllUserTokens = async ({
     tokenAccounts?.map(({ pubkey, account }) => {
       const parsedData = AccountLayout.decode(account.data);
 
-      const amountNum = parsedData.amount
-        ? new BN(parsedData.amount, 10, 'le')?.toNumber()
-        : -1;
+      const amountNum = (() => {
+        try {
+          return new BN(parsedData.amount, 10, 'le')?.toNumber();
+        } catch (error) {
+          return -1;
+        }
+      })();
 
       return {
         tokenAccountPubkey: pubkey.toBase58(),

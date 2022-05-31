@@ -97,15 +97,15 @@ body input.valueInput {
 }
 
 .useMaxBtn {
-  @include resetBtnStyle;
-
   & {
-    border: 1px solid var(--gray-color-2);
+    border: 1px solid var(--accent-color-1);
   }
 
+  cursor: pointer;
+  background: var(--accent-shadow-color);
+  transition: background-color var(--transition-1);
   font: var(--font-btn-small);
   text-transform: uppercase;
-  transition: background var(--transition-1), border-color var(--transition-1);
   min-width: 116px;
   display: flex;
   align-items: center;
@@ -113,7 +113,7 @@ body input.valueInput {
   padding: 4px 0 2px;
 
   &:hover {
-    background: var(--gray-color-2);
+    background: var(--accent-color-1);
   }
 
   @media screen and (max-width: 440px) {

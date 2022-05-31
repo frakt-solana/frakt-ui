@@ -1,6 +1,6 @@
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
-import { HIDDEN_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
+import { VISIBLE_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
 import {
   convertStringLiquidityPoolKeysV4ToPublicKeys,
   LiquidityPoolKeysV4String,
@@ -24,8 +24,8 @@ class API {
 
     const nftPoolData = parseRawNftPools(rawPoolsData);
 
-    return nftPoolData.filter(
-      ({ publicKey }) => !HIDDEN_POOLS.includes(publicKey.toBase58()),
+    return nftPoolData.filter(({ publicKey }) =>
+      VISIBLE_POOLS.includes(publicKey.toBase58()),
     );
   }
 
