@@ -18,6 +18,7 @@ import {
   AccountInfoParsed,
   getTokenAccountBalance,
 } from '../../../utils/accounts';
+import { useSolanaTimestamp } from '../../../hooks';
 
 interface RewardsInterface {
   baseToken: TokenInfo;
@@ -34,6 +35,7 @@ const Rewards: FC<RewardsInterface> = ({
 }) => {
   const { harvestLiquidity, stakeLiquidity } = useLiquidityPools();
   const { tokensList } = useTokenListContext();
+  const solanaTimestamp = useSolanaTimestamp();
 
   const { mainRouter, stakeAccount, secondaryReward, secondaryStakeAccount } =
     fusionPoolInfo;
@@ -72,7 +74,11 @@ const Rewards: FC<RewardsInterface> = ({
           {stakeAccount ? (
             <div className={styles.rewardInfo}>
               <p>
-                {calcFusionMainRewards(mainRouter, stakeAccount)?.toFixed(5)}{' '}
+                {calcFusionMainRewards(
+                  mainRouter,
+                  stakeAccount,
+                  solanaTimestamp,
+                )?.toFixed(5)}{' '}
                 <span>{rewardInfoByMint[0]?.symbol}</span>
               </p>
               {secondaryRewardInfoByMint.map((reward) => (
@@ -83,6 +89,7 @@ const Rewards: FC<RewardsInterface> = ({
                       reward,
                       secondaryStakeAccount,
                       mainRouter,
+                      solanaTimestamp,
                     )?.toFixed(5)}
                   </span>{' '}
                   <span>{reward.tokenInfo[0].symbol}</span>
@@ -108,6 +115,7 @@ const Rewards: FC<RewardsInterface> = ({
           {calcFusionMainRewards(
             fusionPoolInfo.mainRouter,
             fusionPoolInfo.stakeAccount,
+            solanaTimestamp,
           ) > 1e-5 && (
             <Button
               type="tertiary"
