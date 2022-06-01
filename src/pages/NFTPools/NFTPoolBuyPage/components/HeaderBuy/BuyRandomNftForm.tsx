@@ -1,4 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Select } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -7,9 +8,9 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import styles from './HeaderBuy.module.scss';
 import { ArrowDownBtn, SolanaIcon } from '../../../../../icons';
 import { useNativeAccount } from '../../../../../utils/accounts';
-import { useWalletModal } from '../../../../../contexts/WalletModal';
 import Button from '../../../../../components/Button';
 import { SlippageDropdown } from '../../../components/ModalParts';
+import { commonActions } from '../../../../../state/common/actions';
 
 const { Option } = Select;
 
@@ -35,10 +36,10 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
   slippage,
   setSlippage,
 }) => {
+  const dispatch = useDispatch();
   const poolTokenPriceSOL = parseFloat(poolTokenPrice);
 
   const { connected } = useWallet();
-  const { setVisible } = useWalletModal();
   const { account } = useNativeAccount();
 
   const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
@@ -127,7 +128,12 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
       <Button
         type="alternative"
         className={styles.buyButton}
-        onClick={connected ? () => onBuy(token === Token.SOL) : setVisible}
+        onClick={
+          connected
+            ? () => onBuy(token === Token.SOL)
+            : (arg) =>
+                dispatch(commonActions.setWalletModal({ isVisible: arg }))
+        }
         disabled={connected && isBtnDisabled}
       >
         {connected ? 'Buy' : 'Connect wallet'}

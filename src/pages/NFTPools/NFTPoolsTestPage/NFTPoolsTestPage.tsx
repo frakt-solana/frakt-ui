@@ -1,5 +1,6 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { FC, useState } from 'react';
+
 import Button from '../../../components/Button';
 import { Input } from '../../../components/Input';
 import { Container } from '../../../components/Layout';
@@ -10,9 +11,10 @@ import {
   addToWhitelistTransaction,
   createCommunityPool,
 } from '../../../contexts/nftPools/transactions';
+import { useConnection } from '../../../hooks';
 
 export const NFTPoolsTestPage: FC = () => {
-  const { connection } = useConnection();
+  const connection = useConnection();
   const wallet = useWallet();
 
   const [communityPoolAddress, setCommunityPoolAddress] = useState('');

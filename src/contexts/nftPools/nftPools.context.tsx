@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
-import { usePolling } from '../../hooks';
+import { useConnection, usePolling } from '../../hooks';
 import { FetchDataFunc, NftPoolsContextValues } from './nftPools.model';
 import { Cacher } from '../../utils/cacher';
 import { NftPoolData } from '../../utils/cacher/nftPools';
@@ -24,7 +24,7 @@ export const NftPoolsProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const { connection } = useConnection();
+  const connection = useConnection();
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(false);

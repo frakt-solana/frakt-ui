@@ -1,9 +1,10 @@
 import { useState, createContext, useEffect } from 'react';
 import { Prism } from '@prism-hq/prism-ag';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { PrismContextValues, PrismProviderValues } from './prism.model';
 import { useTokenListContext } from '../TokenList';
+import { useConnection } from '../../hooks';
 
 export const PrismContext = createContext<PrismContextValues>({
   loading: true,
@@ -12,7 +13,7 @@ export const PrismContext = createContext<PrismContextValues>({
 
 export const PrismProvider: PrismProviderValues = ({ children }) => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const { tokensList, loading: tokensListLoading } = useTokenListContext();
   const [prismInitialised, setPrismInitialised] = useState<boolean>(false);

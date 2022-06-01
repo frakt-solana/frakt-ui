@@ -7,12 +7,14 @@ import {
   useEffect,
   useCallback,
 } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 
+import { commonActions } from '../../state/common/actions';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
-import { useWalletModal } from '../../contexts/WalletModal';
 import {
   DISCOUNT_NFT_CREATORS,
   getNftMarketLowerPricesByCreators,
@@ -111,7 +113,7 @@ export const useBorrowPage = (): {
   } = useUserTokens();
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const [searchString, setSearchString] = useState<string>('');
-  const { setVisible } = useWalletModal();
+  const dispatch = useDispatch();
   const { loanDataByPoolPublicKey, loading: loansLoading } = useLoans();
 
   useEffect(() => {
@@ -232,7 +234,8 @@ export const useBorrowPage = (): {
     isCloseSidebar,
     setIsCloseSidebar,
     nfts: filteredNfts,
-    setVisible,
+    setVisible: (arg) =>
+      dispatch(commonActions.setWalletModal({ isVisible: arg })),
     loading: connected ? loading : false,
     searchItems,
     loanData,

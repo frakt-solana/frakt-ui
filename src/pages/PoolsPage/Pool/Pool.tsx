@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
-import { useWalletModal } from '../../../contexts/WalletModal';
 import { PoolCardHeader } from './components/PoolCardHeader';
 import { useUserSplAccount } from '../../../utils/accounts';
 import DepositModal from '../../../components/DepositModal';
@@ -41,7 +40,6 @@ const Pool: FC<PoolInterface> = ({
 }) => {
   const { tokenInfo, poolConfig } = poolData;
   const { connected } = useWallet();
-  const { setVisible } = useWalletModal();
   const [depositModalVisible, setDepositModalVisible] =
     useState<boolean>(false);
 
@@ -106,10 +104,7 @@ const Pool: FC<PoolInterface> = ({
         />
       )}
       {isOpen && !connected && (
-        <PoolDetailsWalletDisconnected
-          setWalletModalVisible={setVisible}
-          className={styles.poolDetails}
-        />
+        <PoolDetailsWalletDisconnected className={styles.poolDetails} />
       )}
       <DepositModal
         visible={depositModalVisible}
