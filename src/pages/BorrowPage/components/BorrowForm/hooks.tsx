@@ -1,8 +1,10 @@
+import { useWallet } from '@solana/wallet-adapter-react';
+
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
 import { UserNFT, useUserTokens } from '../../../../contexts/userTokens';
 import { proposeLoan } from '../../../../contexts/loans';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useConnection } from '../../../../hooks';
 
 type UseBorrowForm = (props: {
   onDeselect?: () => void;
@@ -28,7 +30,7 @@ export const useBorrowForm: UseBorrowForm = ({
   onSubmit;
 } => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const {
     visible: confirmModalVisible,

@@ -1,5 +1,5 @@
 import { FC, useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
 
@@ -7,7 +7,7 @@ import styles from './NFTPoolSwapPage.module.scss';
 import { HeaderSwap } from './components/HeaderSwap';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { WalletNotConnected } from '../components/WalletNotConnected';
-import { usePublicKeyParam } from '../../../hooks';
+import { useConnection, usePublicKeyParam } from '../../../hooks';
 import {
   filterWhitelistedNFTs,
   useNftPool,
@@ -50,7 +50,7 @@ const useNftsSwap = ({
   poolTokenInfo: TokenInfo;
 }) => {
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { depositNftToCommunityPool, getLotteryTicket } = useNftPools();
   const { removeTokenOptimistic } = useUserTokens();
   const { balance } = useNftPoolTokenBalance(pool);

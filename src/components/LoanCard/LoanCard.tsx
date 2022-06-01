@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
@@ -12,7 +12,7 @@ import {
   getAmountToReturnForPriceBasedLoan,
 } from '../../contexts/loans';
 import styles from './LoanCard.module.scss';
-import { useCountdown } from '../../hooks';
+import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
 
@@ -23,7 +23,7 @@ interface LoanCardProps {
 
 const usePaybackLoan = () => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { removeLoanOptimistic } = useLoans();
 
   const {

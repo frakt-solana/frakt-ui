@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { LoanView } from '@frakters/nft-lending-v2';
 
 import {
@@ -12,7 +12,7 @@ import {
   LoanWithArweaveMetadata,
 } from './loans.model';
 import { fetchLoanDataByPoolPublicKey } from './loans.helpers';
-import { usePolling } from '../../hooks';
+import { useConnection, usePolling } from '../../hooks';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
@@ -32,7 +32,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const [loanDataByPoolPublicKey, setLoanDataByPoolPublicKey] =
     useState<LoanDataByPoolPublicKey>(new Map<string, LoanData>());

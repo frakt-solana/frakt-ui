@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import BN from 'bn.js';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
 
 import {
@@ -16,6 +16,7 @@ import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.m
 import { useLoadingModal } from '../LoadingModal';
 import { getTokenAccount } from '../../utils/accounts';
 import { PublicKey } from '@solana/web3.js';
+import { useConnection } from '../../hooks';
 
 export enum InputControlsNames {
   QUOTE_VALUE = 'quoteValue',
@@ -56,7 +57,7 @@ export const useDeposit = (
   const { poolInfo, fetchPoolInfo } = useLazyPoolInfo();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const { control, watch, register, setValue } = useForm({
     defaultValues: {

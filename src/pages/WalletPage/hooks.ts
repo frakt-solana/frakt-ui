@@ -1,5 +1,4 @@
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +9,7 @@ import {
   useNameServiceInfo,
 } from '../../utils/nameService';
 import { TokenInfoWithAmount } from './components/TokensTab/TokensTab';
+import { useConnection } from '../../hooks';
 
 type UseWalletTokens = (props: { walletPubkey: string }) => {
   userTokens: TokenInfoWithAmount[];
@@ -22,7 +22,7 @@ export const useWalletTokens: UseWalletTokens = ({ walletPubkey }) => {
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const fetchUserTokens = async () => {
     try {
@@ -74,7 +74,7 @@ type UseNameService = (props: { walletPubkey: string }) => {
 };
 
 export const useNameService: UseNameService = ({ walletPubkey }) => {
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();
