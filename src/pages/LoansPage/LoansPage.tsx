@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
-import { MyLoansTab } from './components/MyLoansTab';
 import { AppLayout } from '../../components/Layout/AppLayout';
+import { MyLoansTab } from './components/MyLoansTab';
 import BorrowBanner from './components/BorrowBanner';
 import { Container } from '../../components/Layout';
 import LendingPool from './components/LendingPool';
