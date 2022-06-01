@@ -13,13 +13,15 @@ export const useBorrowPage = (): {
   setVisible: (nextState: boolean) => void;
   loading: boolean;
   searchItems: (search: string) => void;
+  pagination: { skip: number; limit: number };
+  fetchData: () => void;
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const [searchString, setSearchString] = useState<string>('');
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const { setVisible } = useWalletModal();
 
-  const { userWhitelistedNFTs, loading: userWhiteListedNFTsLoading } =
+  const { userWhitelistedNFTs, pagination, fetchData } =
     useUserWhitelistedNFTs();
 
   const searchItems = useDebounce((search: string): void => {
@@ -30,10 +32,10 @@ export const useBorrowPage = (): {
   const filteredNfts = useMemo(() => {
     return (userWhitelistedNFTs || [])
       .filter(({ name }) => name?.toUpperCase().includes(searchString))
-      .sort(({ name: nameA }, { name: nameB }) => nameB?.localeCompare(nameA));
+      .sort(({ name: nameA }, { name: nameB }) => nameA?.localeCompare(nameB));
   }, [searchString, userWhitelistedNFTs]);
 
-  const loading = userWhiteListedNFTsLoading || !filteredNfts.length;
+  const loading = !userWhitelistedNFTs.length || !filteredNfts.length;
 
   return {
     isCloseSidebar,
@@ -42,5 +44,7 @@ export const useBorrowPage = (): {
     setVisible,
     loading,
     searchItems,
+    pagination,
+    fetchData,
   };
 };

@@ -1,58 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { UserWhitelistedNFT } from '../../../contexts/userTokens';
 
 export const useUserWhitelistedNFTs = (): {
-  loading: boolean;
   userWhitelistedNFTs: UserWhitelistedNFT[];
+  pagination: { skip: number; limit: number };
+  fetchData: () => void;
 } => {
-  const { connected, publicKey } = useWallet();
-  const [userWhitelistedNFTs, setUserWhitelistedNFTs] =
-    useState<UserWhitelistedNFT[]>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-
+  const ITEMS_PER_PAGE = 10;
   const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
 
-  let skip = 0;
+  const [userWhitelistedNFTs, setUserWhitelistedNFTs] = useState<
+    UserWhitelistedNFT[]
+  >([]);
 
-  const fetchNftsUser = async (previousResponse = []): Promise<void> => {
-    const limit = 10;
+  const { publicKey } = useWallet();
 
-    try {
-      const newResponse = await (
-        await fetch(
-          `${URL}/${publicKey?.toBase58()}?skip=${skip}&limit=${limit}`,
-        )
-      ).json();
+  const [pagination, setPagination] = useState({
+    skip: 0,
+    limit: ITEMS_PER_PAGE,
+  });
 
-      const response = [...previousResponse, ...newResponse];
+  const fetchData = async () => {
+    const fullURL = `${URL}/${publicKey?.toBase58()}?skip=${
+      pagination.skip
+    }&limit=${pagination.limit}`;
 
-      if (newResponse.length) {
-        skip += limit;
-        return fetchNftsUser(response);
-      }
+    const response = await fetch(fullURL);
+    const nfts = await response.json();
 
-      setUserWhitelistedNFTs(response);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
-    } finally {
-      setLoading(false);
+    if (nfts) {
+      setUserWhitelistedNFTs([...userWhitelistedNFTs, ...nfts]);
+
+      setPagination({
+        ...pagination,
+        skip: pagination.skip + ITEMS_PER_PAGE,
+      });
     }
   };
 
   useEffect(() => {
-    (async () => {
-      if (connected) {
-        await fetchNftsUser();
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected]);
+    if (publicKey) {
+      fetchData();
+    }
+    // eslint-disable-next-line
+  }, [publicKey]);
 
   return {
+    pagination,
+    fetchData,
     userWhitelistedNFTs,
-    loading,
   };
 };

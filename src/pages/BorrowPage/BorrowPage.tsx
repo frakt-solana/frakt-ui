@@ -5,9 +5,7 @@ import { LinkWithArrow } from '../../components/LinkWithArrow';
 import { SearchInput } from '../../components/SearchInput';
 import NFTCheckbox from '../../components/NFTCheckbox';
 import { BorrowForm } from './components/BorrowForm';
-import FakeInfinityScroll, {
-  useFakeInfinityScroll,
-} from '../../components/FakeInfinityScroll';
+import FakeInfinityScroll from '../../components/FakeInfinityScroll';
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
@@ -17,10 +15,9 @@ const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
 
 const BorrowPage: FC = () => {
   const [search, setSearch] = useState<string>('');
-  const { itemsToShow, next } = useFakeInfinityScroll(15);
   const { connected, onDeselect, onSelect, selectedNfts } = useSelectLayout();
 
-  const { isCloseSidebar, setVisible, loading, searchItems, nfts } =
+  const { isCloseSidebar, fetchData, setVisible, loading, searchItems, nfts } =
     useBorrowPage();
 
   return (
@@ -70,8 +67,8 @@ const BorrowPage: FC = () => {
 
       {connected && (
         <FakeInfinityScroll
-          itemsToShow={itemsToShow}
-          next={next}
+          itemsToShow={nfts.length}
+          next={fetchData}
           isLoading={loading}
           wrapperClassName={styles.nftsList}
           emptyMessage=""
