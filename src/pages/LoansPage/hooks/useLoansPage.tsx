@@ -92,6 +92,8 @@ export const useLoansPage = (): {
         solanaTimestamp,
       );
 
+      const onlyPositiveReward = rewardAmount < 0 ? 0 : rewardAmount;
+
       return {
         apr,
         loans: activeUserLoans.length || 0,
@@ -99,7 +101,7 @@ export const useLoansPage = (): {
         depositAmount: depositAccount?.amount / 1e9 || 0,
         totalBorrowed: totalBorrowed / 1e9 || 0,
         utilizationRate,
-        rewardAmount,
+        rewardAmount: onlyPositiveReward,
       };
     }
   }, [loanDataByPoolPublicKey, wallet, solanaTimestamp]);
