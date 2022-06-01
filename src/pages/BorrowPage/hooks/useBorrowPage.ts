@@ -35,7 +35,7 @@ export const useBorrowPage = (): {
       .sort(({ name: nameA }, { name: nameB }) => nameA?.localeCompare(nameB));
   }, [searchString, userWhitelistedNFTs]);
 
-  const loading = !userWhitelistedNFTs.length || !filteredNfts.length;
+  const loading = !filteredNfts.length;
 
   return {
     isCloseSidebar,
