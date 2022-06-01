@@ -208,3 +208,9 @@ export const fetchSolanaPriceUSD = async (): Promise<number> => {
 };
 export const getStakingPointsURL = (walletAddress: PublicKey): string =>
   `https://frakt-stats.herokuapp.com/staking/${walletAddress}`;
+
+export const getCorrectSolWalletBalance = (
+  solWalletBalance: string,
+): string => {
+  return solWalletBalance.split(',').join('');
+};
