@@ -38,18 +38,15 @@ const fetchSolanaTimestampSaga = function* () {
   yield put(commonActions.fetchSolanaTimestampPending());
   try {
     const connection = yield select(selectConnection);
-    const data = yield call(
-      async ({ connection }: { connection: Connection }) => {
-        try {
-          const { absoluteSlot: lastSlot } = await connection.getEpochInfo();
-          const solanaTimeUnix = await connection.getBlockTime(lastSlot);
-          return solanaTimeUnix || moment().unix();
-        } catch (error) {
-          return moment().unix();
-        }
-      },
-      connection,
-    );
+    const data = yield call(async (connection: Connection) => {
+      try {
+        const { absoluteSlot: lastSlot } = await connection.getEpochInfo();
+        const solanaTimeUnix = await connection.getBlockTime(lastSlot);
+        return solanaTimeUnix || moment().unix();
+      } catch (error) {
+        return moment().unix();
+      }
+    }, connection);
     yield put(commonActions.fetchSolanaTimestampFulfilled(data));
   } catch (error) {
     yield put(commonActions.fetchSolanaTimestampFailed(error));

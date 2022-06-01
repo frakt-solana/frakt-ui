@@ -80,6 +80,6 @@ export const selectWalletModalVisible = createSelector(
 );
 
 export const selectConnection = createSelector(
-  [pathOr(null, ['common', 'connection'])],
+  [pathOr(null, ['common', 'connection', 'connection'])],
   identity,
 );
