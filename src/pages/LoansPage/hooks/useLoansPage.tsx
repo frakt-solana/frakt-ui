@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { Tab, useTabs } from '../../../components/Tabs';
-import { useDebounce, useSolanaTimestamp } from '../../../hooks';
+import { useConnection, useDebounce, useSolanaTimestamp } from '../../../hooks';
 import {
   calcLoanPoolApr,
   calcLoanPoolReward,
@@ -46,7 +46,7 @@ export const useLoansPage = (): {
   const solanaTimestamp = useSolanaTimestamp();
 
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const {
     tabs: loanTabs,

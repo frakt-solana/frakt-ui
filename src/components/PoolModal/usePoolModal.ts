@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useForm } from 'react-hook-form';
 
 import { useNativeAccount } from '../../utils/accounts';
@@ -9,6 +9,7 @@ import {
   depositLiquidity as depositTxn,
   unstakeLiquidity as unstakeTxn,
 } from '../../contexts/loans';
+import { useConnection } from '../../hooks';
 
 export enum InputControlsNames {
   DEPOSIT_VALUE = 'depositValue',
@@ -47,7 +48,7 @@ export const usePoolModal = (
 } => {
   const liquidityPool = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { watch, register, setValue } = useForm({
     defaultValues: {
       [InputControlsNames.DEPOSIT_VALUE]: '',
