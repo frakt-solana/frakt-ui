@@ -1,13 +1,13 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
 import { proposeLoan } from '../../../../contexts/loans';
 import {
-  UserNFT,
-  useUserTokens,
   UserWhitelistedNFT,
+  useUserTokens,
 } from '../../../../contexts/userTokens';
+import { useConnection } from '../../../../hooks';
 
 type UseBorrowForm = (props: {
   onDeselect?: () => void;
@@ -33,7 +33,7 @@ export const useBorrowForm: UseBorrowForm = ({
   onSubmit;
 } => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const {
     visible: confirmModalVisible,
@@ -49,7 +49,7 @@ export const useBorrowForm: UseBorrowForm = ({
 
   const { removeTokenOptimistic } = useUserTokens();
 
-  const onSubmit = async (nft: UserNFT) => {
+  const onSubmit = async (nft: UserWhitelistedNFT) => {
     try {
       openLoadingModal();
 

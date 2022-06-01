@@ -23,7 +23,9 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
   wallet,
   commitment = 'finalized',
 }) => {
-  const { blockhash } = await connection.getRecentBlockhash();
+  const { blockhash, lastValidBlockHeight } =
+    await connection.getLatestBlockhash();
+
   transaction.recentBlockhash = blockhash;
   transaction.feePayer = wallet.publicKey;
 
@@ -43,5 +45,12 @@ export const signAndConfirmTransaction: SignAndConfirmTransaction = async ({
     type: NotifyType.INFO,
   });
 
-  await connection.confirmTransaction(txid, commitment);
+  await connection.confirmTransaction(
+    {
+      signature: txid,
+      blockhash,
+      lastValidBlockHeight,
+    },
+    commitment,
+  );
 };

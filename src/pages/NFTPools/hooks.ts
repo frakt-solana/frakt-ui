@@ -1,17 +1,18 @@
-import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Percent } from '@raydium-io/raydium-sdk';
+import { useParams } from 'react-router-dom';
 
 import {
   UserNFT,
   UserNFTWithCollection,
   useUserTokens,
 } from '../../contexts/userTokens';
-import { useDebounce } from '../../hooks';
+import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
+import { useConnection, useDebounce } from '../../hooks';
 import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
@@ -24,7 +25,6 @@ import {
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
 import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
-import { useParams } from 'react-router-dom';
 import { CUSTOM_POOLS_URLS } from '../../utils/cacher/nftPools';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
@@ -86,7 +86,7 @@ type UseLotteryTicketSubscription = () => {
 
 export const useLotteryTicketSubscription: UseLotteryTicketSubscription =
   () => {
-    const { connection } = useConnection();
+    const connection = useConnection();
     const wallet = useWallet();
 
     const subscriptionId = useRef<number>();

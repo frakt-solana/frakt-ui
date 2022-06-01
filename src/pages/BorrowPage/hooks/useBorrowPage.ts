@@ -3,14 +3,12 @@ import { useState, useMemo, Dispatch, SetStateAction } from 'react';
 import { useFakeInfinityScroll } from '../../../components/FakeInfinityScroll';
 import { UserWhitelistedNFT } from '../../../contexts/userTokens';
 import { useUserWhitelistedNFTs } from './useUserWhitelistedNFTs';
-import { useWalletModal } from '../../../contexts/WalletModal';
 import { useDebounce } from '../../../hooks';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
   setIsCloseSidebar: Dispatch<SetStateAction<boolean>>;
   nfts: UserWhitelistedNFT[];
-  setVisible: (nextState: boolean) => void;
   loading: boolean;
   searchItems: (search: string) => void;
   pagination: { skip: number; limit: number };
@@ -19,7 +17,6 @@ export const useBorrowPage = (): {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const [searchString, setSearchString] = useState<string>('');
   const { setItemsToShow } = useFakeInfinityScroll(15);
-  const { setVisible } = useWalletModal();
 
   const { userWhitelistedNFTs, pagination, fetchData } =
     useUserWhitelistedNFTs();
@@ -41,7 +38,6 @@ export const useBorrowPage = (): {
     isCloseSidebar,
     setIsCloseSidebar,
     nfts: filteredNfts,
-    setVisible,
     loading,
     searchItems,
     pagination,

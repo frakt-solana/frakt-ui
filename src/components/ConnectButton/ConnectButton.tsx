@@ -1,19 +1,20 @@
-import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import Button from '../Button';
-import { useWalletModal } from '../../contexts/WalletModal';
+import { commonActions } from '../../state/common/actions';
 
 export interface ConnectButtonProps {
   className?: string;
 }
 
 const ConnectButton = ({ className }: ConnectButtonProps): JSX.Element => {
-  const { visible, setVisible } = useWalletModal();
+  const dispatch = useDispatch();
 
   return (
     <Button
       className={className}
       onClick={() => {
-        setVisible(!visible);
+        dispatch(commonActions.toggleWalletModal());
       }}
     >
       Connect wallet

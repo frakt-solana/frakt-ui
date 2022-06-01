@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { keyBy, isArray } from 'lodash';
-import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import {
   RawUserTokensByMint,
@@ -12,6 +12,7 @@ import {
   isTokenFrozen,
 } from './userTokens.helpers';
 import { getAllUserTokens } from '../../utils/accounts';
+import { useConnection } from '../../hooks';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
   nfts: [],
@@ -30,7 +31,7 @@ export const UserTokensProvider = ({
   children: JSX.Element;
 }): JSX.Element => {
   const { connected, publicKey } = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const [rawUserTokensByMint, setRawUserTokensByMint] =
     useState<RawUserTokensByMint>({});
   const [loading, setLoading] = useState<boolean>(false);

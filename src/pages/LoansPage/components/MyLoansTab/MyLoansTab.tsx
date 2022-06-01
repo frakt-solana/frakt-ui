@@ -1,9 +1,10 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { FC } from 'react';
-import Button from '../../../../components/Button';
+import { useDispatch } from 'react-redux';
 
+import Button from '../../../../components/Button';
 import { LoanWithArweaveMetadata } from '../../../../contexts/loans';
-import { useWalletModal } from '../../../../contexts/WalletModal';
+import { commonActions } from '../../../../state/common/actions';
 import { LoansList } from '../../../WalletPage/components/LoansList';
 import styles from './MyLoansTab.module.scss';
 
@@ -27,7 +28,7 @@ export const MyLoansTab: FC<MyLoansTabProps> = ({ userLoans, loading }) => {
 };
 
 const ConnectWalletSection = () => {
-  const { setVisible } = useWalletModal();
+  const dispatch = useDispatch();
 
   return (
     <div className={styles.connectWallet}>
@@ -37,7 +38,9 @@ const ConnectWalletSection = () => {
       <Button
         type="alternative"
         className={styles.connectWalletBtn}
-        onClick={() => setVisible(true)}
+        onClick={() =>
+          dispatch(commonActions.setWalletModal({ isVisible: true }))
+        }
       >
         Connect wallet
       </Button>

@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { LinkWithArrow } from '../../components/LinkWithArrow';
@@ -9,15 +10,17 @@ import FakeInfinityScroll from '../../components/FakeInfinityScroll';
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
+import { commonActions } from '../../state/common/actions';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
 
 const BorrowPage: FC = () => {
+  const dispatch = useDispatch();
   const [search, setSearch] = useState<string>('');
   const { connected, onDeselect, onSelect, selectedNfts } = useSelectLayout();
 
-  const { isCloseSidebar, fetchData, setVisible, loading, searchItems, nfts } =
+  const { isCloseSidebar, fetchData, loading, searchItems, nfts } =
     useBorrowPage();
 
   return (
@@ -47,7 +50,9 @@ const BorrowPage: FC = () => {
         <Button
           type="secondary"
           className={styles.connectBtn}
-          onClick={() => setVisible(true)}
+          onClick={() =>
+            dispatch(commonActions.setWalletModal({ isVisible: true }))
+          }
         >
           Connect wallet
         </Button>

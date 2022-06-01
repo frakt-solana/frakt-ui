@@ -19,7 +19,6 @@ import store from './state/store';
 import { UserTokensProvider } from './contexts/userTokens';
 import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT } from './config';
-import { WalletModalProvider } from './contexts/WalletModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 import { LoansProvider } from './contexts/loans';
@@ -39,24 +38,22 @@ const App: FC = () => {
     <ReduxProvider store={store}>
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets} autoConnect>
-          <WalletModalProvider>
-            {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
-            <TokenListContextProvider>
-              <UserTokensProvider>
-                <LiquidityPoolsProvider>
-                  <NftPoolsProvider>
-                    <LoansProvider>
-                      <PrismProvider>
-                        <Router />
-                      </PrismProvider>
-                    </LoansProvider>
-                  </NftPoolsProvider>
-                </LiquidityPoolsProvider>
-              </UserTokensProvider>
-            </TokenListContextProvider>
-            {/* <IntercomService /> */}
-            {/* </IntercomProvider> */}
-          </WalletModalProvider>
+          {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
+          <TokenListContextProvider>
+            <UserTokensProvider>
+              <LiquidityPoolsProvider>
+                <NftPoolsProvider>
+                  <LoansProvider>
+                    <PrismProvider>
+                      <Router />
+                    </PrismProvider>
+                  </LoansProvider>
+                </NftPoolsProvider>
+              </LiquidityPoolsProvider>
+            </UserTokensProvider>
+          </TokenListContextProvider>
+          {/* <IntercomService /> */}
+          {/* </IntercomProvider> */}
         </WalletProvider>
       </ConnectionProvider>
     </ReduxProvider>
