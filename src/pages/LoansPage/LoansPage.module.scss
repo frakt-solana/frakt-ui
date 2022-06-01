@@ -35,52 +35,9 @@
   }
 }
 
-.search {
-  max-width: 375px;
-
-  @media screen and (max-width: 1023px) {
-    margin-bottom: 28px;
-  }
-}
-
-.filters {
+.loader {
+  height: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 15px 30px;
-
-  @media screen and (max-width: 1023px) {
-    width: 100%;
-    margin-bottom: 35px;
-  }
-}
-
-.sortingSelect {
-  width: unset;
-  margin-left: 8px;
-}
-
-.sortingSelectContainer {
-  svg {
-    position: relative;
-    top: 2px;
-    path {
-      stroke: var(--accent-color-1);
-    }
-  }
-}
-
-.arrowUp,
-.arrowDown {
-  position: relative;
-  top: 2px;
-
-  path {
-    stroke: var(--white-color);
-  }
-}
-
-.arrowDown {
-  transform: rotate(180deg);
 }

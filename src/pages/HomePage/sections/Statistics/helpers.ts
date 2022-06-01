@@ -1,6 +1,6 @@
 import { NFT_POOLS_STATS_URL, LOANS_STATS_URL } from './constants';
 import { LoansStats, NftPoolsStats, Stats } from './model';
-import { fetchSolanaPriceUSD } from '../../../../contexts/liquidityPools';
+import { fetchSolanaPriceUSD } from '../../../../utils';
 
 export const fetchNftPoolsStats = async (): Promise<NftPoolsStats | null> => {
   try {
