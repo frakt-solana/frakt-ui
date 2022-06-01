@@ -1,4 +1,4 @@
-import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -9,6 +9,7 @@ import {
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
 import { FUSION_PROGRAM_PUBKEY } from '../../../contexts/liquidityPools/transactions/fusionPools';
+import { useConnection } from '../../../hooks';
 
 type FusionPoolsByMint = Map<string, FusionPoolInfo>;
 
@@ -27,7 +28,7 @@ export const useCachedFusionPools: UseCachedFusionPools = () => {
   );
 
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const { poolDataByMint, loading: liquidityPoolsLoading } =
     useLiquidityPools();

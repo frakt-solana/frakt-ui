@@ -11,7 +11,6 @@
   align-items: center;
   padding: 20px 25px 20px 20px;
   justify-content: space-between;
-  cursor: pointer;
 
   @media screen and (max-width: 767px) {
     flex-wrap: wrap;
@@ -25,7 +24,7 @@
   justify-content: flex-end;
   align-items: center;
   border-bottom: 1px solid var(--gray-color-3);
-  padding: 10px 20px;
+  padding: 10px 25px 10px 20px;
   min-height: 43px;
 }
 
@@ -35,7 +34,7 @@
   gap: 20px;
   flex-grow: 1;
 
-  @media screen and (max-width: 1140px) {
+  @media screen and (max-width: 970px) {
     align-items: start;
     flex-direction: column;
   }
@@ -48,6 +47,25 @@
     flex-direction: row;
     max-width: 100%;
     align-items: center;
+  }
+}
+
+.tokenImage {
+  position: relative;
+  display: flex;
+  &::before {
+    content: attr(aria-valuenow) '+54';
+    background: var(--accent-color-1);
+    color: var(--white-color);
+    position: absolute;
+    font: var(--font-smallest);
+    padding: 2px 4px 4px 5px;
+    top: -4px;
+    left: 7px;
+    border-radius: 10px;
+    transform: translateX(-13px);
+    width: 29px;
+    height: 16px;
   }
 }
 
@@ -94,11 +112,7 @@
 
 .statsValue {
   display: flex;
-  gap: 60px;
-
-  @media screen and (max-width: 1140px) {
-    gap: 30px;
-  }
+  gap: 30px;
 
   @media screen and (max-width: 767px) {
     order: 1;
@@ -179,6 +193,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  padding-top: 5px;
+  line-height: 1;
 
   @media screen and (max-width: 767px) {
     gap: 10px;
@@ -187,10 +203,4 @@
 
 .reward {
   font: var(--font-text-3);
-}
-
-.equivalent {
-  color: var(--color-gray-4);
-  font: var(--font-secondary);
-  margin-top: 5px;
 }

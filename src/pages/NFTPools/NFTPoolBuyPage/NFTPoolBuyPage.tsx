@@ -1,10 +1,9 @@
 import { FC, useMemo, useState } from 'react';
 import BN from 'bn.js';
-import { useConnection } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { HeaderBuy } from './components/HeaderBuy';
-import { usePublicKeyParam } from '../../../hooks';
+import { useConnection, usePublicKeyParam } from '../../../hooks';
 import {
   useNftPool,
   useNftPools,
@@ -59,7 +58,7 @@ const useNftBuy = ({
   poolTokenInfo: TokenInfo;
 }) => {
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { getLotteryTicket } = useNftPools();
   const {
     visible: loadingModalVisible,

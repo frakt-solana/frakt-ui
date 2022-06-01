@@ -1,22 +1,27 @@
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { selectWalletModalVisible } from '../../state/common/selectors';
+import { commonActions } from '../../state/common/actions';
 import styles from './styles.module.scss';
 import { Modal, ModalProps } from '../Modal/Modal';
 import { ArrowRightIcon } from '../../icons';
-import { useWalletModal } from '../../contexts/WalletModal';
 
 export const ConnectWalletModal = ({
   title,
   ...props
 }: ModalProps): JSX.Element => {
   const { wallets, select } = useWallet();
-  const { visible, setVisible } = useWalletModal();
+  const dispatch = useDispatch();
+  const visible = useSelector(selectWalletModalVisible);
 
   return (
     <Modal
       visible={visible}
       title={title || 'Connect wallet'}
-      onCancel={() => setVisible(false)}
+      onCancel={() =>
+        dispatch(commonActions.setWalletModal({ isVisible: false }))
+      }
       {...props}
     >
       <p className={styles.text}>
@@ -29,7 +34,7 @@ export const ConnectWalletModal = ({
             className={styles.wallet}
             onClick={() => {
               select(name);
-              setVisible(false);
+              dispatch(commonActions.setWalletModal({ isVisible: false }));
             }}
           >
             <div className={styles.walletName}>
