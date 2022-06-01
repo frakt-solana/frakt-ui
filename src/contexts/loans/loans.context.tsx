@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LoanView } from '@frakters/nft-lending-v2';
+import { Connection } from '@solana/web3.js';
 
 import {
   FetchDataFunc,
@@ -111,7 +112,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loanDataByPoolPublicKey, loading, wallet.connected]);
 
-  const fetchMetadataAndInitialize = async () => {
+  const fetchMetadataAndInitialize = async (connection: Connection) => {
     try {
       if (!userLoans.length) {
         setMetadataLoading(true);
@@ -138,11 +139,11 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   };
 
   useEffect(() => {
-    if (userLoansWithoutMetadata.length) {
-      fetchMetadataAndInitialize();
+    if (userLoansWithoutMetadata.length && connection) {
+      fetchMetadataAndInitialize(connection);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLoansWithoutMetadata]);
+  }, [userLoansWithoutMetadata, connection]);
 
   const userLoansLoading = wallet.connected
     ? loading || metadataLoading
