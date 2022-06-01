@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { Tab, useTabs } from '../../../components/Tabs';
 import { useConnection, useDebounce, useSolanaTimestamp } from '../../../hooks';
+import { Tab, useTabs } from '../../../components/Tabs';
 import {
   calcLoanPoolApr,
   calcLoanPoolReward,
