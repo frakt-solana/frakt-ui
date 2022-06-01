@@ -102,6 +102,7 @@ body input.valueInput {
   }
 
   cursor: pointer;
+  color: var(--white-color);
   background: var(--accent-shadow-color);
   transition: background-color var(--transition-1);
   font: var(--font-btn-small);
@@ -137,6 +138,8 @@ body input.valueInput {
 }
 
 .tokenName {
+  color: var(--white-color);
+  font: var(--font-text-3);
   white-space: nowrap;
 
   &_empty {
