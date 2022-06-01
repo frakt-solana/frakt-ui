@@ -1,4 +1,5 @@
 import { FC, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import BN from 'bn.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 
@@ -25,7 +26,7 @@ import {
   NFTPoolPageLayout,
   PoolPageType,
 } from '../components/NFTPoolPageLayout';
-import { useTokenListContext } from '../../../contexts/TokenList';
+import { selectTokenListState } from '../../../state/tokenList/selectors';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 
 import { NftPoolData } from '../../../utils/cacher/nftPools';
@@ -154,7 +155,7 @@ export const NFTPoolBuyPage: FC = () => {
   const poolPublicKey = pool?.publicKey?.toBase58();
 
   const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
-    useTokenListContext();
+    useSelector(selectTokenListState);
 
   const poolTokenInfo = useMemo(() => {
     return tokensMap.get(pool?.fractionMint?.toBase58());

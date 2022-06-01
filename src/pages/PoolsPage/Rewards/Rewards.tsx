@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
@@ -13,7 +14,7 @@ import {
   RaydiumPoolInfo,
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
-import { useTokenListContext } from '../../../contexts/TokenList';
+import { selectTokenListState } from '../../../state/tokenList/selectors';
 import {
   AccountInfoParsed,
   getTokenAccountBalance,
@@ -34,7 +35,7 @@ const Rewards: FC<RewardsInterface> = ({
   raydiumPoolInfo,
 }) => {
   const { harvestLiquidity, stakeLiquidity } = useLiquidityPools();
-  const { tokensList } = useTokenListContext();
+  const { tokensList } = useSelector(selectTokenListState);
   const solanaTimestamp = useSolanaTimestamp();
 
   const { mainRouter, stakeAccount, secondaryReward, secondaryStakeAccount } =
