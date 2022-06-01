@@ -1,6 +1,8 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { useEffect, useRef, useState } from 'react';
+
+import { useConnection } from '../../../hooks';
 import { getTokenAccount, parseTokenAccount } from '../accounts.helpers';
 import { AccountInfoParsed } from '../accounts.model';
 
@@ -14,7 +16,7 @@ type UseUserSplAccount = () => {
 };
 
 export const useUserSplAccount: UseUserSplAccount = () => {
-  const { connection } = useConnection();
+  const connection = useConnection();
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(true);
