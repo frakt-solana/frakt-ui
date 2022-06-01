@@ -102,6 +102,7 @@ body input.valueInput {
   }
 
   cursor: pointer;
+  color: var(--white-color);
   background: var(--accent-shadow-color);
   transition: background-color var(--transition-1);
   font: var(--font-btn-small);
@@ -137,6 +138,8 @@ body input.valueInput {
 }
 
 .tokenName {
+  color: var(--white-color);
+  font: var(--font-text-3);
   white-space: nowrap;
 
   &_empty {
@@ -179,12 +182,19 @@ body input.valueInput {
 .label {
   margin-bottom: 16px;
   font-weight: bold;
-  display: flex;
-  justify-content: space-between;
   font-size: 14px;
   text-transform: uppercase;
   color: var(--gray-color-3);
   transition: var(--transition-1);
+}
+
+.labelWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.labelPositionRight {
+  justify-content: flex-end;
 }
 
 .disabledTokens {

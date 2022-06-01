@@ -28,6 +28,7 @@ export interface TokenFieldProps {
   placeholder?: string;
   amountMaxLength?: number;
   disabled?: boolean;
+  labelRight?: boolean;
 }
 
 const TokenField: FC<TokenFieldProps> = ({
@@ -47,6 +48,7 @@ const TokenField: FC<TokenFieldProps> = ({
   amountMaxLength,
   lpTokenSymbol,
   placeholder = '0.0',
+  labelRight,
   disabled = false,
 }) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -60,16 +62,20 @@ const TokenField: FC<TokenFieldProps> = ({
         { [styles.error]: error },
       ])}
     >
-      {!!label && (
-        <div className={styles.label}>
-          {label}
-          {!!balance && (
-            <span>
-              BALANCE: {balance} {currentToken?.symbol}
-            </span>
-          )}
-        </div>
-      )}
+      <div
+        className={classNames(
+          styles.labelWrapper,
+          labelRight && styles.labelPositionRight,
+        )}
+      >
+        {!!label && <div className={styles.label}>{label}</div>}
+        {!!balance && (
+          <span className={styles.label}>
+            BALANCE: {balance} {currentToken?.symbol}
+          </span>
+        )}
+      </div>
+
       <div
         className={classNames([styles.root, className])}
         onFocus={() => setIsFocused(true)}
