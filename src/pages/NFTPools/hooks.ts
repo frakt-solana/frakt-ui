@@ -16,7 +16,11 @@ import { useConnection, useDebounce } from '../../hooks';
 import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
-import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
+import {
+  FilterFormFieldsValues,
+  FilterFormInputsNames,
+  PoolStats,
+} from './model';
 import {
   FusionPool,
   getFusionApr,
@@ -25,8 +29,10 @@ import {
 } from '../../contexts/liquidityPools';
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
-import { PoolStats, useCachedPoolsStats } from '../PoolsPage';
-import { useCachedFusionPoolsForStats } from './NFTPoolStakePage/hooks';
+import {
+  useCachedFusionPoolsForStats,
+  useCachedPoolsStats,
+} from './NFTPoolStakePage/hooks';
 import { CUSTOM_POOLS_URLS } from '../../utils/cacher/nftPools';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {

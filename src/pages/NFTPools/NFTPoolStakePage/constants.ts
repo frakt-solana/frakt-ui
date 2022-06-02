@@ -7,3 +7,5 @@ export enum CONTROLS {
   SELECT_NFTS_INVENTORY = 'selectNftsInventory',
   SELECT_NFTS_LIQUIDITY = 'selectNftsLiquidity',
 }
+
+export const RAYDIUM_STATS_API = process.env.RAYDIUM_STATS_API;

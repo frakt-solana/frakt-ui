@@ -8,3 +8,4 @@ export * from './useInventoryStakingTotalLiquidityUSD';
 export * from './useStakingPageInfo';
 export * from './useCachedFusionPoolsForStats';
 export * from './useStakeControls';
+export * from './useCachedPoolsStats';

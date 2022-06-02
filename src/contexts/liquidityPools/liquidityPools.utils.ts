@@ -6,8 +6,8 @@ import {
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 
-import { PoolStats } from '../../pages/PoolsPage';
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
+import { PoolStats } from '../../pages/NFTPools/model';
 
 export const calculateTVL = (
   poolInfo: RaydiumPoolInfo,

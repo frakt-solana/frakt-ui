@@ -1,4 +1,5 @@
-import { PoolStats, useCachedPoolsStats } from '../../../PoolsPage';
+import { PoolStats } from '../../model';
+import { useCachedPoolsStats } from './useCachedPoolsStats';
 
 type UseCachedSpecificPoolStats = (tokenMint: string) => {
   loading: boolean;

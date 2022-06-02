@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { useLiquidityPools } from '../../../contexts/liquidityPools';
+import { useLiquidityPools } from '../../../../contexts/liquidityPools';
 import { RAYDIUM_STATS_API } from '../constants';
-import { PoolStats, RawPoolStatsV2 } from '../model';
+import { PoolStats, RawPoolStatsV2 } from '../../model';
 
 type PoolsStatsByBaseTokenMint = Map<string, PoolStats>;
 

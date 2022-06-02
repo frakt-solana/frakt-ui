@@ -24,8 +24,9 @@ import {
   usePoolTokensPrices,
 } from '../hooks';
 import { SELL_COMMISSION_PERCENT } from '../constants';
-import { PoolStats, useCachedPoolsStats } from '../../PoolsPage';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
+import { useCachedPoolsStats } from '../NFTPoolStakePage/hooks';
+import { PoolStats } from '../model';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
   const poolPubkey = usePoolPubkeyParam();
