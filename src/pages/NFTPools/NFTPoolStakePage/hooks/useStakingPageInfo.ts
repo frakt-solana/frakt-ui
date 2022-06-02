@@ -9,6 +9,7 @@ import { useTokenListContext } from '../../../../contexts/TokenList';
 import { useSplTokenBalance } from '../../../../utils/accounts';
 import { useAPR } from '../../hooks';
 import { useInventoryStakingTotalLiquidityUSD } from './useInventoryStakingTotalLiquidityUSD';
+import { useSolanaTimestamp } from '../../../../hooks';
 
 type UseStakingPageInfo = (props: {
   inventoryFusionPool: FusionPool;
@@ -34,6 +35,7 @@ export const useStakingPageInfo: UseStakingPageInfo = ({
 }) => {
   const { connected, publicKey: walletPublicKey } = useWallet();
   const { tokensList, loading: tokensListLoading } = useTokenListContext();
+  const solanaTimestamp = useSolanaTimestamp();
 
   const stakeRewards = useMemo(() => {
     if (
@@ -49,11 +51,13 @@ export const useStakingPageInfo: UseStakingPageInfo = ({
         liquidityFusionPool,
         tokensMap,
         walletPublicKey?.toBase58(),
+        solanaTimestamp,
       );
       const inventoryRewards = getFusionRewards(
         inventoryFusionPool,
         tokensMap,
         walletPublicKey?.toBase58(),
+        solanaTimestamp,
       );
 
       return [...liquidityRewards, ...inventoryRewards];
@@ -130,17 +134,20 @@ const getFusionRewards = (
   fusionPool: FusionPool,
   tokensMap: Dictionary<TokenInfo>,
   walletPublicKey: string,
+  solanaTimestamp = moment().unix(),
 ): { ticker: string; balance: number }[] => {
   const primaryRewards = getPrimaryRewards(
     fusionPool,
     tokensMap,
     walletPublicKey,
+    solanaTimestamp,
   );
 
   const secondaryRewards = getSecondaryFusionRewards(
     fusionPool,
     tokensMap,
     walletPublicKey,
+    solanaTimestamp,
   );
 
   return [primaryRewards, ...secondaryRewards];
@@ -150,13 +157,12 @@ const getPrimaryRewards = (
   fusionPool: FusionPool,
   tokensMap: Dictionary<TokenInfo>,
   walletPublicKey: string,
+  solanaTimestamp: number,
 ): { ticker: string; balance: number } => {
   const account =
     fusionPool?.stakeAccounts?.find(
       ({ stakeOwner, isStaked }) => stakeOwner === walletPublicKey && isStaked,
     ) || null;
-
-  const checkDate = moment().unix();
 
   const stakedAtCumulative = Number(account?.stakedAtCumulative) || 0;
   const cumulative = Number(fusionPool?.router?.cumulative) || 0;
@@ -168,7 +174,7 @@ const getPrimaryRewards = (
   const tokenMintOutput = fusionPool?.router?.tokenMintOutput;
 
   const primaryRewardsAmount =
-    ((cumulative + apr * (checkDate - lastTime) - stakedAtCumulative) *
+    ((cumulative + apr * (solanaTimestamp - lastTime) - stakedAtCumulative) *
       amount) /
     (1e10 / decimalsInput) /
     decimalsInput /
@@ -186,6 +192,7 @@ const getSecondaryFusionRewards = (
   fusionPool: FusionPool,
   tokensMap: Dictionary<TokenInfo>,
   walletPublicKey: string,
+  solanaTimestamp: number,
 ): { ticker: string; balance: number }[] => {
   const primaryStakeAccount =
     fusionPool?.stakeAccounts?.find(
@@ -193,7 +200,7 @@ const getSecondaryFusionRewards = (
     ) || null;
 
   const amount = Number(primaryStakeAccount?.amount) || 0;
-  const stakeEnd = Number(primaryStakeAccount?.stakeEnd) || moment().unix();
+  const stakeEnd = Number(primaryStakeAccount?.stakeEnd) || solanaTimestamp;
 
   const decimalsInput = Number(fusionPool?.router?.decimalsInput) || 0;
 
