@@ -3,7 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useForm } from 'react-hook-form';
 
 import { useNativeAccount } from '../../utils/accounts';
-import { getSolBalanceValue } from '../../utils';
+import { getCorrectSolWalletBalance, getSolBalanceValue } from '../../utils';
 import { Tab, useTabs } from '../Tabs';
 import {
   depositLiquidity as depositTxn,
@@ -31,6 +31,7 @@ export type FormFieldValues = {
 export const usePoolModal = (
   visible: string,
   depositAmount: number,
+  onCancel: () => void,
 ): {
   depositValue: string;
   withdrawValue: string;
@@ -58,7 +59,8 @@ export const usePoolModal = (
   });
 
   const { account } = useNativeAccount();
-  const solWalletBalance = getSolBalanceValue(account);
+  const solBalanceValue = getSolBalanceValue(account);
+  const solWalletBalance = getCorrectSolWalletBalance(solBalanceValue);
 
   const { depositValue, withdrawValue, percentValue } = watch();
 
@@ -149,6 +151,8 @@ export const usePoolModal = (
       liquidityPool,
       amount,
     });
+
+    onCancel();
   };
 
   const unstakeLiquidity = async (): Promise<void> => {
@@ -160,6 +164,8 @@ export const usePoolModal = (
       liquidityPool,
       amount,
     });
+
+    onCancel();
   };
 
   return {

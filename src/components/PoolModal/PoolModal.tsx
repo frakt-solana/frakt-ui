@@ -39,10 +39,14 @@ export const PoolModal: FC<PoolModalProps> = ({
     onWithdrawValueChange,
     onWithdrawPercentChange,
     solWalletBalance,
-  } = usePoolModal(visible, depositAmount);
+  } = usePoolModal(visible, depositAmount, onCancel);
 
   const notEnoughDepositError = depositAmount < Number(withdrawValue);
   const notEnoughBalanceError = Number(solWalletBalance) < Number(depositValue);
+  const isDisabledDepositBtn =
+    Number(depositValue) === 0 || notEnoughBalanceError;
+  const isDisabledWithdrawBtn =
+    Number(withdrawValue) === 0 || notEnoughDepositError;
 
   return (
     <Modal
@@ -103,7 +107,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             onClick={depositLiquidity}
             className={styles.btn}
             type="alternative"
-            disabled={notEnoughBalanceError}
+            disabled={isDisabledDepositBtn}
           >
             Deposit
           </Button>
@@ -138,7 +142,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             onClick={unstakeLiquidity}
             className={styles.btn}
             type="alternative"
-            disabled={notEnoughDepositError}
+            disabled={isDisabledWithdrawBtn}
           >
             Confirm
           </Button>

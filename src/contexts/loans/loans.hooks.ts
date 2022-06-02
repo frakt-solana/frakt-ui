@@ -1,5 +1,6 @@
 import { useContext, useEffect } from 'react';
 
+import { useConnection } from '../../hooks';
 import { LoansPoolsContext } from './loans.context';
 import { LoansContextValues } from './loans.model';
 
@@ -13,13 +14,14 @@ export const useLoans = (): LoansContextValues => {
 
 export const useLoansInitialFetch = (): void => {
   const { loading, loanDataByPoolPublicKey, initialFetch } = useLoans();
+  const connection = useConnection();
 
   useEffect(() => {
-    if (!loading && !loanDataByPoolPublicKey.size) {
+    if (!loading && !loanDataByPoolPublicKey.size && connection) {
       initialFetch();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [connection]);
 };
 
 export const useLoansPolling = (): void => {
