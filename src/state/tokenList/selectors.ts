@@ -4,7 +4,6 @@ import {
   compose,
   ifElse,
   filter,
-  propEq,
   propSatisfies,
   includes,
   indexBy,
@@ -31,7 +30,7 @@ const isNonEmptyMap = (v): boolean => isMap(v) && !!v.size;
 
 export const selectTokenList: (state) => Array<TokenInfo> = createSelector(
   [pathOr([], ['tokenList', 'data', 'tokens'])],
-  filter(propEq('chainId', 101)),
+  identity,
 );
 
 export const selectFraktTokenList: (state) => Array<TokenInfo> = createSelector(
