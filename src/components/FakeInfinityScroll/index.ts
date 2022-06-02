@@ -1,1 +1,5 @@
-export { default, useFakeInfinityScroll } from './FakeInfinityScroll';
+export {
+  default,
+  useFakeInfinityScroll,
+  useInfinityScroll,
+} from './FakeInfinityScroll';

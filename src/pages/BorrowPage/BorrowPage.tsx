@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
@@ -6,22 +6,46 @@ import { LinkWithArrow } from '../../components/LinkWithArrow';
 import { SearchInput } from '../../components/SearchInput';
 import NFTCheckbox from '../../components/NFTCheckbox';
 import { BorrowForm } from './components/BorrowForm';
-import FakeInfinityScroll from '../../components/FakeInfinityScroll';
+import FakeInfinityScroll, {
+  useInfinityScroll,
+} from '../../components/FakeInfinityScroll';
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
 import { commonActions } from '../../state/common/actions';
+import { FetchData } from '../../components/FakeInfinityScroll/FakeInfinityScroll';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { UserWhitelistedNFT } from '../../contexts/userTokens';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
 
 const BorrowPage: FC = () => {
   const dispatch = useDispatch();
-  const [search, setSearch] = useState<string>('');
+  // const [search, setSearch] = useState<string>('');
   const { connected, onDeselect, onSelect, selectedNfts } = useSelectLayout();
 
   const { isCloseSidebar, fetchData, loading, searchItems, nfts } =
     useBorrowPage();
+
+  const fetchData1: FetchData = async ({ offset, limit, searchStr }) => {
+    const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
+
+    const items = await (
+      await fetch(
+        `${URL}/Gu6faGp621MczGbkVtTppFNjJaoBSGQTM51NsQdJXLyR?${
+          searchStr && `search=${searchStr}&`
+        }skip=${offset}&limit=${limit}`,
+      )
+    ).json();
+
+    return items || [];
+  };
+
+  const { next, search, setSearch, items } = useInfinityScroll({
+    fetchData: fetchData1,
+    itemsPerScroll: 12,
+  });
 
   return (
     <SelectLayout
@@ -72,14 +96,14 @@ const BorrowPage: FC = () => {
 
       {connected && (
         <FakeInfinityScroll
-          itemsToShow={nfts.length}
-          next={fetchData}
-          isLoading={loading}
+          itemsToShow={undefined}
+          next={next}
+          isLoading={false}
           wrapperClassName={styles.nftsList}
           emptyMessage=""
           customLoader={<p className={styles.loader}>loading your jpegs</p>}
         >
-          {nfts.map((nft) => {
+          {(items as UserWhitelistedNFT[]).map((nft) => {
             return (
               <NFTCheckbox
                 key={nft.mint}
