@@ -15,8 +15,7 @@ import {
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import { LinkWithArrow } from '../../../components/LinkWithArrow';
-import { PATHS, POOL_TABS } from '../../../constants';
+import { POOL_TABS } from '../../../constants';
 import {
   Price,
   useAPR,
@@ -127,11 +126,6 @@ const LiquiditySection: FC<LiquiditySectionProps> = ({ poolStats }) => {
       <h5 className={styles.cardTitle}>Liquidity</h5>
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>
-      <LinkWithArrow
-        to={`${PATHS.EARN}`}
-        label="Earn"
-        className={styles.liquidityLink}
-      />
     </div>
   );
 };

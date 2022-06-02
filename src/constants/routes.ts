@@ -6,7 +6,6 @@ import {
   HomePage,
   SwapPage,
   WalletPage,
-  PoolsPage,
   NFTPoolsPage,
   NFTPoolBuyPage,
   NFTPoolSellPage,
@@ -84,11 +83,6 @@ export const routes: Route[] = [
     exact: true,
     path: `${PATHS.WALLET}${PATHS.WALLET_PUBKEY}`,
     component: WalletPage,
-  },
-  {
-    exact: true,
-    path: PATHS.EARN,
-    component: PoolsPage,
   },
   {
     exact: true,

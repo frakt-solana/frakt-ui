@@ -25,7 +25,6 @@ export const PATHS = {
   WALLET: '/wallet',
   PAGE_404: '/404',
   WALLET_PUBKEY: '/:walletPubkey',
-  EARN: '/earn',
   TEST: '/market_test',
   BORROW: '/borrow',
   LOANS: '/loans',
