@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
 import { PoolModal } from '../../../../components/PoolModal';
@@ -7,10 +8,10 @@ import { LoansPoolInfo, useLoansPage } from '../../hooks';
 import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
-import { useWalletModal } from '../../../../contexts/WalletModal';
 import Tooltip from '../../../../components/Tooltip';
 import BearsImage from '../mockImage/Bears.png';
 import DegodsImage from '../mockImage/Degods.png';
+import { commonActions } from '../../../../state/common/actions';
 
 const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
 
@@ -21,6 +22,7 @@ interface LendingPoolProps {
 const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
   const [poolModalVisible, setPoolModalVisible] = useState<TabsNames>(null);
   const { connected } = useWallet();
+  const dispatch = useDispatch();
 
   const {
     depositAmount,
@@ -33,11 +35,10 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
   } = loansPoolInfo;
 
   const { harvestLiquidity } = useLoansPage();
-  const { setVisible } = useWalletModal();
 
   const openPoolModal = (tab: TabsNames) => {
     if (!connected) {
-      setVisible(true);
+      dispatch(commonActions.setWalletModal({ isVisible: true }));
     } else {
       setPoolModalVisible(tab);
     }
@@ -53,7 +54,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
             <>
               <div className={styles.rewards}>
                 <p className={styles.reward}>
-                  Pending Rewards: {rewardAmount?.toFixed(3)} SOL
+                  Pending Rewards: {rewardAmount?.toFixed(4)} SOL
                 </p>
               </div>
               <Tooltip

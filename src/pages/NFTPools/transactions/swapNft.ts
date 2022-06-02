@@ -192,7 +192,8 @@ export const swapNft: SwapNft = async ({
       getLotteryTicketTransaction,
     ].filter((txn) => txn);
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     transactions.forEach((transaction) => {
       transaction.recentBlockhash = blockhash;
@@ -215,14 +216,20 @@ export const swapNft: SwapNft = async ({
       type: NotifyType.INFO,
     });
 
-    await connection.confirmTransaction(txidDeposit, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidDeposit, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     if (needSwap) {
       const txidSwap = await connection.sendRawTransaction(
         signedTransactions[1].serialize(),
       );
 
-      await connection.confirmTransaction(txidSwap, 'finalized');
+      await connection.confirmTransaction(
+        { signature: txidSwap, blockhash, lastValidBlockHeight },
+        'finalized',
+      );
     }
 
     const txidGetLotteryTicket = await connection.sendRawTransaction(
@@ -230,7 +237,10 @@ export const swapNft: SwapNft = async ({
       // { skipPreflight: true },
     );
 
-    await connection.confirmTransaction(txidGetLotteryTicket, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidGetLotteryTicket, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     notify({
       message: 'Swap made successfully',

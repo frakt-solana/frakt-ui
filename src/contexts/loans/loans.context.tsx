@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { LoanView } from '@frakters/nft-lending-v2';
+import { Connection } from '@solana/web3.js';
 
 import {
   FetchDataFunc,
@@ -12,7 +13,7 @@ import {
   LoanWithArweaveMetadata,
 } from './loans.model';
 import { fetchLoanDataByPoolPublicKey } from './loans.helpers';
-import { usePolling } from '../../hooks';
+import { useConnection, usePolling } from '../../hooks';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
 export const LoansPoolsContext = React.createContext<LoansContextValues>({
@@ -32,7 +33,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const [loanDataByPoolPublicKey, setLoanDataByPoolPublicKey] =
     useState<LoanDataByPoolPublicKey>(new Map<string, LoanData>());
@@ -111,7 +112,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loanDataByPoolPublicKey, loading, wallet.connected]);
 
-  const fetchMetadataAndInitialize = async () => {
+  const fetchMetadataAndInitialize = async (connection: Connection) => {
     try {
       if (!userLoans.length) {
         setMetadataLoading(true);
@@ -138,11 +139,11 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   };
 
   useEffect(() => {
-    if (userLoansWithoutMetadata.length) {
-      fetchMetadataAndInitialize();
+    if (userLoansWithoutMetadata.length && connection) {
+      fetchMetadataAndInitialize(connection);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLoansWithoutMetadata]);
+  }, [userLoansWithoutMetadata, connection]);
 
   const userLoansLoading = wallet.connected
     ? loading || metadataLoading

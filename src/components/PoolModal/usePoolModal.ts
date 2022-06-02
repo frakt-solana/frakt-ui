@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useForm } from 'react-hook-form';
 
 import { useNativeAccount } from '../../utils/accounts';
-import { getSolBalanceValue } from '../../utils';
+import { getCorrectSolWalletBalance, getSolBalanceValue } from '../../utils';
 import { Tab, useTabs } from '../Tabs';
 import {
   depositLiquidity as depositTxn,
   unstakeLiquidity as unstakeTxn,
 } from '../../contexts/loans';
+import { useConnection } from '../../hooks';
 
 export enum InputControlsNames {
   DEPOSIT_VALUE = 'depositValue',
@@ -30,6 +31,7 @@ export type FormFieldValues = {
 export const usePoolModal = (
   visible: string,
   depositAmount: number,
+  onCancel: () => void,
 ): {
   depositValue: string;
   withdrawValue: string;
@@ -47,7 +49,7 @@ export const usePoolModal = (
 } => {
   const liquidityPool = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { watch, register, setValue } = useForm({
     defaultValues: {
       [InputControlsNames.DEPOSIT_VALUE]: '',
@@ -57,7 +59,8 @@ export const usePoolModal = (
   });
 
   const { account } = useNativeAccount();
-  const solWalletBalance = getSolBalanceValue(account);
+  const solBalanceValue = getSolBalanceValue(account);
+  const solWalletBalance = getCorrectSolWalletBalance(solBalanceValue);
 
   const { depositValue, withdrawValue, percentValue } = watch();
 
@@ -148,6 +151,8 @@ export const usePoolModal = (
       liquidityPool,
       amount,
     });
+
+    onCancel();
   };
 
   const unstakeLiquidity = async (): Promise<void> => {
@@ -159,6 +164,8 @@ export const usePoolModal = (
       liquidityPool,
       amount,
     });
+
+    onCancel();
   };
 
   return {

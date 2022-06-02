@@ -146,7 +146,8 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
 
     const transactions = [depositTransaction, addLiquidityTransaction];
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     transactions.forEach((transaction) => {
       transaction.recentBlockhash = blockhash;
@@ -168,14 +169,20 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
       type: NotifyType.INFO,
     });
 
-    await connection.confirmTransaction(txidDeposit, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidDeposit, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     const txidAddLiquidity = await connection.sendRawTransaction(
       signedTransactions[1].serialize(),
       // { skipPreflight: true },
     );
 
-    await connection.confirmTransaction(txidAddLiquidity, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidAddLiquidity, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     notify({
       message: 'Liquidity provided successfully',

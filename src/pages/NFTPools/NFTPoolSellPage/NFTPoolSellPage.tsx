@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
@@ -12,7 +12,7 @@ import {
   useNftPool,
   useNftPoolsInitialFetch,
 } from '../../../contexts/nftPools';
-import { usePublicKeyParam } from '../../../hooks';
+import { useConnection, usePublicKeyParam } from '../../../hooks';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import { Loader } from '../../../components/Loader';
 import { FilterFormInputsNames } from '../model';
@@ -41,9 +41,9 @@ const useNftSell = ({
   pool: NftPoolData;
   poolTokenInfo: TokenInfo;
 }) => {
-  const { poolDataByMint } = useLiquidityPools();
-  const { connection } = useConnection();
   const wallet = useWallet();
+  const { poolDataByMint } = useLiquidityPools();
+  const connection = useConnection();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,

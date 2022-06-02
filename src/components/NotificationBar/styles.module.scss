@@ -1,3 +1,20 @@
+.notificationBar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+.notificationBarHide {
+  bottom: -44px;
+  transition: bottom 0.2s ease-in;
+}
+
 .warning {
   background-color: #ff9d66;
 }

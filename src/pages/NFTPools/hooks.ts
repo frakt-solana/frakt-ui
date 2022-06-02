@@ -1,5 +1,4 @@
-import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
@@ -12,7 +11,8 @@ import {
   UserNFTWithCollection,
   useUserTokens,
 } from '../../contexts/userTokens';
-import { useDebounce } from '../../hooks';
+import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
+import { useConnection, useDebounce } from '../../hooks';
 import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
@@ -88,7 +88,7 @@ type UseLotteryTicketSubscription = () => {
 
 export const useLotteryTicketSubscription: UseLotteryTicketSubscription =
   () => {
-    const { connection } = useConnection();
+    const connection = useConnection();
     const wallet = useWallet();
 
     const subscriptionId = useRef<number>();

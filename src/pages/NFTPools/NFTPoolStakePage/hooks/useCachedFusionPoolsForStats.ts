@@ -1,9 +1,9 @@
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
-import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
 
 import { FusionPool, mapRawPools } from '../../../../contexts/liquidityPools';
+import { useConnection } from '../../../../hooks';
 
 const fusionPoolsCache = { value: null };
 
@@ -18,7 +18,7 @@ export const useCachedFusionPoolsForStats: UseCachedFusionPoolsForStats =
     const [loading, setLoading] = useState<boolean>(false);
     const [fusionPools, setFusionPools] = useState<FusionPool[]>(null);
 
-    const { connection } = useConnection();
+    const connection = useConnection();
 
     const fetchPools = async () => {
       const {

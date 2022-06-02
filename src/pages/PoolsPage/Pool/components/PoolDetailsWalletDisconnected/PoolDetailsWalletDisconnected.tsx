@@ -1,19 +1,23 @@
 import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 
 import Button from '../../../../../components/Button';
+import { commonActions } from '../../../../../state/common/actions';
 import styles from './PoolDetailsWalletDisconnected.module.scss';
 
 interface PoolDetailsWalletDisconnectedProps {
-  setWalletModalVisible: (walletModalVisible: boolean) => void;
   className?: string;
 }
 
 export const PoolDetailsWalletDisconnected: FC<PoolDetailsWalletDisconnectedProps> =
-  ({ setWalletModalVisible, className }) => {
+  ({ className }) => {
+    const dispatch = useDispatch();
     return (
       <div className={className}>
         <Button
-          onClick={() => setWalletModalVisible(true)}
+          onClick={() =>
+            dispatch(commonActions.setWalletModal({ isVisible: true }))
+          }
           className={styles.connectBtn}
         >
           Connect wallet

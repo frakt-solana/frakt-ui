@@ -105,7 +105,8 @@ export const sellNftAndStake: SellNftAndStake = async ({
 
     const transactions = [depositTransaction, stakeTransaction];
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     transactions.forEach((transaction) => {
       transaction.recentBlockhash = blockhash;
@@ -126,14 +127,20 @@ export const sellNftAndStake: SellNftAndStake = async ({
       type: NotifyType.INFO,
     });
 
-    await connection.confirmTransaction(txidDeposit, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidDeposit, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     const txidStake = await connection.sendRawTransaction(
       signedTransactions[1].serialize(),
       // { skipPreflight: true },
     );
 
-    await connection.confirmTransaction(txidStake, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidStake, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     notify({
       message: 'Staked successfully',

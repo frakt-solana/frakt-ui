@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useTokenListContext } from '../TokenList';
 import {
@@ -19,6 +19,7 @@ import {
   LiquidityPoolsProviderType,
   PoolDataByMint,
 } from './liquidityPools.model';
+import { useConnection } from '../../hooks';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
@@ -38,7 +39,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
   children,
 }) => {
   const { fraktionTokensMap } = useTokenListContext();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(true);

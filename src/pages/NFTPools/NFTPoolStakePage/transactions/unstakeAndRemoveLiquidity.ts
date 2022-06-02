@@ -129,7 +129,8 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
 
     const transactions = [unstakeTransaction, removeLiquidityTransaction];
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     transactions.forEach((transaction) => {
       transaction.recentBlockhash = blockhash;
@@ -150,14 +151,20 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
       type: NotifyType.INFO,
     });
 
-    await connection.confirmTransaction(txidUnstake, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidUnstake, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     const txidWithdraw = await connection.sendRawTransaction(
       signedTransactions[1].serialize(),
       // { skipPreflight: true },
     );
 
-    await connection.confirmTransaction(txidWithdraw, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txidWithdraw, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     notify({
       message: 'Unstaked successfully',

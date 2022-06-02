@@ -71,7 +71,8 @@ export const provideLiquidity: ProvideLiquidity = async ({
         fixedSide: 'b',
       });
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = wallet.publicKey;
@@ -90,7 +91,10 @@ export const provideLiquidity: ProvideLiquidity = async ({
       type: NotifyType.INFO,
     });
 
-    await connection.confirmTransaction(txid, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txid, blockhash, lastValidBlockHeight },
+      'finalized',
+    );
 
     notify({
       message: 'Liquidity provided successfully',

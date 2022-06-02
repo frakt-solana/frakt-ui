@@ -1,25 +1,34 @@
+import { FC } from 'react';
+import Button from '../Button';
 import styles from './styles.module.scss';
 
 interface ChangeSidesButtonProps {
   onClick: () => void;
 }
 
-export const ChangeSidesButton = ({
-  onClick,
-}: ChangeSidesButtonProps): JSX.Element => {
+export const ChangeSidesButton: FC<ChangeSidesButtonProps> = ({ onClick }) => {
   return (
-    <button onClick={onClick} className={styles.changeSidesBtn}>
-      <svg
-        viewBox="64 64 896 896"
-        data-icon="swap"
-        width="1em"
-        height="1em"
-        fill="currentColor"
-        aria-hidden="true"
-        focusable="false"
+    <div className={styles.btnWrap}>
+      <div className={styles.line} />
+      <Button
+        type="tertiary"
+        onClick={onClick}
+        className={styles.changeSidesBtn}
       >
-        <path d="M847.9 592H152c-4.4 0-8 3.6-8 8v60c0 4.4 3.6 8 8 8h605.2L612.9 851c-4.1 5.2-.4 13 6.3 13h72.5c4.9 0 9.5-2.2 12.6-6.1l168.8-214.1c16.5-21 1.6-51.8-25.2-51.8zM872 356H266.8l144.3-183c4.1-5.2.4-13-6.3-13h-72.5c-4.9 0-9.5 2.2-12.6 6.1L150.9 380.2c-16.5 21-1.6 51.8 25.1 51.8h696c4.4 0 8-3.6 8-8v-60c0-4.4-3.6-8-8-8z"></path>
-      </svg>
-    </button>
+        <svg
+          width="19"
+          height="15"
+          viewBox="0 0 19 15"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4.53544 0.795532L0.738561 4.68281C0.587891 4.83348 0.489956 5.06702 0.489956 5.27042C0.489956 5.74503 0.821429 6.06897 1.2885 6.06897C1.51451 6.06897 1.69531 5.99363 1.84598 5.83543L3.39788 4.22327L4.3923 3.07818L4.33203 4.67528V14.0695C4.33203 14.5441 4.67104 14.8831 5.13811 14.8831C5.60519 14.8831 5.93666 14.5441 5.93666 14.0695V4.67528L5.88393 3.07818L6.87081 4.22327L8.42271 5.83543C8.57338 5.99363 8.76172 6.06897 8.98772 6.06897C9.44727 6.06897 9.77874 5.74503 9.77874 5.27042C9.77874 5.06702 9.6808 4.83348 9.53013 4.68281L5.73326 0.795532C5.40179 0.448992 4.87444 0.441459 4.53544 0.795532ZM14.4646 14.6195L18.2614 10.7322C18.4121 10.574 18.51 10.3405 18.51 10.1371C18.51 9.66997 18.1786 9.34603 17.7115 9.34603C17.4855 9.34603 17.3047 9.42137 17.154 9.57204L15.6021 11.1842L14.6077 12.3293L14.668 10.7322V1.33794C14.668 0.878401 14.329 0.53186 13.8619 0.53186C13.4023 0.53186 13.0633 0.878401 13.0633 1.33794V10.7322L13.1161 12.3293L12.1292 11.1842L10.5773 9.57204C10.4266 9.42137 10.2383 9.34603 10.0198 9.34603C9.55273 9.34603 9.22126 9.66997 9.22126 10.1371C9.22126 10.3405 9.3192 10.574 9.46987 10.7322L13.2667 14.6195C13.5982 14.9735 14.1256 14.9811 14.4646 14.6195Z"
+            fill="white"
+          />
+        </svg>
+      </Button>
+      <div className={styles.line} />
+    </div>
   );
 };

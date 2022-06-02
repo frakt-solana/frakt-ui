@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import {
   EstimatedRewards,
@@ -31,6 +31,7 @@ import {
   useLoadingModal,
 } from '../../../../../components/LoadingModal';
 import { provideLiquidity, stakeInLiquidityFusion } from '../../transactions';
+import { useConnection } from '../../../../../hooks';
 
 interface DepositLiquidityModalProps {
   visible?: boolean;
@@ -60,7 +61,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
   const wallet = useWallet();
   const walletPublicKey = wallet?.publicKey;
 
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
 
   const [baseValue, setBaseValue] = useState<string>('');

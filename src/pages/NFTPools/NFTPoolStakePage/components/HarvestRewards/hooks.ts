@@ -1,7 +1,8 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useLoadingModal } from '../../../../../components/LoadingModal';
 import { FusionPool } from '../../../../../contexts/liquidityPools';
+import { useConnection } from '../../../../../hooks';
 import { harvest } from '../../transactions';
 
 type UseHarvestRewards = (props: {
@@ -18,7 +19,7 @@ export const useHarvestRewards: UseHarvestRewards = ({
   liquidityFusionPool,
 }) => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const {
     visible: loadingModalVisible,

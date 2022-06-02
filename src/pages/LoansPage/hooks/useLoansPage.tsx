@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
+import { useConnection, useDebounce, useSolanaTimestamp } from '../../../hooks';
 import { Tab, useTabs } from '../../../components/Tabs';
-import { useDebounce } from '../../../hooks';
 import {
   calcLoanPoolApr,
   calcLoanPoolReward,
@@ -43,8 +43,10 @@ export const useLoansPage = (): {
   useLoansPolling();
 
   const { userLoans, userLoansLoading, loanDataByPoolPublicKey } = useLoans();
+  const solanaTimestamp = useSolanaTimestamp();
+
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const {
     tabs: loanTabs,
@@ -84,7 +86,13 @@ export const useLoansPage = (): {
       const utilizationRate =
         (totalBorrowed / liquidityPool?.amountOfStaked) * 100 || 0;
 
-      const rewardAmount = calcLoanPoolReward(liquidityPool, depositAccount);
+      const rewardAmount = calcLoanPoolReward(
+        liquidityPool,
+        depositAccount,
+        solanaTimestamp,
+      );
+
+      const onlyPositiveReward = rewardAmount < 0 ? 0 : rewardAmount;
 
       return {
         apr,
@@ -93,10 +101,10 @@ export const useLoansPage = (): {
         depositAmount: depositAccount?.amount / 1e9 || 0,
         totalBorrowed: totalBorrowed / 1e9 || 0,
         utilizationRate,
-        rewardAmount,
+        rewardAmount: onlyPositiveReward,
       };
     }
-  }, [loanDataByPoolPublicKey, wallet]);
+  }, [loanDataByPoolPublicKey, wallet, solanaTimestamp]);
 
   const harvestLiquidity = async (): Promise<void> => {
     await harvestTxn({

@@ -87,7 +87,8 @@ export const harvest: Harvest = async ({
 
     const transactions = [transactionInventory, transactionLiquidity];
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     transactions.forEach((transaction) => {
       transaction.recentBlockhash = blockhash;
@@ -112,7 +113,12 @@ export const harvest: Harvest = async ({
     });
 
     await Promise.all(
-      txids.map((txid) => connection.confirmTransaction(txid, 'finalized')),
+      txids.map((txid) =>
+        connection.confirmTransaction(
+          { signature: txid, blockhash, lastValidBlockHeight },
+          'finalized',
+        ),
+      ),
     );
 
     notify({

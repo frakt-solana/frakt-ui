@@ -1,7 +1,7 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import classNames from 'classnames';
 import { FC } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import {
   LoadingModal,
@@ -28,6 +28,7 @@ import styles from './SellAndStakeModal.module.scss';
 
 import { NftPoolData } from '../../../../../utils/cacher/nftPools';
 import { sellNftAndStake } from '../../transactions';
+import { useConnection } from '../../../../../hooks';
 
 interface SellAndStakeModalProps {
   visible?: boolean;
@@ -49,7 +50,7 @@ export const SellAndStakeModal: FC<SellAndStakeModalProps> = ({
   inventoryFusionPool,
 }) => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { removeTokenOptimistic } = useUserTokens();
 
   const sellValue = 1 - SELL_COMMISSION_PERCENT / 100;

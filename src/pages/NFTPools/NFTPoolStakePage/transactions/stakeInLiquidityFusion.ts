@@ -35,7 +35,8 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
 
     stakeTransaction.add(stakeInstruction);
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     stakeTransaction.recentBlockhash = blockhash;
     stakeTransaction.feePayer = wallet.publicKey;
@@ -52,7 +53,10 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
       type: NotifyType.INFO,
     });
 
-    await connection.confirmTransaction(txid, 'finalized');
+    await connection.confirmTransaction(
+      { signature: txid, lastValidBlockHeight, blockhash },
+      'finalized',
+    );
 
     notify({
       message: 'Staked successfully',

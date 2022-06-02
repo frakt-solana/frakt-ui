@@ -154,7 +154,8 @@ export const sellNft: SellNft = async ({
       };
     })();
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     if (needSwap) {
       const transactions = [depositNftTransaction, swapTransaction];
@@ -177,14 +178,20 @@ export const sellNft: SellNft = async ({
         type: NotifyType.INFO,
       });
 
-      await connection.confirmTransaction(txidDeposit, 'finalized');
+      await connection.confirmTransaction(
+        { signature: txidDeposit, blockhash, lastValidBlockHeight },
+        'finalized',
+      );
 
       const txidSwap = await connection.sendRawTransaction(
         signedTransactions[1].serialize(),
         // { skipPreflight: true },
       );
 
-      await connection.confirmTransaction(txidSwap, 'finalized');
+      await connection.confirmTransaction(
+        { signature: txidSwap, blockhash, lastValidBlockHeight },
+        'finalized',
+      );
     } else {
       depositNftTransaction.recentBlockhash = blockhash;
       depositNftTransaction.feePayer = wallet.publicKey;
@@ -204,7 +211,10 @@ export const sellNft: SellNft = async ({
         type: NotifyType.INFO,
       });
 
-      await connection.confirmTransaction(txid, 'finalized');
+      await connection.confirmTransaction(
+        { signature: txid, lastValidBlockHeight, blockhash },
+        'finalized',
+      );
     }
 
     notify({

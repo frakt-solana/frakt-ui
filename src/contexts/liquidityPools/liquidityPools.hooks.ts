@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
@@ -19,6 +19,7 @@ import {
 } from './liquidityPools.model';
 import { FUSION_PROGRAM_PUBKEY } from './transactions/fusionPools';
 import { fetchSolanaPriceUSD } from '../../utils';
+import { useConnection } from '../../hooks';
 
 export const useLiquidityPools = (): LiquidityPoolsContextValues => {
   const context = useContext(LiquidityPoolsContext);
@@ -62,7 +63,7 @@ export const useLazyRaydiumPoolsInfoMap = (): {
   raydiumPoolsInfoMap: RaydiumPoolInfoMap;
   fetchPoolsInfoMap: (poolConfigs: LiquidityPoolKeysV4[]) => Promise<void>;
 } => {
-  const { connection } = useConnection();
+  const connection = useConnection();
   const [loading, setLoading] = useState<boolean>(false);
   const [raydiumPoolsInfoMap, setRaydiumPoolsInfoMap] =
     useState<RaydiumPoolInfoMap>(new Map());
@@ -94,7 +95,7 @@ export const useLazyFusionPools_old = (): {
   fetchFusionPoolsInfo: (lpMints: string[]) => Promise<void>;
 } => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [fusionPoolInfoMap, setFusionPoolInfoMap] =
@@ -133,7 +134,7 @@ type UseLazyFusionPools = () => {
 };
 
 export const useLazyFusionPools: UseLazyFusionPools = () => {
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const [fusionPools, setFusionPools] = useState<FusionPool[]>(null);
   const [loading, setLoading] = useState<boolean>(false);

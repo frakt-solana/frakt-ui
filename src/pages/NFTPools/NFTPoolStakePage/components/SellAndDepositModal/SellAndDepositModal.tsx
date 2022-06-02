@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import classNames from 'classnames';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
 import {
@@ -37,6 +37,7 @@ import {
   useNativeAccount,
 } from '../../../../../utils/accounts';
 import { sellNftAndDeposit, stakeInLiquidityFusion } from '../../transactions';
+import { useConnection } from '../../../../../hooks';
 
 interface SellAndDepositModalProps {
   visible?: boolean;
@@ -62,7 +63,7 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
   liquidityFusionPool,
 }) => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
   const { removeTokenOptimistic } = useUserTokens();
 
   const sellValue = 1 - SELL_COMMISSION_PERCENT / 100;

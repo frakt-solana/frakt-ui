@@ -1,9 +1,9 @@
 import { FC, useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { HeaderBuy } from './components/HeaderBuy';
-import { usePublicKeyParam } from '../../../hooks';
+import { useConnection, usePublicKeyParam } from '../../../hooks';
 import {
   useNftPool,
   useNftPoolsInitialFetch,
@@ -39,9 +39,9 @@ const useNftBuy = ({
   pool: NftPoolData;
   poolTokenInfo: TokenInfo;
 }) => {
-  const { poolDataByMint } = useLiquidityPools();
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const { poolDataByMint } = useLiquidityPools();
+  const connection = useConnection();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,

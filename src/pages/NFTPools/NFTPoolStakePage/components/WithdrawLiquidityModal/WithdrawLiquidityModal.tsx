@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 
 import {
@@ -23,6 +23,7 @@ import {
 import styles from './WithdrawLiquidityModal.module.scss';
 import { Slider } from '../../../../../components/Slider';
 import { unstakeAndRemoveLiquidity } from '../../transactions';
+import { useConnection } from '../../../../../hooks';
 
 export interface WithdrawLiquidityModalProps {
   visible?: boolean;
@@ -46,7 +47,7 @@ export const WithdrawLiquidityModal: FC<WithdrawLiquidityModalProps> = ({
   liquidityFusionPool,
 }) => {
   const wallet = useWallet();
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const [percent, setPercent] = useState(0);
   const [lpValue, setLpValue] = useState<string>('');

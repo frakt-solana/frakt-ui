@@ -123,7 +123,8 @@ export const buyRandomNft: BuyRandomNft = async ({
     const getLotteryTicketTransaction = new Transaction();
     getLotteryTicketTransaction.add(...getLotteryTicketInstructions);
 
-    const { blockhash } = await connection.getRecentBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await connection.getLatestBlockhash();
 
     if (needSwap) {
       const transactions = [swapTransaction, getLotteryTicketTransaction];
@@ -146,14 +147,20 @@ export const buyRandomNft: BuyRandomNft = async ({
         type: NotifyType.INFO,
       });
 
-      await connection.confirmTransaction(txidSwap, 'finalized');
+      await connection.confirmTransaction(
+        { signature: txidSwap, blockhash, lastValidBlockHeight },
+        'finalized',
+      );
 
       const txidGetLotteryTicket = await connection.sendRawTransaction(
         signedTransactions[1].serialize(),
         // { skipPreflight: true },
       );
 
-      await connection.confirmTransaction(txidGetLotteryTicket, 'finalized');
+      await connection.confirmTransaction(
+        { signature: txidGetLotteryTicket, blockhash, lastValidBlockHeight },
+        'finalized',
+      );
     } else {
       getLotteryTicketTransaction.recentBlockhash = blockhash;
       getLotteryTicketTransaction.feePayer = wallet.publicKey;
@@ -173,7 +180,10 @@ export const buyRandomNft: BuyRandomNft = async ({
         type: NotifyType.INFO,
       });
 
-      await connection.confirmTransaction(txid, 'finalized');
+      await connection.confirmTransaction(
+        { signature: txid, blockhash, lastValidBlockHeight },
+        'finalized',
+      );
     }
 
     notify({
