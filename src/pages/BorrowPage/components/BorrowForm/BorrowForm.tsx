@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react';
 import { Dictionary } from 'lodash';
+import { loans } from '@frakt-protocol/frakt-sdk';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
@@ -8,11 +9,7 @@ import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { ShortTermFields } from '../ShortTermFields';
 import { useBorrowForm } from './hooks';
-import {
-  getFeePercent,
-  getNftReturnPeriod,
-  LoanData,
-} from '../../../../contexts/loans';
+import { LoanData } from '../../../../contexts/loans';
 import { getNftCreators, SOL_TOKEN } from '../../../../utils';
 
 interface BorrowFormProps {
@@ -62,7 +59,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
 
   const fee = useMemo(() => {
     if (loanData && selectedNft) {
-      return getFeePercent({
+      return loans.getFeePercent({
         loanData,
         nft: selectedNft,
       });
@@ -74,7 +71,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
 
   const returnPeriod = useMemo(() => {
     if (loanData && selectedNft) {
-      return getNftReturnPeriod({
+      return loans.getNftReturnPeriod({
         loanData,
         nft: selectedNft,
       });

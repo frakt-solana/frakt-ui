@@ -1,10 +1,9 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AccountInfo, PublicKey } from '@solana/web3.js';
 import { useEffect, useRef, useState } from 'react';
+import { utils, AccountInfoParsed } from '@frakt-protocol/frakt-sdk';
 
 import { useConnection } from '../../../hooks';
-import { getTokenAccount, parseTokenAccount } from '../accounts.helpers';
-import { AccountInfoParsed } from '../accounts.model';
 
 type GetInfoAndSubscribe = (tokenMint: PublicKey) => Promise<void>;
 
@@ -32,7 +31,7 @@ export const useUserSplAccount: UseUserSplAccount = () => {
     tokenAccountPubkey: PublicKey;
     tokenAccountEncoded: AccountInfo<Buffer>;
   }) => {
-    const parsedAccountInfo = parseTokenAccount({
+    const parsedAccountInfo = utils.parseTokenAccount({
       tokenAccountPubkey,
       tokenAccountEncoded,
     });
@@ -64,7 +63,7 @@ export const useUserSplAccount: UseUserSplAccount = () => {
 
       setTokenMint(tokenMint);
 
-      const info = await getTokenAccount({
+      const info = await utils.getTokenAccount({
         tokenMint,
         owner: wallet.publicKey,
         connection,

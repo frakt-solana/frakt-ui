@@ -1,10 +1,8 @@
 import { useContext, useEffect, useMemo } from 'react';
+import { pools as nftPools } from '@frakt-protocol/frakt-sdk';
 
 import { NftPoolsContext } from './nftPools.context';
-import {
-  getWhitelistedCreatorsDictionary,
-  getWhitelistedMintsDictionary,
-} from './nftPools.helpers';
+
 import { NftPoolsContextValues, UseNftPool } from './nftPools.model';
 
 export const useNftPools = (): NftPoolsContextValues => {
@@ -50,14 +48,14 @@ export const useNftPool: UseNftPool = (poolPubkey) => {
 
   const whitelistedMintsDictionary = useMemo(() => {
     if (pool) {
-      return getWhitelistedMintsDictionary(pool);
+      return nftPools.getWhitelistedMintsDictionary(pool);
     }
     return {};
   }, [pool]);
 
   const whitelistedCreatorsDictionary = useMemo(() => {
     if (pool) {
-      return getWhitelistedCreatorsDictionary(pool);
+      return nftPools.getWhitelistedCreatorsDictionary(pool);
     }
     return {};
   }, [pool]);

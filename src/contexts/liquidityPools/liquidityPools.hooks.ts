@@ -2,11 +2,11 @@ import { useContext, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
+import { swaps } from '@frakt-protocol/frakt-sdk';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
   fetchProgramAccounts,
-  fetchRaydiumPoolsInfoMap,
   mapFusionPoolInfo,
 } from './liquidityPools.helpers';
 import {
@@ -69,7 +69,7 @@ export const useLazyRaydiumPoolsInfoMap = (): {
     try {
       setLoading(true);
 
-      const poolsInfoMap = await fetchRaydiumPoolsInfoMap(
+      const poolsInfoMap = await swaps.fetchRaydiumPoolsInfoMap(
         connection,
         poolConfigs,
       );

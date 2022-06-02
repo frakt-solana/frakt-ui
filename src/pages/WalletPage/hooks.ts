@@ -1,8 +1,8 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
-import { getAllUserTokens } from '../../utils/accounts';
 import { useTokenListContext } from '../../contexts/TokenList';
 import {
   NameServiceResponse,
@@ -28,7 +28,7 @@ export const useWalletTokens: UseWalletTokens = ({ walletPubkey }) => {
     try {
       setLoading(true);
 
-      const userTokens = await getAllUserTokens({
+      const userTokens = await utils.getAllUserTokens({
         connection,
         walletPublicKey: new PublicKey(walletPubkey),
       });

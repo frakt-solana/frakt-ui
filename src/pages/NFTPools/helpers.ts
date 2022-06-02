@@ -1,9 +1,22 @@
 import { Connection } from '@solana/web3.js';
 import { Liquidity, Percent } from '@raydium-io/raydium-sdk';
+import { swaps } from '@frakt-protocol/frakt-sdk';
 
-import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { PoolData } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
+import BN from 'bn.js';
+
+// TODO: Remove after raydium version update!!!
+export interface LiquidityPoolInfo {
+  status: BN;
+  baseDecimals: number;
+  quoteDecimals: number;
+  lpDecimals: number;
+  baseReserve: BN;
+  quoteReserve: BN;
+  lpSupply: BN;
+  startTime: BN;
+}
 
 type GetTokenPrice = (params: {
   poolData: PoolData;
@@ -22,15 +35,15 @@ export const getTokenPrice: GetTokenPrice = async ({
   isBuy = true,
   connection,
 }) => {
-  const poolInfo = await Liquidity.fetchInfo({
+  const poolInfo = (await Liquidity.fetchInfo({
     connection,
     poolKeys: poolData?.poolConfig,
-  });
+  })) as LiquidityPoolInfo;
 
   const persentSlippage = new Percent(Math.round(slippage * 100), 10_000);
 
   if (isBuy) {
-    const { amountIn, maxAmountIn, priceImpact } = getInputAmount({
+    const { amountIn, maxAmountIn, priceImpact } = swaps.getInputAmount({
       poolKeys: poolData?.poolConfig,
       poolInfo,
       receiveToken: poolData?.tokenInfo,
@@ -45,7 +58,7 @@ export const getTokenPrice: GetTokenPrice = async ({
       priceImpact,
     };
   } else {
-    const { amountOut, minAmountOut, priceImpact } = getOutputAmount({
+    const { amountOut, minAmountOut, priceImpact } = swaps.getOutputAmount({
       poolKeys: poolData?.poolConfig,
       poolInfo,
       payToken: poolData?.tokenInfo,

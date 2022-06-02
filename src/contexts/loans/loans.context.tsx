@@ -2,17 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LoanView } from '@frakters/nft-lending-v2';
 import { Connection } from '@solana/web3.js';
+import { loans, LoanDataByPoolPublicKey } from '@frakt-protocol/frakt-sdk';
 
 import {
   FetchDataFunc,
   LoansContextValues,
   LoansProviderType,
   LoanData,
-  LoanDataByPoolPublicKey,
   RemoveLoanOptimistic,
   LoanWithArweaveMetadata,
 } from './loans.model';
-import { fetchLoanDataByPoolPublicKey } from './loans.helpers';
 import { useConnection, usePolling } from '../../hooks';
 import { getArweaveMetadataByMint } from '../../utils/getArweaveMetadata';
 
@@ -42,7 +41,10 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
   const [metadataLoading, setMetadataLoading] = useState<boolean>(false);
 
   const fetchLoansData: FetchDataFunc = async (): Promise<void> => {
-    const loansData = await fetchLoanDataByPoolPublicKey(connection);
+    const loansData = await loans.fetchLoanDataByPoolPublicKey(
+      connection,
+      process.env.LOANS_PROGRAM_PUBKEY,
+    );
     setLoanDataByPoolPublicKey(loansData);
   };
 

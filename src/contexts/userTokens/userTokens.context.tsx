@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { keyBy, isArray } from 'lodash';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
 import {
   RawUserTokensByMint,
@@ -11,7 +12,6 @@ import {
   fetchWalletNFTsUsingArweave,
   isTokenFrozen,
 } from './userTokens.helpers';
-import { getAllUserTokens } from '../../utils/accounts';
 import { useConnection } from '../../hooks';
 
 export const UserTokensContext = React.createContext<UserTokensValues>({
@@ -49,7 +49,7 @@ export const UserTokensProvider = ({
   const fetchTokens = async () => {
     setLoading(true);
     try {
-      const userTokens = await getAllUserTokens({
+      const userTokens = await utils.getAllUserTokens({
         walletPublicKey: publicKey,
         connection,
       });

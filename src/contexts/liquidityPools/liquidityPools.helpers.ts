@@ -1,14 +1,9 @@
 import {
-  CurrencyAmount,
-  Liquidity,
   LiquidityPoolKeysV4,
   Spl,
   SPL_ACCOUNT_LAYOUT,
-  Token,
-  TokenAmount,
   WSOL,
 } from '@raydium-io/raydium-sdk';
-import BN from 'bn.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
@@ -19,28 +14,15 @@ import {
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 
-import { SOL_TOKEN } from '../../utils';
 import { BLOCKED_POOLS_IDS } from './liquidityPools.constants';
 import {
-  FetchPoolDataByMint,
   PoolData,
   PoolDataByMint,
   FusionPoolsInfo,
-  RaydiumPoolInfo,
-  RaydiumPoolInfoMap,
   FusionPoolInfoByMint,
   FusionPoolInfo,
   secondaryRewardWithTokenInfo,
 } from './liquidityPools.model';
-import { Cacher } from '../../utils/cacher';
-
-export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
-  tokensMap,
-}) => {
-  const allRaydiumConfigs = await Cacher.getAllRaydiumPoolsConfigs();
-
-  return getPoolDataByMint(allRaydiumConfigs, tokensMap);
-};
 
 export const getPoolDataByMint = (
   raydiumPoolConfigs: LiquidityPoolKeysV4[],
@@ -77,28 +59,6 @@ export const filterFraktionPoolConfigs = (
     );
   });
 
-export const fetchRaydiumPoolsInfoMap = async (
-  connection: Connection,
-  raydiumPoolConfigs: LiquidityPoolKeysV4[],
-): Promise<RaydiumPoolInfoMap> => {
-  const raydiumPoolInfoMap = new Map<string, RaydiumPoolInfo>();
-
-  const allPoolsInfo = await Promise.all(
-    raydiumPoolConfigs.map((poolKey) =>
-      Liquidity.fetchInfo({ connection, poolKeys: poolKey }),
-    ),
-  );
-
-  allPoolsInfo.forEach((poolInfo, idx) => {
-    raydiumPoolInfoMap.set(
-      raydiumPoolConfigs?.[idx]?.baseMint.toBase58(),
-      poolInfo,
-    );
-  });
-
-  return raydiumPoolInfoMap;
-};
-
 export const getTokenAccount = async ({
   tokenMint,
   owner,
@@ -128,23 +88,6 @@ export const getTokenAccount = async ({
     : null;
 
   return tokenAccount;
-};
-
-export const getCurrencyAmount = (
-  tokenInfo: TokenInfo,
-  amount: BN,
-): CurrencyAmount | TokenAmount => {
-  return tokenInfo.address === SOL_TOKEN.address
-    ? new CurrencyAmount(SOL_TOKEN, amount)
-    : new TokenAmount(
-        new Token(
-          tokenInfo.address,
-          tokenInfo.decimals,
-          tokenInfo.symbol,
-          tokenInfo.name,
-        ),
-        amount,
-      );
 };
 
 export const fetchProgramAccounts = async ({

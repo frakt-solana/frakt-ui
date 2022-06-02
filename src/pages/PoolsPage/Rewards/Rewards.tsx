@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { utils, AccountInfoParsed } from '@frakt-protocol/frakt-sdk';
 
 import Button from '../../../components/Button';
 import styles from './Rewards.module.scss';
@@ -14,10 +15,6 @@ import {
   useLiquidityPools,
 } from '../../../contexts/liquidityPools';
 import { useTokenListContext } from '../../../contexts/TokenList';
-import {
-  AccountInfoParsed,
-  getTokenAccountBalance,
-} from '../../../utils/accounts';
 import { useSolanaTimestamp } from '../../../hooks';
 
 interface RewardsInterface {
@@ -40,7 +37,7 @@ const Rewards: FC<RewardsInterface> = ({
   const { mainRouter, stakeAccount, secondaryReward, secondaryStakeAccount } =
     fusionPoolInfo;
 
-  const balance = getTokenAccountBalance(
+  const balance = utils.getTokenAccountBalance(
     lpTokenAccountInfo,
     raydiumPoolInfo.lpDecimals,
   );

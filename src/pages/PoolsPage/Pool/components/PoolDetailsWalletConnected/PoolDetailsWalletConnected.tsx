@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { FC } from 'react';
+import { AccountInfoParsed } from '@frakt-protocol/frakt-sdk';
 
 import Button from '../../../../../components/Button';
 import { Loader } from '../../../../../components/Loader';
@@ -9,7 +10,6 @@ import {
   RaydiumPoolInfo,
 } from '../../../../../contexts/liquidityPools';
 import { useUserTokens } from '../../../../../contexts/userTokens';
-import { AccountInfoParsed } from '../../../../../utils/accounts';
 import Rewards from '../../../Rewards';
 import Withdraw from '../../../Withdraw';
 import styles from './PoolDetailsWalletConnected.module.scss';

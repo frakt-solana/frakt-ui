@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { LoanDataByPoolPublicKey } from '@frakt-protocol/frakt-sdk';
 import {
   CollectionInfoView,
   DepositView,
@@ -31,8 +32,6 @@ export interface LoanData {
   liquidityPool: LiquidityPoolView;
   loans: LoanView[];
 }
-
-export type LoanDataByPoolPublicKey = Map<string, LoanData>;
 
 export interface LoanWithArweaveMetadata {
   loan: LoanView;

@@ -2,6 +2,7 @@ import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -10,10 +11,7 @@ import {
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import {
-  getCurrencyAmount,
-  getTokenAccount,
-} from '../../liquidityPools.helpers';
+import { getTokenAccount } from '../../liquidityPools.helpers';
 
 export interface SwapTransactionParams {
   baseToken: TokenInfo;
@@ -48,8 +46,8 @@ export const rawRaydiumSwap = async ({
     )
   ).filter((tokenAccount) => tokenAccount);
 
-  const amountIn = getCurrencyAmount(baseToken, baseAmount);
-  const amountOut = getCurrencyAmount(quoteToken, quoteAmount);
+  const amountIn = pools.getCurrencyAmount(baseToken, baseAmount);
+  const amountOut = pools.getCurrencyAmount(quoteToken, quoteAmount);
 
   const { transaction, signers } = await Liquidity.makeSwapTransaction({
     connection,

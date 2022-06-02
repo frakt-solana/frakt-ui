@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { pools, swaps } from '@frakt-protocol/frakt-sdk';
 
 import { useTokenListContext } from '../TokenList';
 import {
-  fetchRaydiumPoolsInfo,
   addRaydiumLiquidity,
   removeRaydiumLiquidity,
   raydiumSwap,
@@ -13,7 +13,6 @@ import {
   unstakeLiquidity,
   createRaydiumLiquidityPool,
 } from './liquidityPools';
-import { fetchPoolDataByMint } from './liquidityPools.helpers';
 import {
   LiquidityPoolsContextValues,
   LiquidityPoolsProviderType,
@@ -49,7 +48,8 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
 
   const fetchPoolData = async (fraktionTokensMap: Map<string, TokenInfo>) => {
     try {
-      const poolDataByMint = await fetchPoolDataByMint({
+      const poolDataByMint = await pools.fetchPoolDataByMint({
+        connection,
         tokensMap: fraktionTokensMap,
       });
 
@@ -72,7 +72,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       value={{
         loading,
         poolDataByMint,
-        fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
+        fetchRaydiumPoolsInfo: swaps.fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap({
           connection,
           wallet,

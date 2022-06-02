@@ -6,12 +6,9 @@ import {
   TokenAmount,
 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { utils, AccountInfoParsed } from '@frakt-protocol/frakt-sdk';
 
 import { TokenFieldWithBalance } from '../../../components/TokenField';
-import {
-  AccountInfoParsed,
-  getTokenAccountBalance,
-} from '../../../utils/accounts';
 import Button from '../../../components/Button';
 import { SOL_TOKEN } from '../../../utils';
 import styles from './Withdraw.module.scss';
@@ -51,7 +48,7 @@ const Withdraw: FC<WithdrawInterface> = ({
   const { lpMint } = poolConfig;
   const { lpDecimals } = raydiumPoolInfo;
 
-  const balance = getTokenAccountBalance(lpTokenAccountInfo, lpDecimals);
+  const balance = utils.getTokenAccountBalance(lpTokenAccountInfo, lpDecimals);
 
   const stakedBalance = getStakedBalance(fusionPoolInfo, lpDecimals);
 

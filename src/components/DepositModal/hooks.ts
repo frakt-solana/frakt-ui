@@ -4,6 +4,7 @@ import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
 import {
   calculateTotalDeposit,
@@ -14,7 +15,6 @@ import { SOL_TOKEN } from '../../utils';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
 import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
 import { useLoadingModal } from '../LoadingModal';
-import { getTokenAccount } from '../../utils/accounts';
 import { PublicKey } from '@solana/web3.js';
 import { useConnection } from '../../hooks';
 
@@ -150,7 +150,7 @@ export const useDeposit = (
   };
 
   const stakeLiquidity = async (): Promise<boolean> => {
-    const { accountInfo } = await getTokenAccount({
+    const { accountInfo } = await utils.getTokenAccount({
       tokenMint: new PublicKey(fusionPoolInfo?.mainRouter?.tokenMintInput),
       owner: wallet.publicKey,
       connection,

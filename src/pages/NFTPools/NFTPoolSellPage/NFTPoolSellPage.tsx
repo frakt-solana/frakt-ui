@@ -2,6 +2,7 @@ import { FC, useMemo, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
@@ -9,7 +10,6 @@ import { WalletNotConnected } from '../components/WalletNotConnected';
 import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
 import styles from './NFTPoolSellPage.module.scss';
 import {
-  filterWhitelistedNFTs,
   useNftPool,
   useNftPools,
   useNftPoolsInitialFetch,
@@ -204,7 +204,7 @@ export const NFTPoolSellPage: FC = () => {
   const [, setIsSidebar] = useState<boolean>(false);
 
   const whitelistedNFTs = useMemo(() => {
-    return filterWhitelistedNFTs(
+    return pools.filterWhitelistedNFTs(
       rawNfts || [],
       whitelistedMintsDictionary,
       whitelistedCreatorsDictionary,

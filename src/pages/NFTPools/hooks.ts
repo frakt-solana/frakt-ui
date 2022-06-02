@@ -5,6 +5,7 @@ import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Percent } from '@raydium-io/raydium-sdk';
 import { useParams } from 'react-router-dom';
+import { swaps } from '@frakt-protocol/frakt-sdk';
 
 import {
   UserNFT,
@@ -22,10 +23,10 @@ import {
   sumFusionAndRaydiumApr,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
-import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
 import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
 import { CUSTOM_POOLS_URLS } from '../../utils/cacher/nftPools';
+import { LiquidityPoolInfo } from './helpers';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -189,30 +190,33 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
 
       const poolsInfo = await fetchRaydiumPoolsInfo(poolConfigs);
 
-      const pricesByTokenMint = poolsInfo.reduce((map, poolInfo, idx) => {
-        const { amountOut: sellPrice } = getOutputAmount({
-          poolKeys: poolConfigs?.[idx],
-          poolInfo,
-          payToken: poolTokensInfo?.[idx],
-          payAmount: 1,
-          receiveToken: SOL_TOKEN,
-          slippage: new Percent(1, 100),
-        });
+      const pricesByTokenMint = poolsInfo.reduce(
+        (map, poolInfo: LiquidityPoolInfo, idx) => {
+          const { amountOut: sellPrice } = swaps.getOutputAmount({
+            poolKeys: poolConfigs?.[idx],
+            poolInfo,
+            payToken: poolTokensInfo?.[idx],
+            payAmount: 1,
+            receiveToken: SOL_TOKEN,
+            slippage: new Percent(1, 100),
+          });
 
-        const { amountIn: buyPrice } = getInputAmount({
-          poolKeys: poolConfigs?.[idx],
-          poolInfo,
-          payToken: SOL_TOKEN,
-          receiveAmount: 1,
-          receiveToken: poolTokensInfo?.[idx],
-          slippage: new Percent(1, 100),
-        });
+          const { amountIn: buyPrice } = swaps.getInputAmount({
+            poolKeys: poolConfigs?.[idx],
+            poolInfo,
+            payToken: SOL_TOKEN,
+            receiveAmount: 1,
+            receiveToken: poolTokensInfo?.[idx],
+            slippage: new Percent(1, 100),
+          });
 
-        return map.set(poolTokensInfo?.[idx]?.address, {
-          buy: buyPrice,
-          sell: sellPrice,
-        });
-      }, new Map<string, Price>());
+          return map.set(poolTokensInfo?.[idx]?.address, {
+            buy: buyPrice,
+            sell: sellPrice,
+          });
+        },
+        new Map<string, Price>(),
+      );
 
       pricesByTokenMintCache.value = new Map(pricesByTokenMint);
 

@@ -2,14 +2,13 @@ import { FC } from 'react';
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
+import { loans } from '@frakt-protocol/frakt-sdk';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import {
   LoanWithArweaveMetadata,
   useLoans,
   paybackLoan as paybackLoanTx,
-  getLoanCollectionInfo,
-  getAmountToReturnForPriceBasedLoan,
 } from '../../contexts/loans';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
@@ -73,7 +72,7 @@ const LoanCard: FC<LoanCardProps> = ({
   const { loan, metadata } = loanWithArweaveMetadata;
 
   const { loanDataByPoolPublicKey } = useLoans();
-  const collectionInfo = getLoanCollectionInfo(
+  const collectionInfo = loans.getLoanCollectionInfo(
     loanDataByPoolPublicKey.get(loan?.liquidityPool),
     loan.collectionInfo,
   );
@@ -96,7 +95,7 @@ const LoanCard: FC<LoanCardProps> = ({
     : '';
 
   const amountToReturn =
-    getAmountToReturnForPriceBasedLoan(loan)?.toFixed(2) || '';
+    loans.getAmountToReturnForPriceBasedLoan(loan)?.toFixed(2) || '';
 
   return (
     <>

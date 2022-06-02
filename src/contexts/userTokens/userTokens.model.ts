@@ -1,4 +1,4 @@
-import { TokenView } from '../../utils/accounts';
+import { TokenView } from '@frakt-protocol/frakt-sdk';
 
 import {
   ArweaveAttribute,

@@ -1,6 +1,6 @@
 import { Connection, PublicKey } from '@solana/web3.js';
+import { TokenView } from '@frakt-protocol/frakt-sdk';
 
-import { TokenView } from '../../utils/accounts';
 import {
   getArweaveMetadataByMint,
   NFTCreator,

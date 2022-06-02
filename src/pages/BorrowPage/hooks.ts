@@ -11,13 +11,13 @@ import { useDispatch } from 'react-redux';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
+import { loans } from '@frakt-protocol/frakt-sdk';
 
 import { commonActions } from '../../state/common/actions';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
 import { UserNFT, useUserTokens } from '../../contexts/userTokens';
 import {
   DISCOUNT_NFT_CREATORS,
-  getNftMarketLowerPricesByCreators,
   LoanData,
   useLoans,
   useLoansInitialFetch,
@@ -35,7 +35,7 @@ const usePriceByCreator = (creatorsArray = []) => {
     try {
       setLoading(true);
 
-      const priceByCreator = await getNftMarketLowerPricesByCreators(
+      const priceByCreator = await loans.getNftMarketLowerPricesByCreators(
         creatorsArray,
       );
 

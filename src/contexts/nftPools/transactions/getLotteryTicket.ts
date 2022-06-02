@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
+import { utils } from '@frakt-protocol/frakt-sdk';
 import {
   getLotteryTicket as getLotteryTicketTxn,
   Provider,
@@ -11,8 +12,6 @@ import {
   WalletAndConnection,
   wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-
-import { getTokenAccount } from '../../../utils/accounts';
 
 export interface GetLotteryTicketParams {
   pool: NftPoolData;
@@ -31,7 +30,7 @@ export const rawGetLotteryTicket = async ({
   poolLpMint,
   afterTransaction,
 }: GetLotteryTicketRawParams): Promise<PublicKey> => {
-  const { publicKey: userFractionsTokenAccount } = await getTokenAccount({
+  const { publicKey: userFractionsTokenAccount } = await utils.getTokenAccount({
     tokenMint: pool.fractionMint,
     owner: wallet.publicKey,
     connection,
