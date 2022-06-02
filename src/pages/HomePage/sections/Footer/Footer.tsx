@@ -14,7 +14,7 @@ import {
 import {
   CONTACT_SECTION_ID,
   OUR_PRODUCT_ID,
-  OUR_TOKENS_ID,
+  // OUR_TOKENS_ID,
   TEAM_SECTION_ID,
   // TECHNICAL_PARTNERS_ID,
 } from '../../constants';
@@ -31,7 +31,7 @@ const ECOSYSTEM_LIST = [
 
 const LANDING_LIST = [
   { to: `#${OUR_PRODUCT_ID}`, label: 'Our products' },
-  { to: `#${OUR_TOKENS_ID}`, label: 'Our tokens' },
+  // { to: `#${OUR_TOKENS_ID}`, label: 'Our tokens' },
   // { to: `#${TECHNICAL_PARTNERS_ID}`, label: 'Technical partners' },
   { to: `#${TEAM_SECTION_ID}`, label: 'Team' },
 ];

@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import Statistics from './sections/Statistics/Statistics';
 import { FullPotentialSection } from './sections/FullPotentialSection';
-import { OurTokensSection } from './sections/OurTokensSection';
+// import { OurTokensSection } from './sections/OurTokensSection';
 import { TeamSection } from './sections/TeamSection';
 import { TestimonialsSection } from './sections/TestimonialsSection';
 // import PartnersSection from './sections/PartnersSection';
@@ -33,7 +33,7 @@ const HomePage = (): JSX.Element => {
       <MainSection />
       <Statistics />
       <FullPotentialSection navRef={sectionRef1} />
-      <OurTokensSection navRef={sectionRef2} />
+      {/* <OurTokensSection navRef={sectionRef2} /> */}
       <TestimonialsSection />
       {/* <PartnersSection navRef={sectionRef3} /> */}
       <TeamSection navRef={sectionRef4} />
