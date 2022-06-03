@@ -9,6 +9,7 @@ import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
 import { LoanTabsNames, useLoansPage } from './hooks';
 import { Loader } from '../../components/Loader';
+import Liquidations from './components/Liquidations/Liquidations';
 
 const LoansPage: FC = () => {
   const {
@@ -46,7 +47,7 @@ const LoansPage: FC = () => {
             )}
           </>
         )}
-        {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
+        {tabValue === LoanTabsNames.LIQUIDATIONS && <Liquidations />}
         {tabValue === LoanTabsNames.LOANS && (
           <MyLoansTab userLoans={userLoans} loading={userLoansLoading} />
         )}

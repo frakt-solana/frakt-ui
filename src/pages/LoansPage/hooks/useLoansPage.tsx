@@ -134,7 +134,6 @@ const LOANS_TABS: Tab[] = [
   {
     label: 'Liquidations',
     value: 'liquidations',
-    disabled: true,
   },
   {
     label: 'My loans',
