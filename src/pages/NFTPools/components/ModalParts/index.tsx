@@ -364,7 +364,7 @@ export const EstimatedRewards: FC<EstimatedRewardsProps> = ({
       </p>
       <div className={styles.estimatedRewardsValues}>
         <p>
-          {formatNumberToCurrency((totalValueUSD * apr) / 100)}{' '}
+          {formatNumberToCurrency((totalValueUSD * apr) / 1200)}{' '}
           <span className={styles.bold}>/ month</span>
         </p>
         <p>
