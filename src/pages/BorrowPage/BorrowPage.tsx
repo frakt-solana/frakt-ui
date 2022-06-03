@@ -65,7 +65,7 @@ const BorrowPage: FC = () => {
         </Button>
       )}
 
-      {connected && !nfts?.length && !loading && (
+      {connected && !loading && !nfts.length && (
         <div className={styles.noSuiableMessageWrapper}>
           <p className={styles.noSuiableMessage}>No suitable NFTs found</p>
           <LinkWithArrow
@@ -81,8 +81,8 @@ const BorrowPage: FC = () => {
         <InfinityScroll
           itemsToShow={nfts.length}
           next={next}
-          isLoading={loading}
           wrapperClassName={styles.nftsList}
+          isLoading={loading}
           emptyMessage=""
           customLoader={<p className={styles.loader}>loading your jpegs</p>}
         >

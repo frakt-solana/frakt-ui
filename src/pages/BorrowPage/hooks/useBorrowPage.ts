@@ -1,3 +1,4 @@
+import { useWallet } from '@solana/wallet-adapter-react';
 import { useState, useMemo, Dispatch, SetStateAction } from 'react';
 
 import {
@@ -17,13 +18,15 @@ export const useBorrowPage = (): {
   search: string;
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
+  const [nftsLoading, setNftsLoading] = useState<boolean>(true);
+  const { publicKey } = useWallet();
 
   const fetchData: FetchData = async ({ offset, limit, searchStr }) => {
     try {
       const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
       const isSearch = searchStr ? `search=${searchStr}&` : '';
 
-      const fullURL = `${URL}/Gu6faGp621MczGbkVtTppFNjJaoBSGQTM51NsQdJXLyR?${isSearch}skip=${offset}&limit=${limit}`;
+      const fullURL = `${URL}/${publicKey.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;
       const response = await fetch(fullURL);
       const nfts = await response.json();
 
@@ -31,6 +34,8 @@ export const useBorrowPage = (): {
     } catch (error) {
       // eslint-disable-next-line
       console.log(error);
+    } finally {
+      setNftsLoading(false);
     }
   };
 
@@ -50,7 +55,7 @@ export const useBorrowPage = (): {
     );
   }, [userWhitelistedNFTs]);
 
-  const loading = !filteredNfts.length;
+  const loading = nftsLoading;
 
   return {
     isCloseSidebar,
