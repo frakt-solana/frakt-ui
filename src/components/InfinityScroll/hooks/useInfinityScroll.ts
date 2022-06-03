@@ -8,7 +8,7 @@ export type FetchData<T> = (props: {
   searchStr?: string;
 }) => Promise<T[]>;
 
-export const useInfinityScroll = <T, D>(
+export const useInfinityScroll = <T>(
   {
     fetchData,
     itemsPerScroll = 10,
@@ -16,7 +16,7 @@ export const useInfinityScroll = <T, D>(
     fetchData: FetchData<T>;
     itemsPerScroll?: number;
   },
-  [deps]: [D],
+  deps: any[] = [],
 ): {
   next: () => void;
   search: string;
@@ -57,7 +57,7 @@ export const useInfinityScroll = <T, D>(
     setItems([]);
     next();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deps]);
+  }, [...deps]);
 
   useEffect(() => {
     nextDebounced(search);
