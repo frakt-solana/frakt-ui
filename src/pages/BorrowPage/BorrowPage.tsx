@@ -81,6 +81,7 @@ const BorrowPage: FC = () => {
         <InfinityScroll
           itemsToShow={nfts.length}
           next={next}
+          isLoading={loading}
           wrapperClassName={styles.nftsList}
           emptyMessage=""
           customLoader={<p className={styles.loader}>loading your jpegs</p>}

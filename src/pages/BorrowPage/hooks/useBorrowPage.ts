@@ -1,21 +1,22 @@
 import { useState, useMemo, Dispatch, SetStateAction } from 'react';
+
 import {
   FetchData,
   useInfinityScroll,
-} from '../../../components/InfinityScroll/InfinityScroll';
+} from '../../../components/InfinityScroll';
+import { BorrowNFT } from './../../../contexts/userTokens';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
   setIsCloseSidebar: Dispatch<SetStateAction<boolean>>;
-  nfts: any[];
+  nfts: BorrowNFT[];
   loading: boolean;
-  searchItems: any;
-  setSearch: any;
+  searchItems: (search: string) => void;
+  setSearch: (searchStr: string) => void;
   next: () => void;
   search: string;
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
-  const [nftsLoading, setNftsLoading] = useState(true);
 
   const fetchData: FetchData = async ({ offset, limit, searchStr }) => {
     try {
@@ -23,7 +24,6 @@ export const useBorrowPage = (): {
       const isSearch = searchStr ? `search=${searchStr}&` : '';
 
       const fullURL = `${URL}/Gu6faGp621MczGbkVtTppFNjJaoBSGQTM51NsQdJXLyR?${isSearch}skip=${offset}&limit=${limit}`;
-
       const response = await fetch(fullURL);
       const nfts = await response.json();
 
@@ -31,8 +31,6 @@ export const useBorrowPage = (): {
     } catch (error) {
       // eslint-disable-next-line
       console.log(error);
-    } finally {
-      setNftsLoading(false);
     }
   };
 
@@ -52,7 +50,7 @@ export const useBorrowPage = (): {
     );
   }, [userWhitelistedNFTs]);
 
-  const loading = nftsLoading && !filteredNfts.length;
+  const loading = !filteredNfts.length;
 
   return {
     isCloseSidebar,
