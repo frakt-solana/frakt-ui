@@ -11,7 +11,7 @@ import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
 import { commonActions } from '../../state/common/actions';
-import { UserWhitelistedNFT } from '../../contexts/userTokens';
+import { BorrowNFT } from '../../contexts/userTokens';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
@@ -85,7 +85,7 @@ const BorrowPage: FC = () => {
           emptyMessage=""
           customLoader={<p className={styles.loader}>loading your jpegs</p>}
         >
-          {(nfts as UserWhitelistedNFT[]).map((nft) => {
+          {(nfts as BorrowNFT[]).map((nft) => {
             return (
               <NFTCheckbox
                 key={nft.mint}

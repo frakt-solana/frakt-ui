@@ -1,20 +1,16 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import {
-  UserNFT,
-  useUserTokens,
-  UserWhitelistedNFT,
-} from '../../contexts/userTokens';
+import { UserNFT, useUserTokens, BorrowNFT } from '../../contexts/userTokens';
 import { useDebounce } from '../../hooks';
 import { useFakeInfinityScroll } from '../InfinityScroll';
 
 export const useSelectLayout = (): {
-  onDeselect: (nft?: UserWhitelistedNFT) => void;
-  selectedNfts: UserWhitelistedNFT[];
-  setSelectedNfts: Dispatch<SetStateAction<UserWhitelistedNFT[]>>;
-  onMultiSelect: (nft: UserWhitelistedNFT) => void;
-  onSelect: (nft: UserWhitelistedNFT) => void;
+  onDeselect: (nft?: BorrowNFT) => void;
+  selectedNfts: BorrowNFT[];
+  setSelectedNfts: Dispatch<SetStateAction<BorrowNFT[]>>;
+  onMultiSelect: (nft: BorrowNFT) => void;
+  onSelect: (nft: BorrowNFT) => void;
   nfts: UserNFT[];
   searchItems: (search: string) => void;
   loading: boolean;
@@ -23,7 +19,7 @@ export const useSelectLayout = (): {
   const { connected } = useWallet();
   const { nfts: rawNfts, nftsLoading: loading } = useUserTokens();
 
-  const [selectedNfts, setSelectedNfts] = useState<UserWhitelistedNFT[]>([]);
+  const [selectedNfts, setSelectedNfts] = useState<BorrowNFT[]>([]);
   const [searchString, setSearchString] = useState<string>('');
   const { setItemsToShow } = useFakeInfinityScroll(15);
 
@@ -32,7 +28,7 @@ export const useSelectLayout = (): {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const onDeselect = (nft?: UserWhitelistedNFT): void => {
+  const onDeselect = (nft?: BorrowNFT): void => {
     if (nft) {
       setSelectedNfts(
         selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
@@ -42,7 +38,7 @@ export const useSelectLayout = (): {
     }
   };
 
-  const onMultiSelect = (nft: UserWhitelistedNFT): void => {
+  const onMultiSelect = (nft: BorrowNFT): void => {
     selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
       ? setSelectedNfts(
           selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
@@ -50,7 +46,7 @@ export const useSelectLayout = (): {
       : setSelectedNfts([...selectedNfts, nft]);
   };
 
-  const onSelect = (nft: UserWhitelistedNFT): void => {
+  const onSelect = (nft: BorrowNFT): void => {
     selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
       ? setSelectedNfts(
           selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),

@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
-import { UserWhitelistedNFT } from '../../../../contexts/userTokens';
+import { BorrowNFT } from '../../../../contexts/userTokens';
 import { ShortTermFields } from '../ShortTermFields';
 import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
@@ -11,7 +11,7 @@ import { useStakingPoints } from '../../hooks/useStakingPoints';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 interface BorrowFormProps {
-  selectedNft: UserWhitelistedNFT;
+  selectedNft: BorrowNFT;
   onDeselect?: () => void;
 }
 
