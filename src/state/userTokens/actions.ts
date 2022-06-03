@@ -2,7 +2,6 @@ import { createCustomAction } from 'typesafe-actions';
 
 import { UserNFT } from './types';
 import { ServerError } from '../../utils/state';
-import { stubNull } from 'ramda-adjunct';
 
 export const userTokensTypes = {
   FETCH_USER_TOKENS: 'userTokens/FETCH_USER_TOKENS',
@@ -54,5 +53,5 @@ export const userTokensActions = {
     userTokensTypes.REMOVE_TOKEN_OPTIMISTIC,
     (mints: string[]) => ({ payload: mints }),
   ),
-  clearTokens: createCustomAction(userTokensTypes.CLEAR_TOKENS, () => stubNull),
+  clearTokens: createCustomAction(userTokensTypes.CLEAR_TOKENS, () => null),
 };
