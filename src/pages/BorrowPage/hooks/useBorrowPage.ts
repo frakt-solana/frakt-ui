@@ -21,7 +21,11 @@ export const useBorrowPage = (): {
   const [nftsLoading, setNftsLoading] = useState<boolean>(true);
   const { publicKey } = useWallet();
 
-  const fetchData: FetchData = async ({ offset, limit, searchStr }) => {
+  const fetchData: FetchData<BorrowNFT> = async ({
+    offset,
+    limit,
+    searchStr,
+  }) => {
     try {
       const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
       const isSearch = searchStr ? `search=${searchStr}&` : '';
