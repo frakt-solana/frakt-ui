@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useDebounce } from '../../../hooks';
 
 export type FetchData = <T>(props: {
@@ -39,13 +39,13 @@ export const useInfinityScroll: UseInfinityScroll = ({
     setItems([...items, ...nextItems]);
   };
 
-  const next = useCallback((): void => {
+  const next = (): void => {
     if (publicKey) {
       setOffset(offset + itemsPerScroll);
       fetchItems();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey]);
+  };
 
   const nextDebounced = useDebounce((search: string): void => {
     stringRef.current = search;
