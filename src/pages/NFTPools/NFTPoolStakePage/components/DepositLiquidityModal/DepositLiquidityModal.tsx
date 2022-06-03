@@ -20,7 +20,6 @@ import {
 } from '../../../../../utils/accounts';
 import { SOL_TOKEN } from '../../../../../utils';
 import {
-  calculateTotalDeposit,
   FusionPool,
   getTokenAccount,
   RaydiumPoolInfo,
@@ -32,6 +31,7 @@ import {
 } from '../../../../../components/LoadingModal';
 import { provideLiquidity, stakeInLiquidityFusion } from '../../transactions';
 import { useConnection } from '../../../../../hooks';
+import { usePoolTokenPrice } from '../../hooks';
 
 interface DepositLiquidityModalProps {
   visible?: boolean;
@@ -63,6 +63,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
 
   const connection = useConnection();
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
+  const { poolTokenPrice } = usePoolTokenPrice(baseToken);
 
   const [baseValue, setBaseValue] = useState<string>('');
   const [solValue, setSolValue] = useState<string>('');
@@ -97,11 +98,10 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
     !parseFloat(baseValue) ||
     !parseFloat(solValue);
 
-  const totalValueUSD = calculateTotalDeposit(
-    solValue,
-    baseValue,
-    currentSolanaPriceUSD,
-  );
+  const totalValueUSD =
+    (parseFloat(baseValue) * parseFloat(poolTokenPrice) +
+      parseFloat(solValue)) *
+    currentSolanaPriceUSD;
 
   const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const {
