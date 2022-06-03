@@ -1,9 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { UserNFT, useUserTokens } from '../../contexts/userTokens';
+import { UserNFT } from '../../state/userTokens/types';
 import { useDebounce } from '../../hooks';
 import { useFakeInfinityScroll } from '../FakeInfinityScroll';
+import { selectUserTokensState } from '../../state/userTokens/selectors';
 
 export const useSelectLayout = (): {
   onDeselect: (nft?: UserNFT) => void;
@@ -17,7 +19,9 @@ export const useSelectLayout = (): {
   connected: boolean;
 } => {
   const { connected } = useWallet();
-  const { nfts: rawNfts, nftsLoading: loading } = useUserTokens();
+  const { nfts: rawNfts, nftsLoading: loading } = useSelector(
+    selectUserTokensState,
+  );
 
   const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
   const [searchString, setSearchString] = useState<string>('');

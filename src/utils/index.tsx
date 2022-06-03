@@ -6,7 +6,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
-import { UserNFT } from '../contexts/userTokens';
+import { UserNFT } from '../state/userTokens/types';
 import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../config';
 
 export const notify: Notify = ({

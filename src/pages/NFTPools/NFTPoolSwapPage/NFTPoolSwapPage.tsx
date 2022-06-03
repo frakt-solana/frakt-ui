@@ -1,5 +1,5 @@
 import { FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
@@ -15,7 +15,7 @@ import {
   useNftPools,
   useNftPoolsInitialFetch,
 } from '../../../contexts/nftPools';
-import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../state/userTokens/types';
 import {
   useAPR,
   useNftPoolTokenBalance,
@@ -42,6 +42,7 @@ import {
 import { SELL_COMMISSION_PERCENT } from '../constants';
 import { getTokenPrice } from '../helpers';
 import { SOL_TOKEN } from '../../../utils';
+import { userTokensActions } from '../../../state/userTokens/actions';
 
 const useNftsSwap = ({
   pool,
@@ -53,7 +54,7 @@ const useNftsSwap = ({
   const { poolDataByMint, raydiumSwap } = useLiquidityPools();
   const connection = useConnection();
   const { depositNftToCommunityPool, getLotteryTicket } = useNftPools();
-  const { removeTokenOptimistic } = useUserTokens();
+  const dispatch = useDispatch();
   const { balance } = useNftPoolTokenBalance(pool);
   const {
     visible: loadingModalVisible,
@@ -74,7 +75,7 @@ const useNftsSwap = ({
       nft: selectedNft,
       poolLpMint,
       afterTransaction: () => {
-        removeTokenOptimistic([selectedNft?.mint]);
+        dispatch(userTokensActions.removeTokenOptimistic([selectedNft?.mint]));
         onDeselect();
       },
     });

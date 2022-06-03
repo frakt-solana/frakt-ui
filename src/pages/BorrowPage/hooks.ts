@@ -7,14 +7,15 @@ import {
   useEffect,
   useCallback,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 
 import { commonActions } from '../../state/common/actions';
 import { useFakeInfinityScroll } from '../../components/FakeInfinityScroll';
-import { UserNFT, useUserTokens } from '../../contexts/userTokens';
+import { UserNFT } from '../../state/userTokens/types';
+import { selectUserTokensState } from '../../state/userTokens/selectors';
 import {
   DISCOUNT_NFT_CREATORS,
   getNftMarketLowerPricesByCreators,
@@ -24,6 +25,7 @@ import {
 } from '../../contexts/loans';
 import { useDebounce } from '../../hooks';
 import { getNftCreators, getStakingPointsURL } from '../../utils';
+import { userTokensActions } from '../../state/userTokens/actions';
 
 const usePriceByCreator = (creatorsArray = []) => {
   const [priceByCreator, setPriceByCreator] = useState<
@@ -108,12 +110,12 @@ export const useBorrowPage = (): {
     allNfts: rawNftsWithFrozen,
     loading: userTokensLoading,
     nftsLoading,
-    fetchUserNfts,
     rawUserTokensByMint,
-  } = useUserTokens();
+  } = useSelector(selectUserTokensState);
   const { setItemsToShow } = useFakeInfinityScroll(15);
   const [searchString, setSearchString] = useState<string>('');
   const dispatch = useDispatch();
+  const fetchUserNfts = () => dispatch(userTokensActions.fetchWalletNfts());
   const { loanDataByPoolPublicKey, loading: loansLoading } = useLoans();
 
   useEffect(() => {

@@ -1,16 +1,13 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Percent } from '@raydium-io/raydium-sdk';
 import { useParams } from 'react-router-dom';
 
-import {
-  UserNFT,
-  UserNFTWithCollection,
-  useUserTokens,
-} from '../../contexts/userTokens';
+import { UserNFT, UserNFTWithCollection } from '../../state/userTokens/types';
 import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
 import { useConnection, useDebounce } from '../../hooks';
 import { useUserSplAccount } from '../../utils/accounts';
@@ -26,6 +23,8 @@ import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
 import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
 import { CUSTOM_POOLS_URLS } from '../../utils/cacher/nftPools';
+import { selectUserTokensState } from '../../state/userTokens/selectors';
+import { userTokensActions } from '../../state/userTokens/actions';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -274,10 +273,12 @@ export const useUserRawNfts: UseUserRawNfts = () => {
     nfts: rawNfts,
     loading: userTokensLoading,
     nftsLoading,
-    fetchUserNfts,
     rawUserTokensByMint,
-    removeTokenOptimistic,
-  } = useUserTokens();
+  } = useSelector(selectUserTokensState);
+  const dispatch = useDispatch();
+  const fetchUserNfts = () => dispatch(userTokensActions.fetchWalletNfts());
+  const removeTokenOptimistic = (mints) =>
+    dispatch(userTokensActions.removeTokenOptimistic(mints));
 
   useEffect(() => {
     if (

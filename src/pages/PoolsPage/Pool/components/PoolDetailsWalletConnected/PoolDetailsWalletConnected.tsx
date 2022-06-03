@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 
 import Button from '../../../../../components/Button';
 import { Loader } from '../../../../../components/Loader';
@@ -8,7 +9,7 @@ import {
   FusionPoolInfo,
   RaydiumPoolInfo,
 } from '../../../../../contexts/liquidityPools';
-import { useUserTokens } from '../../../../../contexts/userTokens';
+import { selectUserTokensState } from '../../../../../state/userTokens/selectors';
 import { AccountInfoParsed } from '../../../../../utils/accounts';
 import Rewards from '../../../Rewards';
 import Withdraw from '../../../Withdraw';
@@ -34,7 +35,7 @@ export const PoolDetailsWalletConnected: FC<PoolDetailsWalletConnectedProps> =
   }) => {
     const { tokenInfo, poolConfig } = poolData;
 
-    const { loading } = useUserTokens();
+    const { loading } = useSelector(selectUserTokensState);
 
     return (
       <div className={classNames(styles.root, className)}>

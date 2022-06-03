@@ -1,5 +1,5 @@
 import { FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
 import BN from 'bn.js';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -7,7 +7,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
 import { WalletNotConnected } from '../components/WalletNotConnected';
-import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../state/userTokens/types';
 import styles from './NFTPoolSellPage.module.scss';
 import {
   filterWhitelistedNFTs,
@@ -40,6 +40,7 @@ import {
   LoadingModal,
   useLoadingModal,
 } from '../../../components/LoadingModal';
+import { userTokensActions } from '../../../state/userTokens/actions';
 
 const useNftSell = ({
   pool,
@@ -51,7 +52,7 @@ const useNftSell = ({
   const { poolDataByMint, raydiumSwap: raydiumSwapTx } = useLiquidityPools();
   const connection = useConnection();
   const { depositNftToCommunityPool } = useNftPools();
-  const { removeTokenOptimistic } = useUserTokens();
+  const dispatch = useDispatch();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
@@ -102,7 +103,7 @@ const useNftSell = ({
       nft: selectedNft,
       poolLpMint,
       afterTransaction: () => {
-        removeTokenOptimistic([selectedNft?.mint]);
+        dispatch(userTokensActions.removeTokenOptimistic([selectedNft?.mint]));
         onDeselect();
       },
     });

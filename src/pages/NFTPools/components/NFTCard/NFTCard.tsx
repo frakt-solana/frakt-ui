@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { FC } from 'react';
 
-import { UserNFTWithCollection } from '../../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../../state/userTokens/types';
 import styles from './NFTCard.module.scss';
 
 interface NFTCardProps {

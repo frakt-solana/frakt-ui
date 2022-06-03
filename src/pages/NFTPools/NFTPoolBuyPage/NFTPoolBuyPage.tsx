@@ -12,7 +12,7 @@ import {
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
-import { UserNFTWithCollection } from '../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../state/userTokens/types';
 import { safetyDepositBoxWithNftMetadataToUserNFT } from '../../../utils/cacher/nftPools/nftPools.helpers';
 import { NFTPoolNFTsList, SORT_VALUES } from '../components/NFTPoolNFTsList';
 import {

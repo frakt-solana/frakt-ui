@@ -10,7 +10,7 @@ import {
   UserNFT,
   RawUserTokensByMint,
   QNFetchNFTData,
-} from './userTokens.model';
+} from '../../state/userTokens/types';
 
 const parseQuickNodeNFTs = (qnNftData: QNFetchNFTData[]): UserNFT[] => {
   const userNFTs: UserNFT[] = qnNftData.map((nft) => {

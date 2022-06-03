@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import styles from './NFTsList.module.scss';
-import { UserNFTWithCollection } from '../../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../../state/userTokens/types';
 import { NFTCard } from '../NFTCard';
 import {
   ModalNFTsSlider,

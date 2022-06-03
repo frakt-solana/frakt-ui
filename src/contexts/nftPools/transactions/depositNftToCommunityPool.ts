@@ -13,7 +13,7 @@ import {
   wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import { getTokenAccount } from '../../../utils/accounts';
-import { UserNFT } from '../../userTokens';
+import { UserNFT } from '../../../state/userTokens/types';
 import {
   getWhitelistedCreatorsDictionary,
   isNFTWhitelistedByCreator,

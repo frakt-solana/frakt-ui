@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useHeaderState } from '../../../Layout/headerState';
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 
 export const useSidebar = (
   nfts: UserNFT[],

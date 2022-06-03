@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Control, useForm } from 'react-hook-form';
 import BN from 'bn.js';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -14,7 +15,7 @@ import {
   FusionPoolInfoByMint,
   useLazyFusionPools,
 } from '../../../contexts/liquidityPools';
-import { useUserTokens } from '../../../contexts/userTokens';
+import { selectUserTokensState } from '../../../state/userTokens/selectors';
 import styles from '../PoolsPage.module.scss';
 import { useLazyPoolsStats, PoolsStatsByMarketId } from './useLazyPoolsStats';
 import { POOL_INFO_POLLING_INTERVAL } from '../constants';
@@ -60,7 +61,9 @@ export const usePoolsPage = (): {
   });
 
   const { connected } = useWallet();
-  const { rawUserTokensByMint, loading: userTokensLoading } = useUserTokens();
+  const { rawUserTokensByMint, loading: userTokensLoading } = useSelector(
+    selectUserTokensState,
+  );
   const {
     poolsStatsByMarketId,
     fetchPoolsStats,

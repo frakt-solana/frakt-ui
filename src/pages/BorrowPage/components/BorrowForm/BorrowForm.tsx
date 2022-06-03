@@ -3,7 +3,7 @@ import { Dictionary } from 'lodash';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { ShortTermFields } from '../ShortTermFields';
