@@ -1,4 +1,3 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useState, useRef, useEffect } from 'react';
 import { useDebounce } from '../../../hooks';
 
@@ -28,7 +27,7 @@ export const useInfinityScroll = <T>(
   const [offset, setOffset] = useState<number>(0);
   const [items, setItems] = useState<T[]>([]);
   const stringRef = useRef(null);
-  const { publicKey } = useWallet();
+  const fetchOnlyConnectedWallet = deps[0]?.publicKey;
 
   const fetchItems = async (): Promise<void> => {
     const nextItems = await fetchData({
@@ -41,11 +40,8 @@ export const useInfinityScroll = <T>(
   };
 
   const next = (): void => {
-    if (publicKey) {
-      setOffset(offset + itemsPerScroll);
-      fetchItems();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setOffset(offset + itemsPerScroll);
+    fetchItems();
   };
 
   const nextDebounced = useDebounce((search: string): void => {
@@ -54,13 +50,15 @@ export const useInfinityScroll = <T>(
   }, 500);
 
   useEffect(() => {
-    setItems([]);
-    next();
+    if (fetchOnlyConnectedWallet) {
+      setItems([]);
+      next();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...deps]);
+  }, [fetchOnlyConnectedWallet]);
 
   useEffect(() => {
-    nextDebounced(search);
+    search && nextDebounced(search);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 

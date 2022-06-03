@@ -19,7 +19,7 @@ export const useBorrowPage = (): {
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const [nftsLoading, setNftsLoading] = useState<boolean>(true);
-  const { publicKey } = useWallet();
+  const wallet = useWallet();
 
   const fetchData: FetchData<BorrowNFT> = async ({
     offset,
@@ -30,7 +30,7 @@ export const useBorrowPage = (): {
       const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
       const isSearch = searchStr ? `search=${searchStr}&` : '';
 
-      const fullURL = `${URL}/${publicKey?.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;
+      const fullURL = `${URL}/${wallet?.publicKey?.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;
       const response = await fetch(fullURL);
       const nfts = await response.json();
 
@@ -53,7 +53,7 @@ export const useBorrowPage = (): {
     {
       fetchData,
     },
-    [publicKey],
+    [wallet],
   );
 
   const filteredNfts = useMemo(() => {
