@@ -1,46 +1,67 @@
 import { useState, useMemo, Dispatch, SetStateAction } from 'react';
-
-import { useFakeInfinityScroll } from '../../../components/FakeInfinityScroll';
-import { UserWhitelistedNFT } from '../../../contexts/userTokens';
-import { useUserWhitelistedNFTs } from './useUserWhitelistedNFTs';
-import { useDebounce } from '../../../hooks';
+import {
+  FetchData,
+  useInfinityScroll,
+} from '../../../components/InfinityScroll/InfinityScroll';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
   setIsCloseSidebar: Dispatch<SetStateAction<boolean>>;
-  nfts: UserWhitelistedNFT[];
+  nfts: any[];
   loading: boolean;
-  searchItems: (search: string) => void;
-  pagination: { skip: number; limit: number };
-  fetchData: () => void;
+  searchItems: any;
+  setSearch: any;
+  next: () => void;
+  search: string;
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
-  const [searchString, setSearchString] = useState<string>('');
-  const { setItemsToShow } = useFakeInfinityScroll(15);
+  const [nftsLoading, setNftsLoading] = useState(true);
 
-  const { userWhitelistedNFTs, pagination, fetchData } =
-    useUserWhitelistedNFTs();
+  const fetchData: FetchData = async ({ offset, limit, searchStr }) => {
+    try {
+      const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
+      const isSearch = searchStr ? `search=${searchStr}&` : '';
 
-  const searchItems = useDebounce((search: string): void => {
-    setItemsToShow(15);
-    setSearchString(search.toUpperCase());
-  }, 300);
+      const fullURL = `${URL}/Gu6faGp621MczGbkVtTppFNjJaoBSGQTM51NsQdJXLyR?${isSearch}skip=${offset}&limit=${limit}`;
+
+      const response = await fetch(fullURL);
+      const nfts = await response.json();
+
+      return nfts || [];
+    } catch (error) {
+      // eslint-disable-next-line
+      console.log(error);
+    } finally {
+      setNftsLoading(false);
+    }
+  };
+
+  const {
+    next,
+    search,
+    setSearch,
+    items: userWhitelistedNFTs,
+    nextDebounced: searchItems,
+  } = useInfinityScroll({
+    fetchData,
+  });
 
   const filteredNfts = useMemo(() => {
-    return (userWhitelistedNFTs || [])
-      .filter(({ name }) => name?.toUpperCase().includes(searchString))
-      .sort(({ name: nameA }, { name: nameB }) => nameA?.localeCompare(nameB));
-  }, [searchString, userWhitelistedNFTs]);
+    return (userWhitelistedNFTs || []).sort(
+      ({ name: nameA }, { name: nameB }) => nameA?.localeCompare(nameB),
+    );
+  }, [userWhitelistedNFTs]);
 
-  const loading = !filteredNfts.length;
+  const loading = nftsLoading && !filteredNfts.length;
 
   return {
     isCloseSidebar,
     setIsCloseSidebar,
     nfts: filteredNfts,
     loading,
+    setSearch,
+    next,
     searchItems,
-    pagination,
-    fetchData,
+    search,
   };
 };

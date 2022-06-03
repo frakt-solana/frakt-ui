@@ -2,4 +2,4 @@ export {
   default,
   useFakeInfinityScroll,
   useInfinityScroll,
-} from './FakeInfinityScroll';
+} from './InfinityScroll';

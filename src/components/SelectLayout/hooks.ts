@@ -7,7 +7,7 @@ import {
   UserWhitelistedNFT,
 } from '../../contexts/userTokens';
 import { useDebounce } from '../../hooks';
-import { useFakeInfinityScroll } from '../FakeInfinityScroll';
+import { useFakeInfinityScroll } from '../InfinityScroll';
 
 export const useSelectLayout = (): {
   onDeselect: (nft?: UserWhitelistedNFT) => void;

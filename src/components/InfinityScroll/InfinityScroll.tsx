@@ -1,18 +1,18 @@
-import InfiniteScroll, {
-  Props as InfinityScrollProps,
+import InfiniteScrollComponent, {
+  Props,
 } from 'react-infinite-scroll-component';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import { Loader } from '../Loader';
 import { useDebounce } from '../../hooks';
 
-interface FakeInfinityScrollProps {
+interface InfinityScrollProps {
   itemsToShow?: number;
   next: () => void;
   infinityScrollProps?: Omit<
-    InfinityScrollProps,
+    Props,
     'dataLength' | 'next' | 'hasMore' | 'children'
   >;
   wrapperClassName?: string;
@@ -41,68 +41,67 @@ export const useFakeInfinityScroll = (
   };
 };
 
-export type FetchData = (props: {
+export type FetchData = <T>(props: {
   offset: number;
   limit: number;
   searchStr?: string;
-}) => Promise<any[]>;
+}) => Promise<T[]>;
 
 type UseInfinityScroll = (props: {
   fetchData: FetchData;
-  itemsPerScroll: number;
+  itemsPerScroll?: number;
 }) => {
   next: () => void;
   search: string;
   setSearch: (searchStr: string) => void;
   items: any;
+  nextDebounced: (search: string) => void;
 };
 
 export const useInfinityScroll: UseInfinityScroll = ({
   fetchData,
-  itemsPerScroll = 10,
+  itemsPerScroll = 5,
 }) => {
   const [search, setSearch] = useState<string>('');
   const [offset, setOffset] = useState<number>(0);
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<any>([]);
+  const stringRef = useRef(null);
 
-  const fetchItems = async (nextSearch: string) => {
+  const fetchItems = async (): Promise<void> => {
     const nextItems = await fetchData({
       offset,
       limit: itemsPerScroll,
-      searchStr: search,
+      searchStr: stringRef.current,
     });
-    setItems((prev) => (nextSearch ? nextItems : [...prev, ...nextItems]));
+
+    setItems([...items, ...nextItems]);
   };
 
-  const next = (search?: string) => {
-    setOffset((prev) => prev + itemsPerScroll);
-    fetchItems(search);
+  const next = (): void => {
+    setOffset(offset + itemsPerScroll);
+    fetchItems();
   };
 
-  const nextDebounced = useDebounce((search: string) => {
-    next(search);
+  const nextDebounced = useDebounce((search: string): void => {
+    stringRef.current = search;
+    next();
   }, 500);
 
   useEffect(() => {
-    setOffset(0);
     nextDebounced(search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     next();
-  //   }, 2000);
-  // }, []);
 
   return {
     next,
     search,
     setSearch,
     items,
+    nextDebounced,
   };
 };
 
-const FakeInfinityScroll = ({
+const InfinityScroll = ({
   itemsToShow = 20,
   next,
   wrapperClassName,
@@ -113,7 +112,7 @@ const FakeInfinityScroll = ({
   infinityScrollProps,
   scrollableTargetId = 'app-content',
   customLoader,
-}: FakeInfinityScrollProps): JSX.Element => {
+}: InfinityScrollProps): JSX.Element => {
   if (isLoading) {
     return (
       customLoader || (
@@ -133,7 +132,7 @@ const FakeInfinityScroll = ({
   }
 
   return (
-    <InfiniteScroll
+    <InfiniteScrollComponent
       scrollableTarget={scrollableTargetId}
       next={next}
       dataLength={itemsToShow}
@@ -144,8 +143,8 @@ const FakeInfinityScroll = ({
       <div className={classNames(wrapperClassName)}>
         {children?.slice(0, itemsToShow).map((child) => child)}
       </div>
-    </InfiniteScroll>
+    </InfiniteScrollComponent>
   );
 };
 
-export default FakeInfinityScroll;
+export default InfinityScroll;
