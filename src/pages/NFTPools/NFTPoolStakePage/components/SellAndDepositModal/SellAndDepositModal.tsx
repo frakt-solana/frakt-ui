@@ -79,9 +79,6 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
   const { poolTokenPrice } = usePoolTokenPrice(poolToken);
   const { currentSolanaPriceUSD } = useCurrentSolanaPrice();
 
-  const totalValueUSD =
-    sellValue * parseFloat(poolTokenPrice) * currentSolanaPriceUSD;
-
   const onSubmit = async () => {
     try {
       setTransactionsLeft(2);
@@ -136,6 +133,9 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
   const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
 
   const solValue = sellValue * calcRatio(raydiumPoolInfo);
+
+  const totalValueUSD =
+    (sellValue * parseFloat(poolTokenPrice) + solValue) * currentSolanaPriceUSD;
 
   const notEnoughSOLError = solValue > solBalance;
 
