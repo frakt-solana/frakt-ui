@@ -24,7 +24,10 @@
 .stakingBalance {
   flex-grow: 1;
   width: 100%;
-  margin-bottom: 10px;
+
+  @media screen and (max-width: 1023px) {
+    margin-bottom: 10px;
+  }
 }
 
 .stakingBtn {
