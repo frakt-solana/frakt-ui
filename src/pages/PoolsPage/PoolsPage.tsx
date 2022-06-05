@@ -9,9 +9,9 @@ import { SearchInput } from '../../components/SearchInput';
 import { Container } from '../../components/Layout';
 import styles from './PoolsPage.module.scss';
 import Pool from './Pool';
-import FakeInfinityScroll, {
+import InfinityScroll, {
   useFakeInfinityScroll,
-} from '../../components/FakeInfinityScroll';
+} from '../../components/InfinityScroll';
 import { Select } from '../../components/Select';
 
 const PoolsPage: FC = () => {
@@ -74,7 +74,7 @@ const PoolsPage: FC = () => {
           </div>
         </div>
 
-        <FakeInfinityScroll
+        <InfinityScroll
           itemsToShow={itemsToShow}
           next={next}
           isLoading={loading}
@@ -99,7 +99,7 @@ const PoolsPage: FC = () => {
               )}
             />
           ))}
-        </FakeInfinityScroll>
+        </InfinityScroll>
       </Container>
     </AppLayout>
   );
