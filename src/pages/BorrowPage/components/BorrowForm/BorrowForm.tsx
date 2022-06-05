@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
@@ -8,7 +9,7 @@ import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';
 import { useBorrowForm } from './hooks';
 import { useStakingPoints } from '../../hooks/useStakingPoints';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { SOL_TOKEN } from '../../../../utils';
 
 interface BorrowFormProps {
   selectedNft: BorrowNFT;
@@ -20,17 +21,6 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   onDeselect,
 }) => {
   const {
-    openConfirmModal,
-    confirmModalVisible,
-    closeConfirmModal,
-    loadingModalVisible,
-    closeLoadingModal,
-    onSubmit,
-  } = useBorrowForm({
-    onDeselect,
-  });
-
-  const {
     name,
     loanValue,
     valuation,
@@ -40,6 +30,18 @@ export const BorrowForm: FC<BorrowFormProps> = ({
     fee,
     feeDiscountPercents,
   } = selectedNft;
+
+  const {
+    openConfirmModal,
+    confirmModalVisible,
+    closeConfirmModal,
+    loadingModalVisible,
+    closeLoadingModal,
+    onSubmit,
+  } = useBorrowForm({
+    onDeselect,
+    proposedNftPrice: parseFloat(valuation) * 10 ** SOL_TOKEN.decimals,
+  });
 
   const { publicKey } = useWallet();
   const { stakingPoints } = useStakingPoints(publicKey);
