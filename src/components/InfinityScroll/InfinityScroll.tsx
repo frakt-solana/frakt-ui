@@ -1,17 +1,16 @@
-import InfiniteScroll, {
-  Props as InfinityScrollProps,
+import InfiniteScrollComponent, {
+  Props,
 } from 'react-infinite-scroll-component';
-import { useState } from 'react';
 
 import styles from './styles.module.scss';
 import classNames from 'classnames';
 import { Loader } from '../Loader';
 
-interface FakeInfinityScrollProps {
+interface InfinityScrollProps {
   itemsToShow?: number;
   next: () => void;
   infinityScrollProps?: Omit<
-    InfinityScrollProps,
+    Props,
     'dataLength' | 'next' | 'hasMore' | 'children'
   >;
   wrapperClassName?: string;
@@ -23,24 +22,7 @@ interface FakeInfinityScrollProps {
   scrollableTargetId?: string;
 }
 
-export const useFakeInfinityScroll = (
-  itemsPerScroll = 20,
-): {
-  itemsToShow: number;
-  next: () => void;
-  setItemsToShow: (itemsToShow: number) => void;
-} => {
-  const [itemsToShow, setItemsToShow] = useState<number>(itemsPerScroll);
-
-  const onScrollHandler = () => setItemsToShow((prev) => prev + itemsPerScroll);
-  return {
-    itemsToShow,
-    setItemsToShow,
-    next: onScrollHandler,
-  };
-};
-
-const FakeInfinityScroll = ({
+const InfinityScroll = ({
   itemsToShow = 20,
   next,
   wrapperClassName,
@@ -51,7 +33,7 @@ const FakeInfinityScroll = ({
   infinityScrollProps,
   scrollableTargetId = 'app-content',
   customLoader,
-}: FakeInfinityScrollProps): JSX.Element => {
+}: InfinityScrollProps): JSX.Element => {
   if (isLoading) {
     return (
       customLoader || (
@@ -71,7 +53,7 @@ const FakeInfinityScroll = ({
   }
 
   return (
-    <InfiniteScroll
+    <InfiniteScrollComponent
       scrollableTarget={scrollableTargetId}
       next={next}
       dataLength={itemsToShow}
@@ -82,8 +64,8 @@ const FakeInfinityScroll = ({
       <div className={classNames(wrapperClassName)}>
         {children?.slice(0, itemsToShow).map((child) => child)}
       </div>
-    </InfiniteScroll>
+    </InfiniteScrollComponent>
   );
 };
 
-export default FakeInfinityScroll;
+export default InfinityScroll;

@@ -1,38 +1,33 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
+import { LinkWithArrow } from '../../components/LinkWithArrow';
 import { SearchInput } from '../../components/SearchInput';
 import NFTCheckbox from '../../components/NFTCheckbox';
 import { BorrowForm } from './components/BorrowForm';
-import FakeInfinityScroll, {
-  useFakeInfinityScroll,
-} from '../../components/FakeInfinityScroll';
+import InfinityScroll from '../../components/InfinityScroll';
 import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
-import { LinkWithArrow } from '../../components/LinkWithArrow';
-import { getNftCreators, SOL_TOKEN } from '../../utils';
 import { commonActions } from '../../state/common/actions';
+import { BorrowNFT } from '../../contexts/userTokens';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
 
 const BorrowPage: FC = () => {
   const dispatch = useDispatch();
-  const [search, setSearch] = useState<string>('');
-  const { itemsToShow, next } = useFakeInfinityScroll(15);
   const { connected, onDeselect, onSelect, selectedNfts } = useSelectLayout();
 
   const {
     isCloseSidebar,
-    loading,
     nfts,
+    setSearch,
     searchItems,
-    loanData,
-    priceByCreator,
-    ltvByCreator,
-    interestRateDiscountPercent,
+    search,
+    next,
+    loading,
   } = useBorrowPage();
 
   return (
@@ -41,14 +36,7 @@ const BorrowPage: FC = () => {
       onDeselect={onDeselect}
       isCloseSidebar={isCloseSidebar}
       sidebarForm={
-        <BorrowForm
-          selectedNft={selectedNfts?.[0]}
-          onDeselect={onDeselect}
-          priceByCreator={priceByCreator}
-          ltvByCreator={ltvByCreator}
-          loanData={loanData}
-          interestRateDiscountPercent={interestRateDiscountPercent}
-        />
+        <BorrowForm selectedNft={selectedNfts?.[0]} onDeselect={onDeselect} />
       }
     >
       <h1 className={styles.title}>Borrow money</h1>
@@ -77,7 +65,7 @@ const BorrowPage: FC = () => {
         </Button>
       )}
 
-      {connected && !nfts?.length && !loading && (
+      {connected && !loading && !nfts.length && (
         <div className={styles.noSuiableMessageWrapper}>
           <p className={styles.noSuiableMessage}>No suitable NFTs found</p>
           <LinkWithArrow
@@ -90,45 +78,31 @@ const BorrowPage: FC = () => {
       )}
 
       {connected && (
-        <FakeInfinityScroll
-          itemsToShow={itemsToShow}
+        <InfinityScroll
+          itemsToShow={nfts.length}
           next={next}
-          isLoading={loading}
           wrapperClassName={styles.nftsList}
+          isLoading={loading}
           emptyMessage=""
           customLoader={<p className={styles.loader}>loading your jpegs</p>}
         >
-          {nfts.map((nft) => {
-            const verifiedCreators = getNftCreators(nft);
-
-            const nftPrice =
-              Object.entries(priceByCreator)?.find(([creator]) =>
-                verifiedCreators.includes(creator),
-              )?.[1] || 0;
-
-            const ltv =
-              Object.entries(ltvByCreator)?.find(([creator]) =>
-                verifiedCreators.includes(creator),
-              )?.[1] || 0;
-
-            const loanValue = (nftPrice * ltv) / 10 ** SOL_TOKEN.decimals;
-
+          {(nfts as BorrowNFT[]).map((nft) => {
             return (
               <NFTCheckbox
                 key={nft.mint}
                 onClick={() => onSelect(nft)}
-                imageUrl={nft.metadata.image}
-                name={nft.metadata.name}
+                imageUrl={nft.imageUrl}
+                name={nft.name}
                 selected={
                   !!selectedNfts.find(
                     (selectedNft) => selectedNft?.mint === nft.mint,
                   )
                 }
-                loanValue={loanValue || null}
+                loanValue={Number(nft.loanValue)}
               />
             );
           })}
-        </FakeInfinityScroll>
+        </InfinityScroll>
       )}
     </SelectLayout>
   );
