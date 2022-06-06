@@ -10,6 +10,7 @@ interface BlockContentProps {
   title: string;
   text: string;
   to?: string;
+  soon?: boolean;
   externalLink?: boolean;
 }
 
@@ -19,6 +20,7 @@ export const BlockContent: FC<BlockContentProps> = ({
   title,
   text,
   to = '',
+  soon = false,
   externalLink = false,
 }) => {
   return (
@@ -26,7 +28,7 @@ export const BlockContent: FC<BlockContentProps> = ({
       <div className={styles.iconWrapper}>{icon}</div>
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.text}>{text}</p>
-      {!to && (
+      {soon && (
         <Button type="alternative" className={styles.btn} disabled>
           Soon
         </Button>

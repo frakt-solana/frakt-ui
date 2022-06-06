@@ -1,5 +1,6 @@
 import { notify } from '../..';
 import { NotifyType } from '../../solanaUtils';
+import { showSolscanLinkNotification } from './showSolscanLinkNotification';
 
 interface NotificationMessage {
   message: string;
@@ -32,41 +33,9 @@ export const wrapTxnWithTryCatch: WrapAsyncWithTryCatch =
 
       return result;
     } catch (error) {
-      const errorMessage = error?.message || '';
+      const isNotConfirmed = showSolscanLinkNotification(error);
 
-      if (errorMessage?.includes('Transaction was not confirmed in')) {
-        const txnSignature = errorMessage?.substring(
-          errorMessage.search('Check signature ') + 16,
-          errorMessage.search(' using the Solana'),
-        );
-
-        notify({
-          message: 'Transaction processing problems',
-          description: (
-            <p>
-              Unable to determine transaction result.
-              <br />
-              Please check{' '}
-              <a
-                href={`https://solscan.io/tx/${txnSignature}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fraktion__notificationLink"
-              >
-                Solscan
-              </a>{' '}
-              for details.
-            </p>
-          ),
-          type: NotifyType.ERROR,
-        });
-
-        // eslint-disable-next-line no-console
-        console.error(error);
-      } else {
-        // eslint-disable-next-line no-console
-        console.error(error);
-
+      if (!isNotConfirmed) {
         onErrorMessage &&
           notify({
             message: onErrorMessage?.message,
@@ -74,6 +43,9 @@ export const wrapTxnWithTryCatch: WrapAsyncWithTryCatch =
             type: NotifyType.ERROR,
           });
       }
+
+      // eslint-disable-next-line no-console
+      console.error(error);
     } finally {
       onFinishMessage &&
         notify({
