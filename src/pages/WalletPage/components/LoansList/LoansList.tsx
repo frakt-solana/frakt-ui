@@ -3,9 +3,9 @@ import classNames from 'classnames';
 
 import LoanCard from '../../../../components/LoanCard';
 import styles from './LoansList.module.scss';
-import FakeInfinityScroll, {
+import InfinityScroll, {
   useFakeInfinityScroll,
-} from '../../../../components/FakeInfinityScroll';
+} from '../../../../components/InfinityScroll';
 import { LoanWithArweaveMetadata } from '../../../../contexts/loans';
 
 interface LoansListProps {
@@ -22,7 +22,7 @@ export const LoansList: FC<LoansListProps> = ({
   const { itemsToShow, next } = useFakeInfinityScroll(12);
 
   return (
-    <FakeInfinityScroll
+    <InfinityScroll
       itemsToShow={itemsToShow}
       isLoading={loading}
       next={next}
@@ -32,6 +32,6 @@ export const LoansList: FC<LoansListProps> = ({
       {loansWithArweaveMetadata.map((loanWithArweaveMetadata, idx) => (
         <LoanCard key={idx} loanWithArweaveMetadata={loanWithArweaveMetadata} />
       ))}
-    </FakeInfinityScroll>
+    </InfinityScroll>
   );
 };
