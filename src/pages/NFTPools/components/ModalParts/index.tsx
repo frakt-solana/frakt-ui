@@ -8,6 +8,7 @@ import { ArrowDownBtn, CloseModalIcon, SolanaIcon } from '../../../../icons';
 import SettingsIcon from '../../../../icons/SettingsIcon';
 import styles from './ModalParts.module.scss';
 import NumericInput from '../../../../components/NumericInput';
+import { formatNumberToCurrency } from '../../../../contexts/liquidityPools';
 
 const { Option } = Select;
 
@@ -305,6 +306,71 @@ export const CurrencySelector: FC<CurrencySelectorProps> = ({
         </div>
       </div>
       <p className={styles.slippageInfo}>{slippageText}</p>
+    </div>
+  );
+};
+
+interface ModalCloseProps {
+  className?: string;
+  onClick?: () => void;
+}
+
+export const ModalClose: FC<ModalCloseProps> = ({
+  className,
+  onClick = () => {},
+}) => {
+  return (
+    <div
+      className={classNames(styles.closeModalIcon, className)}
+      onClick={onClick}
+    >
+      <CloseModalIcon className={styles.closeIcon} />
+    </div>
+  );
+};
+
+interface TotalUSDProps {
+  totalValueUSD?: number;
+  className?: string;
+}
+
+export const TotalUSD: FC<TotalUSDProps> = ({
+  className,
+  totalValueUSD = 0,
+}) => {
+  return (
+    <div className={classNames(styles.totalUSD, className)}>
+      <p>Total</p>
+      {formatNumberToCurrency(totalValueUSD)}
+    </div>
+  );
+};
+
+interface EstimatedRewardsProps {
+  className?: string;
+  totalValueUSD?: number;
+  apr?: number;
+}
+
+export const EstimatedRewards: FC<EstimatedRewardsProps> = ({
+  className,
+  totalValueUSD = 0,
+  apr = 0,
+}) => {
+  return (
+    <div className={classNames(styles.estimatedRewards, className)}>
+      <p className={styles.estimatedRewardsTitle}>
+        Estimated earnings from fees (7d)
+      </p>
+      <div className={styles.estimatedRewardsValues}>
+        <p>
+          {formatNumberToCurrency((totalValueUSD * apr) / 1200)}{' '}
+          <span className={styles.bold}>/ month</span>
+        </p>
+        <p>
+          {apr && apr.toFixed(2)} % <span className={styles.bold}>APR</span>
+        </p>
+      </div>
     </div>
   );
 };

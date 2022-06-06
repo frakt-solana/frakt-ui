@@ -6,9 +6,7 @@ import classNames from 'classnames';
 import { Modal, ModalProps } from '../Modal/Modal';
 import { SearchInput } from '../SearchInput';
 import styles from './styles.module.scss';
-import FakeInfinityScroll, {
-  useFakeInfinityScroll,
-} from '../FakeInfinityScroll';
+import InfinityScroll, { useFakeInfinityScroll } from '../InfinityScroll';
 import { useDebounce } from '../../hooks';
 import { CloseModalIcon } from '../../icons';
 import { selectTokenListState } from '../../state/tokenList/selectors';
@@ -96,7 +94,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
         onScroll={onContentScroll}
         id={`scrollBar${title}`}
       >
-        <FakeInfinityScroll
+        <InfinityScroll
           scrollableTargetId={`scrollBar${title}`}
           itemsToShow={itemsToShow}
           next={next}
@@ -117,7 +115,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
               </span>
             </div>
           ))}
-        </FakeInfinityScroll>
+        </InfinityScroll>
       </div>
     </Modal>
   );

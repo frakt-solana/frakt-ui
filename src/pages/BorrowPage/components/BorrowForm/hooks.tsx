@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
-import { UserNFT } from '../../../../state/userTokens/types';
+import { BorrowNFT } from '../../../../state/userTokens/types';
 import { proposeLoan } from '../../../../contexts/loans';
 import { useConnection } from '../../../../hooks';
 import { userTokensActions } from '../../../../state/userTokens/actions';
@@ -17,7 +17,7 @@ type UseBorrowForm = (props: {
   closeConfirmModal: () => void;
   loadingModalVisible: boolean;
   closeLoadingModal: () => void;
-  onSubmit: (nft: UserNFT) => void;
+  onSubmit: (nft: BorrowNFT) => void;
 };
 
 export const useBorrowForm: UseBorrowForm = ({
@@ -50,7 +50,7 @@ export const useBorrowForm: UseBorrowForm = ({
   const removeTokenOptimistic = (mints) =>
     dispatch(userTokensActions.removeTokenOptimistic(mints));
 
-  const onSubmit = async (nft: UserNFT) => {
+  const onSubmit = async (nft: BorrowNFT) => {
     try {
       openLoadingModal();
 

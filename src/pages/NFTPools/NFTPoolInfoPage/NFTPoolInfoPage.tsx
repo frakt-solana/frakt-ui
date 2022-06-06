@@ -8,10 +8,7 @@ import styles from './NFTPoolInfoPage.module.scss';
 import { HeaderInfo } from './components/HeaderInfo';
 import { SolanaIcon } from '../../../icons';
 import { usePublicKeyParam } from '../../../hooks';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import {
   useNftPool,
   useNftPoolsInitialFetch,
@@ -19,8 +16,7 @@ import {
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
 import { selectTokenListState } from '../../../state/tokenList/selectors';
-import { LinkWithArrow } from '../../../components/LinkWithArrow';
-import { PATHS } from '../../../constants';
+import { POOL_TABS } from '../../../constants';
 import {
   Price,
   useAPR,
@@ -29,8 +25,9 @@ import {
   usePoolTokensPrices,
 } from '../hooks';
 import { SELL_COMMISSION_PERCENT } from '../constants';
-import { PoolStats, useCachedPoolsStats } from '../../PoolsPage';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
+import { useCachedPoolsStats } from '../NFTPoolStakePage/hooks';
+import { PoolStats } from '../model';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
   const poolPubkey = usePoolPubkeyParam();
@@ -80,7 +77,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
           hidden={pageLoading}
         />
       }
-      pageType={PoolPageType.INFO}
+      tab={POOL_TABS.INFO}
     >
       {loading ? (
         <Loader size="large" />
@@ -131,11 +128,6 @@ const LiquiditySection: FC<LiquiditySectionProps> = ({ poolStats }) => {
       <h5 className={styles.cardTitle}>Liquidity</h5>
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>
-      <LinkWithArrow
-        to={`${PATHS.EARN}`}
-        label="Earn"
-        className={styles.liquidityLink}
-      />
     </div>
   );
 };

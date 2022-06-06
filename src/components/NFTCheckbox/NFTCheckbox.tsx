@@ -37,7 +37,7 @@ const NFTCheckbox = ({
         />
         <div className={styles.root__content}>
           <p className={styles.root__title}>{name}</p>
-          {loanValue && (
+          {!!loanValue && (
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>Loan value</p>
               <div className={styles.ltvContent}>

@@ -9,7 +9,6 @@ import {
   PercentIcon50,
   YieldInfoIcon,
 } from '../../../svg';
-import { PATHS } from '../../../../../constants';
 
 interface YieldBlockProps {
   className?: string;
@@ -22,7 +21,6 @@ export const YieldBlock: FC<YieldBlockProps> = ({ className }) => {
         title={'Earn'}
         icon={<YieldInfoIcon />}
         text={'Provide NFTs or liquidity to protocol and reap the rewards'}
-        to={PATHS.EARN}
       />
       <div className={styles.percentsWrapper}>
         <PercentIcon100 className={styles.percent100} />

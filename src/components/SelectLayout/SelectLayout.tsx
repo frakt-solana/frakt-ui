@@ -1,14 +1,14 @@
 import { FC } from 'react';
 
 import Sidebar from './components/Sidebar';
-import { UserNFT } from '../../state/userTokens/types';
+import { BorrowNFT } from '../../state/userTokens/types';
 import { AppLayout } from '../Layout/AppLayout';
 import styles from './SelectLayout.module.scss';
 import { Container } from '../Layout';
 
 interface SelectLayoutProps {
-  selectedNfts: UserNFT[];
-  onDeselect?: (nft: UserNFT) => void;
+  selectedNfts: BorrowNFT[];
+  onDeselect?: (nft: BorrowNFT) => void;
   sidebarForm: JSX.Element;
   isCloseSidebar?: boolean;
 }

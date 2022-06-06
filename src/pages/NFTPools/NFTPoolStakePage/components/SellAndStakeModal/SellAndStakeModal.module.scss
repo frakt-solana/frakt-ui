@@ -1,0 +1,60 @@
+.wrapper {
+  position: relative;
+  margin-left: auto;
+  max-width: 295px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border: var(--border-gray-1);
+  border-bottom: none;
+  background-color: var(--color-gray-7);
+  // padding: 0 20px 20px;
+  transition: transform 0.3s ease-out;
+
+  &.visible {
+    transform: translateY(-100%);
+
+    .closeModal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @media screen and (max-width: 1600px) {
+    &.modalDown {
+      transform: translateY(-70px);
+
+      @media screen and (max-width: 767px) {
+        transform: translateY(-60px);
+      }
+
+      .slippageWrapper {
+        display: none;
+      }
+
+      .closeModal {
+        transform: translateY(250px);
+        opacity: 0;
+      }
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    max-width: 270px;
+  }
+}
+
+.tokenAmountInputWithBalance {
+  padding: 5px 20px;
+}
+
+.totalUSD {
+  padding: 10px 20px 0;
+}
+
+.estimatedRewards {
+  padding: 5px 20px 35px;
+}
+
+.itemContent {
+  padding: 0 20px;
+}
