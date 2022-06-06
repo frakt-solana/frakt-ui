@@ -1,8 +1,9 @@
 import { TokenInfo } from '@solana/spl-token-registry';
+import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 
 import { useNftPool } from '../../../../contexts/nftPools';
-import { useTokenListContext } from '../../../../contexts/TokenList';
+import { selectTokenListState } from '../../../../state/tokenList/selectors';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 
 type UseNftPoolWithTokenInfo = (poolPubkey: string) => {
@@ -17,7 +18,7 @@ export const useNftPoolWithTokenInfo: UseNftPoolWithTokenInfo = (
   const { pool, loading: poolLoading } = useNftPool(poolPubkey);
 
   const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
-    useTokenListContext();
+    useSelector(selectTokenListState);
 
   const poolPublicKey = pool?.publicKey?.toBase58();
   const poolTokenInfo = useMemo(() => {
