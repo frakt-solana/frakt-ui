@@ -1,7 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { HeaderSell } from './components/HeaderSell';
@@ -12,7 +11,6 @@ import styles from './NFTPoolSellPage.module.scss';
 import {
   filterWhitelistedNFTs,
   useNftPool,
-  useNftPools,
   useNftPoolsInitialFetch,
 } from '../../../contexts/nftPools';
 import { useConnection, usePublicKeyParam } from '../../../hooks';
@@ -26,20 +24,16 @@ import {
   usePoolTokensPrices,
   useUserRawNfts,
 } from '../hooks';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import { selectTokenListState } from '../../../state/tokenList/selectors';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
-import { SOL_TOKEN } from '../../../utils';
-import { getTokenPrice } from '../helpers';
-import { SELL_COMMISSION_PERCENT } from '../constants';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
 import {
   LoadingModal,
   useLoadingModal,
 } from '../../../components/LoadingModal';
+import { POOL_TABS } from '../../../constants';
+import { sellNft } from '../transactions';
 
 const useNftSell = ({
   pool,
@@ -48,95 +42,47 @@ const useNftSell = ({
   pool: NftPoolData;
   poolTokenInfo: TokenInfo;
 }) => {
-  const { poolDataByMint, raydiumSwap: raydiumSwapTx } = useLiquidityPools();
+  const wallet = useWallet();
+  const { poolDataByMint } = useLiquidityPools();
   const connection = useConnection();
-  const { depositNftToCommunityPool } = useNftPools();
-  const { removeTokenOptimistic } = useUserTokens();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
+  const { removeTokenOptimistic } = useUserTokens();
 
   const [slippage, setSlippage] = useState<number>(0.5);
-  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
-
-  const raydiumSwap = async (): Promise<boolean> => {
-    const poolData = poolDataByMint.get(poolTokenInfo.address);
-
-    const { amountWithSlippage: receiveAmount } = await getTokenPrice({
-      poolData,
-      slippage: slippage || 1,
-      isBuy: false,
-      connection,
-    });
-
-    const receiveAmountBN = new BN(
-      parseFloat(receiveAmount) *
-        ((100 - SELL_COMMISSION_PERCENT) / 100) *
-        10 ** SOL_TOKEN.decimals,
-    );
-
-    const payAmount = new BN(
-      ((100 - SELL_COMMISSION_PERCENT) / 100) * 10 ** poolTokenInfo?.decimals,
-    );
-
-    const result = await raydiumSwapTx({
-      baseToken: poolTokenInfo,
-      baseAmount: payAmount,
-      quoteToken: SOL_TOKEN,
-      quoteAmount: receiveAmountBN,
-      poolConfig: poolData?.poolConfig,
-    });
-
-    return !!result;
-  };
-
-  const depositNFT = async (): Promise<boolean> => {
-    const poolData = poolDataByMint.get(poolTokenInfo.address);
-    const poolLpMint = poolData?.poolConfig?.lpMint;
-
-    const result = await depositNftToCommunityPool({
-      pool,
-      nft: selectedNft,
-      poolLpMint,
-      afterTransaction: () => {
-        removeTokenOptimistic([selectedNft?.mint]);
-        onDeselect();
-      },
-    });
-
-    return !!result;
-  };
 
   const sell = async (needSwap = false) => {
     try {
-      setTransactionsLeft(1);
-      if (needSwap) {
-        setTransactionsLeft(2);
-      }
       openLoadingModal();
 
-      const isDepositSuccessful = await depositNFT();
-      if (!isDepositSuccessful) {
-        throw new Error('NFT deposit failed');
+      const poolData = poolDataByMint.get(poolTokenInfo.address);
+
+      const result = await sellNft({
+        pool,
+        nft: selectedNft,
+        poolToken: poolTokenInfo,
+        connection,
+        wallet,
+        raydiumLiquidityPoolKeys: poolData?.poolConfig,
+        swapSlippage: slippage,
+        needSwap,
+      });
+
+      if (!result) {
+        throw new Error('Sell failed');
       }
 
-      if (isDepositSuccessful && needSwap) {
-        setTransactionsLeft(1);
-        const isRaydiumSwapSuccessful = await raydiumSwap();
-
-        if (!isRaydiumSwapSuccessful) {
-          throw new Error('Raydium swap failed');
-        }
-      }
+      removeTokenOptimistic([selectedNft?.mint]);
+      onDeselect();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       closeLoadingModal();
-      setTransactionsLeft(null);
     }
   };
 
@@ -156,7 +102,6 @@ const useNftSell = ({
     selectedNft,
     loadingModalVisible,
     closeLoadingModal,
-    loadingModalSubtitle: `Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`,
   };
 };
 
@@ -199,7 +144,6 @@ export const NFTPoolSellPage: FC = () => {
     sell,
     loadingModalVisible,
     closeLoadingModal,
-    loadingModalSubtitle,
   } = useNftSell({ pool, poolTokenInfo });
 
   const [, setIsSidebar] = useState<boolean>(false);
@@ -231,7 +175,7 @@ export const NFTPoolSellPage: FC = () => {
           hidden={pageLoading}
         />
       }
-      pageType={PoolPageType.SELL}
+      tab={POOL_TABS.SELL}
     >
       {pageLoading ? (
         <Loader size="large" />
@@ -265,9 +209,9 @@ export const NFTPoolSellPage: FC = () => {
             />
           </div>
           <LoadingModal
+            title="Please approve transaction"
             visible={loadingModalVisible}
             onCancel={closeLoadingModal}
-            subtitle={loadingModalSubtitle}
           />
         </>
       )}

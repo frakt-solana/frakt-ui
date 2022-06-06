@@ -2,14 +2,17 @@ import { useContext, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { PublicKey } from '@solana/web3.js';
+import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
   fetchProgramAccounts,
   fetchRaydiumPoolsInfoMap,
   mapFusionPoolInfo,
+  mapRawPools,
 } from './liquidityPools.helpers';
 import {
+  FusionPool,
   FusionPoolInfoByMint,
   LiquidityPoolsContextValues,
   RaydiumPoolInfoMap,
@@ -86,7 +89,7 @@ export const useLazyRaydiumPoolsInfoMap = (): {
   return { raydiumPoolsInfoMap, loading, fetchPoolsInfoMap };
 };
 
-export const useLazyFusionPools = (): {
+export const useLazyFusionPools_old = (): {
   loading: boolean;
   fusionPoolInfoMap: FusionPoolInfoByMint;
   fetchFusionPoolsInfo: (lpMints: string[]) => Promise<void>;
@@ -121,4 +124,67 @@ export const useLazyFusionPools = (): {
   };
 
   return { fusionPoolInfoMap, loading, fetchFusionPoolsInfo };
+};
+
+type UseLazyFusionPools = () => {
+  fusionPools: FusionPool[];
+  loading: boolean;
+  initialFetch: () => Promise<void>;
+  refetch: () => Promise<void>;
+};
+
+export const useLazyFusionPools: UseLazyFusionPools = () => {
+  const connection = useConnection();
+
+  const [fusionPools, setFusionPools] = useState<FusionPool[]>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const fetchPools = async () => {
+    const {
+      mainRouters,
+      stakeAccounts,
+      secondaryRewards,
+      secondaryStakeAccounts,
+    } = await getAllProgramAccounts(
+      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      connection,
+    );
+
+    const fusionPools: FusionPool[] = mapRawPools({
+      mainRouters,
+      stakeAccounts,
+      secondaryRewards,
+      secondaryStakeAccounts,
+    });
+    setFusionPools(fusionPools);
+  };
+
+  const initialFetch = async () => {
+    try {
+      setLoading(true);
+
+      await fetchPools();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const refetch = async () => {
+    try {
+      await fetchPools();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
+
+  return {
+    fusionPools,
+    loading,
+    initialFetch,
+    refetch,
+  };
 };

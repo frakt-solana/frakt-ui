@@ -2,8 +2,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
-import { UserNFT, useUserTokens } from '../../../../contexts/userTokens';
 import { proposeLoan } from '../../../../contexts/loans';
+import { BorrowNFT, useUserTokens } from '../../../../contexts/userTokens';
 import { useConnection } from '../../../../hooks';
 
 type UseBorrowForm = (props: {
@@ -15,7 +15,7 @@ type UseBorrowForm = (props: {
   closeConfirmModal: () => void;
   loadingModalVisible: boolean;
   closeLoadingModal: () => void;
-  onSubmit: (nft: UserNFT) => void;
+  onSubmit: (nft: BorrowNFT) => void;
 };
 
 export const useBorrowForm: UseBorrowForm = ({
@@ -46,7 +46,7 @@ export const useBorrowForm: UseBorrowForm = ({
 
   const { removeTokenOptimistic } = useUserTokens();
 
-  const onSubmit = async (nft: UserNFT) => {
+  const onSubmit = async (nft: BorrowNFT) => {
     try {
       openLoadingModal();
 

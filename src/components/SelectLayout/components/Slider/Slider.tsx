@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Scrollbar } from 'swiper';
 import classNames from 'classnames';
 
-import { UserNFT } from '../../../../contexts/userTokens';
+import { BorrowNFT } from '../../../../contexts/userTokens';
 import styles from './Slider.module.scss';
 
 SwiperCore.use([Navigation, Scrollbar]);
@@ -13,8 +13,8 @@ const sliderBreakpoints = {
 };
 
 interface SliderProps {
-  nfts: UserNFT[];
-  onDeselect?: (nft: UserNFT) => void;
+  nfts: BorrowNFT[];
+  onDeselect?: (nft: BorrowNFT) => void;
   className?: string;
 }
 
@@ -31,7 +31,7 @@ export const Slider: FC<SliderProps> = ({ onDeselect, nfts, className }) => {
         <SwiperSlide key={idx}>
           <div
             className={styles.image}
-            style={{ backgroundImage: `url(${nft?.metadata?.image})` }}
+            style={{ backgroundImage: `url(${nft.imageUrl})` }}
           >
             <button
               className={styles.removeBtn}
