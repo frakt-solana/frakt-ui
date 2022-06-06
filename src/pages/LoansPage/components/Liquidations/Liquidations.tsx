@@ -1,6 +1,16 @@
-import React from 'react';
 import { Tab, Tabs, useTabs } from '../../../../components/Tabs';
+import GraceCard from '../GraceCard/GraceCard';
+import LiquidationRaffleCard from '../LiquidationRaffleCard/LiquidationRaffleCard';
+import LiquidationsList from '../LiquidationsList/LiquidationsList';
+import NoWinningRaffles from '../NoWinningRaffles/NoWinningRaffles';
+import WonRaffleCard from '../WonRaffleCard/WonRaffleCard';
 import styles from './Liquidations.module.scss';
+
+export enum LiquidationsTabsNames {
+  GRACE = 'grace',
+  LIQUIDATIONS = 'liquidations',
+  RAFFLES = 'raffles',
+}
 
 const Liquidations = () => {
   const {
@@ -20,6 +30,13 @@ const Liquidations = () => {
         value={tabValue}
         setValue={setTabValue}
       />
+      <LiquidationsList>
+        {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
+          <LiquidationRaffleCard />
+        )}
+        {tabValue === LiquidationsTabsNames.GRACE && <GraceCard />}
+        {tabValue === LiquidationsTabsNames.RAFFLES && <WonRaffleCard />}
+      </LiquidationsList>
     </div>
   );
 };
@@ -34,7 +51,6 @@ const LIQUIDATIONS_TABS: Tab[] = [
   {
     label: 'Grace List',
     value: 'grace',
-    disabled: true,
   },
   {
     label: 'Won raffles',
