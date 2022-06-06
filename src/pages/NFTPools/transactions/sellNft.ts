@@ -15,7 +15,7 @@ import {
   getWhitelistedCreatorsDictionary,
   isNFTWhitelistedByCreator,
 } from '../../../contexts/nftPools';
-import { UserNFT } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../state/userTokens/types';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
 import { NotifyType } from '../../../utils/solanaUtils';

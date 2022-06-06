@@ -5,7 +5,7 @@ import {
   FetchData,
   useInfinityScroll,
 } from '../../../components/InfinityScroll';
-import { BorrowNFT } from './../../../contexts/userTokens/userTokens.model';
+import { BorrowNFT } from './../../../state/userTokens/types';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;

@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
-import { BorrowNFT } from '../../../../contexts/userTokens';
+import { BorrowNFT } from '../../../../state/userTokens/types';
 import { ShortTermFields } from '../ShortTermFields';
 import Button from '../../../../components/Button';
 import styles from './BorrowForm.module.scss';

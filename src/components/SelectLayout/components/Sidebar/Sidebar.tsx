@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 
-import { BorrowNFT } from '../../../../contexts/userTokens';
+import { BorrowNFT } from '../../../../state/userTokens/types';
 import styles from './Sidebar.module.scss';
 import { useSidebar } from './hooks';
 import { Slider } from '../Slider';

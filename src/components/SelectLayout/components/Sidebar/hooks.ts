@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+
 import { useHeaderState } from '../../../Layout/headerState';
-import { BorrowNFT } from '../../../../contexts/userTokens';
+import { BorrowNFT } from '../../../../state/userTokens/types';
 
 export const useSidebar = (
   nfts: BorrowNFT[],

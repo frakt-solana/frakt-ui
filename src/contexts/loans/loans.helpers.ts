@@ -7,7 +7,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { groupBy, Dictionary } from 'lodash';
 
 import { getNftCreators, SOL_TOKEN } from '../../utils';
-import { UserNFT } from '../userTokens';
+import { UserNFT } from '../../state/userTokens/types';
 
 import { LoanData, LoanDataByPoolPublicKey } from './loans.model';
 

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import { InventoryWalletInfo } from '../InventoryWalletInfo';
 import { LiquidityWalletInfo } from '../LiquidityWalletInfo';
-import { UserNFT } from '../../../../../contexts/userTokens';
+import { UserNFT } from '../../../../../state/userTokens/types';
 import styles from './GeneralWalletInfo.module.scss';
 import { CONTROLS } from '../../constants';
 

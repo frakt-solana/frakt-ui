@@ -1,12 +1,12 @@
 import { FC, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { HeaderSell } from './components/HeaderSell';
 import { SellingModal } from './components/SellingModal';
 import { WalletNotConnected } from '../components/WalletNotConnected';
-import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../state/userTokens/types';
 import styles from './NFTPoolSellPage.module.scss';
 import {
   filterWhitelistedNFTs,
@@ -32,6 +32,7 @@ import {
   LoadingModal,
   useLoadingModal,
 } from '../../../components/LoadingModal';
+import { userTokensActions } from '../../../state/userTokens/actions';
 import { POOL_TABS } from '../../../constants';
 import { sellNft } from '../transactions';
 
@@ -45,12 +46,13 @@ const useNftSell = ({
   const wallet = useWallet();
   const { poolDataByMint } = useLiquidityPools();
   const connection = useConnection();
+  const dispatch = useDispatch();
+
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
-  const { removeTokenOptimistic } = useUserTokens();
 
   const [slippage, setSlippage] = useState<number>(0.5);
   const [selectedNft, setSelectedNft] = useState<UserNFT>(null);
@@ -76,7 +78,7 @@ const useNftSell = ({
         throw new Error('Sell failed');
       }
 
-      removeTokenOptimistic([selectedNft?.mint]);
+      dispatch(userTokensActions.removeTokenOptimistic([selectedNft?.mint]));
       onDeselect();
     } catch (error) {
       // eslint-disable-next-line no-console

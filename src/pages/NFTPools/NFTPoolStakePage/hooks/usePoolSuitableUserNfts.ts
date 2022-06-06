@@ -5,7 +5,7 @@ import {
   getWhitelistedCreatorsDictionary,
   getWhitelistedMintsDictionary,
 } from '../../../../contexts/nftPools';
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { useUserRawNfts } from '../../hooks';
 

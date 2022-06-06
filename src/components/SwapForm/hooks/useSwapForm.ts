@@ -11,7 +11,7 @@ import { notify, SOL_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
 import { usePrism } from '../../../contexts/prism/prism.hooks';
 import { NotifyType } from '../../../utils/solanaUtils';
-import { useUserTokens } from '../../../contexts/userTokens';
+import { selectUserTokensState } from '../../../state/userTokens/selectors';
 import { getTokenBalance } from '../../TokenField/TokenFieldWithBalance';
 import { useNativeAccount } from '../../../utils/accounts';
 
@@ -59,7 +59,7 @@ export const useSwapForm = (
   const { fraktionTokensMap, tokensList, fraktionTokensList } =
     useSelector(selectTokenListState);
   const wallet = useWallet();
-  const { rawUserTokensByMint } = useUserTokens();
+  const { rawUserTokensByMint } = useSelector(selectUserTokensState);
   const { account } = useNativeAccount();
 
   const [slippage, setSlippage] = useState<number>(1);

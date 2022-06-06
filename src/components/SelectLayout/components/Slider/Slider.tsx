@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Scrollbar } from 'swiper';
 import classNames from 'classnames';
 
-import { BorrowNFT } from '../../../../contexts/userTokens';
+import { BorrowNFT } from '../../../../state/userTokens/types';
 import styles from './Slider.module.scss';
 
 SwiperCore.use([Navigation, Scrollbar]);

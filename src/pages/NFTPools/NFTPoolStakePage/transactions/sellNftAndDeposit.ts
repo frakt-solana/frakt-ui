@@ -19,7 +19,7 @@ import { showSolscanLinkNotification } from '../../../../utils/transactions';
 import { SELL_COMMISSION_PERCENT } from '../../constants';
 import { calcRatio } from '../components';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 import {
   getWhitelistedCreatorsDictionary,
   isNFTWhitelistedByCreator,
