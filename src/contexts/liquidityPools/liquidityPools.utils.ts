@@ -6,8 +6,8 @@ import {
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
 
-import { PoolStats } from '../../pages/PoolsPage';
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
+import { PoolStats } from '../../pages/NFTPools/model';
 
 export const calculateTVL = (
   poolInfo: RaydiumPoolInfo,
@@ -236,19 +236,27 @@ export const getStakedBalance = (
   lpDecimals: number,
 ): number => Number(fusionPoolInfo?.stakeAccount?.amount) / 10 ** lpDecimals;
 
+export const getFusionApr = (fusionPoolRouter: MainRouterView): number => {
+  const SECONDS_IN_YEAR = 31536000;
+
+  if (fusionPoolRouter) {
+    const { apr, endTime, decimalsInput } = fusionPoolRouter;
+
+    return (
+      (((Number(apr) * Number(endTime)) / SECONDS_IN_YEAR) * 1e2) /
+      (1e10 / Number(decimalsInput))
+    );
+  }
+
+  return 0;
+};
+
 export const sumFusionAndRaydiumApr = (
   fusionPoolInfo: FusionPoolInfo,
   poolStats: PoolStats,
 ): number => {
   if (fusionPoolInfo?.mainRouter) {
-    const SECONDS_IN_YEAR = 31536000;
-    const { apr, endTime, decimalsInput } = fusionPoolInfo.mainRouter;
-
-    return (
-      (((Number(apr) * Number(endTime)) / SECONDS_IN_YEAR) * 1e2) /
-        (1e10 / Number(decimalsInput)) +
-      poolStats?.apr
-    );
+    return getFusionApr(fusionPoolInfo.mainRouter) + poolStats?.apr;
   }
   return poolStats?.apr || 0;
 };

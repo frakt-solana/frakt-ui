@@ -2,7 +2,7 @@
   padding-bottom: 50px;
   padding-left: 20px;
   width: 100%;
-  padding-top: 150px;
+  padding-top: 164px;
   position: relative;
 }
 
@@ -17,7 +17,8 @@
 
 .sellContent,
 .swapContent,
-.infoContent {
+.infoContent,
+.stakeContent {
   @media screen and (max-width: 1023px) {
     padding-top: 196px;
   }

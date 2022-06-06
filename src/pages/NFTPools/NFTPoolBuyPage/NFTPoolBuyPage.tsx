@@ -1,12 +1,11 @@
 import { FC, useMemo, useState } from 'react';
-import BN from 'bn.js';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { HeaderBuy } from './components/HeaderBuy';
 import { useConnection, usePublicKeyParam } from '../../../hooks';
 import {
   useNftPool,
-  useNftPools,
   useNftPoolsInitialFetch,
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
@@ -21,10 +20,7 @@ import {
   usePoolTokensPrices,
 } from '../hooks';
 import { FilterFormInputsNames } from '../model';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import { useTokenListContext } from '../../../contexts/TokenList';
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 
@@ -33,22 +29,8 @@ import {
   LoadingModal,
   useLoadingModal,
 } from '../../../components/LoadingModal';
-import { getTokenPrice } from '../helpers';
-import { SOL_TOKEN } from '../../../utils';
-
-// const getNftImagesForLottery = (
-//   nfts: UserNFTWithCollection[],
-// ): string[] => {
-//   const ARRAY_SIZE = 20;
-
-//   const shuffled = shuffle(nfts.map(({ metadata }) => metadata.image));
-
-//   if (shuffled.length >= ARRAY_SIZE) {
-//     return shuffled.slice(0, ARRAY_SIZE);
-//   }
-
-//   return shuffled;
-// };
+import { POOL_TABS } from '../../../constants';
+import { buyRandomNft } from '../transactions';
 
 const useNftBuy = ({
   pool,
@@ -57,9 +39,9 @@ const useNftBuy = ({
   pool: NftPoolData;
   poolTokenInfo: TokenInfo;
 }) => {
-  const { poolDataByMint, raydiumSwap } = useLiquidityPools();
+  const wallet = useWallet();
+  const { poolDataByMint } = useLiquidityPools();
   const connection = useConnection();
-  const { getLotteryTicket } = useNftPools();
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
@@ -67,70 +49,30 @@ const useNftBuy = ({
   } = useLoadingModal();
 
   const [slippage, setSlippage] = useState<number>(0.5);
-  const [transactionsLeft, setTransactionsLeft] = useState<number>(null);
-
-  const buyPoolToken = async (): Promise<boolean> => {
-    const poolData = poolDataByMint.get(poolTokenInfo.address);
-
-    const { amountWithSlippage: payAmount } = await getTokenPrice({
-      poolData,
-      slippage: slippage || 1,
-      isBuy: true,
-      connection,
-    });
-
-    const payAmountBN = new BN(
-      parseFloat(payAmount) * 10 ** poolTokenInfo.decimals,
-    );
-
-    const receiveAmountBN = new BN(10 ** SOL_TOKEN?.decimals);
-
-    const success = await raydiumSwap({
-      quoteToken: poolTokenInfo,
-      quoteAmount: receiveAmountBN,
-      baseToken: SOL_TOKEN,
-      baseAmount: payAmountBN,
-      poolConfig: poolData?.poolConfig,
-    });
-
-    return !!success;
-  };
-
-  const runLottery = async (): Promise<boolean> => {
-    const poolData = poolDataByMint.get(poolTokenInfo.address);
-    const poolLpMint = poolData?.poolConfig?.lpMint;
-
-    const success = await getLotteryTicket({
-      pool,
-      poolLpMint,
-    });
-
-    return !!success;
-  };
 
   const buy = async (needSwap = false) => {
     try {
       openLoadingModal();
 
-      if (needSwap) {
-        setTransactionsLeft(2);
-        const isTokenBuySucessful = await buyPoolToken();
-        if (!isTokenBuySucessful) {
-          throw new Error('Raydium swap failed');
-        }
-      }
+      const poolData = poolDataByMint.get(poolTokenInfo.address);
 
-      setTransactionsLeft(1);
-      const isLotterySuccessful = await runLottery();
-      if (!isLotterySuccessful) {
-        throw new Error('Lottery failed');
+      const result = await buyRandomNft({
+        pool,
+        poolToken: poolTokenInfo,
+        connection,
+        wallet,
+        raydiumLiquidityPoolKeys: poolData?.poolConfig,
+        swapSlippage: slippage,
+        needSwap,
+      });
+      if (!result) {
+        throw new Error('Buy failed');
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       closeLoadingModal();
-      setTransactionsLeft(null);
     }
   };
 
@@ -138,7 +80,6 @@ const useNftBuy = ({
     buy,
     loadingModalVisible,
     closeLoadingModal,
-    loadingModalSubtitle: `Time gap between transactions can be up to 1 minute.\nTransactions left: ${transactionsLeft}`,
     slippage,
     setSlippage,
   };
@@ -180,14 +121,8 @@ export const NFTPoolBuyPage: FC = () => {
 
   const { control, nfts } = useNFTsFiltering(rawNFTs);
 
-  const {
-    buy,
-    loadingModalVisible,
-    closeLoadingModal,
-    loadingModalSubtitle,
-    slippage,
-    setSlippage,
-  } = useNftBuy({ pool, poolTokenInfo });
+  const { buy, loadingModalVisible, closeLoadingModal, slippage, setSlippage } =
+    useNftBuy({ pool, poolTokenInfo });
 
   const { loading: aprLoading } = useAPR();
 
@@ -209,7 +144,7 @@ export const NFTPoolBuyPage: FC = () => {
           hidden={loading}
         />
       }
-      pageType={PoolPageType.BUY}
+      tab={POOL_TABS.BUY}
     >
       {loading ? (
         <Loader size="large" />
@@ -224,9 +159,9 @@ export const NFTPoolBuyPage: FC = () => {
         />
       )}
       <LoadingModal
+        title="Please approve transaction"
         visible={loadingModalVisible}
         onCancel={closeLoadingModal}
-        subtitle={loadingModalSubtitle}
       />
     </NFTPoolPageLayout>
   );

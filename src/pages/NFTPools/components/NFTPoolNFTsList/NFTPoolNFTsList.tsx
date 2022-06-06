@@ -1,5 +1,6 @@
-import { FC } from 'react';
+import { forwardRef, RefObject } from 'react';
 import { Control, Controller } from 'react-hook-form';
+import classNames from 'classnames';
 
 import { NFTsList, NFTsListProps } from '../NFTsList';
 import { Select } from '../../../../components/Select/Select';
@@ -18,49 +19,58 @@ interface MarketNFTsList extends NFTsListProps {
   sortFieldName: FilterFormInputsNames;
   sortValues: NftSortValue[];
   poolName?: string;
+  className?: string;
 }
 
-export const NFTPoolNFTsList: FC<MarketNFTsList> = ({
-  nfts,
-  control,
-  sortFieldName,
-  sortValues,
-  onCardClick,
-  selectedNft,
-  poolName = '',
-}) => {
-  return (
-    <div className={styles.marketNFTsList}>
-      <div className={styles.itemsSortWrapper}>
-        <p className={styles.poolName}>{poolName}</p>
-        <div className={styles.itemsAmount}>
-          {pluralize(nfts.length, 'item')}
+export const NFTPoolNFTsList = forwardRef(
+  (
+    {
+      nfts,
+      control,
+      sortFieldName,
+      sortValues,
+      onCardClick,
+      selectedNft,
+      poolName = '',
+      className,
+    }: MarketNFTsList,
+    ref: RefObject<HTMLDivElement>,
+  ) => {
+    return (
+      <div ref={ref} className={classNames(styles.marketNFTsList, className)}>
+        <div className={styles.itemsSortWrapper}>
+          {!!poolName && <p className={styles.poolName}>{poolName}</p>}
+          <div className={styles.itemsAmount}>
+            {pluralize(nfts.length, 'item')}
+          </div>
+          <div className={styles.sortWrapper}>
+            <Controller
+              control={control}
+              name={sortFieldName}
+              render={({ field: { ref, ...field } }) => (
+                <Select
+                  className={styles.sortingSelect}
+                  valueContainerClassName={styles.sortingSelectValueContainer}
+                  label="Sort by"
+                  name={sortFieldName}
+                  options={sortValues}
+                  {...field}
+                />
+              )}
+            />
+          </div>
         </div>
-        <div className={styles.sortWrapper}>
-          <Controller
-            control={control}
-            name={sortFieldName}
-            render={({ field: { ref, ...field } }) => (
-              <Select
-                className={styles.sortingSelect}
-                valueContainerClassName={styles.sortingSelectValueContainer}
-                label="Sort by"
-                name={sortFieldName}
-                options={sortValues}
-                {...field}
-              />
-            )}
-          />
-        </div>
+        <NFTsList
+          nfts={nfts}
+          onCardClick={onCardClick}
+          selectedNft={selectedNft}
+        />
       </div>
-      <NFTsList
-        nfts={nfts}
-        onCardClick={onCardClick}
-        selectedNft={selectedNft}
-      />
-    </div>
-  );
-};
+    );
+  },
+);
+
+NFTPoolNFTsList.displayName = 'NFTPoolNFTsList';
 
 export const SORT_VALUES = [
   {
