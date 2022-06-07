@@ -18,7 +18,9 @@ import { LoanWithMetadata } from './types';
 import { selectWalletPublicKey } from '../common/selectors';
 
 const activatedLoan = propEq('loanStatus', 'activated');
-const ownedByUser = curry((publicKey) => propEq('user', publicKey.toBase58()));
+const ownedByUser = curry((publicKey) =>
+  publicKey ? propEq('user', publicKey.toBase58()) : false,
+);
 
 export const selectUserLoans: (state) => Array<LoanWithMetadata> =
   createSelector(
