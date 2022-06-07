@@ -9,7 +9,7 @@ import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
 import { LoanTabsNames, useLoansPage } from './hooks';
 import { Loader } from '../../components/Loader';
-import Liquidations from './components/Liquidations/Liquidations';
+import Liquidations from './components/Liquidations';
 
 const LoansPage: FC = () => {
   const {

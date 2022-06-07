@@ -1,19 +1,21 @@
 import { FC } from 'react';
 
-import { LiquidationsTabsNames, useLiquidationsPage } from '.';
+import { useLiquidationsPage } from '.';
 import LiquidationRaffleCard from '../LiquidationRaffleCard';
+import { LiquidationsTabsNames } from '../../model';
 import { Tabs } from '../../../../components/Tabs';
-import LiquidationsList from '../LiquidationsList';
 import NoWinningRaffles from '../NoWinningRaffles';
+import LiquidationsList from '../LiquidationsList';
 import styles from './Liquidations.module.scss';
 import GraceCard from '../GraceCard/GraceCard';
 import WonRaffleCard from '../WonRaffleCard';
 
 const Liquidations: FC = () => {
   const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
+  const isRafflesCards = true;
 
   return (
-    <div>
+    <>
       <Tabs
         className={styles.tab}
         tabs={liquidationTabs}
@@ -21,16 +23,25 @@ const Liquidations: FC = () => {
         setValue={setTabValue}
         type="secondary"
       />
-      <LiquidationsList
-        withRafflesInfo={tabValue === LiquidationsTabsNames.LIQUIDATIONS}
-      >
-        {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
+      {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
+        <LiquidationsList withRafflesInfo>
           <LiquidationRaffleCard />
-        )}
-        {tabValue === LiquidationsTabsNames.GRACE && <GraceCard />}
-        {tabValue === LiquidationsTabsNames.RAFFLES && <WonRaffleCard />}
-      </LiquidationsList>
-    </div>
+        </LiquidationsList>
+      )}
+      {tabValue === LiquidationsTabsNames.GRACE && (
+        <LiquidationsList>
+          <GraceCard />
+        </LiquidationsList>
+      )}
+      {tabValue === LiquidationsTabsNames.RAFFLES &&
+        (isRafflesCards ? (
+          <LiquidationsList>
+            <WonRaffleCard />
+          </LiquidationsList>
+        ) : (
+          <NoWinningRaffles />
+        ))}
+    </>
   );
 };
 

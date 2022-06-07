@@ -1,7 +1,8 @@
-import classNames from 'classnames';
 import { FC } from 'react';
-import { Timer } from '../../../../icons';
+import classNames from 'classnames';
+
 import styles from './GraceCard.module.scss';
+import { Timer } from '../../../../icons';
 
 const GraceCard: FC = () => {
   return (
