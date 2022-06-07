@@ -77,8 +77,6 @@ const WalletPage: FC = () => {
     tabValue,
     setTabValue,
     pageTitle,
-    userLoans,
-    userLoansLoading,
     userTokens,
     userTokensLoading,
     nameServiceInfo,
@@ -107,11 +105,7 @@ const WalletPage: FC = () => {
               setValue={setTabValue}
             />
             {tabValue === WalletTabs.LOANS && (
-              <LoansList
-                className={styles.loansList}
-                loansWithArweaveMetadata={userLoans}
-                loading={userLoansLoading}
-              />
+              <LoansList className={styles.loansList} />
             )}
             {tabValue === WalletTabs.TOKENS && (
               <TokensTab userTokens={userTokens} loading={userTokensLoading} />

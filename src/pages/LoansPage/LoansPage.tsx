@@ -11,14 +11,7 @@ import { LoanTabsNames, useLoansPage } from './hooks';
 import { Loader } from '../../components/Loader';
 
 const LoansPage: FC = () => {
-  const {
-    loanTabs,
-    tabValue,
-    setTabValue,
-    userLoans,
-    userLoansLoading,
-    loansPoolInfo,
-  } = useLoansPage();
+  const { loanTabs, tabValue, setTabValue, loansPoolInfo } = useLoansPage();
 
   return (
     <AppLayout>
@@ -47,9 +40,7 @@ const LoansPage: FC = () => {
           </>
         )}
         {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
-        {tabValue === LoanTabsNames.LOANS && (
-          <MyLoansTab userLoans={userLoans} loading={userLoansLoading} />
-        )}
+        {tabValue === LoanTabsNames.LOANS && <MyLoansTab />}
       </Container>
     </AppLayout>
   );

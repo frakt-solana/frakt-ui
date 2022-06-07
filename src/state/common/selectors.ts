@@ -83,3 +83,13 @@ export const selectConnection = createSelector(
   [pathOr(null, ['common', 'connection', 'connection'])],
   identity,
 );
+
+export const selectSocket = createSelector(
+  [pathOr(null, ['common', 'socket', 'socket'])],
+  identity,
+);
+
+export const selectWalletPublicKey = createSelector(
+  [pathOr('', ['common', 'wallet', 'wallet', 'publicKey'])],
+  identity,
+);

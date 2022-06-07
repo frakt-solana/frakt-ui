@@ -1,4 +1,5 @@
 import { Connection } from '@solana/web3.js';
+import { Socket } from 'socket.io-client';
 
 export interface NotificationPayload {
   config?: { mode: 'error' | 'warning'; content: JSX.Element };
@@ -23,4 +24,8 @@ export enum SolanaNetworkHealth {
 
 export interface ConnectionState {
   connection: Connection;
+}
+
+export interface SocketState {
+  socket: Socket;
 }

@@ -5,12 +5,12 @@ import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import {
-  LoanWithArweaveMetadata,
   useLoans,
   paybackLoan as paybackLoanTx,
   getLoanCollectionInfo,
   getAmountToReturnForPriceBasedLoan,
 } from '../../contexts/loans';
+import { LoanWithMetadata } from '../../state/loans/types';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
@@ -18,7 +18,7 @@ import Button from '../Button';
 
 interface LoanCardProps {
   className?: string;
-  loanWithArweaveMetadata: LoanWithArweaveMetadata;
+  loanWithMetadata: LoanWithMetadata;
 }
 
 const usePaybackLoan = () => {
@@ -66,11 +66,8 @@ const usePaybackLoan = () => {
   };
 };
 
-const LoanCard: FC<LoanCardProps> = ({
-  className,
-  loanWithArweaveMetadata,
-}) => {
-  const { loan, metadata } = loanWithArweaveMetadata;
+const LoanCard: FC<LoanCardProps> = ({ className, loanWithMetadata }) => {
+  const { loan, metadata } = loanWithMetadata;
 
   const { loanDataByPoolPublicKey } = useLoans();
   const collectionInfo = getLoanCollectionInfo(
