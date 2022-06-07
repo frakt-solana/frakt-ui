@@ -22,8 +22,11 @@
     max-width: 245px;
   }
 
-  @media screen and (max-width: 375px) {
-    max-width: 135px;
+  @media screen and (max-width: 510px) {
+    max-width: 180px;
+  }
+  @media screen and (max-width: 440px) {
+    max-width: 134px;
   }
 }
 
@@ -37,12 +40,23 @@
 }
 
 .sortingSelect {
+  :global {
+    .custom-select__control {
+      @media screen and (max-width: 550px) {
+        justify-content: flex-end;
+      }
+    }
+  }
   span {
     color: var(--white-color);
   }
 }
 
 .sortingSelectValueContainer {
+  @media screen and (max-width: 550px) {
+    font-size: 15px;
+  }
+
   svg {
     position: relative;
     top: 2px;

@@ -1,10 +1,14 @@
 .wrapper {
   display: flex;
-  gap: 5px;
+  gap: 9px;
 }
 
 .value {
   font: var(--font-text-3);
+
+  @media screen and (max-width: 510px) {
+    font-size: 15px;
+  }
 }
 
 .icon {
