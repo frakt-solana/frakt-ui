@@ -1,1 +1,1 @@
-export * from './LiquidationRaffleCard';
+export { default } from './LiquidationRaffleCard';

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import classNames from 'classnames';
 
 import Button from '../../../../components/Button';
 import styles from './WonRaffleCard.module.scss';
@@ -17,7 +18,7 @@ const WonRaffleCard: FC = () => {
       </div>
 
       <div className={styles.statsValue}>
-        <div className={styles.totalValue}>
+        <div className={classNames(styles.totalValue, styles.opacity)}>
           <p className={styles.subtitle}>floor price</p>
           <p className={styles.value}>150 SOL</p>
         </div>

@@ -1,1 +1,1 @@
-export * from './NoWinningRaffles';
+export { default } from './NoWinningRaffles';

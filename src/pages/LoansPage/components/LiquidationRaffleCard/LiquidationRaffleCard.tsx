@@ -1,7 +1,9 @@
 import { FC } from 'react';
+import classNames from 'classnames';
+
+import styles from './LiquidationRaffleCard.module.scss';
 import Button from '../../../../components/Button';
 import { Ticket } from '../../../../icons';
-import styles from './LiquidationRaffleCard.module.scss';
 
 const LiquidationRaffleCard: FC = () => {
   return (
@@ -15,9 +17,8 @@ const LiquidationRaffleCard: FC = () => {
           <p className={styles.nftName}>MonkeBack #4739</p>
         </div>
       </div>
-
       <div className={styles.statsValue}>
-        <div className={styles.totalValue}>
+        <div className={classNames(styles.totalValue, styles.opacity)}>
           <p className={styles.subtitle}>floor price</p>
           <p className={styles.value}>150 SOL</p>
         </div>

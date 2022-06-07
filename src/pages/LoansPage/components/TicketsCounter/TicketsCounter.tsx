@@ -4,10 +4,10 @@ import styles from './TicketsCounter.module.scss';
 import { Ticket } from '../../../../icons';
 
 interface TicketsCounterProps {
-  tickets: string;
+  tickets: number;
 }
 
-const TicketsCounter: FC<TicketsCounterProps> = ({ tickets }) => {
+export const TicketsCounter: FC<TicketsCounterProps> = ({ tickets }) => {
   return (
     <div className={styles.ticket}>
       <Ticket />
@@ -15,5 +15,3 @@ const TicketsCounter: FC<TicketsCounterProps> = ({ tickets }) => {
     </div>
   );
 };
-
-export default TicketsCounter;

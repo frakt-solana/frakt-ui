@@ -1,36 +1,29 @@
-import { Tab, Tabs, useTabs } from '../../../../components/Tabs';
-import GraceCard from '../GraceCard/GraceCard';
-import LiquidationRaffleCard from '../LiquidationRaffleCard/LiquidationRaffleCard';
-import LiquidationsList from '../LiquidationsList/LiquidationsList';
-import NoWinningRaffles from '../NoWinningRaffles/NoWinningRaffles';
-import WonRaffleCard from '../WonRaffleCard/WonRaffleCard';
+import { FC } from 'react';
+
+import { LiquidationsTabsNames, useLiquidationsPage } from '.';
+import LiquidationRaffleCard from '../LiquidationRaffleCard';
+import { Tabs } from '../../../../components/Tabs';
+import LiquidationsList from '../LiquidationsList';
+import NoWinningRaffles from '../NoWinningRaffles';
 import styles from './Liquidations.module.scss';
+import GraceCard from '../GraceCard/GraceCard';
+import WonRaffleCard from '../WonRaffleCard';
 
-export enum LiquidationsTabsNames {
-  GRACE = 'grace',
-  LIQUIDATIONS = 'liquidations',
-  RAFFLES = 'raffles',
-}
-
-const Liquidations = () => {
-  const {
-    tabs: loanTabs,
-    value: tabValue,
-    setValue: setTabValue,
-  } = useTabs({
-    tabs: LIQUIDATIONS_TABS,
-    defaultValue: LIQUIDATIONS_TABS[0].value,
-  });
+const Liquidations: FC = () => {
+  const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
 
   return (
     <div>
       <Tabs
         className={styles.tab}
-        tabs={loanTabs}
+        tabs={liquidationTabs}
         value={tabValue}
         setValue={setTabValue}
+        type="secondary"
       />
-      <LiquidationsList>
+      <LiquidationsList
+        withRafflesInfo={tabValue === LiquidationsTabsNames.LIQUIDATIONS}
+      >
         {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
           <LiquidationRaffleCard />
         )}
@@ -42,18 +35,3 @@ const Liquidations = () => {
 };
 
 export default Liquidations;
-
-const LIQUIDATIONS_TABS: Tab[] = [
-  {
-    label: 'Liquidations raffle',
-    value: 'liquidations',
-  },
-  {
-    label: 'Grace List',
-    value: 'grace',
-  },
-  {
-    label: 'Won raffles',
-    value: 'raffles',
-  },
-];

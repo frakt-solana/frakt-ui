@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  gap: 5px;
+}
+
+.value {
+  font: var(--font-text-3);
+}
+
+.icon {
+  margin-top: 3px;
+}
+
+.timeProgressWrapper {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-gray-4);
+  position: relative;
+  margin-top: 3px;
+
+  .timeProgress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 1px;
+    background-color: var(--accent-color-1);
+  }
+}

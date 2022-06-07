@@ -38,3 +38,4 @@ export { CoinGeckoIcon } from './CoinGeckoIcon';
 export { UserIcon } from './UserIcon';
 export { PencilIcon } from './PencilIcon';
 export { Ticket } from './Ticket';
+export { Timer } from './Timer';

@@ -1,1 +1,1 @@
-export * from './WonRaffleCard';
+export { default } from './WonRaffleCard';

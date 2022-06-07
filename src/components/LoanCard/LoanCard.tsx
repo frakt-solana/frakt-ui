@@ -15,10 +15,13 @@ import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
+import Tooltip from '../Tooltip';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 interface LoanCardProps {
   className?: string;
   loanWithArweaveMetadata: LoanWithArweaveMetadata;
+  withGracePeriod?: boolean;
 }
 
 const usePaybackLoan = () => {
@@ -69,6 +72,7 @@ const usePaybackLoan = () => {
 const LoanCard: FC<LoanCardProps> = ({
   className,
   loanWithArweaveMetadata,
+  withGracePeriod,
 }) => {
   const { loan, metadata } = loanWithArweaveMetadata;
 
@@ -111,23 +115,75 @@ const LoanCard: FC<LoanCardProps> = ({
           <div className={styles.root__content}>
             <p className={styles.root__title}>{metadata?.name}</p>
             <div className={styles.ltvWrapper}>
-              <p className={styles.ltvTitle}>Borrowed</p>
-              <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{amountToGet}</p>
-                <div className={styles.tokenInfo}>
-                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
-                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
-                </div>
-              </div>
-              <p className={styles.ltvTitle}>To repay</p>
-              <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{amountToReturn}</p>
-                <div className={styles.tokenInfo}>
-                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
-                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
-                </div>
-              </div>
-              <p className={styles.ltvTitle}>Time to return</p>
+              {!withGracePeriod ? (
+                <>
+                  <p className={styles.ltvTitle}>Borrowed</p>
+                  <div className={styles.ltvContent}>
+                    <p className={styles.ltvText}>{amountToGet}</p>
+                    <div className={styles.tokenInfo}>
+                      <img
+                        className={styles.ltvImage}
+                        src={SOL_TOKEN.logoURI}
+                      />
+                      <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
+                    </div>
+                  </div>
+                  <p className={styles.ltvTitle}>To repay</p>
+                  <div className={styles.ltvContent}>
+                    <p className={styles.ltvText}>{amountToReturn}</p>
+                    <div className={styles.tokenInfo}>
+                      <img
+                        className={styles.ltvImage}
+                        src={SOL_TOKEN.logoURI}
+                      />
+                      <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
+                    </div>
+                  </div>
+                  <p className={styles.ltvTitle}>Time to return</p>
+                </>
+              ) : (
+                <>
+                  <div className={styles.graceWrapper}>
+                    <div>
+                      <p className={styles.ltvTitle}>LTV</p>
+                      <div className={styles.ltvContent}>
+                        <p className={styles.ltvText}>{amountToGet}</p>
+                        <div className={styles.tokenInfo}>
+                          <img
+                            className={styles.ltvImage}
+                            src={SOL_TOKEN.logoURI}
+                          />
+                          <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p className={styles.ltvTitle}>Fee</p>
+                      <div className={styles.ltvContent}>
+                        <p className={styles.ltvText}>{amountToReturn}</p>
+                        <div className={styles.tokenInfo}>
+                          <img
+                            className={styles.ltvImage}
+                            src={SOL_TOKEN.logoURI}
+                          />
+                          <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.tooltip}>
+                    <p className={styles.ltvTitle}>Grace Period</p>
+                    <Tooltip
+                      placement="bottom"
+                      trigger="hover"
+                      overlay={`You have to repay the loan in 23h : 23m : 13s`}
+                    >
+                      <QuestionCircleOutlined className={styles.tooltipIcon} />
+                    </Tooltip>
+                  </div>
+                </>
+              )}
+
               <div className={styles.countdown}>
                 <p className={styles.timeItem}>{timeLeft.days}d</p>
                 <span className={styles.timeDelim}>:</span>

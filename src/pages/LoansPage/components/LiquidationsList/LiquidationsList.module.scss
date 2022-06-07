@@ -4,18 +4,26 @@
   justify-content: space-between;
   padding-top: 32px;
   margin-bottom: 20px;
+  width: 100%;
+  flex-wrap: wrap;
+}
 
-  @media screen and (max-width: 370px) {
-    flex-wrap: wrap;
-  }
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .searchInput {
   max-width: 330px;
   margin-right: 20px;
 
-  @media screen and (max-width: 370px) {
-    margin-bottom: 20px;
+  @media screen and (max-width: 768px) {
+    max-width: 245px;
+  }
+
+  @media screen and (max-width: 375px) {
+    max-width: 135px;
   }
 }
 
@@ -51,8 +59,7 @@
 
 .sortWrapper {
   display: flex;
-  gap: 33px;
-  flex-shrink: 0;
+  gap: 35px;
 
   .arrowDown,
   .arrowUp {
@@ -64,10 +71,22 @@
   .arrowDown {
     transform: rotate(180deg);
   }
+
+  @media screen and (max-width: 780px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .rafflesInfo {
   display: flex;
   align-items: center;
   gap: 25px;
+
+  @media screen and (max-width: 1250px) {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 20px;
+  }
 }

@@ -1,1 +1,1 @@
-export * from './LiquidationsList';
+export { default } from './LiquidationsList';

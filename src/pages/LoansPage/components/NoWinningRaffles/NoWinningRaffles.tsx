@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 import styles from './NoWinningRaffles.module.scss';
 import Button from '../../../../components/Button';

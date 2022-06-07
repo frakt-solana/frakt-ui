@@ -131,3 +131,20 @@
     background-color: var(--accent-color-1);
   }
 }
+
+.tooltip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tooltipIcon {
+  svg {
+    fill: var(--accent-color-1);
+  }
+}
+
+.graceWrapper {
+  display: flex;
+  justify-content: space-between;
+}
