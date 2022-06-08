@@ -57,7 +57,7 @@ export const selectNotFrozenWalletNfts: (state) => UserNFT[] = createSelector(
 );
 
 export const selectBorrowNfts: (state) => BorrowNFT[] = createSelector(
-  [pathOr([], ['userTokens', 'borrowNfts'])],
+  [pathOr([], ['userTokens', 'borrowNfts', 'data'])],
   identity,
 );
 

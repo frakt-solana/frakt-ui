@@ -1,4 +1,4 @@
-import { useState, useMemo, Dispatch, SetStateAction } from 'react';
+import { useState, useMemo, Dispatch, SetStateAction, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import {
@@ -19,7 +19,6 @@ export const useBorrowPage = (): {
   setSearch: (searchStr: string) => void;
   next: () => void;
   search: string;
-  removeTokenOptimistic: (mints: string[]) => void;
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const [nftsLoading, setNftsLoading] = useState<boolean>(true);
@@ -67,16 +66,12 @@ export const useBorrowPage = (): {
     );
   }, [userWhitelistedNFTs]);
 
-  const removeTokenOptimistic = (mints: string[]): void => {
-    const patchedNfts = filteredNfts.filter((nft) => {
-      return !mints.includes(nft.mint);
-    });
+  useEffect(() => {
+    dispatch(userTokensActions.setBorrowNfts(userWhitelistedNFTs));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userWhitelistedNFTs]);
 
-    dispatch(userTokensActions.setBorrowNfts(patchedNfts));
-  };
-
-  const rawNfts = useSelector(selectBorrowNfts);
-  const nfts = Object.values(rawNfts);
+  const nfts = useSelector(selectBorrowNfts);
 
   const loading = nftsLoading;
 
@@ -89,6 +84,5 @@ export const useBorrowPage = (): {
     next,
     searchItems,
     search,
-    removeTokenOptimistic,
   };
 };

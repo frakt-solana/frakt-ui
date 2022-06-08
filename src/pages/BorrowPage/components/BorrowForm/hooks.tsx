@@ -1,11 +1,12 @@
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useDispatch } from 'react-redux';
 
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
 import { BorrowNFT } from '../../../../state/userTokens/types';
 import { proposeLoan } from '../../../../contexts/loans';
 import { useConnection } from '../../../../hooks';
-import { useBorrowPage } from '../../hooks';
+import { userTokensActions } from '../../../../state/userTokens/actions';
 
 type UseBorrowForm = (props: {
   onDeselect?: () => void;
@@ -31,6 +32,7 @@ export const useBorrowForm: UseBorrowForm = ({
   onSubmit;
 } => {
   const wallet = useWallet();
+  const dispatch = useDispatch();
   const connection = useConnection();
 
   const {
@@ -45,7 +47,8 @@ export const useBorrowForm: UseBorrowForm = ({
     open: openLoadingModal,
   } = useLoadingModal();
 
-  const { removeTokenOptimistic } = useBorrowPage();
+  const removeTokenOptimistic = (mints) =>
+    dispatch(userTokensActions.removeTokenOptimistic(mints));
 
   const onSubmit = async (nft: BorrowNFT) => {
     try {

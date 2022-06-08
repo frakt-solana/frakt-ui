@@ -1,6 +1,8 @@
 import { createReducer } from 'typesafe-actions';
 import { combineReducers } from 'redux';
-import { flip, reject, includes } from 'ramda';
+import { flip, reject, includes, compose, prop } from 'ramda';
+
+const includesIn = flip(includes);
 
 import {
   initialAsyncState,
@@ -19,20 +21,17 @@ const fetchWalletNftsReducer = createReducer(
   createHandlers(userTokensTypes.FETCH_WALLET_NFTS),
 );
 
-const setBorrowNftsReducer = createReducer(
-  {},
-  {
-    [userTokensTypes.SET_BORROW_NFTS]: (state, action) => ({
-      ...state,
-      ...action.payload,
-    }),
-  },
-);
+const setBorrowNftsReducer = createReducer([], {
+  [userTokensTypes.SET_BORROW_NFTS]: (state, action) => ({
+    ...state,
+    data: action.payload,
+  }),
+});
 
 const removeTokenOptimisticReducer = createReducer(initialAsyncState, {
   [userTokensTypes.REMOVE_TOKEN_OPTIMISTIC]: (state, action) => ({
     ...state,
-    data: reject(flip(includes)(action.payload), state.data),
+    data: reject(compose(includesIn(action.payload), prop('mint')), state.data),
   }),
 });
 
@@ -54,5 +53,8 @@ export default combineReducers({
     removeTokenOptimisticReducer,
     clearTokensReducer,
   ),
-  borrowNfts: setBorrowNftsReducer,
+  borrowNfts: composeReducers(
+    setBorrowNftsReducer,
+    removeTokenOptimisticReducer,
+  ),
 });
