@@ -3,41 +3,33 @@ import { FC } from 'react';
 
 import { Container } from '../../../../components/Layout';
 import { AppLayout } from '../../../../components/Layout/AppLayout';
+import { POOL_TABS } from '../../../../constants';
 import styles from './NFTPoolPageLayout.module.scss';
-
-export enum PoolPageType {
-  BUY = 'buy',
-  SELL = 'sell',
-  SWAP = 'swap',
-  INFO = 'info',
-}
 
 interface NFTPoolPageLayout {
   customHeader?: JSX.Element;
   children: JSX.Element[] | JSX.Element;
-  pageType?: PoolPageType;
+  tab?: POOL_TABS;
 }
 
 export const NFTPoolPageLayout: FC<NFTPoolPageLayout> = ({
   customHeader,
   children,
-  pageType = PoolPageType.BUY,
+  tab = POOL_TABS.BUY,
 }) => {
   const CONTENT_STYLE_BY_PAGE_TYPE = {
-    [PoolPageType.BUY]: styles.buyContent,
-    [PoolPageType.SELL]: styles.sellContent,
-    [PoolPageType.SWAP]: styles.swapContent,
-    [PoolPageType.INFO]: styles.infoContent,
+    [POOL_TABS.BUY]: styles.buyContent,
+    [POOL_TABS.SELL]: styles.sellContent,
+    [POOL_TABS.SWAP]: styles.swapContent,
+    [POOL_TABS.STAKE]: styles.stakeContent,
+    [POOL_TABS.INFO]: styles.infoContent,
   };
 
   return (
     <AppLayout customHeader={customHeader}>
       <Container
         component="main"
-        className={classNames(
-          styles.content,
-          CONTENT_STYLE_BY_PAGE_TYPE[pageType],
-        )}
+        className={classNames(styles.content, CONTENT_STYLE_BY_PAGE_TYPE[tab])}
       >
         {children}
       </Container>

@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js';
-import { utils, pools } from '@frakt-protocol/frakt-sdk';
 import {
   depositNftToCommunityPool as depositNftToCommunityPoolTxn,
   Provider,
@@ -13,7 +12,12 @@ import {
   WalletAndConnection,
   wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
-import { UserNFT } from '../../userTokens';
+import { getTokenAccount } from '../../../utils/accounts';
+import { UserNFT } from '../../../state/userTokens/types';
+import {
+  getWhitelistedCreatorsDictionary,
+  isNFTWhitelistedByCreator,
+} from '../nftPools.helpers';
 
 export interface DepositNftToCommunityPoolParams {
   pool: NftPoolData;
@@ -34,16 +38,15 @@ export const rawDepositNftToCommunityPool = async ({
   poolLpMint = new PublicKey(process.env.FRKT_MINT),
   afterTransaction,
 }: DepositNftToCommunityPoolRawParams): Promise<boolean | null> => {
-  const { publicKey: nftUserTokenAccount } = await utils.getTokenAccount({
+  const { publicKey: nftUserTokenAccount } = await getTokenAccount({
     tokenMint: new PublicKey(nft.mint),
     owner: wallet.publicKey,
     connection,
   });
 
-  const whitelistedCreatorsDictionary =
-    pools.getWhitelistedCreatorsDictionary(pool);
+  const whitelistedCreatorsDictionary = getWhitelistedCreatorsDictionary(pool);
 
-  const whitelistedCreator: string | null = pools.isNFTWhitelistedByCreator(
+  const whitelistedCreator: string | null = isNFTWhitelistedByCreator(
     nft,
     whitelistedCreatorsDictionary,
   );

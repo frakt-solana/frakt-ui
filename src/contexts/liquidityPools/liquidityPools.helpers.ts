@@ -13,6 +13,7 @@ import {
   SecondStakeAccountView,
   StakeAccountView,
 } from '@frakters/frkt-multiple-reward/lib/accounts';
+import { groupBy } from 'lodash';
 
 import { BLOCKED_POOLS_IDS } from './liquidityPools.constants';
 import {
@@ -22,6 +23,7 @@ import {
   FusionPoolInfoByMint,
   FusionPoolInfo,
   secondaryRewardWithTokenInfo,
+  FusionPool,
 } from './liquidityPools.model';
 
 export const getPoolDataByMint = (
@@ -223,3 +225,65 @@ export const getTokenInfoByReward = (
   tokensList: TokenInfo[],
 ): TokenInfo[] =>
   tokensList.filter(({ address }) => address === stakeAccount?.tokenMintOutput);
+
+export const findSpecificFusionPool = (
+  pools: FusionPool[] = [],
+  inputTokenMint: string,
+  outputTokenMint: string,
+): FusionPool | null => {
+  return (
+    pools.find(
+      ({ router }) =>
+        router.tokenMintInput === inputTokenMint &&
+        router.tokenMintOutput === outputTokenMint,
+    ) || null
+  );
+};
+
+export const mapRawPools = ({
+  mainRouters,
+  stakeAccounts,
+  secondaryRewards,
+  secondaryStakeAccounts,
+}: {
+  mainRouters: MainRouterView[];
+  stakeAccounts: StakeAccountView[];
+  secondaryRewards: SecondaryRewardView[];
+  secondaryStakeAccounts: SecondStakeAccountView[];
+}): FusionPool[] => {
+  const stakeAccountsByRouterPubkey = groupBy(stakeAccounts, 'routerPubkey');
+
+  const secondaryRewardsByRouterPubkey = groupBy(
+    secondaryRewards,
+    'routerPubkey',
+  );
+  const secondaryStakeAccountsBySecondaryRewardAccountPubkey = groupBy(
+    secondaryStakeAccounts,
+    'secondaryReward',
+  );
+
+  const fusionPools: FusionPool[] = mainRouters.map((router) => {
+    const stakeAccounts =
+      stakeAccountsByRouterPubkey[router.mainRouterPubkey] || [];
+
+    const secondaryRewards = (
+      secondaryRewardsByRouterPubkey[router.mainRouterPubkey] || []
+    )?.map((rewards: SecondaryRewardView) => {
+      return {
+        rewards,
+        stakeAccounts:
+          secondaryStakeAccountsBySecondaryRewardAccountPubkey[
+            rewards?.secondaryRewardaccount
+          ] || [],
+      };
+    });
+
+    return {
+      router,
+      stakeAccounts,
+      secondaryRewards,
+    };
+  });
+
+  return fusionPools;
+};

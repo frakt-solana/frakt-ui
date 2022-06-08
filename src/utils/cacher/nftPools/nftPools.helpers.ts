@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
 import { groupBy, keyBy, Dictionary } from 'lodash';
 
-import { UserNFT } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../state/userTokens/types';
 import { CUSTOM_POOLS_URLS } from './nftPools.constants';
 import {
   AnchorState,

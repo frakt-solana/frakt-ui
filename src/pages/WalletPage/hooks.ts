@@ -1,9 +1,10 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
-import { utils } from '@frakt-protocol/frakt-sdk';
+import { useSelector } from 'react-redux';
 
-import { useTokenListContext } from '../../contexts/TokenList';
+import { getAllUserTokens } from '../../utils/accounts';
+import { selectTokenListState } from '../../state/tokenList/selectors';
 import {
   NameServiceResponse,
   useNameServiceInfo,
@@ -17,7 +18,8 @@ type UseWalletTokens = (props: { walletPubkey: string }) => {
 };
 
 export const useWalletTokens: UseWalletTokens = ({ walletPubkey }) => {
-  const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
+  const { fraktionTokensMap, loading: tokensLoading } =
+    useSelector(selectTokenListState);
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,7 +30,7 @@ export const useWalletTokens: UseWalletTokens = ({ walletPubkey }) => {
     try {
       setLoading(true);
 
-      const userTokens = await utils.getAllUserTokens({
+      const userTokens = await getAllUserTokens({
         connection,
         walletPublicKey: new PublicKey(walletPubkey),
       });

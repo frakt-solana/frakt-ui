@@ -25,6 +25,8 @@
   @media screen and (max-width: 767px) {
     font-size: 14px;
     height: 38px;
+    padding-left: 8px;
+    padding-right: 8px;
 
     svg {
       width: 14px;
@@ -48,5 +50,9 @@
 }
 
 .navIcon {
+  margin-right: 8px;
+}
+
+.emoji {
   margin-right: 8px;
 }

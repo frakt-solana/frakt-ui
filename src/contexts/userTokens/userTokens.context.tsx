@@ -1,29 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { keyBy, isArray } from 'lodash';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { utils } from '@frakt-protocol/frakt-sdk';
 
-import {
-  RawUserTokensByMint,
-  UserNFT,
-  UserTokensValues,
-} from './userTokens.model';
-import {
-  fetchWalletNFTsUsingArweave,
-  isTokenFrozen,
-} from './userTokens.helpers';
-import { useConnection } from '../../hooks';
-
-export const UserTokensContext = React.createContext<UserTokensValues>({
-  nfts: [],
-  allNfts: [],
-  rawUserTokensByMint: {},
-  loading: false,
-  nftsLoading: false,
-  removeTokenOptimistic: () => {},
-  refetch: () => Promise.resolve(null),
-  fetchUserNfts: () => Promise.resolve(null),
-});
+import { userTokensActions } from '../../state/userTokens/actions';
 
 export const UserTokensProvider = ({
   children = null,
@@ -31,110 +10,16 @@ export const UserTokensProvider = ({
   children: JSX.Element;
 }): JSX.Element => {
   const { connected, publicKey } = useWallet();
-  const connection = useConnection();
-  const [rawUserTokensByMint, setRawUserTokensByMint] =
-    useState<RawUserTokensByMint>({});
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const [nftsLoading, setNftsLoading] = useState<boolean>(false);
-  const [nfts, setNfts] = useState<UserNFT[]>(null);
-  const [allNfts, setAllNfts] = useState<UserNFT[]>(null);
-
-  const clearTokens = () => {
-    setNfts(null);
-    setRawUserTokensByMint({});
-    setLoading(false);
-  };
-
-  const fetchTokens = async () => {
-    setLoading(true);
-    try {
-      const userTokens = await utils.getAllUserTokens({
-        walletPublicKey: publicKey,
-        connection,
-      });
-
-      const rawUserTokensByMint = keyBy(userTokens, 'mint');
-
-      setRawUserTokensByMint(rawUserTokensByMint);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchUserNfts = async () => {
-    if (isArray(nfts)) return;
-    setNftsLoading(true);
-    try {
-      const possibleNftTokens = Object.entries(rawUserTokensByMint)
-        ?.filter(([, token]) => token.amount === 1)
-        .map(([, token]) => token);
-
-      const frozenNFTsMints = possibleNftTokens
-        .filter((token) => isTokenFrozen(token))
-        .map(({ mint }) => mint);
-
-      const userNFTs = await fetchWalletNFTsUsingArweave(
-        rawUserTokensByMint,
-        connection,
-      );
-
-      const userNFTsFrozen = userNFTs?.filter(({ mint }) =>
-        frozenNFTsMints.includes(mint),
-      );
-
-      const userNFTsNotFrozen = userNFTs?.filter(
-        ({ mint }) => !frozenNFTsMints.includes(mint),
-      );
-
-      setNfts(userNFTsNotFrozen);
-      setAllNfts([...userNFTsNotFrozen, ...userNFTsFrozen]);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    } finally {
-      setNftsLoading(false);
-    }
-  };
-
-  const removeTokenOptimistic = (mints: string[]): void => {
-    const patchedRawUserTokensByMint = Object.fromEntries(
-      Object.entries(rawUserTokensByMint).filter(
-        ([key]) => !mints.includes(key),
-      ),
-    );
-
-    const patchedNfts = nfts.filter((nft) => {
-      return !mints.includes(nft.mint);
-    });
-
-    setNfts(patchedNfts);
-    setRawUserTokensByMint(patchedRawUserTokensByMint);
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    connected && fetchTokens();
-    return () => clearTokens();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected]);
+    if (connected) {
+      dispatch(userTokensActions.fetchUserTokens(publicKey));
+    }
+    return () => {
+      dispatch(userTokensActions.clearTokens());
+    };
+  }, [connected, dispatch, publicKey]);
 
-  return (
-    <UserTokensContext.Provider
-      value={{
-        nfts,
-        allNfts,
-        rawUserTokensByMint,
-        loading,
-        refetch: fetchTokens,
-        removeTokenOptimistic,
-        fetchUserNfts,
-        nftsLoading,
-      }}
-    >
-      {children}
-    </UserTokensContext.Provider>
-  );
+  return <div>{children}</div>;
 };

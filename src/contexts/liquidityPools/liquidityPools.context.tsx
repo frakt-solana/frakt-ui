@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { pools, swaps } from '@frakt-protocol/frakt-sdk';
 
-import { useTokenListContext } from '../TokenList';
+import { selectTokenListState } from '../../state/tokenList/selectors';
 import {
   addRaydiumLiquidity,
   removeRaydiumLiquidity,
@@ -37,7 +38,7 @@ export const LiquidityPoolsContext =
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
   children,
 }) => {
-  const { fraktionTokensMap } = useTokenListContext();
+  const { fraktionTokensMap } = useSelector(selectTokenListState);
   const connection = useConnection();
   const wallet = useWallet();
 

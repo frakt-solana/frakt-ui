@@ -16,7 +16,7 @@ import {
   sumFusionAndRaydiumApr,
 } from '../../contexts/liquidityPools';
 import { LoadingModal } from '../LoadingModal';
-import { PoolStats } from '../../pages/PoolsPage';
+import { PoolStats } from '../../pages/NFTPools/model';
 
 interface DepositModalProps {
   visible: boolean;
