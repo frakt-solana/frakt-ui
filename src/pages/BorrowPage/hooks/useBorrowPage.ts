@@ -60,12 +60,6 @@ export const useBorrowPage = (): {
     [wallet],
   );
 
-  const filteredNfts = useMemo(() => {
-    return (userWhitelistedNFTs || []).sort(
-      ({ name: nameA }, { name: nameB }) => nameA?.localeCompare(nameB),
-    );
-  }, [userWhitelistedNFTs]);
-
   useEffect(() => {
     dispatch(userTokensActions.setBorrowNfts(userWhitelistedNFTs));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,12 +67,18 @@ export const useBorrowPage = (): {
 
   const nfts = useSelector(selectBorrowNfts);
 
+  const filteredNfts = useMemo(() => {
+    return (nfts || []).sort(({ name: nameA }, { name: nameB }) =>
+      nameA?.localeCompare(nameB),
+    );
+  }, [nfts]);
+
   const loading = nftsLoading;
 
   return {
     isCloseSidebar,
     setIsCloseSidebar,
-    nfts: nfts.length ? nfts : filteredNfts,
+    nfts: filteredNfts,
     loading,
     setSearch,
     next,
