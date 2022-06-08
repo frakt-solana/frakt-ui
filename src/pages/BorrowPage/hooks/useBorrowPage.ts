@@ -62,8 +62,7 @@ export const useBorrowPage = (): {
 
   useEffect(() => {
     dispatch(userTokensActions.setBorrowNfts(userWhitelistedNFTs));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userWhitelistedNFTs]);
+  }, [userWhitelistedNFTs, dispatch]);
 
   const nfts = useSelector(selectBorrowNfts);
 
