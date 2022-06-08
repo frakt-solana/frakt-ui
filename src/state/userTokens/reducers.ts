@@ -1,6 +1,8 @@
 import { createReducer } from 'typesafe-actions';
 import { combineReducers } from 'redux';
-import { flip, reject, includes } from 'ramda';
+import { flip, reject, includes, compose, prop } from 'ramda';
+
+const includesIn = flip(includes);
 
 import {
   initialAsyncState,
@@ -22,7 +24,7 @@ const fetchWalletNftsReducer = createReducer(
 const removeTokenOptimisticReducer = createReducer(initialAsyncState, {
   [userTokensTypes.REMOVE_TOKEN_OPTIMISTIC]: (state, action) => ({
     ...state,
-    data: reject(flip(includes)(action.payload), state.data),
+    data: reject(compose(includesIn(action.payload), prop('mint')), state.data),
   }),
 });
 
