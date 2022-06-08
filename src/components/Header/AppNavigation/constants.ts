@@ -24,10 +24,6 @@ export const NAVIGATION_LINKS = [
     to: PATHS.SWAP,
     label: 'Swap',
   },
-  {
-    to: PATHS.EARN,
-    label: 'Earn',
-  },
 ];
 
 export const DROPDOWN_EXTERNAL_LINKS = [

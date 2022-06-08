@@ -4,22 +4,12 @@ import moment from 'moment';
 import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 
 import { commonTypes, commonActions } from './actions';
-
-const networkRequest = (params: any) =>
-  new Promise((resolve, reject) => {
-    try {
-      fetch(params.url)
-        .then((response) => response.json())
-        .then((data) => {
-          resolve(data);
-        });
-    } catch (error) {
-      reject(error);
-    }
-  });
+import { tokenListActions } from '../tokenList/actions';
+import { networkRequest } from '../../utils/state';
 
 const appInitSaga = function* () {
   yield put(commonActions.fetchSolanaHealth());
+  yield put(tokenListActions.fetchTokenList());
 };
 
 const fetchSolanaHealthSaga = function* () {

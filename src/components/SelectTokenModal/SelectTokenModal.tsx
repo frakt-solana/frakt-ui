@@ -1,16 +1,15 @@
 import { FC, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
 import classNames from 'classnames';
 
 import { Modal, ModalProps } from '../Modal/Modal';
 import { SearchInput } from '../SearchInput';
 import styles from './styles.module.scss';
-import FakeInfinityScroll, {
-  useFakeInfinityScroll,
-} from '../FakeInfinityScroll';
+import InfinityScroll, { useFakeInfinityScroll } from '../InfinityScroll';
 import { useDebounce } from '../../hooks';
 import { CloseModalIcon } from '../../icons';
-import { useTokenListContext } from '../../contexts/TokenList';
+import { selectTokenListState } from '../../state/tokenList/selectors';
 import { useSwapForm } from '../SwapForm/hooks/useSwapForm';
 import { useHeaderState } from '../Layout/headerState';
 import { SOL_TOKEN, USDC_TOKEN, USDT_TOKEN } from '../../utils';
@@ -33,7 +32,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
 }) => {
   const [searchString, setSearchString] = useState<string>('');
   const { next, itemsToShow } = useFakeInfinityScroll(15);
-  const { tokensList } = useTokenListContext();
+  const { tokensList } = useSelector(selectTokenListState);
   const { swapTokenList } = useSwapForm();
   const { onContentScroll } = useHeaderState();
 
@@ -95,7 +94,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
         onScroll={onContentScroll}
         id={`scrollBar${title}`}
       >
-        <FakeInfinityScroll
+        <InfinityScroll
           scrollableTargetId={`scrollBar${title}`}
           itemsToShow={itemsToShow}
           next={next}
@@ -116,7 +115,7 @@ export const SelectTokenModal: FC<SelectTokenModalProps> = ({
               </span>
             </div>
           ))}
-        </FakeInfinityScroll>
+        </InfinityScroll>
       </div>
     </Modal>
   );

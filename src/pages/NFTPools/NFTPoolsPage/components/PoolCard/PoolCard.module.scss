@@ -181,10 +181,17 @@
 
 .aprWrapper {
   padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .aprValue {
   font: var(--font-text-3);
   color: var(--color-gray-4);
+}
+.aprValueRed {
+  color: #ff6666;
+}
+.aprValueGreen {
   color: #83d6a4;
 }

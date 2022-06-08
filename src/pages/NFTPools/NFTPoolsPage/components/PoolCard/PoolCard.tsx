@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { FC } from 'react';
+import classNames from 'classnames';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import {
@@ -21,7 +22,7 @@ interface PoolCardProps {
 export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
   const { safetyBoxes } = pool;
 
-  const { liquidityAPR } = useAPR(poolTokenInfo);
+  const { liquidityAPR, inventoryAPR } = useAPR(poolTokenInfo);
 
   const nftsAmount = safetyBoxes.length;
 
@@ -70,9 +71,19 @@ export const PoolCard: FC<PoolCardProps> = ({ pool, poolTokenInfo, price }) => {
           </div>
 
           <div className={styles.aprWrapper}>
-            <p className={styles.aprLabel}>Staking APR</p>
-            <div className={styles.aprValue}>
-              {liquidityAPR.toFixed(2) || 0} %
+            <div className={styles.apr}>
+              <p className={styles.aprLabel}>Inventory APR</p>
+              <div
+                className={classNames(styles.aprValue, styles.aprValueGreen)}
+              >
+                {inventoryAPR.toFixed(2) || 0} %
+              </div>
+            </div>
+            <div className={styles.apr}>
+              <p className={styles.aprLabel}>Liquidity APR</p>
+              <div className={classNames(styles.aprValue, styles.aprValueRed)}>
+                {liquidityAPR.toFixed(2) || 0} %
+              </div>
             </div>
           </div>
         </div>

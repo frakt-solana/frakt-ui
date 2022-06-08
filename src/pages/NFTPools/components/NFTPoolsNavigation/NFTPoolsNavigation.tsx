@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { createPoolLink, POOL_TABS } from '../../../../constants';
-import { BuyIcon, InfoIcon, SellIcon, SwapMarketIcon } from '../../../../icons';
 import styles from './NFTPoolsNavigation.module.scss';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 
@@ -12,61 +11,57 @@ interface HeaderBuyProps {
   pool: NftPoolData;
 }
 
+const POOL_LINKS = [
+  {
+    label: 'Buy',
+    tab: POOL_TABS.BUY,
+    emoji: '💸',
+    // icon: BuyIcon,
+  },
+  {
+    label: 'Sell',
+    tab: POOL_TABS.SELL,
+    emoji: '💰',
+    // icon: SellIcon,
+  },
+  {
+    label: 'Swap',
+    tab: POOL_TABS.SWAP,
+    emoji: '↕️',
+    // icon: SwapMarketIcon,
+  },
+  {
+    label: 'Stake',
+    tab: POOL_TABS.STAKE,
+    emoji: '🥩',
+    // icon: StakeIcon,
+  },
+  {
+    label: 'Info',
+    tab: POOL_TABS.INFO,
+    emoji: '📈',
+    // icon: InfoIcon,
+  },
+];
+
 export const NFTPoolsNavigation: FC<HeaderBuyProps> = ({ className, pool }) => {
   return (
     <ul className={classNames(styles.navigation, className)}>
-      <li className={styles.item}>
-        <NavLink
-          activeClassName={styles.activeLink}
-          className={styles.link}
-          to={createPoolLink(
-            POOL_TABS.BUY,
-            pool?.customName || pool?.publicKey?.toBase58(),
-          )}
-        >
-          <BuyIcon className={styles.navIcon} />
-          Buy
-        </NavLink>
-      </li>
-      <li className={styles.item}>
-        <NavLink
-          activeClassName={styles.activeLink}
-          className={styles.link}
-          to={createPoolLink(
-            POOL_TABS.SELL,
-            pool?.customName || pool?.publicKey?.toBase58(),
-          )}
-        >
-          <SellIcon className={styles.navIcon} />
-          Sell
-        </NavLink>
-      </li>
-      <li className={styles.item}>
-        <NavLink
-          activeClassName={styles.activeLink}
-          className={styles.link}
-          to={createPoolLink(
-            POOL_TABS.SWAP,
-            pool?.customName || pool?.publicKey?.toBase58(),
-          )}
-        >
-          <SwapMarketIcon className={styles.navIcon} />
-          Swap
-        </NavLink>
-      </li>
-      <li className={styles.item}>
-        <NavLink
-          activeClassName={styles.activeLink}
-          className={styles.link}
-          to={createPoolLink(
-            POOL_TABS.INFO,
-            pool?.customName || pool?.publicKey?.toBase58(),
-          )}
-        >
-          <InfoIcon className={styles.navIcon} />
-          Info
-        </NavLink>
-      </li>
+      {POOL_LINKS.map(({ label, tab, emoji }, idx) => (
+        <li key={idx} className={styles.item}>
+          <NavLink
+            activeClassName={styles.activeLink}
+            className={styles.link}
+            to={createPoolLink(
+              tab,
+              pool?.customName || pool?.publicKey?.toBase58(),
+            )}
+          >
+            <span className={styles.emoji}>{emoji}</span>
+            {label}
+          </NavLink>
+        </li>
+      ))}
     </ul>
   );
 };
