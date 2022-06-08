@@ -6,6 +6,9 @@ import {
   useInfinityScroll,
 } from '../../../components/InfinityScroll';
 import { BorrowNFT } from './../../../state/userTokens/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { userTokensActions } from '../../../state/userTokens/actions';
+import { selectBorrowNfts } from '../../../state/userTokens/selectors';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
@@ -16,10 +19,12 @@ export const useBorrowPage = (): {
   setSearch: (searchStr: string) => void;
   next: () => void;
   search: string;
+  removeTokenOptimistic: (mints: string[]) => void;
 } => {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const [nftsLoading, setNftsLoading] = useState<boolean>(true);
   const wallet = useWallet();
+  const dispatch = useDispatch();
 
   const fetchData: FetchData<BorrowNFT> = async ({
     offset,
@@ -62,16 +67,28 @@ export const useBorrowPage = (): {
     );
   }, [userWhitelistedNFTs]);
 
+  const removeTokenOptimistic = (mints: string[]): void => {
+    const patchedNfts = filteredNfts.filter((nft) => {
+      return !mints.includes(nft.mint);
+    });
+
+    dispatch(userTokensActions.setBorrowNfts(patchedNfts));
+  };
+
+  const rawNfts = useSelector(selectBorrowNfts);
+  const nfts = Object.values(rawNfts);
+
   const loading = nftsLoading;
 
   return {
     isCloseSidebar,
     setIsCloseSidebar,
-    nfts: filteredNfts,
+    nfts: nfts.length ? nfts : filteredNfts,
     loading,
     setSearch,
     next,
     searchItems,
     search,
+    removeTokenOptimistic,
   };
 };
