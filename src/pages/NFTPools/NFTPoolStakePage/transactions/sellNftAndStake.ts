@@ -5,12 +5,9 @@ import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { depositNftToCommunityPoolIx } from '@frakters/community-pools-client-library-v2';
 import { BN, Provider } from '@project-serum/anchor';
 import { stakeInFusion } from '@frakters/frkt-multiple-reward';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
-import {
-  getWhitelistedCreatorsDictionary,
-  isNFTWhitelistedByCreator,
-} from '../../../../contexts/nftPools';
 import { UserNFT } from '../../../../state/userTokens/types';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { SELL_COMMISSION_PERCENT } from '../../constants';
@@ -44,9 +41,9 @@ export const sellNftAndStake: SellNftAndStake = async ({
     const nftUserTokenAccount = nftLargestAccounts?.[0]?.address || null;
 
     const whitelistedCreatorsDictionary =
-      getWhitelistedCreatorsDictionary(pool);
+      pools.getWhitelistedCreatorsDictionary(pool);
 
-    const whitelistedCreator: string | null = isNFTWhitelistedByCreator(
+    const whitelistedCreator: string | null = pools.isNFTWhitelistedByCreator(
       nft,
       whitelistedCreatorsDictionary,
     );

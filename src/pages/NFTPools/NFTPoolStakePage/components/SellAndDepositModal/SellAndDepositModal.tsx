@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
 import {
   LoadingModal,
@@ -32,10 +33,7 @@ import styles from './SellAndDepositModal.module.scss';
 import { NftPoolData } from '../../../../../utils/cacher/nftPools';
 import { TokenAmountInput } from '../../../../../components/TokenAmountInput';
 import { calcRatio } from '../DepositLiquidityModal';
-import {
-  getTokenAccount,
-  useNativeAccount,
-} from '../../../../../utils/accounts';
+import { useNativeAccount } from '../../../../../utils/accounts';
 import { sellNftAndDeposit, stakeInLiquidityFusion } from '../../transactions';
 import { useConnection } from '../../../../../hooks';
 
@@ -104,7 +102,7 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
       onDeselect();
       setTransactionsLeft(1);
 
-      const { accountInfo } = await getTokenAccount({
+      const { accountInfo } = await utils.getTokenAccount({
         tokenMint: new PublicKey(liquidityFusionPool?.router?.tokenMintInput),
         owner: wallet.publicKey,
         connection,

@@ -1,10 +1,6 @@
 import { useMemo } from 'react';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
-import {
-  filterWhitelistedNFTs,
-  getWhitelistedCreatorsDictionary,
-  getWhitelistedMintsDictionary,
-} from '../../../../contexts/nftPools';
 import { UserNFT } from '../../../../state/userTokens/types';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { useUserRawNfts } from '../../hooks';
@@ -20,7 +16,7 @@ export const usePoolSuitableUserNfts: UsePoolSuitableUserNfts = (pool) => {
   const poolPublicKey = pool?.publicKey?.toBase58();
   const whitelistedMintsDictionary = useMemo(() => {
     if (pool) {
-      return getWhitelistedMintsDictionary(pool);
+      return pools.getWhitelistedMintsDictionary(pool);
     }
     return {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,14 +24,14 @@ export const usePoolSuitableUserNfts: UsePoolSuitableUserNfts = (pool) => {
 
   const whitelistedCreatorsDictionary = useMemo(() => {
     if (pool) {
-      return getWhitelistedCreatorsDictionary(pool);
+      return pools.getWhitelistedCreatorsDictionary(pool);
     }
     return {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolPublicKey]);
 
   const nfts = useMemo(() => {
-    return filterWhitelistedNFTs(
+    return pools.filterWhitelistedNFTs(
       rawNfts || [],
       whitelistedMintsDictionary,
       whitelistedCreatorsDictionary,

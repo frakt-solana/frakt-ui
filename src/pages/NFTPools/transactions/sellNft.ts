@@ -6,15 +6,9 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import BN from 'bn.js';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
-import {
-  getCurrencyAmount,
-  getTokenAccount,
-} from '../../../contexts/liquidityPools';
-import {
-  getWhitelistedCreatorsDictionary,
-  isNFTWhitelistedByCreator,
-} from '../../../contexts/nftPools';
+import { getTokenAccount } from '../../../contexts/liquidityPools';
 import { UserNFT } from '../../../state/userTokens/types';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
@@ -52,9 +46,9 @@ export const sellNft: SellNft = async ({
     });
 
     const whitelistedCreatorsDictionary =
-      getWhitelistedCreatorsDictionary(pool);
+      pools.getWhitelistedCreatorsDictionary(pool);
 
-    const whitelistedCreator: string | null = isNFTWhitelistedByCreator(
+    const whitelistedCreator: string | null = pools.isNFTWhitelistedByCreator(
       nft,
       whitelistedCreatorsDictionary,
     );
@@ -126,8 +120,8 @@ export const sellNft: SellNft = async ({
           )
         ).filter((tokenAccount) => tokenAccount);
 
-        const amountIn = getCurrencyAmount(poolToken, poolTokenAmountBN);
-        const amountOut = getCurrencyAmount(SOL_TOKEN, solAmountBN);
+        const amountIn = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
+        const amountOut = pools.getCurrencyAmount(SOL_TOKEN, solAmountBN);
 
         const { transaction: swapTransaction, signers: swapTransationSigners } =
           await Liquidity.makeSwapTransaction({

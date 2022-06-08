@@ -3,9 +3,9 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import {
-  getCurrencyAmount,
   getTokenAccount,
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
@@ -55,8 +55,8 @@ export const provideLiquidity: ProvideLiquidity = async ({
     );
     const solTokenAmountBN = new BN(solTokenAmount * 10 ** SOL_TOKEN?.decimals);
 
-    const amountInA = getCurrencyAmount(poolToken, poolTokenAmountBN);
-    const amountInB = getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
+    const amountInA = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
+    const amountInB = pools.getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
 
     const { transaction, signers } =
       await Liquidity.makeAddLiquidityTransaction({

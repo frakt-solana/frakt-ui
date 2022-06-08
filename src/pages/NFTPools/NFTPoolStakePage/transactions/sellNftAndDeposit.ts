@@ -6,10 +6,10 @@ import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import {
   FusionPool,
-  getCurrencyAmount,
   getTokenAccount,
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
@@ -20,10 +20,6 @@ import { SELL_COMMISSION_PERCENT } from '../../constants';
 import { calcRatio } from '../components';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { UserNFT } from '../../../../state/userTokens/types';
-import {
-  getWhitelistedCreatorsDictionary,
-  isNFTWhitelistedByCreator,
-} from '../../../../contexts/nftPools';
 
 type SellNftAndDeposit = (props: {
   wallet: WalletContextState;
@@ -55,9 +51,9 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
     const nftUserTokenAccount = nftLargestAccounts?.[0]?.address || null;
 
     const whitelistedCreatorsDictionary =
-      getWhitelistedCreatorsDictionary(pool);
+      pools.getWhitelistedCreatorsDictionary(pool);
 
-    const whitelistedCreator: string | null = isNFTWhitelistedByCreator(
+    const whitelistedCreator: string | null = pools.isNFTWhitelistedByCreator(
       nft,
       whitelistedCreatorsDictionary,
     );
@@ -126,8 +122,8 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
 
     const solTokenAmountBN = new BN(solTokenAmount * 10 ** SOL_TOKEN?.decimals);
 
-    const amountInA = getCurrencyAmount(poolToken, poolTokenAmountBN);
-    const amountInB = getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
+    const amountInA = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
+    const amountInB = pools.getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
 
     const {
       transaction: addLiquidityTransaction,

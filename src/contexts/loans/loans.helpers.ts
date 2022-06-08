@@ -5,11 +5,10 @@ import {
 } from '@frakters/nft-lending-v2';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { groupBy, Dictionary } from 'lodash';
+import { LoanData, LoanDataByPoolPublicKey } from '@frakt-protocol/frakt-sdk';
 
 import { getNftCreators, SOL_TOKEN } from '../../utils';
 import { UserNFT } from '../../state/userTokens/types';
-
-import { LoanData, LoanDataByPoolPublicKey } from './loans.model';
 
 export const fetchLoanDataByPoolPublicKey = async (
   connection: Connection,

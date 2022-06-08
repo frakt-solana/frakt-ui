@@ -1,6 +1,6 @@
 import { all, call, takeLatest, put, select } from 'redux-saga/effects';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
-import { getAllUserTokens } from '../../utils/accounts';
 import { selectConnection } from '../common/selectors';
 import { userTokensTypes, userTokensActions } from './actions';
 import { selectRawUserTokensByMint } from './selectors';
@@ -10,7 +10,7 @@ const fetchUserTokensSaga = function* (action) {
   yield put(userTokensActions.fetchUserTokensPending());
   try {
     const connection = yield select(selectConnection);
-    const data = yield call(getAllUserTokens, {
+    const data = yield call(utils.getAllUserTokens, {
       walletPublicKey: action.payload,
       connection,
     });
