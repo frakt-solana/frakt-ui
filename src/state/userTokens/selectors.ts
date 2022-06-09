@@ -14,7 +14,7 @@ import {
 } from 'ramda';
 
 import { isTokenFrozen } from './helpers';
-import { UserNFT } from './types';
+import { BorrowNFT, UserNFT } from './types';
 
 export const selectUserTokensPending: (state) => boolean = createSelector(
   [pathOr('', ['userTokens', 'userTokens', 'status'])],
@@ -54,6 +54,11 @@ export const selectNotFrozenWalletNfts: (state) => UserNFT[] = createSelector(
   (frozenNFTsMints, userNFTs) => {
     return userNFTs?.filter(({ mint }) => !frozenNFTsMints.includes(mint));
   },
+);
+
+export const selectBorrowNfts: (state) => BorrowNFT[] = createSelector(
+  [pathOr([], ['userTokens', 'borrowNfts', 'data'])],
+  identity,
 );
 
 export const selectUserTokensState = createSelector(

@@ -2,7 +2,7 @@ import { ActionType, StateType } from 'typesafe-actions';
 import { Reducer } from 'redux';
 
 export const initialAsyncState = {
-  data: null,
+  data: [],
   status: 'IDLE',
   messages: [],
 };
