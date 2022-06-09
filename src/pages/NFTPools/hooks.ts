@@ -298,7 +298,7 @@ export const useUserRawNfts: UseUserRawNfts = () => {
       fetchUserNfts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, nftsLoading]);
+  }, [connected]);
 
   return {
     rawNfts,
