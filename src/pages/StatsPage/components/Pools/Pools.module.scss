@@ -1,0 +1,88 @@
+.title {
+  font: var(--font-h4);
+  margin-bottom: 20px;
+}
+
+.chart {
+  width: 300px;
+}
+
+.poolsList {
+}
+
+.poolRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #4d4d4d;
+  padding: 8px 0;
+}
+
+.poolInfo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.poolIcon {
+  height: 24px;
+  width: 24px;
+}
+
+.listsInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  p {
+    font-family: Oxanium;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18px;
+  }
+}
+
+.wrapper {
+  display: flex;
+  //   flex-direction: column;
+}
+
+.title {
+  font: var(--font-h4);
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font: var(--font-text-1);
+  margin-bottom: 20px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+}
+
+.line {
+  height: 100%;
+  width: 1px;
+  background: #4d4d4d;
+  margin: 0 30px;
+}
+
+.radioWrap {
+  display: flex;
+  gap: 10px;
+  padding-bottom: 30px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+}
+
+.poolsConainer {
+  display: flex;
+}
+
+.radio {
+  width: unset !important;
+}

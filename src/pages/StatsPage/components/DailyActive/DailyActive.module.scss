@@ -1,0 +1,35 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 220px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.title {
+  font: var(--font-h4);
+  margin-bottom: 20px;
+}
+
+.content {
+  max-width: 530px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.subtitle {
+  color: var(--color-gray-4);
+  font: var(--font-text-5);
+  text-transform: uppercase;
+}
+
+.value {
+  font: var(--font-text-2);
+}
