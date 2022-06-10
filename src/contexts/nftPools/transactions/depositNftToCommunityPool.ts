@@ -34,7 +34,7 @@ export const rawDepositNftToCommunityPool = async ({
   poolLpMint = new PublicKey(process.env.FRKT_MINT),
   afterTransaction,
 }: DepositNftToCommunityPoolRawParams): Promise<boolean | null> => {
-  const { publicKey: nftUserTokenAccount } = await utils.getTokenAccount({
+  const { pubkey: nftUserTokenAccount } = await utils.getTokenAccount({
     tokenMint: new PublicKey(nft.mint),
     owner: wallet.publicKey,
     connection,

@@ -1,9 +1,4 @@
-import {
-  LiquidityPoolKeysV4,
-  Spl,
-  SPL_ACCOUNT_LAYOUT,
-  WSOL,
-} from '@raydium-io/raydium-sdk';
+import { LiquidityPoolKeysV4, WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
@@ -60,37 +55,6 @@ export const filterFraktionPoolConfigs = (
       !BLOCKED_POOLS_IDS.includes(id.toBase58())
     );
   });
-
-export const getTokenAccount = async ({
-  tokenMint,
-  owner,
-  connection,
-}: {
-  tokenMint: PublicKey;
-  owner: PublicKey;
-  connection: Connection;
-}): Promise<{
-  pubkey: PublicKey;
-  accountInfo: any;
-} | null> => {
-  const tokenAccountPubkey = await Spl.getAssociatedTokenAccount({
-    mint: tokenMint,
-    owner,
-  });
-
-  const tokenAccountEncoded = await connection.getAccountInfo(
-    tokenAccountPubkey,
-  );
-
-  const tokenAccount = tokenAccountEncoded
-    ? {
-        pubkey: tokenAccountPubkey,
-        accountInfo: SPL_ACCOUNT_LAYOUT.decode(tokenAccountEncoded.data),
-      }
-    : null;
-
-  return tokenAccount;
-};
 
 export const fetchProgramAccounts = async ({
   vaultProgramId,

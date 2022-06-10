@@ -6,7 +6,6 @@ import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Percent } from '@raydium-io/raydium-sdk';
 import { useParams } from 'react-router-dom';
-import { swaps } from '@frakt-protocol/frakt-sdk';
 
 import { UserNFT, UserNFTWithCollection } from '../../state/userTokens/types';
 import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
@@ -25,6 +24,8 @@ import {
   PoolDataByMint,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
+// TODO: Replace on functions from sdk
+import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
 import {
   useCachedFusionPoolsForStats,
@@ -199,7 +200,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
 
       const pricesByTokenMint = poolsInfo.reduce(
         (map, poolInfo: LiquidityPoolInfo, idx) => {
-          const { amountOut: sellPrice } = swaps.getOutputAmount({
+          const { amountOut: sellPrice } = getOutputAmount({
             poolKeys: poolConfigs?.[idx],
             poolInfo,
             payToken: poolTokensInfo?.[idx],
@@ -208,7 +209,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
             slippage: new Percent(1, 100),
           });
 
-          const { amountIn: buyPrice } = swaps.getInputAmount({
+          const { amountIn: buyPrice } = getInputAmount({
             poolKeys: poolConfigs?.[idx],
             poolInfo,
             payToken: SOL_TOKEN,
@@ -297,12 +298,13 @@ export const useUserRawNfts: UseUserRawNfts = () => {
       connected &&
       !userTokensLoading &&
       !nftsLoading &&
-      Object.keys(rawUserTokensByMint).length
+      Object.keys(rawUserTokensByMint).length &&
+      !rawNfts.length
     ) {
       fetchUserNfts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, nftsLoading]);
+  }, [connected, rawNfts.length]);
 
   return {
     rawNfts,

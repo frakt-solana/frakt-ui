@@ -4,6 +4,7 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
 import {
   EstimatedRewards,
@@ -21,7 +22,6 @@ import {
 import { SOL_TOKEN } from '../../../../../utils';
 import {
   FusionPool,
-  getTokenAccount,
   RaydiumPoolInfo,
   useCurrentSolanaPrice,
 } from '../../../../../contexts/liquidityPools';
@@ -131,7 +131,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
 
       setTransactionsLeft(1);
 
-      const { accountInfo } = await getTokenAccount({
+      const { accountInfo } = await utils.getTokenAccount({
         tokenMint: new PublicKey(liquidityFusionPool?.router?.tokenMintInput),
         owner: walletPublicKey,
         connection,

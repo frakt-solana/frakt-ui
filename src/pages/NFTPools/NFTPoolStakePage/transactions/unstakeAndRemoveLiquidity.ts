@@ -13,10 +13,10 @@ import {
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
 import {
   FusionPool,
-  getTokenAccount,
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
@@ -102,7 +102,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
           SOL_TOKEN.address,
           raydiumLiquidityPoolKeys?.lpMint?.toBase58(),
         ].map((mint) =>
-          getTokenAccount({
+          utils.getTokenAccount({
             tokenMint: new PublicKey(mint),
             owner: wallet.publicKey,
             connection,

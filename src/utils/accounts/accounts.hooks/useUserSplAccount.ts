@@ -40,7 +40,7 @@ export const useUserSplAccount: UseUserSplAccount = () => {
   };
 
   const subscribe = (tokenAccountPubkey: PublicKey) => {
-    if (tokenAccountPubkey === accountInfo?.publicKey) return;
+    if (tokenAccountPubkey === accountInfo?.pubkey) return;
     subscriptionId.current = connection.onAccountChange(
       tokenAccountPubkey,
       (tokenAccountEncoded) => {
@@ -71,7 +71,7 @@ export const useUserSplAccount: UseUserSplAccount = () => {
 
       if (info) {
         setAccountInfo(info);
-        subscribe(info.publicKey);
+        subscribe(info.pubkey);
       }
     } catch (error) {
       // eslint-disable-next-line no-console

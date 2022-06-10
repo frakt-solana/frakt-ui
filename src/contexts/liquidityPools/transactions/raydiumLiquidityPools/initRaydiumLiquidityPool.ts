@@ -12,13 +12,13 @@ import {
 } from '@solana/web3.js';
 import BN from 'bn.js';
 import moment from 'moment';
+import { utils } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import { getTokenAccount } from '../../liquidityPools.helpers';
 export interface InitRaydiumLiquidityPoolParams {
   baseToken: TokenInfo;
   quoteToken: TokenInfo;
@@ -106,7 +106,7 @@ export const rawInitRaydiumLiquidityPool = async ({
     owner: wallet.publicKey,
   });
 
-  const lpTokenAccount = await getTokenAccount({
+  const lpTokenAccount = await utils.getTokenAccount({
     tokenMint: associatedPoolKeys.lpMint,
     owner: wallet.publicKey,
     connection,

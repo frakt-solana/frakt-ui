@@ -15,7 +15,6 @@ const fetchUserTokensSaga = function* (action) {
       connection,
     });
     yield put(userTokensActions.fetchUserTokensFulfilled(data));
-    yield put(userTokensActions.fetchWalletNfts());
   } catch (error) {
     yield put(userTokensActions.fetchUserTokensFailed(error));
   }

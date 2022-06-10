@@ -6,7 +6,7 @@ import {
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import { pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -15,7 +15,6 @@ import {
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import { getTokenAccount } from '../../liquidityPools.helpers';
 
 export interface AddLiquidityTransactionParams {
   baseToken: TokenInfo;
@@ -43,7 +42,7 @@ const rawAddRaydiumLiquidity = async ({
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
-        getTokenAccount({
+        utils.getTokenAccount({
           tokenMint: new PublicKey(mint),
           owner: wallet.publicKey,
           connection,

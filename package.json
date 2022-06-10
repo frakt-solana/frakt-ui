@@ -6,7 +6,7 @@
     "@ant-design/icons": "^4.7.0",
     "@bonfida/spl-name-service": "^0.1.24",
     "@craco/craco": "^5.7.0",
-    "@frakt-protocol/frakt-sdk": "0.0.6",
+    "@frakt-protocol/frakt-sdk": "0.0.7",
     "@frakters/community-pools-client-library-v2": "^1.0.27",
     "@frakters/frkt-multiple-reward": "^1.0.28",
     "@frakters/nft-lending-v2": "^0.2.3",

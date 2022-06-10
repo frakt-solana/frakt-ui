@@ -6,11 +6,10 @@ import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
-import { pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools } from '@frakt-protocol/frakt-sdk';
 
 import {
   FusionPool,
-  getTokenAccount,
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
@@ -104,7 +103,7 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
           SOL_TOKEN.address,
           raydiumLiquidityPoolKeys.lpMint,
         ].map((mint) =>
-          getTokenAccount({
+          utils.getTokenAccount({
             tokenMint: new PublicKey(mint),
             owner: wallet.publicKey,
             connection,

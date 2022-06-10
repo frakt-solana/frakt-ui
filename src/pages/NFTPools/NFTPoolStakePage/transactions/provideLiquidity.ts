@@ -3,12 +3,9 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import { pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools } from '@frakt-protocol/frakt-sdk';
 
-import {
-  getTokenAccount,
-  RaydiumPoolInfo,
-} from '../../../../contexts/liquidityPools';
+import { RaydiumPoolInfo } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
@@ -39,7 +36,7 @@ export const provideLiquidity: ProvideLiquidity = async ({
           SOL_TOKEN.address,
           raydiumLiquidityPoolKeys?.lpMint?.toBase58(),
         ].map((mint) =>
-          getTokenAccount({
+          utils.getTokenAccount({
             tokenMint: new PublicKey(mint),
             owner: wallet.publicKey,
             connection,

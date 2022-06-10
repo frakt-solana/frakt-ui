@@ -30,7 +30,7 @@ export const rawGetLotteryTicket = async ({
   poolLpMint,
   afterTransaction,
 }: GetLotteryTicketRawParams): Promise<PublicKey> => {
-  const { publicKey: userFractionsTokenAccount } = await utils.getTokenAccount({
+  const { pubkey: userFractionsTokenAccount } = await utils.getTokenAccount({
     tokenMint: pool.fractionMint,
     owner: wallet.publicKey,
     connection,

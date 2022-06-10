@@ -62,11 +62,11 @@ export const useCachedFusionPoolsForStats: UseCachedFusionPoolsForStats =
     };
 
     useEffect(() => {
-      if (!fusionPools) {
+      if (!fusionPools && connection) {
         initialFetch();
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [connection]);
 
     return {
       fusionPools,

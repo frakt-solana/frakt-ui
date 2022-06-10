@@ -5,9 +5,8 @@ import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import BN from 'bn.js';
-import { pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools } from '@frakt-protocol/frakt-sdk';
 
-import { getTokenAccount } from '../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
 import { NotifyType } from '../../../utils/solanaUtils';
@@ -55,7 +54,7 @@ export const buyRandomNft: BuyRandomNft = async ({
         const tokenAccounts = (
           await Promise.all(
             [SOL_TOKEN.address, poolToken.address].map((mint) =>
-              getTokenAccount({
+              utils.getTokenAccount({
                 tokenMint: new PublicKey(mint),
                 owner: wallet.publicKey,
                 connection,
@@ -92,7 +91,7 @@ export const buyRandomNft: BuyRandomNft = async ({
       };
     })();
 
-    const { pubkey: userFractionsTokenAccount } = await getTokenAccount({
+    const { pubkey: userFractionsTokenAccount } = await utils.getTokenAccount({
       tokenMint: pool.fractionMint,
       owner: wallet.publicKey,
       connection,
