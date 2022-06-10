@@ -1,3 +1,5 @@
+export * from '@frakters/nft-lending-v2/lib/accounts';
+
 export interface LoanWithMetadata {
   loan: {
     nftName: string;
@@ -27,4 +29,14 @@ export interface LoanWithMetadata {
     name: string;
     image: string;
   };
+}
+
+export interface LoansPoolInfo {
+  apr?: number;
+  loans?: number;
+  totalSupply?: number;
+  depositAmount?: number;
+  utilizationRate?: number;
+  rewardAmount?: number;
+  totalBorrowed?: number;
 }

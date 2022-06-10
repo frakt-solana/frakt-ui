@@ -18,8 +18,15 @@ export const UserTokensProvider = ({
   useEffect(() => {
     if (connected && publicKey && socket) {
       socket.emit('loan-subscribe', publicKey);
+      socket.emit('lending-subscribe', publicKey);
     }
   }, [connected, socket, publicKey]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit('lending-subscribe');
+    }
+  }, [socket]);
 
   useEffect(() => {
     if (connected) {

@@ -11,6 +11,14 @@ const setLoansReducer = createReducer(initialAsyncState, {
   }),
 });
 
+const setLendingReducer = createReducer(initialAsyncState, {
+  [loansTypes.SET_LENDING]: (state, action) => ({
+    ...state,
+    data: action.payload,
+  }),
+});
+
 export default combineReducers({
-  list: setLoansReducer,
+  loans: setLoansReducer,
+  lending: setLendingReducer,
 });
