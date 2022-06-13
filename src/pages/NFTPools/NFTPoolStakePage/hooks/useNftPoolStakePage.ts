@@ -5,7 +5,7 @@ import {
   FusionPool,
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { useAPR } from '../../hooks';
 import { useNftPoolLiquidityAndFusionWithPolling } from './useNftPoolLiquidityAndFusionWithPolling';

@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 
 import { useConfirmModal } from '../../ConfirmModal';
 import { useLoadingModal } from '../../LoadingModal';
-import { useTokenListContext } from '../../../contexts/TokenList';
+import { selectTokenListState } from '../../../state/tokenList/selectors';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
 import { usePrism } from '../../../contexts/prism/prism.hooks';
 import { NotifyType } from '../../../utils/solanaUtils';
-import { useUserTokens } from '../../../contexts/userTokens';
+import { selectUserTokensState } from '../../../state/userTokens/selectors';
 import { getTokenBalance } from '../../TokenField/TokenFieldWithBalance';
 import { useNativeAccount } from '../../../utils/accounts';
 
@@ -56,9 +57,9 @@ export const useSwapForm = (
 } => {
   const { prism } = usePrism();
   const { fraktionTokensMap, tokensList, fraktionTokensList } =
-    useTokenListContext();
+    useSelector(selectTokenListState);
   const wallet = useWallet();
-  const { rawUserTokensByMint } = useUserTokens();
+  const { rawUserTokensByMint } = useSelector(selectUserTokensState);
   const { account } = useNativeAccount();
 
   const [slippage, setSlippage] = useState<number>(1);

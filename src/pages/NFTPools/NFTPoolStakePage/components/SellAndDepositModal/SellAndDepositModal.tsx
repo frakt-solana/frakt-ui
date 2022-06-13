@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 
@@ -14,10 +15,9 @@ import {
   RaydiumPoolInfo,
   useCurrentSolanaPrice,
 } from '../../../../../contexts/liquidityPools';
-import {
-  UserNFTWithCollection,
-  useUserTokens,
-} from '../../../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../../../state/userTokens/types';
+import { userTokensActions } from '../../../../../state/userTokens/actions';
+
 import { SOL_TOKEN } from '../../../../../utils';
 import {
   EstimatedRewards,
@@ -62,9 +62,9 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
   raydiumLiquidityPoolKeys,
   liquidityFusionPool,
 }) => {
+  const dispatch = useDispatch();
   const wallet = useWallet();
   const connection = useConnection();
-  const { removeTokenOptimistic } = useUserTokens();
 
   const sellValue = 1 - SELL_COMMISSION_PERCENT / 100;
 
@@ -100,7 +100,7 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
         throw new Error('Liquidity providing failed');
       }
 
-      removeTokenOptimistic([nft?.mint]);
+      dispatch(userTokensActions.removeTokenOptimistic([nft?.mint]));
       onDeselect();
       setTransactionsLeft(1);
 

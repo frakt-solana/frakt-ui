@@ -1,11 +1,12 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { keyBy, Dictionary } from 'lodash';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
-import { useTokenListContext } from '../../../../contexts/TokenList';
+import { selectTokenListState } from '../../../../state/tokenList/selectors';
 import { useSplTokenBalance } from '../../../../utils/accounts';
 import { useAPR } from '../../hooks';
 import { useInventoryStakingTotalLiquidityUSD } from './useInventoryStakingTotalLiquidityUSD';
@@ -34,7 +35,8 @@ export const useStakingPageInfo: UseStakingPageInfo = ({
   poolTokenInfo,
 }) => {
   const { connected, publicKey: walletPublicKey } = useWallet();
-  const { tokensList, loading: tokensListLoading } = useTokenListContext();
+  const { tokensList, loading: tokensListLoading } =
+    useSelector(selectTokenListState);
   const solanaTimestamp = useSolanaTimestamp();
 
   const stakeRewards = useMemo(() => {

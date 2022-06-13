@@ -1,4 +1,5 @@
 import { FC, useMemo, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
 
@@ -12,7 +13,7 @@ import {
   useNftPool,
   useNftPoolsInitialFetch,
 } from '../../../contexts/nftPools';
-import { UserNFT, useUserTokens } from '../../../contexts/userTokens';
+import { UserNFT } from '../../../state/userTokens/types';
 import {
   useAPR,
   useNftPoolTokenBalance,
@@ -26,7 +27,7 @@ import { Loader } from '../../../components/Loader';
 import { SwapModal } from './components/SwapModal';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
 import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
-import { useTokenListContext } from '../../../contexts/TokenList';
+import { selectTokenListState } from '../../../state/tokenList/selectors';
 
 import { useLiquidityPools } from '../../../contexts/liquidityPools';
 import {
@@ -34,6 +35,7 @@ import {
   useLoadingModal,
 } from '../../../components/LoadingModal';
 import { SELL_COMMISSION_PERCENT } from '../constants';
+import { userTokensActions } from '../../../state/userTokens/actions';
 import { POOL_TABS } from '../../../constants';
 import { swapNft } from '../transactions';
 
@@ -47,7 +49,7 @@ const useNftsSwap = ({
   const wallet = useWallet();
   const { poolDataByMint } = useLiquidityPools();
   const connection = useConnection();
-  const { removeTokenOptimistic } = useUserTokens();
+  const dispatch = useDispatch();
   const { balance } = useNftPoolTokenBalance(pool);
   const {
     visible: loadingModalVisible,
@@ -79,7 +81,7 @@ const useNftsSwap = ({
         throw new Error('Swap failed');
       }
 
-      removeTokenOptimistic([selectedNft?.mint]);
+      dispatch(userTokensActions.removeTokenOptimistic([selectedNft?.mint]));
       onDeselect();
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -124,7 +126,7 @@ export const NFTPoolSwapPage: FC = () => {
 
   const poolPublicKey = pool?.publicKey?.toBase58();
   const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
-    useTokenListContext();
+    useSelector(selectTokenListState);
 
   const poolTokenInfo = useMemo(() => {
     return tokensMap.get(pool?.fractionMint?.toBase58());

@@ -1,6 +1,6 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 
-export type TokenListContextInterface = {
+export type TokenListState = {
   tokensList: TokenInfo[];
   tokensMap: Map<string, TokenInfo>;
   fraktionTokensList: TokenInfo[];

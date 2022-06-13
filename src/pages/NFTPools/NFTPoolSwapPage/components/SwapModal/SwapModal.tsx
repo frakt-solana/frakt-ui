@@ -4,7 +4,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import styles from './SwapModal.module.scss';
 import { SwapMarketIcon } from '../../../../../icons';
-import { UserNFTWithCollection } from '../../../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../../../state/userTokens/types';
 import {
   CurrencySelector,
   ItemContent,

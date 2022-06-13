@@ -11,7 +11,7 @@ import {
   getWhitelistedCreatorsDictionary,
   isNFTWhitelistedByCreator,
 } from '../../../../contexts/nftPools';
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { SELL_COMMISSION_PERCENT } from '../../constants';
 import { notify } from '../../../../utils';

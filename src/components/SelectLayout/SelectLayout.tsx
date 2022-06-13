@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import Sidebar from './components/Sidebar';
-import { BorrowNFT } from '../../contexts/userTokens';
+import { BorrowNFT } from '../../state/userTokens/types';
 import { AppLayout } from '../Layout/AppLayout';
 import styles from './SelectLayout.module.scss';
 import { Container } from '../Layout';

@@ -1,6 +1,6 @@
 import { MutableRefObject, useRef, useState } from 'react';
 
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 import { CONTROLS } from '../constants';
 
 type UseStakeControls = () => {
