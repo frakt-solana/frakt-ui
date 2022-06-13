@@ -3,4 +3,8 @@
   border: 1px solid var(--color-gray-4);
   border-radius: 10px;
   padding: 30px;
+
+  @media screen and (max-width: 768px) {
+    padding: 20px;
+  }
 }

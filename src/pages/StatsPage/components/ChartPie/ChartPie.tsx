@@ -9,9 +9,12 @@ export const defaultColors = ['#83D6A4', '#3E9EF8', '#5D5FEF', '#4D4D4D'];
 interface ChartPieProps {
   rawData?: any[];
   colors?: string[];
+  width?: number;
 }
 
-const ChartPie: FC<ChartPieProps> = ({ rawData, colors }) => {
+export const ChartPie: FC<ChartPieProps> = ({ rawData, colors, width }) => {
+  const options = { maintainAspectRatio: false };
+
   const data = {
     datasets: [
       {
@@ -23,7 +26,5 @@ const ChartPie: FC<ChartPieProps> = ({ rawData, colors }) => {
     ],
   };
 
-  return <Pie data={data} />;
+  return <Pie data={data} options={options} width={width} />;
 };
-
-export default ChartPie;

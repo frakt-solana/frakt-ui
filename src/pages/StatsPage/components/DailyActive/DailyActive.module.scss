@@ -4,12 +4,24 @@
   align-items: center;
   gap: 10px;
   width: 220px;
+
+  @media screen and (max-width: 1240px) {
+    width: 329px;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 141px;
+  }
 }
 
 .wrapper {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  min-width: 529px;
+
+  @media screen and (max-width: 768px) {
+    min-width: 100%;
+  }
 }
 
 .title {
@@ -18,15 +30,22 @@
 }
 
 .content {
-  max-width: 530px;
+  max-width: 529px;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  height: 100%;
+
+  @media screen and (max-width: 1240px) {
+    max-width: 100%;
+    justify-content: center;
+  }
 }
 
 .subtitle {
   color: var(--color-gray-4);
   font: var(--font-text-5);
+  text-align: center;
   text-transform: uppercase;
 }
 

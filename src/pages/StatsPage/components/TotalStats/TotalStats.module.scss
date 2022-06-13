@@ -1,13 +1,3 @@
-.block {
-  width: 700px;
-}
-
-.statsWrapper {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -20,9 +10,27 @@
 }
 
 .subtitle {
-  color: var(--white-color);
+  color: var(--color-gray-4);
   font: var(--font-text-5);
+  margin-bottom: 8px;
   text-transform: uppercase;
+
+  @media screen and (max-width: 768px) {
+    margin-bottom: 5px;
+  }
+}
+
+.subtitleWhite {
+  color: var(--white-color);
+}
+
+.valueInfo {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin: 0 5px 0 10px;
 }
 
 .value {
@@ -45,8 +53,69 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
   padding: 20px 0;
   width: 100%;
   border-top: 2px solid var(--accent-color-1);
+}
+
+.statsWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+}
+
+.statsInfo {
+  padding: 18px;
+
+  @media screen and (max-width: 768px) {
+    padding: 8px;
+  }
+}
+
+.cell_1 {
+  border-bottom: 1px solid var(--accent-color-1);
+  border-right: 1px solid var(--accent-color-1);
+}
+
+.cell_2 {
+  border-bottom: 1px solid var(--accent-color-1);
+  border-right: 1px solid var(--accent-color-1);
+
+  @media screen and (max-width: 768px) {
+    border-right: 0;
+  }
+}
+.cell_3 {
+  border-bottom: 1px solid var(--accent-color-1);
+
+  @media screen and (max-width: 768px) {
+    border-right: 1px solid var(--accent-color-1);
+    grid-area: 2 / 1 / 3 / 2;
+  }
+}
+.cell_4 {
+  @media screen and (max-width: 768px) {
+    border-bottom: 1px solid var(--accent-color-1);
+    grid-area: 2 / 2 / 3 / 3;
+  }
+}
+.cell_5 {
+  border-right: 1px solid var(--accent-color-1);
+  border-left: 1px solid var(--accent-color-1);
+
+  @media screen and (max-width: 768px) {
+    border-left: 0;
+    grid-area: 3 / 1 / 4 / 2;
+  }
+}
+
+.cell_6 {
+  @media screen and (max-width: 768px) {
+    grid-area: 3 / 2 / 4 / 3;
+  }
 }

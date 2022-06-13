@@ -17,4 +17,18 @@
   display: flex;
   gap: 30px;
   width: 100%;
+  
+  @media screen and (max-width: 1240px) {
+    flex-direction: column;
+  }
+}
+
+.poolsWrapper {
+  display: flex;
+  padding-top: 70px;
+  gap: 30px;
+
+  @media screen and (max-width: 1430px) {
+    flex-direction: column;
+  }
 }

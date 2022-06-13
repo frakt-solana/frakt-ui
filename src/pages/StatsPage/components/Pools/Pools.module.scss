@@ -1,49 +1,6 @@
-.title {
-  font: var(--font-h4);
-  margin-bottom: 20px;
-}
-
-.chart {
-  width: 300px;
-}
-
-.poolsList {
-}
-
-.poolRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #4d4d4d;
-  padding: 8px 0;
-}
-
-.poolInfo {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.poolIcon {
-  height: 24px;
-  width: 24px;
-}
-
-.listsInfo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  p {
-    font-family: Oxanium;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 18px;
-  }
-}
-
 .wrapper {
   display: flex;
-  //   flex-direction: column;
+  flex-direction: column;
 }
 
 .title {
@@ -51,38 +8,34 @@
   margin-bottom: 20px;
 }
 
-.subtitle {
-  font: var(--font-text-1);
-  margin-bottom: 20px;
-}
-
 .block {
   display: flex;
-  flex-direction: column;
-}
+  max-width: 1010px;
 
-.line {
-  height: 100%;
-  width: 1px;
-  background: #4d4d4d;
-  margin: 0 30px;
-}
-
-.radioWrap {
-  display: flex;
-  gap: 10px;
-  padding-bottom: 30px;
-}
-
-.block {
-  display: flex;
-  flex-direction: column;
+  @media screen and (max-width: 1430px) {
+    max-width: 100%;
+  }
 }
 
 .poolsConainer {
   display: flex;
+
+  @media screen and (max-width: 1430px) {
+    width: 100%;
+  }
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+  }
 }
 
-.radio {
-  width: unset !important;
+.line {
+  width: 1px;
+  background: var(--color-gray-4);
+  margin: 0 30px;
+
+  @media screen and (max-width: 1024px) {
+    margin: 30px 0;
+    height: 1px;
+    width: 100%;
+  }
 }
