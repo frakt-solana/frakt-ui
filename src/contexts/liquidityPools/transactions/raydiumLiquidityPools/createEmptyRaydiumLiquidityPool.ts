@@ -1,8 +1,5 @@
-import {
-  Liquidity,
-  LiquidityAssociatedPoolKeysV4,
-} from '@raydium-io/raydium-sdk';
 import { Transaction } from '@solana/web3.js';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import {
   signAndConfirmTransaction,
@@ -10,7 +7,7 @@ import {
 } from '../../../../utils/transactions';
 
 export interface CreateEmptyRaydiumLiquidityParams {
-  associatedPoolKeys?: LiquidityAssociatedPoolKeysV4;
+  associatedPoolKeys?: raydium.LiquidityAssociatedPoolKeysV4;
 }
 
 export interface CreateEmptyRaydiumLiquidityRawParams
@@ -25,7 +22,7 @@ export const rawCreateEmptyRaydiumLiquidityPool = async ({
   const transaction = new Transaction();
 
   transaction.add(
-    await Liquidity.makeCreatePoolInstruction({
+    await raydium.Liquidity.makeCreatePoolInstruction({
       poolKeys: associatedPoolKeys,
       userKeys: {
         payer: wallet.publicKey,

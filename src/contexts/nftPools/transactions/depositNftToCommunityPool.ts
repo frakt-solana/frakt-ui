@@ -1,9 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import {
-  depositNftToCommunityPool as depositNftToCommunityPoolTxn,
-  Provider,
-} from '@frakters/community-pools-client-library-v2';
-import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
+import { Provider } from '@project-serum/anchor';
 import { utils, pools } from '@frakt-protocol/frakt-sdk';
 
 import { NftPoolData } from './../../../utils/cacher/nftPools';
@@ -49,7 +45,7 @@ export const rawDepositNftToCommunityPool = async ({
   );
 
   const metadataInfo = whitelistedCreator
-    ? await deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
+    ? await utils.deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
     : new PublicKey(nft.mint);
 
   const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
@@ -58,33 +54,29 @@ export const rawDepositNftToCommunityPool = async ({
       : whitelistedAddress.toBase58() === nft.mint;
   });
 
-  await depositNftToCommunityPoolTxn(
-    {
-      nftMint: new PublicKey(nft.mint),
-      communityPool: pool.publicKey,
-      poolWhitelist: poolWhitelist.publicKey,
-      nftUserTokenAccount,
-      fractionMint: pool.fractionMint,
-      metadataInfo,
-      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      tokenMintInputFusion: poolLpMint,
-      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
+  await pools.depositNftToCommunityPool({
+    nftMint: new PublicKey(nft.mint),
+    communityPool: pool.publicKey,
+    poolWhitelist: poolWhitelist.publicKey,
+    nftUserTokenAccount,
+    fractionMint: pool.fractionMint,
+    metadataInfo,
+    fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+    tokenMintInputFusion: poolLpMint,
+    feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+    adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
+    programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+    userPubkey: wallet.publicKey,
+    provider: new Provider(connection, wallet, null),
+    sendTxn: async (transaction, signers) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        wallet,
+        signers,
+      });
     },
-    {
-      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-      userPubkey: wallet.publicKey,
-      provider: new Provider(connection, wallet, null),
-      sendTxn: async (transaction, signers) => {
-        await signAndConfirmTransaction({
-          transaction,
-          connection,
-          wallet,
-          signers,
-        });
-      },
-    },
-  );
+  });
 
   afterTransaction && afterTransaction();
 

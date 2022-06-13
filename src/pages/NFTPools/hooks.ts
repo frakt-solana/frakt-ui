@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Percent } from '@raydium-io/raydium-sdk';
 import { useParams } from 'react-router-dom';
+import { swaps, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { UserNFT, UserNFTWithCollection } from '../../state/userTokens/types';
 import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
@@ -24,8 +24,6 @@ import {
   PoolDataByMint,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
-// TODO: Replace on functions from sdk
-import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
 import {
   useCachedFusionPoolsForStats,
@@ -200,22 +198,22 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
 
       const pricesByTokenMint = poolsInfo.reduce(
         (map, poolInfo: LiquidityPoolInfo, idx) => {
-          const { amountOut: sellPrice } = getOutputAmount({
+          const { amountOut: sellPrice } = swaps.getOutputAmount({
             poolKeys: poolConfigs?.[idx],
             poolInfo,
             payToken: poolTokensInfo?.[idx],
             payAmount: 1,
             receiveToken: SOL_TOKEN,
-            slippage: new Percent(1, 100),
+            slippage: new raydium.Percent(1, 100),
           });
 
-          const { amountIn: buyPrice } = getInputAmount({
+          const { amountIn: buyPrice } = swaps.getInputAmount({
             poolKeys: poolConfigs?.[idx],
             poolInfo,
             payToken: SOL_TOKEN,
             receiveAmount: 1,
             receiveToken: poolTokensInfo?.[idx],
-            slippage: new Percent(1, 100),
+            slippage: new raydium.Percent(1, 100),
           });
 
           return map.set(poolTokensInfo?.[idx]?.address, {

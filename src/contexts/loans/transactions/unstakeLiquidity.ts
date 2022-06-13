@@ -1,7 +1,7 @@
-import { unstakeLiquidity as txn } from '@frakters/nft-lending-v2';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
+import { lending } from '@frakt-protocol/frakt-sdk';
 
 import { NotifyType } from '../../../utils/solanaUtils';
 import { notify } from '../../../utils';
@@ -27,7 +27,7 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
     const options = Provider.defaultOptions();
     const provider = new Provider(connection, wallet, options);
 
-    await txn({
+    await lending.unstakeLiquidity({
       programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       liquidityPool: new PublicKey(liquidityPool),

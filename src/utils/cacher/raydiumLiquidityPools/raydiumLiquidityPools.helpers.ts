@@ -1,11 +1,11 @@
 import { PublicKey } from '@solana/web3.js';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import { LiquidityPoolKeysV4String } from './raydiumLiquidityPools.model';
 
 export const convertStringLiquidityPoolKeysV4ToPublicKeys = (
   rawPoolKeysV4: LiquidityPoolKeysV4String,
-): LiquidityPoolKeysV4 => {
+): raydium.LiquidityPoolKeysV4 => {
   return {
     authority: new PublicKey(rawPoolKeysV4.authority),
     baseMint: new PublicKey(rawPoolKeysV4.baseMint),

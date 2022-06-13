@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { WSOL } from '@raydium-io/raydium-sdk';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import SwapForm from '../../components/SwapForm';
@@ -22,7 +22,7 @@ const SwapPage: FC = () => {
             <Loader size={'large'} />
           </div>
         ) : (
-          <SwapForm defaultTokenMint={WSOL.mint} />
+          <SwapForm defaultTokenMint={raydium.WSOL.mint} />
         )}
       </div>
     </AppLayout>

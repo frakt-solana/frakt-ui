@@ -1,28 +1,28 @@
-import { LiquidityPoolKeysV4, WSOL } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 import {
   MainRouterView,
+  pools,
+  raydium,
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
+} from '@frakt-protocol/frakt-sdk';
 import { groupBy } from 'lodash';
 
 import { BLOCKED_POOLS_IDS } from './liquidityPools.constants';
 import {
+  FusionPool,
+  FusionPoolInfo,
+  FusionPoolInfoByMint,
+  FusionPoolsInfo,
   PoolData,
   PoolDataByMint,
-  FusionPoolsInfo,
-  FusionPoolInfoByMint,
-  FusionPoolInfo,
   secondaryRewardWithTokenInfo,
-  FusionPool,
 } from './liquidityPools.model';
 
 export const getPoolDataByMint = (
-  raydiumPoolConfigs: LiquidityPoolKeysV4[],
+  raydiumPoolConfigs: raydium.LiquidityPoolKeysV4[],
   tokensMap: Map<string, TokenInfo>,
 ): PoolDataByMint =>
   raydiumPoolConfigs.reduce((acc, raydiumPoolConfig) => {
@@ -32,7 +32,7 @@ export const getPoolDataByMint = (
 
     if (
       tokenInfo &&
-      quoteMint.toBase58() === WSOL.mint &&
+      quoteMint.toBase58() === raydium.WSOL.mint &&
       !BLOCKED_POOLS_IDS.includes(id.toBase58())
     ) {
       acc.set(baseMint.toBase58(), {
@@ -45,13 +45,13 @@ export const getPoolDataByMint = (
   }, new Map<string, PoolData>());
 
 export const filterFraktionPoolConfigs = (
-  raydiumPoolConfigs: LiquidityPoolKeysV4[],
+  raydiumPoolConfigs: raydium.LiquidityPoolKeysV4[],
   tokensMap: Map<string, TokenInfo>,
-): LiquidityPoolKeysV4[] =>
+): raydium.LiquidityPoolKeysV4[] =>
   raydiumPoolConfigs.filter(({ id, baseMint, quoteMint }) => {
     return (
       tokensMap.has(baseMint.toBase58()) &&
-      quoteMint.toBase58() === WSOL.mint &&
+      quoteMint.toBase58() === raydium.WSOL.mint &&
       !BLOCKED_POOLS_IDS.includes(id.toBase58())
     );
   });
@@ -63,12 +63,7 @@ export const fetchProgramAccounts = async ({
   vaultProgramId: PublicKey;
   connection: Connection;
 }): Promise<FusionPoolsInfo> => {
-  const allProgramAccounts = await getAllProgramAccounts(
-    vaultProgramId,
-    connection,
-  );
-
-  return allProgramAccounts;
+  return await pools.getAllRewardProgramAccounts(vaultProgramId, connection);
 };
 
 const getFusionDataMap = (

@@ -1,8 +1,7 @@
-import { MainRouterView } from '@frakters/frkt-multiple-reward/lib/accounts';
-import { stakeInFusion } from '@frakters/frkt-multiple-reward';
 import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import BN from 'bn.js';
+import { pools, MainRouterView } from '@frakt-protocol/frakt-sdk';
 
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
@@ -29,7 +28,7 @@ const rawStakeLiquidity = async ({
 }: StakeLiquidityTransactionRawParams): Promise<boolean> => {
   const transaction = new Transaction();
 
-  const instruction = await stakeInFusion(
+  const instruction = await pools.stakeInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,

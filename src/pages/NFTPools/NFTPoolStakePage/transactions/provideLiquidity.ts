@@ -1,9 +1,8 @@
-import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import { utils, pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { RaydiumPoolInfo } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
@@ -16,7 +15,7 @@ type ProvideLiquidity = (props: {
   wallet: WalletContextState;
   poolToken: TokenInfo;
   poolTokenAmount: number;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
 }) => Promise<boolean>;
 
@@ -56,7 +55,7 @@ export const provideLiquidity: ProvideLiquidity = async ({
     const amountInB = pools.getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
 
     const { transaction, signers } =
-      await Liquidity.makeAddLiquidityTransaction({
+      await raydium.Liquidity.makeAddLiquidityTransaction({
         connection,
         poolKeys: raydiumLiquidityPoolKeys,
         userKeys: {

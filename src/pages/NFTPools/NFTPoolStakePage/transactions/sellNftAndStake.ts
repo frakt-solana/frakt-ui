@@ -1,11 +1,8 @@
-import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { depositNftToCommunityPoolIx } from '@frakters/community-pools-client-library-v2';
 import { BN, Provider } from '@project-serum/anchor';
-import { stakeInFusion } from '@frakters/frkt-multiple-reward';
-import { pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools } from '@frakt-protocol/frakt-sdk';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
 import { UserNFT } from '../../../../state/userTokens/types';
@@ -49,7 +46,7 @@ export const sellNftAndStake: SellNftAndStake = async ({
     );
 
     const metadataInfo = whitelistedCreator
-      ? await deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
+      ? await utils.deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
       : new PublicKey(nft.mint);
 
     const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
@@ -65,31 +62,27 @@ export const sellNftAndStake: SellNftAndStake = async ({
     const {
       instructions: depositInstructions,
       signers: depositInstructionsSigners,
-    } = await depositNftToCommunityPoolIx(
-      {
-        communityPool: pool.publicKey,
-        nftMint: new PublicKey(nft.mint),
-        nftUserTokenAccount,
-        poolWhitelist: poolWhitelist.publicKey,
-        fractionMint: pool.fractionMint,
-        metadataInfo,
-        fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        tokenMintInputFusion,
-        feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-        adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-      },
-      {
-        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-        userPubkey: wallet.publicKey,
-        provider: new Provider(connection, wallet, null),
-      },
-    );
+    } = await pools.depositNftToCommunityPoolIx({
+      communityPool: pool.publicKey,
+      nftMint: new PublicKey(nft.mint),
+      nftUserTokenAccount,
+      poolWhitelist: poolWhitelist.publicKey,
+      fractionMint: pool.fractionMint,
+      metadataInfo,
+      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion,
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
+      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      userPubkey: wallet.publicKey,
+      provider: new Provider(connection, wallet, null),
+    });
 
     depositTransaction.add(...depositInstructions);
 
     const stakeTransaction = new Transaction();
 
-    const stakeInstruction = await stakeInFusion(
+    const stakeInstruction = await pools.stakeInFusion(
       new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       new Provider(connection, wallet, null),
       wallet.publicKey,

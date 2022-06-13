@@ -6,7 +6,6 @@ import { pools } from '@frakt-protocol/frakt-sdk';
 
 import { selectTokenListState } from '../../state/tokenList/selectors';
 import {
-  fetchRaydiumPoolsInfo,
   addRaydiumLiquidity,
   removeRaydiumLiquidity,
   raydiumSwap,
@@ -74,8 +73,7 @@ export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
       value={{
         loading,
         poolDataByMint,
-        // TODO: Replace on functions from sdk
-        fetchRaydiumPoolsInfo: fetchRaydiumPoolsInfo(connection),
+        fetchRaydiumPoolsInfo: pools.fetchRaydiumPoolsInfo(connection),
         raydiumSwap: raydiumSwap({
           connection,
           wallet,

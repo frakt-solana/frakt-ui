@@ -1,5 +1,5 @@
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { useEffect, useMemo, useState } from 'react';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import {
   findSpecificFusionPool,
@@ -12,7 +12,7 @@ import { usePolling } from '../../../../hooks';
 import { useRaydiumLiquidityPoolKeys } from './useRaydiumLiquidityPoolKeys';
 
 type UseNftPoolLiquidityAndFusionWithPolling = (poolTokenMint: string) => {
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
   inventoryFusionPool: FusionPool;
   liquidityFusionPool: FusionPool;
@@ -31,7 +31,7 @@ export const useNftPoolLiquidityAndFusionWithPolling: UseNftPoolLiquidityAndFusi
       useState<boolean>(false);
 
     const raydiumPoolInfoFetch = async (
-      liquidityPoolKeys: LiquidityPoolKeysV4,
+      liquidityPoolKeys: raydium.LiquidityPoolKeysV4,
     ) => {
       const result = await fetchRaydiumPoolsInfo([liquidityPoolKeys]);
 

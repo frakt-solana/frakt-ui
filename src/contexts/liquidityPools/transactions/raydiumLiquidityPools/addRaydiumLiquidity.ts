@@ -1,12 +1,7 @@
-import {
-  Liquidity,
-  LiquidityPoolKeysV4,
-  LiquiditySide,
-} from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import { utils, pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -21,8 +16,8 @@ export interface AddLiquidityTransactionParams {
   baseAmount: BN;
   quoteToken: TokenInfo;
   quoteAmount: BN;
-  poolConfig: LiquidityPoolKeysV4;
-  fixedSide: LiquiditySide;
+  poolConfig: raydium.LiquidityPoolKeysV4;
+  fixedSide: raydium.LiquiditySide;
 }
 
 export interface AddLiquidityTransactionRawParams
@@ -54,17 +49,18 @@ const rawAddRaydiumLiquidity = async ({
   const amountInA = pools.getCurrencyAmount(baseToken, baseAmount);
   const amountInB = pools.getCurrencyAmount(SOL_TOKEN, quoteAmount);
 
-  const { transaction, signers } = await Liquidity.makeAddLiquidityTransaction({
-    connection,
-    poolKeys: poolConfig,
-    userKeys: {
-      tokenAccounts,
-      owner: wallet.publicKey,
-    },
-    amountInA,
-    amountInB,
-    fixedSide,
-  });
+  const { transaction, signers } =
+    await raydium.Liquidity.makeAddLiquidityTransaction({
+      connection,
+      poolKeys: poolConfig,
+      userKeys: {
+        tokenAccounts,
+        owner: wallet.publicKey,
+      },
+      amountInA,
+      amountInB,
+      fixedSide,
+    });
 
   await signAndConfirmTransaction({
     transaction,

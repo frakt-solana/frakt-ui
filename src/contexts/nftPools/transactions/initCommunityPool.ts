@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { initCommunityPool } from '@frakters/community-pools-client-library-v2';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import {
   signAndConfirmTransaction,
@@ -12,7 +12,7 @@ export const rawInitCommunityPool = async ({
   connection,
   wallet,
 }: WalletAndConnection): Promise<void> => {
-  await initCommunityPool({
+  await pools.initCommunityPool({
     programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
     userPubkey: wallet.publicKey,
     provider: new Provider(connection, wallet, null),

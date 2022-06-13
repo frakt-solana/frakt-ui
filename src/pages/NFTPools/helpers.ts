@@ -1,6 +1,5 @@
 import { Connection } from '@solana/web3.js';
-import { Liquidity, Percent } from '@raydium-io/raydium-sdk';
-import { swaps } from '@frakt-protocol/frakt-sdk';
+import { swaps, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { PoolData } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
@@ -35,12 +34,15 @@ export const getTokenPrice: GetTokenPrice = async ({
   isBuy = true,
   connection,
 }) => {
-  const poolInfo = (await Liquidity.fetchInfo({
+  const poolInfo = (await raydium.Liquidity.fetchInfo({
     connection,
     poolKeys: poolData?.poolConfig,
   })) as LiquidityPoolInfo;
 
-  const persentSlippage = new Percent(Math.round(slippage * 100), 10_000);
+  const persentSlippage = new raydium.Percent(
+    Math.round(slippage * 100),
+    10_000,
+  );
 
   if (isBuy) {
     const { amountIn, maxAmountIn, priceImpact } = swaps.getInputAmount({

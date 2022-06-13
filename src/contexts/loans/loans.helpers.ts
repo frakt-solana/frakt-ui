@@ -1,6 +1,5 @@
-import { LoanView } from '@frakters/nft-lending-v2';
 import { Dictionary } from 'lodash';
-import { LoanData } from '@frakt-protocol/frakt-sdk';
+import { LoanData, LoanView } from '@frakt-protocol/frakt-sdk';
 
 import { getNftCreators, SOL_TOKEN } from '../../utils';
 import { UserNFT } from '../../state/userTokens/types';

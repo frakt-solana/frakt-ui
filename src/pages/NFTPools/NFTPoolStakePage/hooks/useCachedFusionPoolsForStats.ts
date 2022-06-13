@@ -1,6 +1,6 @@
-import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import { FusionPool, mapRawPools } from '../../../../contexts/liquidityPools';
 import { useConnection } from '../../../../hooks';
@@ -26,7 +26,7 @@ export const useCachedFusionPoolsForStats: UseCachedFusionPoolsForStats =
         stakeAccounts,
         secondaryRewards,
         secondaryStakeAccounts,
-      } = await getAllProgramAccounts(
+      } = await pools.getAllRewardProgramAccounts(
         new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
         connection,
       );

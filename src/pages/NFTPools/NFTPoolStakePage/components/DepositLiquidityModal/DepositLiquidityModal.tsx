@@ -2,9 +2,8 @@ import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { utils } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium } from '@frakt-protocol/frakt-sdk';
 
 import {
   EstimatedRewards,
@@ -39,7 +38,7 @@ interface DepositLiquidityModalProps {
   baseToken: TokenInfo;
   raydiumPoolInfo: RaydiumPoolInfo;
   apr?: number;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   liquidityFusionPool: FusionPool;
 }
 

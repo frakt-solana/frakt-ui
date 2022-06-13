@@ -1,19 +1,8 @@
-import {
-  unstakeInFusion as unstakeInFusionIx,
-  harvestInFusion as harvestInFusionIx,
-  harvestSecondaryReward as harvestSecondaryRewardIx,
-} from '@frakters/frkt-multiple-reward';
 import { BN, Provider } from '@project-serum/anchor';
-import {
-  Liquidity,
-  LiquidityPoolKeysV4,
-  Token,
-  TokenAmount,
-} from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { utils } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium, pools } from '@frakt-protocol/frakt-sdk';
 
 import {
   FusionPool,
@@ -28,7 +17,7 @@ type UnstakeAndRemoveLiquidity = (props: {
   wallet: WalletContextState;
   liquidityFusion: FusionPool;
   poolToken: TokenInfo;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
   amount: number;
 }) => Promise<boolean>;
@@ -56,7 +45,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
     );
 
     if (Number(stakeAccount.unstakedAtCumulative)) {
-      const harvestInstruction = await harvestInFusionIx(
+      const harvestInstruction = await pools.harvestInFusion(
         new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
         new Provider(connection, wallet, null),
         wallet.publicKey,
@@ -72,7 +61,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
     );
 
     if (liquidityFusion?.secondaryRewards.length) {
-      const secondaryHarvestInstruction = await harvestSecondaryRewardIx(
+      const secondaryHarvestInstruction = await pools.harvestSecondaryReward(
         new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
         new Provider(connection, wallet, null),
         wallet.publicKey,
@@ -84,7 +73,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
       unstakeTransaction.add(...secondaryHarvestInstruction);
     }
 
-    const unstakeInstruction = await unstakeInFusionIx(
+    const unstakeInstruction = await pools.unstakeInFusion(
       new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       new Provider(connection, wallet, null),
       wallet.publicKey,
@@ -114,15 +103,18 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
     const {
       transaction: removeLiquidityTransaction,
       signers: removeLiquidityTransactionSigners,
-    } = await Liquidity.makeRemoveLiquidityTransaction({
+    } = await raydium.Liquidity.makeRemoveLiquidityTransaction({
       connection,
       poolKeys: raydiumLiquidityPoolKeys,
       userKeys: {
         tokenAccounts: tokenAccounts,
         owner: wallet.publicKey,
       },
-      amountIn: new TokenAmount(
-        new Token(raydiumLiquidityPoolKeys.lpMint, raydiumPoolInfo.lpDecimals),
+      amountIn: new raydium.TokenAmount(
+        new raydium.Token(
+          raydiumLiquidityPoolKeys.lpMint,
+          raydiumPoolInfo.lpDecimals,
+        ),
         amountBN,
       ),
     });

@@ -1,10 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import {
-  harvestInFusion,
-  harvestSecondaryReward,
-} from '@frakters/frkt-multiple-reward';
 import { Provider } from '@project-serum/anchor';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import { FusionPool } from './../../../../contexts/liquidityPools/liquidityPools.model';
 import { notify } from '../../../../utils';
@@ -37,7 +34,7 @@ export const harvest: Harvest = async ({
     const transactionInventory = new Transaction();
     const transactionLiquidity = new Transaction();
 
-    const inventoryHarvestInstruction = await harvestInFusion(
+    const inventoryHarvestInstruction = await pools.harvestInFusion(
       new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       new Provider(connection, wallet, null),
       wallet.publicKey,
@@ -45,23 +42,24 @@ export const harvest: Harvest = async ({
       new PublicKey(inventoryRouter.tokenMintOutput),
     );
 
-    const inventorySecondaryRewardsInstructions = await harvestSecondaryReward(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
-      wallet.publicKey,
-      new PublicKey(inventoryRouter.tokenMintInput),
-      new PublicKey(inventoryRouter.tokenMintOutput),
-      inventorySecondaryRewards?.map(
-        ({ rewards }) => new PublicKey(rewards?.tokenMint),
-      ) || [],
-    );
+    const inventorySecondaryRewardsInstructions =
+      await pools.harvestSecondaryReward(
+        new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        new Provider(connection, wallet, null),
+        wallet.publicKey,
+        new PublicKey(inventoryRouter.tokenMintInput),
+        new PublicKey(inventoryRouter.tokenMintOutput),
+        inventorySecondaryRewards?.map(
+          ({ rewards }) => new PublicKey(rewards?.tokenMint),
+        ) || [],
+      );
 
     transactionInventory.add(inventoryHarvestInstruction);
     if (inventorySecondaryRewardsInstructions?.length) {
       transactionInventory.add(...inventorySecondaryRewardsInstructions);
     }
 
-    const liquidityHarvestInstruction = await harvestInFusion(
+    const liquidityHarvestInstruction = await pools.harvestInFusion(
       new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       new Provider(connection, wallet, null),
       wallet.publicKey,
@@ -69,16 +67,17 @@ export const harvest: Harvest = async ({
       new PublicKey(liquidityRouter.tokenMintOutput),
     );
 
-    const liquiditySecondaryRewardsInstructions = await harvestSecondaryReward(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
-      wallet.publicKey,
-      new PublicKey(liquidityRouter.tokenMintInput),
-      new PublicKey(liquidityRouter.tokenMintOutput),
-      liquiditySecondaryRewards?.map(
-        ({ rewards }) => new PublicKey(rewards?.tokenMint),
-      ) || [],
-    );
+    const liquiditySecondaryRewardsInstructions =
+      await pools.harvestSecondaryReward(
+        new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        new Provider(connection, wallet, null),
+        wallet.publicKey,
+        new PublicKey(liquidityRouter.tokenMintInput),
+        new PublicKey(liquidityRouter.tokenMintOutput),
+        liquiditySecondaryRewards?.map(
+          ({ rewards }) => new PublicKey(rewards?.tokenMint),
+        ) || [],
+      );
 
     transactionLiquidity.add(liquidityHarvestInstruction);
     if (liquiditySecondaryRewardsInstructions?.length) {

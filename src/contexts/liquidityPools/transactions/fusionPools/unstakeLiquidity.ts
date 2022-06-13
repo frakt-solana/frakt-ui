@@ -1,15 +1,11 @@
+import { Provider } from '@project-serum/anchor';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import {
-  harvestInFusion,
-  harvestSecondaryReward,
-  unstakeInFusion,
-} from '@frakters/frkt-multiple-reward';
-import {
+  pools,
   MainRouterView,
   SecondaryRewardView,
   StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
-import { Provider } from '@project-serum/anchor';
-import { PublicKey, Transaction } from '@solana/web3.js';
+} from '@frakt-protocol/frakt-sdk';
 
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
@@ -42,7 +38,7 @@ export const rawUnstakeLiquidity = async ({
   const transaction = new Transaction();
 
   if (Number(stakeAccount.unstakedAtCumulative)) {
-    const harvestInstruction = await harvestInFusion(
+    const harvestInstruction = await pools.harvestInFusion(
       new PublicKey(FUSION_PROGRAM_PUBKEY),
       new Provider(connection, wallet, null),
       wallet.publicKey,
@@ -58,7 +54,7 @@ export const rawUnstakeLiquidity = async ({
   );
 
   if (secondaryReward.length) {
-    const secondaryHarvestInstruction = await harvestSecondaryReward(
+    const secondaryHarvestInstruction = await pools.harvestSecondaryReward(
       new PublicKey(FUSION_PROGRAM_PUBKEY),
       new Provider(connection, wallet, null),
       wallet.publicKey,
@@ -70,7 +66,7 @@ export const rawUnstakeLiquidity = async ({
     transaction.add(...secondaryHarvestInstruction);
   }
 
-  const unStakeInstruction = await unstakeInFusion(
+  const unStakeInstruction = await pools.unstakeInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,

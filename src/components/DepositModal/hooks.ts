@@ -3,8 +3,7 @@ import BN from 'bn.js';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { LiquidityPoolKeysV4, LiquiditySide } from '@raydium-io/raydium-sdk';
-import { utils } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium } from '@frakt-protocol/frakt-sdk';
 
 import {
   calculateTotalDeposit,
@@ -31,23 +30,23 @@ export type FormFieldValues = {
   [InputControlsNames.BASE_VALUE]: string;
   [InputControlsNames.TOTAL_VALUE]: string;
   [InputControlsNames.IS_VERIFIED]: boolean;
-  [InputControlsNames.LIQUIDITY_SIDE]: LiquiditySide;
+  [InputControlsNames.LIQUIDITY_SIDE]: raydium.LiquiditySide;
 };
 
 export const useDeposit = (
   quoteToken: TokenInfo,
-  poolConfig: LiquidityPoolKeysV4,
+  poolConfig: raydium.LiquidityPoolKeysV4,
   fusionPoolInfo: FusionPoolInfo,
 ): {
   formControl: Control<FormFieldValues>;
   totalValue: string;
   isDepositBtnEnabled: boolean;
   handleChange: (value: string, name: InputControlsNames) => void;
-  handleBlur: (value: LiquiditySide) => void;
+  handleBlur: (value: raydium.LiquiditySide) => void;
   quoteValue: string;
   baseValue: string;
   currentSolanaPriceUSD: number;
-  liquiditySide: LiquiditySide | null;
+  liquiditySide: raydium.LiquiditySide | null;
   loadingModalVisible: boolean;
   openLoadingModal: () => void;
   closeLoadingModal: () => void;
@@ -102,7 +101,7 @@ export const useDeposit = (
     }
   };
 
-  const handleBlur = (value: LiquiditySide) => {
+  const handleBlur = (value: raydium.LiquiditySide) => {
     setValue(InputControlsNames.LIQUIDITY_SIDE, value);
   };
 

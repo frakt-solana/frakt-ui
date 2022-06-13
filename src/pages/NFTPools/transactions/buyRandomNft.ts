@@ -1,11 +1,9 @@
-import { getLotteryTicketIx } from '@frakters/community-pools-client-library-v2';
 import { Provider } from '@project-serum/anchor';
-import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 import BN from 'bn.js';
-import { utils, pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
@@ -18,7 +16,7 @@ type BuyRandomNft = (props: {
   poolToken: TokenInfo;
   connection: Connection;
   wallet: WalletContextState;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   needSwap?: boolean;
   swapSlippage?: number;
 }) => Promise<boolean>;
@@ -67,7 +65,7 @@ export const buyRandomNft: BuyRandomNft = async ({
         const amountOut = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
 
         const { transaction: swapTransaction, signers: swapTransationSigners } =
-          await Liquidity.makeSwapTransaction({
+          await raydium.Liquidity.makeSwapTransaction({
             connection,
             poolKeys: raydiumLiquidityPoolKeys,
             userKeys: {
@@ -100,22 +98,18 @@ export const buyRandomNft: BuyRandomNft = async ({
     const {
       instructions: getLotteryTicketInstructions,
       signers: getLotteryTicketSigners,
-    } = await getLotteryTicketIx(
-      {
-        communityPool: pool.publicKey,
-        userFractionsTokenAccount,
-        fractionMint: pool.fractionMint,
-        fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
-        feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-        adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-      },
-      {
-        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-        userPubkey: wallet.publicKey,
-        provider: new Provider(connection, wallet, null),
-      },
-    );
+    } = await pools.getLotteryTicketIx({
+      communityPool: pool.publicKey,
+      userFractionsTokenAccount,
+      fractionMint: pool.fractionMint,
+      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
+      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
+      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      userPubkey: wallet.publicKey,
+      provider: new Provider(connection, wallet, null),
+    });
 
     const getLotteryTicketTransaction = new Transaction();
     getLotteryTicketTransaction.add(...getLotteryTicketInstructions);

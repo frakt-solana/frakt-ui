@@ -4,7 +4,7 @@ import {
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
+} from '@frakt-protocol/frakt-sdk';
 
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
 import { PoolStats } from '../../pages/NFTPools/model';

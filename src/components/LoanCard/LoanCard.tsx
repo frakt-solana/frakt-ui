@@ -1,8 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
-import { loans } from '@frakt-protocol/frakt-sdk';
+import { loans, CollectionInfoView, LoanView } from '@frakt-protocol/frakt-sdk';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import {

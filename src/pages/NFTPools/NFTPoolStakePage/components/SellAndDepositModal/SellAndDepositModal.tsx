@@ -4,8 +4,7 @@ import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { utils } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium } from '@frakt-protocol/frakt-sdk';
 
 import {
   LoadingModal,
@@ -45,7 +44,7 @@ interface SellAndDepositModalProps {
   apr?: number;
   liquidityFusionPool: FusionPool;
   raydiumPoolInfo: RaydiumPoolInfo;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   onDeselect?: () => void;
 }
 

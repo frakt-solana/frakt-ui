@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
-import { LoanDataByPoolPublicKey } from '@frakt-protocol/frakt-sdk';
 import {
+  LoanDataByPoolPublicKey,
   CollectionInfoView,
   DepositView,
   LiquidityPoolView,
   LoanView,
-} from '@frakters/nft-lending-v2/lib/accounts';
+} from '@frakt-protocol/frakt-sdk';
 
 import { ArweaveMetadata } from '../../utils/getArweaveMetadata';
 

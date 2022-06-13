@@ -1,4 +1,4 @@
-import { DepositView, LiquidityPoolView } from '@frakters/nft-lending-v2';
+import { DepositView, LiquidityPoolView } from '@frakt-protocol/frakt-sdk';
 
 export const calcLoanPoolReward = (
   liquidityPool: LiquidityPoolView,

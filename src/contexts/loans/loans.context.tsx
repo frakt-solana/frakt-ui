@@ -1,8 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { LoanView } from '@frakters/nft-lending-v2';
 import { Connection } from '@solana/web3.js';
-import { loans, LoanDataByPoolPublicKey } from '@frakt-protocol/frakt-sdk';
+import {
+  loans,
+  LoanDataByPoolPublicKey,
+  LoanView,
+} from '@frakt-protocol/frakt-sdk';
 
 import {
   FetchDataFunc,

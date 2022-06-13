@@ -1,7 +1,7 @@
-import { stakeInFusion as stakeInFusionIx } from '@frakters/frkt-multiple-reward';
 import { BN, Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
 import { notify } from '../../../../utils';
@@ -24,7 +24,7 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
   try {
     const stakeTransaction = new Transaction();
 
-    const stakeInstruction = await stakeInFusionIx(
+    const stakeInstruction = await pools.stakeInFusion(
       new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       new Provider(connection, wallet, null),
       wallet.publicKey,

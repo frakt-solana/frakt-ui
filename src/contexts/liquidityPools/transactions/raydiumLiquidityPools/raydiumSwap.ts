@@ -1,8 +1,7 @@
-import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PublicKey } from '@solana/web3.js';
 import BN from 'bn.js';
-import { utils, pools } from '@frakt-protocol/frakt-sdk';
+import { utils, pools, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -17,7 +16,7 @@ export interface SwapTransactionParams {
   baseAmount: BN;
   quoteToken: TokenInfo;
   quoteAmount: BN;
-  poolConfig: LiquidityPoolKeysV4;
+  poolConfig: raydium.LiquidityPoolKeysV4;
 }
 
 export interface SwapTransactionRawParams
@@ -48,7 +47,7 @@ export const rawRaydiumSwap = async ({
   const amountIn = pools.getCurrencyAmount(baseToken, baseAmount);
   const amountOut = pools.getCurrencyAmount(quoteToken, quoteAmount);
 
-  const { transaction, signers } = await Liquidity.makeSwapTransaction({
+  const { transaction, signers } = await raydium.Liquidity.makeSwapTransaction({
     connection,
     poolKeys: poolConfig,
     userKeys: {

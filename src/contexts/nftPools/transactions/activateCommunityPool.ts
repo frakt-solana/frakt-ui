@@ -1,8 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
-import {
-  activateCommunityPool,
-  Provider,
-} from '@frakters/community-pools-client-library-v2';
+import { Provider } from '@project-serum/anchor';
+import { pools } from '@frakt-protocol/frakt-sdk';
 
 import {
   signAndConfirmTransaction,
@@ -23,24 +21,20 @@ const rawActivateCommunityPool = async ({
   wallet,
   communityPoolAddress,
 }: ActivateCommunityPoolTransactionRawParams): Promise<void> => {
-  await activateCommunityPool(
-    {
-      communityPool: new PublicKey(communityPoolAddress),
+  await pools.activateCommunityPool({
+    communityPool: new PublicKey(communityPoolAddress),
+    programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+    userPubkey: wallet.publicKey,
+    provider: new Provider(connection, wallet, null),
+    sendTxn: async (transaction, signers) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        wallet,
+        signers,
+      });
     },
-    {
-      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-      userPubkey: wallet.publicKey,
-      provider: new Provider(connection, wallet, null),
-      sendTxn: async (transaction, signers) => {
-        await signAndConfirmTransaction({
-          transaction,
-          connection,
-          wallet,
-          signers,
-        });
-      },
-    },
-  );
+  });
 };
 
 export const activateCommunityPoolTransaction = wrapTxnWithTryCatch(

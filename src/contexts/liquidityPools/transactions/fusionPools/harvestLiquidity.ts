@@ -1,11 +1,8 @@
 import {
-  harvestInFusion,
-  harvestSecondaryReward,
-} from '@frakters/frkt-multiple-reward';
-import {
+  pools,
   MainRouterView,
   SecondaryRewardView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
+} from '@frakt-protocol/frakt-sdk';
 import { Provider } from '@project-serum/anchor';
 import { PublicKey, Transaction } from '@solana/web3.js';
 
@@ -34,7 +31,7 @@ export const rawHarvestLiquidity = async ({
 }: HarvestLiquidityTransactionRawParams): Promise<any> => {
   const transaction = new Transaction();
 
-  const harvestInstruction = await harvestInFusion(
+  const harvestInstruction = await pools.harvestInFusion(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,
@@ -48,7 +45,7 @@ export const rawHarvestLiquidity = async ({
     ({ tokenMint }) => new PublicKey(tokenMint),
   );
 
-  const secondaryHarvestInstructions = await harvestSecondaryReward(
+  const secondaryHarvestInstructions = await pools.harvestSecondaryReward(
     new PublicKey(FUSION_PROGRAM_PUBKEY),
     new Provider(connection, wallet, null),
     wallet.publicKey,

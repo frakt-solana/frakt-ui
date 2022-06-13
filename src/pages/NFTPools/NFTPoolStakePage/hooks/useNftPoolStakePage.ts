@@ -1,4 +1,4 @@
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import {
@@ -16,7 +16,7 @@ type UseNftPoolForStakePage = (poolPubkey: string) => {
   pool: NftPoolData;
   poolTokenInfo: TokenInfo;
   userNfts: UserNFT[];
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
   inventoryFusionPool: FusionPool;
   liquidityFusionPool: FusionPool;

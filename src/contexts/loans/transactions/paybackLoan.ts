@@ -1,11 +1,11 @@
-import {
-  CollectionInfoView,
-  LoanView,
-  paybackLoan as txn,
-} from '@frakters/nft-lending-v2';
 import { Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
+import {
+  lending,
+  CollectionInfoView,
+  LoanView,
+} from '@frakt-protocol/frakt-sdk';
 
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
@@ -31,7 +31,7 @@ export const paybackLoan: PaybackLoan = async ({
     const options = Provider.defaultOptions();
     const provider = new Provider(connection, wallet, options);
 
-    await txn({
+    await lending.paybackLoan({
       programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       user: wallet.publicKey,

@@ -1,7 +1,7 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
-import { proposeLoan as txn, decodeLoan } from '@frakters/nft-lending-v2';
+import { lending } from '@frakt-protocol/frakt-sdk';
 
 import {
   showSolscanLinkNotification,
@@ -28,7 +28,7 @@ export const proposeLoan: ProposeLoan = async ({
     const provider = new Provider(connection, wallet, options);
     const programId = new PublicKey(process.env.LOANS_PROGRAM_PUBKEY);
 
-    const { loanPubkey } = await txn({
+    const { loanPubkey } = await lending.proposeLoan({
       programId,
       provider,
       user: wallet.publicKey,
@@ -49,7 +49,7 @@ export const proposeLoan: ProposeLoan = async ({
     const subscribtionId = connection.onAccountChange(
       loanPubkey,
       (accountInfo) => {
-        const loanAccountData = decodeLoan(
+        const loanAccountData = lending.decodeLoan(
           accountInfo.data,
           connection,
           new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
