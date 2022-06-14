@@ -1,8 +1,7 @@
-import BN from 'bn.js';
 import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { AccountInfo } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { decimalBNToString, SOL_TOKEN } from '../../utils';
 import { selectUserTokensState } from '../../state/userTokens/selectors';
@@ -12,7 +11,7 @@ import { useNativeAccount } from '../../utils/accounts';
 
 export const getTokenBalance = (
   token: TokenInfo,
-  account: AccountInfo<Buffer>,
+  account: web3.AccountInfo<Buffer>,
   rawUserTokensByMint: RawUserTokensByMint,
 ): string => {
   if (token?.address === SOL_TOKEN.address) {
@@ -30,7 +29,7 @@ export const getTokenBalance = (
 
 const getMintBalanceMap = (
   tokensList: TokenInfo[],
-  account: AccountInfo<Buffer>,
+  account: web3.AccountInfo<Buffer>,
   rawUserTokensByMint: RawUserTokensByMint,
 ) => {
   return tokensList.reduce((acc, token) => {

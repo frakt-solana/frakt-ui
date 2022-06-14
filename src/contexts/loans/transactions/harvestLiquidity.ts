@@ -1,7 +1,5 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
-import { lending } from '@frakt-protocol/frakt-sdk';
+import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { NotifyType } from '../../../utils/solanaUtils';
 import { notify } from '../../../utils';
@@ -11,7 +9,7 @@ import {
 } from '../../../utils/transactions';
 
 type HarvestLiquidity = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   liquidityPool: string;
 }) => Promise<boolean>;
@@ -22,13 +20,13 @@ export const harvestLiquidity: HarvestLiquidity = async ({
   liquidityPool,
 }): Promise<boolean> => {
   try {
-    const options = Provider.defaultOptions();
-    const provider = new Provider(connection, wallet, options);
+    const options = AnchorProvider.defaultOptions();
+    const provider = new AnchorProvider(connection, wallet, options);
 
     await lending.harvestLiquidity({
-      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
-      liquidityPool: new PublicKey(liquidityPool),
+      liquidityPool: new web3.PublicKey(liquidityPool),
       user: wallet.publicKey,
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({

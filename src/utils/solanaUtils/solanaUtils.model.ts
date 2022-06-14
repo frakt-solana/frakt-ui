@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
-import { AccountInfo, PublicKey } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { AccountInfo as TokenAccountInfo } from '@solana/spl-token';
 
 export interface TokenAccount {
-  pubkey: PublicKey;
-  account: AccountInfo<Buffer>;
+  pubkey: web3.PublicKey;
+  account: web3.AccountInfo<Buffer>;
   info: TokenAccountInfo;
 }
 

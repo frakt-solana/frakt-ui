@@ -1,5 +1,4 @@
 import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection, PublicKey } from '@solana/web3.js';
 import {
   MainRouterView,
   pools,
@@ -7,6 +6,7 @@ import {
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
+  web3,
 } from '@frakt-protocol/frakt-sdk';
 import { groupBy } from 'lodash';
 
@@ -60,8 +60,8 @@ export const fetchProgramAccounts = async ({
   vaultProgramId,
   connection,
 }: {
-  vaultProgramId: PublicKey;
-  connection: Connection;
+  vaultProgramId: web3.PublicKey;
+  connection: web3.Connection;
 }): Promise<FusionPoolsInfo> => {
   return await pools.getAllRewardProgramAccounts(vaultProgramId, connection);
 };

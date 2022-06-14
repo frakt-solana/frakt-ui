@@ -1,15 +1,15 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Commitment, Connection, Signer, Transaction } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 import { notify } from '../..';
 import { NotifyType } from '../../solanaUtils';
 
 interface SignAndConfirmTransactionProps {
-  transaction: Transaction;
-  signers?: Signer[];
-  connection: Connection;
+  transaction: web3.Transaction;
+  signers?: web3.Signer[];
+  connection: web3.Connection;
   wallet: WalletContextState;
-  commitment?: Commitment;
+  commitment?: web3.Commitment;
 }
 
 type SignAndConfirmTransaction = (

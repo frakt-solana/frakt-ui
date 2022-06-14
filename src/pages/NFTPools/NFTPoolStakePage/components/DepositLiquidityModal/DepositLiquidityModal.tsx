@@ -1,9 +1,8 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { utils, raydium } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
   EstimatedRewards,
@@ -86,7 +85,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
   );
 
   const { account } = useNativeAccount();
-  const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
+  const solBalance = (account?.lamports || 0) / web3.LAMPORTS_PER_SOL;
 
   const notEnoughBaseTokenError = parseFloat(baseValue) > baseTokenBalance;
   const notEnoughSOLError = parseFloat(solValue) > solBalance;
@@ -131,7 +130,9 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
       setTransactionsLeft(1);
 
       const { accountInfo } = await utils.getTokenAccount({
-        tokenMint: new PublicKey(liquidityFusionPool?.router?.tokenMintInput),
+        tokenMint: new web3.PublicKey(
+          liquidityFusionPool?.router?.tokenMintInput,
+        ),
         owner: walletPublicKey,
         connection,
       });

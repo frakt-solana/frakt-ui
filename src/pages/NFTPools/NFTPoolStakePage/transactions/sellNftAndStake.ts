@@ -1,8 +1,12 @@
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { BN, Provider } from '@project-serum/anchor';
-import { utils, pools } from '@frakt-protocol/frakt-sdk';
+import {
+  utils,
+  pools,
+  AnchorProvider,
+  BN,
+  web3,
+} from '@frakt-protocol/frakt-sdk';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
 import { UserNFT } from '../../../../state/userTokens/types';
@@ -14,7 +18,7 @@ import { showSolscanLinkNotification } from '../../../../utils/transactions';
 
 type SellNftAndStake = (props: {
   wallet: WalletContextState;
-  connection: Connection;
+  connection: web3.Connection;
   poolToken: TokenInfo;
   pool: NftPoolData;
   inventoryFusionPool: FusionPool;
@@ -30,10 +34,10 @@ export const sellNftAndStake: SellNftAndStake = async ({
   inventoryFusionPool,
 }): Promise<boolean> => {
   try {
-    const depositTransaction = new Transaction();
+    const depositTransaction = new web3.Transaction();
 
     const { value: nftLargestAccounts } =
-      await connection.getTokenLargestAccounts(new PublicKey(nft?.mint));
+      await connection.getTokenLargestAccounts(new web3.PublicKey(nft?.mint));
 
     const nftUserTokenAccount = nftLargestAccounts?.[0]?.address || null;
 
@@ -46,8 +50,8 @@ export const sellNftAndStake: SellNftAndStake = async ({
     );
 
     const metadataInfo = whitelistedCreator
-      ? await utils.deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
-      : new PublicKey(nft.mint);
+      ? await utils.deriveMetadataPubkeyFromMint(new web3.PublicKey(nft.mint))
+      : new web3.PublicKey(nft.mint);
 
     const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
       return whitelistedCreator
@@ -55,7 +59,7 @@ export const sellNftAndStake: SellNftAndStake = async ({
         : whitelistedAddress.toBase58() === nft.mint;
     });
 
-    const tokenMintInputFusion = new PublicKey(
+    const tokenMintInputFusion = new web3.PublicKey(
       inventoryFusionPool?.router?.tokenMintInput,
     );
 
@@ -64,30 +68,30 @@ export const sellNftAndStake: SellNftAndStake = async ({
       signers: depositInstructionsSigners,
     } = await pools.depositNftToCommunityPoolIx({
       communityPool: pool.publicKey,
-      nftMint: new PublicKey(nft.mint),
+      nftMint: new web3.PublicKey(nft.mint),
       nftUserTokenAccount,
       poolWhitelist: poolWhitelist.publicKey,
       fractionMint: pool.fractionMint,
       metadataInfo,
-      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       tokenMintInputFusion,
-      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
       userPubkey: wallet.publicKey,
-      provider: new Provider(connection, wallet, null),
+      provider: new AnchorProvider(connection, wallet, null),
     });
 
     depositTransaction.add(...depositInstructions);
 
-    const stakeTransaction = new Transaction();
+    const stakeTransaction = new web3.Transaction();
 
     const stakeInstruction = await pools.stakeInFusion(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      new AnchorProvider(connection, wallet, null),
       wallet.publicKey,
-      new PublicKey(inventoryFusionPool?.router.tokenMintInput),
-      new PublicKey(inventoryFusionPool?.router.tokenMintOutput),
+      new web3.PublicKey(inventoryFusionPool?.router.tokenMintInput),
+      new web3.PublicKey(inventoryFusionPool?.router.tokenMintOutput),
       new BN((1 - SELL_COMMISSION_PERCENT / 100) * 10 ** poolToken?.decimals),
     );
 

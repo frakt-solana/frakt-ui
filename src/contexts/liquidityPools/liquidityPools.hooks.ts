@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
-import { pools, raydium } from '@frakt-protocol/frakt-sdk';
+import { pools, raydium, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
@@ -106,7 +105,7 @@ export const useLazyFusionPools_old = (): {
   const fetchFusionPoolsInfo = async (lpMints: string[]) => {
     try {
       const allProgramAccounts = await fetchProgramAccounts({
-        vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
+        vaultProgramId: new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
         connection,
       });
 
@@ -148,7 +147,7 @@ export const useLazyFusionPools: UseLazyFusionPools = () => {
       secondaryRewards,
       secondaryStakeAccounts,
     } = await pools.getAllRewardProgramAccounts(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       connection,
     );
 

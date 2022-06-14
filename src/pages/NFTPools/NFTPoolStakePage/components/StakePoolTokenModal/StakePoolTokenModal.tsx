@@ -1,5 +1,5 @@
 import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
+import { BN } from '@frakt-protocol/frakt-sdk';
 import classNames from 'classnames';
 import { FC, useState } from 'react';
 

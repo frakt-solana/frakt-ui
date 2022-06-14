@@ -1,9 +1,13 @@
-import { Provider } from '@project-serum/anchor';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import BN from 'bn.js';
-import { utils, pools, raydium } from '@frakt-protocol/frakt-sdk';
+import {
+  utils,
+  pools,
+  raydium,
+  AnchorProvider,
+  BN,
+  web3,
+} from '@frakt-protocol/frakt-sdk';
 
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
@@ -14,7 +18,7 @@ import { getTokenPrice } from '../helpers';
 type BuyRandomNft = (props: {
   pool: NftPoolData;
   poolToken: TokenInfo;
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   needSwap?: boolean;
@@ -53,7 +57,7 @@ export const buyRandomNft: BuyRandomNft = async ({
           await Promise.all(
             [SOL_TOKEN.address, poolToken.address].map((mint) =>
               utils.getTokenAccount({
-                tokenMint: new PublicKey(mint),
+                tokenMint: new web3.PublicKey(mint),
                 owner: wallet.publicKey,
                 connection,
               }),
@@ -102,16 +106,16 @@ export const buyRandomNft: BuyRandomNft = async ({
       communityPool: pool.publicKey,
       userFractionsTokenAccount,
       fractionMint: pool.fractionMint,
-      fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
-      feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-      adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
       userPubkey: wallet.publicKey,
-      provider: new Provider(connection, wallet, null),
+      provider: new AnchorProvider(connection, wallet, null),
     });
 
-    const getLotteryTicketTransaction = new Transaction();
+    const getLotteryTicketTransaction = new web3.Transaction();
     getLotteryTicketTransaction.add(...getLotteryTicketInstructions);
 
     const { blockhash, lastValidBlockHeight } =

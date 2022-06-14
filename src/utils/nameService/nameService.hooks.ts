@@ -1,4 +1,4 @@
-import { Connection } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { useState } from 'react';
 import { getNameServiceData } from './nameService';
 import {
@@ -16,7 +16,7 @@ export const useNameServiceInfo: useNameServiceInfoType = () => {
 
   const getInfo = async (
     walletPublicKey: string,
-    connection: Connection,
+    connection: web3.Connection,
   ): Promise<void> => {
     try {
       setLoading(true);

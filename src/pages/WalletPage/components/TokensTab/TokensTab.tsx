@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
+import { BN } from '@frakt-protocol/frakt-sdk';
 
 import { Loader } from '../../../../components/Loader';
 import { FRKT_TOKEN } from '../../../../utils';
 import { TokenCard } from '../TokenCard';
 import styles from './styles.module.scss';
-import BN from 'bn.js';
 
 export interface TokenInfoWithAmount extends TokenInfo {
   amountBN: BN;

@@ -1,10 +1,9 @@
 import { FC, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { utils, raydium } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
   LoadingModal,
@@ -102,7 +101,9 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
       setTransactionsLeft(1);
 
       const { accountInfo } = await utils.getTokenAccount({
-        tokenMint: new PublicKey(liquidityFusionPool?.router?.tokenMintInput),
+        tokenMint: new web3.PublicKey(
+          liquidityFusionPool?.router?.tokenMintInput,
+        ),
         owner: wallet.publicKey,
         connection,
       });
@@ -127,7 +128,7 @@ export const SellAndDepositModal: FC<SellAndDepositModalProps> = ({
   };
 
   const { account } = useNativeAccount();
-  const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
+  const solBalance = (account?.lamports || 0) / web3.LAMPORTS_PER_SOL;
 
   const solValue = sellValue * calcRatio(raydiumPoolInfo);
 

@@ -1,6 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
-import { pools } from '@frakt-protocol/frakt-sdk';
+import { pools, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
   signAndConfirmTransaction,
@@ -22,10 +20,10 @@ const rawActivateCommunityPool = async ({
   communityPoolAddress,
 }: ActivateCommunityPoolTransactionRawParams): Promise<void> => {
   await pools.activateCommunityPool({
-    communityPool: new PublicKey(communityPoolAddress),
-    programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+    communityPool: new web3.PublicKey(communityPoolAddress),
+    programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
     userPubkey: wallet.publicKey,
-    provider: new Provider(connection, wallet, null),
+    provider: new AnchorProvider(connection, wallet, null),
     sendTxn: async (transaction, signers) => {
       await signAndConfirmTransaction({
         transaction,

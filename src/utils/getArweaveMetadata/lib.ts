@@ -1,5 +1,5 @@
 import { deserializeUnchecked } from 'borsh';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 import { Metadata, StringPublicKey } from './arweave.model';
 import {
@@ -8,17 +8,17 @@ import {
   PROGRAM_IDS,
 } from './arweave.constant';
 
-const PubKeysInternedMap = new Map<string, PublicKey>();
+const PubKeysInternedMap = new Map<string, web3.PublicKey>();
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const toPublicKey = (key: string | PublicKey) => {
+const toPublicKey = (key: string | web3.PublicKey) => {
   if (typeof key !== 'string') {
     return key;
   }
 
   let result = PubKeysInternedMap.get(key);
   if (!result) {
-    result = new PublicKey(key);
+    result = new web3.PublicKey(key);
     PubKeysInternedMap.set(key, result);
   }
 
@@ -27,9 +27,9 @@ const toPublicKey = (key: string | PublicKey) => {
 
 const findProgramAddress = async (
   seeds: (Buffer | Uint8Array)[],
-  programId: PublicKey,
+  programId: web3.PublicKey,
 ) => {
-  const result = await PublicKey.findProgramAddress(seeds, programId);
+  const result = await web3.PublicKey.findProgramAddress(seeds, programId);
 
   return [result[0].toBase58(), result[1]] as [string, number];
 };
@@ -48,7 +48,10 @@ const decodeMetadata = (buffer: Buffer): Metadata => {
   return metadata;
 };
 
-async function getMetadata(pubkey: PublicKey, connection: Connection) {
+async function getMetadata(
+  pubkey: web3.PublicKey,
+  connection: web3.Connection,
+) {
   let metadata;
 
   try {
@@ -80,16 +83,22 @@ async function getMetadataKey(
   )[0];
 }
 
-async function fetchMetadataFromPDA(pubkey: PublicKey, connection: Connection) {
+async function fetchMetadataFromPDA(
+  pubkey: web3.PublicKey,
+  connection: web3.Connection,
+) {
   const metadataKey = await getMetadataKey(pubkey.toBase58());
 
   return await connection.getAccountInfo(toPublicKey(metadataKey));
 }
 
-const createJsonObject = (connection: Connection) => {
+const createJsonObject = (connection: web3.Connection) => {
   const mints = [];
   return async (mint: string): Promise<unknown> => {
-    const tokenMetadata = await getMetadata(new PublicKey(mint), connection);
+    const tokenMetadata = await getMetadata(
+      new web3.PublicKey(mint),
+      connection,
+    );
     if (!tokenMetadata) {
       return mints;
     }
@@ -105,7 +114,7 @@ const createJsonObject = (connection: Connection) => {
           tokenMetadata.data.creators?.map((d) => {
             return {
               share: d.share,
-              address: new PublicKey(d.address).toBase58(),
+              address: new web3.PublicKey(d.address).toBase58(),
               verified: !!d.verified,
             };
           }) || null,
@@ -127,6 +136,6 @@ const resolveSequentially = (mints: string[], func) => {
 
 export const getMeta = async (
   tokens: string[],
-  connection: Connection,
+  connection: web3.Connection,
 ): Promise<any[]> =>
   await resolveSequentially(tokens, createJsonObject(connection));

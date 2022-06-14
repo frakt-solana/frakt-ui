@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import BN from 'bn.js';
+import { BN } from '@frakt-protocol/frakt-sdk';
 
 import { decimalBNToString } from '../../../../utils';
 import Button from '../../../../components/Button';

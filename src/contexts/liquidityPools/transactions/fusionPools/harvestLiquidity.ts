@@ -2,9 +2,9 @@ import {
   pools,
   MainRouterView,
   SecondaryRewardView,
+  AnchorProvider,
+  web3,
 } from '@frakt-protocol/frakt-sdk';
-import { Provider } from '@project-serum/anchor';
-import { PublicKey, Transaction } from '@solana/web3.js';
 
 import {
   wrapTxnWithTryCatch,
@@ -29,28 +29,28 @@ export const rawHarvestLiquidity = async ({
   wallet,
   secondaryReward,
 }: HarvestLiquidityTransactionRawParams): Promise<any> => {
-  const transaction = new Transaction();
+  const transaction = new web3.Transaction();
 
   const harvestInstruction = await pools.harvestInFusion(
-    new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new Provider(connection, wallet, null),
+    new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+    new AnchorProvider(connection, wallet, null),
     wallet.publicKey,
-    new PublicKey(router.tokenMintInput),
-    new PublicKey(router.tokenMintOutput),
+    new web3.PublicKey(router.tokenMintInput),
+    new web3.PublicKey(router.tokenMintOutput),
   );
 
   transaction.add(harvestInstruction);
 
   const secondaryRewardsTokensMints = secondaryReward.map(
-    ({ tokenMint }) => new PublicKey(tokenMint),
+    ({ tokenMint }) => new web3.PublicKey(tokenMint),
   );
 
   const secondaryHarvestInstructions = await pools.harvestSecondaryReward(
-    new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new Provider(connection, wallet, null),
+    new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+    new AnchorProvider(connection, wallet, null),
     wallet.publicKey,
-    new PublicKey(router.tokenMintInput),
-    new PublicKey(router.tokenMintOutput),
+    new web3.PublicKey(router.tokenMintInput),
+    new web3.PublicKey(router.tokenMintOutput),
     secondaryRewardsTokensMints,
   );
 

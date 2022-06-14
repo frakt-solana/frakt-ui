@@ -1,4 +1,4 @@
-import { Connection } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 export interface NotificationPayload {
   config?: { mode: 'error' | 'warning'; content: JSX.Element };
@@ -22,5 +22,5 @@ export enum SolanaNetworkHealth {
 }
 
 export interface ConnectionState {
-  connection: Connection;
+  connection: web3.Connection;
 }

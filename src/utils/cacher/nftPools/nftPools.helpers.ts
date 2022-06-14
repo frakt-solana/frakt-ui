@@ -1,5 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
+import { BN, web3 } from '@frakt-protocol/frakt-sdk';
 import { groupBy, keyBy, Dictionary } from 'lodash';
 
 import { UserNFT } from '../../../state/userTokens/types';
@@ -36,13 +35,13 @@ const parseRawCommunityPool = (
   const { publicKey: rawPublicKey, account } = rawCommunityPool;
 
   return {
-    publicKey: new PublicKey(rawPublicKey),
-    authority: new PublicKey(account.authority),
+    publicKey: new web3.PublicKey(rawPublicKey),
+    authority: new web3.PublicKey(account.authority),
     createdAt: new BN(account.createdAt, 16),
-    fractionMint: new PublicKey(account.fractionMint),
+    fractionMint: new web3.PublicKey(account.fractionMint),
     fractionsSupply: new BN(account.fractionsSupply, 16),
     state: parseAnchorState<CommunityPoolState>(account.state),
-    tokenProgram: new PublicKey(account.tokenProgram),
+    tokenProgram: new web3.PublicKey(account.tokenProgram),
     tokenTypeCount: new BN(account.tokenTypeCount, 16),
     customName: CUSTOM_POOLS_URLS[rawPublicKey],
   };
@@ -54,13 +53,13 @@ const parseRawLotteryTicket = (
   const { publicKey: rawPublicKey, account } = rawLotteryTicket;
 
   return {
-    publicKey: new PublicKey(rawPublicKey),
-    communityPool: new PublicKey(account.communityPool),
+    publicKey: new web3.PublicKey(rawPublicKey),
+    communityPool: new web3.PublicKey(account.communityPool),
     lotteryTicketState: parseAnchorState<LotteryTicketState>(
       account.lotteryTicketState,
     ),
-    ticketHolder: new PublicKey(account.ticketHolder),
-    winningSafetyBox: new PublicKey(account.winningSafetyBox),
+    ticketHolder: new web3.PublicKey(account.ticketHolder),
+    winningSafetyBox: new web3.PublicKey(account.winningSafetyBox),
   };
 };
 
@@ -70,10 +69,10 @@ const parseRawPoolWhitelist = (
   const { publicKey: rawPublicKey, account } = rawPoolWhitelist;
 
   return {
-    publicKey: new PublicKey(rawPublicKey),
-    communityPool: new PublicKey(account.communityPool),
+    publicKey: new web3.PublicKey(rawPublicKey),
+    communityPool: new web3.PublicKey(account.communityPool),
     whitelistType: parseAnchorState<PoolWhitelistType>(account.whitelistType),
-    whitelistedAddress: new PublicKey(account.whitelistedAddress),
+    whitelistedAddress: new web3.PublicKey(account.whitelistedAddress),
   };
 };
 
@@ -83,13 +82,13 @@ const parseRawSafetyDepositBox = (
   const { publicKey: rawPublicKey, account } = rawSafetyDepositBox;
 
   return {
-    publicKey: new PublicKey(rawPublicKey),
-    communityPool: new PublicKey(account.communityPool),
-    nftMint: new PublicKey(account.nftMint),
+    publicKey: new web3.PublicKey(rawPublicKey),
+    communityPool: new web3.PublicKey(account.communityPool),
+    nftMint: new web3.PublicKey(account.nftMint),
     safetyBoxState: parseAnchorState<SafetyDepositBoxState>(
       account.safetyBoxState,
     ),
-    storeNftTokenAccount: new PublicKey(account.storeNftTokenAccount),
+    storeNftTokenAccount: new web3.PublicKey(account.storeNftTokenAccount),
   };
 };
 

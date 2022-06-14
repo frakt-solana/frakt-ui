@@ -1,5 +1,5 @@
 import { selectConnection } from './selectors';
-import { Connection } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import moment from 'moment';
 import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 
@@ -28,7 +28,7 @@ const fetchSolanaTimestampSaga = function* () {
   yield put(commonActions.fetchSolanaTimestampPending());
   try {
     const connection = yield select(selectConnection);
-    const data = yield call(async (connection: Connection) => {
+    const data = yield call(async (connection: web3.Connection) => {
       try {
         const { absoluteSlot: lastSlot } = await connection.getEpochInfo();
         const solanaTimeUnix = await connection.getBlockTime(lastSlot);

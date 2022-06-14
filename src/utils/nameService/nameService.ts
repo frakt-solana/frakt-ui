@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import {
   getHandleAndRegistryKey,
   performReverseLookup,
@@ -11,9 +11,9 @@ export const getOwnerAvatar = (twitterHandle: string): string =>
   `https://unavatar.io/twitter/${twitterHandle}`;
 
 const findOwnedNameAccountsForUser = async (
-  connection: Connection,
-  userAccount: PublicKey,
-): Promise<PublicKey[]> => {
+  connection: web3.Connection,
+  userAccount: web3.PublicKey,
+): Promise<web3.PublicKey[]> => {
   const filters = [
     {
       memcmp: {
@@ -29,8 +29,8 @@ const findOwnedNameAccountsForUser = async (
 };
 
 const lookupForDomainName = async (
-  domainKeys: PublicKey[],
-  connection: Connection,
+  domainKeys: web3.PublicKey[],
+  connection: web3.Connection,
 ): Promise<string | null> => {
   for (const domainKey of domainKeys) {
     try {
@@ -44,8 +44,8 @@ const lookupForDomainName = async (
 };
 
 const lookupForTwitterHandle = async (
-  pubkey: PublicKey,
-  connection: Connection,
+  pubkey: web3.PublicKey,
+  connection: web3.Connection,
 ): Promise<string | null> => {
   try {
     const [handle] = await getHandleAndRegistryKey(connection, pubkey);
@@ -58,12 +58,12 @@ const lookupForTwitterHandle = async (
 
 export const getNameServiceData = async (
   walletPublicKey: string,
-  connection: Connection,
+  connection: web3.Connection,
 ): Promise<NameServiceResponse> => {
   if (nameServiceCache[walletPublicKey]) {
     return nameServiceCache[walletPublicKey];
   } else {
-    const pubkey = new PublicKey(walletPublicKey);
+    const pubkey = new web3.PublicKey(walletPublicKey);
 
     const domainKeys = await findOwnedNameAccountsForUser(connection, pubkey);
 

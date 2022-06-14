@@ -1,5 +1,4 @@
-import { Connection, PublicKey } from '@solana/web3.js';
-import { TokenView } from '@frakt-protocol/frakt-sdk';
+import { TokenView, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
   getArweaveMetadataByMint,
@@ -103,7 +102,7 @@ export const fetchWalletNFTsFromQuickNode = async (
 
 export const fetchWalletNFTsUsingArweave = async (
   rawUserTokensByMint: RawUserTokensByMint,
-  connection: Connection,
+  connection: web3.Connection,
 ): Promise<UserNFT[] | null> => {
   try {
     const mints = Object.entries(rawUserTokensByMint)
@@ -129,9 +128,9 @@ export const fetchWalletNFTsUsingArweave = async (
 };
 
 type fetchNftsWithFallback = (props: {
-  walletPublicKey: PublicKey;
+  walletPublicKey: web3.PublicKey;
   rawUserTokensByMint: RawUserTokensByMint;
-  connection: Connection;
+  connection: web3.Connection;
 }) => Promise<UserNFT[]>;
 
 export const fetchNftsWithFallback: fetchNftsWithFallback = async ({

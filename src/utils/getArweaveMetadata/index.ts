@@ -1,11 +1,11 @@
-import { Connection } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 import { getMeta } from './lib';
 import { MetadataByMint } from './arweave.model';
 
 export const getArweaveMetadataByMint = async (
   tokenMints: string[],
-  connection: Connection,
+  connection: web3.Connection,
 ): Promise<MetadataByMint> => {
   const rawMeta = await getMeta(tokenMints, connection);
 

@@ -1,8 +1,8 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 export type WalletAndConnection = {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
 };
 

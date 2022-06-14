@@ -1,11 +1,15 @@
-import { PublicKey } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 export class Creator {
-  address: PublicKey;
+  address: web3.PublicKey;
   verified: boolean;
   share: number;
 
-  constructor(args: { address: PublicKey; verified: boolean; share: number }) {
+  constructor(args: {
+    address: web3.PublicKey;
+    verified: boolean;
+    share: number;
+  }) {
     this.address = args.address;
     this.verified = args.verified;
     this.share = args.share;
@@ -44,20 +48,20 @@ export class Data {
 
 export class Metadata {
   key: MetadataKey;
-  updateAuthority: PublicKey;
-  mint: PublicKey;
+  updateAuthority: web3.PublicKey;
+  mint: web3.PublicKey;
   data: Data;
   primarySaleHappened: boolean;
   isMutable: boolean;
-  masterEdition?: PublicKey;
-  edition?: PublicKey;
+  masterEdition?: web3.PublicKey;
+  edition?: web3.PublicKey;
   constructor(args: {
-    updateAuthority: PublicKey;
-    mint: PublicKey;
+    updateAuthority: web3.PublicKey;
+    mint: web3.PublicKey;
     data: Data;
     primarySaleHappened: boolean;
     isMutable: boolean;
-    masterEdition?: PublicKey;
+    masterEdition?: web3.PublicKey;
   }) {
     this.key = MetadataKey.MetadataV1;
     this.updateAuthority = args.updateAuthority;

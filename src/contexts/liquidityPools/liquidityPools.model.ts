@@ -5,9 +5,9 @@ import {
   SecondStakeAccountView,
   SecondaryRewardView,
   StakeAccountView,
+  BN,
 } from '@frakt-protocol/frakt-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
 import { ReactNode } from 'react';
 
 import {

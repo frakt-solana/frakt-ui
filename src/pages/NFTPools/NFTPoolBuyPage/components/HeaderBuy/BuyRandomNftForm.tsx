@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Select } from 'antd';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 import styles from './HeaderBuy.module.scss';
 import { ArrowDownBtn, SolanaIcon } from '../../../../../icons';
@@ -42,7 +42,7 @@ export const BuyRandomNftForm: FC<BuyRandomNftFormProps> = ({
   const { connected } = useWallet();
   const { account } = useNativeAccount();
 
-  const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
+  const solBalance = (account?.lamports || 0) / web3.LAMPORTS_PER_SOL;
 
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 

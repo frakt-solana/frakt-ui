@@ -1,7 +1,5 @@
-import { BN, Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { pools } from '@frakt-protocol/frakt-sdk';
+import { pools, AnchorProvider, BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
 import { notify } from '../../../../utils';
@@ -10,7 +8,7 @@ import { showSolscanLinkNotification } from '../../../../utils/transactions';
 
 type StakeInLiquidityFusion = (props: {
   amount: BN;
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   liquidityFusionPool: FusionPool;
 }) => Promise<boolean>;
@@ -22,14 +20,14 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
   liquidityFusionPool,
 }): Promise<boolean> => {
   try {
-    const stakeTransaction = new Transaction();
+    const stakeTransaction = new web3.Transaction();
 
     const stakeInstruction = await pools.stakeInFusion(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      new AnchorProvider(connection, wallet, null),
       wallet.publicKey,
-      new PublicKey(liquidityFusionPool?.router.tokenMintInput),
-      new PublicKey(liquidityFusionPool?.router.tokenMintOutput),
+      new web3.PublicKey(liquidityFusionPool?.router.tokenMintInput),
+      new web3.PublicKey(liquidityFusionPool?.router.tokenMintOutput),
       amount,
     );
 

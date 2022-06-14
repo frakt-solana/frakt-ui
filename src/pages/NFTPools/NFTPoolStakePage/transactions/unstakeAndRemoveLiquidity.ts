@@ -1,8 +1,13 @@
-import { BN, Provider } from '@project-serum/anchor';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { utils, raydium, pools } from '@frakt-protocol/frakt-sdk';
+import {
+  utils,
+  raydium,
+  pools,
+  BN,
+  AnchorProvider,
+  web3,
+} from '@frakt-protocol/frakt-sdk';
 
 import {
   FusionPool,
@@ -13,7 +18,7 @@ import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
 
 type UnstakeAndRemoveLiquidity = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   liquidityFusion: FusionPool;
   poolToken: TokenInfo;
@@ -36,7 +41,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
 
     const { router } = liquidityFusion;
 
-    const unstakeTransaction = new Transaction();
+    const unstakeTransaction = new web3.Transaction();
 
     const stakeAccount = liquidityFusion?.stakeAccounts?.find(
       ({ stakeOwner }) => {
@@ -46,27 +51,27 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
 
     if (Number(stakeAccount.unstakedAtCumulative)) {
       const harvestInstruction = await pools.harvestInFusion(
-        new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        new Provider(connection, wallet, null),
+        new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        new AnchorProvider(connection, wallet, null),
         wallet.publicKey,
-        new PublicKey(router.tokenMintInput),
-        new PublicKey(router.tokenMintOutput),
+        new web3.PublicKey(router.tokenMintInput),
+        new web3.PublicKey(router.tokenMintOutput),
       );
 
       unstakeTransaction.add(harvestInstruction);
     }
 
     const rewardsTokenMint = liquidityFusion?.secondaryRewards.map(
-      ({ rewards }) => new PublicKey(rewards.tokenMint),
+      ({ rewards }) => new web3.PublicKey(rewards.tokenMint),
     );
 
     if (liquidityFusion?.secondaryRewards.length) {
       const secondaryHarvestInstruction = await pools.harvestSecondaryReward(
-        new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        new Provider(connection, wallet, null),
+        new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        new AnchorProvider(connection, wallet, null),
         wallet.publicKey,
-        new PublicKey(router.tokenMintInput),
-        new PublicKey(router.tokenMintOutput),
+        new web3.PublicKey(router.tokenMintInput),
+        new web3.PublicKey(router.tokenMintOutput),
         rewardsTokenMint,
       );
 
@@ -74,11 +79,11 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
     }
 
     const unstakeInstruction = await pools.unstakeInFusion(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      new AnchorProvider(connection, wallet, null),
       wallet.publicKey,
-      new PublicKey(router.tokenMintInput),
-      new PublicKey(router.tokenMintOutput),
+      new web3.PublicKey(router.tokenMintInput),
+      new web3.PublicKey(router.tokenMintOutput),
       amountBN,
     );
 
@@ -92,7 +97,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
           raydiumLiquidityPoolKeys?.lpMint?.toBase58(),
         ].map((mint) =>
           utils.getTokenAccount({
-            tokenMint: new PublicKey(mint),
+            tokenMint: new web3.PublicKey(mint),
             owner: wallet.publicKey,
             connection,
           }),

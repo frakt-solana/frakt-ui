@@ -1,7 +1,5 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
-import { lending } from '@frakt-protocol/frakt-sdk';
+import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
   showSolscanLinkNotification,
@@ -11,7 +9,7 @@ import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
 
 type ProposeLoan = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   nftMint: string;
   proposedNftPrice: number;
@@ -24,15 +22,15 @@ export const proposeLoan: ProposeLoan = async ({
   proposedNftPrice,
 }): Promise<boolean> => {
   try {
-    const options = Provider.defaultOptions();
-    const provider = new Provider(connection, wallet, options);
-    const programId = new PublicKey(process.env.LOANS_PROGRAM_PUBKEY);
+    const options = AnchorProvider.defaultOptions();
+    const provider = new AnchorProvider(connection, wallet, options);
+    const programId = new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY);
 
     const { loanPubkey } = await lending.proposeLoan({
       programId,
       provider,
       user: wallet.publicKey,
-      nftMint: new PublicKey(nftMint),
+      nftMint: new web3.PublicKey(nftMint),
       proposedNftPrice: proposedNftPrice,
       isPriceBased: false,
       sendTxn: async (transaction, signers) => {
@@ -52,7 +50,7 @@ export const proposeLoan: ProposeLoan = async ({
         const loanAccountData = lending.decodeLoan(
           accountInfo.data,
           connection,
-          new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+          new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
         );
 
         if (loanAccountData?.loanStatus?.activated) {

@@ -1,11 +1,10 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useParams } from 'react-router-dom';
-import { swaps, raydium } from '@frakt-protocol/frakt-sdk';
+import { swaps, raydium, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { UserNFT, UserNFTWithCollection } from '../../state/userTokens/types';
 import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
@@ -82,7 +81,7 @@ export const useNFTsFiltering: UseNFTsFiltering = (nfts) => {
 };
 
 type SubscribeOnLotteryTicketChanges = (
-  lotteryTicketPublicKey: PublicKey,
+  lotteryTicketPublicKey: web3.PublicKey,
   callback: (value: string) => void,
 ) => void;
 

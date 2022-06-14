@@ -1,9 +1,7 @@
-import { Connection } from '@solana/web3.js';
-import { swaps, raydium } from '@frakt-protocol/frakt-sdk';
+import { swaps, raydium, BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { PoolData } from '../../contexts/liquidityPools';
 import { SOL_TOKEN } from '../../utils';
-import BN from 'bn.js';
 
 // TODO: Remove after raydium version update!!!
 export interface LiquidityPoolInfo {
@@ -21,7 +19,7 @@ type GetTokenPrice = (params: {
   poolData: PoolData;
   slippage: number;
   isBuy?: boolean;
-  connection: Connection;
+  connection: web3.Connection;
 }) => Promise<{
   amount: string;
   amountWithSlippage: string;

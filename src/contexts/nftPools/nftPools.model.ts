@@ -1,5 +1,5 @@
-import { PublicKey } from '@solana/web3.js';
 import { Dictionary } from 'lodash';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 import { NftPoolData } from '../../utils/cacher/nftPools';
 import {
@@ -20,7 +20,7 @@ export type NftPoolsContextValues = {
   depositNftToCommunityPool: (
     params: DepositNftToCommunityPoolParams,
   ) => Promise<boolean | null>;
-  getLotteryTicket: (params: GetLotteryTicketParams) => Promise<PublicKey>;
+  getLotteryTicket: (params: GetLotteryTicketParams) => Promise<web3.PublicKey>;
 };
 
 export type UseNftPool = (poolPubkey: string) => {

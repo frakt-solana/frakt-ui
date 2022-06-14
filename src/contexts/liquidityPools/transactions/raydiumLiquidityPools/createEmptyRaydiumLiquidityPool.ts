@@ -1,5 +1,4 @@
-import { Transaction } from '@solana/web3.js';
-import { raydium } from '@frakt-protocol/frakt-sdk';
+import { raydium, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
   signAndConfirmTransaction,
@@ -19,7 +18,7 @@ export const rawCreateEmptyRaydiumLiquidityPool = async ({
   wallet,
   associatedPoolKeys,
 }: CreateEmptyRaydiumLiquidityRawParams): Promise<void> => {
-  const transaction = new Transaction();
+  const transaction = new web3.Transaction();
 
   transaction.add(
     await raydium.Liquidity.makeCreatePoolInstruction({

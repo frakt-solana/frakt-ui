@@ -1,6 +1,5 @@
 import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
-import { raydium } from '@frakt-protocol/frakt-sdk';
+import { raydium, BN } from '@frakt-protocol/frakt-sdk';
 
 import { useLoadingModal } from '../../../../../components/LoadingModal';
 import {

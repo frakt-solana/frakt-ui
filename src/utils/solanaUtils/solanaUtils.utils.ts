@@ -1,7 +1,6 @@
-import BN from 'bn.js';
 import { MintInfo } from '@solana/spl-token';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
+import { BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { TokenAccount } from './solanaUtils.model';
 import { WAD, ZERO } from './solanaUtils.constants';
@@ -21,7 +20,7 @@ export const shortenAddress = (address: string, chars = 4): string => {
 
 export const getTokenName = (
   map: KnownTokenMap,
-  mint?: string | PublicKey,
+  mint?: string | web3.PublicKey,
   shorten = true,
 ): string => {
   const mintAddress = typeof mint === 'string' ? mint : mint?.toBase58();
@@ -54,7 +53,7 @@ export const getTokenByName = (
 
 export const getTokenIcon = (
   map: KnownTokenMap,
-  mintAddress?: string | PublicKey,
+  mintAddress?: string | web3.PublicKey,
 ): string | undefined => {
   const address =
     typeof mintAddress === 'string' ? mintAddress : mintAddress?.toBase58();

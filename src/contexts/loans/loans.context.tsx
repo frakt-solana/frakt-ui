@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Connection } from '@solana/web3.js';
 import {
   loans,
   LoanDataByPoolPublicKey,
   LoanView,
+  web3,
 } from '@frakt-protocol/frakt-sdk';
 
 import {
@@ -117,7 +117,7 @@ export const LoansProvider: LoansProviderType = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loanDataByPoolPublicKey, loading, wallet.connected]);
 
-  const fetchMetadataAndInitialize = async (connection: Connection) => {
+  const fetchMetadataAndInitialize = async (connection: web3.Connection) => {
     try {
       if (!userLoans.length) {
         setMetadataLoading(true);

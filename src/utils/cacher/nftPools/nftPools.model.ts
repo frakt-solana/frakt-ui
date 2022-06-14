@@ -1,5 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
+import { BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 export type AnchorState = { [key: string]: unknown };
 
@@ -19,13 +18,13 @@ export type RawCommunityPool = AnchorAccountBFF<{
   tokenTypeCount: string;
 }>;
 export interface CommunityPool {
-  publicKey: PublicKey;
-  authority: PublicKey;
+  publicKey: web3.PublicKey;
+  authority: web3.PublicKey;
   createdAt: BN;
-  fractionMint: PublicKey;
+  fractionMint: web3.PublicKey;
   fractionsSupply: BN;
   state: CommunityPoolState;
-  tokenProgram: PublicKey;
+  tokenProgram: web3.PublicKey;
   tokenTypeCount: BN;
   customName?: string;
 }
@@ -43,11 +42,11 @@ export type RawLotteryTicket = AnchorAccountBFF<{
   winningSafetyBox: string;
 }>;
 export interface LotteryTicket {
-  publicKey: PublicKey;
-  communityPool: PublicKey;
+  publicKey: web3.PublicKey;
+  communityPool: web3.PublicKey;
   lotteryTicketState: LotteryTicketState;
-  ticketHolder: PublicKey;
-  winningSafetyBox: PublicKey;
+  ticketHolder: web3.PublicKey;
+  winningSafetyBox: web3.PublicKey;
 }
 export enum LotteryTicketState {
   USED = 'used',
@@ -62,10 +61,10 @@ export type RawPoolWhitelist = AnchorAccountBFF<{
   whitelistedAddress: string;
 }>;
 export interface PoolWhitelist {
-  publicKey: PublicKey;
-  communityPool: PublicKey;
+  publicKey: web3.PublicKey;
+  communityPool: web3.PublicKey;
   whitelistType: PoolWhitelistType;
-  whitelistedAddress: PublicKey;
+  whitelistedAddress: web3.PublicKey;
 }
 export enum PoolWhitelistType {
   SINGLE_NFT_WHITELIST = 'singleNftWhitelist',
@@ -80,11 +79,11 @@ export type RawSafetyDepositBox = AnchorAccountBFF<{
   storeNftTokenAccount: string;
 }>;
 export interface SafetyDepositBox {
-  publicKey: PublicKey;
-  communityPool: PublicKey;
-  nftMint: PublicKey;
+  publicKey: web3.PublicKey;
+  communityPool: web3.PublicKey;
+  nftMint: web3.PublicKey;
   safetyBoxState: SafetyDepositBoxState;
-  storeNftTokenAccount: PublicKey;
+  storeNftTokenAccount: web3.PublicKey;
 }
 export enum SafetyDepositBoxState {
   EMPTY = 'empty',

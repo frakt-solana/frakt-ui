@@ -1,8 +1,8 @@
 import { FC, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
+import { BN } from '@frakt-protocol/frakt-sdk';
 
 import {
   LoadingModal,

@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { useEffect } from 'react';
 
 import { useUserSplAccount } from './useUserSplAccount';
@@ -18,7 +18,7 @@ export const useSplTokenBalance = (
 
   useEffect(() => {
     if (connected && tokenMint && decimals) {
-      splTokenSubscribe(new PublicKey(tokenMint));
+      splTokenSubscribe(new web3.PublicKey(tokenMint));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected, tokenMint, decimals]);

@@ -1,7 +1,5 @@
-import { raydium } from '@frakt-protocol/frakt-sdk';
+import { raydium, BN, web3 } from '@frakt-protocol/frakt-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -17,7 +15,7 @@ export interface CreateLiquidityTransactionParams {
   quoteAmount: BN;
   baseToken: TokenInfo;
   quoteToken: TokenInfo;
-  marketId: PublicKey;
+  marketId: web3.PublicKey;
 }
 
 export interface CreateLiquidityTransactionRawParams
@@ -36,8 +34,8 @@ const rawCreateRaydiumLiquidityPool = async ({
   const associatedPoolKeys = await raydium.Liquidity.getAssociatedPoolKeys({
     version: 4,
     marketId,
-    baseMint: new PublicKey(baseToken.address),
-    quoteMint: new PublicKey(quoteToken.address),
+    baseMint: new web3.PublicKey(baseToken.address),
+    quoteMint: new web3.PublicKey(quoteToken.address),
   });
 
   // const marketAccountInfo = await connection.getAccountInfo(marketId);

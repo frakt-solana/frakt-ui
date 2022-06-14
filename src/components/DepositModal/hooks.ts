@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import BN from 'bn.js';
 import { Control, useForm } from 'react-hook-form';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { utils, raydium } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium, BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
   calculateTotalDeposit,
@@ -14,7 +13,6 @@ import { SOL_TOKEN } from '../../utils';
 import { useLazyPoolInfo } from '../SwapForm/hooks/useLazyPoolInfo';
 import { FusionPoolInfo } from './../../contexts/liquidityPools/liquidityPools.model';
 import { useLoadingModal } from '../LoadingModal';
-import { PublicKey } from '@solana/web3.js';
 import { useConnection } from '../../hooks';
 
 export enum InputControlsNames {
@@ -150,7 +148,7 @@ export const useDeposit = (
 
   const stakeLiquidity = async (): Promise<boolean> => {
     const { accountInfo } = await utils.getTokenAccount({
-      tokenMint: new PublicKey(fusionPoolInfo?.mainRouter?.tokenMintInput),
+      tokenMint: new web3.PublicKey(fusionPoolInfo?.mainRouter?.tokenMintInput),
       owner: wallet.publicKey,
       connection,
     });

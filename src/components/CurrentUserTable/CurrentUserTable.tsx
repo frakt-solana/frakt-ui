@@ -1,5 +1,5 @@
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 import { formatNumber, shortenAddress } from '../../utils/solanaUtils';
 import { SolanaIcon, UserIcon } from '../../icons';
@@ -24,7 +24,7 @@ const CurrentUserTable = ({
 
   const getBalanceValue = () => {
     const valueStr = `${formatNumber.format(
-      (account?.lamports || 0) / LAMPORTS_PER_SOL,
+      (account?.lamports || 0) / web3.LAMPORTS_PER_SOL,
     )}`;
     return (
       <div className={styles.row}>

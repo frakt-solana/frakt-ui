@@ -1,4 +1,4 @@
-import { Connection } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { createCustomAction } from 'typesafe-actions';
 
 import { ServerError } from '../../utils/state';
@@ -28,7 +28,7 @@ export const commonActions = {
   appInit: createCustomAction(commonTypes.APP_INIT, () => null),
   setConnection: createCustomAction(
     commonTypes.SET_CONNECTION,
-    (connection: Connection) => ({ payload: connection }),
+    (connection: web3.Connection) => ({ payload: connection }),
   ),
   setNotification: createCustomAction(
     commonTypes.SET_NOTIFICATION,

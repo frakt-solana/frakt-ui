@@ -1,13 +1,6 @@
 import { TokenInfo } from '@solana/spl-token-registry';
-import {
-  Keypair,
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
-import BN from 'bn.js';
 import moment from 'moment';
-import { utils, raydium } from '@frakt-protocol/frakt-sdk';
+import { utils, raydium, BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -35,19 +28,19 @@ export const rawInitRaydiumLiquidityPool = async ({
   baseAmount,
   quoteAmount,
 }: InitRaydiumLiquidityPoolRawParams): Promise<void> => {
-  const transaction = new Transaction();
-  const signers: Keypair[] = [];
+  const transaction = new web3.Transaction();
+  const signers: web3.Keypair[] = [];
 
-  const frontInstructions: TransactionInstruction[] = [];
-  const endInstructions: TransactionInstruction[] = [];
+  const frontInstructions: web3.TransactionInstruction[] = [];
+  const endInstructions: web3.TransactionInstruction[] = [];
 
   const baseTokenAccount = await raydium.Spl.getAssociatedTokenAccount({
-    mint: new PublicKey(baseToken.address),
+    mint: new web3.PublicKey(baseToken.address),
     owner: wallet.publicKey,
   });
 
   let quoteTokenAccount = await raydium.Spl.getAssociatedTokenAccount({
-    mint: new PublicKey(quoteToken.address),
+    mint: new web3.PublicKey(quoteToken.address),
     owner: wallet.publicKey,
   });
 

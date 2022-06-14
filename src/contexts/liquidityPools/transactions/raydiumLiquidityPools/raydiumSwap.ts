@@ -1,7 +1,5 @@
 import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
-import { utils, pools, raydium } from '@frakt-protocol/frakt-sdk';
+import { utils, pools, raydium, BN, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -36,7 +34,7 @@ export const rawRaydiumSwap = async ({
     await Promise.all(
       [baseToken.address, quoteToken.address].map((mint) =>
         utils.getTokenAccount({
-          tokenMint: new PublicKey(mint),
+          tokenMint: new web3.PublicKey(mint),
           owner: wallet.publicKey,
           connection,
         }),

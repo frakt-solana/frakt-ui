@@ -1,10 +1,10 @@
-import { Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
 import {
   lending,
   CollectionInfoView,
   LoanView,
+  AnchorProvider,
+  web3,
 } from '@frakt-protocol/frakt-sdk';
 
 import { notify } from '../../../utils';
@@ -15,7 +15,7 @@ import {
 } from '../../../utils/transactions';
 
 type PaybackLoan = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   loan: LoanView;
   collectionInfo: CollectionInfoView;
@@ -28,19 +28,19 @@ export const paybackLoan: PaybackLoan = async ({
   collectionInfo,
 }): Promise<boolean> => {
   try {
-    const options = Provider.defaultOptions();
-    const provider = new Provider(connection, wallet, options);
+    const options = AnchorProvider.defaultOptions();
+    const provider = new AnchorProvider(connection, wallet, options);
 
     await lending.paybackLoan({
-      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       user: wallet.publicKey,
-      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-      loan: new PublicKey(loan.loanPubkey),
-      nftMint: new PublicKey(loan.nftMint),
-      liquidityPool: new PublicKey(loan.liquidityPool),
-      collectionInfo: new PublicKey(loan.collectionInfo),
-      royaltyAddress: new PublicKey(collectionInfo.royaltyAddress),
+      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      loan: new web3.PublicKey(loan.loanPubkey),
+      nftMint: new web3.PublicKey(loan.nftMint),
+      liquidityPool: new web3.PublicKey(loan.liquidityPool),
+      collectionInfo: new web3.PublicKey(loan.collectionInfo),
+      royaltyAddress: new web3.PublicKey(collectionInfo.royaltyAddress),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,

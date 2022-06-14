@@ -1,6 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
-import { pools, utils } from '@frakt-protocol/frakt-sdk';
+import { pools, utils, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { NftPoolData } from './../../../utils/cacher/nftPools';
 import {
@@ -12,7 +10,7 @@ import {
 
 export interface GetLotteryTicketParams {
   pool: NftPoolData;
-  poolLpMint: PublicKey;
+  poolLpMint: web3.PublicKey;
   afterTransaction?: () => void;
 }
 
@@ -26,7 +24,7 @@ export const rawGetLotteryTicket = async ({
   pool,
   poolLpMint,
   afterTransaction,
-}: GetLotteryTicketRawParams): Promise<PublicKey> => {
+}: GetLotteryTicketRawParams): Promise<web3.PublicKey> => {
   const { pubkey: userFractionsTokenAccount } = await utils.getTokenAccount({
     tokenMint: pool.fractionMint,
     owner: wallet.publicKey,
@@ -37,13 +35,13 @@ export const rawGetLotteryTicket = async ({
     communityPool: pool.publicKey,
     userFractionsTokenAccount,
     fractionMint: pool.fractionMint,
-    fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+    fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
     tokenMintInputFusion: poolLpMint,
-    feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-    adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-    programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+    feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
+    adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
+    programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
     userPubkey: wallet.publicKey,
-    provider: new Provider(connection, wallet, null),
+    provider: new AnchorProvider(connection, wallet, null),
     sendTxn: async (transaction, signers) => {
       await signAndConfirmTransaction({
         transaction,
