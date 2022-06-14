@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
 import { BorrowNFT } from '../../../../state/userTokens/types';
-import { proposeLoan } from '../../../../contexts/loans';
 import { useConnection } from '../../../../hooks';
 import { userTokensActions } from '../../../../state/userTokens/actions';
+import { proposeLoan } from '../../../../utils/loans';
 
 type UseBorrowForm = (props: {
   onDeselect?: () => void;

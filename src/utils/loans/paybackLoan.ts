@@ -1,27 +1,26 @@
-import { unstakeLiquidity as txn } from '@frakters/nft-lending-v2';
+import { paybackLoan as txn } from '@frakters/nft-lending-v2';
+import { Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
 
-import { NotifyType } from '../../../utils/solanaUtils';
-import { notify } from '../../../utils';
+import { notify } from '../';
+import { LoanView } from '../../state/loans/types';
+import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
+} from '../transactions';
 
-type UnstakeLiquidity = (props: {
+type PaybackLoan = (props: {
   connection: Connection;
   wallet: WalletContextState;
-  liquidityPool: string;
-  amount: number;
+  loan: LoanView;
 }) => Promise<boolean>;
 
-export const unstakeLiquidity: UnstakeLiquidity = async ({
+export const paybackLoan: PaybackLoan = async ({
   connection,
   wallet,
-  liquidityPool,
-  amount,
+  loan,
 }): Promise<boolean> => {
   try {
     const options = Provider.defaultOptions();
@@ -30,9 +29,13 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
     await txn({
       programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
-      liquidityPool: new PublicKey(liquidityPool),
       user: wallet.publicKey,
-      amount,
+      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      loan: new PublicKey(loan.loanPubkey),
+      nftMint: new PublicKey(loan.nftMint),
+      liquidityPool: new PublicKey(loan.liquidityPool),
+      collectionInfo: new PublicKey(loan.collectionInfo),
+      royaltyAddress: new PublicKey(loan.royaltyAddress),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -44,7 +47,7 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
     });
 
     notify({
-      message: 'Unstake liquidity successfully!',
+      message: 'Paid back successfully!',
       type: NotifyType.SUCCESS,
     });
 

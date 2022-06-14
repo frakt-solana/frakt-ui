@@ -7,7 +7,6 @@ import styles from './LoansList.module.scss';
 import InfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../../components/InfinityScroll';
-import { LoanWithArweaveMetadata } from '../../../../contexts/loans';
 import { LoanWithMetadata } from '../../../../state/loans/types';
 import {
   selectUserLoans,
@@ -16,8 +15,6 @@ import {
 
 interface LoansListProps {
   className?: string;
-  loansWithArweaveMetadata?: LoanWithArweaveMetadata[];
-  loading?: boolean;
 }
 
 export const LoansList: FC<LoansListProps> = ({ className }) => {

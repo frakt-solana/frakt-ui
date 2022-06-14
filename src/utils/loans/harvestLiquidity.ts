@@ -3,12 +3,12 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
 
-import { NotifyType } from '../../../utils/solanaUtils';
-import { notify } from '../../../utils';
+import { NotifyType } from '../solanaUtils';
+import { notify } from '../';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
+} from '../transactions';
 
 type HarvestLiquidity = (props: {
   connection: Connection;

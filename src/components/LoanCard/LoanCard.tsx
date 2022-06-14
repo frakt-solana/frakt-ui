@@ -1,20 +1,15 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
-import {
-  useLoans,
-  paybackLoan as paybackLoanTx,
-  getLoanCollectionInfo,
-  getAmountToReturnForPriceBasedLoan,
-} from '../../contexts/loans';
-import { LoanWithMetadata } from '../../state/loans/types';
+import { paybackLoan as paybackLoanTx } from '../../utils/loans';
+import { LoanView, LoanWithMetadata } from '../../state/loans/types';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
+import { getAmountToReturnForPriceBasedLoan } from '../../state/loans/helpers';
 
 interface LoanCardProps {
   className?: string;
@@ -24,7 +19,6 @@ interface LoanCardProps {
 const usePaybackLoan = () => {
   const wallet = useWallet();
   const connection = useConnection();
-  const { removeLoanOptimistic } = useLoans();
 
   const {
     visible: loadingModalVisible,
@@ -32,10 +26,7 @@ const usePaybackLoan = () => {
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const paybackLoan = async (
-    loan: LoanView,
-    collectionInfo: CollectionInfoView,
-  ) => {
+  const paybackLoan = async (loan: LoanView) => {
     try {
       openLoadingModal();
 
@@ -43,14 +34,11 @@ const usePaybackLoan = () => {
         connection,
         wallet,
         loan,
-        collectionInfo,
       });
 
       if (!result) {
         throw new Error('Loan failed');
       }
-
-      removeLoanOptimistic(loan);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -69,12 +57,6 @@ const usePaybackLoan = () => {
 const LoanCard: FC<LoanCardProps> = ({ className, loanWithMetadata }) => {
   const { loan, metadata } = loanWithMetadata;
 
-  const { loanDataByPoolPublicKey } = useLoans();
-  const collectionInfo = getLoanCollectionInfo(
-    loanDataByPoolPublicKey.get(loan?.liquidityPool),
-    loan.collectionInfo,
-  );
-
   const { paybackLoan, closeLoadingModal, loadingModalVisible } =
     usePaybackLoan();
 
@@ -85,7 +67,7 @@ const LoanCard: FC<LoanCardProps> = ({ className, loanWithMetadata }) => {
     ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
 
   const onPayback = () => {
-    paybackLoan(loan, collectionInfo);
+    paybackLoan(loan);
   };
 
   const amountToGet = loan?.amountToGet

@@ -5,7 +5,7 @@ import { loansActions } from './actions';
 
 const loanChannel = (socket) =>
   eventChannel((emit) => {
-    socket.on('loans', (response) => emit(response));
+    socket.on('loans', (response) => emit(response || []));
     return () => socket.off('loans');
   });
 
