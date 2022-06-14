@@ -1,1 +1,1 @@
-export * from '../../../utils/loans/useLoansPage';
+export * from './useLoansPage';

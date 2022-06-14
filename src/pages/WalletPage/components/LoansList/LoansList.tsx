@@ -7,7 +7,7 @@ import styles from './LoansList.module.scss';
 import InfinityScroll, {
   useFakeInfinityScroll,
 } from '../../../../components/InfinityScroll';
-import { LoanWithMetadata } from '../../../../state/loans/types';
+import { LoanView } from '../../../../state/loans/types';
 import {
   selectUserLoans,
   selectUserLoansPending,
@@ -19,7 +19,7 @@ interface LoansListProps {
 
 export const LoansList: FC<LoansListProps> = ({ className }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
-  const userLoans: LoanWithMetadata[] = useSelector(selectUserLoans);
+  const userLoans: LoanView[] = useSelector(selectUserLoans);
   const loading: boolean = useSelector(selectUserLoansPending);
 
   return (
@@ -30,8 +30,8 @@ export const LoansList: FC<LoansListProps> = ({ className }) => {
       wrapperClassName={classNames(styles.loansList, className)}
       emptyMessage="Loans not found"
     >
-      {userLoans.map((loanWithMetadata, idx) => (
-        <LoanCard key={idx} loanWithMetadata={loanWithMetadata} />
+      {userLoans.map((loan) => (
+        <LoanCard key={loan?.nftMint} loan={loan} />
       ))}
     </InfinityScroll>
   );

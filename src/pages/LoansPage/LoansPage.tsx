@@ -8,9 +8,9 @@ import { Container } from '../../components/Layout';
 import LendingPool from './components/LendingPool';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
-import { LoanTabsNames, useLoansPage } from './hooks';
 import { Loader } from '../../components/Loader';
 import { selectLiquidityPoolInfo } from '../../state/loans/selectors';
+import { useLoansPage, LoanTabsNames } from './hooks';
 
 const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();

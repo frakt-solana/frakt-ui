@@ -4,16 +4,15 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import { paybackLoan as paybackLoanTx } from '../../utils/loans';
-import { LoanView, LoanWithMetadata } from '../../state/loans/types';
+import { LoanView } from '../../state/loans/types';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
-import { getAmountToReturnForPriceBasedLoan } from '../../state/loans/helpers';
 
 interface LoanCardProps {
   className?: string;
-  loanWithMetadata: LoanWithMetadata;
+  loan: LoanView;
 }
 
 const usePaybackLoan = () => {
@@ -54,15 +53,13 @@ const usePaybackLoan = () => {
   };
 };
 
-const LoanCard: FC<LoanCardProps> = ({ className, loanWithMetadata }) => {
-  const { loan, metadata } = loanWithMetadata;
-
+const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
   const { paybackLoan, closeLoadingModal, loadingModalVisible } =
     usePaybackLoan();
 
-  const { timeLeft, leftTimeInSeconds } = useCountdown(loan.expiredAt);
+  const { timeLeft, leftTimeInSeconds } = useCountdown(loan?.expiredAt);
 
-  const loanDurationInSeconds = loan.expiredAt - loan.startedAt;
+  const loanDurationInSeconds = loan?.expiredAt - loan?.startedAt;
   const progress =
     ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
 
@@ -74,9 +71,6 @@ const LoanCard: FC<LoanCardProps> = ({ className, loanWithMetadata }) => {
     ? (loan?.amountToGet / 10 ** SOL_TOKEN.decimals).toFixed(2)
     : '';
 
-  const amountToReturn =
-    getAmountToReturnForPriceBasedLoan(loan)?.toFixed(2) || '';
-
   return (
     <>
       <div className={styles.wrapper}>
@@ -84,11 +78,11 @@ const LoanCard: FC<LoanCardProps> = ({ className, loanWithMetadata }) => {
           <div
             className={styles.root__image}
             style={{
-              backgroundImage: `url(${metadata?.image})`,
+              backgroundImage: `url(${loan?.nftImageUrl})`,
             }}
           />
           <div className={styles.root__content}>
-            <p className={styles.root__title}>{metadata?.name}</p>
+            <p className={styles.root__title}>{loan?.nftName}</p>
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>Borrowed</p>
               <div className={styles.ltvContent}>
@@ -100,7 +94,9 @@ const LoanCard: FC<LoanCardProps> = ({ className, loanWithMetadata }) => {
               </div>
               <p className={styles.ltvTitle}>To repay</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{amountToReturn}</p>
+                <p className={styles.ltvText}>
+                  {loan?.amountToRepay.toFixed(2)}
+                </p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>

@@ -1,13 +1,5 @@
 export * from '@frakters/nft-lending-v2/lib/accounts';
 
-export interface LoanWithMetadata {
-  loan: LoanView;
-  metadata: {
-    name: string;
-    image: string;
-  };
-}
-
 export interface LoanView {
   nftName: string;
   nftImageUrl: string;
@@ -23,6 +15,7 @@ export interface LoanView {
   finishedAt: number;
   originalPrice: number;
   amountToGet: number;
+  amountToRepay: number;
   rewardAmount: number;
   feeAmount: number;
   royaltyAddress: string;

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { harvestLiquidity as harvestTxn } from '../../utils/loans';
-import { useConnection, useDebounce } from '../../hooks';
-import { Tab, useTabs } from '../../components/Tabs';
+import { harvestLiquidity as harvestTxn } from '../../../utils/loans';
+import { useConnection, useDebounce } from '../../../hooks';
+import { Tab, useTabs } from '../../../components/Tabs';
+import { LOAN_POOL_PUBKEY } from '../../../state/loans/selectors';
 
 export enum LoanTabsNames {
   LENDING = 'lending',
@@ -40,8 +41,6 @@ export const useLoansPage = (): {
     defaultValue: LOANS_TABS[0].value,
   });
   const [, setSearchString] = useState<string>('');
-
-  const LOAN_POOL_PUBKEY = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
 
   const searchItems = useDebounce((search: string) => {
     setSearchString(search.toUpperCase());

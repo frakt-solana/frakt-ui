@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import {
   compose,
   pathOr,
-  map,
   applySpec,
   identity,
   prop,
@@ -24,13 +23,13 @@ import {
 } from 'ramda';
 import { isNilOrEmpty } from 'ramda-adjunct';
 
-import { LoanWithMetadata, LiquidityPoolView, LoansPoolInfo } from './types';
+import { LiquidityPoolView, LoansPoolInfo, LoanView } from './types';
 import {
   selectWalletPublicKey,
   selectSolanaTimestamp,
 } from '../common/selectors';
 
-const LOAN_POOL_PUBKEY = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
+export const LOAN_POOL_PUBKEY = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
 const SECONDS_IN_YEAR = 31536000;
 
 const isActivatedLoan = propEq('loanStatus', 'activated');
@@ -44,29 +43,14 @@ const processOr = curry((defaultValue, func) =>
   ),
 );
 
-export const selectUserLoans: (state) => Array<LoanWithMetadata> =
-  createSelector(
-    [pathOr([], ['loans', 'loans', 'data']), selectWalletPublicKey],
-    (loans, publicKey) =>
-      compose<
-        any,
-        Array<LoanWithMetadata>,
-        Array<LoanWithMetadata>,
-        Array<LoanWithMetadata>
-      >(
-        map(
-          applySpec({
-            loan: identity,
-            metadata: {
-              name: prop('nftName'),
-              image: prop('nftImageUrl'),
-            },
-          }),
-        ),
-        sortBy(prop('expiredAt')),
-        filter(allPass([isActivatedLoan, isOwnedByUser(publicKey)])),
-      )(loans),
-  );
+export const selectUserLoans: (state) => Array<LoanView> = createSelector(
+  [pathOr([], ['loans', 'loans', 'data']), selectWalletPublicKey],
+  (loans, publicKey) =>
+    compose<any, Array<LoanView>, Array<LoanView>>(
+      sortBy(prop('expiredAt')),
+      filter(allPass([isActivatedLoan, isOwnedByUser(publicKey)])),
+    )(loans),
+);
 
 export const selectUserLoansPending = createSelector(
   [pathEq(['loans', 'loans', 'data'], null)],
