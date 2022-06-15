@@ -8,13 +8,12 @@ import {
   createInitialAsyncState,
 } from '../../utils/state/reducers';
 import { userTokensActions, userTokensTypes } from './actions';
-import { BorrowNftsState, UserNFT } from './types';
+import { UserNFT } from './types';
 import { AsyncState } from '../../utils/state';
 import { TokenView } from '../../utils/accounts';
 
 const includesIn = flip(includes);
 
-export const initialBorrowNftsState: BorrowNftsState = { data: [] };
 export const initialUserTokensState: AsyncState<TokenView[]> =
   createInitialAsyncState<TokenView[]>(null);
 export const initialWalletNfts: AsyncState<UserNFT[]> =
@@ -28,19 +27,6 @@ const fetchUserTokensReducer = createReducer(
 const fetchWalletNftsReducer = createReducer(
   initialWalletNfts,
   createHandlers<UserNFT[]>(userTokensTypes.FETCH_WALLET_NFTS),
-);
-
-const setBorrowNftsReducer = createReducer<BorrowNftsState>(
-  initialBorrowNftsState,
-  {
-    [userTokensTypes.SET_BORROW_NFTS]: (
-      state,
-      action: ReturnType<typeof userTokensActions.setBorrowNfts>,
-    ) => ({
-      ...state,
-      data: action.payload,
-    }),
-  },
 );
 
 const removeTokenOptimisticReducer = createReducer<AsyncState<TokenView[]>>(
@@ -79,9 +65,5 @@ export default combineReducers({
     fetchWalletNftsReducer,
     removeTokenOptimisticReducer,
     clearTokensReducer,
-  ),
-  borrowNfts: composeReducers(
-    setBorrowNftsReducer,
-    removeTokenOptimisticReducer,
   ),
 });
