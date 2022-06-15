@@ -15,6 +15,7 @@ import {
   identity,
 } from 'ramda';
 import { isNumber, isNonEmptyString } from 'ramda-adjunct';
+import moment from 'moment';
 
 import { SolanaHealthResponse, SolanaNetworkHealth } from './types';
 
@@ -65,7 +66,7 @@ export const selectSolanaHealth = createSelector(
 );
 
 export const selectSolanaTimestamp = createSelector(
-  [pathOr(null, ['common', 'fetchSolanaTimestamp', 'data'])],
+  [pathOr(moment().unix(), ['common', 'fetchSolanaTimestamp', 'data'])],
   identity,
 );
 
