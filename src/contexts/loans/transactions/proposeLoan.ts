@@ -9,6 +9,7 @@ import {
 } from '../../../utils/transactions';
 import { notify } from '../../../utils';
 import { NotifyType } from '../../../utils/solanaUtils';
+import { captureSentryError } from '../../../utils/sentry';
 
 type ProposeLoan = (props: {
   connection: Connection;
@@ -87,8 +88,11 @@ export const proposeLoan: ProposeLoan = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      user: wallet?.publicKey?.toBase58(),
+      transactionName: 'Propose loan',
+    });
 
     return false;
   }

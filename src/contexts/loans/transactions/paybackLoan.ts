@@ -8,6 +8,7 @@ import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 
 import { notify } from '../../../utils';
+import { captureSentryError } from '../../../utils/sentry';
 import { NotifyType } from '../../../utils/solanaUtils';
 import {
   showSolscanLinkNotification,
@@ -67,8 +68,11 @@ export const paybackLoan: PaybackLoan = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      user: wallet?.publicKey?.toBase58(),
+      transactionName: 'Payback loan',
+    });
 
     return false;
   }

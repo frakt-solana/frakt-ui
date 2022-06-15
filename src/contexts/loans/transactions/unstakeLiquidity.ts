@@ -9,6 +9,7 @@ import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
 } from '../../../utils/transactions';
+import { captureSentryError } from '../../../utils/sentry';
 
 type UnstakeLiquidity = (props: {
   connection: Connection;
@@ -59,8 +60,11 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      user: wallet?.publicKey?.toBase58(),
+      transactionName: 'Unstake liquidity',
+    });
 
     return false;
   }

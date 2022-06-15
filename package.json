@@ -12,6 +12,8 @@
     "@prism-hq/prism-ag": "^0.1.6",
     "@project-serum/anchor": "^0.22.1",
     "@raydium-io/raydium-sdk": "^1.0.1-beta.31",
+    "@sentry/react": "^7.1.1",
+    "@sentry/tracing": "^7.1.1",
     "@solana/spl-token": "0.1.8",
     "@solana/spl-token-registry": "^0.2.2791",
     "@solana/wallet-adapter-base": "^0.7.0",
