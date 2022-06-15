@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { isArray } from 'ramda-adjunct';
+
 import { useDebounce } from '../../../hooks';
 
 export type FetchData<T> = (props: {
@@ -36,7 +38,9 @@ export const useInfinityScroll = <T>(
       searchStr: stringRef.current,
     });
 
-    setItems([...items, ...nextItems]);
+    if (isArray(nextItems)) {
+      setItems([...items, ...nextItems]);
+    }
   };
 
   const next = (): void => {
