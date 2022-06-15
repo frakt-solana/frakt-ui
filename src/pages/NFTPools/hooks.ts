@@ -293,12 +293,13 @@ export const useUserRawNfts: UseUserRawNfts = () => {
       connected &&
       !userTokensLoading &&
       !nftsLoading &&
-      Object.keys(rawUserTokensByMint).length
+      Object.keys(rawUserTokensByMint).length &&
+      !rawNfts.length
     ) {
       fetchUserNfts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, nftsLoading]);
+  }, [connected, rawNfts.length]);
 
   return {
     rawNfts,
