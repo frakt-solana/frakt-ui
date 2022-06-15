@@ -1,13 +1,11 @@
-import { Connection } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { Socket } from 'socket.io-client';
 
-export interface NotificationPayload {
+export interface NotificationState {
   config?: { mode: 'error' | 'warning'; content: JSX.Element };
   isVisible: boolean;
 }
-export interface WalletModalPayload {
-  isVisible: boolean;
-}
+
 export interface SolanaHealthResponse {
   submitted: number;
   confirmed: number;
@@ -28,4 +26,14 @@ export interface ConnectionState {
 
 export interface SocketState {
   socket: Socket;
+}
+
+export interface WalletState {
+  wallet: {
+    publicKey: PublicKey | null;
+  };
+}
+
+export interface WalletModalState {
+  isVisible: boolean;
 }

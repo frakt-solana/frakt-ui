@@ -15,5 +15,5 @@ export enum RequestStatus {
 export interface AsyncState<TData> {
   data: TData | null;
   status: RequestStatus;
-  messages: ServerError[];
+  messages: string[];
 }

@@ -1,66 +1,110 @@
+import { AsyncState } from './../../utils/state/types';
+import { commonActions } from './actions';
 import { combineReducers } from 'redux';
 import { createReducer } from 'typesafe-actions';
 
 import {
-  initialAsyncState,
   createHandlers,
   composeReducers,
+  createInitialAsyncState,
 } from '../../utils/state/reducers';
 import { commonTypes } from '../../state/common/actions';
-import { ConnectionState, SocketState } from './types';
+import {
+  ConnectionState,
+  NotificationState,
+  SocketState,
+  SolanaHealthResponse,
+  WalletModalState,
+  WalletState,
+} from './types';
 
+export const initialFetchSolanaHealthState: AsyncState<SolanaHealthResponse[]> =
+  createInitialAsyncState<SolanaHealthResponse[]>(null);
+export const initialFetchSolanaTimestampState: AsyncState<number> =
+  createInitialAsyncState<number>(null);
 export const initialConnectionState: ConnectionState = { connection: null };
 export const initialSocketState: SocketState = { socket: null };
-export const initialWalletState = { wallet: null };
-export const initialNotificationState = { isVisible: false, config: null };
-export const initialWalletModalState = { isVisible: false };
+export const initialWalletState: WalletState = {
+  wallet: {
+    publicKey: null,
+  },
+};
+export const initialNotificationState: NotificationState = {
+  isVisible: false,
+  config: null,
+};
+export const initialWalletModalState: WalletModalState = { isVisible: false };
 
 const fetchSolanaHealthReducer = createReducer(
-  initialAsyncState,
-  createHandlers(commonTypes.FETCH_SOLANA_HEALTH),
+  initialFetchSolanaHealthState,
+  createHandlers<SolanaHealthResponse[]>(commonTypes.FETCH_SOLANA_HEALTH),
 );
 const fetchSolanaTimestampReducer = createReducer(
-  initialAsyncState,
-  createHandlers(commonTypes.FETCH_SOLANA_TIMESTAMP),
+  initialFetchSolanaTimestampState,
+  createHandlers<number>(commonTypes.FETCH_SOLANA_TIMESTAMP),
 );
 const setConnectionReducer = createReducer<ConnectionState>(
   initialConnectionState,
   {
-    [commonTypes.SET_CONNECTION]: (state, action) => ({
+    [commonTypes.SET_CONNECTION]: (
+      state,
+      action: ReturnType<typeof commonActions.setConnection>,
+    ) => ({
       ...state,
       connection: action.payload,
     }),
   },
 );
 const setSocketReducer = createReducer<SocketState>(initialSocketState, {
-  [commonTypes.SET_SOCKET]: (state, action) => ({
+  [commonTypes.SET_SOCKET]: (
+    state,
+    action: ReturnType<typeof commonActions.setSocket>,
+  ) => ({
     ...state,
     socket: action.payload,
   }),
 });
-const setWalletReducer = createReducer(initialWalletState, {
-  [commonTypes.SET_WALLET]: (state, action) => ({
+const setWalletReducer = createReducer<WalletState>(initialWalletState, {
+  [commonTypes.SET_WALLET]: (
+    state,
+    action: ReturnType<typeof commonActions.setWallet>,
+  ) => ({
     ...state,
     wallet: action.payload,
   }),
 });
-const setNotificationReducer = createReducer(initialNotificationState, {
-  [commonTypes.SET_NOTIFICATION]: (state, action) => ({
-    ...state,
-    ...action.payload,
-  }),
-});
-const setWalletModalReducer = createReducer(initialWalletModalState, {
-  [commonTypes.SET_WALLET_MODAL]: (state, action) => ({
-    ...state,
-    ...action.payload,
-  }),
-});
-const toggleWalletModalReducer = createReducer(initialWalletModalState, {
-  [commonTypes.TOGGLE_WALLET_MODAL]: (state) => ({
-    isVisible: !state.isVisible,
-  }),
-});
+const setNotificationReducer = createReducer<NotificationState>(
+  initialNotificationState,
+  {
+    [commonTypes.SET_NOTIFICATION]: (
+      state,
+      action: ReturnType<typeof commonActions.setNotification>,
+    ) => ({
+      ...state,
+      ...action.payload,
+    }),
+  },
+);
+const setWalletModalReducer = createReducer<WalletModalState>(
+  initialWalletModalState,
+  {
+    [commonTypes.SET_WALLET_MODAL]: (
+      state,
+      action: ReturnType<typeof commonActions.setWalletModal>,
+    ) => ({
+      ...state,
+      ...action.payload,
+    }),
+  },
+);
+const toggleWalletModalReducer = createReducer<WalletModalState>(
+  initialWalletModalState,
+  {
+    [commonTypes.TOGGLE_WALLET_MODAL]: (state) => ({
+      isVisible: !state.isVisible,
+    }),
+  },
+);
 
 export default combineReducers({
   connection: setConnectionReducer,

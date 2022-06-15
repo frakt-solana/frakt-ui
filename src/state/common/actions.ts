@@ -1,12 +1,12 @@
-import { Connection } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { Socket } from 'socket.io-client';
 import { createCustomAction } from 'typesafe-actions';
 
 import { ServerError } from '../../utils/state';
 import {
-  NotificationPayload,
-  WalletModalPayload,
   SolanaHealthResponse,
+  NotificationState,
+  WalletModalState,
 } from './types';
 
 export const commonTypes = {
@@ -36,16 +36,19 @@ export const commonActions = {
   setSocket: createCustomAction(commonTypes.SET_SOCKET, (socket: Socket) => ({
     payload: socket,
   })),
-  setWallet: createCustomAction(commonTypes.SET_WALLET, (wallet) => ({
-    payload: wallet,
-  })),
+  setWallet: createCustomAction(
+    commonTypes.SET_WALLET,
+    (wallet: { publicKey: PublicKey }) => ({
+      payload: wallet,
+    }),
+  ),
   setNotification: createCustomAction(
     commonTypes.SET_NOTIFICATION,
-    (payload: NotificationPayload) => ({ payload }),
+    (payload: NotificationState) => ({ payload }),
   ),
   setWalletModal: createCustomAction(
     commonTypes.SET_WALLET_MODAL,
-    (payload: WalletModalPayload) => ({ payload }),
+    (payload: WalletModalState) => ({ payload }),
   ),
   toggleWalletModal: createCustomAction(
     commonTypes.TOGGLE_WALLET_MODAL,

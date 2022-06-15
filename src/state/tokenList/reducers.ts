@@ -1,11 +1,19 @@
 import { createReducer } from 'typesafe-actions';
 
-import { initialAsyncState, createHandlers } from '../../utils/state/reducers';
+import { AsyncState } from '../../utils/state';
+import {
+  createHandlers,
+  createInitialAsyncState,
+} from '../../utils/state/reducers';
 import { tokenListTypes } from './actions';
+import { TokenListState } from './types';
+
+export const initialTokenListState: AsyncState<TokenListState> =
+  createInitialAsyncState<TokenListState>(null);
 
 const fetchTokenListReducer = createReducer(
-  initialAsyncState,
-  createHandlers(tokenListTypes.FETCH_TOKEN_LIST),
+  initialTokenListState,
+  createHandlers<TokenListState>(tokenListTypes.FETCH_TOKEN_LIST),
 );
 
 export { fetchTokenListReducer as default };
