@@ -3,12 +3,12 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
 import { proposeLoan as txn, decodeLoan } from '@frakters/nft-lending-v2';
 
+import { notify } from '../';
+import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
-import { notify } from '../../../utils';
-import { NotifyType } from '../../../utils/solanaUtils';
+} from '../transactions';
 
 type ProposeLoan = (props: {
   connection: Connection;

@@ -1,9 +1,11 @@
 import { ActionType, StateType } from 'typesafe-actions';
 import { Reducer } from 'redux';
 
+import { RequestStatus } from './types';
+
 export const initialAsyncState = {
-  data: [],
-  status: 'IDLE',
+  data: null,
+  status: RequestStatus.IDLE,
   messages: [],
 };
 
@@ -12,12 +14,12 @@ export const createHandlers = <T>(
 ): { [key: string]: Reducer<typeof initialAsyncState> } => ({
   [`${request}__PENDING`]: (state: StateType<typeof initialAsyncState>) => ({
     ...state,
-    status: 'PENDING',
+    status: RequestStatus.PENDING,
     messages: initialAsyncState.messages,
   }),
   [`${request}__CANCELLED`]: (state: StateType<typeof initialAsyncState>) => ({
     ...state,
-    status: 'IDLE',
+    status: RequestStatus.IDLE,
   }),
   [`${request}__RESET`]: (state: StateType<typeof initialAsyncState>) => ({
     ...state,
@@ -28,7 +30,7 @@ export const createHandlers = <T>(
     action: ActionType<T>,
   ) => ({
     ...state,
-    status: 'FULFILLED',
+    status: RequestStatus.FULFILLED,
     data: action.payload,
   }),
   [`${request}__FAILED`]: (
@@ -36,7 +38,7 @@ export const createHandlers = <T>(
     action: ActionType<T>,
   ) => ({
     ...state,
-    status: 'FAILED',
+    status: RequestStatus.FAILED,
     messages: action.payload,
   }),
 });

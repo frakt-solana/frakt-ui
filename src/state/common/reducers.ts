@@ -7,9 +7,11 @@ import {
   composeReducers,
 } from '../../utils/state/reducers';
 import { commonTypes } from '../../state/common/actions';
-import { ConnectionState } from './types';
+import { ConnectionState, SocketState } from './types';
 
 export const initialConnectionState: ConnectionState = { connection: null };
+export const initialSocketState: SocketState = { socket: null };
+export const initialWalletState = { wallet: null };
 export const initialNotificationState = { isVisible: false, config: null };
 export const initialWalletModalState = { isVisible: false };
 
@@ -30,6 +32,18 @@ const setConnectionReducer = createReducer<ConnectionState>(
     }),
   },
 );
+const setSocketReducer = createReducer<SocketState>(initialSocketState, {
+  [commonTypes.SET_SOCKET]: (state, action) => ({
+    ...state,
+    socket: action.payload,
+  }),
+});
+const setWalletReducer = createReducer(initialWalletState, {
+  [commonTypes.SET_WALLET]: (state, action) => ({
+    ...state,
+    wallet: action.payload,
+  }),
+});
 const setNotificationReducer = createReducer(initialNotificationState, {
   [commonTypes.SET_NOTIFICATION]: (state, action) => ({
     ...state,
@@ -50,6 +64,8 @@ const toggleWalletModalReducer = createReducer(initialWalletModalState, {
 
 export default combineReducers({
   connection: setConnectionReducer,
+  socket: setSocketReducer,
+  wallet: setWalletReducer,
   fetchSolanaHealth: fetchSolanaHealthReducer,
   fetchSolanaTimestamp: fetchSolanaTimestampReducer,
   notification: setNotificationReducer,
