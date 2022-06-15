@@ -15,10 +15,11 @@ import {
 
 import { isTokenFrozen } from './helpers';
 import { UserNFT } from './types';
+import { RequestStatus } from '../../utils/state';
 
 export const selectUserTokensPending: (state) => boolean = createSelector(
   [pathOr('', ['userTokens', 'userTokens', 'status'])],
-  equals('PENDING'),
+  equals(RequestStatus.PENDING),
 );
 
 export const selectUserTokens: (state) => UserNFT[] = createSelector(
@@ -41,7 +42,7 @@ export const selectFrozenNftMints: (state) => string[] = createSelector(
 
 export const selectWalletNftsPending: (state) => boolean = createSelector(
   [pathOr('', ['userTokens', 'walletNfts', 'status'])],
-  equals('PENDING'),
+  equals(RequestStatus.PENDING),
 );
 
 export const selectAllWalletNfts: (state) => UserNFT[] = createSelector(
