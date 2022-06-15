@@ -4,8 +4,9 @@ import { AsyncState } from '../../utils/state';
 
 import { createInitialAsyncState } from '../../utils/state/reducers';
 import { loansActions, loansTypes } from './actions';
-import { Lending, LoanView } from './types';
+import { BorrowNft, Lending, LoanView } from './types';
 
+export const initialBorrowNftsState: BorrowNft[] = null;
 export const initialLoansState: AsyncState<LoanView[]> =
   createInitialAsyncState<LoanView[]>(null);
 export const initialLendingState: AsyncState<Lending> =
@@ -37,7 +38,18 @@ const setLendingReducer = createReducer<AsyncState<Lending>>(
   },
 );
 
+const setBorrowNftsReducer = createReducer<BorrowNft[]>(
+  initialBorrowNftsState,
+  {
+    [loansTypes.SET_BORROW_NFTS]: (
+      __,
+      action: ReturnType<typeof loansActions.setBorrowNfts>,
+    ) => action.payload,
+  },
+);
+
 export default combineReducers({
   loans: setLoansReducer,
   lending: setLendingReducer,
+  borrowNfts: setBorrowNftsReducer,
 });
