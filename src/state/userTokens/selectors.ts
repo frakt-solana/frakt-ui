@@ -14,11 +14,12 @@ import {
 } from 'ramda';
 
 import { isTokenFrozen } from './helpers';
+import { RequestStatus } from '../../utils/state';
 import { BorrowNFT, UserNFT } from './types';
 
 export const selectUserTokensPending: (state) => boolean = createSelector(
   [pathOr('', ['userTokens', 'userTokens', 'status'])],
-  equals('PENDING'),
+  equals(RequestStatus.PENDING),
 );
 
 export const selectUserTokens: (state) => UserNFT[] = createSelector(
@@ -41,7 +42,7 @@ export const selectFrozenNftMints: (state) => string[] = createSelector(
 
 export const selectWalletNftsPending: (state) => boolean = createSelector(
   [pathOr('', ['userTokens', 'walletNfts', 'status'])],
-  equals('PENDING'),
+  equals(RequestStatus.PENDING),
 );
 
 export const selectAllWalletNfts: (state) => UserNFT[] = createSelector(

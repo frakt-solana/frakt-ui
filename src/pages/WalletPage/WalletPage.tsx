@@ -7,11 +7,6 @@ import { Container } from '../../components/Layout';
 import { TokensTab } from './components/TokensTab';
 import { LoansList } from './components/LoansList';
 import styles from './WalletPage.module.scss';
-import {
-  useLoans,
-  useLoansInitialFetch,
-  useLoansPolling,
-} from '../../contexts/loans';
 import { useParams } from 'react-router-dom';
 import { usePublicKeyParam } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -28,16 +23,11 @@ const useWalletPage = () => {
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   usePublicKeyParam(walletPubkey);
 
-  useLoansInitialFetch();
-  useLoansPolling();
-
   const wallet = useWallet();
 
   const { nameServiceInfo } = useNameService({ walletPubkey });
 
   const isMyProfile = walletPubkey === wallet.publicKey?.toBase58();
-
-  const { userLoans, userLoansLoading } = useLoans();
 
   const { userTokens, loading: userTokensLoading } = useWalletTokens({
     walletPubkey,
@@ -60,8 +50,6 @@ const useWalletPage = () => {
     tabs,
     tabValue,
     setTabValue,
-    userLoans,
-    userLoansLoading,
     isMyProfile,
     pageTitle,
     userTokens,
@@ -77,8 +65,6 @@ const WalletPage: FC = () => {
     tabValue,
     setTabValue,
     pageTitle,
-    userLoans,
-    userLoansLoading,
     userTokens,
     userTokensLoading,
     nameServiceInfo,
@@ -107,11 +93,7 @@ const WalletPage: FC = () => {
               setValue={setTabValue}
             />
             {tabValue === WalletTabs.LOANS && (
-              <LoansList
-                className={styles.loansList}
-                loansWithArweaveMetadata={userLoans}
-                loading={userLoansLoading}
-              />
+              <LoansList className={styles.loansList} />
             )}
             {tabValue === WalletTabs.TOKENS && (
               <TokensTab userTokens={userTokens} loading={userTokensLoading} />

@@ -2,47 +2,72 @@ import { createReducer } from 'typesafe-actions';
 import { combineReducers } from 'redux';
 import { flip, reject, includes, compose, prop } from 'ramda';
 
-const includesIn = flip(includes);
-
 import {
-  initialAsyncState,
   createHandlers,
   composeReducers,
+  createInitialAsyncState,
 } from '../../utils/state/reducers';
-import { userTokensTypes } from './actions';
+import { userTokensActions, userTokensTypes } from './actions';
+import { BorrowNftsState, UserNFT } from './types';
+import { AsyncState } from '../../utils/state';
+import { TokenView } from '../../utils/accounts';
 
-export const initialBorrowNftsState = { data: [] };
+const includesIn = flip(includes);
+
+export const initialBorrowNftsState: BorrowNftsState = { data: [] };
+export const initialUserTokensState: AsyncState<TokenView[]> =
+  createInitialAsyncState<TokenView[]>(null);
+export const initialWalletNfts: AsyncState<UserNFT[]> =
+  createInitialAsyncState<UserNFT[]>(null);
 
 const fetchUserTokensReducer = createReducer(
-  initialAsyncState,
-  createHandlers(userTokensTypes.FETCH_USER_TOKENS),
+  initialUserTokensState,
+  createHandlers<TokenView[]>(userTokensTypes.FETCH_USER_TOKENS),
 );
 
 const fetchWalletNftsReducer = createReducer(
-  initialAsyncState,
-  createHandlers(userTokensTypes.FETCH_WALLET_NFTS),
+  initialWalletNfts,
+  createHandlers<UserNFT[]>(userTokensTypes.FETCH_WALLET_NFTS),
 );
 
-const setBorrowNftsReducer = createReducer(initialBorrowNftsState, {
-  [userTokensTypes.SET_BORROW_NFTS]: (state, action) => ({
-    ...state,
-    data: action.payload,
-  }),
-});
+const setBorrowNftsReducer = createReducer<BorrowNftsState>(
+  initialBorrowNftsState,
+  {
+    [userTokensTypes.SET_BORROW_NFTS]: (
+      state,
+      action: ReturnType<typeof userTokensActions.setBorrowNfts>,
+    ) => ({
+      ...state,
+      data: action.payload,
+    }),
+  },
+);
 
-const removeTokenOptimisticReducer = createReducer(initialAsyncState, {
-  [userTokensTypes.REMOVE_TOKEN_OPTIMISTIC]: (state, action) => ({
-    ...state,
-    data: reject(compose(includesIn(action.payload), prop('mint')), state.data),
-  }),
-});
+const removeTokenOptimisticReducer = createReducer<AsyncState<TokenView[]>>(
+  initialUserTokensState,
+  {
+    [userTokensTypes.REMOVE_TOKEN_OPTIMISTIC]: (
+      state,
+      action: ReturnType<typeof userTokensActions.removeTokenOptimistic>,
+    ) => ({
+      ...state,
+      data: reject(
+        compose(includesIn(action.payload), prop('mint')),
+        state.data,
+      ),
+    }),
+  },
+);
 
-const clearTokensReducer = createReducer(initialAsyncState, {
-  [userTokensTypes.CLEAR_TOKENS]: (state) => ({
-    ...state,
-    ...initialAsyncState,
-  }),
-});
+const clearTokensReducer = createReducer<AsyncState<TokenView[]>>(
+  initialUserTokensState,
+  {
+    [userTokensTypes.CLEAR_TOKENS]: (state) => ({
+      ...state,
+      ...initialUserTokensState,
+    }),
+  },
+);
 
 export default combineReducers({
   userTokens: composeReducers(

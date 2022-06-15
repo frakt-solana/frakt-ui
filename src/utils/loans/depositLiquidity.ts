@@ -1,46 +1,36 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import {
-  lending,
-  CollectionInfoView,
-  LoanView,
-  AnchorProvider,
-  web3,
-} from '@frakt-protocol/frakt-sdk';
+import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
-import { notify } from '../../../utils';
-import { NotifyType } from '../../../utils/solanaUtils';
+import { NotifyType } from '../solanaUtils';
+import { notify } from '../';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
+} from '../transactions';
 
-type PaybackLoan = (props: {
+type DepositLiquidity = (props: {
   connection: web3.Connection;
   wallet: WalletContextState;
-  loan: LoanView;
-  collectionInfo: CollectionInfoView;
+  liquidityPool: string;
+  amount: number;
 }) => Promise<boolean>;
 
-export const paybackLoan: PaybackLoan = async ({
+export const depositLiquidity: DepositLiquidity = async ({
   connection,
   wallet,
-  loan,
-  collectionInfo,
+  liquidityPool,
+  amount,
 }): Promise<boolean> => {
   try {
     const options = AnchorProvider.defaultOptions();
     const provider = new AnchorProvider(connection, wallet, options);
 
-    await lending.paybackLoan({
+    await lending.depositLiquidity({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
+      liquidityPool: new web3.PublicKey(liquidityPool),
       user: wallet.publicKey,
-      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-      loan: new web3.PublicKey(loan.loanPubkey),
-      nftMint: new web3.PublicKey(loan.nftMint),
-      liquidityPool: new web3.PublicKey(loan.liquidityPool),
-      collectionInfo: new web3.PublicKey(loan.collectionInfo),
-      royaltyAddress: new web3.PublicKey(collectionInfo.royaltyAddress),
+      amount,
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -52,7 +42,7 @@ export const paybackLoan: PaybackLoan = async ({
     });
 
     notify({
-      message: 'Paid back successfully!',
+      message: 'Deposit liquidity successfully!',
       type: NotifyType.SUCCESS,
     });
 

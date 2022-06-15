@@ -1,16 +1,19 @@
-import { web3 } from '@frakt-protocol/frakt-sdk';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { Socket } from 'socket.io-client';
 import { createCustomAction } from 'typesafe-actions';
 
 import { ServerError } from '../../utils/state';
 import {
-  NotificationPayload,
-  WalletModalPayload,
   SolanaHealthResponse,
+  NotificationState,
+  WalletModalState,
 } from './types';
 
 export const commonTypes = {
   APP_INIT: 'common/APP_INIT',
   SET_CONNECTION: 'common/SET_CONNECTION',
+  SET_SOCKET: 'common/SET_SOCKET',
+  SET_WALLET: 'common/SET_WALLET',
   SET_NOTIFICATION: 'common/SET_NOTIFICATION',
   SET_WALLET_MODAL: 'common/SET_WALLET_MODAL',
   TOGGLE_WALLET_MODAL: 'common/TOGGLE_WALLET_MODAL',
@@ -28,15 +31,24 @@ export const commonActions = {
   appInit: createCustomAction(commonTypes.APP_INIT, () => null),
   setConnection: createCustomAction(
     commonTypes.SET_CONNECTION,
-    (connection: web3.Connection) => ({ payload: connection }),
+    (connection: Connection) => ({ payload: connection }),
+  ),
+  setSocket: createCustomAction(commonTypes.SET_SOCKET, (socket: Socket) => ({
+    payload: socket,
+  })),
+  setWallet: createCustomAction(
+    commonTypes.SET_WALLET,
+    (wallet: { publicKey: PublicKey }) => ({
+      payload: wallet,
+    }),
   ),
   setNotification: createCustomAction(
     commonTypes.SET_NOTIFICATION,
-    (payload: NotificationPayload) => ({ payload }),
+    (payload: NotificationState) => ({ payload }),
   ),
   setWalletModal: createCustomAction(
     commonTypes.SET_WALLET_MODAL,
-    (payload: WalletModalPayload) => ({ payload }),
+    (payload: WalletModalState) => ({ payload }),
   ),
   toggleWalletModal: createCustomAction(
     commonTypes.TOGGLE_WALLET_MODAL,

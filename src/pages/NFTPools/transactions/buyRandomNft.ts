@@ -1,14 +1,15 @@
+import { getLotteryTicketIx } from '@frakters/community-pools-client-library-v2';
+import { Provider } from '@project-serum/anchor';
+import { Liquidity, LiquidityPoolKeysV4, Spl } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import {
-  utils,
-  pools,
-  raydium,
-  AnchorProvider,
-  BN,
-  web3,
-} from '@frakt-protocol/frakt-sdk';
+import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+import BN from 'bn.js';
 
+import {
+  getCurrencyAmount,
+  getTokenAccount,
+} from '../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
 import { NotifyType } from '../../../utils/solanaUtils';
@@ -18,9 +19,9 @@ import { getTokenPrice } from '../helpers';
 type BuyRandomNft = (props: {
   pool: NftPoolData;
   poolToken: TokenInfo;
-  connection: web3.Connection;
+  connection: Connection;
   wallet: WalletContextState;
-  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
   needSwap?: boolean;
   swapSlippage?: number;
 }) => Promise<boolean>;
@@ -56,8 +57,8 @@ export const buyRandomNft: BuyRandomNft = async ({
         const tokenAccounts = (
           await Promise.all(
             [SOL_TOKEN.address, poolToken.address].map((mint) =>
-              utils.getTokenAccount({
-                tokenMint: new web3.PublicKey(mint),
+              getTokenAccount({
+                tokenMint: new PublicKey(mint),
                 owner: wallet.publicKey,
                 connection,
               }),
@@ -65,11 +66,11 @@ export const buyRandomNft: BuyRandomNft = async ({
           )
         ).filter((tokenAccount) => tokenAccount);
 
-        const amountIn = pools.getCurrencyAmount(SOL_TOKEN, solAmountBN);
-        const amountOut = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
+        const amountIn = getCurrencyAmount(SOL_TOKEN, solAmountBN);
+        const amountOut = getCurrencyAmount(poolToken, poolTokenAmountBN);
 
         const { transaction: swapTransaction, signers: swapTransationSigners } =
-          await raydium.Liquidity.makeSwapTransaction({
+          await Liquidity.makeSwapTransaction({
             connection,
             poolKeys: raydiumLiquidityPoolKeys,
             userKeys: {
@@ -93,29 +94,32 @@ export const buyRandomNft: BuyRandomNft = async ({
       };
     })();
 
-    const { pubkey: userFractionsTokenAccount } = await utils.getTokenAccount({
-      tokenMint: pool.fractionMint,
+    const userFractionsTokenAccount = await Spl.getAssociatedTokenAccount({
+      mint: pool.fractionMint,
       owner: wallet.publicKey,
-      connection,
     });
 
     const {
       instructions: getLotteryTicketInstructions,
       signers: getLotteryTicketSigners,
-    } = await pools.getLotteryTicketIx({
-      communityPool: pool.publicKey,
-      userFractionsTokenAccount,
-      fractionMint: pool.fractionMint,
-      fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
-      feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
-      adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
-      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-      userPubkey: wallet.publicKey,
-      provider: new AnchorProvider(connection, wallet, null),
-    });
+    } = await getLotteryTicketIx(
+      {
+        communityPool: pool.publicKey,
+        userFractionsTokenAccount,
+        fractionMint: pool.fractionMint,
+        fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
+        feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
+        adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
+      },
+      {
+        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+        userPubkey: wallet.publicKey,
+        provider: new Provider(connection, wallet, null),
+      },
+    );
 
-    const getLotteryTicketTransaction = new web3.Transaction();
+    const getLotteryTicketTransaction = new Transaction();
     getLotteryTicketTransaction.add(...getLotteryTicketInstructions);
 
     const { blockhash, lastValidBlockHeight } =

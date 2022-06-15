@@ -5,7 +5,7 @@ import {
   FetchData,
   useInfinityScroll,
 } from '../../../components/InfinityScroll';
-import { BorrowNFT } from '../../../state/userTokens/types';
+import { BorrowNFT } from './../../../state/userTokens/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { userTokensActions } from '../../../state/userTokens/actions';
 import { selectBorrowNfts } from '../../../state/userTokens/selectors';
@@ -31,7 +31,7 @@ export const useBorrowPage = (): {
     searchStr,
   }) => {
     try {
-      const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
+      const URL = `https://${process.env.BACKEND_DOMAIN}/nft/meta`;
       const isSearch = searchStr ? `search=${searchStr}&` : '';
 
       const fullURL = `${URL}/${wallet?.publicKey?.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;

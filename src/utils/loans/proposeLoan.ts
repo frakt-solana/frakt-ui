@@ -1,12 +1,12 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
+import { notify } from '../';
+import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
-import { notify } from '../../../utils';
-import { NotifyType } from '../../../utils/solanaUtils';
+} from '../transactions';
 
 type ProposeLoan = (props: {
   connection: web3.Connection;

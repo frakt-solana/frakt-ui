@@ -1,33 +1,36 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
-import { NotifyType } from '../../../utils/solanaUtils';
-import { notify } from '../../../utils';
+import { NotifyType } from '../solanaUtils';
+import { notify } from '../';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
+} from '../transactions';
 
-type HarvestLiquidity = (props: {
+type UnstakeLiquidity = (props: {
   connection: web3.Connection;
   wallet: WalletContextState;
   liquidityPool: string;
+  amount: number;
 }) => Promise<boolean>;
 
-export const harvestLiquidity: HarvestLiquidity = async ({
+export const unstakeLiquidity: UnstakeLiquidity = async ({
   connection,
   wallet,
   liquidityPool,
+  amount,
 }): Promise<boolean> => {
   try {
     const options = AnchorProvider.defaultOptions();
     const provider = new AnchorProvider(connection, wallet, options);
 
-    await lending.harvestLiquidity({
+    await lending.unstakeLiquidity({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       liquidityPool: new web3.PublicKey(liquidityPool),
       user: wallet.publicKey,
+      amount,
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -39,7 +42,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
     });
 
     notify({
-      message: 'Harvest liquidity successfully!',
+      message: 'Unstake liquidity successfully!',
       type: NotifyType.SUCCESS,
     });
 
