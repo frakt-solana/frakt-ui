@@ -22,8 +22,9 @@ import {
   multiply,
 } from 'ramda';
 import { isNilOrEmpty } from 'ramda-adjunct';
+import { LiquidityPoolView } from '@frakt-protocol/frakt-sdk';
 
-import { Lending, LiquidityPoolView, LoansPoolInfo, LoanView } from './types';
+import { Lending, LoansPoolInfo, LoanView } from './types';
 import {
   selectWalletPublicKey,
   selectSolanaTimestamp,

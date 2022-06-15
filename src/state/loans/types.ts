@@ -1,5 +1,3 @@
-export * from '@frakters/nft-lending-v2/lib/accounts';
-
 export interface LoanView {
   nftName: string;
   nftImageUrl: string;

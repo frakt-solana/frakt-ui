@@ -1,6 +1,7 @@
 import { createReducer } from 'typesafe-actions';
 import { combineReducers } from 'redux';
 import { flip, reject, includes, compose, prop } from 'ramda';
+import { TokenView } from '@frakt-protocol/frakt-sdk';
 
 import {
   createHandlers,
@@ -10,7 +11,6 @@ import {
 import { userTokensActions, userTokensTypes } from './actions';
 import { BorrowNftsState, UserNFT } from './types';
 import { AsyncState } from '../../utils/state';
-import { TokenView } from '../../utils/accounts';
 
 const includesIn = flip(includes);
 
