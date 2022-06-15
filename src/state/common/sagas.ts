@@ -8,6 +8,7 @@ import loansSagas from '../loans/sagas';
 import { commonTypes, commonActions } from './actions';
 import { tokenListActions } from '../tokenList/actions';
 import { networkRequest, connectSocket } from '../../utils/state';
+import { parseSolanaHealth } from './helpers';
 
 const appInitSaga = function* () {
   yield put(commonActions.fetchSolanaHealth());
@@ -23,7 +24,10 @@ const fetchSolanaHealthSaga = function* () {
     const data = yield call(networkRequest, {
       url: 'https://ping.solana.com/mainnet-beta/last6hours',
     });
-    yield put(commonActions.fetchSolanaHealthFulfilled(data));
+
+    yield put(
+      commonActions.fetchSolanaHealthFulfilled(parseSolanaHealth(data)),
+    );
   } catch (error) {
     yield put(commonActions.fetchSolanaHealthFailed(error));
   }

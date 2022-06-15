@@ -13,13 +13,17 @@ import {
   ConnectionState,
   NotificationState,
   SocketState,
-  SolanaHealthResponse,
+  SolanaHealthState,
+  SolanaNetworkHealth,
   WalletModalState,
   WalletState,
 } from './types';
 
-export const initialFetchSolanaHealthState: AsyncState<SolanaHealthResponse[]> =
-  createInitialAsyncState<SolanaHealthResponse[]>(null);
+export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
+  createInitialAsyncState<SolanaHealthState>({
+    health: SolanaNetworkHealth.Good,
+    loss: 0,
+  });
 export const initialFetchSolanaTimestampState: AsyncState<number> =
   createInitialAsyncState<number>(null);
 export const initialConnectionState: ConnectionState = { connection: null };
@@ -35,9 +39,9 @@ export const initialNotificationState: NotificationState = {
 };
 export const initialWalletModalState: WalletModalState = { isVisible: false };
 
-const fetchSolanaHealthReducer = createReducer(
-  initialFetchSolanaHealthState,
-  createHandlers<SolanaHealthResponse[]>(commonTypes.FETCH_SOLANA_HEALTH),
+const solanaHealthReducer = createReducer(
+  initialSolanaHealthState,
+  createHandlers<SolanaHealthState>(commonTypes.FETCH_SOLANA_HEALTH),
 );
 const fetchSolanaTimestampReducer = createReducer(
   initialFetchSolanaTimestampState,
@@ -110,7 +114,7 @@ export default combineReducers({
   connection: setConnectionReducer,
   socket: setSocketReducer,
   wallet: setWalletReducer,
-  fetchSolanaHealth: fetchSolanaHealthReducer,
+  solanaHealth: solanaHealthReducer,
   fetchSolanaTimestamp: fetchSolanaTimestampReducer,
   notification: setNotificationReducer,
   walletModal: composeReducers(setWalletModalReducer, toggleWalletModalReducer),

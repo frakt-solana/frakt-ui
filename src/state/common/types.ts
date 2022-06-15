@@ -20,6 +20,11 @@ export enum SolanaNetworkHealth {
   Good = 'Good',
 }
 
+export interface SolanaHealthState {
+  health: SolanaNetworkHealth;
+  loss: number;
+}
+
 export interface ConnectionState {
   connection: Connection;
 }
