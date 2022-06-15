@@ -3,13 +3,13 @@ import { eventChannel } from 'redux-saga';
 import { Socket } from 'socket.io-client';
 import { loansActions } from './actions';
 
-const loanChannel = (socket) =>
+const loanChannel = (socket: Socket) =>
   eventChannel((emit) => {
     socket.on('loans', (response) => emit(response || []));
     return () => socket.off('loans');
   });
 
-const lendingChannel = (socket) =>
+const lendingChannel = (socket: Socket) =>
   eventChannel((emit) => {
     socket.on('lending', (response) => emit(response));
     return () => socket.off('lending');
