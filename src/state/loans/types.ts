@@ -36,3 +36,35 @@ export interface LoansPoolInfo {
   rewardAmount?: number;
   totalBorrowed?: number;
 }
+
+export interface Lending {
+  activeLoansCount: number;
+  collectionsCount: number;
+  deposit?: {
+    amount: number;
+    depositPubkey: string;
+    liquidityPool: string;
+    stakedAt: number;
+    stakedAtCumulative: number;
+    updatedAt: string;
+  };
+  user?: string;
+  liquidityPool: {
+    amountOfStaked: number;
+    apr: number;
+    cumulative: number;
+    feeInterestRatePrice: number;
+    feeInterestRateTime: number;
+    id: number;
+    lastTime: number;
+    liqOwner: string;
+    liquidityAmount: number;
+    liquidityPoolPubkey: string;
+    oldCumulative: number;
+    period: number;
+    rewardInterestRatePrice: number;
+    rewardInterestRateTime: number;
+    updatedAt: string;
+    userRewardsAmount: number;
+  };
+}

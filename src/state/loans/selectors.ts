@@ -23,7 +23,7 @@ import {
 } from 'ramda';
 import { isNilOrEmpty } from 'ramda-adjunct';
 
-import { LiquidityPoolView, LoansPoolInfo, LoanView } from './types';
+import { Lending, LiquidityPoolView, LoansPoolInfo, LoanView } from './types';
 import {
   selectWalletPublicKey,
   selectSolanaTimestamp,
@@ -57,10 +57,11 @@ export const selectUserLoansPending = createSelector(
   identity,
 );
 
-export const selectLending: (state) => LiquidityPoolView = createSelector(
-  [pathOr([], ['loans', 'lending', 'data'])],
-  find(pathEq(['liquidityPool', 'liquidityPoolPubkey'], LOAN_POOL_PUBKEY)),
-);
+export const selectLending: (state: LiquidityPoolView) => LiquidityPoolView =
+  createSelector(
+    [pathOr([], ['loans', 'lending', 'data'])],
+    find(pathEq(['liquidityPool', 'liquidityPoolPubkey'], LOAN_POOL_PUBKEY)),
+  );
 
 export const selectLiquidityPoolInfo: (state) => LoansPoolInfo = createSelector(
   [selectLending, selectSolanaTimestamp],
@@ -77,8 +78,8 @@ export const selectLiquidityPoolInfo: (state) => LoansPoolInfo = createSelector(
       ),
       totalBorrowed: processOr(
         0,
-        converge<any, any, any>(
-          (amountOfStaked, liquidityAmount) =>
+        converge(
+          (amountOfStaked: number, liquidityAmount: number) =>
             (amountOfStaked - liquidityAmount) / 1e9,
           [
             path(['liquidityPool', 'amountOfStaked']),
@@ -88,8 +89,8 @@ export const selectLiquidityPoolInfo: (state) => LoansPoolInfo = createSelector(
       ),
       utilizationRate: processOr(
         0,
-        converge<any, any, any>(
-          (amountOfStaked, liquidityAmount) =>
+        converge(
+          (amountOfStaked: number, liquidityAmount: number) =>
             ((amountOfStaked - liquidityAmount) / amountOfStaked) * 100,
           [
             path(['liquidityPool', 'amountOfStaked']),
@@ -103,21 +104,21 @@ export const selectLiquidityPoolInfo: (state) => LoansPoolInfo = createSelector(
       ),
       loans: pathOr(0, ['activeLoansCount']),
       depositAmount: compose(divide(__, 1e9), pathOr(0, ['deposit', 'amount'])),
-      rewardAmount: (lending) => {
-        const arp = path(['liquidityPool', 'apr'], lending);
-        const depositAmount = path(['deposit', 'amount'], lending);
-        if (!arp || !depositAmount) return 0;
+      rewardAmount: (lending: Lending) => {
+        const apr = path<number>(['liquidityPool', 'apr'], lending);
+        const depositAmount = path<number>(['deposit', 'amount'], lending);
+        if (!apr || !depositAmount) return 0;
 
-        const { lastTime, period, apr, cumulative } = lending.liquidityPool;
+        const { lastTime, period, cumulative } = lending.liquidityPool;
         const { stakedAtCumulative, amount } = lending.deposit;
 
-        let differentTime = solanaTimestamp - lastTime;
+        let timeDiff = solanaTimestamp - lastTime;
 
-        if (differentTime > period) {
-          differentTime = period - 1;
+        if (timeDiff > period) {
+          timeDiff = period - 1;
         }
 
-        const rewardCumulative = differentTime * apr + cumulative;
+        const rewardCumulative = timeDiff * apr + cumulative;
         const rewardAmount =
           ((rewardCumulative - stakedAtCumulative) * amount) / 1e11 / 1e9;
         return rewardAmount < 0 ? 0 : rewardAmount;
