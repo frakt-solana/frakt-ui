@@ -98,7 +98,7 @@ const BorrowPage: FC = () => {
                     (selectedNft) => selectedNft?.mint === nft.mint,
                   )
                 }
-                loanValue={Number(nft.maxLoanValue)}
+                loanValue={nft.maxLoanValue}
               />
             );
           })}

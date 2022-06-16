@@ -17,9 +17,8 @@ export const ShortTermFields: FC<ShortTermFields> = ({ nft }) => {
     fee,
     feeDiscountPercents,
     repayValue,
+    loanValue,
   } = nft.timeBased;
-
-  const loanValue = parseFloat(valuation) * (ltvPercents / 100); //TODO: Add on server
 
   return (
     <div className={styles.fieldWrapper}>

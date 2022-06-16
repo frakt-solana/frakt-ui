@@ -26,7 +26,7 @@ import { isNilOrEmpty } from 'ramda-adjunct';
 import {
   BorrowNft,
   Lending,
-  LiquidityPoolView,
+  // LiquidityPoolView,
   LoansPoolInfo,
   LoanView,
 } from './types';
@@ -63,11 +63,10 @@ export const selectUserLoansPending = createSelector(
   identity,
 );
 
-export const selectLending: (state: LiquidityPoolView) => LiquidityPoolView =
-  createSelector(
-    [pathOr([], ['loans', 'lending', 'data'])],
-    find(pathEq(['liquidityPool', 'liquidityPoolPubkey'], LOAN_POOL_PUBKEY)),
-  );
+export const selectLending: (state: any) => any = createSelector(
+  [pathOr([], ['loans', 'lending', 'data'])],
+  find(pathEq(['liquidityPool', 'liquidityPoolPubkey'], LOAN_POOL_PUBKEY)),
+);
 
 export const selectLiquidityPoolInfo: (state) => LoansPoolInfo = createSelector(
   [selectLending, selectSolanaTimestamp],

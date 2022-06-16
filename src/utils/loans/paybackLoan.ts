@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import { paybackLoan as txn } from '@frakters/nft-lending-v2';
 import { Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
@@ -36,6 +37,7 @@ export const paybackLoan: PaybackLoan = async ({
       liquidityPool: new PublicKey(loan.liquidityPool),
       collectionInfo: new PublicKey(loan.collectionInfo),
       royaltyAddress: new PublicKey(loan.royaltyAddress),
+      amount: new BN(10000),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,

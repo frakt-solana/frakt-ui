@@ -26,15 +26,16 @@ export const proposeLoan: ProposeLoan = async ({
   try {
     const options = Provider.defaultOptions();
     const provider = new Provider(connection, wallet, options);
-    const programId = new PublicKey(process.env.LOANS_PROGRAM_PUBKEY);
 
     const { loanPubkey } = await txn({
-      programId,
+      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       user: wallet.publicKey,
       nftMint: new PublicKey(nftMint),
       proposedNftPrice: proposedNftPrice,
       isPriceBased: false,
+      loanToValue: 20.5,
+      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
           transaction,

@@ -33,6 +33,7 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
       liquidityPool: new PublicKey(liquidityPool),
       user: wallet.publicKey,
       amount,
+      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,

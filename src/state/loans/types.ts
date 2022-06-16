@@ -1,4 +1,4 @@
-export * from '@frakters/nft-lending-v2/lib/accounts';
+// export * from '@frakters/nft-lending-v2/lib/accounts';
 
 export interface LoanView {
   nftName: string;
@@ -82,10 +82,52 @@ export interface BorrowNft {
     feeDiscountPercents: string; // 2
     repayValue: string; // 1.101
     liquidityPoolPubkey: string;
+    loanValue: string; // 1.020
   };
   priceBased?: {
     liquidityPoolPubkey: string;
     ltvPercents: number; // 40
     borrowAPRPercents: number; // 10
   };
+}
+
+export interface TimeBasedLiquidityPool {
+  amountOfStaked: number;
+  apr: number;
+  cumulative: number;
+  feeInterestRatePrice: number;
+  feeInterestRateTime: number;
+  id: number;
+  lastTime: number;
+  liqOwner: string;
+  liquidityAmount: number;
+  liquidityPoolPubkey: string;
+  oldCumulative: number;
+  period: number;
+  rewardInterestRatePrice: number;
+  rewardInterestRateTime: number;
+  userRewardsAmount: number;
+  createdAt: string; // 2022-06-15T11:11:32.462Z
+  updatedAt: string; // 2022-06-15T11:11:32.462Z
+}
+
+export interface PriceBasedLiquidityPool {
+  amountOfStaked: number;
+  baseBorrowRate: number;
+  borrowApr: number;
+  borrowCumulative: number;
+  depositApr: number;
+  depositCumulative: number;
+  id: number;
+  lastTime: number;
+  liqOwner: string;
+  liquidityAmount: number;
+  liquidityPoolPubkey: string;
+  reserveAmount: number;
+  reserveFactor: number;
+  utilizationRateOptimal: number;
+  variableSlope1: number;
+  variableSlope2: number;
+  createdAt: string; // 2022-06-15T11:11:32.462Z
+  updatedAt: string; // 2022-06-15T11:11:32.462Z
 }
