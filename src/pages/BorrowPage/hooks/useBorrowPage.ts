@@ -31,7 +31,7 @@ export const useBorrowPage = (): {
     searchStr,
   }) => {
     try {
-      const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
+      const URL = `https://${process.env.BACKEND_DOMAIN}/nft/meta`;
       const isSearch = searchStr ? `search=${searchStr}&` : '';
 
       const fullURL = `${URL}/${wallet?.publicKey?.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;

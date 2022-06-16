@@ -16,6 +16,7 @@ import { TokenInfo } from '@solana/spl-token-registry';
 
 import { TokenListState } from './types';
 import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';
+import { RequestStatus } from '../../utils/state';
 
 //? Add some external spl tokens in swappableTokensMap
 const ADDITIONAL_SWAPPABLE_TOKENS_MINTS = [
@@ -70,7 +71,7 @@ export const selectFraktTokenMap = createSelector(
 
 export const selectLoading = createSelector(
   [pathOr('', ['tokenList', 'status'])],
-  equals('PENDING'),
+  equals(RequestStatus.PENDING),
 );
 
 export const selectTokenListState: (state) => TokenListState = createSelector(

@@ -20,7 +20,6 @@ import { UserTokensProvider } from './contexts/userTokens';
 import { ENDPOINT } from './config';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
-import { LoansProvider } from './contexts/loans';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { PrismProvider } from './contexts/prism';
 import { createBrowserHistory } from 'history';
@@ -46,11 +45,9 @@ const App: FC = () => {
           <UserTokensProvider>
             <LiquidityPoolsProvider>
               <NftPoolsProvider>
-                <LoansProvider>
-                  <PrismProvider>
-                    <Router />
-                  </PrismProvider>
-                </LoansProvider>
+                <PrismProvider>
+                  <Router />
+                </PrismProvider>
               </NftPoolsProvider>
             </LiquidityPoolsProvider>
           </UserTokensProvider>

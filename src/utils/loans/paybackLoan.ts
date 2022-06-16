@@ -1,28 +1,27 @@
-import { depositLiquidity as txn } from '@frakters/nft-lending-v2';
+import { paybackLoan as txn } from '@frakters/nft-lending-v2';
+import { Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
 
-import { NotifyType } from '../../../utils/solanaUtils';
-import { notify } from '../../../utils';
+import { notify } from '..';
+import { LoanView } from '../../state/loans/types';
+import { captureSentryError } from '../sentry';
+import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
-import { captureSentryError } from '../../../utils/sentry';
+} from '../transactions';
 
-type DepositLiquidity = (props: {
+type PaybackLoan = (props: {
   connection: Connection;
   wallet: WalletContextState;
-  liquidityPool: string;
-  amount: number;
+  loan: LoanView;
 }) => Promise<boolean>;
 
-export const depositLiquidity: DepositLiquidity = async ({
+export const paybackLoan: PaybackLoan = async ({
   connection,
   wallet,
-  liquidityPool,
-  amount,
+  loan,
 }): Promise<boolean> => {
   try {
     const options = Provider.defaultOptions();
@@ -31,9 +30,13 @@ export const depositLiquidity: DepositLiquidity = async ({
     await txn({
       programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
-      liquidityPool: new PublicKey(liquidityPool),
       user: wallet.publicKey,
-      amount,
+      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      loan: new PublicKey(loan.loanPubkey),
+      nftMint: new PublicKey(loan.nftMint),
+      liquidityPool: new PublicKey(loan.liquidityPool),
+      collectionInfo: new PublicKey(loan.collectionInfo),
+      royaltyAddress: new PublicKey(loan.royaltyAddress),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -45,7 +48,7 @@ export const depositLiquidity: DepositLiquidity = async ({
     });
 
     notify({
-      message: 'Deposit liquidity successfully!',
+      message: 'Paid back successfully!',
       type: NotifyType.SUCCESS,
     });
 
@@ -60,7 +63,7 @@ export const depositLiquidity: DepositLiquidity = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'depositLiquidity' });
+    captureSentryError({ error, wallet, transactionName: 'paybackLoan' });
 
     return false;
   }

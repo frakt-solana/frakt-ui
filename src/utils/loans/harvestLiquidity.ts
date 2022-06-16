@@ -1,32 +1,26 @@
-import {
-  CollectionInfoView,
-  LoanView,
-  paybackLoan as txn,
-} from '@frakters/nft-lending-v2';
-import { Provider } from '@project-serum/anchor';
+import { harvestLiquidity as txn } from '@frakters/nft-lending-v2';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
+import { Provider } from '@project-serum/anchor';
 
-import { notify } from '../../../utils';
-import { captureSentryError } from '../../../utils/sentry';
-import { NotifyType } from '../../../utils/solanaUtils';
+import { NotifyType } from '../solanaUtils';
+import { notify } from '../';
+import { captureSentryError } from '../sentry';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
+  showSolscanLinkNotification,
+} from '../transactions';
 
-type PaybackLoan = (props: {
+type HarvestLiquidity = (props: {
   connection: Connection;
   wallet: WalletContextState;
-  loan: LoanView;
-  collectionInfo: CollectionInfoView;
+  liquidityPool: string;
 }) => Promise<boolean>;
 
-export const paybackLoan: PaybackLoan = async ({
+export const harvestLiquidity: HarvestLiquidity = async ({
   connection,
   wallet,
-  loan,
-  collectionInfo,
+  liquidityPool,
 }): Promise<boolean> => {
   try {
     const options = Provider.defaultOptions();
@@ -35,13 +29,8 @@ export const paybackLoan: PaybackLoan = async ({
     await txn({
       programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
+      liquidityPool: new PublicKey(liquidityPool),
       user: wallet.publicKey,
-      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-      loan: new PublicKey(loan.loanPubkey),
-      nftMint: new PublicKey(loan.nftMint),
-      liquidityPool: new PublicKey(loan.liquidityPool),
-      collectionInfo: new PublicKey(loan.collectionInfo),
-      royaltyAddress: new PublicKey(collectionInfo.royaltyAddress),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -53,7 +42,7 @@ export const paybackLoan: PaybackLoan = async ({
     });
 
     notify({
-      message: 'Paid back successfully!',
+      message: 'Harvest liquidity successfully!',
       type: NotifyType.SUCCESS,
     });
 
@@ -68,7 +57,7 @@ export const paybackLoan: PaybackLoan = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'paybackLoan' });
+    captureSentryError({ error, wallet, transactionName: 'harvestLiquidity' });
 
     return false;
   }

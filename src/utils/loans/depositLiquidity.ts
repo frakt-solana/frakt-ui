@@ -1,26 +1,28 @@
-import { harvestLiquidity as txn } from '@frakters/nft-lending-v2';
+import { depositLiquidity as txn } from '@frakters/nft-lending-v2';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
 
-import { NotifyType } from '../../../utils/solanaUtils';
-import { notify } from '../../../utils';
+import { NotifyType } from '../solanaUtils';
+import { notify } from '../';
+import { captureSentryError } from '../sentry';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
-import { captureSentryError } from '../../../utils/sentry';
+  showSolscanLinkNotification,
+} from '../transactions';
 
-type HarvestLiquidity = (props: {
+type DepositLiquidity = (props: {
   connection: Connection;
   wallet: WalletContextState;
   liquidityPool: string;
+  amount: number;
 }) => Promise<boolean>;
 
-export const harvestLiquidity: HarvestLiquidity = async ({
+export const depositLiquidity: DepositLiquidity = async ({
   connection,
   wallet,
   liquidityPool,
+  amount,
 }): Promise<boolean> => {
   try {
     const options = Provider.defaultOptions();
@@ -31,6 +33,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
       provider,
       liquidityPool: new PublicKey(liquidityPool),
       user: wallet.publicKey,
+      amount,
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -42,7 +45,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
     });
 
     notify({
-      message: 'Harvest liquidity successfully!',
+      message: 'Deposit liquidity successfully!',
       type: NotifyType.SUCCESS,
     });
 
@@ -57,7 +60,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'harvestLiquidity' });
+    captureSentryError({ error, wallet, transactionName: 'depositLiquidity' });
 
     return false;
   }
