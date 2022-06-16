@@ -5,10 +5,13 @@ import {
 } from '@frakters/community-pools-client-library-v2';
 
 import {
+  showSolscanLinkNotification,
   signAndConfirmTransaction,
   WalletAndConnection,
-  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
+import { notify } from '../../../utils';
+import { NotifyType } from '../../../utils/solanaUtils';
+import { captureSentryError } from '../../../utils/sentry';
 
 export interface AddToWhiteListTransactionParams {
   communityPoolAddress: string;
@@ -19,37 +22,47 @@ export interface AddToWhiteListTransactionRawParams
   extends AddToWhiteListTransactionParams,
     WalletAndConnection {}
 
-const rawAddToWhitelist = async ({
+export const addToWhitelistTransaction = async ({
   connection,
   wallet,
   communityPoolAddress,
   whitelistedAddress,
 }: AddToWhiteListTransactionRawParams): Promise<void> => {
-  await addToWhitelist(
-    {
-      isCreator: false,
-      communityPool: new PublicKey(communityPoolAddress),
-      whitelistedAddress: new PublicKey(whitelistedAddress),
-    },
-    {
-      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-      userPubkey: wallet.publicKey,
-      provider: new Provider(connection, wallet, null),
-      sendTxn: async (transaction, signers) => {
-        await signAndConfirmTransaction({
-          transaction,
-          connection,
-          wallet,
-          signers,
-        });
+  try {
+    await addToWhitelist(
+      {
+        isCreator: false,
+        communityPool: new PublicKey(communityPoolAddress),
+        whitelistedAddress: new PublicKey(whitelistedAddress),
       },
-    },
-  );
-};
+      {
+        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+        userPubkey: wallet.publicKey,
+        provider: new Provider(connection, wallet, null),
+        sendTxn: async (transaction, signers) => {
+          await signAndConfirmTransaction({
+            transaction,
+            connection,
+            wallet,
+            signers,
+          });
+        },
+      },
+    );
+  } catch (error) {
+    const isNotConfirmed = showSolscanLinkNotification(error);
 
-export const addToWhitelistTransaction = wrapTxnWithTryCatch(
-  rawAddToWhitelist,
-  {
-    onErrorMessage: { message: 'Transaction failed' },
-  },
-);
+    if (!isNotConfirmed) {
+      notify({
+        message: 'Transaction failed',
+        type: NotifyType.ERROR,
+      });
+    }
+
+    captureSentryError({
+      error,
+      user: wallet?.publicKey?.toBase58(),
+      transactionName: 'addToWhitelist',
+    });
+  }
+};

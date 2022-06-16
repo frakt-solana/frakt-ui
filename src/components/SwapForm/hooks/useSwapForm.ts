@@ -14,6 +14,7 @@ import { NotifyType } from '../../../utils/solanaUtils';
 import { selectUserTokensState } from '../../../state/userTokens/selectors';
 import { getTokenBalance } from '../../TokenField/TokenFieldWithBalance';
 import { useNativeAccount } from '../../../utils/accounts';
+import { captureSentryError } from '../../../utils/sentry';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -217,9 +218,13 @@ export const useSwapForm = (
 
       notify({ message: 'Swapped successfully', type: NotifyType.SUCCESS });
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
       notify({ message: 'Swap failed', type: NotifyType.ERROR });
+
+      captureSentryError({
+        error,
+        user: wallet?.publicKey?.toBase58(),
+        transactionName: 'swapTokens',
+      });
     } finally {
       closeLoadingModal();
     }

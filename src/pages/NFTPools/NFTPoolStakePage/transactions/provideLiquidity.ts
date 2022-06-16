@@ -10,6 +10,7 @@ import {
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { captureSentryError } from '../../../../utils/sentry';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
 import { calcRatio } from '../components';
@@ -112,8 +113,11 @@ export const provideLiquidity: ProvideLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      user: wallet?.publicKey?.toBase58(),
+      transactionName: 'ProvideLiquidityInNftPool',
+    });
 
     return false;
   }

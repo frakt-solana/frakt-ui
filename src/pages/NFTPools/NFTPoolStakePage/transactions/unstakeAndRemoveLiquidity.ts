@@ -20,6 +20,7 @@ import {
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { captureSentryError } from '../../../../utils/sentry';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
 
@@ -182,8 +183,11 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      user: wallet?.publicKey?.toBase58(),
+      transactionName: 'unstakeAndRemoveLiquidity',
+    });
 
     return false;
   }

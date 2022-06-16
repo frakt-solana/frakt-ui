@@ -24,6 +24,7 @@ import {
   getWhitelistedCreatorsDictionary,
   isNFTWhitelistedByCreator,
 } from '../../../../contexts/nftPools';
+import { captureSentryError } from '../../../../utils/sentry';
 
 type SellNftAndDeposit = (props: {
   wallet: WalletContextState;
@@ -200,8 +201,11 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      user: wallet?.publicKey?.toBase58(),
+      transactionName: 'sellNftAndDeposit',
+    });
 
     return false;
   }
