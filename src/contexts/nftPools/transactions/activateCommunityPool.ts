@@ -57,7 +57,7 @@ export const activateCommunityPoolTransaction = async ({
 
     captureSentryError({
       error,
-      user: wallet?.publicKey?.toBase58(),
+      wallet,
       transactionName: 'activateCommunityPool',
     });
   }

@@ -115,8 +115,8 @@ export const provideLiquidity: ProvideLiquidity = async ({
 
     captureSentryError({
       error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'ProvideLiquidityInNftPool',
+      wallet,
+      transactionName: 'provideLiquidityInNftPool',
     });
 
     return false;

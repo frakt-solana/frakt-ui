@@ -159,11 +159,7 @@ export const sellNftAndStake: SellNftAndStake = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'sellNftAndStake',
-    });
+    captureSentryError({ error, wallet, transactionName: 'sellNftAndStake' });
 
     return false;
   }

@@ -259,11 +259,7 @@ export const swapNft: SwapNft = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'swapNft',
-    });
+    captureSentryError({ error, wallet, transactionName: 'swapNft' });
 
     return false;
   }

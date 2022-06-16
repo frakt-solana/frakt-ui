@@ -77,7 +77,7 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
 
     captureSentryError({
       error,
-      user: wallet?.publicKey?.toBase58(),
+      wallet,
       transactionName: 'stakeInLiquidityFusion',
     });
 

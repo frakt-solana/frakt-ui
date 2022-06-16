@@ -60,11 +60,7 @@ export const depositLiquidity: DepositLiquidity = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'Deposit liquidity',
-    });
+    captureSentryError({ error, wallet, transactionName: 'depositLiquidity' });
 
     return false;
   }

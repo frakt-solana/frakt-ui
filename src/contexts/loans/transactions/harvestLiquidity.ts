@@ -57,11 +57,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'Harvest liquidity',
-    });
+    captureSentryError({ error, wallet, transactionName: 'harvestLiquidity' });
 
     return false;
   }

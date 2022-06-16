@@ -59,10 +59,6 @@ export const addToWhitelistTransaction = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'addToWhitelist',
-    });
+    captureSentryError({ error, wallet, transactionName: 'addToWhitelist' });
   }
 };

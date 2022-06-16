@@ -88,11 +88,7 @@ export const proposeLoan: ProposeLoan = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'Propose loan',
-    });
+    captureSentryError({ error, wallet, transactionName: 'proposeLoan' });
 
     return false;
   }

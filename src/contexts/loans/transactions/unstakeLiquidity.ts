@@ -60,11 +60,7 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'Unstake liquidity',
-    });
+    captureSentryError({ error, wallet, transactionName: 'unstakeLiquidity' });
 
     return false;
   }

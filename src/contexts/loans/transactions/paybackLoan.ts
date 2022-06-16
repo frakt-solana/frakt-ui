@@ -68,11 +68,7 @@ export const paybackLoan: PaybackLoan = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'Payback loan',
-    });
+    captureSentryError({ error, wallet, transactionName: 'paybackLoan' });
 
     return false;
   }

@@ -52,7 +52,7 @@ export const addToWhitelistOwner = async ({
 
     captureSentryError({
       error,
-      user: wallet?.publicKey?.toBase58(),
+      wallet,
       transactionName: 'addToWhitelistOwner',
     });
   }

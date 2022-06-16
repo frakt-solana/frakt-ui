@@ -220,11 +220,7 @@ export const useSwapForm = (
     } catch (error) {
       notify({ message: 'Swap failed', type: NotifyType.ERROR });
 
-      captureSentryError({
-        error,
-        user: wallet?.publicKey?.toBase58(),
-        transactionName: 'swapTokens',
-      });
+      captureSentryError({ error, wallet, transactionName: 'swapTokens' });
     } finally {
       closeLoadingModal();
     }

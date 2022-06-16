@@ -234,11 +234,7 @@ export const sellNft: SellNft = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'sellNft',
-    });
+    captureSentryError({ error, wallet, transactionName: 'sellNft' });
 
     return false;
   }

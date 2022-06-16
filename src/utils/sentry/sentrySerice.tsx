@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import * as ReactSentry from '@sentry/react';
+import { WalletContextState } from '@solana/wallet-adapter-react';
 import { RouterHistory } from '@sentry/react/types/reactrouter';
 import { Integrations } from '@sentry/tracing';
 import { SENTRY_APP_DSN } from './constants';
@@ -20,13 +21,15 @@ export const initSentry = (history: RouterHistory): void => {
 
 export const captureSentryError = ({
   error,
-  user,
+  wallet,
   transactionName,
 }: {
   error: Error;
-  user?: string;
+  wallet?: WalletContextState;
   transactionName: string;
 }): void => {
+  const user = wallet?.publicKey?.toBase58();
+
   if (user) {
     Sentry.setUser({ user });
   } else {

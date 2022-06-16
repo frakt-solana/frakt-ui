@@ -185,7 +185,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
 
     captureSentryError({
       error,
-      user: wallet?.publicKey?.toBase58(),
+      wallet,
       transactionName: 'unstakeAndRemoveLiquidity',
     });
 

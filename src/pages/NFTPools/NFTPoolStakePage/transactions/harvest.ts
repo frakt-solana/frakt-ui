@@ -138,11 +138,7 @@ export const harvest: Harvest = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'HarvestInNftPool',
-    });
+    captureSentryError({ error, wallet, transactionName: 'harvestInNftPool' });
 
     return false;
   }

@@ -203,11 +203,7 @@ export const buyRandomNft: BuyRandomNft = async ({
       });
     }
 
-    captureSentryError({
-      error,
-      user: wallet?.publicKey?.toBase58(),
-      transactionName: 'buyRandomNft',
-    });
+    captureSentryError({ error, wallet, transactionName: 'buyRandomNft' });
 
     return false;
   }
