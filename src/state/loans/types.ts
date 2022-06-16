@@ -131,3 +131,29 @@ export interface PriceBasedLiquidityPool {
   createdAt: string; // 2022-06-15T11:11:32.462Z
   updatedAt: string; // 2022-06-15T11:11:32.462Z
 }
+
+export interface LiquidityPoolDeposit {
+  amount: number;
+  depositPubkey: string;
+  liquidityPool: string;
+  stakedAt: number;
+  stakedAtCumulative: number;
+  updatedAt: string;
+}
+
+export interface LiquidityPoolInto<TLiquidityPool> {
+  activeLoansCount: number;
+  collectionsCount: number;
+  liquidityPool: TLiquidityPool;
+  deposit?: LiquidityPoolDeposit;
+}
+
+export interface LiquidityPoolsResponse {
+  priceBased: LiquidityPoolInto<PriceBasedLiquidityPool>[];
+  timeBased: LiquidityPoolInto<TimeBasedLiquidityPool>[];
+}
+
+export interface LiquidityPoolsState {
+  priceBased: LiquidityPoolInto<PriceBasedLiquidityPool>[];
+  timeBased: LiquidityPoolInto<TimeBasedLiquidityPool>;
+}

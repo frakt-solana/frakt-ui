@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
 import { sum } from 'ramda';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -29,36 +29,36 @@ const getRisk = ({
 
 interface ShortTermFields {
   nft: BorrowNft;
+  ltv: number;
+  setLtv: (nextValue: number) => void;
 }
 
-const LongTermFields: FC<ShortTermFields> = ({ nft }) => {
+const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
   const { valuation, priceBased } = nft;
 
   const { borrowAPRPercents, ltvPercents } = priceBased;
-
-  const [LTV, setLTV] = useState<number>(10);
 
   const marks = {
     10: '10%',
     [ltvPercents]: `${ltvPercents}%`,
   };
 
-  const liquidationPrice = Number(valuation) * (LTV / 100);
+  const liquidationPrice = Number(valuation) * (ltv / 100);
   const mintingFee = liquidationPrice * 0.01;
-  const loanValue = Number(valuation) * (LTV / 100) - mintingFee;
+  const loanValue = Number(valuation) * (ltv / 100);
 
-  const risk = getRisk({ LTV, limits: [10, ltvPercents] });
+  const risk = getRisk({ LTV: ltv, limits: [10, ltvPercents] });
 
   return (
     <div className={styles.fieldWrapper}>
       <div className={styles.sliderWrapper}>
-        <p className={styles.sliderLabel}>loan to value: {LTV}%</p>
+        <p className={styles.sliderLabel}>loan to value: {ltv}%</p>
         <Slider
           marks={marks}
           className={styles.slider}
-          value={LTV}
+          value={ltv}
           step={1}
-          setValue={setLTV}
+          setValue={setLtv}
           min={10}
           max={ltvPercents}
         />

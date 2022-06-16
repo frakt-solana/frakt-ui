@@ -1,6 +1,6 @@
 import { createReducer } from 'typesafe-actions';
 import { combineReducers } from 'redux';
-import { flip, reject, includes, compose, prop } from 'ramda';
+import { flip, reject, includes, compose, prop, identity, ifElse } from 'ramda';
 
 import {
   createHandlers,
@@ -11,6 +11,7 @@ import { userTokensActions, userTokensTypes } from './actions';
 import { UserNFT } from './types';
 import { AsyncState } from '../../utils/state';
 import { TokenView } from '../../utils/accounts';
+import { isArray } from 'ramda-adjunct';
 
 const includesIn = flip(includes);
 
@@ -35,13 +36,16 @@ const removeTokenOptimisticReducer = createReducer<AsyncState<TokenView[]>>(
     [userTokensTypes.REMOVE_TOKEN_OPTIMISTIC]: (
       state,
       action: ReturnType<typeof userTokensActions.removeTokenOptimistic>,
-    ) => ({
-      ...state,
-      data: reject(
-        compose(includesIn(action.payload), prop('mint')),
-        state.data,
-      ),
-    }),
+    ) => {
+      return {
+        ...state,
+        data: ifElse(
+          isArray,
+          reject(compose(includesIn(action.payload), prop('mint'))),
+          identity,
+        )(state.data),
+      };
+    },
   },
 );
 

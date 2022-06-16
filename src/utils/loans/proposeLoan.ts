@@ -1,9 +1,9 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
+import { BN, Provider } from '@project-serum/anchor';
 import { proposeLoan as txn, decodeLoan } from '@frakters/nft-lending-v2';
 
-import { notify } from '../';
+import { notify, SOL_TOKEN } from '../';
 import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
@@ -14,14 +14,18 @@ type ProposeLoan = (props: {
   connection: Connection;
   wallet: WalletContextState;
   nftMint: string;
-  proposedNftPrice: number;
+  valuation: number; //? SOL Lamports
+  loanToValue: number; //? Percent
+  isPriceBased?: boolean;
 }) => Promise<boolean>;
 
 export const proposeLoan: ProposeLoan = async ({
   connection,
   wallet,
   nftMint,
-  proposedNftPrice,
+  valuation,
+  loanToValue,
+  isPriceBased = false,
 }): Promise<boolean> => {
   try {
     const options = Provider.defaultOptions();
@@ -32,9 +36,9 @@ export const proposeLoan: ProposeLoan = async ({
       provider,
       user: wallet.publicKey,
       nftMint: new PublicKey(nftMint),
-      proposedNftPrice: proposedNftPrice,
-      isPriceBased: false,
-      loanToValue: 20.5,
+      proposedNftPrice: new BN(valuation * 10 ** SOL_TOKEN.decimals),
+      isPriceBased,
+      loanToValue: new BN(loanToValue * 100), //? Percent 20% ==> 2000
       admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({

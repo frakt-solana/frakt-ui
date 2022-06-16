@@ -4,13 +4,12 @@ import { AsyncState } from '../../utils/state';
 
 import { createInitialAsyncState } from '../../utils/state/reducers';
 import { loansActions, loansTypes } from './actions';
-import { BorrowNft, Lending, LoanView } from './types';
+import { BorrowNft, LiquidityPoolsState, LoanView } from './types';
 
-export const initialBorrowNftsState: BorrowNft[] = null;
 export const initialLoansState: AsyncState<LoanView[]> =
   createInitialAsyncState<LoanView[]>(null);
-export const initialLendingState: AsyncState<Lending> =
-  createInitialAsyncState<Lending>(null);
+export const initialLendingState: AsyncState<LiquidityPoolsState> =
+  createInitialAsyncState<LiquidityPoolsState>(null);
 
 const setLoansReducer = createReducer<AsyncState<LoanView[]>>(
   initialLoansState,
@@ -25,10 +24,10 @@ const setLoansReducer = createReducer<AsyncState<LoanView[]>>(
   },
 );
 
-const setLendingReducer = createReducer<AsyncState<Lending>>(
+const setLendingsReducer = createReducer<AsyncState<LiquidityPoolsState>>(
   initialLendingState,
   {
-    [loansTypes.SET_LENDING]: (
+    [loansTypes.SET_LENDINGS]: (
       state,
       action: ReturnType<typeof loansActions.setLending>,
     ) => ({
@@ -38,18 +37,23 @@ const setLendingReducer = createReducer<AsyncState<Lending>>(
   },
 );
 
-const setBorrowNftsReducer = createReducer<BorrowNft[]>(
-  initialBorrowNftsState,
-  {
-    [loansTypes.SET_BORROW_NFTS]: (
-      __,
-      action: ReturnType<typeof loansActions.setBorrowNfts>,
-    ) => action.payload,
-  },
-);
+const setBorrowNftsReducer = createReducer<BorrowNft[]>(null, {
+  [loansTypes.SET_BORROW_NFTS]: (
+    __,
+    action: ReturnType<typeof loansActions.setBorrowNfts>,
+  ) => action.payload,
+});
+
+const addHiddenBorrowNftsReducer = createReducer<string[]>([], {
+  [loansTypes.ADD_HIDDEN_BORROW_NFT]: (
+    state,
+    action: ReturnType<typeof loansActions.addHiddenBorrowNftMint>,
+  ) => [...state, action.payload],
+});
 
 export default combineReducers({
   loans: setLoansReducer,
-  lending: setLendingReducer,
+  lendings: setLendingsReducer,
   borrowNfts: setBorrowNftsReducer,
+  hiddenBorrowNfts: addHiddenBorrowNftsReducer,
 });

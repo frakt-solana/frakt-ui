@@ -26,6 +26,7 @@ import { isNilOrEmpty } from 'ramda-adjunct';
 import {
   BorrowNft,
   Lending,
+  LiquidityPoolsState,
   // LiquidityPoolView,
   LoansPoolInfo,
   LoanView,
@@ -64,8 +65,15 @@ export const selectUserLoansPending = createSelector(
 );
 
 export const selectLending: (state: any) => any = createSelector(
-  [pathOr([], ['loans', 'lending', 'data'])],
+  [pathOr([], ['loans', 'lendings', 'data'])],
   find(pathEq(['liquidityPool', 'liquidityPoolPubkey'], LOAN_POOL_PUBKEY)),
+);
+
+export const selectLiquidityPools: (
+  state: LiquidityPoolsState,
+) => LiquidityPoolsState = createSelector(
+  [pathOr(null, ['loans', 'lendings', 'data'])],
+  identity,
 );
 
 export const selectLiquidityPoolInfo: (state) => LoansPoolInfo = createSelector(
@@ -131,5 +139,15 @@ export const selectLiquidityPoolInfo: (state) => LoansPoolInfo = createSelector(
     })(lending),
 );
 
-export const selectBorrowNfts: (state: BorrowNft[]) => BorrowNft[] =
+export const selectHiddenBorrowNfts: (state: string[]) => string[] =
+  createSelector([pathOr([], ['loans', 'hiddenBorrowNfts'])], identity);
+
+export const selectAllBorrowNfts: (state: BorrowNft[]) => BorrowNft[] =
   createSelector([pathOr([], ['loans', 'borrowNfts'])], identity);
+
+export const selectBorrowNfts: (state: BorrowNft[]) => BorrowNft[] =
+  createSelector(
+    [selectHiddenBorrowNfts, selectAllBorrowNfts],
+    (hiddenBorrowNfts, borrowNfts) =>
+      borrowNfts?.filter(({ mint }) => !hiddenBorrowNfts.includes(mint)) || [],
+  );

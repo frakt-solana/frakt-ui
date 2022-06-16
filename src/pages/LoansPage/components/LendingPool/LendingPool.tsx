@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
 import { PoolModal } from '../../../../components/PoolModal';
-import { LoansPoolInfo, useLoansPage } from '../../hooks';
+import { useLoansPage } from '../../hooks';
 import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
@@ -12,27 +12,103 @@ import Tooltip from '../../../../components/Tooltip';
 import BearsImage from '../mockImage/Bears.png';
 import DegodsImage from '../mockImage/Degods.png';
 import { commonActions } from '../../../../state/common/actions';
+import {
+  LiquidityPoolInto,
+  PriceBasedLiquidityPool,
+  TimeBasedLiquidityPool,
+} from '../../../../state/loans/types';
+import { compose, converge, divide, pathOr, __ } from 'ramda';
 
 const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
 
+type UnitedLiquidityPoolInto =
+  | LiquidityPoolInto<PriceBasedLiquidityPool>
+  | LiquidityPoolInto<TimeBasedLiquidityPool>;
+
 interface LendingPoolProps {
-  loansPoolInfo: LoansPoolInfo;
+  liquidityPoolInfo: UnitedLiquidityPoolInto;
 }
 
-const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
+// const SECONDS_IN_YEAR = 31536000;
+
+const getUtilizationRate = converge(
+  (amountOfStaked: number, liquidityAmount: number) =>
+    ((amountOfStaked - liquidityAmount) / amountOfStaked) * 100,
+  [
+    pathOr(0, ['liquidityPool', 'amountOfStaked']),
+    pathOr(0, ['liquidityPool', 'liquidityAmount']),
+  ],
+);
+
+const getTotalBorrowed = converge(
+  (amountOfStaked: number, liquidityAmount: number) =>
+    (amountOfStaked - liquidityAmount) / 1e9,
+  [
+    pathOr(0, ['liquidityPool', 'amountOfStaked']),
+    pathOr(0, ['liquidityPool', 'liquidityAmount']),
+  ],
+);
+
+const getDepositAmount = compose(
+  divide(__, 1e9),
+  pathOr(0, ['deposit', 'amount']),
+);
+
+const getTotalSupply = compose(
+  divide(__, 1e9),
+  pathOr(0, ['liquidityPool', 'amountOfStaked']),
+);
+
+const getUserLoansAmount = pathOr(0, ['activeLoansCount']);
+
+// const getTimeBasedAPR = compose(
+//   multiply(100),
+//   divide(__, 1e11),
+//   multiply(SECONDS_IN_YEAR),
+//   pathOr(0, ['liquidityPool', 'apr']),
+// );
+
+// const getAPR = (liquidityPoolInfo: UnitedLiquidityPoolInto) => {
+//   const depositAprPriceBased = pathOr(0, ['liquidityPool', 'depositApr'])(
+//     liquidityPoolInfo,
+//   );
+//   const depositAprTimeBased = pathOr(0, ['liquidityPool', 'apr'])(
+//     liquidityPoolInfo,
+//   );
+//   return depositAprPriceBased || depositAprTimeBased;
+// };
+
+// const getHarvestAmount = (liquidityPoolInfo: UnitedLiquidityPoolInto) => {
+//   const apr = getAPR(liquidityPoolInfo);
+//   const depositAmount = pathOr<number>(0, ['deposit', 'amount']);
+//   if (!apr || !depositAmount) return 0;
+
+//   const { stakedAtCumulative, amount } = liquidityPoolInfo.deposit;
+//   const { lastTime, period, cumulative } = liquidityPoolInfo.liquidityPool;
+// };
+
+const LendingPool: FC<LendingPoolProps> = ({ liquidityPoolInfo }) => {
   const [poolModalVisible, setPoolModalVisible] = useState<TabsNames>(null);
   const { connected } = useWallet();
   const dispatch = useDispatch();
 
-  const {
-    depositAmount,
-    apr,
-    totalSupply,
-    loans,
-    utilizationRate,
-    rewardAmount,
-    totalBorrowed,
-  } = loansPoolInfo;
+  // const {
+  //   depositAmount,
+  //   apr,
+  //   totalSupply,
+  //   loans,
+  //   utilizationRate,
+  //   rewardAmount,
+  //   totalBorrowed,
+  // } = liquidityPool;
+
+  const depositAmount = getDepositAmount(liquidityPoolInfo);
+  const apr = 50; //TODO:
+  const totalSupply = getTotalSupply(liquidityPoolInfo);
+  const loans = getUserLoansAmount(liquidityPoolInfo);
+  const utilizationRate = getUtilizationRate(liquidityPoolInfo);
+  const harvestAmount = 10; //TODO:
+  const totalBorrowed = getTotalBorrowed(liquidityPoolInfo);
 
   const { harvestLiquidity } = useLoansPage();
 
@@ -44,7 +120,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
     }
   };
 
-  const isDisabledBtn = rewardAmount < MIN_AVAILABLE_VALUE_FOR_HARVEST;
+  const isDisabledBtn = harvestAmount < MIN_AVAILABLE_VALUE_FOR_HARVEST;
 
   return (
     <>
@@ -54,7 +130,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
             <>
               <div className={styles.rewards}>
                 <p className={styles.reward}>
-                  Pending Rewards: {rewardAmount?.toFixed(4)} SOL
+                  Pending Rewards: {harvestAmount?.toFixed(4)} SOL
                 </p>
               </div>
               <Tooltip

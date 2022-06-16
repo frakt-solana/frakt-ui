@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga';
 import { Socket } from 'socket.io-client';
 
 import { loansActions } from './actions';
-import { Lending, LoanView } from './types';
+import { LiquidityPoolsResponse, LoanView } from './types';
 
 const loanChannel = (socket: Socket) =>
   eventChannel((emit) => {
@@ -21,8 +21,13 @@ const loanSaga = function* (loans: LoanView[]) {
   yield put(loansActions.setLoans(loans));
 };
 
-const lendingSaga = function* (lending: Lending) {
-  yield put(loansActions.setLending(lending));
+const lendingsSaga = function* (liquidityPools: LiquidityPoolsResponse) {
+  yield put(
+    loansActions.setLending({
+      priceBased: liquidityPools.priceBased,
+      timeBased: liquidityPools.timeBased?.[0] || null,
+    }),
+  );
 };
 
 const loansSagas = (socket: Socket) =>
@@ -31,7 +36,7 @@ const loansSagas = (socket: Socket) =>
     const lendingStream: any = yield call(lendingChannel, socket);
 
     yield all([takeLatest(loanStream, loanSaga)]);
-    yield all([takeLatest(lendingStream, lendingSaga)]);
+    yield all([takeLatest(lendingStream, lendingsSaga)]);
   };
 
 export default loansSagas;
