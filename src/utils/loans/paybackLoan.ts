@@ -37,7 +37,7 @@ export const paybackLoan: PaybackLoan = async ({
       liquidityPool: new PublicKey(loan.liquidityPool),
       collectionInfo: new PublicKey(loan.collectionInfo),
       royaltyAddress: new PublicKey(loan.royaltyAddress),
-      amount: new BN(loan.repayValue * 1e9),
+      amount: new BN(loan.repayValueLamports),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
