@@ -166,12 +166,13 @@ const TimeToReturn: FC<{
 const Health: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const { health } = loan;
+  const { health: rawHealth = 0 } = loan;
+  const health = rawHealth > 100 ? 100 : rawHealth;
 
   return (
     <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
-      <p>{health || 0} %</p>
-      <LoanHealthProgress healthPercent={health || 0} />
+      <p>{health} %</p>
+      <LoanHealthProgress healthPercent={100 - health} />
     </div>
   );
 };
