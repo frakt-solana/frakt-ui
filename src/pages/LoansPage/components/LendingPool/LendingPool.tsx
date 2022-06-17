@@ -90,7 +90,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
           <div className={styles.statsValue}>
             <div className={styles.totalValue}>
               <p className={styles.title}>Total liquidity</p>
-              <p className={styles.value}>{totalSupply} SOL</p>
+              <p className={styles.value}>{totalSupply.toFixed(2)} SOL</p>
             </div>
             <div className={styles.totalValue}>
               <p className={styles.title}>Deposit APR</p>
