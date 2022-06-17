@@ -17,7 +17,7 @@ export interface BorrowNft {
     liquidityPoolPubkey: string;
     ltvPercents: number; // 40
     borrowAPRPercents: number; // 10
-    collaterizationRate: number; // 10
+    collaterizationRate: number; // 0.1
   };
 }
 

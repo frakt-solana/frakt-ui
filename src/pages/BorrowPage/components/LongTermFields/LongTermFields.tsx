@@ -36,16 +36,17 @@ interface ShortTermFields {
 const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
   const { valuation, priceBased } = nft;
 
-  const { borrowAPRPercents, ltvPercents } = priceBased;
+  const { borrowAPRPercents, ltvPercents, collaterizationRate } = priceBased;
 
   const marks = {
     10: '10%',
     [ltvPercents]: `${ltvPercents}%`,
   };
 
-  const liquidationPrice = Number(valuation) * (ltv / 100);
-  const mintingFee = liquidationPrice * 0.01;
   const loanValue = Number(valuation) * (ltv / 100);
+  const mintingFee = loanValue * 0.01;
+
+  const liquidationPrice = loanValue + loanValue * collaterizationRate;
 
   const risk = getRisk({ LTV: ltv, limits: [10, ltvPercents] });
 
