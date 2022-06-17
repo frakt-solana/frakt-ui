@@ -46,6 +46,7 @@ export interface LiquidityPool {
 }
 
 export interface Loan {
+  pubkey: string;
   mint: string;
   name: string;
   imageUrl: string;

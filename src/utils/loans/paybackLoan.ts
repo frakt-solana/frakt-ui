@@ -32,12 +32,12 @@ export const paybackLoan: PaybackLoan = async ({
       provider,
       user: wallet.publicKey,
       admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-      loan: new PublicKey('11111111111111111111111111111111'), //TODO:
+      loan: new PublicKey(loan.pubkey),
       nftMint: new PublicKey(loan.mint),
       liquidityPool: new PublicKey(loan.liquidityPool),
       collectionInfo: new PublicKey(loan.collectionInfo),
       royaltyAddress: new PublicKey(loan.royaltyAddress),
-      amount: new BN(0),
+      amount: new BN(loan.repayValue * 1e9),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
