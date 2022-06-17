@@ -1,74 +1,3 @@
-// export * from '@frakters/nft-lending-v2/lib/accounts';
-
-export interface LoanView {
-  nftName: string;
-  nftImageUrl: string;
-  _id: string;
-  loanPubkey: string;
-  user: string;
-  nftMint: string;
-  nftUserTokenAccount: string;
-  liquidityPool: string;
-  collectionInfo: string;
-  startedAt: number;
-  expiredAt: number;
-  finishedAt: number;
-  originalPrice: number;
-  amountToGet: number;
-  amountToRepay: number;
-  rewardAmount: number;
-  feeAmount: number;
-  royaltyAddress: string;
-  royaltyAmount: number;
-  rewardInterestRate: number;
-  feeInterestRate: number;
-  royaltyInterestRate: number;
-  loanStatus: string;
-  loanType: string;
-}
-
-export interface LoansPoolInfo {
-  apr?: number;
-  loans?: number;
-  totalSupply?: number;
-  depositAmount?: number;
-  utilizationRate?: number;
-  rewardAmount?: number;
-  totalBorrowed?: number;
-}
-
-export interface Lending {
-  activeLoansCount: number;
-  collectionsCount: number;
-  deposit?: {
-    amount: number;
-    depositPubkey: string;
-    liquidityPool: string;
-    stakedAt: number;
-    stakedAtCumulative: number;
-    updatedAt: string;
-  };
-  user?: string;
-  liquidityPool: {
-    amountOfStaked: number;
-    apr: number;
-    cumulative: number;
-    feeInterestRatePrice: number;
-    feeInterestRateTime: number;
-    id: number;
-    lastTime: number;
-    liqOwner: string;
-    liquidityAmount: number;
-    liquidityPoolPubkey: string;
-    oldCumulative: number;
-    period: number;
-    rewardInterestRatePrice: number;
-    rewardInterestRateTime: number;
-    updatedAt: string;
-    userRewardsAmount: number;
-  };
-}
-
 export interface BorrowNft {
   mint: string;
   name: string;
@@ -91,69 +20,46 @@ export interface BorrowNft {
   };
 }
 
-export interface TimeBasedLiquidityPool {
-  amountOfStaked: number;
-  apr: number;
-  cumulative: number;
-  feeInterestRatePrice: number;
-  feeInterestRateTime: number;
-  id: number;
-  lastTime: number;
-  liqOwner: string;
-  liquidityAmount: number;
-  liquidityPoolPubkey: string;
-  oldCumulative: number;
-  period: number;
-  rewardInterestRatePrice: number;
-  rewardInterestRateTime: number;
-  userRewardsAmount: number;
-  createdAt: string; // 2022-06-15T11:11:32.462Z
-  updatedAt: string; // 2022-06-15T11:11:32.462Z
-}
+export interface LiquidityPool {
+  pubkey: string;
+  isPriceBased: boolean;
+  name: string;
+  imageUrl: string[];
 
-export interface PriceBasedLiquidityPool {
-  amountOfStaked: number;
-  baseBorrowRate: number;
-  borrowApr: number;
-  borrowCumulative: number;
+  totalLiquidity: number;
+  totalBorrowed: number;
+
+  utilizationRate: number;
   depositApr: number;
-  depositCumulative: number;
-  id: number;
-  lastTime: number;
-  liqOwner: string;
-  liquidityAmount: number;
-  liquidityPoolPubkey: string;
-  reserveAmount: number;
-  reserveFactor: number;
-  utilizationRateOptimal: number;
-  variableSlope1: number;
-  variableSlope2: number;
-  createdAt: string; // 2022-06-15T11:11:32.462Z
-  updatedAt: string; // 2022-06-15T11:11:32.462Z
+  borrowApr?: number;
+
+  activeloansAmount: number;
+
+  collectionsAmount: number;
+
+  userDeposit?: {
+    pubkey: string;
+    harvestAmount: number;
+    depositAmount: number;
+  };
+  userActiveLoansAmount?: number;
 }
 
-export interface LiquidityPoolDeposit {
-  amount: number;
-  depositPubkey: string;
+export interface Loan {
+  mint: string;
+  name: string;
+  imageUrl: string;
+  isPriceBased: boolean;
+
+  loanValue: number; //? SOL
+  repayValue: number; //? SOL
+
+  startedAt: string; //? Date
+  expiredAt?: string; //? Date
+
   liquidityPool: string;
-  stakedAt: number;
-  stakedAtCumulative: number;
-  updatedAt: string;
-}
+  collectionInfo: string;
+  royaltyAddress: string;
 
-export interface LiquidityPoolInto<TLiquidityPool> {
-  activeLoansCount: number;
-  collectionsCount: number;
-  liquidityPool: TLiquidityPool;
-  deposit?: LiquidityPoolDeposit;
-}
-
-export interface LiquidityPoolsResponse {
-  priceBased: LiquidityPoolInto<PriceBasedLiquidityPool>[];
-  timeBased: LiquidityPoolInto<TimeBasedLiquidityPool>[];
-}
-
-export interface LiquidityPoolsState {
-  priceBased: LiquidityPoolInto<PriceBasedLiquidityPool>[];
-  timeBased: LiquidityPoolInto<TimeBasedLiquidityPool>;
+  health?: number; //? 80(%) 0-100%
 }

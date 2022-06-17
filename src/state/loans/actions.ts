@@ -1,22 +1,22 @@
 import { createCustomAction } from 'typesafe-actions';
 
-import { BorrowNft, LiquidityPoolsState } from './types';
+import { BorrowNft, LiquidityPool, Loan } from './types';
 
 export const loansTypes = {
   SET_LOANS: 'loans/SET_LOANS',
-  SET_LENDINGS: 'loans/SET_LENDINGS',
+  SET_LIQUIDITY_POOLS: 'loans/SET_LIQUIDITY_POOLS',
   SET_BORROW_NFTS: 'loans/SET_BORROW_NFTS',
   ADD_HIDDEN_BORROW_NFT: 'loans/ADD_HIDDEN_BORROW_NFT',
 };
 
 export const loansActions = {
-  setLoans: createCustomAction(loansTypes.SET_LOANS, (loans: any) => ({
+  setLoans: createCustomAction(loansTypes.SET_LOANS, (loans: Loan[]) => ({
     payload: loans,
   })),
-  setLending: createCustomAction(
-    loansTypes.SET_LENDINGS,
-    (lendings: LiquidityPoolsState) => ({
-      payload: lendings,
+  setLiquidityPools: createCustomAction(
+    loansTypes.SET_LIQUIDITY_POOLS,
+    (liquidityPools: LiquidityPool[]) => ({
+      payload: liquidityPools,
     }),
   ),
   setBorrowNfts: createCustomAction(

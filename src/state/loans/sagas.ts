@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga';
 import { Socket } from 'socket.io-client';
 
 import { loansActions } from './actions';
-import { LiquidityPoolsResponse, LoanView } from './types';
+import { LiquidityPool, Loan } from './types';
 
 const loanChannel = (socket: Socket) =>
   eventChannel((emit) => {
@@ -11,32 +11,27 @@ const loanChannel = (socket: Socket) =>
     return () => socket.off('loans');
   });
 
-const lendingChannel = (socket: Socket) =>
+const liquidityPoolsChannel = (socket: Socket) =>
   eventChannel((emit) => {
     socket.on('lending', (response) => emit(response));
     return () => socket.off('lending');
   });
 
-const loanSaga = function* (loans: LoanView[]) {
+const loansSaga = function* (loans: Loan[]) {
   yield put(loansActions.setLoans(loans));
 };
 
-const lendingsSaga = function* (liquidityPools: LiquidityPoolsResponse) {
-  yield put(
-    loansActions.setLending({
-      priceBased: liquidityPools.priceBased,
-      timeBased: liquidityPools.timeBased?.[0] || null,
-    }),
-  );
+const liquidityPoolsSaga = function* (liquidityPools: LiquidityPool[]) {
+  yield put(loansActions.setLiquidityPools(liquidityPools));
 };
 
 const loansSagas = (socket: Socket) =>
   function* (): Generator {
-    const loanStream: any = yield call(loanChannel, socket);
-    const lendingStream: any = yield call(lendingChannel, socket);
+    const loansStream: any = yield call(loanChannel, socket);
+    const lendingsStream: any = yield call(liquidityPoolsChannel, socket);
 
-    yield all([takeLatest(loanStream, loanSaga)]);
-    yield all([takeLatest(lendingStream, lendingsSaga)]);
+    yield all([takeLatest(loansStream, loansSaga)]);
+    yield all([takeLatest(lendingsStream, liquidityPoolsSaga)]);
   };
 
 export default loansSagas;

@@ -33,9 +33,11 @@ const LoansPage: FC = () => {
           <>
             {liquidityPools ? (
               <div className={styles.sortWrapper}>
-                <LendingPool liquidityPoolInfo={liquidityPools.timeBased} />
-                {liquidityPools.priceBased?.map((liquidityPool, idx) => (
-                  <LendingPool key={idx} liquidityPoolInfo={liquidityPool} />
+                {liquidityPools?.map((liquidityPool) => (
+                  <LendingPool
+                    key={liquidityPool.pubkey}
+                    liquidityPool={liquidityPool}
+                  />
                 ))}
               </div>
             ) : (

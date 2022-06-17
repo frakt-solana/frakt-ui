@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import { useSolanaTimestamp } from './useSolanaTimestamp';
 
+export interface TimeLeft {
+  days: string;
+  hours: string;
+  minutes: string;
+  seconds: string;
+}
+
 type UseCountdown = (endTime: number) => {
-  timeLeft: {
-    days: string;
-    hours: string;
-    minutes: string;
-    seconds: string;
-  };
+  timeLeft: TimeLeft;
   leftTimeInSeconds: number;
 };
 
