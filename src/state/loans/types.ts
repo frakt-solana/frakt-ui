@@ -17,6 +17,7 @@ export interface BorrowNft {
     liquidityPoolPubkey: string;
     ltvPercents: number; // 40
     borrowAPRPercents: number; // 10
+    collaterizationRate: number; // 10
   };
 }
 
@@ -41,6 +42,7 @@ export interface LiquidityPool {
     pubkey: string;
     harvestAmount: number;
     depositAmount: number;
+    depositAmountLamports: string; //? Lamports
   };
   userActiveLoansAmount?: number;
 }
@@ -54,6 +56,7 @@ export interface Loan {
 
   loanValue: number; //? SOL
   repayValue: number; //? SOL
+  repayValueLamports: string; //? Lamports
 
   startedAt: string; //? Date
   expiredAt?: string; //? Date
@@ -62,5 +65,7 @@ export interface Loan {
   collectionInfo: string;
   royaltyAddress: string;
 
+  liquidationPrice?: number; //? 1.23456 (SOL)
+  valuation?: number; //? 1.23456 (SOL)
   health?: number; //? 80(%) 0-100%
 }
