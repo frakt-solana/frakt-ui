@@ -162,17 +162,6 @@ const Rewards: FC<LendingPoolProps> = ({ liquidityPool }) => {
 
   const tooltipText = 'Harvest is available from 0.001 SOL';
 
-  const btn = (
-    <Button
-      onClick={() => harvestLiquidity(liquidityPool.pubkey)}
-      className={classNames(styles.btn, styles.btnHarvest)}
-      disabled={isDisabledBtn}
-      type="tertiary"
-    >
-      Harvest
-    </Button>
-  );
-
   return (
     <div className={styles.rewards}>
       <p className={styles.reward}>
@@ -180,10 +169,24 @@ const Rewards: FC<LendingPoolProps> = ({ liquidityPool }) => {
       </p>
       {isDisabledBtn ? (
         <Tooltip placement="top" overlay={tooltipText}>
-          <div>{btn}</div>
+          <div>
+            <Button
+              className={classNames(styles.btn, styles.btnHarvest)}
+              disabled
+              type="tertiary"
+            >
+              Harvest
+            </Button>
+          </div>
         </Tooltip>
       ) : (
-        { btn }
+        <Button
+          onClick={() => harvestLiquidity(liquidityPool?.pubkey)}
+          className={classNames(styles.btn, styles.btnHarvest)}
+          type="tertiary"
+        >
+          Harvest
+        </Button>
       )}
     </div>
   );

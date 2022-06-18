@@ -13,7 +13,7 @@ const loanChannel = (socket: Socket) =>
 
 const liquidityPoolsChannel = (socket: Socket) =>
   eventChannel((emit) => {
-    socket.on('lending', (response) => emit(response));
+    socket.on('lending', (response) => emit(response || []));
     return () => socket.off('lending');
   });
 
