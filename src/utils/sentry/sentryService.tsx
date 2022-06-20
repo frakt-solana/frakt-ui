@@ -39,6 +39,5 @@ export const captureSentryError = ({
   Sentry.configureScope((scope) => scope.setTransactionName(transactionName));
   Sentry.captureException(error);
 
-  // eslint-disable-next-line no-console
   console.error(error);
 };

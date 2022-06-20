@@ -1,1 +1,1 @@
-export * from './sentrySerice';
+export * from './sentryService';
