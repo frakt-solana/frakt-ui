@@ -2,20 +2,20 @@ import { FC } from 'react';
 
 import styles from './DailyActive.module.scss';
 import Block from '../Block';
+import { DailyStats } from '../../model';
 
-interface DailyActiveProps {
-  lockedNftsInLoans: number;
-  issuedIn24Hours: number;
-  paidBackIn24Hours: number;
-  liquidatedIn24Hours: number;
+interface DailyStatsProps {
+  dailyStats: DailyStats;
 }
 
-const DailyActive: FC<DailyActiveProps> = ({
-  lockedNftsInLoans,
-  issuedIn24Hours,
-  paidBackIn24Hours,
-  liquidatedIn24Hours,
-}) => {
+const DailyActive: FC<DailyStatsProps> = ({ dailyStats }) => {
+  const {
+    lockedNftsInLoans,
+    issuedIn24Hours,
+    paidBackIn24Hours,
+    liquidatedIn24Hours,
+  } = dailyStats;
+
   return (
     <div className={styles.wrapper}>
       <h2 className={styles.title}>Daily Active</h2>

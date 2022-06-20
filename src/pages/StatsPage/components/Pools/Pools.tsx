@@ -11,7 +11,7 @@ interface PoolsProps {
 const Pools: FC<PoolsProps> = ({ poolsInfo }) => {
   return (
     <div className={styles.wrapper}>
-      <h2 className={styles.title}>Daily Active</h2>
+      <h2 className={styles.title}>Pools</h2>
       <Block className={styles.block}>
         <div className={styles.poolsConainer}>
           <PoolsRaw data={poolsInfo} title={'NFT pools TVL'} />

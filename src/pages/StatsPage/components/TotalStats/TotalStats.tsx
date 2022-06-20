@@ -1,26 +1,24 @@
-import classNames from 'classnames';
 import { FC } from 'react';
-import { SolanaIcon } from '../../../../icons';
-import Block from '../Block';
-import styles from './TotalStats.module.scss';
+import classNames from 'classnames';
 
+import { SolanaIcon } from '../../../../icons';
+import styles from './TotalStats.module.scss';
+import Block from '../Block';
+import { TotalStats as TotalStatsInterface } from '../../model';
 interface TotalStatsProps {
-  lockedNftsInPools: number;
-  poolsTvl: number;
-  poolsVolumeAllTime: number;
-  totalIssuedInLoans: number;
-  loansTvl: number;
-  loansVolumeAllTime: number;
+  totalStats: TotalStatsInterface;
 }
 
-const TotalStats: FC<TotalStatsProps> = ({
-  lockedNftsInPools,
-  poolsTvl,
-  poolsVolumeAllTime,
-  totalIssuedInLoans,
-  loansTvl,
-  loansVolumeAllTime,
-}) => {
+const TotalStats: FC<TotalStatsProps> = ({ totalStats }) => {
+  const {
+    lockedNftsInPools,
+    poolsTvl,
+    poolsVolumeAllTime,
+    totalIssuedInLoans,
+    loansTvl,
+    loansVolumeAllTime,
+  } = totalStats;
+
   return (
     <div className={styles.wrapper}>
       <h2 className={styles.title}>Total stats</h2>

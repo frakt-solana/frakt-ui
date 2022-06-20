@@ -43,7 +43,6 @@
 
 .cards {
   display: flex;
-  overflow-x: auto;
   padding-bottom: 10px;
 
   @media screen and (max-width: 1240px) {
@@ -51,6 +50,7 @@
   }
 
   @media screen and (max-width: 768px) {
+    overflow-x: auto;
     justify-content: flex-start;
   }
 
@@ -64,11 +64,12 @@
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
   background: var(--black-color);
   border: 1px solid var(--color-gray-4);
   border-radius: 10px;
-  height: 304px;
-  width: 215px;
+  max-width: 215px;
   padding: 20px;
   margin-right: -43px;
 }
@@ -80,6 +81,8 @@
 
 .nftName {
   font: var(--font-text-3);
+  padding-top: 10px;
+  flex-grow: 1;
 }
 
 .cardTitle {
@@ -103,7 +106,7 @@
 .line {
   background: var(--color-gray-4);
   margin: 0 30px;
-  width: 1px;
+  min-width: 1px;
 
   @media screen and (max-width: 1240px) {
     margin: 20px 0 30px;
@@ -137,7 +140,9 @@
 
 .headerValues {
   display: flex;
-  gap: 130px;
+  justify-content: space-between;
+  max-width: 233px;
+  width: 100%;
 }
 
 .headerTitle {
@@ -176,5 +181,7 @@
 
 .tableStats {
   display: flex;
-  gap: 70px;
+  justify-content: space-between;
+  max-width: 270px;
+  width: 100%;
 }

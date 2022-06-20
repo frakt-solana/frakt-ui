@@ -1,10 +1,16 @@
 import { FC } from 'react';
 
+import { LastLoans, LedningPools } from '../../model';
+import { SOL_TOKEN } from '../../../../utils';
 import styles from './Lending.module.scss';
 import Block from '../Block';
-import { SOL_TOKEN } from '../../../../utils';
 
-const Lending: FC = () => {
+interface LendingProps {
+  lendingPools: LedningPools[];
+  lastLoans: LastLoans[];
+}
+
+const Lending: FC<LendingProps> = ({ lendingPools, lastLoans }) => {
   return (
     <div className={styles.wrapper}>
       <h2 className={styles.title}>Lending</h2>
@@ -13,13 +19,13 @@ const Lending: FC = () => {
           <div className={styles.cardContainer}>
             <h3 className={styles.subtitle}>Last loans</h3>
             <div className={styles.cards}>
-              {mockCards.map(({ name, value, image }, idx) => (
+              {lastLoans.map(({ nftName, loanValue, image }, idx) => (
                 <div key={idx} className={styles.card}>
                   <img src={image} className={styles.nftImage} />
-                  <p className={styles.nftName}>{name}</p>
+                  <p className={styles.nftName}>{nftName}</p>
                   <p className={styles.cardTitle}>Loan Value</p>
                   <div className={styles.nftValue}>
-                    <p>{value}</p>
+                    <p>{loanValue}</p>
                     <img className={styles.icon} src={SOL_TOKEN.logoURI} />
                     SOL
                   </div>
@@ -38,16 +44,16 @@ const Lending: FC = () => {
                   <p className={styles.headerTitle}>TVL</p>
                 </div>
               </div>
-              {mockTable.map(({ name, apr, image, tvl }, idx) => (
+              {lendingPools.map(({ nftName, apr, image, tvl }, idx) => (
                 <div key={idx} className={styles.tableRow}>
                   <div className={styles.tableInfo}>
                     <p className={styles.rowNumber}>{idx + 1}</p>
                     <img className={styles.rowImage} src={image} />
-                    <p className={styles.rowTitle}>{name}</p>
+                    <p className={styles.rowTitle}>{nftName}</p>
                   </div>
                   <div className={styles.tableStats}>
-                    <p>{apr} %</p>
-                    <p>{tvl} SOL</p>
+                    <p>{apr.toFixed(2)} %</p>
+                    <p>{tvl.toFixed(2)} SOL</p>
                   </div>
                 </div>
               ))}
@@ -60,99 +66,3 @@ const Lending: FC = () => {
 };
 
 export default Lending;
-
-const mockCards = [
-  {
-    name: 'Degen Ape #5453',
-    value: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/2r9U-XIjrWajP7TRM3nUWuqcGolr2PL3uv3tS0vxjhs',
-  },
-  {
-    name: 'SolPunk #6290',
-    value: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/p2cTCJCkckFVDtxf3QpcfJJk1nEFA4pPrwGmHTiKg3E',
-  },
-  {
-    name: 'Rayford Vandyke',
-    value: '26.49',
-    image: 'https://i.imgur.com/DnOVkxY.png',
-  },
-];
-
-const mockTable = [
-  {
-    name: 'Degen Ape #5453',
-    apr: '26.49',
-    tvl: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/2r9U-XIjrWajP7TRM3nUWuqcGolr2PL3uv3tS0vxjhs',
-  },
-  {
-    name: 'SolPunk #6290',
-    apr: '26.49',
-    tvl: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/p2cTCJCkckFVDtxf3QpcfJJk1nEFA4pPrwGmHTiKg3E',
-  },
-  {
-    name: 'Rayford Vandyke',
-    apr: '26.49',
-    tvl: '26.49',
-    image: 'https://i.imgur.com/DnOVkxY.png',
-  },
-  {
-    name: 'Degen Ape #5453',
-    apr: '26.49',
-    tvl: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/2r9U-XIjrWajP7TRM3nUWuqcGolr2PL3uv3tS0vxjhs',
-  },
-  {
-    name: 'SolPunk #6290',
-    apr: '26.49',
-    tvl: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/p2cTCJCkckFVDtxf3QpcfJJk1nEFA4pPrwGmHTiKg3E',
-  },
-  {
-    name: 'Rayford Vandyke',
-    apr: '26.49',
-    tvl: '26.49',
-    image: 'https://i.imgur.com/DnOVkxY.png',
-  },
-  {
-    name: 'Degen Ape #5453',
-    apr: '26.49',
-    tvl: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/2r9U-XIjrWajP7TRM3nUWuqcGolr2PL3uv3tS0vxjhs',
-  },
-  {
-    name: 'SolPunk #6290',
-    apr: '26.49',
-    tvl: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/p2cTCJCkckFVDtxf3QpcfJJk1nEFA4pPrwGmHTiKg3E',
-  },
-  {
-    name: 'Rayford Vandyke',
-    apr: '26.49',
-    tvl: '26.49',
-    image: 'https://i.imgur.com/DnOVkxY.png',
-  },
-  {
-    name: 'SolPunk #6290',
-    apr: '26.49',
-    tvl: '26.49',
-    image:
-      'https://img-cdn.magiceden.dev/rs:fill:400:400:0:0/plain/https://arweave.net/p2cTCJCkckFVDtxf3QpcfJJk1nEFA4pPrwGmHTiKg3E',
-  },
-  {
-    name: 'Rayford Vandyke',
-    apr: '26.49',
-    tvl: '26.49',
-    image: 'https://i.imgur.com/DnOVkxY.png',
-  },
-];
