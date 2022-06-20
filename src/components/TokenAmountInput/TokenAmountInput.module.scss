@@ -1,0 +1,51 @@
+.tokenAmountInput {
+  background: var(--black-color);
+  display: flex;
+  justify-content: flex-end;
+  border: 1px solid var(--color-gray-1);
+  padding: 10px;
+  transition: border-color var(--transition-1);
+}
+.tokenAmountInputFocused {
+  border-color: var(--accent-color-1);
+}
+.tokenAmountInputError {
+  border-color: var(--red-error-color);
+}
+
+input.input {
+  flex-grow: 1;
+  height: 24px;
+  padding: 0;
+
+  &,
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    border: unset;
+  }
+}
+
+.tokenInfo {
+  display: flex;
+  align-items: center;
+  gap: 0 5px;
+
+  border-left: 1px solid var(--color-gray-1);
+  padding-left: 10px;
+  margin-left: 10px;
+}
+
+.tokenImage {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--color-gray-1);
+  background-position: center;
+  background-size: cover;
+}
+
+.tokenTicker {
+  font: var(--font-text-3);
+  color: var(--white-color);
+}

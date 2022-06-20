@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { CloseModalIcon } from '../../icons/CloseModalIcon';
 import SwiperCore, { FreeMode, Navigation, Scrollbar, Thumbs } from 'swiper';
 
-import { UserNFT } from '../../contexts/userTokens';
+import { UserNFT } from '../../state/userTokens/types';
 import { SlideContent } from './components';
 import styles from './styles.module.scss';
 

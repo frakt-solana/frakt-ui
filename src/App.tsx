@@ -17,11 +17,9 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { Router } from './router';
 import store from './state/store';
 import { UserTokensProvider } from './contexts/userTokens';
-import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT } from './config';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
-import { LoansProvider } from './contexts/loans';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { PrismProvider } from './contexts/prism';
 
@@ -39,19 +37,15 @@ const App: FC = () => {
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets} autoConnect>
           {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
-          <TokenListContextProvider>
-            <UserTokensProvider>
-              <LiquidityPoolsProvider>
-                <NftPoolsProvider>
-                  <LoansProvider>
-                    <PrismProvider>
-                      <Router />
-                    </PrismProvider>
-                  </LoansProvider>
-                </NftPoolsProvider>
-              </LiquidityPoolsProvider>
-            </UserTokensProvider>
-          </TokenListContextProvider>
+          <UserTokensProvider>
+            <LiquidityPoolsProvider>
+              <NftPoolsProvider>
+                <PrismProvider>
+                  <Router />
+                </PrismProvider>
+              </NftPoolsProvider>
+            </LiquidityPoolsProvider>
+          </UserTokensProvider>
           {/* <IntercomService /> */}
           {/* </IntercomProvider> */}
         </WalletProvider>

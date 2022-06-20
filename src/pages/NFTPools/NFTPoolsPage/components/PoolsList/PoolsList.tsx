@@ -3,9 +3,9 @@ import { FC } from 'react';
 import { NftPoolData } from '../../../../../utils/cacher/nftPools';
 import styles from './PoolsList.module.scss';
 import { PoolCard } from '../PoolCard';
-import FakeInfinityScroll, {
+import InfinityScroll, {
   useFakeInfinityScroll,
-} from '../../../../../components/FakeInfinityScroll';
+} from '../../../../../components/InfinityScroll';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { PricesByTokenMint } from '../../../hooks';
 
@@ -23,7 +23,7 @@ export const PoolsList: FC<PoolsList> = ({
   const { itemsToShow, next } = useFakeInfinityScroll(15);
 
   return (
-    <FakeInfinityScroll
+    <InfinityScroll
       itemsToShow={itemsToShow}
       next={next}
       isLoading={false}
@@ -40,6 +40,6 @@ export const PoolsList: FC<PoolsList> = ({
           }
         />
       ))}
-    </FakeInfinityScroll>
+    </InfinityScroll>
   );
 };

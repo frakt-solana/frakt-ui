@@ -22,7 +22,7 @@ export const useStatsPage = (): {
 
   const fetchDailyStats = async (): Promise<void> => {
     try {
-      const URL = `${process.env.BACKEND_DOMAIN}/stats/daily`;
+      const URL = `https://${process.env.BACKEND_DOMAIN}/stats/daily`;
 
       const response = await fetch(URL);
       const dailyStats = await response.json();
@@ -38,7 +38,7 @@ export const useStatsPage = (): {
 
   const fetchTotalStats = async (): Promise<void> => {
     try {
-      const URL = `${process.env.BACKEND_DOMAIN}/stats/total`;
+      const URL = `https://${process.env.BACKEND_DOMAIN}/stats/total`;
 
       const response = await fetch(URL);
       const totalStats = await response.json();
@@ -54,7 +54,7 @@ export const useStatsPage = (): {
 
   const fetchLendingPools = async (): Promise<void> => {
     try {
-      const URL = `${process.env.BACKEND_DOMAIN}/stats/lending-pools`;
+      const URL = `https://${process.env.BACKEND_DOMAIN}/stats/lending-pools`;
 
       const response = await fetch(URL);
       const lendingPools = await response.json();
@@ -70,7 +70,7 @@ export const useStatsPage = (): {
 
   const fetchLastLoans = async (): Promise<void> => {
     try {
-      const URL = `${process.env.BACKEND_DOMAIN}/stats/last-loans`;
+      const URL = `https://${process.env.BACKEND_DOMAIN}/stats/last-loans`;
 
       const response = await fetch(URL);
       const lastLoans = await response.json();

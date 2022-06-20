@@ -14,7 +14,7 @@ import {
 import {
   CONTACT_SECTION_ID,
   OUR_PRODUCT_ID,
-  OUR_TOKENS_ID,
+  // OUR_TOKENS_ID,
   TEAM_SECTION_ID,
   // TECHNICAL_PARTNERS_ID,
 } from '../../constants';
@@ -23,15 +23,15 @@ import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 import { Container } from '../../../../components/Layout';
 
 const ECOSYSTEM_LIST = [
+  { path: PATHS.LOANS, label: 'Loans' },
   { path: PATHS.POOLS, label: 'Pools' },
   { path: PATHS.SWAP, label: 'Swap' },
-  { path: PATHS.EARN, label: 'Earn' },
   { to: PATHS.ROADMAP, label: 'Roadmap' },
 ];
 
 const LANDING_LIST = [
   { to: `#${OUR_PRODUCT_ID}`, label: 'Our products' },
-  { to: `#${OUR_TOKENS_ID}`, label: 'Our tokens' },
+  // { to: `#${OUR_TOKENS_ID}`, label: 'Our tokens' },
   // { to: `#${TECHNICAL_PARTNERS_ID}`, label: 'Technical partners' },
   { to: `#${TEAM_SECTION_ID}`, label: 'Team' },
 ];

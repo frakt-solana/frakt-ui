@@ -1,42 +1,57 @@
-import { ActionType, StateType } from 'typesafe-actions';
 import { Reducer } from 'redux';
 
-export const initialAsyncState = {
+import { AsyncState, RequestStatus } from './types';
+
+export const asyncState: AsyncState<null> = {
   data: null,
-  status: 'IDLE',
+  status: RequestStatus.IDLE,
   messages: [],
 };
 
-export const createHandlers = <T>(
+export const createInitialAsyncState = <TData>(
+  initialData: TData = null,
+): AsyncState<TData> => ({
+  data: initialData,
+  status: RequestStatus.IDLE,
+  messages: [],
+});
+
+export const createHandlers = <TData>(
   request: string,
-): { [key: string]: Reducer<typeof initialAsyncState> } => ({
-  [`${request}__PENDING`]: (state: StateType<typeof initialAsyncState>) => ({
+): { [key: string]: Reducer<AsyncState<TData>> } => ({
+  [`${request}__PENDING`]: (state: AsyncState<TData>) => ({
     ...state,
-    status: 'PENDING',
-    messages: initialAsyncState.messages,
+    status: RequestStatus.PENDING,
+    messages: asyncState.messages,
   }),
-  [`${request}__CANCELLED`]: (state: StateType<typeof initialAsyncState>) => ({
+  [`${request}__CANCELLED`]: (state: AsyncState<TData>) => ({
     ...state,
-    status: 'IDLE',
+    status: RequestStatus.IDLE,
   }),
-  [`${request}__RESET`]: (state: StateType<typeof initialAsyncState>) => ({
+  [`${request}__RESET`]: (state: AsyncState<TData>) => ({
     ...state,
-    data: initialAsyncState.data,
+    data: asyncState.data,
   }),
   [`${request}__FULFILLED`]: (
-    state: StateType<typeof initialAsyncState>,
-    action: ActionType<T>,
+    state: AsyncState<TData>,
+    action: {
+      type: string;
+      payload: TData;
+    },
   ) => ({
     ...state,
-    status: 'FULFILLED',
+    status: RequestStatus.FULFILLED,
     data: action.payload,
   }),
   [`${request}__FAILED`]: (
-    state: StateType<typeof initialAsyncState>,
-    action: ActionType<T>,
+    state: AsyncState<TData>,
+    action: {
+      type: string;
+      payload: string[];
+    },
   ) => ({
     ...state,
-    status: 'FAILED',
+    status: RequestStatus.FAILED,
     messages: action.payload,
   }),
 });

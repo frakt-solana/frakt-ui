@@ -1,15 +1,15 @@
 import { FC } from 'react';
 
 import styles from './NFTsList.module.scss';
-import { UserNFTWithCollection } from '../../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../../state/userTokens/types';
 import { NFTCard } from '../NFTCard';
 import {
   ModalNFTsSlider,
   useModalNFTsSlider,
 } from '../../../../components/ModalNFTsSlider';
-import FakeInfinityScroll, {
+import InfinityScroll, {
   useFakeInfinityScroll,
-} from '../../../../components/FakeInfinityScroll';
+} from '../../../../components/InfinityScroll';
 
 export interface NFTsListProps {
   nfts: UserNFTWithCollection[];
@@ -35,7 +35,7 @@ export const NFTsList: FC<NFTsListProps> = ({
 
   return (
     <>
-      <FakeInfinityScroll
+      <InfinityScroll
         itemsToShow={itemsToShow}
         next={next}
         isLoading={false}
@@ -51,7 +51,7 @@ export const NFTsList: FC<NFTsListProps> = ({
             isSelected={selectedNft?.mint === nft.mint}
           />
         ))}
-      </FakeInfinityScroll>
+      </InfinityScroll>
       <ModalNFTsSlider
         isModalVisible={isModalVisible}
         currentSlide={currentSlide}
