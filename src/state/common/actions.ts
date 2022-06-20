@@ -4,9 +4,9 @@ import { createCustomAction } from 'typesafe-actions';
 
 import { ServerError } from '../../utils/state';
 import {
-  SolanaHealthResponse,
   NotificationState,
   WalletModalState,
+  SolanaHealthState,
 } from './types';
 
 export const commonTypes = {
@@ -64,7 +64,7 @@ export const commonActions = {
   ),
   fetchSolanaHealthFulfilled: createCustomAction(
     commonTypes.FETCH_SOLANA_HEALTH__FULFILLED,
-    (response: SolanaHealthResponse[]) => ({ payload: response }),
+    (payload: SolanaHealthState) => ({ payload }),
   ),
   fetchSolanaHealthFailed: createCustomAction(
     commonTypes.FETCH_SOLANA_HEALTH__FAILED,

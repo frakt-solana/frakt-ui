@@ -7,8 +7,9 @@ interface RadioProps {
   className?: string;
   disabled?: boolean;
   checked?: boolean;
-  value: string;
+  value?: string;
   label?: string;
+  onClick?: (args: any) => any;
 }
 
 export const Radio = ({
@@ -16,6 +17,7 @@ export const Radio = ({
   disabled = false,
   checked = false,
   label = null,
+  onClick = () => {},
   value,
 }: RadioProps): JSX.Element => (
   <RadioAntd
@@ -23,6 +25,7 @@ export const Radio = ({
     disabled={disabled}
     checked={checked}
     value={value}
+    onClick={onClick}
   >
     {label}
   </RadioAntd>

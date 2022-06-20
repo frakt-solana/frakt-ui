@@ -11,6 +11,8 @@ interface SliderProps {
   marks?: { [key: number]: string };
   step?: number;
   withTooltip?: boolean;
+  max?: number;
+  min?: number;
 }
 
 export const Slider: FC<SliderProps> = ({
@@ -20,6 +22,8 @@ export const Slider: FC<SliderProps> = ({
   setValue,
   step,
   withTooltip,
+  max,
+  min,
 }) => {
   return (
     <div
@@ -35,6 +39,8 @@ export const Slider: FC<SliderProps> = ({
         onChange={setValue}
         tooltipVisible={false}
         step={step}
+        max={max}
+        min={min}
       />
     </div>
   );
