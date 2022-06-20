@@ -25,6 +25,10 @@ export const commonTypes = {
   FETCH_SOLANA_TIMESTAMP__PENDING: 'common/FETCH_SOLANA_TIMESTAMP__PENDING',
   FETCH_SOLANA_TIMESTAMP__FULFILLED: 'common/FETCH_SOLANA_TIMESTAMP__FULFILLED',
   FETCH_SOLANA_TIMESTAMP__FAILED: 'common/FETCH_SOLANA_TIMESTAMP__FAILED',
+  FETCH_USER: 'common/FETCH_USER',
+  FETCH_USER__PENDING: 'common/FETCH_USER__PENDING',
+  FETCH_USER__FULFILLED: 'common/FETCH_USER__FULFILLED',
+  FETCH_USER__FAILED: 'common/FETCH_USER__FAILED',
 };
 
 export const commonActions = {
@@ -84,6 +88,22 @@ export const commonActions = {
   ),
   fetchSolanaTimestampFailed: createCustomAction(
     commonTypes.FETCH_SOLANA_TIMESTAMP__FAILED,
+    (error: ServerError) => ({ payload: error }),
+  ),
+
+  fetchUser: createCustomAction(commonTypes.FETCH_USER, (publicKey) => ({
+    payload: publicKey,
+  })),
+  fetchUserPending: createCustomAction(
+    commonTypes.FETCH_USER__PENDING,
+    () => null,
+  ),
+  fetchUserFulfilled: createCustomAction(
+    commonTypes.FETCH_USER__FULFILLED,
+    (data) => ({ payload: data }),
+  ),
+  fetchUserFailed: createCustomAction(
+    commonTypes.FETCH_USER__FAILED,
     (error: ServerError) => ({ payload: error }),
   ),
 };

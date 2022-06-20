@@ -32,6 +32,7 @@ export const UserTokensProvider = ({
     if (connected) {
       dispatch(commonActions.setWallet({ publicKey }));
       dispatch(userTokensActions.fetchUserTokens(publicKey));
+      dispatch(commonActions.fetchUser(publicKey));
     }
     return () => {
       dispatch(userTokensActions.clearTokens());

@@ -1,8 +1,13 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { UserState } from '../../../../state/common/types';
 import { getOwnerAvatar } from '../../../../utils/nameService';
 import { shortenAddress } from '../../../../utils/solanaUtils';
+import { getDiscordUri } from '../../../../utils';
 import { /* PencilIcon, */ TwitterIcon2 } from '../../../../icons';
+import DiscordIcon from '../../../../icons/DiscordIcon2';
+import { commonActions } from '../../../../state/common/actions';
 // import Button from '../../../../components/Button';
 import styles from './ProfileCard.module.scss';
 // import { LinkWithArrow } from '../../../../components/LinkWithArrow';
@@ -11,13 +16,28 @@ interface ProfileCard {
   name?: string;
   twitterName?: string;
   walletPubkey: string;
+  user?: UserState;
 }
 
 export const ProfileCard: FC<ProfileCard> = ({
   name,
   walletPubkey,
   twitterName,
+  user,
 }) => {
+  const dispatch = useDispatch();
+
+  const unlink = useCallback(async () => {
+    try {
+      await fetch(
+        `https://${process.env.BACKEND_DOMAIN}/user/${walletPubkey}/delete`,
+      );
+      dispatch(commonActions.fetchUserFulfilled(null));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [dispatch, walletPubkey]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.userInfo}>
@@ -26,7 +46,9 @@ export const ProfileCard: FC<ProfileCard> = ({
           <div
             className={styles.ownerAvatar}
             style={{
-              backgroundImage: `url(${getOwnerAvatar(twitterName)})`,
+              backgroundImage: `url(${
+                user?.avatar ?? getOwnerAvatar(twitterName)
+              })`,
             }}
           >
             {/* <div className={styles.editAvatarIcon}>
@@ -52,6 +74,19 @@ export const ProfileCard: FC<ProfileCard> = ({
             </a>
           )}
         </h3>
+        {!user ? (
+          <a
+            href={getDiscordUri(walletPubkey)}
+            className={styles.discordButton}
+            rel="noopener noreferrer"
+          >
+            <DiscordIcon className={styles.logo} /> Link discord
+          </a>
+        ) : (
+          <button onClick={unlink} className={styles.discordButton}>
+            <DiscordIcon className={styles.logo} /> Unlink discord
+          </button>
+        )}
       </div>
 
       {/* <div className={styles.line} /> */}
