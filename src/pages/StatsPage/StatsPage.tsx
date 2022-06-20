@@ -2,21 +2,21 @@ import { FC } from 'react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Container } from '../../components/Layout';
-import SystemHealth from './components/SystemHealth';
+// import SystemHealth from './components/SystemHealth';
 import DailyActive from './components/DailyActive';
 import TotalStats from './components/TotalStats';
 import { Loader } from '../../components/Loader';
 import { useStatsPage } from './useStatsPage';
 import styles from './StatsPage.module.scss';
 import Lending from './components/Lending';
-import Pools from './components/Pools';
+// import Pools from './components/Pools';
 
-const poolsInfo = [
-  { name: 'Solpunks', value: '132' },
-  { name: 'Frakt', value: '100' },
-  { name: 'Turtles', value: '132' },
-  { name: 'Other Collecions', value: '400' },
-];
+// const poolsInfo = [
+//   { name: 'Solpunks', value: '132' },
+//   { name: 'Frakt', value: '100' },
+//   { name: 'Turtles', value: '132' },
+//   { name: 'Other Collecions', value: '400' },
+// ];
 
 const StatsPage: FC = () => {
   const { totalStats, lastLoans, lendingPools, dailyStats, loading } =
@@ -36,10 +36,10 @@ const StatsPage: FC = () => {
               <DailyActive dailyStats={dailyStats} />
             </div>
             <Lending lendingPools={lendingPools} lastLoans={lastLoans} />
-            <div className={styles.poolsWrapper}>
+            {/* <div className={styles.poolsWrapper}>
               <Pools poolsInfo={poolsInfo} />
               <SystemHealth health={80} />
-            </div>
+            </div> */}
           </>
         )}
       </Container>

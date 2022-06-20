@@ -4,6 +4,8 @@ import { LastLoans, LedningPools } from '../../model';
 import { SOL_TOKEN } from '../../../../utils';
 import styles from './Lending.module.scss';
 import Block from '../Block';
+import okayBears from '../PoolsRaw/mockImage/okayBears.png';
+import degods from '../PoolsRaw/mockImage/degods.png';
 
 interface LendingProps {
   lendingPools: LedningPools[];
@@ -48,7 +50,14 @@ const Lending: FC<LendingProps> = ({ lendingPools, lastLoans }) => {
                 <div key={idx} className={styles.tableRow}>
                   <div className={styles.tableInfo}>
                     <p className={styles.rowNumber}>{idx + 1}</p>
-                    <img className={styles.rowImage} src={image} />
+                    {image === 'image' ? (
+                      <div className={styles.mockImages}>
+                        <img className={styles.rowImage} src={okayBears} />
+                        <img className={styles.rowImage} src={degods} />
+                      </div>
+                    ) : (
+                      <img className={styles.rowImage} src={image} />
+                    )}
                     <p className={styles.rowTitle}>{nftName}</p>
                   </div>
                   <div className={styles.tableStats}>

@@ -185,3 +185,28 @@
   max-width: 270px;
   width: 100%;
 }
+
+.mockImages {
+  display: flex;
+  margin: 0 5px 0 10px;
+  position: relative;
+
+  &::before {
+    content: attr(aria-valuenow) '+54';
+    background: var(--accent-color-1);
+    color: var(--white-color);
+    position: absolute;
+    font: var(--font-smallest);
+    padding: 2px 4px 4px 5px;
+    top: -4px;
+    left: 7px;
+    border-radius: 10px;
+    transform: translateX(-13px);
+    width: 29px;
+    height: 16px;
+  }
+}
+
+.mockImages .rowImage {
+  margin: 0;
+}
