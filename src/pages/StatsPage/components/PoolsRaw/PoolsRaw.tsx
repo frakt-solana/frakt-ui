@@ -4,6 +4,7 @@ import { ChartPie, defaultColors } from '../ChartPie';
 import styles from './PoolsRaw.module.scss';
 import okayBears from './mockImage/okayBears.png';
 import degods from './mockImage/degods.png';
+import { SolanaIcon } from '../../../../icons';
 
 interface PoolsRawProps {
   data: any[];
@@ -36,12 +37,8 @@ const PoolsRaw: FC<PoolsRawProps> = ({ data, title }) => {
                     <img src={degods} className={styles.rowIcon} />
                   </div>
                 ) : (
-                  <img
-                    src="https://img.raydium.io/icon/So11111111111111111111111111111111111111112.png"
-                    className={styles.rowIcon}
-                  />
+                  <SolanaIcon width={12} />
                 )}
-
                 <p>{name}</p>
               </div>
               <p>{value} SOL</p>
