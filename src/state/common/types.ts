@@ -46,3 +46,7 @@ export interface WalletModalState {
 export interface UserState {
   avatar: string;
 }
+
+export interface ModalState {
+  isVisible: boolean;
+}

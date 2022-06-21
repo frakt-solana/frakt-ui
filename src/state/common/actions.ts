@@ -29,6 +29,7 @@ export const commonTypes = {
   FETCH_USER__PENDING: 'common/FETCH_USER__PENDING',
   FETCH_USER__FULFILLED: 'common/FETCH_USER__FULFILLED',
   FETCH_USER__FAILED: 'common/FETCH_USER__FAILED',
+  TOGGLE_DISCORD_MODAL: 'common/TOGGLE_DISCORD_MODAL',
 };
 
 export const commonActions = {
@@ -90,7 +91,6 @@ export const commonActions = {
     commonTypes.FETCH_SOLANA_TIMESTAMP__FAILED,
     (error: ServerError) => ({ payload: error }),
   ),
-
   fetchUser: createCustomAction(commonTypes.FETCH_USER, (publicKey) => ({
     payload: publicKey,
   })),
@@ -105,5 +105,9 @@ export const commonActions = {
   fetchUserFailed: createCustomAction(
     commonTypes.FETCH_USER__FAILED,
     (error: ServerError) => ({ payload: error }),
+  ),
+  toggleDiscordModal: createCustomAction(
+    commonTypes.TOGGLE_DISCORD_MODAL,
+    () => null,
   ),
 };
