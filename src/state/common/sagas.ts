@@ -3,13 +3,19 @@ import { Connection } from '@solana/web3.js';
 import moment from 'moment';
 import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 
+import { sagaMiddleware } from '../store';
+import loansSagas from '../loans/sagas';
 import { commonTypes, commonActions } from './actions';
 import { tokenListActions } from '../tokenList/actions';
-import { networkRequest } from '../../utils/state';
+import { networkRequest, connectSocket } from '../../utils/state';
+import { parseSolanaHealth } from './helpers';
 
 const appInitSaga = function* () {
   yield put(commonActions.fetchSolanaHealth());
   yield put(tokenListActions.fetchTokenList());
+  const socket = yield call(connectSocket);
+  yield put(commonActions.setSocket(socket));
+  sagaMiddleware.run(loansSagas(socket));
 };
 
 const fetchSolanaHealthSaga = function* () {
@@ -18,7 +24,10 @@ const fetchSolanaHealthSaga = function* () {
     const data = yield call(networkRequest, {
       url: 'https://ping.solana.com/mainnet-beta/last6hours',
     });
-    yield put(commonActions.fetchSolanaHealthFulfilled(data));
+
+    yield put(
+      commonActions.fetchSolanaHealthFulfilled(parseSolanaHealth(data)),
+    );
   } catch (error) {
     yield put(commonActions.fetchSolanaHealthFailed(error));
   }

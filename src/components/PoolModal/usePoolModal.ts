@@ -8,7 +8,7 @@ import { Tab, useTabs } from '../Tabs';
 import {
   depositLiquidity as depositTxn,
   unstakeLiquidity as unstakeTxn,
-} from '../../contexts/loans';
+} from '../../utils/loans';
 import { useConnection } from '../../hooks';
 
 export enum InputControlsNames {

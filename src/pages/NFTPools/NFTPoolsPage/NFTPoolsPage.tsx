@@ -72,7 +72,9 @@ export const NFTPoolsPage: FC = () => {
     <AppLayout>
       <Container component="main" className={styles.container}>
         <h1 className={styles.title}>Pools</h1>
-        <h2 className={styles.subtitle}>Buy, sell, and swap NFTs instantly</h2>
+        <h2 className={styles.subtitle}>
+          Buy, sell, swap and stake NFTs instantly
+        </h2>
 
         <div className={styles.searchWrapper}>
           <SearchInput

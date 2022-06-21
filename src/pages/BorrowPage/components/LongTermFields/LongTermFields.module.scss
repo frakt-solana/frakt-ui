@@ -1,0 +1,76 @@
+.fieldWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.sliderWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.sliderLabel {
+  color: var(--gray-color-3);
+  font: var(--font-text-5);
+  text-transform: uppercase;
+}
+
+.staticValue {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0 10px;
+
+  color: var(--gray-color-3);
+  font: var(--font-text-5);
+  text-transform: uppercase;
+
+  &::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    display: block;
+    background: var(--color-gray-4);
+    order: 2;
+  }
+}
+.staticValueAccent {
+  color: var(--white-color);
+}
+
+.staticValueTitle {
+  order: 1;
+}
+.staticValueData {
+  order: 3;
+}
+
+.highLoanRisk {
+  color: #ff6666;
+}
+
+.mediumLoanRisk {
+  color: #ddb834;
+}
+
+.lowLoanRisk {
+  color: #83d6a4;
+}
+
+.questionIcon {
+  margin-left: 5px;
+
+  svg {
+    fill: var(--accent-color-1);
+  }
+}
+
+.slider {
+  padding: 0 5px;
+  :global {
+    .ant-slider-mark-text:first-child {
+      left: 10px !important;
+    }
+  }
+}

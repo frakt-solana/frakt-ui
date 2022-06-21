@@ -1,6 +1,6 @@
 import { createCustomAction } from 'typesafe-actions';
 
-import { UserNFT } from './types';
+import { BorrowNFT, UserNFT } from './types';
 import { ServerError } from '../../utils/state';
 
 export const userTokensTypes = {
@@ -14,6 +14,7 @@ export const userTokensTypes = {
   FETCH_WALLET_NFTS__FAILED: 'userTokens/FETCH_WALLET_NFTS__FAILED',
   REMOVE_TOKEN_OPTIMISTIC: 'userTokens/REMOVE_TOKEN_OPTIMISTIC',
   CLEAR_TOKENS: 'userTokens/CLEAR_TOKENS',
+  SET_BORROW_NFTS: 'userTokens/SET_BORROW_NFTS',
 };
 
 export const userTokensActions = {
@@ -52,6 +53,10 @@ export const userTokensActions = {
   removeTokenOptimistic: createCustomAction(
     userTokensTypes.REMOVE_TOKEN_OPTIMISTIC,
     (mints: string[]) => ({ payload: mints }),
+  ),
+  setBorrowNfts: createCustomAction(
+    userTokensTypes.SET_BORROW_NFTS,
+    (nfts: BorrowNFT[]) => ({ payload: nfts }),
   ),
   clearTokens: createCustomAction(userTokensTypes.CLEAR_TOKENS, () => null),
 };

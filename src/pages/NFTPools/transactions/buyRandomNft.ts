@@ -1,6 +1,6 @@
 import { getLotteryTicketIx } from '@frakters/community-pools-client-library-v2';
 import { Provider } from '@project-serum/anchor';
-import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { Liquidity, LiquidityPoolKeysV4, Spl } from '@raydium-io/raydium-sdk';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
@@ -94,10 +94,9 @@ export const buyRandomNft: BuyRandomNft = async ({
       };
     })();
 
-    const { pubkey: userFractionsTokenAccount } = await getTokenAccount({
-      tokenMint: pool.fractionMint,
+    const userFractionsTokenAccount = await Spl.getAssociatedTokenAccount({
+      mint: pool.fractionMint,
       owner: wallet.publicKey,
-      connection,
     });
 
     const {

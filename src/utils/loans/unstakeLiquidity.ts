@@ -1,23 +1,23 @@
-import { depositLiquidity as txn } from '@frakters/nft-lending-v2';
+import { unstakeLiquidity as txn } from '@frakters/nft-lending-v2';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Provider } from '@project-serum/anchor';
 
-import { NotifyType } from '../../../utils/solanaUtils';
-import { notify } from '../../../utils';
+import { NotifyType } from '../solanaUtils';
+import { notify } from '../';
 import {
   showSolscanLinkNotification,
   signAndConfirmTransaction,
-} from '../../../utils/transactions';
+} from '../transactions';
 
-type DepositLiquidity = (props: {
+type UnstakeLiquidity = (props: {
   connection: Connection;
   wallet: WalletContextState;
   liquidityPool: string;
   amount: number;
 }) => Promise<boolean>;
 
-export const depositLiquidity: DepositLiquidity = async ({
+export const unstakeLiquidity: UnstakeLiquidity = async ({
   connection,
   wallet,
   liquidityPool,
@@ -44,7 +44,7 @@ export const depositLiquidity: DepositLiquidity = async ({
     });
 
     notify({
-      message: 'Deposit liquidity successfully!',
+      message: 'Unstake liquidity successfully!',
       type: NotifyType.SUCCESS,
     });
 

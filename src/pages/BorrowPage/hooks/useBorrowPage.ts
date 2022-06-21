@@ -1,4 +1,4 @@
-import { useState, useMemo, Dispatch, SetStateAction } from 'react';
+import { useState, useMemo, Dispatch, SetStateAction, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import {
@@ -6,6 +6,9 @@ import {
   useInfinityScroll,
 } from '../../../components/InfinityScroll';
 import { BorrowNFT } from './../../../state/userTokens/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { userTokensActions } from '../../../state/userTokens/actions';
+import { selectBorrowNfts } from '../../../state/userTokens/selectors';
 
 export const useBorrowPage = (): {
   isCloseSidebar: boolean;
@@ -20,6 +23,7 @@ export const useBorrowPage = (): {
   const [isCloseSidebar, setIsCloseSidebar] = useState<boolean>(false);
   const [nftsLoading, setNftsLoading] = useState<boolean>(true);
   const wallet = useWallet();
+  const dispatch = useDispatch();
 
   const fetchData: FetchData<BorrowNFT> = async ({
     offset,
@@ -27,7 +31,7 @@ export const useBorrowPage = (): {
     searchStr,
   }) => {
     try {
-      const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
+      const URL = `https://${process.env.BACKEND_DOMAIN}/nft/meta`;
       const isSearch = searchStr ? `search=${searchStr}&` : '';
 
       const fullURL = `${URL}/${wallet?.publicKey?.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;
@@ -56,11 +60,17 @@ export const useBorrowPage = (): {
     [wallet],
   );
 
+  useEffect(() => {
+    dispatch(userTokensActions.setBorrowNfts(userWhitelistedNFTs));
+  }, [userWhitelistedNFTs, dispatch]);
+
+  const nfts = useSelector(selectBorrowNfts);
+
   const filteredNfts = useMemo(() => {
-    return (userWhitelistedNFTs || []).sort(
-      ({ name: nameA }, { name: nameB }) => nameA?.localeCompare(nameB),
+    return (nfts || []).sort(({ name: nameA }, { name: nameB }) =>
+      nameA?.localeCompare(nameB),
     );
-  }, [userWhitelistedNFTs]);
+  }, [nfts]);
 
   const loading = nftsLoading;
 

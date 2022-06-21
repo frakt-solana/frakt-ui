@@ -25,3 +25,9 @@
   justify-content: center;
   font: var(--font-btn-small);
 }
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

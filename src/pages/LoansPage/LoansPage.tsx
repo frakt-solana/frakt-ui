@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { MyLoansTab } from './components/MyLoansTab';
@@ -7,19 +8,14 @@ import { Container } from '../../components/Layout';
 import LendingPool from './components/LendingPool';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
-import { LoanTabsNames, useLoansPage } from './hooks';
 import { Loader } from '../../components/Loader';
 import Liquidations from './components/Liquidations';
+import { selectLiquidityPoolInfo } from '../../state/loans/selectors';
+import { useLoansPage, LoanTabsNames } from './hooks';
 
 const LoansPage: FC = () => {
-  const {
-    loanTabs,
-    tabValue,
-    setTabValue,
-    userLoans,
-    userLoansLoading,
-    loansPoolInfo,
-  } = useLoansPage();
+  const { loanTabs, tabValue, setTabValue } = useLoansPage();
+  const loansPoolInfo = useSelector(selectLiquidityPoolInfo);
 
   return (
     <AppLayout>
@@ -48,9 +44,7 @@ const LoansPage: FC = () => {
           </>
         )}
         {tabValue === LoanTabsNames.LIQUIDATIONS && <Liquidations />}
-        {tabValue === LoanTabsNames.LOANS && (
-          <MyLoansTab userLoans={userLoans} loading={userLoansLoading} />
-        )}
+        {tabValue === LoanTabsNames.LOANS && <MyLoansTab />}
       </Container>
     </AppLayout>
   );
