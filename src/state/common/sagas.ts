@@ -56,8 +56,7 @@ const fetchUserStatusSaga = function* (action) {
   yield put(commonActions.fetchUserPending());
   try {
     const data = yield call(networkRequest, {
-      //url: `https://${process.env.BACKEND_DOMAIN}/user/${action.payload}`,
-      url: `http://localhost:3001/user/${action.payload}`,
+      url: `https://${process.env.BACKEND_DOMAIN}/user/${action.payload}`,
     });
 
     if (data.statusCode) {
