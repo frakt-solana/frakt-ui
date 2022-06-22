@@ -27,15 +27,8 @@ export const ProfileCard: FC<ProfileCard> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const unlink = useCallback(async () => {
-    try {
-      await fetch(
-        `https://${process.env.BACKEND_DOMAIN}/user/${walletPubkey}/delete`,
-      );
-      dispatch(commonActions.fetchUserFulfilled(null));
-    } catch (error) {
-      console.error(error);
-    }
+  const unlink = useCallback(() => {
+    dispatch(commonActions.deleteUser(walletPubkey));
   }, [dispatch, walletPubkey]);
 
   return (

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Modal as ModalAnt } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CloseIcon } from '../../icons';
+import { CloseModalIcon } from '../../icons';
 import DiscordIcon from '../../icons/DiscordIcon2';
 import { LinkWithArrow } from '../LinkWithArrow';
 import { commonActions } from '../../state/common/actions';
@@ -38,9 +38,7 @@ export const DiscordModal: FC = () => {
       footer={null}
       className={classNames(styles.modal)}
       wrapClassName={styles.wrap}
-      closeIcon={
-        <CloseIcon width="24px" height="24px" className={styles.close} />
-      }
+      closeIcon={<CloseModalIcon className={styles.close} />}
       onCancel={onClose}
     >
       <div className={styles.content}>

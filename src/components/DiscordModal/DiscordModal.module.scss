@@ -43,10 +43,14 @@
 .close {
   border-radius: 50%;
   border: 1px solid var(--gray-color-3);
-  background-color: var(--black-color);
   padding: 10px;
   width: 44px;
   height: 44px;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border: 1px solid var(--white-color);
+  }
 }
 
 .content {
