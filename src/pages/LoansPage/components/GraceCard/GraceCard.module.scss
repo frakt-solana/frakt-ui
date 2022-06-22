@@ -107,3 +107,14 @@
     background-color: var(--accent-color-1);
   }
 }
+
+.countdown {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  gap: 5px;
+
+  @media screen and (max-width: 500px) {
+    font: var(--font-text-2);
+  }
+}
