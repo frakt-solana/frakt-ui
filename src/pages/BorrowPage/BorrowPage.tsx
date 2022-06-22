@@ -99,6 +99,7 @@ const BorrowPage: FC = () => {
                   )
                 }
                 loanValue={Number(nft.loanValue)}
+                isCanFreeze={nft.isCanFreeze}
               />
             );
           })}

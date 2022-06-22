@@ -20,6 +20,7 @@ export interface BorrowNFT {
   fee: string;
   feeDiscountPercents: string;
   repayValue: string;
+  isCanFreeze?: boolean;
 }
 
 export interface UserNFT {
