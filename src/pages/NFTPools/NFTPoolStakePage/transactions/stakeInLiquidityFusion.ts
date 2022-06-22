@@ -5,6 +5,7 @@ import { Connection, PublicKey, Transaction } from '@solana/web3.js';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
 import { notify } from '../../../../utils';
+import { captureSentryError } from '../../../../utils/sentry';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
 
@@ -74,8 +75,11 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'stakeInLiquidityFusion',
+    });
 
     return false;
   }

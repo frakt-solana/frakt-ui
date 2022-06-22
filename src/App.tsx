@@ -22,6 +22,11 @@ import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { PrismProvider } from './contexts/prism';
+import { createBrowserHistory } from 'history';
+import { initSentry } from './utils/sentry';
+
+const history = createBrowserHistory();
+initSentry(history);
 
 const wallets = [
   getPhantomWallet(),

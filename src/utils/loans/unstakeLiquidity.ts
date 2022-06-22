@@ -5,9 +5,10 @@ import { Provider } from '@project-serum/anchor';
 
 import { NotifyType } from '../solanaUtils';
 import { notify } from '../';
+import { captureSentryError } from '../sentry';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
+  showSolscanLinkNotification,
 } from '../transactions';
 
 type UnstakeLiquidity = (props: {
@@ -33,6 +34,7 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
       liquidityPool: new PublicKey(liquidityPool),
       user: wallet.publicKey,
       amount,
+      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -59,8 +61,7 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'unstakeLiquidity' });
 
     return false;
   }

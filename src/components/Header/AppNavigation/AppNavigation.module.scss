@@ -72,10 +72,16 @@
 .dropdownLink {
   color: var(--white-color);
   background: none;
+  font: var(--font-text-3);
   outline: none;
   border: none;
   cursor: pointer;
-  padding: 0 16px;
+  padding: 5px 20px;
+
+  &:hover {
+    color: var(--white-color);
+    background: var(--color-gray-7);
+  }
 
   svg {
     margin-right: 10px;

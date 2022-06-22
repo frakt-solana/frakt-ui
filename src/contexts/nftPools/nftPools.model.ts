@@ -1,11 +1,6 @@
-import { PublicKey } from '@solana/web3.js';
 import { Dictionary } from 'lodash';
 
 import { NftPoolData } from '../../utils/cacher/nftPools';
-import {
-  DepositNftToCommunityPoolParams,
-  GetLotteryTicketParams,
-} from './transactions';
 
 export type FetchDataFunc = () => Promise<void>;
 
@@ -17,10 +12,6 @@ export type NftPoolsContextValues = {
   isPolling: boolean;
   startPolling: () => void;
   stopPolling: () => void;
-  depositNftToCommunityPool: (
-    params: DepositNftToCommunityPoolParams,
-  ) => Promise<boolean | null>;
-  getLotteryTicket: (params: GetLotteryTicketParams) => Promise<PublicKey>;
 };
 
 export type UseNftPool = (poolPubkey: string) => {

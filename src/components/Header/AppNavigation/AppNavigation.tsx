@@ -18,6 +18,9 @@ export const DropdownMenuMore: FC = () => {
   return (
     <Dropdown title="More">
       <ul>
+        <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
+          Stats
+        </NavLink>
         <li>
           <a
             className={styles.dropdownLink}
