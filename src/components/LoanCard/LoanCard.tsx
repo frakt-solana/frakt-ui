@@ -143,7 +143,7 @@ const LoanCardValues: FC<{
         {isPriceBased ? (
           <div className={styles.valueWithTooltip}>
             <p className={styles.valueTitle}>Valuation status</p>
-            <Tooltip placement="bottom" overlay="hover" visible={false}>
+            <Tooltip placement="bottom" overlay="hover">
               <QuestionCircleOutlined className={styles.questionIcon} />
             </Tooltip>
           </div>
@@ -208,11 +208,9 @@ const Health: FC<{
     valuation,
     nftOriginalPrice,
   } = loan;
-  const health = rawHealth > 100 ? 100 : rawHealth;
 
-  const pxInFullHealthPersent = 220;
-  const moveLabelByHealthPersent =
-    pxInFullHealthPersent - (100 - health) * (pxInFullHealthPersent / 100);
+  const health = rawHealth > 100 ? 100 : rawHealth;
+  const moveLabelByHealthPersent = health < 22 ? null : 100 - health;
 
   const risk = getRisk({ health });
 
@@ -225,11 +223,12 @@ const Health: FC<{
           [styles.mediumLoanRisk]: risk === Risk.Medium,
           [styles.lowLoanRisk]: risk === Risk.Low,
         })}
-        style={{ left: `${moveLabelByHealthPersent}px` }}
+        style={{ right: `${moveLabelByHealthPersent}%` }}
       >
         {rawHealth > 100 && '>'}
         {valuation.toFixed(2)} SOL
       </div>
+
       <div className={styles.healthValueWrapper}>
         <p className={styles.healthValue}>{liquidationPrice.toFixed(2)} SOL</p>
         <p className={styles.healthValue}>{nftOriginalPrice.toFixed(2)} SOL</p>
