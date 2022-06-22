@@ -52,7 +52,7 @@ const fetchSolanaTimestampSaga = function* () {
   }
 };
 
-const fetchUserStatusSaga = function* (action) {
+const fetchUserSaga = function* (action) {
   yield put(commonActions.fetchUserPending());
   try {
     const data = yield call(networkRequest, {
@@ -77,7 +77,7 @@ const commonSagas = function* (): Generator {
   yield all([
     takeLatest(commonTypes.FETCH_SOLANA_TIMESTAMP, fetchSolanaTimestampSaga),
   ]);
-  yield all([takeLatest(commonTypes.FETCH_USER, fetchUserStatusSaga)]);
+  yield all([takeLatest(commonTypes.FETCH_USER, fetchUserSaga)]);
 };
 
 export default commonSagas;
