@@ -68,4 +68,6 @@ export interface Loan {
   liquidationPrice?: number; //? 1.23456 (SOL)
   valuation?: number; //? 1.23456 (SOL)
   health?: number; //? 80(%) 0-100%
+  nftOriginalPrice?: number;
+  borrowAPRPercents?: number;
 }

@@ -102,7 +102,7 @@ export default LoanCard;
 const LoanCardValues: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const { loanValue, repayValue, isPriceBased } = loan;
+  const { loanValue, repayValue, isPriceBased, borrowAPRPercents } = loan;
 
   return (
     <div className={styles.valuesWrapper}>
@@ -134,7 +134,7 @@ const LoanCardValues: FC<{
         <div className={styles.valueWrapper}>
           <p className={styles.valueTitle}>Borrow APY</p>
           <div className={styles.valueInfo}>
-            <p>{repayValue.toFixed(2)} %</p>
+            <p>{borrowAPRPercents} %</p>
           </div>
         </div>
       )}
@@ -202,7 +202,12 @@ const getRisk = ({ health }: { health: number }): Risk => {
 const Health: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const { health: rawHealth = 0, liquidationPrice, valuation } = loan;
+  const {
+    health: rawHealth = 0,
+    liquidationPrice,
+    valuation,
+    nftOriginalPrice,
+  } = loan;
   const health = rawHealth > 100 ? 100 : rawHealth;
 
   const pxInFullHealthPersent = 220;
@@ -226,8 +231,8 @@ const Health: FC<{
         {valuation.toFixed(2)} SOL
       </div>
       <div className={styles.healthValueWrapper}>
-        <p className={styles.healthValue}>{liquidationPrice} SOL</p>
-        <p className={styles.healthValue}>{valuation} SOL</p>
+        <p className={styles.healthValue}>{liquidationPrice.toFixed(2)} SOL</p>
+        <p className={styles.healthValue}>{nftOriginalPrice.toFixed(2)} SOL</p>
       </div>
     </div>
   );
