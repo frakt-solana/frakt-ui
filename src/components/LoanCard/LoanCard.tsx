@@ -227,7 +227,7 @@ const Health: FC<{
         })}
         style={{ left: `${moveLabelByHealthPersent}px` }}
       >
-        {health > 100 && '>'}
+        {rawHealth > 100 && '>'}
         {valuation.toFixed(2)} SOL
       </div>
       <div className={styles.healthValueWrapper}>
