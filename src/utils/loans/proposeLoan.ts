@@ -3,11 +3,12 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { BN, Provider } from '@project-serum/anchor';
 import { proposeLoan as txn, decodeLoan } from '@frakters/nft-lending-v2';
 
-import { notify, SOL_TOKEN } from '../';
 import { NotifyType } from '../solanaUtils';
+import { notify, SOL_TOKEN } from '../';
+import { captureSentryError } from '../sentry';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
+  showSolscanLinkNotification,
 } from '../transactions';
 
 type ProposeLoan = (props: {
@@ -92,8 +93,7 @@ export const proposeLoan: ProposeLoan = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'proposeLoan' });
 
     return false;
   }

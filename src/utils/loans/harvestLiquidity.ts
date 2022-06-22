@@ -5,9 +5,10 @@ import { Provider } from '@project-serum/anchor';
 
 import { NotifyType } from '../solanaUtils';
 import { notify } from '../';
+import { captureSentryError } from '../sentry';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
+  showSolscanLinkNotification,
 } from '../transactions';
 
 type HarvestLiquidity = (props: {
@@ -57,8 +58,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'harvestLiquidity' });
 
     return false;
   }
