@@ -16,7 +16,6 @@
     "@solana/wallet-adapter-react": "^0.13.1",
     "@solana/wallet-adapter-wallets": "^0.11.3",
     "antd": "^4.6.6",
-    "bn.js": "^5.2.0",
     "chart.js": "^3.8.0",
     "classnames": "^2.3.1",
     "moment": "^2.29.1",
