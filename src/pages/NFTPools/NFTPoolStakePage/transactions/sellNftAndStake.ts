@@ -15,6 +15,7 @@ import { SELL_COMMISSION_PERCENT } from '../../constants';
 import { notify } from '../../../../utils';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
+import { captureSentryError } from '../../../../utils/sentry';
 
 type SellNftAndStake = (props: {
   wallet: WalletContextState;
@@ -152,8 +153,7 @@ export const sellNftAndStake: SellNftAndStake = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'sellNftAndStake' });
 
     return false;
   }

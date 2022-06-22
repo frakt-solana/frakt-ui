@@ -1,8 +1,9 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
-import { notify } from '../';
+import { notify } from '..';
 import { LoanView } from '../../state/loans/types';
+import { captureSentryError } from '../sentry';
 import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
@@ -60,8 +61,7 @@ export const paybackLoan: PaybackLoan = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'paybackLoan' });
 
     return false;
   }

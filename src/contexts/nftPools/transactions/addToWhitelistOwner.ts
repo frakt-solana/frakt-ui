@@ -1,35 +1,51 @@
 import { pools, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
 import {
+  showSolscanLinkNotification,
   signAndConfirmTransaction,
-  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import { AddToWhiteListTransactionRawParams } from './index';
+import { notify } from '../../../utils';
+import { captureSentryError } from '../../../utils/sentry';
+import { NotifyType } from '../../../utils/solanaUtils';
 
-const rawAddToWhitelistOwner = async ({
+export const addToWhitelistOwner = async ({
   communityPoolAddress,
   whitelistedAddress,
   connection,
   wallet,
 }: AddToWhiteListTransactionRawParams): Promise<void> => {
-  await pools.addToWhitelist({
-    isCreator: true,
-    communityPool: new web3.PublicKey(communityPoolAddress),
-    whitelistedAddress: new web3.PublicKey(whitelistedAddress),
-    programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-    userPubkey: wallet.publicKey,
-    provider: new AnchorProvider(connection, wallet, null),
-    sendTxn: async (transaction, signers) => {
-      await signAndConfirmTransaction({
-        transaction,
-        connection,
-        wallet,
-        signers,
-      });
-    },
-  });
-};
+  try {
+    await pools.addToWhitelist({
+      isCreator: true,
+      communityPool: new web3.PublicKey(communityPoolAddress),
+      whitelistedAddress: new web3.PublicKey(whitelistedAddress),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      userPubkey: wallet.publicKey,
+      provider: new AnchorProvider(connection, wallet, null),
+      sendTxn: async (transaction, signers) => {
+        await signAndConfirmTransaction({
+          transaction,
+          connection,
+          wallet,
+          signers,
+        });
+      },
+    });
+  } catch (error) {
+    const isNotConfirmed = showSolscanLinkNotification(error);
 
-export const addToWhitelistOwner = wrapTxnWithTryCatch(rawAddToWhitelistOwner, {
-  onErrorMessage: { message: 'Transaction failed' },
-});
+    if (!isNotConfirmed) {
+      notify({
+        message: 'Transaction failed',
+        type: NotifyType.ERROR,
+      });
+    }
+
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'addToWhitelistOwner',
+    });
+  }
+};

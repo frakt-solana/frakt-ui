@@ -1,11 +1,12 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
-import { notify } from '../';
+import { captureSentryError } from '../sentry';
 import { NotifyType } from '../solanaUtils';
+import { notify } from '..';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
+  showSolscanLinkNotification,
 } from '../transactions';
 
 type ProposeLoan = (props: {
@@ -85,8 +86,7 @@ export const proposeLoan: ProposeLoan = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'proposeLoan' });
 
     return false;
   }

@@ -3,9 +3,10 @@ import { lending, AnchorProvider, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { NotifyType } from '../solanaUtils';
 import { notify } from '../';
+import { captureSentryError } from '../sentry';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
+  showSolscanLinkNotification,
 } from '../transactions';
 
 type UnstakeLiquidity = (props: {
@@ -57,8 +58,7 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'unstakeLiquidity' });
 
     return false;
   }

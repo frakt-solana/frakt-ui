@@ -12,6 +12,7 @@ import {
 import { UserNFT } from '../../../state/userTokens/types';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
+import { captureSentryError } from '../../../utils/sentry';
 import { NotifyType } from '../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../utils/transactions';
 import { SELL_COMMISSION_PERCENT } from '../constants';
@@ -241,8 +242,7 @@ export const swapNft: SwapNft = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'swapNft' });
 
     return false;
   }

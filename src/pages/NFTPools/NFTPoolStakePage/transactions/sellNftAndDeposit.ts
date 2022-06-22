@@ -20,6 +20,7 @@ import { SELL_COMMISSION_PERCENT } from '../../constants';
 import { calcRatio } from '../components';
 import { NftPoolData } from '../../../../utils/cacher/nftPools';
 import { UserNFT } from '../../../../state/userTokens/types';
+import { captureSentryError } from '../../../../utils/sentry';
 
 type SellNftAndDeposit = (props: {
   wallet: WalletContextState;
@@ -192,8 +193,7 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'sellNftAndDeposit' });
 
     return false;
   }

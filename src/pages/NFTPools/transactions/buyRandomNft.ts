@@ -11,6 +11,7 @@ import {
 
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
+import { captureSentryError } from '../../../utils/sentry';
 import { NotifyType } from '../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../utils/transactions';
 import { getTokenPrice } from '../helpers';
@@ -198,8 +199,7 @@ export const buyRandomNft: BuyRandomNft = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'buyRandomNft' });
 
     return false;
   }
