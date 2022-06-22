@@ -10,6 +10,7 @@ import { FusionPool } from './../../../../contexts/liquidityPools/liquidityPools
 import { notify } from '../../../../utils';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
+import { captureSentryError } from '../../../../utils/sentry';
 
 type Harvest = (props: {
   wallet: WalletContextState;
@@ -137,8 +138,7 @@ export const harvest: Harvest = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'harvestInNftPool' });
 
     return false;
   }
