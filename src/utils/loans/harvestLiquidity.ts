@@ -28,6 +28,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
 
     await txn({
       programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       provider,
       liquidityPool: new PublicKey(liquidityPool),
       user: wallet.publicKey,

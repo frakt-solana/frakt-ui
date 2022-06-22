@@ -1,27 +1,25 @@
 import { FC } from 'react';
-
-import styles from './ShortTermFields.module.scss';
 import classNames from 'classnames';
 
+import styles from './ShortTermFields.module.scss';
+import { BorrowNft } from '../../../../state/loans/types';
+
 interface ShortTermFields {
-  repayValue?: string;
-  loanValue?: string;
-  valuation?: string;
-  ltv?: number;
-  fee?: string;
-  feeDiscountPercent?: number;
-  returnPeriodDays?: number;
+  nft: BorrowNft;
 }
 
-export const ShortTermFields: FC<ShortTermFields> = ({
-  loanValue,
-  valuation,
-  ltv,
-  fee,
-  feeDiscountPercent,
-  returnPeriodDays,
-  repayValue,
-}) => {
+export const ShortTermFields: FC<ShortTermFields> = ({ nft }) => {
+  const { valuation } = nft;
+
+  const {
+    returnPeriodDays,
+    ltvPercents,
+    fee,
+    feeDiscountPercents,
+    repayValue,
+    loanValue,
+  } = nft.timeBased;
+
   return (
     <div className={styles.fieldWrapper}>
       <div
@@ -39,7 +37,7 @@ export const ShortTermFields: FC<ShortTermFields> = ({
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>
         <p className={styles.staticValueTitle}>LTV</p>
-        <p className={styles.staticValueData}>{ltv.toFixed(0)}%</p>
+        <p className={styles.staticValueData}>{ltvPercents.toFixed(0)}%</p>
       </div>
 
       <div
@@ -55,10 +53,10 @@ export const ShortTermFields: FC<ShortTermFields> = ({
         <p className={styles.staticValueData}>{fee} SOL</p>
       </div>
 
-      {!!feeDiscountPercent && (
+      {!!feeDiscountPercents && (
         <div className={styles.staticValue} style={{ marginBottom: 10 }}>
           <p className={styles.staticValueTitle}>Fee Discount</p>
-          <p className={styles.staticValueData}>{feeDiscountPercent}%</p>
+          <p className={styles.staticValueData}>{feeDiscountPercents}%</p>
         </div>
       )}
 

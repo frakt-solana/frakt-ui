@@ -1,11 +1,11 @@
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
+import { BN, Provider } from '@project-serum/anchor';
 import { proposeLoan as txn, decodeLoan } from '@frakters/nft-lending-v2';
 
-import { captureSentryError } from '../sentry';
 import { NotifyType } from '../solanaUtils';
-import { notify } from '..';
+import { notify, SOL_TOKEN } from '../';
+import { captureSentryError } from '../sentry';
 import {
   signAndConfirmTransaction,
   showSolscanLinkNotification,
@@ -15,27 +15,32 @@ type ProposeLoan = (props: {
   connection: Connection;
   wallet: WalletContextState;
   nftMint: string;
-  proposedNftPrice: number;
+  valuation: number; //? SOL Lamports
+  loanToValue: number; //? Percent
+  isPriceBased?: boolean;
 }) => Promise<boolean>;
 
 export const proposeLoan: ProposeLoan = async ({
   connection,
   wallet,
   nftMint,
-  proposedNftPrice,
+  valuation,
+  loanToValue,
+  isPriceBased = false,
 }): Promise<boolean> => {
   try {
     const options = Provider.defaultOptions();
     const provider = new Provider(connection, wallet, options);
-    const programId = new PublicKey(process.env.LOANS_PROGRAM_PUBKEY);
 
     const { loanPubkey } = await txn({
-      programId,
+      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       user: wallet.publicKey,
       nftMint: new PublicKey(nftMint),
-      proposedNftPrice: proposedNftPrice,
-      isPriceBased: false,
+      proposedNftPrice: new BN(valuation * 10 ** SOL_TOKEN.decimals),
+      isPriceBased,
+      loanToValue: new BN(loanToValue * 100), //? Percent 20% ==> 2000
+      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
           transaction,

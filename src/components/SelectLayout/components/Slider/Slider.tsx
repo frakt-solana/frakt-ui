@@ -3,8 +3,8 @@ import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import SwiperCore, { Navigation, Scrollbar } from 'swiper';
 import classNames from 'classnames';
 
-import { BorrowNFT } from '../../../../state/userTokens/types';
 import styles from './Slider.module.scss';
+import { BorrowNft } from '../../../../state/loans/types';
 
 SwiperCore.use([Navigation, Scrollbar]);
 
@@ -13,8 +13,8 @@ const sliderBreakpoints = {
 };
 
 interface SliderProps {
-  nfts: BorrowNFT[];
-  onDeselect?: (nft: BorrowNFT) => void;
+  nfts: BorrowNft[];
+  onDeselect?: (nft: BorrowNft) => void;
   className?: string;
 }
 

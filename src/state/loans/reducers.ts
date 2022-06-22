@@ -4,19 +4,29 @@ import { AsyncState } from '../../utils/state';
 
 import { createInitialAsyncState } from '../../utils/state/reducers';
 import { loansActions, loansTypes } from './actions';
-import { Lending, LoanView } from './types';
+import { BorrowNft, LiquidityPool, Loan } from './types';
 
-export const initialLoansState: AsyncState<LoanView[]> =
-  createInitialAsyncState<LoanView[]>(null);
-export const initialLendingState: AsyncState<Lending> =
-  createInitialAsyncState<Lending>(null);
+export const initialLoansState: AsyncState<Loan[]> =
+  createInitialAsyncState<Loan[]>(null);
+export const initialLiquidityPoolsState: AsyncState<LiquidityPool[]> =
+  createInitialAsyncState<LiquidityPool[]>(null);
 
-const setLoansReducer = createReducer<AsyncState<LoanView[]>>(
-  initialLoansState,
+const setLoansReducer = createReducer<AsyncState<Loan[]>>(initialLoansState, {
+  [loansTypes.SET_LOANS]: (
+    state,
+    action: ReturnType<typeof loansActions.setLoans>,
+  ) => ({
+    ...state,
+    data: action.payload,
+  }),
+});
+
+const setLiquidityPoolsReducer = createReducer<AsyncState<LiquidityPool[]>>(
+  initialLiquidityPoolsState,
   {
-    [loansTypes.SET_LOANS]: (
+    [loansTypes.SET_LIQUIDITY_POOLS]: (
       state,
-      action: ReturnType<typeof loansActions.setLoans>,
+      action: ReturnType<typeof loansActions.setLiquidityPools>,
     ) => ({
       ...state,
       data: action.payload,
@@ -24,20 +34,23 @@ const setLoansReducer = createReducer<AsyncState<LoanView[]>>(
   },
 );
 
-const setLendingReducer = createReducer<AsyncState<Lending>>(
-  initialLendingState,
-  {
-    [loansTypes.SET_LENDING]: (
-      state,
-      action: ReturnType<typeof loansActions.setLending>,
-    ) => ({
-      ...state,
-      data: action.payload,
-    }),
-  },
-);
+const setBorrowNftsReducer = createReducer<BorrowNft[]>(null, {
+  [loansTypes.SET_BORROW_NFTS]: (
+    __,
+    action: ReturnType<typeof loansActions.setBorrowNfts>,
+  ) => action.payload,
+});
+
+const addHiddenBorrowNftsReducer = createReducer<string[]>([], {
+  [loansTypes.ADD_HIDDEN_BORROW_NFT]: (
+    state,
+    action: ReturnType<typeof loansActions.addHiddenBorrowNftMint>,
+  ) => [...state, action.payload],
+});
 
 export default combineReducers({
   loans: setLoansReducer,
-  lending: setLendingReducer,
+  liquidityPools: setLiquidityPoolsReducer,
+  borrowNfts: setBorrowNftsReducer,
+  hiddenBorrowNfts: addHiddenBorrowNftsReducer,
 });
