@@ -1,70 +1,71 @@
-export * from '@frakters/nft-lending-v2/lib/accounts';
+export interface BorrowNft {
+  mint: string;
+  name: string;
+  imageUrl: string;
+  valuation: string; // 2.508
+  maxLoanValue: string; // 1.003
+  timeBased: {
+    returnPeriodDays: number; // 14
+    ltvPercents: number; // 40
+    fee: string; // 0.100
+    feeDiscountPercents: string; // 2
+    repayValue: string; // 1.101
+    liquidityPoolPubkey: string;
+    loanValue: string; // 1.020
+  };
+  priceBased?: {
+    liquidityPoolPubkey: string;
+    ltvPercents: number; // 40
+    borrowAPRPercents: number; // 10
+    collaterizationRate: number; // 10(%)
+  };
+}
 
-export interface LoanView {
-  nftName: string;
-  nftImageUrl: string;
-  _id: string;
-  loanPubkey: string;
-  user: string;
-  nftMint: string;
-  nftUserTokenAccount: string;
+export interface LiquidityPool {
+  pubkey: string;
+  isPriceBased: boolean;
+  name: string;
+  imageUrl: string[];
+
+  totalLiquidity: number;
+  totalBorrowed: number;
+
+  utilizationRate: number;
+  depositApr: number;
+  borrowApr?: number;
+
+  activeloansAmount: number;
+
+  collectionsAmount: number;
+
+  userDeposit?: {
+    pubkey: string;
+    harvestAmount: number;
+    depositAmount: number;
+    depositAmountLamports: string; //? Lamports
+  };
+  userActiveLoansAmount?: number;
+}
+
+export interface Loan {
+  pubkey: string;
+  mint: string;
+  name: string;
+  imageUrl: string;
+  isPriceBased: boolean;
+
+  loanValue: number; //? SOL
+  repayValue: number; //? SOL
+  repayValueLamports: string; //? Lamports
+
+  startedAt: string; //? Date
+  expiredAt?: string; //? Date
+
   liquidityPool: string;
   collectionInfo: string;
-  startedAt: number;
-  expiredAt: number;
-  finishedAt: number;
-  originalPrice: number;
-  amountToGet: number;
-  amountToRepay: number;
-  rewardAmount: number;
-  feeAmount: number;
   royaltyAddress: string;
-  royaltyAmount: number;
-  rewardInterestRate: number;
-  feeInterestRate: number;
-  royaltyInterestRate: number;
-  loanStatus: string;
-  loanType: string;
-}
 
-export interface LoansPoolInfo {
-  apr?: number;
-  loans?: number;
-  totalSupply?: number;
-  depositAmount?: number;
-  utilizationRate?: number;
-  rewardAmount?: number;
-  totalBorrowed?: number;
-}
-
-export interface Lending {
-  activeLoansCount: number;
-  collectionsCount: number;
-  deposit?: {
-    amount: number;
-    depositPubkey: string;
-    liquidityPool: string;
-    stakedAt: number;
-    stakedAtCumulative: number;
-    updatedAt: string;
-  };
-  user?: string;
-  liquidityPool: {
-    amountOfStaked: number;
-    apr: number;
-    cumulative: number;
-    feeInterestRatePrice: number;
-    feeInterestRateTime: number;
-    id: number;
-    lastTime: number;
-    liqOwner: string;
-    liquidityAmount: number;
-    liquidityPoolPubkey: string;
-    oldCumulative: number;
-    period: number;
-    rewardInterestRatePrice: number;
-    rewardInterestRateTime: number;
-    updatedAt: string;
-    userRewardsAmount: number;
-  };
+  liquidationPrice?: number; //? 1.23456 (SOL)
+  valuation?: number; //? 1.23456 (SOL)
+  health?: number; //? 80(%) 0-100%
 }

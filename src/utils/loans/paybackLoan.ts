@@ -1,10 +1,12 @@
+import BN from 'bn.js';
 import { paybackLoan as txn } from '@frakters/nft-lending-v2';
 import { Provider } from '@project-serum/anchor';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey } from '@solana/web3.js';
 
+import { captureSentryError } from '../sentry';
+import { Loan } from '../../state/loans/types';
 import { notify } from '../';
-import { LoanView } from '../../state/loans/types';
 import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
@@ -14,7 +16,7 @@ import {
 type PaybackLoan = (props: {
   connection: Connection;
   wallet: WalletContextState;
-  loan: LoanView;
+  loan: Loan;
 }) => Promise<boolean>;
 
 export const paybackLoan: PaybackLoan = async ({
@@ -31,11 +33,12 @@ export const paybackLoan: PaybackLoan = async ({
       provider,
       user: wallet.publicKey,
       admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-      loan: new PublicKey(loan.loanPubkey),
-      nftMint: new PublicKey(loan.nftMint),
+      loan: new PublicKey(loan.pubkey),
+      nftMint: new PublicKey(loan.mint),
       liquidityPool: new PublicKey(loan.liquidityPool),
       collectionInfo: new PublicKey(loan.collectionInfo),
       royaltyAddress: new PublicKey(loan.royaltyAddress),
+      amount: new BN(loan.repayValueLamports),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -62,8 +65,7 @@ export const paybackLoan: PaybackLoan = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'paybackLoan' });
 
     return false;
   }

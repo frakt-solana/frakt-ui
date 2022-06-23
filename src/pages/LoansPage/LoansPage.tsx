@@ -9,12 +9,12 @@ import LendingPool from './components/LendingPool';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
-import { selectLiquidityPoolInfo } from '../../state/loans/selectors';
+import { selectLiquidityPools } from '../../state/loans/selectors';
 import { useLoansPage, LoanTabsNames } from './hooks';
 
 const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();
-  const loansPoolInfo = useSelector(selectLiquidityPoolInfo);
+  const liquidityPools = useSelector(selectLiquidityPools);
 
   return (
     <AppLayout>
@@ -31,9 +31,14 @@ const LoansPage: FC = () => {
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
         {tabValue === LoanTabsNames.LENDING && (
           <>
-            {loansPoolInfo?.apr ? (
+            {liquidityPools ? (
               <div className={styles.sortWrapper}>
-                <LendingPool loansPoolInfo={loansPoolInfo} />
+                {liquidityPools?.map((liquidityPool) => (
+                  <LendingPool
+                    key={liquidityPool.pubkey}
+                    liquidityPool={liquidityPool}
+                  />
+                ))}
               </div>
             ) : (
               <div className={styles.loader}>
