@@ -214,3 +214,12 @@ export const getCorrectSolWalletBalance = (
 ): string => {
   return solWalletBalance.split(',').join('');
 };
+
+export const getDiscordUri = (wallet: PublicKey | string): string => {
+  const redirectUri = `https://${process.env.BACKEND_DOMAIN}/user`;
+  const clientId = process.env.DISCORD_CLIENT_ID;
+
+  return `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+    redirectUri,
+  )}&response_type=code&scope=identify&state=${wallet}`;
+};

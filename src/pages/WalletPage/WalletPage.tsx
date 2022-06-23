@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Tab, Tabs, useTabs } from '../../components/Tabs';
@@ -12,6 +13,7 @@ import { usePublicKeyParam } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useNameService, useWalletTokens } from './hooks';
 import { shortenAddress } from '../../utils/solanaUtils';
+import { selectUser } from '../../state/common/selectors';
 
 export enum WalletTabs {
   TOKENS = 'tokens',
@@ -70,6 +72,7 @@ const WalletPage: FC = () => {
     nameServiceInfo,
     walletPubkey,
   } = useWalletPage();
+  const user = useSelector(selectUser);
 
   return (
     <AppLayout>
@@ -84,6 +87,7 @@ const WalletPage: FC = () => {
             walletPubkey={walletPubkey}
             name={nameServiceInfo?.domain}
             twitterName={nameServiceInfo?.twitterHandle}
+            user={user}
           />
           <div className={styles.tabsContent}>
             <Tabs

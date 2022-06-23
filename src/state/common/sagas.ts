@@ -52,6 +52,35 @@ const fetchSolanaTimestampSaga = function* () {
   }
 };
 
+const fetchUserSaga = function* (action) {
+  yield put(commonActions.fetchUserPending());
+  try {
+    const data = yield call(networkRequest, {
+      url: `https://${process.env.BACKEND_DOMAIN}/user/${action.payload}`,
+    });
+
+    if (data.statusCode) {
+      yield put(commonActions.fetchUserFulfilled(null));
+    } else {
+      yield put(commonActions.fetchUserFulfilled(data));
+    }
+  } catch (error) {
+    yield put(commonActions.fetchUserFailed(error));
+  }
+};
+
+const deleteUserSaga = function* (action) {
+  try {
+    yield call(
+      fetch,
+      `https://${process.env.BACKEND_DOMAIN}/user/${action.payload}/delete`,
+    );
+    yield put(commonActions.fetchUserFulfilled(null));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const commonSagas = function* (): Generator {
   yield all([takeLatest(commonTypes.APP_INIT, appInitSaga)]);
   yield all([
@@ -60,6 +89,8 @@ const commonSagas = function* (): Generator {
   yield all([
     takeLatest(commonTypes.FETCH_SOLANA_TIMESTAMP, fetchSolanaTimestampSaga),
   ]);
+  yield all([takeLatest(commonTypes.FETCH_USER, fetchUserSaga)]);
+  yield all([takeLatest(commonTypes.DELETE_USER, deleteUserSaga)]);
 };
 
 export default commonSagas;

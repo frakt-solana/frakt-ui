@@ -1,0 +1,101 @@
+.wrap {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  :global {
+    .ant-modal-content {
+      border: 1px solid var(--gray-color-3);
+      border-radius: 0;
+    }
+
+    .ant-modal-body {
+      font: var(--font-body-small);
+      color: var(--gray-color-8);
+    }
+
+    .ant-modal-content,
+    .ant-modal-header,
+    .ant-modal-footer {
+      background-color: var(--black-color);
+    }
+
+    .ant-modal-header {
+      padding-bottom: 8px;
+      border-bottom: 0;
+    }
+
+    .ant-modal-title {
+      font-style: normal;
+      font: var(--font-h4);
+      color: var(--white-color);
+    }
+
+    .ant-modal-close {
+      top: -64px;
+      width: 44px;
+      height: 44px;
+    }
+  }
+}
+
+.close {
+  border-radius: 50%;
+  border: 1px solid var(--gray-color-3);
+  padding: 10px;
+  width: 44px;
+  height: 44px;
+  transition: border-color var(--transition-1);
+
+  &:hover {
+    border: 1px solid var(--white-color);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font: var(--font-btn-mid);
+  color: var(--white-color);
+}
+
+.logo {
+  margin-top: -2px;
+  width: 35px;
+  height: 35px;
+  fill: var(--white-color);
+}
+
+.infoTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 20px;
+  font: var(--font-title-2);
+  margin-bottom: 20px;
+}
+
+.infoSubtitle {
+  font: var(--font-text-3);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.link {
+
+  color: var(--accent-color-1);
+
+  &::after {
+    background-color: var(--accent-color-1);
+  }
+
+  &:hover {
+    color: var(--accent-color-1);
+  }
+
+  svg path {
+    fill: var(--accent-color-1);
+  }
+}
