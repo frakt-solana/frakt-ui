@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 
 import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
+import { PaperPlane } from '../../icons';
 
 interface NFTCheckboxInterface {
   className?: string;
@@ -10,6 +11,7 @@ interface NFTCheckboxInterface {
   imageUrl?: string;
   name: string;
   onClick?: () => void;
+  isCanFreeze?: boolean;
   loanValue?: string;
 }
 
@@ -20,6 +22,7 @@ const NFTCheckbox = ({
   name,
   onClick,
   loanValue,
+  isCanFreeze,
 }: NFTCheckboxInterface): JSX.Element => {
   return (
     <div className={styles.wrapper}>
@@ -34,7 +37,15 @@ const NFTCheckbox = ({
         <div
           className={styles.root__image}
           style={{ backgroundImage: `url(${imageUrl})` }}
-        />
+        >
+          <div className={styles.imageShadow} />
+          {!isCanFreeze && (
+            <div className={styles.badge}>
+              <PaperPlane />
+              <p className={styles.badgeTitle}>Leaves wallet</p>
+            </div>
+          )}
+        </div>
         <div className={styles.root__content}>
           <p className={styles.root__title}>{name}</p>
           {!!loanValue && (

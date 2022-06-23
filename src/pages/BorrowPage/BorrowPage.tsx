@@ -98,6 +98,7 @@ const BorrowPage: FC = () => {
                     (selectedNft) => selectedNft?.mint === nft.mint,
                   )
                 }
+                isCanFreeze={nft.isCanFreeze}
                 loanValue={nft.maxLoanValue}
               />
             );
