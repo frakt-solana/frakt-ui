@@ -1,4 +1,4 @@
-import { selectConnection } from './selectors';
+import { selectConnection, selectWalletPublicKey } from './selectors';
 import { Connection } from '@solana/web3.js';
 import moment from 'moment';
 import { all, call, takeLatest, put, select } from 'redux-saga/effects';
@@ -16,6 +16,24 @@ const appInitSaga = function* () {
   const socket = yield call(connectSocket);
   yield put(commonActions.setSocket(socket));
   sagaMiddleware.run(loansSagas(socket));
+};
+
+const sendFcmTokenSaga = function* (action) {
+  const walletPublicKey = yield select(selectWalletPublicKey);
+  yield call(networkRequest, {
+    url: `https://${process.env.BACKEND_DOMAIN}/web`,
+    config: {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: action.payload,
+        user: walletPublicKey,
+        type: 'all',
+      }),
+    },
+  });
 };
 
 const fetchSolanaHealthSaga = function* () {
@@ -83,6 +101,7 @@ const deleteUserSaga = function* (action) {
 
 const commonSagas = function* (): Generator {
   yield all([takeLatest(commonTypes.APP_INIT, appInitSaga)]);
+  yield all([takeLatest(commonTypes.SEND_FCM_TOKEN, sendFcmTokenSaga)]);
   yield all([
     takeLatest(commonTypes.FETCH_SOLANA_HEALTH, fetchSolanaHealthSaga),
   ]);
