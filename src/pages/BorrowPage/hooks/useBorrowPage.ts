@@ -31,20 +31,14 @@ export const useBorrowPage = (): {
     searchStr,
   }) => {
     try {
-      // const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
-      // const isSearch = searchStr ? `search=${searchStr}&` : '';
+      const URL = `https://fraktion-monorep.herokuapp.com/nft/meta`;
+      const isSearch = searchStr ? `search=${searchStr}&` : '';
 
-      // const fullURL = `${URL}/${wallet?.publicKey?.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;
-      // const response = await fetch(fullURL);
-      // const nfts = await response.json();
+      const fullURL = `${URL}/${wallet?.publicKey?.toBase58()}?${isSearch}skip=${offset}&limit=${limit}`;
+      const response = await fetch(fullURL);
+      const nfts = await response.json();
 
-      // return nfts || [];
-
-      offset;
-      limit;
-      searchStr;
-      await Promise.resolve();
-      return [];
+      return nfts || [];
     } catch (error) {
       // eslint-disable-next-line
       console.log(error);
