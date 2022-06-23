@@ -10,6 +10,8 @@ import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
 import { Loan } from '../../state/loans/types';
+import Tooltip from 'rc-tooltip';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 interface LoanCardProps {
   loan: Loan;
@@ -100,32 +102,54 @@ export default LoanCard;
 const LoanCardValues: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const { loanValue, repayValue, isPriceBased } = loan;
+  const { loanValue, repayValue, isPriceBased, borrowAPRPercents } = loan;
 
   return (
     <div className={styles.valuesWrapper}>
-      <div className={styles.valueWrapper}>
-        <p className={styles.valueTitle}>Borrowed</p>
-        <div className={styles.valueInfo}>
-          <p>{loanValue.toFixed(2)}</p>
-          <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
-          <p>{SOL_TOKEN.symbol}</p>
+      <div
+        className={classNames(styles.valuesWrapperColumn, {
+          [styles.valuesWrapperRow]: isPriceBased,
+        })}
+      >
+        <div className={styles.valueWrapper}>
+          <p className={styles.valueTitle}>Borrowed</p>
+          <div className={styles.valueInfo}>
+            <p>{loanValue.toFixed(2)}</p>
+            <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+            <p>{SOL_TOKEN.symbol}</p>
+          </div>
+        </div>
+
+        <div className={styles.valueWrapper}>
+          <p className={styles.valueTitle}>To repay</p>
+          <div className={styles.valueInfo}>
+            <p>{repayValue.toFixed(2)}</p>
+            <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+            <p>{SOL_TOKEN.symbol}</p>
+          </div>
         </div>
       </div>
 
-      <div className={styles.valueWrapper}>
-        <p className={styles.valueTitle}>To repay</p>
-        <div className={styles.valueInfo}>
-          <p>{repayValue.toFixed(2)}</p>
-          <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
-          <p>{SOL_TOKEN.symbol}</p>
+      {isPriceBased && (
+        <div className={styles.valueWrapper}>
+          <p className={styles.valueTitle}>Borrow APY</p>
+          <div className={styles.valueInfo}>
+            <p>{borrowAPRPercents} %</p>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className={styles.valueWrapper}>
-        <p className={styles.valueTitle}>
-          {isPriceBased ? 'Health' : 'Time to return'}
-        </p>
+        {isPriceBased ? (
+          <div className={styles.valueWithTooltip}>
+            <p className={styles.valueTitle}>Valuation status</p>
+            <Tooltip placement="bottom" overlay="hover">
+              <QuestionCircleOutlined className={styles.questionIcon} />
+            </Tooltip>
+          </div>
+        ) : (
+          <p className={styles.valueTitle}>Time to return</p>
+        )}
         {isPriceBased ? <Health loan={loan} /> : <TimeToReturn loan={loan} />}
       </div>
     </div>
@@ -163,27 +187,68 @@ const TimeToReturn: FC<{
   );
 };
 
+enum Risk {
+  Low = 'Low',
+  Medium = 'Medium',
+  High = 'High',
+}
+
+const getRisk = ({ health }: { health: number }): Risk => {
+  if (health < 33.3) return Risk.High;
+  if (health < 66.6) return Risk.Medium;
+  return Risk.Low;
+};
+
 const Health: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const { health: rawHealth = 0 } = loan;
+  const {
+    health: rawHealth = 0,
+    liquidationPrice,
+    valuation,
+    nftOriginalPrice,
+  } = loan;
+
   const health = rawHealth > 100 ? 100 : rawHealth;
+  const moveLabelByHealthPersent = health < 22 ? null : 100 - health;
+
+  const risk = getRisk({ health });
 
   return (
     <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
-      <p>{health} %</p>
-      <LoanHealthProgress healthPercent={100 - health} />
+      <LoanHealthProgress healthPercent={100 - health} risk={risk} />
+      <div
+        className={classNames(styles.badge, {
+          [styles.highLoanRisk]: risk === Risk.High,
+          [styles.mediumLoanRisk]: risk === Risk.Medium,
+          [styles.lowLoanRisk]: risk === Risk.Low,
+        })}
+        style={{ right: `${moveLabelByHealthPersent}%` }}
+      >
+        {rawHealth > 100 && '>'}
+        {valuation.toFixed(2)} SOL
+      </div>
+
+      <div className={styles.healthValueWrapper}>
+        <p className={styles.healthValue}>{liquidationPrice.toFixed(2)} SOL</p>
+        <p className={styles.healthValue}>{nftOriginalPrice.toFixed(2)} SOL</p>
+      </div>
     </div>
   );
 };
 
 const LoanHealthProgress: FC<{
   healthPercent: number;
-}> = ({ healthPercent = 0 }) => {
+  risk?: string;
+}> = ({ healthPercent = 0, risk }) => {
   return (
     <div className={styles.progressWrapper}>
       <div
-        className={styles.progress}
+        className={classNames(styles.progress, {
+          [styles.highLoanRisk]: risk === Risk.High,
+          [styles.mediumLoanRisk]: risk === Risk.Medium,
+          [styles.lowLoanRisk]: risk === Risk.Low,
+        })}
         style={{ width: `${100 - healthPercent}%` }}
       />
     </div>

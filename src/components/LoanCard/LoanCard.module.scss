@@ -92,7 +92,30 @@
   left: 0;
   top: 0;
   height: 1px;
-  background-color: var(--accent-color-1);
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  color: var(--white-color);
+  font: var(--font-text-7);
+  font-family: var(--font-family-inter);
+  width: 61px;
+  height: 12px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.highLoanRisk {
+  background-color: #ff6666;
+}
+
+.mediumLoanRisk {
+  background-color: #ddb834;
+}
+
+.lowLoanRisk {
+  background-color: #83d6a4;
 }
 
 .valuesWrapper {
@@ -100,9 +123,24 @@
   flex-direction: column;
   gap: 12px;
 }
+.valuesWrapperColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.valuesWrapperRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .valueWrapper {
   display: flex;
   flex-direction: column;
+}
+.valueWithTooltip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .valueTitle {
   color: var(--color-gray-4);
@@ -118,6 +156,7 @@
   gap: 5px;
 }
 .valueInfoHealth {
+  position: relative;
   gap: unset;
   flex-direction: column;
   align-items: unset;
@@ -125,4 +164,25 @@
 .valueInfoSolImage {
   width: 24px;
   height: 24px;
+}
+
+.questionIcon {
+  width: 18px;
+  margin-top: -5px;
+
+  svg {
+    fill: var(--accent-color-1);
+  }
+}
+
+.healthValueWrapper {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 9px;
+}
+
+.healthValue {
+  color: var(--color-gray-4);
+  font: var(--font-text-6);
 }
