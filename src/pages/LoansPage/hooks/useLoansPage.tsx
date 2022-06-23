@@ -4,7 +4,6 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { harvestLiquidity as harvestTxn } from '../../../utils/loans';
 import { useConnection, useDebounce } from '../../../hooks';
 import { Tab, useTabs } from '../../../components/Tabs';
-import { LOAN_POOL_PUBKEY } from '../../../state/loans/selectors';
 
 export enum LoanTabsNames {
   LENDING = 'lending',
@@ -27,7 +26,7 @@ export const useLoansPage = (): {
   tabValue: string;
   setTabValue: (value: string) => void;
   searchItems: (value?: string) => void;
-  harvestLiquidity: () => void;
+  harvestLiquidity: (liquidityPool: string) => void;
 } => {
   const wallet = useWallet();
   const connection = useConnection();
@@ -46,11 +45,11 @@ export const useLoansPage = (): {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const harvestLiquidity = async (): Promise<void> => {
+  const harvestLiquidity = async (liquidityPool: string): Promise<void> => {
     await harvestTxn({
       connection,
       wallet,
-      liquidityPool: LOAN_POOL_PUBKEY,
+      liquidityPool,
     });
   };
 

@@ -1,6 +1,6 @@
 import { createReducer } from 'typesafe-actions';
 import { combineReducers } from 'redux';
-import { flip, reject, includes, compose, prop } from 'ramda';
+import { flip, reject, includes, compose, prop, identity, ifElse } from 'ramda';
 
 import {
   createHandlers,
@@ -8,13 +8,13 @@ import {
   createInitialAsyncState,
 } from '../../utils/state/reducers';
 import { userTokensActions, userTokensTypes } from './actions';
-import { BorrowNftsState, UserNFT } from './types';
+import { UserNFT } from './types';
 import { AsyncState } from '../../utils/state';
 import { TokenView } from '../../utils/accounts';
+import { isArray } from 'ramda-adjunct';
 
 const includesIn = flip(includes);
 
-export const initialBorrowNftsState: BorrowNftsState = { data: [] };
 export const initialUserTokensState: AsyncState<TokenView[]> =
   createInitialAsyncState<TokenView[]>(null);
 export const initialWalletNfts: AsyncState<UserNFT[]> =
@@ -30,32 +30,22 @@ const fetchWalletNftsReducer = createReducer(
   createHandlers<UserNFT[]>(userTokensTypes.FETCH_WALLET_NFTS),
 );
 
-const setBorrowNftsReducer = createReducer<BorrowNftsState>(
-  initialBorrowNftsState,
-  {
-    [userTokensTypes.SET_BORROW_NFTS]: (
-      state,
-      action: ReturnType<typeof userTokensActions.setBorrowNfts>,
-    ) => ({
-      ...state,
-      data: action.payload,
-    }),
-  },
-);
-
 const removeTokenOptimisticReducer = createReducer<AsyncState<TokenView[]>>(
   initialUserTokensState,
   {
     [userTokensTypes.REMOVE_TOKEN_OPTIMISTIC]: (
       state,
       action: ReturnType<typeof userTokensActions.removeTokenOptimistic>,
-    ) => ({
-      ...state,
-      data: reject(
-        compose(includesIn(action.payload), prop('mint')),
-        state.data,
-      ),
-    }),
+    ) => {
+      return {
+        ...state,
+        data: ifElse(
+          isArray,
+          reject(compose(includesIn(action.payload), prop('mint'))),
+          identity,
+        )(state.data),
+      };
+    },
   },
 );
 
@@ -79,9 +69,5 @@ export default combineReducers({
     fetchWalletNftsReducer,
     removeTokenOptimisticReducer,
     clearTokensReducer,
-  ),
-  borrowNfts: composeReducers(
-    setBorrowNftsReducer,
-    removeTokenOptimisticReducer,
   ),
 });

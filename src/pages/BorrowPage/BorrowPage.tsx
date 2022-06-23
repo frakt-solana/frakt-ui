@@ -11,7 +11,7 @@ import styles from './BorrowPage.module.scss';
 import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
 import { commonActions } from '../../state/common/actions';
-import { BorrowNFT } from '../../state/userTokens/types';
+import { BorrowNft } from '../../state/loans/types';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
@@ -86,7 +86,7 @@ const BorrowPage: FC = () => {
           emptyMessage=""
           customLoader={<p className={styles.loader}>loading your jpegs</p>}
         >
-          {(nfts as BorrowNFT[]).map((nft) => {
+          {(nfts as BorrowNft[]).map((nft) => {
             return (
               <NFTCheckbox
                 key={nft.mint}
@@ -98,8 +98,8 @@ const BorrowPage: FC = () => {
                     (selectedNft) => selectedNft?.mint === nft.mint,
                   )
                 }
-                loanValue={Number(nft.loanValue)}
                 isCanFreeze={nft.isCanFreeze}
+                loanValue={nft.maxLoanValue}
               />
             );
           })}

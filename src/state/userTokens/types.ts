@@ -5,24 +5,6 @@ import {
   ArweaveMetadata,
 } from '../../utils/getArweaveMetadata';
 
-export interface BorrowNftsState {
-  data: BorrowNFT[];
-}
-
-export interface BorrowNFT {
-  mint: string;
-  name: string;
-  imageUrl: string;
-  valuation: string;
-  returnPeriodDays: number;
-  ltvPercents: number;
-  loanValue: string;
-  fee: string;
-  feeDiscountPercents: string;
-  repayValue: string;
-  isCanFreeze?: boolean;
-}
-
 export interface UserNFT {
   mint: string;
   metadata: ArweaveMetadata;

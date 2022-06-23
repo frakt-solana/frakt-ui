@@ -7,7 +7,7 @@ export const Tooltip = ({
   children,
   ...props
 }: RcTooltipProps): JSX.Element => (
-  <RcTooltip {...props} transitionName="custom-animation">
+  <RcTooltip {...props} arrowContent={<></>} transitionName="custom-animation">
     {children}
   </RcTooltip>
 );

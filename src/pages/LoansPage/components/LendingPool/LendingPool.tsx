@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
 import { PoolModal } from '../../../../components/PoolModal';
-import { LoansPoolInfo, useLoansPage } from '../../hooks';
+import { useLoansPage } from '../../hooks';
 import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
@@ -12,29 +12,32 @@ import Tooltip from '../../../../components/Tooltip';
 import BearsImage from '../mockImage/Bears.png';
 import DegodsImage from '../mockImage/Degods.png';
 import { commonActions } from '../../../../state/common/actions';
+import { LiquidityPool } from '../../../../state/loans/types';
 
-const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
+const LIQUIDITY_POOLS_NAMES = {
+  AXQcr2PePPRkKCFtgYtCWR6bDGaFdZA9U3Cys47HJfbM: 'Aggregated Lending Pool',
+  Gb8muSC4yGG2J8gVpCNKBqh3xhf9XbiaxqXyAf7kkx6j: 'Example PriceBased',
+};
 
 interface LendingPoolProps {
-  loansPoolInfo: LoansPoolInfo;
+  liquidityPool: LiquidityPool;
 }
 
-const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
+const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
   const [poolModalVisible, setPoolModalVisible] = useState<TabsNames>(null);
   const { connected } = useWallet();
   const dispatch = useDispatch();
 
   const {
-    depositAmount,
-    apr,
-    totalSupply,
-    loans,
-    utilizationRate,
-    rewardAmount,
+    pubkey: liquidityPoolPubkey,
+    borrowApr,
+    depositApr,
+    totalLiquidity,
+    userActiveLoansAmount,
     totalBorrowed,
-  } = loansPoolInfo;
-
-  const { harvestLiquidity } = useLoansPage();
+    utilizationRate,
+    userDeposit,
+  } = liquidityPool;
 
   const openPoolModal = (tab: TabsNames) => {
     if (!connected) {
@@ -44,57 +47,33 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
     }
   };
 
-  const isDisabledBtn = rewardAmount < MIN_AVAILABLE_VALUE_FOR_HARVEST;
-
   return (
     <>
       <div className={styles.pool}>
         <div className={styles.header}>
-          {connected && !!depositAmount && (
-            <>
-              <div className={styles.rewards}>
-                <p className={styles.reward}>
-                  Pending Rewards: {rewardAmount?.toFixed(4)} SOL
-                </p>
-              </div>
-              <Tooltip
-                placement="top"
-                overlay="Harvest is available from 0.001 SOL"
-              >
-                <div>
-                  <Button
-                    onClick={harvestLiquidity}
-                    className={classNames(styles.btn, styles.btnHarvest)}
-                    disabled={isDisabledBtn}
-                    type="tertiary"
-                  >
-                    Harvest
-                  </Button>
-                </div>
-              </Tooltip>
-            </>
+          {connected && !!userDeposit?.depositAmount && (
+            <Rewards liquidityPool={liquidityPool} />
           )}
         </div>
         <div className={styles.poolCard}>
           <div className={styles.tokenInfo}>
-            <div className={styles.tokenImage}>
-              <img src={BearsImage} className={styles.image} />
-              <img
-                src={DegodsImage}
-                style={{ marginLeft: '-25px' }}
-                className={styles.image}
-              />
+            <LiquidityPoolImage liquidityPool={liquidityPool} />
+            <div className={styles.subtitle}>
+              {LIQUIDITY_POOLS_NAMES[liquidityPool.pubkey]}
             </div>
-            <div className={styles.subtitle}>Aggregated Lending Pool</div>
           </div>
           <div className={styles.statsValue}>
             <div className={styles.totalValue}>
               <p className={styles.title}>Total liquidity</p>
-              <p className={styles.value}>{totalSupply.toFixed(2)} SOL</p>
+              <p className={styles.value}>{totalLiquidity.toFixed(2)} SOL</p>
             </div>
             <div className={styles.totalValue}>
               <p className={styles.title}>Deposit APR</p>
-              <p className={styles.value}>{apr.toFixed(2)} %</p>
+              <p className={styles.value}>{depositApr.toFixed(2)} %</p>
+            </div>
+            <div className={styles.totalValue}>
+              <p className={styles.title}>Borrow APY</p>
+              <p className={styles.value}>{borrowApr?.toFixed(2) || 0} %</p>
             </div>
             <div className={styles.totalValue}>
               <p className={styles.title}>Total borrowed</p>
@@ -104,11 +83,13 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
               <>
                 <div className={styles.totalValue}>
                   <p className={styles.title}>Your liquidity</p>
-                  <p className={styles.value}>{depositAmount} SOL</p>
+                  <p className={styles.value}>
+                    {userDeposit?.depositAmount.toFixed(2) || 0} SOL
+                  </p>
                 </div>
                 <div className={styles.totalValue}>
                   <p className={styles.title}>Your loans</p>
-                  <p className={styles.value}>{loans}</p>
+                  <p className={styles.value}>{userActiveLoansAmount || 0}</p>
                 </div>
               </>
             )}
@@ -117,7 +98,7 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
                 className={styles.btn}
                 type="tertiary"
                 onClick={() => openPoolModal(TabsNames.WITHDRAW)}
-                disabled={connected && !depositAmount}
+                disabled={connected && !userDeposit?.depositAmount}
               >
                 Withdraw
               </Button>
@@ -135,11 +116,79 @@ const LendingPool: FC<LendingPoolProps> = ({ loansPoolInfo }) => {
       <PoolModal
         visible={poolModalVisible}
         onCancel={() => setPoolModalVisible(null)}
-        apr={apr}
-        depositAmount={depositAmount}
+        liquidityPoolPubkey={liquidityPoolPubkey}
+        apr={depositApr}
+        depositAmount={userDeposit?.depositAmount}
         utilizationRate={utilizationRate}
       />
     </>
+  );
+};
+
+const LiquidityPoolImage: FC<LendingPoolProps> = ({ liquidityPool }) => {
+  const { isPriceBased, collectionsAmount } = liquidityPool;
+
+  const showLabelCollectionsAmount = collectionsAmount - 2 > 0;
+
+  return (
+    <div
+      className={classNames(styles.poolImage, {
+        [styles.poolImageWithLabel]:
+          !isPriceBased && showLabelCollectionsAmount,
+      })}
+      data-collections-amount={`+${collectionsAmount - 2}`}
+    >
+      {[BearsImage, DegodsImage].map((image, idx) => (
+        <img
+          src={image}
+          className={styles.image}
+          key={idx}
+          style={idx !== 0 ? { marginLeft: '-25px' } : null}
+        />
+      ))}
+    </div>
+  );
+};
+
+const MIN_AVAILABLE_VALUE_FOR_HARVEST = 0.001;
+
+const Rewards: FC<LendingPoolProps> = ({ liquidityPool }) => {
+  const { userDeposit } = liquidityPool;
+
+  const isDisabledBtn =
+    userDeposit?.harvestAmount < MIN_AVAILABLE_VALUE_FOR_HARVEST;
+
+  const { harvestLiquidity } = useLoansPage();
+
+  const tooltipText = 'Harvest is available from 0.001 SOL';
+
+  return (
+    <div className={styles.rewards}>
+      <p className={styles.reward}>
+        Pending Rewards: {userDeposit?.harvestAmount?.toFixed(4)} SOL
+      </p>
+      {isDisabledBtn ? (
+        <Tooltip placement="top" overlay={tooltipText}>
+          <div>
+            <Button
+              className={classNames(styles.btn, styles.btnHarvest)}
+              disabled
+              type="tertiary"
+            >
+              Harvest
+            </Button>
+          </div>
+        </Tooltip>
+      ) : (
+        <Button
+          onClick={() => harvestLiquidity(liquidityPool?.pubkey)}
+          className={classNames(styles.btn, styles.btnHarvest)}
+          type="tertiary"
+        >
+          Harvest
+        </Button>
+      )}
+    </div>
   );
 };
 

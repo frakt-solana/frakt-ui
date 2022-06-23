@@ -16,14 +16,16 @@ interface PoolModalProps {
   apr: number;
   depositAmount: number;
   utilizationRate: number;
+  liquidityPoolPubkey: string;
 }
 
 export const PoolModal: FC<PoolModalProps> = ({
   visible,
   onCancel,
   apr,
-  depositAmount,
+  depositAmount = 0,
   utilizationRate,
+  liquidityPoolPubkey,
 }) => {
   const {
     withdrawValue,
@@ -39,7 +41,7 @@ export const PoolModal: FC<PoolModalProps> = ({
     onWithdrawValueChange,
     onWithdrawPercentChange,
     solWalletBalance,
-  } = usePoolModal(visible, depositAmount, onCancel);
+  } = usePoolModal(liquidityPoolPubkey, visible, depositAmount, onCancel);
 
   const notEnoughDepositError = depositAmount < Number(withdrawValue);
   const notEnoughBalanceError = Number(solWalletBalance) < Number(depositValue);

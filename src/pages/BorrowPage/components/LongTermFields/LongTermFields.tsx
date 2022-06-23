@@ -1,47 +1,67 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import classNames from 'classnames';
+import { sum } from 'ramda';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import { Slider } from '../../../../components/Slider';
 import Tooltip from '../../../../components/Tooltip';
 import styles from './LongTermFields.module.scss';
+import { BorrowNft } from '../../../../state/loans/types';
 
-interface ShortTermFields {
-  loanValue?: number;
-  valuation?: string;
-  mintingFee?: number;
-  liquidationPrice?: number;
-  ltvPercents?: number;
+enum Risk {
+  Low = 'Low',
+  Medium = 'Medium',
+  High = 'High',
 }
 
-const LongTermFields: FC<ShortTermFields> = ({
-  loanValue,
-  valuation,
-  mintingFee,
-  liquidationPrice,
-  ltvPercents,
-}) => {
-  const [persentLoanToValue, setPersentLoanToValue] = useState<number>(0);
+const getRisk = ({
+  LTV,
+  limits,
+}: {
+  LTV: number;
+  limits: [number, number];
+}): Risk => {
+  const x = LTV / sum(limits);
+  if (x < 0.33) return Risk.Low;
+  if (x < 0.66) return Risk.Medium;
+  return Risk.High;
+};
+
+interface ShortTermFields {
+  nft: BorrowNft;
+  ltv: number;
+  setLtv: (nextValue: number) => void;
+}
+
+const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
+  const { valuation, priceBased } = nft;
+
+  const { borrowAPRPercents, ltvPercents, collaterizationRate } = priceBased;
 
   const marks = {
     10: '10%',
-    50: '50%',
+    [ltvPercents]: `${ltvPercents}%`,
   };
+
+  const loanValue = Number(valuation) * (ltv / 100);
+  const mintingFee = loanValue * 0.01;
+
+  const liquidationPrice = loanValue + loanValue * (collaterizationRate / 100);
+
+  const risk = getRisk({ LTV: ltv, limits: [10, ltvPercents] });
 
   return (
     <div className={styles.fieldWrapper}>
       <div className={styles.sliderWrapper}>
-        <p className={styles.sliderLabel}>
-          loan to value: {persentLoanToValue || 10}%
-        </p>
+        <p className={styles.sliderLabel}>loan to value: {ltv}%</p>
         <Slider
           marks={marks}
           className={styles.slider}
-          value={persentLoanToValue}
+          value={ltv}
           step={1}
-          setValue={(value) => setPersentLoanToValue(value)}
+          setValue={setLtv}
           min={10}
-          max={50}
+          max={ltvPercents}
         />
       </div>
 
@@ -57,9 +77,9 @@ const LongTermFields: FC<ShortTermFields> = ({
         <p className={styles.staticValueTitle}>liquidation price</p>
         <p
           className={classNames(styles.staticValueData, {
-            [styles.highLoanRisk]: ltvPercents < 30,
-            [styles.mediumLoanRisk]: ltvPercents >= 30 && ltvPercents < 60,
-            [styles.lowLoanRisk]: ltvPercents >= 60 && ltvPercents <= 100,
+            [styles.highLoanRisk]: risk === Risk.High,
+            [styles.mediumLoanRisk]: risk === Risk.Medium,
+            [styles.lowLoanRisk]: risk === Risk.Low,
           })}
         >
           {liquidationPrice.toFixed(3)} SOL
@@ -78,7 +98,7 @@ const LongTermFields: FC<ShortTermFields> = ({
         style={{ marginTop: 20, marginBottom: 10 }}
       >
         <p className={styles.staticValueTitle}>Borrow APY</p>
-        <p className={styles.staticValueData}>12.140 %</p>
+        <p className={styles.staticValueData}>{borrowAPRPercents}%</p>
       </div>
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>

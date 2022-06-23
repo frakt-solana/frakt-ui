@@ -11,8 +11,8 @@ interface NFTCheckboxInterface {
   imageUrl?: string;
   name: string;
   onClick?: () => void;
-  loanValue?: number;
   isCanFreeze?: boolean;
+  loanValue?: string;
 }
 
 const NFTCheckbox = ({
@@ -52,7 +52,7 @@ const NFTCheckbox = ({
             <div className={styles.ltvWrapper}>
               <p className={styles.ltvTitle}>Loan value</p>
               <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{loanValue.toFixed(2)}</p>
+                <p className={styles.ltvText}>{loanValue}</p>
                 <div className={styles.tokenInfo}>
                   <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
                   <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>

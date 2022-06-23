@@ -1,18 +1,18 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import { paybackLoan as paybackLoanTx } from '../../utils/loans';
-import { LoanView } from '../../state/loans/types';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
+import { Loan } from '../../state/loans/types';
 
 interface LoanCardProps {
-  className?: string;
-  loan: LoanView;
+  loan: Loan;
 }
 
 const usePaybackLoan = () => {
@@ -25,7 +25,7 @@ const usePaybackLoan = () => {
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const paybackLoan = async (loan: LoanView) => {
+  const paybackLoan = async (loan: Loan) => {
     try {
       openLoadingModal();
 
@@ -53,72 +53,29 @@ const usePaybackLoan = () => {
   };
 };
 
-const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
+const LoanCard: FC<LoanCardProps> = ({ loan }) => {
   const { paybackLoan, closeLoadingModal, loadingModalVisible } =
     usePaybackLoan();
 
-  const { timeLeft, leftTimeInSeconds } = useCountdown(loan?.expiredAt);
-
-  const loanDurationInSeconds = loan?.expiredAt - loan?.startedAt;
-  const progress =
-    ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
+  const { imageUrl, name } = loan;
 
   const onPayback = () => {
     paybackLoan(loan);
   };
 
-  const amountToGet = loan?.amountToGet
-    ? (loan?.amountToGet / 10 ** SOL_TOKEN.decimals).toFixed(2)
-    : '';
-
   return (
     <>
-      <div className={styles.wrapper}>
-        <div className={classNames([styles.root, className])}>
+      <div className={styles.cardWrapper}>
+        <div className={styles.card}>
           <div
-            className={styles.root__image}
+            className={styles.image}
             style={{
-              backgroundImage: `url(${loan?.nftImageUrl})`,
+              backgroundImage: `url(${imageUrl})`,
             }}
           />
-          <div className={styles.root__content}>
-            <p className={styles.root__title}>{loan?.nftName}</p>
-            <div className={styles.ltvWrapper}>
-              <p className={styles.ltvTitle}>Borrowed</p>
-              <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{amountToGet}</p>
-                <div className={styles.tokenInfo}>
-                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
-                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
-                </div>
-              </div>
-              <p className={styles.ltvTitle}>To repay</p>
-              <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>
-                  {loan?.amountToRepay.toFixed(2)}
-                </p>
-                <div className={styles.tokenInfo}>
-                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
-                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
-                </div>
-              </div>
-              <p className={styles.ltvTitle}>Time to return</p>
-              <div className={styles.countdown}>
-                <p className={styles.timeItem}>{timeLeft.days}d</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.hours}h</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.minutes}m</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.seconds}s</p>
-              </div>
-              <div className={styles.timeProgressWrapper}>
-                <div
-                  className={styles.timeProgress}
-                  style={{ width: `${100 - progress}%` }}
-                />
-              </div>
-            </div>
+          <div className={styles.content}>
+            <p className={styles.title}>{name}</p>
+            <LoanCardValues loan={loan} />
             <Button
               type="alternative"
               className={styles.btn}
@@ -139,3 +96,96 @@ const LoanCard: FC<LoanCardProps> = ({ className, loan }) => {
 };
 
 export default LoanCard;
+
+const LoanCardValues: FC<{
+  loan: Loan;
+}> = ({ loan }) => {
+  const { loanValue, repayValue, isPriceBased } = loan;
+
+  return (
+    <div className={styles.valuesWrapper}>
+      <div className={styles.valueWrapper}>
+        <p className={styles.valueTitle}>Borrowed</p>
+        <div className={styles.valueInfo}>
+          <p>{loanValue.toFixed(2)}</p>
+          <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+          <p>{SOL_TOKEN.symbol}</p>
+        </div>
+      </div>
+
+      <div className={styles.valueWrapper}>
+        <p className={styles.valueTitle}>To repay</p>
+        <div className={styles.valueInfo}>
+          <p>{repayValue.toFixed(2)}</p>
+          <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+          <p>{SOL_TOKEN.symbol}</p>
+        </div>
+      </div>
+
+      <div className={styles.valueWrapper}>
+        <p className={styles.valueTitle}>
+          {isPriceBased ? 'Health' : 'Time to return'}
+        </p>
+        {isPriceBased ? <Health loan={loan} /> : <TimeToReturn loan={loan} />}
+      </div>
+    </div>
+  );
+};
+
+const TimeToReturn: FC<{
+  loan: Loan;
+}> = ({ loan }) => {
+  const { expiredAt, startedAt } = loan;
+
+  const expiredAtUnix = moment(expiredAt).unix();
+  const startedAtUnix = moment(startedAt).unix();
+
+  const loanDurationInSeconds = expiredAtUnix - startedAtUnix;
+
+  const { timeLeft, leftTimeInSeconds } = useCountdown(expiredAtUnix);
+
+  const progress =
+    ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
+
+  return (
+    <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
+      <div className={styles.countdown}>
+        <p className={styles.timeItem}>{timeLeft.days}d</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.hours}h</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.minutes}m</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.seconds}s</p>
+      </div>
+      <LoanHealthProgress healthPercent={progress} />
+    </div>
+  );
+};
+
+const Health: FC<{
+  loan: Loan;
+}> = ({ loan }) => {
+  const { health: rawHealth = 0 } = loan;
+  const health = rawHealth > 100 ? 100 : rawHealth;
+
+  return (
+    <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
+      <p>{health} %</p>
+      <LoanHealthProgress healthPercent={100 - health} />
+    </div>
+  );
+};
+
+const LoanHealthProgress: FC<{
+  healthPercent: number;
+}> = ({ healthPercent = 0 }) => {
+  return (
+    <div className={styles.progressWrapper}>
+      <div
+        className={styles.progress}
+        style={{ width: `${100 - healthPercent}%` }}
+      />
+    </div>
+  );
+};
