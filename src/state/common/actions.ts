@@ -17,6 +17,7 @@ export const commonTypes = {
   SET_NOTIFICATION: 'common/SET_NOTIFICATION',
   SET_WALLET_MODAL: 'common/SET_WALLET_MODAL',
   TOGGLE_WALLET_MODAL: 'common/TOGGLE_WALLET_MODAL',
+  SEND_FCM_TOKEN: 'common/SEND_FCM_TOKEN',
   FETCH_SOLANA_HEALTH: 'common/FETCH_SOLANA_HEALTH',
   FETCH_SOLANA_HEALTH__PENDING: 'common/FETCH_SOLANA_HEALTH__PENDING',
   FETCH_SOLANA_HEALTH__FULFILLED: 'common/FETCH_SOLANA_HEALTH__FULFILLED',
@@ -53,6 +54,10 @@ export const commonActions = {
   toggleWalletModal: createCustomAction(
     commonTypes.TOGGLE_WALLET_MODAL,
     () => null,
+  ),
+  sendFcmToken: createCustomAction(
+    commonTypes.SEND_FCM_TOKEN,
+    (token: string) => ({ payload: token }),
   ),
   fetchSolanaHealth: createCustomAction(
     commonTypes.FETCH_SOLANA_HEALTH,

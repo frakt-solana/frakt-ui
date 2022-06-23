@@ -21,6 +21,7 @@
     "antd": "^4.6.6",
     "bn.js": "^5.2.0",
     "classnames": "^2.3.1",
+    "firebase": "^9.8.3",
     "moment": "^2.29.1",
     "ramda": "^0.28.0",
     "ramda-adjunct": "^3.1.0",
