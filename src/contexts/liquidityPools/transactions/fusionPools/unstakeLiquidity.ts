@@ -1,15 +1,12 @@
 import {
-  harvestInFusion,
-  harvestSecondaryReward,
-  unstakeInFusion,
-} from '@frakters/frkt-multiple-reward';
-import {
+  BN,
   MainRouterView,
   SecondaryRewardView,
   StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
-import { Provider } from '@project-serum/anchor';
-import { PublicKey, Transaction } from '@solana/web3.js';
+  pools,
+  AnchorProvider,
+  web3,
+} from '@frakt-protocol/frakt-sdk';
 
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
@@ -18,7 +15,6 @@ import {
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import BN from 'bn.js';
 
 export interface UnstakeLiquidityTransactionParams {
   router: MainRouterView;
@@ -39,43 +35,43 @@ export const rawUnstakeLiquidity = async ({
   amount,
   stakeAccount,
 }: UnstakeLiquidityTransactionRawParams): Promise<boolean | null> => {
-  const transaction = new Transaction();
+  const transaction = new web3.Transaction();
 
   if (Number(stakeAccount.unstakedAtCumulative)) {
-    const harvestInstruction = await harvestInFusion(
-      new PublicKey(FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+    const harvestInstruction = await pools.harvestInFusion(
+      new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+      new AnchorProvider(connection, wallet, null),
       wallet.publicKey,
-      new PublicKey(router.tokenMintInput),
-      new PublicKey(router.tokenMintOutput),
+      new web3.PublicKey(router.tokenMintInput),
+      new web3.PublicKey(router.tokenMintOutput),
     );
 
     transaction.add(harvestInstruction);
   }
 
   const rewardsTokenMint = secondaryReward.map(
-    ({ tokenMint }) => new PublicKey(tokenMint),
+    ({ tokenMint }) => new web3.PublicKey(tokenMint),
   );
 
   if (secondaryReward.length) {
-    const secondaryHarvestInstruction = await harvestSecondaryReward(
-      new PublicKey(FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+    const secondaryHarvestInstruction = await pools.harvestSecondaryReward(
+      new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+      new AnchorProvider(connection, wallet, null),
       wallet.publicKey,
-      new PublicKey(router.tokenMintInput),
-      new PublicKey(router.tokenMintOutput),
+      new web3.PublicKey(router.tokenMintInput),
+      new web3.PublicKey(router.tokenMintOutput),
       rewardsTokenMint,
     );
 
     transaction.add(...secondaryHarvestInstruction);
   }
 
-  const unStakeInstruction = await unstakeInFusion(
-    new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new Provider(connection, wallet, null),
+  const unStakeInstruction = await pools.unstakeInFusion(
+    new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+    new AnchorProvider(connection, wallet, null),
     wallet.publicKey,
-    new PublicKey(router.tokenMintInput),
-    new PublicKey(router.tokenMintOutput),
+    new web3.PublicKey(router.tokenMintInput),
+    new web3.PublicKey(router.tokenMintOutput),
     amount,
   );
 

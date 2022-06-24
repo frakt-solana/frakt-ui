@@ -1,7 +1,5 @@
+import { web3, loans, BN, AnchorProvider } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
-import { BN, Provider } from '@project-serum/anchor';
-import { proposeLoan as txn, decodeLoan } from '@frakters/nft-lending-v2';
 
 import { NotifyType } from '../solanaUtils';
 import { notify, SOL_TOKEN } from '../';
@@ -12,7 +10,7 @@ import {
 } from '../transactions';
 
 type ProposeLoan = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   nftMint: string;
   valuation: number; //? SOL Lamports
@@ -29,18 +27,18 @@ export const proposeLoan: ProposeLoan = async ({
   isPriceBased = false,
 }): Promise<boolean> => {
   try {
-    const options = Provider.defaultOptions();
-    const provider = new Provider(connection, wallet, options);
+    const options = AnchorProvider.defaultOptions();
+    const provider = new AnchorProvider(connection, wallet, options);
 
-    const { loanPubkey } = await txn({
-      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+    const { loanPubkey } = await loans.proposeLoan({
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       user: wallet.publicKey,
-      nftMint: new PublicKey(nftMint),
+      nftMint: new web3.PublicKey(nftMint),
       proposedNftPrice: new BN(valuation * 10 ** SOL_TOKEN.decimals),
       isPriceBased,
       loanToValue: new BN(loanToValue * 100), //? Percent 20% ==> 2000
-      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
           transaction,
@@ -55,10 +53,10 @@ export const proposeLoan: ProposeLoan = async ({
     const subscribtionId = connection.onAccountChange(
       loanPubkey,
       (accountInfo) => {
-        const loanAccountData = decodeLoan(
+        const loanAccountData = loans.decodeLoan(
           accountInfo.data,
           connection,
-          new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+          new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
         );
 
         if (loanAccountData?.loanStatus?.activated) {

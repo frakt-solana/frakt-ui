@@ -50,6 +50,7 @@ export const DiscordModal: FC = () => {
           discord server :(
         </span>
         <LinkWithArrow
+          externalLink
           to="https://tinyurl.com/zp3rx6z3"
           label="Join server"
           className={styles.link}

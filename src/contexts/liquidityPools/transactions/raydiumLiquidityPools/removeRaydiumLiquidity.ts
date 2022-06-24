@@ -1,10 +1,4 @@
-import {
-  Liquidity,
-  LiquidityPoolKeysV4,
-  TokenAmount,
-} from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
+import { web3, utils, TokenInfo, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -13,13 +7,12 @@ import {
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import { getTokenAccount } from '../../liquidityPools.helpers';
 
 export interface RemoveLiquidityTransactionParams {
   baseToken: TokenInfo;
   quoteToken: TokenInfo;
-  poolConfig: LiquidityPoolKeysV4;
-  amount: TokenAmount;
+  poolConfig: raydium.LiquidityPoolKeysV4;
+  amount: raydium.TokenAmount;
 }
 
 export interface RemoveLiquidityTransactionRawParams
@@ -37,8 +30,8 @@ export const rawRemoveRaydiumLiquidity = async ({
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
-        getTokenAccount({
-          tokenMint: new PublicKey(mint),
+        utils.getTokenAccount({
+          tokenMint: new web3.PublicKey(mint),
           owner: wallet.publicKey,
           connection,
         }),
@@ -47,7 +40,7 @@ export const rawRemoveRaydiumLiquidity = async ({
   ).filter((tokenAccount) => tokenAccount);
 
   const { transaction, signers } =
-    await Liquidity.makeRemoveLiquidityTransaction({
+    await raydium.Liquidity.makeRemoveLiquidityTransaction({
       connection,
       poolKeys: poolConfig,
       userKeys: {

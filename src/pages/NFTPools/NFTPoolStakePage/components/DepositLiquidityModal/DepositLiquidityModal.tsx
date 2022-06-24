@@ -1,8 +1,6 @@
 import { FC, useState } from 'react';
 import classNames from 'classnames';
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { web3, utils, TokenInfo, raydium } from '@frakt-protocol/frakt-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import {
@@ -21,7 +19,6 @@ import {
 import { SOL_TOKEN } from '../../../../../utils';
 import {
   FusionPool,
-  getTokenAccount,
   RaydiumPoolInfo,
   useCurrentSolanaPrice,
 } from '../../../../../contexts/liquidityPools';
@@ -39,7 +36,7 @@ interface DepositLiquidityModalProps {
   baseToken: TokenInfo;
   raydiumPoolInfo: RaydiumPoolInfo;
   apr?: number;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   liquidityFusionPool: FusionPool;
 }
 
@@ -87,7 +84,7 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
   );
 
   const { account } = useNativeAccount();
-  const solBalance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
+  const solBalance = (account?.lamports || 0) / web3.LAMPORTS_PER_SOL;
 
   const notEnoughBaseTokenError = parseFloat(baseValue) > baseTokenBalance;
   const notEnoughSOLError = parseFloat(solValue) > solBalance;
@@ -131,8 +128,10 @@ export const DepositLiquidityModal: FC<DepositLiquidityModalProps> = ({
 
       setTransactionsLeft(1);
 
-      const { accountInfo } = await getTokenAccount({
-        tokenMint: new PublicKey(liquidityFusionPool?.router?.tokenMintInput),
+      const { accountInfo } = await utils.getTokenAccount({
+        tokenMint: new web3.PublicKey(
+          liquidityFusionPool?.router?.tokenMintInput,
+        ),
         owner: walletPublicKey,
         connection,
       });

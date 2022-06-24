@@ -1,11 +1,10 @@
-import { useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Control, useForm } from 'react-hook-form';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { Percent } from '@raydium-io/raydium-sdk';
 import { useParams } from 'react-router-dom';
+import { useWallet } from '@solana/wallet-adapter-react';
+
+import { web3, raydium, TokenInfo } from '@frakt-protocol/frakt-sdk';
 
 import { UserNFT, UserNFTWithCollection } from '../../state/userTokens/types';
 import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
@@ -82,7 +81,7 @@ export const useNFTsFiltering: UseNFTsFiltering = (nfts) => {
 };
 
 type SubscribeOnLotteryTicketChanges = (
-  lotteryTicketPublicKey: PublicKey,
+  lotteryTicketPublicKey: web3.PublicKey,
   callback: (value: string) => void,
 ) => void;
 
@@ -203,7 +202,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
           payToken: poolTokensInfo?.[idx],
           payAmount: 1,
           receiveToken: SOL_TOKEN,
-          slippage: new Percent(1, 100),
+          slippage: new raydium.Percent(1, 100),
         });
 
         const { amountIn: buyPrice } = getInputAmount({
@@ -212,7 +211,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
           payToken: SOL_TOKEN,
           receiveAmount: 1,
           receiveToken: poolTokensInfo?.[idx],
-          slippage: new Percent(1, 100),
+          slippage: new raydium.Percent(1, 100),
         });
 
         return map.set(poolTokensInfo?.[idx]?.address, {

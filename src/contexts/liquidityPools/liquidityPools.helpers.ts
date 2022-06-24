@@ -1,23 +1,14 @@
 import {
-  CurrencyAmount,
-  Liquidity,
-  LiquidityPoolKeysV4,
-  Spl,
-  SPL_ACCOUNT_LAYOUT,
-  Token,
-  TokenAmount,
-  WSOL,
-} from '@raydium-io/raydium-sdk';
-import BN from 'bn.js';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { Connection, PublicKey } from '@solana/web3.js';
-import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
-import {
+  web3,
+  pools,
+  raydium,
+  BN,
+  TokenInfo,
   MainRouterView,
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
+} from '@frakt-protocol/frakt-sdk';
 import { groupBy } from 'lodash';
 
 import { SOL_TOKEN } from '../../utils';
@@ -45,7 +36,7 @@ export const fetchPoolDataByMint: FetchPoolDataByMint = async ({
 };
 
 export const getPoolDataByMint = (
-  raydiumPoolConfigs: LiquidityPoolKeysV4[],
+  raydiumPoolConfigs: raydium.LiquidityPoolKeysV4[],
   tokensMap: Map<string, TokenInfo>,
 ): PoolDataByMint =>
   raydiumPoolConfigs.reduce((acc, raydiumPoolConfig) => {
@@ -55,7 +46,7 @@ export const getPoolDataByMint = (
 
     if (
       tokenInfo &&
-      quoteMint.toBase58() === WSOL.mint &&
+      quoteMint.toBase58() === raydium.WSOL.mint &&
       !BLOCKED_POOLS_IDS.includes(id.toBase58())
     ) {
       acc.set(baseMint.toBase58(), {
@@ -68,26 +59,26 @@ export const getPoolDataByMint = (
   }, new Map<string, PoolData>());
 
 export const filterFraktionPoolConfigs = (
-  raydiumPoolConfigs: LiquidityPoolKeysV4[],
+  raydiumPoolConfigs: raydium.LiquidityPoolKeysV4[],
   tokensMap: Map<string, TokenInfo>,
-): LiquidityPoolKeysV4[] =>
+): raydium.LiquidityPoolKeysV4[] =>
   raydiumPoolConfigs.filter(({ id, baseMint, quoteMint }) => {
     return (
       tokensMap.has(baseMint.toBase58()) &&
-      quoteMint.toBase58() === WSOL.mint &&
+      quoteMint.toBase58() === raydium.WSOL.mint &&
       !BLOCKED_POOLS_IDS.includes(id.toBase58())
     );
   });
 
 export const fetchRaydiumPoolsInfoMap = async (
-  connection: Connection,
-  raydiumPoolConfigs: LiquidityPoolKeysV4[],
+  connection: web3.Connection,
+  raydiumPoolConfigs: raydium.LiquidityPoolKeysV4[],
 ): Promise<RaydiumPoolInfoMap> => {
   const raydiumPoolInfoMap = new Map<string, RaydiumPoolInfo>();
 
   const allPoolsInfo = await Promise.all(
     raydiumPoolConfigs.map((poolKey) =>
-      Liquidity.fetchInfo({ connection, poolKeys: poolKey }),
+      raydium.Liquidity.fetchInfo({ connection, poolKeys: poolKey }),
     ),
   );
 
@@ -106,14 +97,14 @@ export const getTokenAccount = async ({
   owner,
   connection,
 }: {
-  tokenMint: PublicKey;
-  owner: PublicKey;
-  connection: Connection;
+  tokenMint: web3.PublicKey;
+  owner: web3.PublicKey;
+  connection: web3.Connection;
 }): Promise<{
-  pubkey: PublicKey;
+  pubkey: web3.PublicKey;
   accountInfo: any;
 } | null> => {
-  const tokenAccountPubkey = await Spl.getAssociatedTokenAccount({
+  const tokenAccountPubkey = await raydium.Spl.getAssociatedTokenAccount({
     mint: tokenMint,
     owner,
   });
@@ -125,7 +116,9 @@ export const getTokenAccount = async ({
   const tokenAccount = tokenAccountEncoded
     ? {
         pubkey: tokenAccountPubkey,
-        accountInfo: SPL_ACCOUNT_LAYOUT.decode(tokenAccountEncoded.data),
+        accountInfo: raydium.SPL_ACCOUNT_LAYOUT.decode(
+          tokenAccountEncoded.data,
+        ),
       }
     : null;
 
@@ -135,11 +128,11 @@ export const getTokenAccount = async ({
 export const getCurrencyAmount = (
   tokenInfo: TokenInfo,
   amount: BN,
-): CurrencyAmount | TokenAmount => {
+): raydium.CurrencyAmount | raydium.TokenAmount => {
   return tokenInfo.address === SOL_TOKEN.address
-    ? new CurrencyAmount(SOL_TOKEN, amount)
-    : new TokenAmount(
-        new Token(
+    ? new raydium.CurrencyAmount(SOL_TOKEN, amount)
+    : new raydium.TokenAmount(
+        new raydium.Token(
           tokenInfo.address,
           tokenInfo.decimals,
           tokenInfo.symbol,
@@ -153,10 +146,10 @@ export const fetchProgramAccounts = async ({
   vaultProgramId,
   connection,
 }: {
-  vaultProgramId: PublicKey;
-  connection: Connection;
+  vaultProgramId: web3.PublicKey;
+  connection: web3.Connection;
 }): Promise<FusionPoolsInfo> => {
-  const allProgramAccounts = await getAllProgramAccounts(
+  const allProgramAccounts = await pools.getAllProgramStakingAccounts(
     vaultProgramId,
     connection,
   );

@@ -1,8 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { PublicKey } from '@solana/web3.js';
-import { getAllProgramAccounts } from '@frakters/frkt-multiple-reward';
+import { web3, pools, raydium } from '@frakt-protocol/frakt-sdk';
 
 import { LiquidityPoolsContext } from './liquidityPools.context';
 import {
@@ -61,14 +59,18 @@ export const useCurrentSolanaPrice = (): {
 export const useLazyRaydiumPoolsInfoMap = (): {
   loading: boolean;
   raydiumPoolsInfoMap: RaydiumPoolInfoMap;
-  fetchPoolsInfoMap: (poolConfigs: LiquidityPoolKeysV4[]) => Promise<void>;
+  fetchPoolsInfoMap: (
+    poolConfigs: raydium.LiquidityPoolKeysV4[],
+  ) => Promise<void>;
 } => {
   const connection = useConnection();
   const [loading, setLoading] = useState<boolean>(false);
   const [raydiumPoolsInfoMap, setRaydiumPoolsInfoMap] =
     useState<RaydiumPoolInfoMap>(new Map());
 
-  const fetchPoolsInfoMap = async (poolConfigs: LiquidityPoolKeysV4[]) => {
+  const fetchPoolsInfoMap = async (
+    poolConfigs: raydium.LiquidityPoolKeysV4[],
+  ) => {
     try {
       setLoading(true);
 
@@ -104,7 +106,7 @@ export const useLazyFusionPools_old = (): {
   const fetchFusionPoolsInfo = async (lpMints: string[]) => {
     try {
       const allProgramAccounts = await fetchProgramAccounts({
-        vaultProgramId: new PublicKey(FUSION_PROGRAM_PUBKEY),
+        vaultProgramId: new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
         connection,
       });
 
@@ -145,8 +147,8 @@ export const useLazyFusionPools: UseLazyFusionPools = () => {
       stakeAccounts,
       secondaryRewards,
       secondaryStakeAccounts,
-    } = await getAllProgramAccounts(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+    } = await pools.getAllProgramStakingAccounts(
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
       connection,
     );
 

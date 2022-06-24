@@ -1,8 +1,5 @@
 import { notification } from 'antd';
-import { AccountInfo, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
-import { WSOL } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
+import { web3, raydium, BN, TokenInfo } from '@frakt-protocol/frakt-sdk';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
@@ -29,7 +26,7 @@ export const COINGECKO_URL = process.env.COINGECKO_URL;
 
 export const SOL_TOKEN: TokenInfo = {
   chainId: 101,
-  address: WSOL.mint,
+  address: raydium.WSOL.mint,
   name: 'SOL',
   decimals: 9,
   symbol: 'SOL',
@@ -147,8 +144,8 @@ export const getFrktBalanceValue = (balance: BN): string => {
   return `${frktBalance !== '0' ? frktBalance : '--'}`;
 };
 
-export const getSolBalanceValue = (account: AccountInfo<Buffer>): string =>
-  `${formatNumber.format((account?.lamports || 0) / LAMPORTS_PER_SOL)}`;
+export const getSolBalanceValue = (account: web3.AccountInfo<Buffer>): string =>
+  `${formatNumber.format((account?.lamports || 0) / web3.LAMPORTS_PER_SOL)}`;
 
 export const getTokenBalanceValue = (amountBN: BN, decimals: number): string =>
   `${formatNumber.format(
@@ -206,7 +203,7 @@ export const fetchSolanaPriceUSD = async (): Promise<number> => {
     return 0;
   }
 };
-export const getStakingPointsURL = (walletAddress: PublicKey): string =>
+export const getStakingPointsURL = (walletAddress: web3.PublicKey): string =>
   `https://frakt-stats.herokuapp.com/staking/${walletAddress}`;
 
 export const getCorrectSolWalletBalance = (
@@ -215,7 +212,7 @@ export const getCorrectSolWalletBalance = (
   return solWalletBalance.split(',').join('');
 };
 
-export const getDiscordUri = (wallet: PublicKey | string): string => {
+export const getDiscordUri = (wallet: web3.PublicKey | string): string => {
   const redirectUri = `https://${process.env.BACKEND_DOMAIN}/user`;
   const clientId = process.env.DISCORD_CLIENT_ID;
 
