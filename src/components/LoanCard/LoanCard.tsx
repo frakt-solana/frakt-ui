@@ -102,7 +102,13 @@ export default LoanCard;
 const LoanCardValues: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const { loanValue, repayValue, isPriceBased, borrowAPRPercents } = loan;
+  const {
+    loanValue,
+    repayValue,
+    isPriceBased,
+    borrowAPRPercents,
+    liquidationPrice,
+  } = loan;
 
   return (
     <div className={styles.valuesWrapper}>
@@ -131,10 +137,23 @@ const LoanCardValues: FC<{
       </div>
 
       {isPriceBased && (
-        <div className={styles.valueWrapper}>
-          <p className={styles.valueTitle}>Borrow APY</p>
-          <div className={styles.valueInfo}>
-            <p>{borrowAPRPercents} %</p>
+        <div className={styles.valuesWrapperRow}>
+          <div className={styles.valueWrapper}>
+            <p className={styles.valueTitle}>Borrow APY</p>
+            <div className={styles.valueInfo}>
+              <p>{borrowAPRPercents} %</p>
+            </div>
+          </div>
+          <div className={styles.valueWrapper}>
+            <p className={styles.valueTitle}>Liquidation price</p>
+            <div className={styles.valueInfo}>
+              <p>{liquidationPrice.toFixed(2)}</p>
+              <img
+                className={styles.valueInfoSolImage}
+                src={SOL_TOKEN.logoURI}
+              />
+              <p>{SOL_TOKEN.symbol}</p>
+            </div>
           </div>
         </div>
       )}
@@ -142,7 +161,7 @@ const LoanCardValues: FC<{
       <div className={styles.valueWrapper}>
         {isPriceBased ? (
           <div className={styles.valueWithTooltip}>
-            <p className={styles.valueTitle}>Valuation status</p>
+            <p className={styles.valueTitle}>Health</p>
             <Tooltip placement="bottom" overlay="hover">
               <QuestionCircleOutlined className={styles.questionIcon} />
             </Tooltip>
@@ -187,68 +206,28 @@ const TimeToReturn: FC<{
   );
 };
 
-enum Risk {
-  Low = 'Low',
-  Medium = 'Medium',
-  High = 'High',
-}
-
-const getRisk = ({ health }: { health: number }): Risk => {
-  if (health < 33.3) return Risk.High;
-  if (health < 66.6) return Risk.Medium;
-  return Risk.Low;
-};
-
 const Health: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const {
-    health: rawHealth = 0,
-    liquidationPrice,
-    valuation,
-    nftOriginalPrice,
-  } = loan;
+  const { health: rawHealth = 0 } = loan;
 
   const health = rawHealth > 100 ? 100 : rawHealth;
-  const moveLabelByHealthPersent = health < 22 ? null : 100 - health;
-
-  const risk = getRisk({ health });
 
   return (
     <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
-      <LoanHealthProgress healthPercent={100 - health} risk={risk} />
-      <div
-        className={classNames(styles.badge, {
-          [styles.highLoanRisk]: risk === Risk.High,
-          [styles.mediumLoanRisk]: risk === Risk.Medium,
-          [styles.lowLoanRisk]: risk === Risk.Low,
-        })}
-        style={{ right: `${moveLabelByHealthPersent}%` }}
-      >
-        {rawHealth > 100 && '>'}
-        {valuation.toFixed(2)} SOL
-      </div>
-
-      <div className={styles.healthValueWrapper}>
-        <p className={styles.healthValue}>{liquidationPrice.toFixed(2)} SOL</p>
-        <p className={styles.healthValue}>{nftOriginalPrice.toFixed(2)} SOL</p>
-      </div>
+      <p className={styles.timeItem}>{health}%</p>
+      <LoanHealthProgress healthPercent={100 - health} />
     </div>
   );
 };
 
 const LoanHealthProgress: FC<{
   healthPercent: number;
-  risk?: string;
-}> = ({ healthPercent = 0, risk }) => {
+}> = ({ healthPercent }) => {
   return (
     <div className={styles.progressWrapper}>
       <div
-        className={classNames(styles.progress, {
-          [styles.highLoanRisk]: risk === Risk.High,
-          [styles.mediumLoanRisk]: risk === Risk.Medium,
-          [styles.lowLoanRisk]: risk === Risk.Low,
-        })}
+        className={styles.progress}
         style={{ width: `${100 - healthPercent}%` }}
       />
     </div>
