@@ -49,15 +49,16 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
   const liquidationPrice = loanValue + loanValue * (collaterizationRate / 100);
 
   const risk = getRisk({ LTV: ltv, limits: [10, ltvPercents] });
+  const value = ltv ? ltv : (ltvPercents + 10) / 2;
 
   return (
     <div className={styles.fieldWrapper}>
       <div className={styles.sliderWrapper}>
-        <p className={styles.sliderLabel}>loan to value: {ltv}%</p>
+        <p className={styles.sliderLabel}>loan to value: {value}%</p>
         <Slider
           marks={marks}
           className={styles.slider}
-          value={ltv}
+          value={value}
           step={1}
           setValue={setLtv}
           min={10}
@@ -98,7 +99,9 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
         style={{ marginTop: 20, marginBottom: 10 }}
       >
         <p className={styles.staticValueTitle}>Borrow APY</p>
-        <p className={styles.staticValueData}>{borrowAPRPercents}%</p>
+        <p className={styles.staticValueData}>
+          {borrowAPRPercents.toFixed(0)}%
+        </p>
       </div>
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>
