@@ -95,33 +95,6 @@
   height: 1px;
 }
 
-.badge {
-  position: absolute;
-  top: 4px;
-  color: var(--white-color);
-  font: var(--font-text-7);
-  font-family: var(--font-family-inter);
-  width: 61px;
-  height: 12px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.highLoanRisk {
-  border-color: var(--red-error-color);
-  background-color: var(--red-error-color);
-}
-
-.mediumLoanRisk {
-  border-color: var(--yellow-color-1);
-  background-color: var(--yellow-color-1);
-}
-
-.lowLoanRisk {
-  border-color: var(--green-color);
-  background-color: var(--green-color);
-}
-
 .valuesWrapper {
   display: flex;
   flex-direction: column;
@@ -177,16 +150,4 @@
   svg {
     fill: var(--accent-color-1);
   }
-}
-
-.healthValueWrapper {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  padding-top: 9px;
-}
-
-.healthValue {
-  color: var(--color-gray-4);
-  font: var(--font-text-6);
 }
