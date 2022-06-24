@@ -9,12 +9,12 @@ import { useLoadingModal } from '../../LoadingModal';
 import { selectTokenListState } from '../../../state/tokenList/selectors';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { useDebounce } from '../../../hooks';
-import { usePrism } from '../../../contexts/prism/prism.hooks';
 import { NotifyType } from '../../../utils/solanaUtils';
 import { selectUserTokensState } from '../../../state/userTokens/selectors';
 import { getTokenBalance } from '../../TokenField/TokenFieldWithBalance';
 import { useNativeAccount } from '../../../utils/accounts';
 import { captureSentryError } from '../../../utils/sentry';
+import { selectPrismState } from '../../../state/prism/selectors';
 
 export enum InputControlsNames {
   RECEIVE_TOKEN = 'receiveToken',
@@ -56,7 +56,8 @@ export const useSwapForm = (
   closeConfirmModal: () => void;
   swapTokenList: TokenInfo[];
 } => {
-  const { prism } = usePrism();
+  const { prism } = useSelector(selectPrismState);
+
   const { fraktionTokensMap, tokensList, fraktionTokensList } =
     useSelector(selectTokenListState);
   const wallet = useWallet();
@@ -164,6 +165,10 @@ export const useSwapForm = (
   }, 400);
 
   useEffect(() => {
+    if (wallet && wallet.publicKey && prism) prism.setSigner(wallet);
+  }, [wallet, prism]);
+
+  useEffect(() => {
     if (!payValue) {
       setValue(InputControlsNames.RECEIVE_VALUE, '');
       setValue(InputControlsNames.TOKEN_PRICE_IMPACT, 0);
@@ -175,7 +180,7 @@ export const useSwapForm = (
 
   useEffect(() => {
     (async () => {
-      if (prism && payToken && receiveToken) {
+      if (payToken && receiveToken && prism) {
         await prism.loadRoutes(payToken.address, receiveToken.address);
         setRoutersIsLoaded([payToken.address, receiveToken.address]);
       }
