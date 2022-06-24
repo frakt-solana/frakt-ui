@@ -50,7 +50,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
 
   const liquidationPrice = loanValue + loanValue * (collaterizationRate / 100);
 
-  const risk = getRisk({ LTV: ltv, limits: [10, ltvPercents] });
+  const risk = getRisk({ LTV: value, limits: [10, ltvPercents] });
 
   return (
     <div className={styles.fieldWrapper}>
