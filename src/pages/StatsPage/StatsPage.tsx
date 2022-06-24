@@ -19,8 +19,7 @@ import Lending from './components/Lending';
 // ];
 
 const StatsPage: FC = () => {
-  const { totalStats, lastLoans, lendingPools, dailyStats, loading } =
-    useStatsPage();
+  const { stats, loading } = useStatsPage();
 
   return (
     <AppLayout>
@@ -32,10 +31,13 @@ const StatsPage: FC = () => {
         ) : (
           <>
             <div className={styles.totalStats}>
-              <TotalStats totalStats={totalStats} />
-              <DailyActive dailyStats={dailyStats} />
+              <TotalStats totalStats={stats?.totalStats} />
+              <DailyActive dailyStats={stats?.dailyActivity} />
             </div>
-            <Lending lendingPools={lendingPools} lastLoans={lastLoans} />
+            <Lending
+              lendingPools={stats?.lendingPools}
+              lastLoans={stats?.lastLoans}
+            />
             {/* <div className={styles.poolsWrapper}>
               <Pools poolsInfo={poolsInfo} />
               <SystemHealth health={80} />

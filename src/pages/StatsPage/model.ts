@@ -26,3 +26,10 @@ export interface LedningPools {
   nftName: string;
   tvl: number;
 }
+
+export interface Stats {
+  totalStats: TotalStats;
+  dailyActivity: DailyStats;
+  lastLoans: LastLoans[];
+  lendingPools: LedningPools[];
+}
