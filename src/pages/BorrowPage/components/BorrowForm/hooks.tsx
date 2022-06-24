@@ -51,7 +51,7 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
     FormFieldTypes.LONG_TERM_FIELD,
   );
 
-  const [priceBasedLTV, setPriceBasedLTV] = useState<number>(10);
+  const [priceBasedLTV, setPriceBasedLTV] = useState<number>(0);
 
   useEffect(() => {
     if (!selectedNft?.priceBased) {
@@ -62,7 +62,7 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
   }, [selectedNft]);
 
   useEffect(() => {
-    setPriceBasedLTV(10);
+    setPriceBasedLTV(0);
   }, [selectedNft]);
 
   const {

@@ -40,7 +40,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
   return (
     <>
       <div className={styles.details}>
-        <p className={styles.detailsTitle}>Loan info</p>
+        <p className={styles.detailsTitle}>Loan Type</p>
         <div className={styles.radioWrapper}>
           <Radio
             className={styles.radio}

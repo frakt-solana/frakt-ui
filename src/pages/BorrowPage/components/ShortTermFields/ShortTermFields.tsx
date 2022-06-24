@@ -36,7 +36,7 @@ export const ShortTermFields: FC<ShortTermFields> = ({ nft }) => {
       </div>
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>
-        <p className={styles.staticValueTitle}>LTV</p>
+        <p className={styles.staticValueTitle}>Loan to Value</p>
         <p className={styles.staticValueData}>{ltvPercents.toFixed(0)}%</p>
       </div>
 
