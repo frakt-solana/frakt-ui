@@ -1,11 +1,11 @@
 import { FC } from 'react';
 
-import { LastLoans, LedningPools } from '../../model';
 import { SOL_TOKEN } from '../../../../utils';
 import styles from './Lending.module.scss';
 import Block from '../Block';
 import okayBears from '../PoolsRaw/mockImage/okayBears.png';
 import degods from '../PoolsRaw/mockImage/degods.png';
+import { LedningPools, LastLoans } from '../../../../state/stats/types';
 
 interface LendingProps {
   lendingPools: LedningPools[];

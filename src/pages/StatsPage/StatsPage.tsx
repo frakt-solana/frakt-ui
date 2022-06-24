@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Container } from '../../components/Layout';
@@ -6,9 +6,11 @@ import { Container } from '../../components/Layout';
 import DailyActive from './components/DailyActive';
 import TotalStats from './components/TotalStats';
 import { Loader } from '../../components/Loader';
-import { useStatsPage } from './useStatsPage';
 import styles from './StatsPage.module.scss';
 import Lending from './components/Lending';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectStatsState } from '../../state/stats/selectors';
+import { statsActions } from '../../state/stats/actions';
 // import Pools from './components/Pools';
 
 // const poolsInfo = [
@@ -19,7 +21,15 @@ import Lending from './components/Lending';
 // ];
 
 const StatsPage: FC = () => {
-  const { stats, loading } = useStatsPage();
+  const { stats, loading } = useSelector(selectStatsState);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!stats) {
+      dispatch(statsActions.fetchStats());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   return (
     <AppLayout>
@@ -30,18 +40,22 @@ const StatsPage: FC = () => {
           <Loader size="large" />
         ) : (
           <>
-            <div className={styles.totalStats}>
-              <TotalStats totalStats={stats?.totalStats} />
-              <DailyActive dailyStats={stats?.dailyActivity} />
-            </div>
-            <Lending
-              lendingPools={stats?.lendingPools}
-              lastLoans={stats?.lastLoans}
-            />
-            {/* <div className={styles.poolsWrapper}>
+            {stats?.totalStats && (
+              <>
+                <div className={styles.totalStats}>
+                  <TotalStats totalStats={stats?.totalStats} />
+                  <DailyActive dailyStats={stats?.dailyActivity} />
+                </div>
+                <Lending
+                  lendingPools={stats?.lendingPools}
+                  lastLoans={stats?.lastLoans}
+                />
+                {/* <div className={styles.poolsWrapper}>
               <Pools poolsInfo={poolsInfo} />
               <SystemHealth health={80} />
             </div> */}
+              </>
+            )}
           </>
         )}
       </Container>

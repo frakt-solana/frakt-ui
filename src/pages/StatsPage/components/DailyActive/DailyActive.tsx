@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import styles from './DailyActive.module.scss';
 import Block from '../Block';
-import { DailyStats } from '../../model';
+import { DailyStats } from '../../../../state/stats/types';
 
 interface DailyStatsProps {
   dailyStats: DailyStats;

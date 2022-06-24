@@ -33,3 +33,8 @@ export interface Stats {
   lastLoans: LastLoans[];
   lendingPools: LedningPools[];
 }
+
+export type StatsState = {
+  stats: Stats;
+  loading: boolean;
+};
