@@ -1,11 +1,11 @@
 import {
-  Liquidity,
-  LiquidityPoolKeysV4,
-  LiquiditySide,
-} from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
+  web3,
+  pools,
+  utils,
+  BN,
+  TokenInfo,
+  raydium,
+} from '@frakt-protocol/frakt-sdk';
 
 import { SOL_TOKEN } from '../../../../utils';
 import {
@@ -14,18 +14,14 @@ import {
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import {
-  getCurrencyAmount,
-  getTokenAccount,
-} from '../../liquidityPools.helpers';
 
 export interface AddLiquidityTransactionParams {
   baseToken: TokenInfo;
   baseAmount: BN;
   quoteToken: TokenInfo;
   quoteAmount: BN;
-  poolConfig: LiquidityPoolKeysV4;
-  fixedSide: LiquiditySide;
+  poolConfig: raydium.LiquidityPoolKeysV4;
+  fixedSide: raydium.LiquiditySide;
 }
 
 export interface AddLiquidityTransactionRawParams
@@ -45,8 +41,8 @@ const rawAddRaydiumLiquidity = async ({
   const tokenAccounts = (
     await Promise.all(
       [baseToken.address, quoteToken.address, poolConfig.lpMint].map((mint) =>
-        getTokenAccount({
-          tokenMint: new PublicKey(mint),
+        utils.getTokenAccount({
+          tokenMint: new web3.PublicKey(mint),
           owner: wallet.publicKey,
           connection,
         }),
@@ -54,20 +50,21 @@ const rawAddRaydiumLiquidity = async ({
     )
   ).filter((tokenAccount) => tokenAccount);
 
-  const amountInA = getCurrencyAmount(baseToken, baseAmount);
-  const amountInB = getCurrencyAmount(SOL_TOKEN, quoteAmount);
+  const amountInA = pools.getCurrencyAmount(baseToken, baseAmount);
+  const amountInB = pools.getCurrencyAmount(SOL_TOKEN, quoteAmount);
 
-  const { transaction, signers } = await Liquidity.makeAddLiquidityTransaction({
-    connection,
-    poolKeys: poolConfig,
-    userKeys: {
-      tokenAccounts,
-      owner: wallet.publicKey,
-    },
-    amountInA,
-    amountInB,
-    fixedSide,
-  });
+  const { transaction, signers } =
+    await raydium.Liquidity.makeAddLiquidityTransaction({
+      connection,
+      poolKeys: poolConfig,
+      userKeys: {
+        tokenAccounts,
+        owner: wallet.publicKey,
+      },
+      amountInA,
+      amountInB,
+      fixedSide,
+    });
 
   await signAndConfirmTransaction({
     transaction,

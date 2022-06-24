@@ -1,8 +1,7 @@
 import { FC, useState } from 'react';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
+import { raydium, TokenInfo } from '@frakt-protocol/frakt-sdk';
 
 import {
   LoadingModal,
@@ -29,7 +28,7 @@ export interface WithdrawLiquidityModalProps {
   visible?: boolean;
   setVisible?: (nextValue: boolean) => void;
   baseToken: TokenInfo;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
   liquidityFusionPool: FusionPool;
   lpTokenStakedAmount?: number;

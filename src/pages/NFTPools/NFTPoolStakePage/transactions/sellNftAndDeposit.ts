@@ -1,16 +1,16 @@
-import { Provider } from '@project-serum/anchor';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { depositNftToCommunityPoolIx } from '@frakters/community-pools-client-library-v2';
-import BN from 'bn.js';
-import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
+import {
+  web3,
+  pools,
+  utils,
+  AnchorProvider,
+  BN,
+  TokenInfo,
+  raydium,
+} from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
 
 import {
   FusionPool,
-  getCurrencyAmount,
-  getTokenAccount,
   RaydiumPoolInfo,
 } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
@@ -28,12 +28,12 @@ import { captureSentryError } from '../../../../utils/sentry';
 
 type SellNftAndDeposit = (props: {
   wallet: WalletContextState;
-  connection: Connection;
+  connection: web3.Connection;
   poolToken: TokenInfo;
   pool: NftPoolData;
   liquidityFusionPool: FusionPool;
   nft: UserNFT;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
 }) => Promise<boolean>;
 
@@ -48,10 +48,10 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
   raydiumPoolInfo,
 }): Promise<boolean> => {
   try {
-    const depositTransaction = new Transaction();
+    const depositTransaction = new web3.Transaction();
 
     const { value: nftLargestAccounts } =
-      await connection.getTokenLargestAccounts(new PublicKey(nft?.mint));
+      await connection.getTokenLargestAccounts(new web3.PublicKey(nft?.mint));
 
     const nftUserTokenAccount = nftLargestAccounts?.[0]?.address || null;
 
@@ -64,8 +64,8 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
     );
 
     const metadataInfo = whitelistedCreator
-      ? await deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
-      : new PublicKey(nft.mint);
+      ? await utils.deriveMetadataPubkeyFromMint(new web3.PublicKey(nft.mint))
+      : new web3.PublicKey(nft.mint);
 
     const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
       return whitelistedCreator
@@ -73,32 +73,28 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
         : whitelistedAddress.toBase58() === nft.mint;
     });
 
-    const tokenMintInputFusion = new PublicKey(
+    const tokenMintInputFusion = new web3.PublicKey(
       liquidityFusionPool?.router?.tokenMintInput,
     );
 
     const {
       instructions: depositInstructions,
       signers: depositInstructionsSigners,
-    } = await depositNftToCommunityPoolIx(
-      {
-        communityPool: pool.publicKey,
-        nftMint: new PublicKey(nft.mint),
-        nftUserTokenAccount,
-        poolWhitelist: poolWhitelist.publicKey,
-        fractionMint: pool.fractionMint,
-        metadataInfo,
-        fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        tokenMintInputFusion,
-        feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-        adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-      },
-      {
-        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-        userPubkey: wallet.publicKey,
-        provider: new Provider(connection, wallet, null),
-      },
-    );
+    } = await pools.depositNftToCommunityPoolIx({
+      communityPool: pool.publicKey,
+      nftMint: new web3.PublicKey(nft.mint),
+      nftUserTokenAccount,
+      poolWhitelist: poolWhitelist.publicKey,
+      fractionMint: pool.fractionMint,
+      metadataInfo,
+      fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion,
+      feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      userPubkey: wallet.publicKey,
+      provider: new AnchorProvider(connection, wallet, null),
+    });
 
     depositTransaction.add(...depositInstructions);
 
@@ -109,8 +105,8 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
           SOL_TOKEN.address,
           raydiumLiquidityPoolKeys.lpMint,
         ].map((mint) =>
-          getTokenAccount({
-            tokenMint: new PublicKey(mint),
+          utils.getTokenAccount({
+            tokenMint: new web3.PublicKey(mint),
             owner: wallet.publicKey,
             connection,
           }),
@@ -127,13 +123,13 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
 
     const solTokenAmountBN = new BN(solTokenAmount * 10 ** SOL_TOKEN?.decimals);
 
-    const amountInA = getCurrencyAmount(poolToken, poolTokenAmountBN);
-    const amountInB = getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
+    const amountInA = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
+    const amountInB = pools.getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
 
     const {
       transaction: addLiquidityTransaction,
       signers: addLiquidityTransactionSigners,
-    } = await Liquidity.makeAddLiquidityTransaction({
+    } = await raydium.Liquidity.makeAddLiquidityTransaction({
       connection,
       poolKeys: raydiumLiquidityPoolKeys,
       userKeys: {

@@ -1,23 +1,14 @@
 import {
-  getLotteryTicketIx,
-  depositNftToCommunityPoolIx,
-} from '@frakters/community-pools-client-library-v2';
-import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
-import { Provider } from '@project-serum/anchor';
-import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
+  web3,
+  pools,
+  utils,
+  raydium,
+  BN,
+  AnchorProvider,
+  TokenInfo,
+} from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import BN from 'bn.js';
 
-import {
-  getCurrencyAmount,
-  getTokenAccount,
-} from '../../../contexts/liquidityPools';
-import {
-  getWhitelistedCreatorsDictionary,
-  isNFTWhitelistedByCreator,
-} from '../../../contexts/nftPools';
 import { UserNFT } from '../../../state/userTokens/types';
 import { notify, SOL_TOKEN } from '../../../utils';
 import { NftPoolData } from '../../../utils/cacher/nftPools';
@@ -30,10 +21,10 @@ import { getTokenPrice } from '../helpers';
 type SwapNft = (props: {
   pool: NftPoolData;
   poolToken: TokenInfo;
-  connection: Connection;
+  connection: web3.Connection;
   nft: UserNFT;
   wallet: WalletContextState;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   needSwap?: boolean;
   swapSlippage?: number;
 }) => Promise<boolean>;
@@ -74,8 +65,8 @@ export const swapNft: SwapNft = async ({
         const tokenAccounts = (
           await Promise.all(
             [SOL_TOKEN.address, poolToken.address].map((mint) =>
-              getTokenAccount({
-                tokenMint: new PublicKey(mint),
+              utils.getTokenAccount({
+                tokenMint: new web3.PublicKey(mint),
                 owner: wallet.publicKey,
                 connection,
               }),
@@ -83,11 +74,11 @@ export const swapNft: SwapNft = async ({
           )
         ).filter((tokenAccount) => tokenAccount);
 
-        const amountIn = getCurrencyAmount(SOL_TOKEN, solAmountBN);
-        const amountOut = getCurrencyAmount(poolToken, poolTokenAmountBN);
+        const amountIn = pools.getCurrencyAmount(SOL_TOKEN, solAmountBN);
+        const amountOut = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
 
         const { transaction: swapTransaction, signers: swapTransationSigners } =
-          await Liquidity.makeSwapTransaction({
+          await raydium.Liquidity.makeSwapTransaction({
             connection,
             poolKeys: raydiumLiquidityPoolKeys,
             userKeys: {
@@ -111,7 +102,7 @@ export const swapNft: SwapNft = async ({
       };
     })();
 
-    const { pubkey: userFractionsTokenAccount } = await getTokenAccount({
+    const { pubkey: userFractionsTokenAccount } = await utils.getTokenAccount({
       tokenMint: pool.fractionMint,
       owner: wallet.publicKey,
       connection,
@@ -120,43 +111,39 @@ export const swapNft: SwapNft = async ({
     const {
       instructions: getLotteryTicketInstructions,
       signers: getLotteryTicketSigners,
-    } = await getLotteryTicketIx(
-      {
-        communityPool: pool.publicKey,
-        userFractionsTokenAccount,
-        fractionMint: pool.fractionMint,
-        fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
-        feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-        adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-      },
-      {
-        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-        userPubkey: wallet.publicKey,
-        provider: new Provider(connection, wallet, null),
-      },
-    );
+    } = await pools.getLotteryTicketIx({
+      communityPool: pool.publicKey,
+      userFractionsTokenAccount,
+      fractionMint: pool.fractionMint,
+      fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
+      feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      userPubkey: wallet.publicKey,
+      provider: new AnchorProvider(connection, wallet, null),
+    });
 
-    const getLotteryTicketTransaction = new Transaction();
+    const getLotteryTicketTransaction = new web3.Transaction();
     getLotteryTicketTransaction.add(...getLotteryTicketInstructions);
 
-    const { pubkey: nftUserTokenAccount } = await getTokenAccount({
-      tokenMint: new PublicKey(nft.mint),
+    const { pubkey: nftUserTokenAccount } = await utils.getTokenAccount({
+      tokenMint: new web3.PublicKey(nft.mint),
       owner: wallet.publicKey,
       connection,
     });
 
     const whitelistedCreatorsDictionary =
-      getWhitelistedCreatorsDictionary(pool);
+      pools.getWhitelistedCreatorsDictionary(pool);
 
-    const whitelistedCreator: string | null = isNFTWhitelistedByCreator(
+    const whitelistedCreator: string | null = pools.isNFTWhitelistedByCreator(
       nft,
       whitelistedCreatorsDictionary,
     );
 
     const metadataInfo = whitelistedCreator
-      ? await deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
-      : new PublicKey(nft.mint);
+      ? await utils.deriveMetadataPubkeyFromMint(new web3.PublicKey(nft.mint))
+      : new web3.PublicKey(nft.mint);
 
     const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
       return whitelistedCreator
@@ -165,26 +152,22 @@ export const swapNft: SwapNft = async ({
     });
 
     const { instructions: depositNftInstructions, signers: depositNftSigners } =
-      await depositNftToCommunityPoolIx(
-        {
-          nftMint: new PublicKey(nft.mint),
-          communityPool: pool.publicKey,
-          poolWhitelist: poolWhitelist.publicKey,
-          nftUserTokenAccount,
-          fractionMint: pool.fractionMint,
-          metadataInfo,
-          fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-          tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
-          feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-          adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-        },
-        {
-          programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-          userPubkey: wallet.publicKey,
-          provider: new Provider(connection, wallet, null),
-        },
-      );
-    const depositNftTransaction = new Transaction();
+      await pools.depositNftToCommunityPoolIx({
+        nftMint: new web3.PublicKey(nft.mint),
+        communityPool: pool.publicKey,
+        poolWhitelist: poolWhitelist.publicKey,
+        nftUserTokenAccount,
+        fractionMint: pool.fractionMint,
+        metadataInfo,
+        fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        tokenMintInputFusion: raydiumLiquidityPoolKeys?.lpMint,
+        feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
+        adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
+        programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+        userPubkey: wallet.publicKey,
+        provider: new AnchorProvider(connection, wallet, null),
+      });
+    const depositNftTransaction = new web3.Transaction();
     depositNftTransaction.add(...depositNftInstructions);
 
     const transactions = [

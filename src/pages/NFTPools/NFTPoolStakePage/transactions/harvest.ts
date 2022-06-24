@@ -1,10 +1,5 @@
+import { web3, pools, AnchorProvider } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import {
-  harvestInFusion,
-  harvestSecondaryReward,
-} from '@frakters/frkt-multiple-reward';
-import { Provider } from '@project-serum/anchor';
 
 import { FusionPool } from './../../../../contexts/liquidityPools/liquidityPools.model';
 import { notify } from '../../../../utils';
@@ -14,7 +9,7 @@ import { captureSentryError } from '../../../../utils/sentry';
 
 type Harvest = (props: {
   wallet: WalletContextState;
-  connection: Connection;
+  connection: web3.Connection;
   inventoryFusionPool: FusionPool;
   liquidityFusionPool: FusionPool;
 }) => Promise<boolean>;
@@ -35,51 +30,53 @@ export const harvest: Harvest = async ({
       secondaryRewards: liquiditySecondaryRewards,
     } = liquidityFusionPool;
 
-    const transactionInventory = new Transaction();
-    const transactionLiquidity = new Transaction();
+    const transactionInventory = new web3.Transaction();
+    const transactionLiquidity = new web3.Transaction();
 
-    const inventoryHarvestInstruction = await harvestInFusion(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+    const inventoryHarvestInstruction = await pools.harvestInFusion(
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      new AnchorProvider(connection, wallet, null),
       wallet.publicKey,
-      new PublicKey(inventoryRouter.tokenMintInput),
-      new PublicKey(inventoryRouter.tokenMintOutput),
+      new web3.PublicKey(inventoryRouter.tokenMintInput),
+      new web3.PublicKey(inventoryRouter.tokenMintOutput),
     );
 
-    const inventorySecondaryRewardsInstructions = await harvestSecondaryReward(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
-      wallet.publicKey,
-      new PublicKey(inventoryRouter.tokenMintInput),
-      new PublicKey(inventoryRouter.tokenMintOutput),
-      inventorySecondaryRewards?.map(
-        ({ rewards }) => new PublicKey(rewards?.tokenMint),
-      ) || [],
-    );
+    const inventorySecondaryRewardsInstructions =
+      await pools.harvestSecondaryReward(
+        new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        new AnchorProvider(connection, wallet, null),
+        wallet.publicKey,
+        new web3.PublicKey(inventoryRouter.tokenMintInput),
+        new web3.PublicKey(inventoryRouter.tokenMintOutput),
+        inventorySecondaryRewards?.map(
+          ({ rewards }) => new web3.PublicKey(rewards?.tokenMint),
+        ) || [],
+      );
 
     transactionInventory.add(inventoryHarvestInstruction);
     if (inventorySecondaryRewardsInstructions?.length) {
       transactionInventory.add(...inventorySecondaryRewardsInstructions);
     }
 
-    const liquidityHarvestInstruction = await harvestInFusion(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+    const liquidityHarvestInstruction = await pools.harvestInFusion(
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      new AnchorProvider(connection, wallet, null),
       wallet.publicKey,
-      new PublicKey(liquidityRouter.tokenMintInput),
-      new PublicKey(liquidityRouter.tokenMintOutput),
+      new web3.PublicKey(liquidityRouter.tokenMintInput),
+      new web3.PublicKey(liquidityRouter.tokenMintOutput),
     );
 
-    const liquiditySecondaryRewardsInstructions = await harvestSecondaryReward(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
-      wallet.publicKey,
-      new PublicKey(liquidityRouter.tokenMintInput),
-      new PublicKey(liquidityRouter.tokenMintOutput),
-      liquiditySecondaryRewards?.map(
-        ({ rewards }) => new PublicKey(rewards?.tokenMint),
-      ) || [],
-    );
+    const liquiditySecondaryRewardsInstructions =
+      await pools.harvestSecondaryReward(
+        new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+        new AnchorProvider(connection, wallet, null),
+        wallet.publicKey,
+        new web3.PublicKey(liquidityRouter.tokenMintInput),
+        new web3.PublicKey(liquidityRouter.tokenMintOutput),
+        liquiditySecondaryRewards?.map(
+          ({ rewards }) => new web3.PublicKey(rewards?.tokenMint),
+        ) || [],
+      );
 
     transactionLiquidity.add(liquidityHarvestInstruction);
     if (liquiditySecondaryRewardsInstructions?.length) {

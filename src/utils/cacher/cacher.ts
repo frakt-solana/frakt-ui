@@ -1,4 +1,4 @@
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import { VISIBLE_POOLS, NftPoolData, parseRawNftPools } from './nftPools';
 import {
@@ -29,7 +29,9 @@ class API {
     );
   }
 
-  public async getAllRaydiumPoolsConfigs(): Promise<LiquidityPoolKeysV4[]> {
+  public async getAllRaydiumPoolsConfigs(): Promise<
+    raydium.LiquidityPoolKeysV4[]
+  > {
     const rawConfigs: LiquidityPoolKeysV4String[] = await (
       await fetch(`${CACHER_URL}/liquidity`)
     ).json();

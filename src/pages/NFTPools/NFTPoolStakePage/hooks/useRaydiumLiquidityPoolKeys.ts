@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import { useLiquidityPools } from '../../../../contexts/liquidityPools';
 
 type UseRaydiumLiquidityPoolKeys = (poolTokenMint: string) => {
   loading: boolean;
-  liquidityPoolKeys: LiquidityPoolKeysV4;
+  liquidityPoolKeys: raydium.LiquidityPoolKeysV4;
 };
 
 export const useRaydiumLiquidityPoolKeys: UseRaydiumLiquidityPoolKeys = (

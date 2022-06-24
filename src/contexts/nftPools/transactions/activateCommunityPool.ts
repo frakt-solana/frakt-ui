@@ -1,8 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
-import {
-  activateCommunityPool,
-  Provider,
-} from '@frakters/community-pools-client-library-v2';
+import { web3, pools, AnchorProvider } from '@frakt-protocol/frakt-sdk';
 
 import {
   showSolscanLinkNotification,
@@ -27,24 +23,20 @@ export const activateCommunityPoolTransaction = async ({
   communityPoolAddress,
 }: ActivateCommunityPoolTransactionRawParams): Promise<void> => {
   try {
-    await activateCommunityPool(
-      {
-        communityPool: new PublicKey(communityPoolAddress),
+    await pools.activateCommunityPool({
+      communityPool: new web3.PublicKey(communityPoolAddress),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      userPubkey: wallet.publicKey,
+      provider: new AnchorProvider(connection, wallet, null),
+      sendTxn: async (transaction, signers) => {
+        await signAndConfirmTransaction({
+          transaction,
+          connection,
+          wallet,
+          signers,
+        });
       },
-      {
-        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-        userPubkey: wallet.publicKey,
-        provider: new Provider(connection, wallet, null),
-        sendTxn: async (transaction, signers) => {
-          await signAndConfirmTransaction({
-            transaction,
-            connection,
-            wallet,
-            signers,
-          });
-        },
-      },
-    );
+    });
   } catch (error) {
     const isNotConfirmed = showSolscanLinkNotification(error);
 

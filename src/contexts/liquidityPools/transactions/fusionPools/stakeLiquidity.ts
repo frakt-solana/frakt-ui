@@ -1,8 +1,10 @@
-import { MainRouterView } from '@frakters/frkt-multiple-reward/lib/accounts';
-import { stakeInFusion } from '@frakters/frkt-multiple-reward';
-import { Provider } from '@project-serum/anchor';
-import { PublicKey, Transaction } from '@solana/web3.js';
-import BN from 'bn.js';
+import {
+  BN,
+  MainRouterView,
+  pools,
+  AnchorProvider,
+  web3,
+} from '@frakt-protocol/frakt-sdk';
 
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
@@ -27,14 +29,14 @@ const rawStakeLiquidity = async ({
   connection,
   wallet,
 }: StakeLiquidityTransactionRawParams): Promise<boolean> => {
-  const transaction = new Transaction();
+  const transaction = new web3.Transaction();
 
-  const instruction = await stakeInFusion(
-    new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new Provider(connection, wallet, null),
+  const instruction = await pools.stakeInFusion(
+    new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+    new AnchorProvider(connection, wallet, null),
     wallet.publicKey,
-    new PublicKey(router.tokenMintInput),
-    new PublicKey(router.tokenMintOutput),
+    new web3.PublicKey(router.tokenMintInput),
+    new web3.PublicKey(router.tokenMintOutput),
     amount,
   );
 

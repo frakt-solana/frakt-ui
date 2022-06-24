@@ -1,13 +1,10 @@
 import {
-  harvestInFusion,
-  harvestSecondaryReward,
-} from '@frakters/frkt-multiple-reward';
-import {
   MainRouterView,
   SecondaryRewardView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
-import { Provider } from '@project-serum/anchor';
-import { PublicKey, Transaction } from '@solana/web3.js';
+  pools,
+  AnchorProvider,
+  web3,
+} from '@frakt-protocol/frakt-sdk';
 
 import {
   wrapTxnWithTryCatch,
@@ -32,28 +29,28 @@ export const rawHarvestLiquidity = async ({
   wallet,
   secondaryReward,
 }: HarvestLiquidityTransactionRawParams): Promise<any> => {
-  const transaction = new Transaction();
+  const transaction = new web3.Transaction();
 
-  const harvestInstruction = await harvestInFusion(
-    new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new Provider(connection, wallet, null),
+  const harvestInstruction = await pools.harvestInFusion(
+    new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+    new AnchorProvider(connection, wallet, null),
     wallet.publicKey,
-    new PublicKey(router.tokenMintInput),
-    new PublicKey(router.tokenMintOutput),
+    new web3.PublicKey(router.tokenMintInput),
+    new web3.PublicKey(router.tokenMintOutput),
   );
 
   transaction.add(harvestInstruction);
 
   const secondaryRewardsTokensMints = secondaryReward.map(
-    ({ tokenMint }) => new PublicKey(tokenMint),
+    ({ tokenMint }) => new web3.PublicKey(tokenMint),
   );
 
-  const secondaryHarvestInstructions = await harvestSecondaryReward(
-    new PublicKey(FUSION_PROGRAM_PUBKEY),
-    new Provider(connection, wallet, null),
+  const secondaryHarvestInstructions = await pools.harvestSecondaryReward(
+    new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
+    new AnchorProvider(connection, wallet, null),
     wallet.publicKey,
-    new PublicKey(router.tokenMintInput),
-    new PublicKey(router.tokenMintOutput),
+    new web3.PublicKey(router.tokenMintInput),
+    new web3.PublicKey(router.tokenMintOutput),
     secondaryRewardsTokensMints,
   );
 

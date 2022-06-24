@@ -1,8 +1,5 @@
-import BN from 'bn.js';
-import { paybackLoan as txn } from '@frakters/nft-lending-v2';
-import { Provider } from '@project-serum/anchor';
+import { web3, loans, AnchorProvider } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
 
 import { captureSentryError } from '../sentry';
 import { Loan } from '../../state/loans/types';
@@ -14,7 +11,7 @@ import {
 } from '../transactions';
 
 type PaybackLoan = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   loan: Loan;
 }) => Promise<boolean>;
@@ -25,20 +22,19 @@ export const paybackLoan: PaybackLoan = async ({
   loan,
 }): Promise<boolean> => {
   try {
-    const options = Provider.defaultOptions();
-    const provider = new Provider(connection, wallet, options);
+    const options = AnchorProvider.defaultOptions();
+    const provider = new AnchorProvider(connection, wallet, options);
 
-    await txn({
-      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+    await loans.paybackLoan({
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       provider,
       user: wallet.publicKey,
-      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-      loan: new PublicKey(loan.pubkey),
-      nftMint: new PublicKey(loan.mint),
-      liquidityPool: new PublicKey(loan.liquidityPool),
-      collectionInfo: new PublicKey(loan.collectionInfo),
-      royaltyAddress: new PublicKey(loan.royaltyAddress),
-      amount: new BN(loan.repayValueLamports),
+      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      loan: new web3.PublicKey(loan.pubkey),
+      nftMint: new web3.PublicKey(loan.mint),
+      liquidityPool: new web3.PublicKey(loan.liquidityPool),
+      collectionInfo: new web3.PublicKey(loan.collectionInfo),
+      royaltyAddress: new web3.PublicKey(loan.royaltyAddress),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
