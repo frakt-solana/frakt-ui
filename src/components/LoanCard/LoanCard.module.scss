@@ -88,6 +88,7 @@
   overflow: hidden;
 }
 .progress {
+  border: 1px solid var(--accent-color-1);
   position: absolute;
   left: 0;
   top: 0;
