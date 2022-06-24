@@ -88,6 +88,7 @@
   overflow: hidden;
 }
 .progress {
+  border: 1px solid var(--accent-color-1);
   position: absolute;
   left: 0;
   top: 0;
@@ -107,15 +108,18 @@
 }
 
 .highLoanRisk {
-  background-color: #ff6666;
+  border-color: var(--red-error-color);
+  background-color: var(--red-error-color);
 }
 
 .mediumLoanRisk {
-  background-color: #ddb834;
+  border-color: var(--yellow-color-1);
+  background-color: var(--yellow-color-1);
 }
 
 .lowLoanRisk {
-  background-color: #83d6a4;
+  border-color: var(--green-color);
+  background-color: var(--green-color);
 }
 
 .valuesWrapper {
