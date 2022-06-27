@@ -9,15 +9,8 @@ import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import Tooltip from '../../../../components/Tooltip';
-import BearsImage from '../mockImage/Bears.png';
-import DegodsImage from '../mockImage/Degods.png';
 import { commonActions } from '../../../../state/common/actions';
 import { LiquidityPool } from '../../../../state/loans/types';
-
-const LIQUIDITY_POOLS_NAMES = {
-  AXQcr2PePPRkKCFtgYtCWR6bDGaFdZA9U3Cys47HJfbM: 'Aggregated Lending Pool',
-  Gb8muSC4yGG2J8gVpCNKBqh3xhf9XbiaxqXyAf7kkx6j: 'Example PriceBased',
-};
 
 interface LendingPoolProps {
   liquidityPool: LiquidityPool;
@@ -29,6 +22,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
   const dispatch = useDispatch();
 
   const {
+    name,
     pubkey: liquidityPoolPubkey,
     borrowApr,
     depositApr,
@@ -58,9 +52,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
         <div className={styles.poolCard}>
           <div className={styles.tokenInfo}>
             <LiquidityPoolImage liquidityPool={liquidityPool} />
-            <div className={styles.subtitle}>
-              {LIQUIDITY_POOLS_NAMES[liquidityPool.pubkey]}
-            </div>
+            <div className={styles.subtitle}>{name || ''}</div>
           </div>
           <div className={styles.statsValue}>
             <div className={styles.totalValue}>
@@ -138,7 +130,7 @@ const LiquidityPoolImage: FC<LendingPoolProps> = ({ liquidityPool }) => {
       })}
       data-collections-amount={`+${collectionsAmount - 2}`}
     >
-      {[BearsImage, DegodsImage].map((image, idx) => (
+      {liquidityPool.imageUrl?.map((image: string, idx: number) => (
         <img
           src={image}
           className={styles.image}

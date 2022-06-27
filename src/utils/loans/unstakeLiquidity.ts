@@ -1,4 +1,4 @@
-import { web3, loans, AnchorProvider } from '@frakt-protocol/frakt-sdk';
+import { web3, loans } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { NotifyType } from '../solanaUtils';
@@ -23,12 +23,10 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
   amount,
 }): Promise<boolean> => {
   try {
-    const options = AnchorProvider.defaultOptions();
-    const provider = new AnchorProvider(connection, wallet, options);
-
     await loans.unstakeLiquidity({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-      provider,
+      adminPubkey: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      connection,
       liquidityPool: new web3.PublicKey(liquidityPool),
       user: wallet.publicKey,
       amount,

@@ -1,10 +1,4 @@
-import {
-  BN,
-  MainRouterView,
-  pools,
-  AnchorProvider,
-  web3,
-} from '@frakt-protocol/frakt-sdk';
+import { BN, MainRouterView, pools, web3 } from '@frakt-protocol/frakt-sdk';
 
 import { FUSION_PROGRAM_PUBKEY } from './constants';
 import {
@@ -33,7 +27,7 @@ const rawStakeLiquidity = async ({
 
   const instruction = await pools.stakeInFusion(
     new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
-    new AnchorProvider(connection, wallet, null),
+    connection,
     wallet.publicKey,
     new web3.PublicKey(router.tokenMintInput),
     new web3.PublicKey(router.tokenMintOutput),

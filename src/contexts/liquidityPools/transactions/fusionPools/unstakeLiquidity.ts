@@ -4,7 +4,6 @@ import {
   SecondaryRewardView,
   StakeAccountView,
   pools,
-  AnchorProvider,
   web3,
 } from '@frakt-protocol/frakt-sdk';
 
@@ -40,7 +39,7 @@ export const rawUnstakeLiquidity = async ({
   if (Number(stakeAccount.unstakedAtCumulative)) {
     const harvestInstruction = await pools.harvestInFusion(
       new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
-      new AnchorProvider(connection, wallet, null),
+      connection,
       wallet.publicKey,
       new web3.PublicKey(router.tokenMintInput),
       new web3.PublicKey(router.tokenMintOutput),
@@ -56,7 +55,7 @@ export const rawUnstakeLiquidity = async ({
   if (secondaryReward.length) {
     const secondaryHarvestInstruction = await pools.harvestSecondaryReward(
       new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
-      new AnchorProvider(connection, wallet, null),
+      connection,
       wallet.publicKey,
       new web3.PublicKey(router.tokenMintInput),
       new web3.PublicKey(router.tokenMintOutput),
@@ -68,7 +67,7 @@ export const rawUnstakeLiquidity = async ({
 
   const unStakeInstruction = await pools.unstakeInFusion(
     new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
-    new AnchorProvider(connection, wallet, null),
+    connection,
     wallet.publicKey,
     new web3.PublicKey(router.tokenMintInput),
     new web3.PublicKey(router.tokenMintOutput),

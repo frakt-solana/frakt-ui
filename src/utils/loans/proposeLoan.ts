@@ -1,4 +1,4 @@
-import { web3, loans, BN, AnchorProvider } from '@frakt-protocol/frakt-sdk';
+import { web3, loans, BN } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { NotifyType } from '../solanaUtils';
@@ -27,12 +27,9 @@ export const proposeLoan: ProposeLoan = async ({
   isPriceBased = false,
 }): Promise<boolean> => {
   try {
-    const options = AnchorProvider.defaultOptions();
-    const provider = new AnchorProvider(connection, wallet, options);
-
     const { loanPubkey } = await loans.proposeLoan({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-      provider,
+      connection,
       user: wallet.publicKey,
       nftMint: new web3.PublicKey(nftMint),
       proposedNftPrice: new BN(valuation * 10 ** SOL_TOKEN.decimals),

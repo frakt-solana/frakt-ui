@@ -2,7 +2,6 @@ import {
   MainRouterView,
   SecondaryRewardView,
   pools,
-  AnchorProvider,
   web3,
 } from '@frakt-protocol/frakt-sdk';
 
@@ -33,7 +32,7 @@ export const rawHarvestLiquidity = async ({
 
   const harvestInstruction = await pools.harvestInFusion(
     new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
-    new AnchorProvider(connection, wallet, null),
+    connection,
     wallet.publicKey,
     new web3.PublicKey(router.tokenMintInput),
     new web3.PublicKey(router.tokenMintOutput),
@@ -47,7 +46,7 @@ export const rawHarvestLiquidity = async ({
 
   const secondaryHarvestInstructions = await pools.harvestSecondaryReward(
     new web3.PublicKey(FUSION_PROGRAM_PUBKEY),
-    new AnchorProvider(connection, wallet, null),
+    connection,
     wallet.publicKey,
     new web3.PublicKey(router.tokenMintInput),
     new web3.PublicKey(router.tokenMintOutput),

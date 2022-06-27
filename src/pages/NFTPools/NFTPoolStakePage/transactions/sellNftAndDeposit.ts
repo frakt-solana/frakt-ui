@@ -2,7 +2,6 @@ import {
   web3,
   pools,
   utils,
-  AnchorProvider,
   BN,
   TokenInfo,
   raydium,
@@ -93,7 +92,7 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
       adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
       programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
       userPubkey: wallet.publicKey,
-      provider: new AnchorProvider(connection, wallet, null),
+      connection,
     });
 
     depositTransaction.add(...depositInstructions);

@@ -2,7 +2,6 @@ import {
   web3,
   pools,
   utils,
-  AnchorProvider,
   BN,
   TokenInfo,
   raydium,
@@ -53,7 +52,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
     if (Number(stakeAccount.unstakedAtCumulative)) {
       const harvestInstruction = await pools.harvestInFusion(
         new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        new AnchorProvider(connection, wallet, null),
+        connection,
         wallet.publicKey,
         new web3.PublicKey(router.tokenMintInput),
         new web3.PublicKey(router.tokenMintOutput),
@@ -69,7 +68,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
     if (liquidityFusion?.secondaryRewards.length) {
       const secondaryHarvestInstruction = await pools.harvestSecondaryReward(
         new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        new AnchorProvider(connection, wallet, null),
+        connection,
         wallet.publicKey,
         new web3.PublicKey(router.tokenMintInput),
         new web3.PublicKey(router.tokenMintOutput),
@@ -81,7 +80,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
 
     const unstakeInstruction = await pools.unstakeInFusion(
       new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new AnchorProvider(connection, wallet, null),
+      connection,
       wallet.publicKey,
       new web3.PublicKey(router.tokenMintInput),
       new web3.PublicKey(router.tokenMintOutput),

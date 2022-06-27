@@ -1,4 +1,4 @@
-import { web3, pools, AnchorProvider } from '@frakt-protocol/frakt-sdk';
+import { web3, pools } from '@frakt-protocol/frakt-sdk';
 
 import {
   showSolscanLinkNotification,
@@ -17,14 +17,14 @@ export const createCommunityPool = async ({
     await pools.initCommunityPool({
       programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
       userPubkey: wallet.publicKey,
-      provider: new AnchorProvider(connection, wallet, null),
+      connection,
       sendTxn: async (transaction, signers) => {
-        await signAndConfirmTransaction({
+        return void (await signAndConfirmTransaction({
           transaction,
           connection,
           wallet,
           signers,
-        });
+        }));
       },
     });
   } catch (error) {

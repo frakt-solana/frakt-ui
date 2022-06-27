@@ -1,4 +1,4 @@
-import { web3, pools, AnchorProvider, BN } from '@frakt-protocol/frakt-sdk';
+import { web3, pools, BN } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
@@ -25,7 +25,7 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
 
     const stakeInstruction = await pools.stakeInFusion(
       new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new AnchorProvider(connection, wallet, null),
+      connection,
       wallet.publicKey,
       new web3.PublicKey(liquidityFusionPool?.router.tokenMintInput),
       new web3.PublicKey(liquidityFusionPool?.router.tokenMintOutput),
