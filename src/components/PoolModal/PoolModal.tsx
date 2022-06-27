@@ -102,7 +102,7 @@ export const PoolModal: FC<PoolModalProps> = ({
           <div className={styles.info}>
             <span className={styles.infoTitle}>Utilization rate</span>
             <span className={styles.infoValue}>
-              {utilizationRate.toFixed(2)}%
+              {(utilizationRate || 0).toFixed(2)}%
             </span>
           </div>
           <Button
