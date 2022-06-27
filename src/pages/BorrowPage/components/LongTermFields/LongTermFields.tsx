@@ -88,7 +88,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
           <Tooltip
             placement="bottom"
             trigger="hover"
-            overlay="The closer to the valuation, the higher the chance of liquidation"
+            overlay="How much the NFT price needs to drop for your loan to get liquidated"
           >
             <QuestionCircleOutlined className={styles.questionIcon} />
           </Tooltip>
