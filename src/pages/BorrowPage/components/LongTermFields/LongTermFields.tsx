@@ -99,9 +99,16 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
         className={classNames(styles.staticValue)}
         style={{ marginTop: 20, marginBottom: 10 }}
       >
-        <p className={styles.staticValueTitle}>Borrow APY</p>
+        <p className={styles.staticValueTitle}>Interest rate</p>
         <p className={styles.staticValueData}>
           {borrowAPRPercents.toFixed(0)}%
+          <Tooltip
+            placement="bottom"
+            trigger="hover"
+            overlay="The current yearly interest rate paid by borrowers"
+          >
+            <QuestionCircleOutlined className={styles.questionIcon} />
+          </Tooltip>
         </p>
       </div>
 

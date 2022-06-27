@@ -139,7 +139,7 @@ const LoanCardValues: FC<{
       {isPriceBased && (
         <div className={styles.valuesWrapperRow}>
           <div className={styles.valueWrapper}>
-            <p className={styles.valueTitle}>Borrow APY</p>
+            <p className={styles.valueTitle}>Interest rate</p>
             <div className={styles.valueInfo}>
               <p>{borrowAPRPercents} %</p>
             </div>
