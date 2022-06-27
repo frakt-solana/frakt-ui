@@ -3,8 +3,6 @@ import { FC } from 'react';
 import { SOL_TOKEN } from '../../../../utils';
 import styles from './Lending.module.scss';
 import Block from '../Block';
-import okayBears from '../PoolsRaw/mockImage/okayBears.png';
-import degods from '../PoolsRaw/mockImage/degods.png';
 import { LedningPools, LastLoans } from '../../../../state/stats/types';
 
 interface LendingProps {
@@ -50,14 +48,10 @@ const Lending: FC<LendingProps> = ({ lendingPools, lastLoans }) => {
                 <div key={idx} className={styles.tableRow}>
                   <div className={styles.tableInfo}>
                     <p className={styles.rowNumber}>{idx + 1}</p>
-                    {image === 'image' ? (
-                      <div className={styles.mockImages}>
-                        <img className={styles.rowImage} src={okayBears} />
-                        <img className={styles.rowImage} src={degods} />
-                      </div>
-                    ) : (
-                      <img className={styles.rowImage} src={image} />
-                    )}
+                    <div className={styles.mockImages}>
+                      <img className={styles.rowImage} src={image[0]} />
+                      <img className={styles.rowImage} src={image[1]} />
+                    </div>
                     <p className={styles.rowTitle}>{nftName}</p>
                   </div>
                   <div className={styles.tableStats}>
