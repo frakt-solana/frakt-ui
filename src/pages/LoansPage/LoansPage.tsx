@@ -11,6 +11,10 @@ import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
 import { selectLiquidityPools } from '../../state/loans/selectors';
 import { useLoansPage, LoanTabsNames } from './hooks';
+import { LiquidityPool } from '../../state/loans/types';
+
+const sortLiquidityPools = (liquidityPools: LiquidityPool[] = []) =>
+  [...liquidityPools].sort((a, b) => b.totalLiquidity - a.totalLiquidity);
 
 const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();
@@ -33,7 +37,7 @@ const LoansPage: FC = () => {
           <>
             {liquidityPools ? (
               <div className={styles.sortWrapper}>
-                {liquidityPools?.map((liquidityPool) => (
+                {sortLiquidityPools(liquidityPools)?.map((liquidityPool) => (
                   <LendingPool
                     key={liquidityPool.pubkey}
                     liquidityPool={liquidityPool}
