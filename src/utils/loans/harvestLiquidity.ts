@@ -23,6 +23,7 @@ export const harvestLiquidity: HarvestLiquidity = async ({
   try {
     await loans.harvestLiquidity({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      adminPubkey: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       connection,
       liquidityPool: new web3.PublicKey(liquidityPool),
       user: wallet.publicKey,

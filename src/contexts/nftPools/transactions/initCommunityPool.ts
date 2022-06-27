@@ -19,12 +19,12 @@ export const createCommunityPool = async ({
       userPubkey: wallet.publicKey,
       connection,
       sendTxn: async (transaction, signers) => {
-        await signAndConfirmTransaction({
+        return void (await signAndConfirmTransaction({
           transaction,
           connection,
           wallet,
           signers,
-        });
+        }));
       },
     });
   } catch (error) {
