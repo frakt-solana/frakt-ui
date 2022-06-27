@@ -1,25 +1,25 @@
-import { Liquidity, LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
-import BN from 'bn.js';
-
 import {
-  getCurrencyAmount,
-  getTokenAccount,
-  RaydiumPoolInfo,
-} from '../../../../contexts/liquidityPools';
+  web3,
+  pools,
+  utils,
+  BN,
+  TokenInfo,
+  raydium,
+} from '@frakt-protocol/frakt-sdk';
+import { WalletContextState } from '@solana/wallet-adapter-react';
+import { RaydiumPoolInfo } from '../../../../contexts/liquidityPools';
 import { notify, SOL_TOKEN } from '../../../../utils';
+import { captureSentryError } from '../../../../utils/sentry';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
 import { calcRatio } from '../components';
 
 type ProvideLiquidity = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   poolToken: TokenInfo;
   poolTokenAmount: number;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
 }) => Promise<boolean>;
 
@@ -39,8 +39,8 @@ export const provideLiquidity: ProvideLiquidity = async ({
           SOL_TOKEN.address,
           raydiumLiquidityPoolKeys?.lpMint?.toBase58(),
         ].map((mint) =>
-          getTokenAccount({
-            tokenMint: new PublicKey(mint),
+          utils.getTokenAccount({
+            tokenMint: new web3.PublicKey(mint),
             owner: wallet.publicKey,
             connection,
           }),
@@ -55,11 +55,11 @@ export const provideLiquidity: ProvideLiquidity = async ({
     );
     const solTokenAmountBN = new BN(solTokenAmount * 10 ** SOL_TOKEN?.decimals);
 
-    const amountInA = getCurrencyAmount(poolToken, poolTokenAmountBN);
-    const amountInB = getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
+    const amountInA = pools.getCurrencyAmount(poolToken, poolTokenAmountBN);
+    const amountInB = pools.getCurrencyAmount(SOL_TOKEN, solTokenAmountBN);
 
     const { transaction, signers } =
-      await Liquidity.makeAddLiquidityTransaction({
+      await raydium.Liquidity.makeAddLiquidityTransaction({
         connection,
         poolKeys: raydiumLiquidityPoolKeys,
         userKeys: {
@@ -112,8 +112,11 @@ export const provideLiquidity: ProvideLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'provideLiquidityInNftPool',
+    });
 
     return false;
   }

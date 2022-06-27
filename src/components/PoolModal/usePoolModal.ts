@@ -8,7 +8,7 @@ import { Tab, useTabs } from '../Tabs';
 import {
   depositLiquidity as depositTxn,
   unstakeLiquidity as unstakeTxn,
-} from '../../contexts/loans';
+} from '../../utils/loans';
 import { useConnection } from '../../hooks';
 
 export enum InputControlsNames {
@@ -29,6 +29,7 @@ export type FormFieldValues = {
 };
 
 export const usePoolModal = (
+  liquidityPoolPubkey: string,
   visible: string,
   depositAmount: number,
   onCancel: () => void,
@@ -47,7 +48,6 @@ export const usePoolModal = (
   percentValue: number;
   solWalletBalance: string;
 } => {
-  const liquidityPool = 'FuydvCEeh5sa4YyPzQuoJFBRJ4sF5mwT4rbeaWMi3nuN';
   const wallet = useWallet();
   const connection = useConnection();
   const { watch, register, setValue } = useForm({
@@ -148,7 +148,7 @@ export const usePoolModal = (
     await depositTxn({
       connection,
       wallet,
-      liquidityPool,
+      liquidityPool: liquidityPoolPubkey,
       amount,
     });
 
@@ -161,7 +161,7 @@ export const usePoolModal = (
     await unstakeTxn({
       connection,
       wallet,
-      liquidityPool,
+      liquidityPool: liquidityPoolPubkey,
       amount,
     });
 

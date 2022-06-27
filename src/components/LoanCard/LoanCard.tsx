@@ -1,30 +1,26 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { CollectionInfoView, LoanView } from '@frakters/nft-lending-v2';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
-import {
-  LoanWithArweaveMetadata,
-  useLoans,
-  paybackLoan as paybackLoanTx,
-  getLoanCollectionInfo,
-  getAmountToReturnForPriceBasedLoan,
-} from '../../contexts/loans';
+import { paybackLoan as paybackLoanTx } from '../../utils/loans';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
+import { Loan } from '../../state/loans/types';
+import Tooltip from 'rc-tooltip';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { HEALTH_TOOLTIP_TEXT } from './constants';
 
 interface LoanCardProps {
-  className?: string;
-  loanWithArweaveMetadata: LoanWithArweaveMetadata;
+  loan: Loan;
 }
 
 const usePaybackLoan = () => {
   const wallet = useWallet();
   const connection = useConnection();
-  const { removeLoanOptimistic } = useLoans();
 
   const {
     visible: loadingModalVisible,
@@ -32,10 +28,7 @@ const usePaybackLoan = () => {
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const paybackLoan = async (
-    loan: LoanView,
-    collectionInfo: CollectionInfoView,
-  ) => {
+  const paybackLoan = async (loan: Loan) => {
     try {
       openLoadingModal();
 
@@ -43,14 +36,11 @@ const usePaybackLoan = () => {
         connection,
         wallet,
         loan,
-        collectionInfo,
       });
 
       if (!result) {
         throw new Error('Loan failed');
       }
-
-      removeLoanOptimistic(loan);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -66,84 +56,29 @@ const usePaybackLoan = () => {
   };
 };
 
-const LoanCard: FC<LoanCardProps> = ({
-  className,
-  loanWithArweaveMetadata,
-}) => {
-  const { loan, metadata } = loanWithArweaveMetadata;
-
-  const { loanDataByPoolPublicKey } = useLoans();
-  const collectionInfo = getLoanCollectionInfo(
-    loanDataByPoolPublicKey.get(loan?.liquidityPool),
-    loan.collectionInfo,
-  );
-
+const LoanCard: FC<LoanCardProps> = ({ loan }) => {
   const { paybackLoan, closeLoadingModal, loadingModalVisible } =
     usePaybackLoan();
 
-  const { timeLeft, leftTimeInSeconds } = useCountdown(loan.expiredAt);
-
-  const loanDurationInSeconds = loan.expiredAt - loan.startedAt;
-  const progress =
-    ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
+  const { imageUrl, name } = loan;
 
   const onPayback = () => {
-    paybackLoan(loan, collectionInfo);
+    paybackLoan(loan);
   };
-
-  const amountToGet = loan?.amountToGet
-    ? (loan?.amountToGet / 10 ** SOL_TOKEN.decimals).toFixed(2)
-    : '';
-
-  const amountToReturn =
-    getAmountToReturnForPriceBasedLoan(loan)?.toFixed(2) || '';
 
   return (
     <>
-      <div className={styles.wrapper}>
-        <div className={classNames([styles.root, className])}>
+      <div className={styles.cardWrapper}>
+        <div className={styles.card}>
           <div
-            className={styles.root__image}
+            className={styles.image}
             style={{
-              backgroundImage: `url(${metadata?.image})`,
+              backgroundImage: `url(${imageUrl})`,
             }}
           />
-          <div className={styles.root__content}>
-            <p className={styles.root__title}>{metadata?.name}</p>
-            <div className={styles.ltvWrapper}>
-              <p className={styles.ltvTitle}>Borrowed</p>
-              <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{amountToGet}</p>
-                <div className={styles.tokenInfo}>
-                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
-                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
-                </div>
-              </div>
-              <p className={styles.ltvTitle}>To repay</p>
-              <div className={styles.ltvContent}>
-                <p className={styles.ltvText}>{amountToReturn}</p>
-                <div className={styles.tokenInfo}>
-                  <img className={styles.ltvImage} src={SOL_TOKEN.logoURI} />
-                  <p className={styles.ltvText}>{SOL_TOKEN.symbol}</p>
-                </div>
-              </div>
-              <p className={styles.ltvTitle}>Time to return</p>
-              <div className={styles.countdown}>
-                <p className={styles.timeItem}>{timeLeft.days}d</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.hours}h</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.minutes}m</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.seconds}s</p>
-              </div>
-              <div className={styles.timeProgressWrapper}>
-                <div
-                  className={styles.timeProgress}
-                  style={{ width: `${100 - progress}%` }}
-                />
-              </div>
-            </div>
+          <div className={styles.content}>
+            <p className={styles.title}>{name}</p>
+            <LoanCardValues loan={loan} />
             <Button
               type="alternative"
               className={styles.btn}
@@ -164,3 +99,146 @@ const LoanCard: FC<LoanCardProps> = ({
 };
 
 export default LoanCard;
+
+const LoanCardValues: FC<{
+  loan: Loan;
+}> = ({ loan }) => {
+  const {
+    loanValue,
+    repayValue,
+    isPriceBased,
+    borrowAPRPercents,
+    liquidationPrice,
+  } = loan;
+
+  return (
+    <div className={styles.valuesWrapper}>
+      <div
+        className={classNames(styles.valuesWrapperColumn, {
+          [styles.valuesWrapperRow]: isPriceBased,
+        })}
+      >
+        <div className={styles.valueWrapper}>
+          <p className={styles.valueTitle}>Borrowed</p>
+          <div className={styles.valueInfo}>
+            <p>{loanValue.toFixed(2)}</p>
+            <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+            <p>{SOL_TOKEN.symbol}</p>
+          </div>
+        </div>
+
+        <div className={styles.valueWrapper}>
+          <p className={styles.valueTitle}>Debt</p>
+          <div className={styles.valueInfo}>
+            <p>{repayValue.toFixed(2)}</p>
+            <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+            <p>{SOL_TOKEN.symbol}</p>
+          </div>
+        </div>
+      </div>
+
+      {isPriceBased && (
+        <div className={styles.valuesWrapperRow}>
+          <div className={styles.valueWrapper}>
+            <div className={styles.valueWithTooltip}>
+              <p className={styles.valueTitle}>Interest rate</p>
+              <Tooltip
+                placement="bottom"
+                overlay="The current yearly interest rate paid by borrowers"
+              >
+                <QuestionCircleOutlined className={styles.questionIcon} />
+              </Tooltip>
+            </div>
+            <div className={styles.valueInfo}>
+              <p>{borrowAPRPercents} %</p>
+            </div>
+          </div>
+          <div className={styles.valueWrapper}>
+            <p className={styles.valueTitle}>Liquidation price</p>
+            <div className={styles.valueInfo}>
+              <p>{liquidationPrice.toFixed(2)}</p>
+              <img
+                className={styles.valueInfoSolImage}
+                src={SOL_TOKEN.logoURI}
+              />
+              <p>{SOL_TOKEN.symbol}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={styles.valueWrapper}>
+        {isPriceBased ? (
+          <div className={styles.valueWithTooltip}>
+            <p className={styles.valueTitle}>Health</p>
+            <Tooltip placement="bottom" overlay={HEALTH_TOOLTIP_TEXT}>
+              <QuestionCircleOutlined className={styles.questionIcon} />
+            </Tooltip>
+          </div>
+        ) : (
+          <p className={styles.valueTitle}>Time to return</p>
+        )}
+        {isPriceBased ? <Health loan={loan} /> : <TimeToReturn loan={loan} />}
+      </div>
+    </div>
+  );
+};
+
+const TimeToReturn: FC<{
+  loan: Loan;
+}> = ({ loan }) => {
+  const { expiredAt, startedAt } = loan;
+
+  const expiredAtUnix = moment(expiredAt).unix();
+  const startedAtUnix = moment(startedAt).unix();
+
+  const loanDurationInSeconds = expiredAtUnix - startedAtUnix;
+
+  const { timeLeft, leftTimeInSeconds } = useCountdown(expiredAtUnix);
+
+  const progress =
+    ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
+
+  return (
+    <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
+      <div className={styles.countdown}>
+        <p className={styles.timeItem}>{timeLeft.days}d</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.hours}h</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.minutes}m</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.seconds}s</p>
+      </div>
+      <LoanHealthProgress healthPercent={progress} />
+    </div>
+  );
+};
+
+const Health: FC<{
+  loan: Loan;
+}> = ({ loan }) => {
+  const { health: rawHealth = 0 } = loan;
+
+  const health = rawHealth > 100 ? 100 : rawHealth;
+
+  return (
+    <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
+      <p className={styles.timeItem}>{health}%</p>
+      <LoanHealthProgress healthPercent={100 - health} />
+    </div>
+  );
+};
+
+const LoanHealthProgress: FC<{
+  healthPercent: number;
+}> = ({ healthPercent }) => {
+  return (
+    <div className={styles.progressWrapper}>
+      <div
+        className={styles.progress}
+        style={{ width: `${100 - healthPercent}%` }}
+      />
+    </div>
+  );
+};

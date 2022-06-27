@@ -1,6 +1,4 @@
 .radio {
-  width: 100%;
-
   &:hover {
     :global {
       .ant-radio-input + .ant-radio-inner {
@@ -24,8 +22,8 @@
     }
 
     .ant-radio-inner::after {
-      top: 4px;
-      left: 4px;
+      top: 8px;
+      left: 8px;
       background-color: var(--white-color);
     }
 

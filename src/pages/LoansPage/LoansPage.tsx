@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { MyLoansTab } from './components/MyLoansTab';
@@ -7,18 +8,13 @@ import { Container } from '../../components/Layout';
 import LendingPool from './components/LendingPool';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
-import { LoanTabsNames, useLoansPage } from './hooks';
 import { Loader } from '../../components/Loader';
+import { selectLiquidityPools } from '../../state/loans/selectors';
+import { useLoansPage, LoanTabsNames } from './hooks';
 
 const LoansPage: FC = () => {
-  const {
-    loanTabs,
-    tabValue,
-    setTabValue,
-    userLoans,
-    userLoansLoading,
-    loansPoolInfo,
-  } = useLoansPage();
+  const { loanTabs, tabValue, setTabValue } = useLoansPage();
+  const liquidityPools = useSelector(selectLiquidityPools);
 
   return (
     <AppLayout>
@@ -35,9 +31,14 @@ const LoansPage: FC = () => {
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
         {tabValue === LoanTabsNames.LENDING && (
           <>
-            {loansPoolInfo?.apr ? (
+            {liquidityPools ? (
               <div className={styles.sortWrapper}>
-                <LendingPool loansPoolInfo={loansPoolInfo} />
+                {liquidityPools?.map((liquidityPool) => (
+                  <LendingPool
+                    key={liquidityPool.pubkey}
+                    liquidityPool={liquidityPool}
+                  />
+                ))}
               </div>
             ) : (
               <div className={styles.loader}>
@@ -47,9 +48,7 @@ const LoansPage: FC = () => {
           </>
         )}
         {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
-        {tabValue === LoanTabsNames.LOANS && (
-          <MyLoansTab userLoans={userLoans} loading={userLoansLoading} />
-        )}
+        {tabValue === LoanTabsNames.LOANS && <MyLoansTab />}
       </Container>
     </AppLayout>
   );

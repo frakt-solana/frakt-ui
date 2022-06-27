@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Tab, Tabs, useTabs } from '../../components/Tabs';
@@ -7,16 +8,12 @@ import { Container } from '../../components/Layout';
 import { TokensTab } from './components/TokensTab';
 import { LoansList } from './components/LoansList';
 import styles from './WalletPage.module.scss';
-import {
-  useLoans,
-  useLoansInitialFetch,
-  useLoansPolling,
-} from '../../contexts/loans';
 import { useParams } from 'react-router-dom';
 import { usePublicKeyParam } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useNameService, useWalletTokens } from './hooks';
 import { shortenAddress } from '../../utils/solanaUtils';
+import { selectUser } from '../../state/common/selectors';
 
 export enum WalletTabs {
   TOKENS = 'tokens',
@@ -28,16 +25,11 @@ const useWalletPage = () => {
   const { walletPubkey } = useParams<{ walletPubkey: string }>();
   usePublicKeyParam(walletPubkey);
 
-  useLoansInitialFetch();
-  useLoansPolling();
-
   const wallet = useWallet();
 
   const { nameServiceInfo } = useNameService({ walletPubkey });
 
   const isMyProfile = walletPubkey === wallet.publicKey?.toBase58();
-
-  const { userLoans, userLoansLoading } = useLoans();
 
   const { userTokens, loading: userTokensLoading } = useWalletTokens({
     walletPubkey,
@@ -60,8 +52,6 @@ const useWalletPage = () => {
     tabs,
     tabValue,
     setTabValue,
-    userLoans,
-    userLoansLoading,
     isMyProfile,
     pageTitle,
     userTokens,
@@ -77,13 +67,12 @@ const WalletPage: FC = () => {
     tabValue,
     setTabValue,
     pageTitle,
-    userLoans,
-    userLoansLoading,
     userTokens,
     userTokensLoading,
     nameServiceInfo,
     walletPubkey,
   } = useWalletPage();
+  const user = useSelector(selectUser);
 
   return (
     <AppLayout>
@@ -98,6 +87,7 @@ const WalletPage: FC = () => {
             walletPubkey={walletPubkey}
             name={nameServiceInfo?.domain}
             twitterName={nameServiceInfo?.twitterHandle}
+            user={user}
           />
           <div className={styles.tabsContent}>
             <Tabs
@@ -107,11 +97,7 @@ const WalletPage: FC = () => {
               setValue={setTabValue}
             />
             {tabValue === WalletTabs.LOANS && (
-              <LoansList
-                className={styles.loansList}
-                loansWithArweaveMetadata={userLoans}
-                loading={userLoansLoading}
-              />
+              <LoansList className={styles.loansList} />
             )}
             {tabValue === WalletTabs.TOKENS && (
               <TokensTab userTokens={userTokens} loading={userTokensLoading} />

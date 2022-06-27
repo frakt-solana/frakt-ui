@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react';
 
+import { DiscordModal } from '../../components/DiscordModal';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import Statistics from './sections/Statistics/Statistics';
 import { FullPotentialSection } from './sections/FullPotentialSection';
@@ -38,6 +39,7 @@ const HomePage = (): JSX.Element => {
       {/* <PartnersSection navRef={sectionRef3} /> */}
       <TeamSection navRef={sectionRef4} />
       <Footer navRef={sectionRef5} />
+      <DiscordModal />
     </AppLayout>
   );
 };

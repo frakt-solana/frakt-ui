@@ -10,28 +10,27 @@ export interface TokenAmountInputWithBalanceProps
   tokenInputClassName?: string;
 }
 
-export const TokenAmountInputWithBalance: FC<TokenAmountInputWithBalanceProps> =
-  ({ balance = '0', className, tokenInputClassName, setValue, ...props }) => {
-    const onBalanceClick = () => setValue(balance);
+export const TokenAmountInputWithBalance: FC<
+  TokenAmountInputWithBalanceProps
+> = ({ balance = '0', className, tokenInputClassName, setValue, ...props }) => {
+  const onBalanceClick = () => setValue(balance);
 
-    return (
-      <div
-        className={classNames(styles.tokenAmountInputWithBalance, className)}
-      >
-        <p className={styles.tokenAmountInputWithBalanceValue}>
-          Balance:{' '}
-          <span
-            onClick={onBalanceClick}
-            className={styles.tokenAmountInputWithBalanceBtn}
-          >
-            {balance}
-          </span>
-        </p>
-        <TokenAmountInput
-          className={tokenInputClassName}
-          setValue={setValue}
-          {...props}
-        />
-      </div>
-    );
-  };
+  return (
+    <div className={classNames(styles.tokenAmountInputWithBalance, className)}>
+      <p className={styles.tokenAmountInputWithBalanceValue}>
+        Balance:{' '}
+        <span
+          onClick={onBalanceClick}
+          className={styles.tokenAmountInputWithBalanceBtn}
+        >
+          {balance}
+        </span>
+      </p>
+      <TokenAmountInput
+        className={tokenInputClassName}
+        setValue={setValue}
+        {...props}
+      />
+    </div>
+  );
+};

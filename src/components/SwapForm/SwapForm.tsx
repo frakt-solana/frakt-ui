@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 import Button from '../Button';
@@ -12,6 +12,8 @@ import { ConfirmModal } from '../ConfirmModal';
 import { LoadingModal } from '../LoadingModal';
 import styles from './styles.module.scss';
 import Tooltip from '../Tooltip';
+import { useDispatch } from 'react-redux';
+import { prismActions } from '../../state/prism/actions';
 
 const PRICE_IMPACT_WRANING_TRESHOLD = 15;
 
@@ -40,6 +42,12 @@ const SwapForm: FC<SwapFormInterface> = ({ defaultTokenMint }) => {
     closeLoadingModal,
     swapTokenList,
   } = useSwapForm(defaultTokenMint);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(prismActions.fetchPrism());
+  }, [dispatch]);
 
   const [isSlippageVisible, setIsSlippageVisible] = useState<boolean>(false);
 
