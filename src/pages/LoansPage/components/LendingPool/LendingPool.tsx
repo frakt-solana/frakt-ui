@@ -11,7 +11,6 @@ import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import Tooltip from '../../../../components/Tooltip';
 import { commonActions } from '../../../../state/common/actions';
 import { LiquidityPool } from '../../../../state/loans/types';
-import { LENDING_POOL_IMAGES_BY_PUBKEY } from './constants';
 
 interface LendingPoolProps {
   liquidityPool: LiquidityPool;
@@ -131,16 +130,14 @@ const LiquidityPoolImage: FC<LendingPoolProps> = ({ liquidityPool }) => {
       })}
       data-collections-amount={`+${collectionsAmount - 2}`}
     >
-      {LENDING_POOL_IMAGES_BY_PUBKEY[liquidityPool?.pubkey]?.map(
-        (image: string, idx: number) => (
-          <img
-            src={image}
-            className={styles.image}
-            key={idx}
-            style={idx !== 0 ? { marginLeft: '-25px' } : null}
-          />
-        ),
-      )}
+      {liquidityPool.imageUrl?.map((image: string, idx: number) => (
+        <img
+          src={image}
+          className={styles.image}
+          key={idx}
+          style={idx !== 0 ? { marginLeft: '-25px' } : null}
+        />
+      ))}
     </div>
   );
 };
