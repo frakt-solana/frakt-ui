@@ -37,7 +37,7 @@ export const selectLiquidityPools: (
   [pathOr(null, ['loans', 'liquidityPools', 'data'])],
   ifElse(
     isArray,
-    sortBy<LiquidityPool>(compose(reverse, propOr(0, 'totalLiquidity'))),
+    compose(reverse<LiquidityPool>, sortBy(propOr(0, 'totalLiquidity'))),
     identity,
   ),
 );
