@@ -1,5 +1,11 @@
 import React from 'react';
 
+interface IUserIcon {
+  className?: string;
+  width?: string;
+  url?: string;
+}
+
 const icon = (
   <>
     <circle cx="25" cy="25" r="24.5" fill="#191919" stroke="#4D4D4D" />
@@ -11,16 +17,21 @@ const icon = (
   </>
 );
 
-export const UserIcon = ({
-  className,
-  width,
-}: React.SVGProps<SVGSVGElement>): JSX.Element => (
-  <svg
-    className={className || ''}
-    width={width || '50'}
-    viewBox="0 0 50 50"
-    fill="none"
-  >
-    {icon}
-  </svg>
-);
+export const UserIcon = ({ className, width, url }: IUserIcon): JSX.Element =>
+  url ? (
+    <img
+      className={className || ''}
+      width={width || '50'}
+      alt="avatar"
+      src={url}
+    />
+  ) : (
+    <svg
+      className={className || ''}
+      width={width || '50'}
+      viewBox="0 0 50 50"
+      fill="none"
+    >
+      {icon}
+    </svg>
+  );
