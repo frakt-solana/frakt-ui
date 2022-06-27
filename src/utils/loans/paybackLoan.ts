@@ -1,4 +1,4 @@
-import { web3, loans, AnchorProvider } from '@frakt-protocol/frakt-sdk';
+import { web3, loans } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { captureSentryError } from '../sentry';
@@ -22,12 +22,9 @@ export const paybackLoan: PaybackLoan = async ({
   loan,
 }): Promise<boolean> => {
   try {
-    const options = AnchorProvider.defaultOptions();
-    const provider = new AnchorProvider(connection, wallet, options);
-
     await loans.paybackLoan({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-      provider,
+      connection,
       user: wallet.publicKey,
       admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       loan: new web3.PublicKey(loan.pubkey),

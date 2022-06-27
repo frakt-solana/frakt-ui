@@ -1,4 +1,4 @@
-import { web3, loans, AnchorProvider } from '@frakt-protocol/frakt-sdk';
+import { web3, loans } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { NotifyType } from '../solanaUtils';
@@ -21,12 +21,9 @@ export const harvestLiquidity: HarvestLiquidity = async ({
   liquidityPool,
 }): Promise<boolean> => {
   try {
-    const options = AnchorProvider.defaultOptions();
-    const provider = new AnchorProvider(connection, wallet, options);
-
     await loans.harvestLiquidity({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-      provider,
+      connection,
       liquidityPool: new web3.PublicKey(liquidityPool),
       user: wallet.publicKey,
       sendTxn: async (transaction) => {

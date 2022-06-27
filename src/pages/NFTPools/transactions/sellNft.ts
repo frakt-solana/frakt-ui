@@ -4,7 +4,6 @@ import {
   utils,
   raydium,
   BN,
-  AnchorProvider,
   TokenInfo,
 } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
@@ -78,7 +77,7 @@ export const sellNft: SellNft = async ({
         adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
         programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
         userPubkey: wallet.publicKey,
-        provider: new AnchorProvider(connection, wallet, null),
+        connection,
       });
     const depositNftTransaction = new web3.Transaction();
     depositNftTransaction.add(...depositNftInstructions);
