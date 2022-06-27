@@ -1,5 +1,15 @@
 import { createSelector } from 'reselect';
-import { pathOr, identity, pathEq } from 'ramda';
+import {
+  pathOr,
+  identity,
+  pathEq,
+  sortBy,
+  compose,
+  reverse,
+  propOr,
+  ifElse,
+} from 'ramda';
+import { isArray } from 'ramda-adjunct';
 
 import { BorrowNft, LiquidityPool, Loan } from './types';
 import {
@@ -21,8 +31,16 @@ export const selectUserLoansPending = createSelector(
   identity,
 );
 
-export const selectLiquidityPools: (state: LiquidityPool[]) => LiquidityPool[] =
-  createSelector([pathOr(null, ['loans', 'liquidityPools', 'data'])], identity);
+export const selectLiquidityPools: (
+  state: LiquidityPool[],
+) => LiquidityPool[] | null = createSelector(
+  [pathOr(null, ['loans', 'liquidityPools', 'data'])],
+  ifElse(
+    isArray,
+    sortBy<LiquidityPool>(compose(reverse, propOr(0, 'totalLiquidity'))),
+    identity,
+  ),
+);
 
 export const selectHiddenBorrowNfts: (state: string[]) => string[] =
   createSelector([pathOr([], ['loans', 'hiddenBorrowNfts'])], identity);
