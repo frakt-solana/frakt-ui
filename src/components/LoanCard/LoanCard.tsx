@@ -12,6 +12,7 @@ import Button from '../Button';
 import { Loan } from '../../state/loans/types';
 import Tooltip from 'rc-tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { HEALTH_TOOLTIP_TEXT } from './constants';
 
 interface LoanCardProps {
   loan: Loan;
@@ -127,7 +128,7 @@ const LoanCardValues: FC<{
         </div>
 
         <div className={styles.valueWrapper}>
-          <p className={styles.valueTitle}>To repay</p>
+          <p className={styles.valueTitle}>Debt</p>
           <div className={styles.valueInfo}>
             <p>{repayValue.toFixed(2)}</p>
             <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
@@ -139,7 +140,15 @@ const LoanCardValues: FC<{
       {isPriceBased && (
         <div className={styles.valuesWrapperRow}>
           <div className={styles.valueWrapper}>
-            <p className={styles.valueTitle}>Interest rate</p>
+            <div className={styles.valueWithTooltip}>
+              <p className={styles.valueTitle}>Interest rate</p>
+              <Tooltip
+                placement="bottom"
+                overlay="The current yearly interest rate paid by borrowers"
+              >
+                <QuestionCircleOutlined className={styles.questionIcon} />
+              </Tooltip>
+            </div>
             <div className={styles.valueInfo}>
               <p>{borrowAPRPercents} %</p>
             </div>
@@ -162,7 +171,7 @@ const LoanCardValues: FC<{
         {isPriceBased ? (
           <div className={styles.valueWithTooltip}>
             <p className={styles.valueTitle}>Health</p>
-            <Tooltip placement="bottom" overlay="hover">
+            <Tooltip placement="bottom" overlay={HEALTH_TOOLTIP_TEXT}>
               <QuestionCircleOutlined className={styles.questionIcon} />
             </Tooltip>
           </div>

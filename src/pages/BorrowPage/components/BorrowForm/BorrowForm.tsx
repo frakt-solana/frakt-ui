@@ -81,6 +81,7 @@ export const BorrowForm: FC<BorrowFormProps> = ({
         visible={confirmModalVisible}
         onCancel={closeConfirmModal}
         onSubmit={() => onSubmit(selectedNft)}
+        title="Ready?"
         subtitle={confirmText}
         btnAgree="Let's go"
       />

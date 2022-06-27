@@ -19,7 +19,7 @@ const getConfirmModalText = (nft: BorrowNft, isPriceBased = false) => {
   const { name, timeBased } = nft;
 
   const confirmShortTermText = `You are about to use ${name} as collateral for an instant loan of ${timeBased.repayValue} SOL (incl. interest rate if applicable) that you commit to repay in full within ${timeBased.returnPeriodDays} days. Proceed?`;
-  const confirmLongTermText = `long term text ...`;
+  const confirmLongTermText = `You are about to confirm the transaction to borrow against your ${name}`;
 
   return isPriceBased ? confirmLongTermText : confirmShortTermText;
 };

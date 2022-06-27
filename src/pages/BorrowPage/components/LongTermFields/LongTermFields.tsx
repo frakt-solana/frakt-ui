@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { sum } from 'ramda';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import { Slider } from '../../../../components/Slider';
@@ -21,9 +20,10 @@ const getRisk = ({
   LTV: number;
   limits: [number, number];
 }): Risk => {
-  const x = LTV / sum(limits);
-  if (x < 0.33) return Risk.Low;
-  if (x < 0.66) return Risk.Medium;
+  const riskPercent = (LTV - limits[0]) / (limits[1] - limits[0]);
+
+  if (riskPercent <= 0.5) return Risk.Low;
+  if (riskPercent < 0.875) return Risk.Medium;
   return Risk.High;
 };
 
@@ -55,7 +55,16 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
   return (
     <div className={styles.fieldWrapper}>
       <div className={styles.sliderWrapper}>
-        <p className={styles.sliderLabel}>loan to value: {value}%</p>
+        <p className={styles.sliderLabel}>
+          loan to value: {value}%{' '}
+          <Tooltip
+            placement="bottom"
+            trigger="hover"
+            overlay="Ratio between debt and deposited NFT valuation. The higher it is, the riskier the loan"
+          >
+            <QuestionCircleOutlined className={styles.questionIcon} />
+          </Tooltip>
+        </p>
         <Slider
           marks={marks}
           className={styles.slider}
@@ -113,7 +122,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
       </div>
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>
-        <p className={styles.staticValueTitle}>Minting Fee</p>
+        <p className={styles.staticValueTitle}>Fee</p>
         <p className={styles.staticValueData}>{mintingFee.toFixed(3)} SOL</p>
       </div>
 
