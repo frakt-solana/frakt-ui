@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { formatNumber, shortenAddress } from '../../utils/solanaUtils';
 import { SolanaIcon, UserIcon } from '../../icons';
 import { useNativeAccount } from '../../utils/accounts';
-import { getDiscordUri } from '../../utils';
+import { getDiscordUri, getDiscordAvatarUrl } from '../../utils';
 import { PATHS } from '../../constants';
 import { LinkWithArrow } from '../LinkWithArrow';
 import { UserState } from '../../state/common/types';
@@ -23,6 +23,7 @@ const CurrentUserTable = ({
 }: CurrentUserTableProps): JSX.Element => {
   const { disconnect, publicKey } = useWallet();
   const { account } = useNativeAccount();
+  const avatarUrl = getDiscordAvatarUrl(user.discordId, user.avatar);
 
   if (!publicKey) {
     return null;
@@ -42,7 +43,7 @@ const CurrentUserTable = ({
   return (
     <div className={`${className} ${styles.wrapper}`}>
       <div className={styles.userWrapper}>
-        <UserIcon />
+        <UserIcon className={styles.avatar} url={avatarUrl} />
         <div className={styles.userInfo}>
           <p className={styles.userKey}>
             {shortenAddress(`${publicKey || ''}`)}

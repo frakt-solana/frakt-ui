@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { UserState } from '../../../../state/common/types';
 import { getOwnerAvatar } from '../../../../utils/nameService';
 import { shortenAddress } from '../../../../utils/solanaUtils';
-import { getDiscordUri } from '../../../../utils';
+import { getDiscordAvatarUrl, getDiscordUri } from '../../../../utils';
 import { /* PencilIcon, */ TwitterIcon2 } from '../../../../icons';
 import DiscordIcon from '../../../../icons/DiscordIcon2';
 import { commonActions } from '../../../../state/common/actions';
@@ -26,6 +26,7 @@ export const ProfileCard: FC<ProfileCard> = ({
   user,
 }) => {
   const dispatch = useDispatch();
+  const avatarUrl = getDiscordAvatarUrl(user.discordId, user.avatar);
 
   const unlink = useCallback(() => {
     dispatch(commonActions.deleteUser(walletPubkey));
@@ -40,7 +41,7 @@ export const ProfileCard: FC<ProfileCard> = ({
             className={styles.ownerAvatar}
             style={{
               backgroundImage: `url(${
-                user?.avatar ?? getOwnerAvatar(twitterName)
+                avatarUrl ?? getOwnerAvatar(twitterName)
               })`,
             }}
           >
