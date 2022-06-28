@@ -150,7 +150,12 @@ export const sellNftAndStake: SellNftAndStake = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'sellNftAndStake' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'sellNftAndStake',
+      params: { pool, nft, poolToken, inventoryFusionPool },
+    });
 
     return false;
   }

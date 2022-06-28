@@ -23,10 +23,12 @@ export const captureSentryError = ({
   error,
   wallet,
   transactionName,
+  params,
 }: {
   error: Error;
   wallet?: WalletContextState;
   transactionName: string;
+  params?: any;
 }): void => {
   const user = wallet?.publicKey?.toBase58();
 
@@ -36,6 +38,7 @@ export const captureSentryError = ({
     Sentry.setUser(null);
   }
 
+  Sentry.setContext('params', params);
   Sentry.configureScope((scope) => scope.setTransactionName(transactionName));
   Sentry.captureException(error);
 

@@ -77,6 +77,7 @@ export const stakeInLiquidityFusion: StakeInLiquidityFusion = async ({
       error,
       wallet,
       transactionName: 'stakeInLiquidityFusion',
+      params: { liquidityFusionPool, amount },
     });
 
     return false;

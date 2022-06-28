@@ -58,7 +58,12 @@ export const paybackLoan: PaybackLoan = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'paybackLoan' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'paybackLoan',
+      params: { loan },
+    });
 
     return false;
   }

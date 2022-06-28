@@ -53,7 +53,12 @@ export const harvestLiquidity: HarvestLiquidity = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'harvestLiquidity' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'harvestLiquidity',
+      params: { liquidityPool },
+    });
 
     return false;
   }

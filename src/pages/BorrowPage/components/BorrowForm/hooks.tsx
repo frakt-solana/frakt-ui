@@ -62,7 +62,12 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
   }, [selectedNft]);
 
   useEffect(() => {
-    setPriceBasedLTV(0);
+    //? Set default value for priceBased LTV
+    if (selectedNft?.priceBased) {
+      setPriceBasedLTV((selectedNft?.priceBased?.ltvPercents + 10) / 2);
+    } else {
+      setPriceBasedLTV(0);
+    }
   }, [selectedNft]);
 
   const {

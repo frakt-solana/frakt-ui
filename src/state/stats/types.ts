@@ -7,7 +7,7 @@ export interface TotalStats {
   loansVolumeAllTime: number;
 }
 
-export interface DailyStats {
+export interface DailyActivity {
   lockedNftsInLoans: number;
   issuedIn24Hours: number;
   paidBackIn24Hours: number;
@@ -26,3 +26,10 @@ export interface LedningPools {
   nftName: string;
   tvl: number;
 }
+
+export type StatsState = {
+  totalStats: TotalStats;
+  dailyActivity: DailyActivity;
+  lastLoans: LastLoans[];
+  lendingPools: LedningPools[];
+};

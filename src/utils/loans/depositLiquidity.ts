@@ -55,7 +55,12 @@ export const depositLiquidity: DepositLiquidity = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'depositLiquidity' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'depositLiquidity',
+      params: { liquidityPool, amount },
+    });
 
     return false;
   }

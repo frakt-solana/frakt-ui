@@ -1,9 +1,10 @@
 import { all, call } from 'redux-saga/effects';
 
 import commonSagas from './common/sagas';
-import prismSagas from './prism/sagas';
 import tokenListSagas from './tokenList/sagas';
 import userTokensSagas from './userTokens/sagas';
+import prismSagas from './prism/sagas';
+import statsSagas from './stats/sagas';
 
 export default function* rootSaga(): Generator {
   yield all([
@@ -11,5 +12,6 @@ export default function* rootSaga(): Generator {
     call(tokenListSagas),
     call(userTokensSagas),
     call(prismSagas),
+    call(statsSagas),
   ]);
 }

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { LastLoans, LedningPools } from '../../model';
+import { LastLoans, LedningPools } from '../../../../state/stats/types';
 import { SOL_TOKEN } from '../../../../utils';
 import styles from './Lending.module.scss';
 import Block from '../Block';

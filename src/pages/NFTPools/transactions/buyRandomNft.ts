@@ -198,7 +198,12 @@ export const buyRandomNft: BuyRandomNft = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'buyRandomNft' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'buyRandomNft',
+      params: { poolToken, pool },
+    });
 
     return false;
   }

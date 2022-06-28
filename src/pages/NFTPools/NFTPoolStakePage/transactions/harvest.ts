@@ -135,7 +135,12 @@ export const harvest: Harvest = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'harvestInNftPool' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'harvestInNftPool',
+      params: { inventoryFusionPool, liquidityFusionPool },
+    });
 
     return false;
   }

@@ -56,7 +56,12 @@ export const unstakeLiquidity: UnstakeLiquidity = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'unstakeLiquidity' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'unstakeLiquidity',
+      params: { liquidityPool, amount },
+    });
 
     return false;
   }
