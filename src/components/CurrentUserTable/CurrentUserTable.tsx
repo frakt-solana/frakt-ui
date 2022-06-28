@@ -23,7 +23,7 @@ const CurrentUserTable = ({
 }: CurrentUserTableProps): JSX.Element => {
   const { disconnect, publicKey } = useWallet();
   const { account } = useNativeAccount();
-  const avatarUrl = getDiscordAvatarUrl(user.discordId, user.avatar);
+  const avatarUrl = getDiscordAvatarUrl(user?.discordId, user?.avatar);
 
   if (!publicKey) {
     return null;

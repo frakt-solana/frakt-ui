@@ -26,7 +26,7 @@ export const ProfileCard: FC<ProfileCard> = ({
   user,
 }) => {
   const dispatch = useDispatch();
-  const avatarUrl = getDiscordAvatarUrl(user.discordId, user.avatar);
+  const avatarUrl = getDiscordAvatarUrl(user?.discordId, user.avatar);
 
   const unlink = useCallback(() => {
     dispatch(commonActions.deleteUser(walletPubkey));
