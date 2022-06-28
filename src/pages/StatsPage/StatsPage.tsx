@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Container } from '../../components/Layout';
@@ -6,7 +7,8 @@ import { Container } from '../../components/Layout';
 import DailyActive from './components/DailyActive';
 import TotalStats from './components/TotalStats';
 import { Loader } from '../../components/Loader';
-import { useStatsPage } from './useStatsPage';
+import { selectStats } from '../../state/stats/selectors';
+import { statsActions } from '../../state/stats/actions';
 import styles from './StatsPage.module.scss';
 import Lending from './components/Lending';
 // import Pools from './components/Pools';
@@ -19,8 +21,12 @@ import Lending from './components/Lending';
 // ];
 
 const StatsPage: FC = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(statsActions.fetchStats());
+  }, [dispatch]);
   const { totalStats, lastLoans, lendingPools, dailyStats, loading } =
-    useStatsPage();
+    useSelector(selectStats);
 
   return (
     <AppLayout>
