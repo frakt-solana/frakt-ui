@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { SolanaIcon } from '../../../../icons';
 import styles from './TotalStats.module.scss';
 import Block from '../Block';
-import { TotalStats as TotalStatsInterface } from '../../model';
+import { TotalStats as TotalStatsInterface } from '../../../../state/stats/types';
 interface TotalStatsProps {
   totalStats: TotalStatsInterface;
 }

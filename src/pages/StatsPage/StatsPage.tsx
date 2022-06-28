@@ -1,4 +1,5 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { Container } from '../../components/Layout';
@@ -6,7 +7,8 @@ import { Container } from '../../components/Layout';
 import DailyActive from './components/DailyActive';
 import TotalStats from './components/TotalStats';
 import { Loader } from '../../components/Loader';
-import { useStatsPage } from './useStatsPage';
+import { selectStats } from '../../state/stats/selectors';
+import { statsActions } from '../../state/stats/actions';
 import styles from './StatsPage.module.scss';
 import Lending from './components/Lending';
 // import Pools from './components/Pools';
@@ -19,8 +21,12 @@ import Lending from './components/Lending';
 // ];
 
 const StatsPage: FC = () => {
-  const { totalStats, lastLoans, lendingPools, dailyStats, loading } =
-    useStatsPage();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(statsActions.fetchStats());
+  }, [dispatch]);
+  const { totalStats, lastLoans, lendingPools, dailyActivity, loading } =
+    useSelector(selectStats);
 
   return (
     <AppLayout>
@@ -33,7 +39,7 @@ const StatsPage: FC = () => {
           <>
             <div className={styles.totalStats}>
               <TotalStats totalStats={totalStats} />
-              <DailyActive dailyStats={dailyStats} />
+              <DailyActive dailyStats={dailyActivity} />
             </div>
             <Lending lendingPools={lendingPools} lastLoans={lastLoans} />
             {/* <div className={styles.poolsWrapper}>

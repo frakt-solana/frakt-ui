@@ -141,7 +141,7 @@
 .headerValues {
   display: flex;
   justify-content: space-between;
-  max-width: 233px;
+  max-width: 220px;
   width: 100%;
 }
 
@@ -184,6 +184,11 @@
   justify-content: space-between;
   max-width: 270px;
   width: 100%;
+
+  & p {
+    min-width: 78px;
+    text-align: right;
+  }
 }
 
 .mockImages {
