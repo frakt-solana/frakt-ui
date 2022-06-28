@@ -31,7 +31,6 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
     totalBorrowed,
     utilizationRate,
     userDeposit,
-    isPriceBased,
   } = liquidityPool;
 
   const openPoolModal = (tab: TabsNames) => {
@@ -91,9 +90,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
                 className={styles.btn}
                 type="tertiary"
                 onClick={() => openPoolModal(TabsNames.WITHDRAW)}
-                disabled={
-                  connected && !userDeposit?.depositAmount && !isPriceBased
-                }
+                disabled={connected && !userDeposit?.depositAmount}
               >
                 Withdraw
               </Button>
@@ -101,7 +98,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
                 className={styles.btn}
                 type="alternative"
                 onClick={() => openPoolModal(TabsNames.DEPOSIT)}
-                disabled={!isPriceBased}
+                disabled
               >
                 Deposit
               </Button>
@@ -180,6 +177,7 @@ const Rewards: FC<LendingPoolProps> = ({ liquidityPool }) => {
           onClick={() => harvestLiquidity(liquidityPool?.pubkey)}
           className={classNames(styles.btn, styles.btnHarvest)}
           type="tertiary"
+          disabled
         >
           Harvest
         </Button>
