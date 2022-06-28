@@ -8,7 +8,7 @@ import { useLoansPage } from '../../hooks';
 import Button from '../../../../components/Button';
 import styles from './LendingPool.module.scss';
 import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
-import Tooltip from '../../../../components/Tooltip';
+// import Tooltip from '../../../../components/Tooltip';
 import { commonActions } from '../../../../state/common/actions';
 import { LiquidityPool } from '../../../../state/loans/types';
 
@@ -31,6 +31,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
     totalBorrowed,
     utilizationRate,
     userDeposit,
+    isPriceBased,
   } = liquidityPool;
 
   const openPoolModal = (tab: TabsNames) => {
@@ -90,7 +91,9 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
                 className={styles.btn}
                 type="tertiary"
                 onClick={() => openPoolModal(TabsNames.WITHDRAW)}
-                disabled={connected && !userDeposit?.depositAmount}
+                disabled={
+                  connected && !userDeposit?.depositAmount && !isPriceBased
+                }
               >
                 Withdraw
               </Button>
@@ -98,6 +101,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
                 className={styles.btn}
                 type="alternative"
                 onClick={() => openPoolModal(TabsNames.DEPOSIT)}
+                disabled={!isPriceBased}
               >
                 Deposit
               </Button>
@@ -152,7 +156,7 @@ const Rewards: FC<LendingPoolProps> = ({ liquidityPool }) => {
 
   const { harvestLiquidity } = useLoansPage();
 
-  const tooltipText = 'Harvest is available from 0.001 SOL';
+  // const tooltipText = 'Harvest is available from 0.001 SOL';
 
   return (
     <div className={styles.rewards}>
@@ -160,18 +164,18 @@ const Rewards: FC<LendingPoolProps> = ({ liquidityPool }) => {
         Pending Rewards: {userDeposit?.harvestAmount?.toFixed(4)} SOL
       </p>
       {isDisabledBtn ? (
-        <Tooltip placement="top" overlay={tooltipText}>
-          <div>
-            <Button
-              className={classNames(styles.btn, styles.btnHarvest)}
-              disabled
-              type="tertiary"
-            >
-              Harvest
-            </Button>
-          </div>
-        </Tooltip>
+        // <Tooltip placement="top" overlay={tooltipText}>
+        //   <div>
+        <Button
+          className={classNames(styles.btn, styles.btnHarvest)}
+          disabled
+          type="tertiary"
+        >
+          Harvest
+        </Button>
       ) : (
+        //   </div>
+        // </Tooltip>
         <Button
           onClick={() => harvestLiquidity(liquidityPool?.pubkey)}
           className={classNames(styles.btn, styles.btnHarvest)}
