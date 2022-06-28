@@ -241,7 +241,12 @@ export const swapNft: SwapNft = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'swapNft' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'swapNft',
+      params: { nft, poolToken, pool },
+    });
 
     return false;
   }

@@ -23,18 +23,21 @@ export const proposeLoan: ProposeLoan = async ({
   wallet,
   nftMint,
   valuation,
-  loanToValue,
+  loanToValue: rawloanToValue,
   isPriceBased = false,
 }): Promise<boolean> => {
+  const proposedNftPrice = valuation * 10 ** SOL_TOKEN.decimals;
+  const loanToValue = rawloanToValue * 100; //? Percent 20% ==> 2000
+
   try {
     const { loanPubkey } = await loans.proposeLoan({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       connection,
       user: wallet.publicKey,
       nftMint: new web3.PublicKey(nftMint),
-      proposedNftPrice: new BN(valuation * 10 ** SOL_TOKEN.decimals),
+      proposedNftPrice: new BN(proposedNftPrice),
       isPriceBased,
-      loanToValue: new BN(loanToValue * 100), //? Percent 20% ==> 2000
+      loanToValue: new BN(loanToValue),
       admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
@@ -88,7 +91,12 @@ export const proposeLoan: ProposeLoan = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'proposeLoan' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'proposeLoan',
+      params: { nftMint, proposedNftPrice, isPriceBased, loanToValue },
+    });
 
     return false;
   }

@@ -183,6 +183,7 @@ export const unstakeAndRemoveLiquidity: UnstakeAndRemoveLiquidity = async ({
       error,
       wallet,
       transactionName: 'unstakeAndRemoveLiquidity',
+      params: { poolToken, amount, liquidityFusion },
     });
 
     return false;

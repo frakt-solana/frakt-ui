@@ -46,6 +46,7 @@ export const addToWhitelistOwner = async ({
       error,
       wallet,
       transactionName: 'addToWhitelistOwner',
+      params: { whitelistedAddress, communityPoolAddress },
     });
   }
 };

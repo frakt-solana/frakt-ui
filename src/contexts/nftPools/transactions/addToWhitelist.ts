@@ -51,6 +51,11 @@ export const addToWhitelistTransaction = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'addToWhitelist' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'addToWhitelist',
+      params: { whitelistedAddress, communityPoolAddress },
+    });
   }
 };
