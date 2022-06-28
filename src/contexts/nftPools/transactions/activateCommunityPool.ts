@@ -51,6 +51,7 @@ export const activateCommunityPoolTransaction = async ({
       error,
       wallet,
       transactionName: 'activateCommunityPool',
+      params: { communityPoolAddress },
     });
   }
 };

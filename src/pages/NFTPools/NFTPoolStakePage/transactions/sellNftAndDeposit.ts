@@ -196,7 +196,12 @@ export const sellNftAndDeposit: SellNftAndDeposit = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'sellNftAndDeposit' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'sellNftAndDeposit',
+      params: { pool, nft, poolToken, liquidityFusionPool },
+    });
 
     return false;
   }

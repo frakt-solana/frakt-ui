@@ -223,7 +223,12 @@ export const sellNft: SellNft = async ({
       });
     }
 
-    captureSentryError({ error, wallet, transactionName: 'sellNft' });
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'sellNft',
+      params: { nft, poolToken, pool },
+    });
 
     return false;
   }

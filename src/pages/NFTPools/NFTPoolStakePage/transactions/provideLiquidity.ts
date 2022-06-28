@@ -116,6 +116,7 @@ export const provideLiquidity: ProvideLiquidity = async ({
       error,
       wallet,
       transactionName: 'provideLiquidityInNftPool',
+      params: { poolTokenAmount, poolToken },
     });
 
     return false;
