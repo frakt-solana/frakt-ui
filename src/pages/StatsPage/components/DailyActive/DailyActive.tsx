@@ -2,10 +2,10 @@ import { FC } from 'react';
 
 import styles from './DailyActive.module.scss';
 import Block from '../Block';
-import { DailyStats } from '../../../../state/stats/types';
+import { DailyActivity } from '../../../../state/stats/types';
 
 interface DailyStatsProps {
-  dailyStats: DailyStats;
+  dailyStats: DailyActivity;
 }
 
 const DailyActive: FC<DailyStatsProps> = ({ dailyStats }) => {
