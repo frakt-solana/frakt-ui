@@ -25,7 +25,7 @@ const StatsPage: FC = () => {
   useEffect(() => {
     dispatch(statsActions.fetchStats());
   }, [dispatch]);
-  const { totalStats, lastLoans, lendingPools, dailyStats, loading } =
+  const { totalStats, lastLoans, lendingPools, dailyActivity, loading } =
     useSelector(selectStats);
 
   return (
@@ -39,7 +39,7 @@ const StatsPage: FC = () => {
           <>
             <div className={styles.totalStats}>
               <TotalStats totalStats={totalStats} />
-              <DailyActive dailyStats={dailyStats} />
+              <DailyActive dailyStats={dailyActivity} />
             </div>
             <Lending lendingPools={lendingPools} lastLoans={lastLoans} />
             {/* <div className={styles.poolsWrapper}>

@@ -1,17 +1,17 @@
 import { createSelector } from 'reselect';
 import { pathOr, path, equals, applySpec } from 'ramda';
 
-import { TotalStats, DailyStats, LastLoans, LedningPools } from './types';
+import { TotalStats, DailyActivity, LastLoans, LedningPools } from './types';
 
 export const selectStatsData = createSelector(
   [path(['stats', 'data'])],
   applySpec<{
-    dailyStats: DailyStats;
+    dailyActivity: DailyActivity;
     totalStats: TotalStats;
     lendingPools: LedningPools[];
     lastLoans: LastLoans[];
   }>({
-    dailyStats: pathOr({}, ['dailyStats']),
+    dailyActivity: pathOr({}, ['dailyActivity']),
     totalStats: pathOr({}, ['totalStats']),
     lendingPools: pathOr([], ['lendingPools']),
     lastLoans: pathOr([], ['lastLoans']),
@@ -25,9 +25,9 @@ export const selectStatsIsLoading = createSelector(
 
 export const selectStats = createSelector(
   [selectStatsData, selectStatsIsLoading],
-  ({ totalStats, dailyStats, lendingPools, lastLoans }, isLoading) => ({
+  ({ totalStats, dailyActivity, lendingPools, lastLoans }, isLoading) => ({
     totalStats,
-    dailyStats,
+    dailyActivity,
     lendingPools,
     lastLoans,
     loading: isLoading,

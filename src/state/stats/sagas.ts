@@ -6,28 +6,10 @@ import { networkRequest } from '../../utils/state';
 const fetchStatsSaga = function* () {
   yield put(statsActions.fetchStatsPending());
   try {
-    const [dailyStats, totalStats, lendingPools, lastLoans] = yield all([
-      yield call(networkRequest, {
-        url: `https://${process.env.BACKEND_DOMAIN}/stats/daily`,
-      }),
-      yield call(networkRequest, {
-        url: `https://${process.env.BACKEND_DOMAIN}/stats/total`,
-      }),
-      yield call(networkRequest, {
-        url: `https://${process.env.BACKEND_DOMAIN}/stats/lending-pools`,
-      }),
-      yield call(networkRequest, {
-        url: `https://${process.env.BACKEND_DOMAIN}/stats/last-loans`,
-      }),
-    ]);
-    yield put(
-      statsActions.fetchStatsFulfilled({
-        dailyStats,
-        totalStats,
-        lendingPools,
-        lastLoans,
-      }),
-    );
+    const data = yield call(networkRequest, {
+      url: `https://${process.env.BACKEND_DOMAIN}/stats/all`,
+    });
+    yield put(statsActions.fetchStatsFulfilled(data));
   } catch (error) {
     yield put(statsActions.fetchStatsFailed(error));
   }
