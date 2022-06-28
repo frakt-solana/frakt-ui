@@ -1,10 +1,4 @@
-import {
-  LiquidityPoolKeysV4,
-  Token,
-  TokenAmount,
-} from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
+import { raydium, TokenInfo, BN } from '@frakt-protocol/frakt-sdk';
 
 import { useLoadingModal } from '../../../../../components/LoadingModal';
 import {
@@ -18,7 +12,7 @@ type UseStakeAndWithdrawLPProps = (props: {
   liquidityFusionPool: FusionPool;
   poolToken: TokenInfo;
   lpTokenBalance?: number;
-  raydiumLiquidityPoolKeys: LiquidityPoolKeysV4;
+  raydiumLiquidityPoolKeys: raydium.LiquidityPoolKeysV4;
   raydiumPoolInfo: RaydiumPoolInfo;
 }) => {
   visible: boolean;
@@ -73,8 +67,8 @@ export const useStakeAndWithdrawLP: UseStakeAndWithdrawLPProps = ({
 
       const amount = new BN(lpTokenBalance * 10 ** raydiumPoolInfo?.lpDecimals);
 
-      const lpTokenAmount = new TokenAmount(
-        new Token(
+      const lpTokenAmount = new raydium.TokenAmount(
+        new raydium.Token(
           raydiumLiquidityPoolKeys?.lpMint,
           raydiumPoolInfo?.lpDecimals,
         ),

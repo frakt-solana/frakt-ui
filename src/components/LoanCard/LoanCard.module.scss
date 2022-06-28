@@ -1,4 +1,4 @@
-.wrapper {
+.cardWrapper {
   padding: 0 10px 10px 0;
   height: 100%;
 }
@@ -27,7 +27,7 @@
   }
 }
 
-.cardImage {
+.image {
   width: 100%;
   background-color: var(--gray-color-7);
   background-size: cover;
@@ -40,7 +40,7 @@
   }
 }
 
-.cardContent {
+.content {
   display: flex;
   flex-direction: column;
   min-height: 196px;
@@ -48,41 +48,14 @@
   padding: 24px;
 }
 
-.nftName {
+.title {
   font: var(--font-subtitle-2);
   flex-grow: 1;
+  margin-bottom: 12px;
 
   @media screen and (max-width: 768px) {
     font: var(--font-text-3);
   }
-}
-
-.subtitle {
-  color: var(--color-gray-4);
-  font: var(--font-text-7);
-  margin-bottom: 10px;
-  margin-top: 10px;
-  text-transform: uppercase;
-}
-
-.valueContent {
-  align-items: center;
-  color: var(--white-color);
-  display: flex;
-  font: var(--font-text-3);
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.tokenInfo {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.graceWrapper {
-  display: flex;
-  justify-content: space-between;
 }
 
 .btn {
@@ -106,19 +79,76 @@
   margin-right: 5px;
 }
 
-.timeProgressWrapper {
+.progressWrapper {
   width: 100%;
   height: 1px;
   background-color: var(--color-gray-4);
   position: relative;
   margin-top: 10px;
+  overflow: hidden;
+}
+.progress {
+  border: 1px solid var(--accent-color-1);
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+}
 
-  .timeProgress {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 1px;
-    background-color: var(--accent-color-1);
+.valuesWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.valuesWrapperColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.valuesWrapperRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.valueWrapper {
+  display: flex;
+  flex-direction: column;
+}
+.valueWithTooltip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.valueTitle {
+  color: var(--color-gray-4);
+  font: var(--font-text-7);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.valueInfo {
+  display: flex;
+  align-items: center;
+  color: var(--white-color);
+  font: var(--font-text-3);
+  gap: 5px;
+}
+.valueInfoHealth {
+  position: relative;
+  gap: unset;
+  flex-direction: column;
+  align-items: unset;
+}
+.valueInfoSolImage {
+  width: 24px;
+  height: 24px;
+}
+
+.questionIcon {
+  width: 18px;
+  margin-top: -5px;
+
+  svg {
+    fill: var(--accent-color-1);
   }
 }
 

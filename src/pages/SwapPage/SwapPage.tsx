@@ -1,14 +1,15 @@
 import { FC } from 'react';
-import { WSOL } from '@raydium-io/raydium-sdk';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import SwapForm from '../../components/SwapForm';
 import { Loader } from '../../components/Loader';
 import styles from './styles.module.scss';
-import { usePrism } from '../../contexts/prism/prism.hooks';
+import { selectLoading } from '../../state/tokenList/selectors';
+import { useSelector } from 'react-redux';
 
 const SwapPage: FC = () => {
-  const { loading } = usePrism();
+  const loading = useSelector(selectLoading);
 
   return (
     <AppLayout contentClassName={styles.exchange}>
@@ -22,7 +23,7 @@ const SwapPage: FC = () => {
             <Loader size={'large'} />
           </div>
         ) : (
-          <SwapForm defaultTokenMint={WSOL.mint} />
+          <SwapForm defaultTokenMint={raydium.WSOL.mint} />
         )}
       </div>
     </AppLayout>

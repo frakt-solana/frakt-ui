@@ -42,3 +42,13 @@ export interface WalletState {
 export interface WalletModalState {
   isVisible: boolean;
 }
+
+export interface UserState {
+  avatar: string;
+  discordId: string;
+  isOnServer: boolean;
+}
+
+export interface ModalState {
+  isVisible: boolean;
+}

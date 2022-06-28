@@ -40,3 +40,4 @@ export { UserIcon } from './UserIcon';
 export { PencilIcon } from './PencilIcon';
 export { Ticket } from './Ticket';
 export { Timer } from './Timer';
+export { PaperPlane } from './PaperPlane';

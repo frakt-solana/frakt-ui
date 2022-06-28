@@ -1,17 +1,16 @@
-import { depositLiquidity as txn } from '@frakters/nft-lending-v2';
+import { web3, loans } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
-import { Provider } from '@project-serum/anchor';
 
 import { NotifyType } from '../solanaUtils';
 import { notify } from '../';
+import { captureSentryError } from '../sentry';
 import {
-  showSolscanLinkNotification,
   signAndConfirmTransaction,
+  showSolscanLinkNotification,
 } from '../transactions';
 
 type DepositLiquidity = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
   liquidityPool: string;
   amount: number;
@@ -24,13 +23,10 @@ export const depositLiquidity: DepositLiquidity = async ({
   amount,
 }): Promise<boolean> => {
   try {
-    const options = Provider.defaultOptions();
-    const provider = new Provider(connection, wallet, options);
-
-    await txn({
-      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-      provider,
-      liquidityPool: new PublicKey(liquidityPool),
+    await loans.depositLiquidity({
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      connection,
+      liquidityPool: new web3.PublicKey(liquidityPool),
       user: wallet.publicKey,
       amount,
       sendTxn: async (transaction) => {
@@ -59,8 +55,7 @@ export const depositLiquidity: DepositLiquidity = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'depositLiquidity' });
 
     return false;
   }

@@ -1,10 +1,10 @@
-import BN, { max, min } from 'bn.js';
 import {
+  BN,
   MainRouterView,
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
+} from '@frakt-protocol/frakt-sdk';
 
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
 import { PoolStats } from '../../pages/NFTPools/model';
@@ -194,19 +194,22 @@ export const caclFusionSecondRewards = (
   let check_date: BN;
 
   if (Number(stakeAccount.stakeEnd) > 0) {
-    const check_date1 = min(
+    const check_date1 = BN.min(
       new BN(solanaTimestamp),
       new BN(stakeAccount.stakeEnd),
     );
-    check_date = min(check_date1, new BN(secondaryReward.endTime));
+    check_date = BN.min(check_date1, new BN(secondaryReward.endTime));
   } else {
-    check_date = min(new BN(solanaTimestamp), new BN(secondaryReward.endTime));
+    check_date = BN.min(
+      new BN(solanaTimestamp),
+      new BN(secondaryReward.endTime),
+    );
   }
 
   if (secondaryReward && secondaryStakeAccount) {
     const calculation =
       ((check_date.toNumber() -
-        max(
+        BN.max(
           new BN(secondaryStakeAccount.lastHarvestedAt),
           new BN(stakeAccount.stakedAt),
         ).toNumber()) *
@@ -218,7 +221,7 @@ export const caclFusionSecondRewards = (
   } else {
     const calculation =
       ((check_date.toNumber() -
-        max(
+        BN.max(
           new BN(secondaryReward.startTime),
           new BN(stakeAccount.stakedAt),
         ).toNumber()) *

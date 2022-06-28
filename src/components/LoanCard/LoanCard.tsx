@@ -1,22 +1,23 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 import { useWallet } from '@solana/wallet-adapter-react';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import { paybackLoan as paybackLoanTx } from '../../utils/loans';
-import { LoanView } from '../../state/loans/types';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
-import Tooltip from '../Tooltip';
+import { Loan } from '../../state/loans/types';
+import { HEALTH_TOOLTIP_TEXT } from './constants';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { SolanaIcon } from '../../icons';
+import Tooltip from 'rc-tooltip';
 
 interface LoanCardProps {
   className?: string;
-  withGracePeriod?: boolean;
-  loan: LoanView;
+  isGracePeriod?: boolean;
+  loan: Loan;
 }
 
 const usePaybackLoan = () => {
@@ -29,7 +30,7 @@ const usePaybackLoan = () => {
     close: closeLoadingModal,
   } = useLoadingModal();
 
-  const paybackLoan = async (loan: LoanView) => {
+  const paybackLoan = async (loan: Loan) => {
     try {
       openLoadingModal();
 
@@ -57,108 +58,29 @@ const usePaybackLoan = () => {
   };
 };
 
-const LoanCard: FC<LoanCardProps> = ({ className, loan, withGracePeriod }) => {
+const LoanCard: FC<LoanCardProps> = ({ loan, isGracePeriod }) => {
   const { paybackLoan, closeLoadingModal, loadingModalVisible } =
     usePaybackLoan();
 
-  const { timeLeft, leftTimeInSeconds } = useCountdown(loan?.expiredAt);
-
-  const loanDurationInSeconds = loan?.expiredAt - loan?.startedAt;
-  const progress =
-    100 -
-    ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
+  const { imageUrl, name } = loan;
 
   const onPayback = () => {
     paybackLoan(loan);
   };
 
-  const amountToGet = loan?.amountToGet
-    ? (loan?.amountToGet / 10 ** SOL_TOKEN.decimals).toFixed(2)
-    : '';
-
   return (
     <>
-      <div className={styles.wrapper}>
-        <div className={classNames([styles.card, className])}>
+      <div className={styles.cardWrapper}>
+        <div className={styles.card}>
           <div
-            className={styles.cardImage}
-            style={{ backgroundImage: `url(${loan?.nftImageUrl})` }}
+            className={styles.image}
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+            }}
           />
-          <div className={styles.cardContent}>
-            <p className={styles.nftName}>{loan?.nftName}</p>
-            <div className={styles.ltvWrapper}>
-              {!withGracePeriod ? (
-                <>
-                  <p className={styles.subtitle}>Borrowed</p>
-                  <div className={styles.valueContent}>
-                    <p>{amountToGet}</p>
-                    <div className={styles.tokenInfo}>
-                      <SolanaIcon width={12} />
-                      {SOL_TOKEN.symbol}
-                    </div>
-                  </div>
-                  <p className={styles.subtitle}>To repay</p>
-                  <div className={styles.valueContent}>
-                    <p>{loan?.amountToRepay.toFixed(2)}</p>
-                    <div className={styles.tokenInfo}>
-                      <SolanaIcon width={12} />
-                      {SOL_TOKEN.symbol}
-                    </div>
-                  </div>
-                  <p className={styles.subtitle}>Time to return</p>
-                </>
-              ) : (
-                <>
-                  <div className={styles.graceWrapper}>
-                    <div>
-                      <p className={styles.subtitle}>LTV</p>
-                      <div className={styles.valueContent}>
-                        <p>{amountToGet}</p>
-                        <div className={styles.tokenInfo}>
-                          <SolanaIcon width={12} />
-                          {SOL_TOKEN.symbol}
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <p className={styles.subtitle}>Fee</p>
-                      <div className={styles.valueContent}>
-                        <p>{(loan?.feeAmount / 1e9).toFixed(2)}</p>
-                        <div className={styles.tokenInfo}>
-                          <SolanaIcon width={12} />
-                          {SOL_TOKEN.symbol}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.tooltip}>
-                    <p className={styles.subtitle}>Grace Period</p>
-                    <Tooltip
-                      placement="bottom"
-                      trigger="hover"
-                      overlay={`You have to repay the loan in 23h : 23m : 13s`}
-                    >
-                      <QuestionCircleOutlined className={styles.tooltipIcon} />
-                    </Tooltip>
-                  </div>
-                </>
-              )}
-              <div className={styles.countdown}>
-                <p className={styles.timeItem}>{timeLeft.days}d</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.hours}h</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.minutes}m</p>
-                <span className={styles.timeDelim}>:</span>
-                <p className={styles.timeItem}>{timeLeft.seconds}s</p>
-              </div>
-              <div className={styles.timeProgressWrapper}>
-                <div
-                  className={styles.timeProgress}
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
+          <div className={styles.content}>
+            <p className={styles.title}>{name}</p>
+            <LoanCardValues loan={loan} isGracePeriod={isGracePeriod} />
             <Button
               type="alternative"
               className={styles.btn}
@@ -179,3 +101,161 @@ const LoanCard: FC<LoanCardProps> = ({ className, loan, withGracePeriod }) => {
 };
 
 export default LoanCard;
+
+const LoanCardValues: FC<{
+  loan: Loan;
+  isGracePeriod?: boolean;
+}> = ({ loan, isGracePeriod }) => {
+  const {
+    loanValue,
+    repayValue,
+    isPriceBased,
+    borrowAPRPercents,
+    liquidationPrice,
+  } = loan;
+
+  return (
+    <div className={styles.valuesWrapper}>
+      <div
+        className={classNames(styles.valuesWrapperColumn, {
+          [styles.valuesWrapperRow]: isPriceBased,
+        })}
+      >
+        <div className={styles.valueWrapper}>
+          <p className={styles.valueTitle}>Borrowed</p>
+          <div className={styles.valueInfo}>
+            <p>{loanValue?.toFixed(2)}</p>
+            <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+            <p>{SOL_TOKEN.symbol}</p>
+          </div>
+        </div>
+
+        <div className={styles.valueWrapper}>
+          <p className={styles.valueTitle}>Debt</p>
+          <div className={styles.valueInfo}>
+            <p>{repayValue?.toFixed(2)}</p>
+            <img className={styles.valueInfoSolImage} src={SOL_TOKEN.logoURI} />
+            <p>{SOL_TOKEN.symbol}</p>
+          </div>
+        </div>
+      </div>
+
+      {isPriceBased && (
+        <div className={styles.valuesWrapperRow}>
+          <div className={styles.valueWrapper}>
+            <div className={styles.valueWithTooltip}>
+              <p className={styles.valueTitle}>Interest rate</p>
+              <Tooltip
+                placement="bottom"
+                overlay="The current yearly interest rate paid by borrowers"
+              >
+                <QuestionCircleOutlined className={styles.questionIcon} />
+              </Tooltip>
+            </div>
+            <div className={styles.valueInfo}>
+              <p>{borrowAPRPercents} %</p>
+            </div>
+          </div>
+          <div className={styles.valueWrapper}>
+            <p className={styles.valueTitle}>Liquidation price</p>
+            <div className={styles.valueInfo}>
+              <p>{liquidationPrice?.toFixed(2)}</p>
+              <img
+                className={styles.valueInfoSolImage}
+                src={SOL_TOKEN.logoURI}
+              />
+              <p>{SOL_TOKEN.symbol}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className={styles.valueWrapper}>
+        {isGracePeriod && (
+          <div className={styles.valueWithTooltip}>
+            <p className={styles.valueTitle}>Grace Period</p>
+            <Tooltip placement="bottom" overlay={''}>
+              <QuestionCircleOutlined className={styles.questionIcon} />
+            </Tooltip>
+          </div>
+        )}
+        {isPriceBased && (
+          <div className={styles.valueWithTooltip}>
+            <p className={styles.valueTitle}>Health</p>
+            <Tooltip placement="bottom" overlay={HEALTH_TOOLTIP_TEXT}>
+              <QuestionCircleOutlined className={styles.questionIcon} />
+            </Tooltip>
+          </div>
+        )}
+        {!isGracePeriod && !isPriceBased && (
+          <p className={styles.valueTitle}>Time to return</p>
+        )}
+        {isPriceBased ? (
+          <Health loan={loan} />
+        ) : (
+          <TimeToReturn isGracePeriod={isGracePeriod} loan={loan} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const TimeToReturn: FC<{
+  loan: Loan;
+  isGracePeriod?: boolean;
+}> = ({ loan }) => {
+  const { expiredAt, startedAt } = loan;
+
+  const expiredAtUnix = moment(expiredAt).unix();
+  const startedAtUnix = moment(startedAt).unix();
+
+  const loanDurationInSeconds = expiredAtUnix - startedAtUnix;
+
+  const { timeLeft, leftTimeInSeconds } = useCountdown(expiredAtUnix);
+
+  const progress =
+    ((loanDurationInSeconds - leftTimeInSeconds) / loanDurationInSeconds) * 100;
+
+  return (
+    <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
+      <div className={styles.countdown}>
+        <p className={styles.timeItem}>{timeLeft.days}d</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.hours}h</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.minutes}m</p>
+        <span className={styles.timeDelim}>:</span>
+        <p className={styles.timeItem}>{timeLeft.seconds}s</p>
+      </div>
+      <LoanHealthProgress healthPercent={progress} />
+    </div>
+  );
+};
+
+const Health: FC<{
+  loan: Loan;
+}> = ({ loan }) => {
+  const { health: rawHealth = 0 } = loan;
+
+  const health = rawHealth > 100 ? 100 : rawHealth;
+
+  return (
+    <div className={classNames(styles.valueInfo, styles.valueInfoHealth)}>
+      <p className={styles.timeItem}>{health}%</p>
+      <LoanHealthProgress healthPercent={100 - health} />
+    </div>
+  );
+};
+
+const LoanHealthProgress: FC<{
+  healthPercent: number;
+}> = ({ healthPercent }) => {
+  return (
+    <div className={styles.progressWrapper}>
+      <div
+        className={styles.progress}
+        style={{ width: `${100 - healthPercent}%` }}
+      />
+    </div>
+  );
+};

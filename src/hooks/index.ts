@@ -10,3 +10,4 @@ export { useConnectionInit } from './useConnectionInit';
 export { useAppInit } from './useAppInit';
 export { useHealthNotification } from './useHealthNotification';
 export { useConnection } from './useConnection';
+export { useFirebaseNotifications } from './useFirebaseNotifications';

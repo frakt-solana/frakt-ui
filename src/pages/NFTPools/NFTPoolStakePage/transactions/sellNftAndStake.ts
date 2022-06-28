@@ -1,10 +1,5 @@
-import { deriveMetadataPubkeyFromMint } from '@frakters/community-pools-client-library-v2/lib/utils/utils';
-import { TokenInfo } from '@solana/spl-token-registry';
+import { utils, web3, pools, TokenInfo, BN } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { depositNftToCommunityPoolIx } from '@frakters/community-pools-client-library-v2';
-import { BN, Provider } from '@project-serum/anchor';
-import { stakeInFusion } from '@frakters/frkt-multiple-reward';
 
 import { FusionPool } from '../../../../contexts/liquidityPools';
 import {
@@ -17,10 +12,11 @@ import { SELL_COMMISSION_PERCENT } from '../../constants';
 import { notify } from '../../../../utils';
 import { NotifyType } from '../../../../utils/solanaUtils';
 import { showSolscanLinkNotification } from '../../../../utils/transactions';
+import { captureSentryError } from '../../../../utils/sentry';
 
 type SellNftAndStake = (props: {
   wallet: WalletContextState;
-  connection: Connection;
+  connection: web3.Connection;
   poolToken: TokenInfo;
   pool: NftPoolData;
   inventoryFusionPool: FusionPool;
@@ -36,10 +32,10 @@ export const sellNftAndStake: SellNftAndStake = async ({
   inventoryFusionPool,
 }): Promise<boolean> => {
   try {
-    const depositTransaction = new Transaction();
+    const depositTransaction = new web3.Transaction();
 
     const { value: nftLargestAccounts } =
-      await connection.getTokenLargestAccounts(new PublicKey(nft?.mint));
+      await connection.getTokenLargestAccounts(new web3.PublicKey(nft?.mint));
 
     const nftUserTokenAccount = nftLargestAccounts?.[0]?.address || null;
 
@@ -52,8 +48,8 @@ export const sellNftAndStake: SellNftAndStake = async ({
     );
 
     const metadataInfo = whitelistedCreator
-      ? await deriveMetadataPubkeyFromMint(new PublicKey(nft.mint))
-      : new PublicKey(nft.mint);
+      ? await utils.deriveMetadataPubkeyFromMint(new web3.PublicKey(nft.mint))
+      : new web3.PublicKey(nft.mint);
 
     const poolWhitelist = pool.poolWhitelist.find(({ whitelistedAddress }) => {
       return whitelistedCreator
@@ -61,43 +57,39 @@ export const sellNftAndStake: SellNftAndStake = async ({
         : whitelistedAddress.toBase58() === nft.mint;
     });
 
-    const tokenMintInputFusion = new PublicKey(
+    const tokenMintInputFusion = new web3.PublicKey(
       inventoryFusionPool?.router?.tokenMintInput,
     );
 
     const {
       instructions: depositInstructions,
       signers: depositInstructionsSigners,
-    } = await depositNftToCommunityPoolIx(
-      {
-        communityPool: pool.publicKey,
-        nftMint: new PublicKey(nft.mint),
-        nftUserTokenAccount,
-        poolWhitelist: poolWhitelist.publicKey,
-        fractionMint: pool.fractionMint,
-        metadataInfo,
-        fusionProgramId: new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-        tokenMintInputFusion,
-        feeConfig: new PublicKey(process.env.FEE_CONFIG_GENERAL),
-        adminAddress: new PublicKey(process.env.FEE_ADMIN_GENERAL),
-      },
-      {
-        programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
-        userPubkey: wallet.publicKey,
-        provider: new Provider(connection, wallet, null),
-      },
-    );
+    } = await pools.depositNftToCommunityPoolIx({
+      communityPool: pool.publicKey,
+      nftMint: new web3.PublicKey(nft.mint),
+      nftUserTokenAccount,
+      poolWhitelist: poolWhitelist.publicKey,
+      fractionMint: pool.fractionMint,
+      metadataInfo,
+      fusionProgramId: new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      tokenMintInputFusion,
+      feeConfig: new web3.PublicKey(process.env.FEE_CONFIG_GENERAL),
+      adminAddress: new web3.PublicKey(process.env.FEE_ADMIN_GENERAL),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      userPubkey: wallet.publicKey,
+      connection,
+    });
 
     depositTransaction.add(...depositInstructions);
 
-    const stakeTransaction = new Transaction();
+    const stakeTransaction = new web3.Transaction();
 
-    const stakeInstruction = await stakeInFusion(
-      new PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
-      new Provider(connection, wallet, null),
+    const stakeInstruction = await pools.stakeInFusion(
+      new web3.PublicKey(process.env.FUSION_PROGRAM_PUBKEY),
+      connection,
       wallet.publicKey,
-      new PublicKey(inventoryFusionPool?.router.tokenMintInput),
-      new PublicKey(inventoryFusionPool?.router.tokenMintOutput),
+      new web3.PublicKey(inventoryFusionPool?.router.tokenMintInput),
+      new web3.PublicKey(inventoryFusionPool?.router.tokenMintOutput),
       new BN((1 - SELL_COMMISSION_PERCENT / 100) * 10 ** poolToken?.decimals),
     );
 
@@ -158,8 +150,7 @@ export const sellNftAndStake: SellNftAndStake = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'sellNftAndStake' });
 
     return false;
   }

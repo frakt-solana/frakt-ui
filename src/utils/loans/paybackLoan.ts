@@ -1,10 +1,9 @@
-import { paybackLoan as txn } from '@frakters/nft-lending-v2';
-import { Provider } from '@project-serum/anchor';
+import { web3, loans } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Connection, PublicKey } from '@solana/web3.js';
 
+import { captureSentryError } from '../sentry';
+import { Loan } from '../../state/loans/types';
 import { notify } from '../';
-import { LoanView } from '../../state/loans/types';
 import { NotifyType } from '../solanaUtils';
 import {
   showSolscanLinkNotification,
@@ -12,9 +11,9 @@ import {
 } from '../transactions';
 
 type PaybackLoan = (props: {
-  connection: Connection;
+  connection: web3.Connection;
   wallet: WalletContextState;
-  loan: LoanView;
+  loan: Loan;
 }) => Promise<boolean>;
 
 export const paybackLoan: PaybackLoan = async ({
@@ -23,19 +22,16 @@ export const paybackLoan: PaybackLoan = async ({
   loan,
 }): Promise<boolean> => {
   try {
-    const options = Provider.defaultOptions();
-    const provider = new Provider(connection, wallet, options);
-
-    await txn({
-      programId: new PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-      provider,
+    await loans.paybackLoan({
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      connection,
       user: wallet.publicKey,
-      admin: new PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-      loan: new PublicKey(loan.loanPubkey),
-      nftMint: new PublicKey(loan.nftMint),
-      liquidityPool: new PublicKey(loan.liquidityPool),
-      collectionInfo: new PublicKey(loan.collectionInfo),
-      royaltyAddress: new PublicKey(loan.royaltyAddress),
+      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      loan: new web3.PublicKey(loan.pubkey),
+      nftMint: new web3.PublicKey(loan.mint),
+      liquidityPool: new web3.PublicKey(loan.liquidityPool),
+      collectionInfo: new web3.PublicKey(loan.collectionInfo),
+      royaltyAddress: new web3.PublicKey(loan.royaltyAddress),
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,
@@ -62,8 +58,7 @@ export const paybackLoan: PaybackLoan = async ({
       });
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error);
+    captureSentryError({ error, wallet, transactionName: 'paybackLoan' });
 
     return false;
   }

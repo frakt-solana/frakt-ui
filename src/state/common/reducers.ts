@@ -15,8 +15,9 @@ import {
   SocketState,
   SolanaHealthState,
   SolanaNetworkHealth,
-  WalletModalState,
+  ModalState,
   WalletState,
+  UserState,
 } from './types';
 
 export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
@@ -33,11 +34,14 @@ export const initialWalletState: WalletState = {
     publicKey: null,
   },
 };
+export const initialUserState: AsyncState<UserState> =
+  createInitialAsyncState<UserState>(null);
+
 export const initialNotificationState: NotificationState = {
   isVisible: false,
   config: null,
 };
-export const initialWalletModalState: WalletModalState = { isVisible: false };
+export const initialModalState: ModalState = { isVisible: false };
 
 const solanaHealthReducer = createReducer(
   initialSolanaHealthState,
@@ -89,33 +93,38 @@ const setNotificationReducer = createReducer<NotificationState>(
     }),
   },
 );
-const setWalletModalReducer = createReducer<WalletModalState>(
-  initialWalletModalState,
-  {
-    [commonTypes.SET_WALLET_MODAL]: (
-      state,
-      action: ReturnType<typeof commonActions.setWalletModal>,
-    ) => ({
-      ...state,
-      ...action.payload,
-    }),
-  },
+const setWalletModalReducer = createReducer<ModalState>(initialModalState, {
+  [commonTypes.SET_WALLET_MODAL]: (
+    state,
+    action: ReturnType<typeof commonActions.setWalletModal>,
+  ) => ({
+    ...state,
+    ...action.payload,
+  }),
+});
+const toggleWalletModalReducer = createReducer<ModalState>(initialModalState, {
+  [commonTypes.TOGGLE_WALLET_MODAL]: (state) => ({
+    isVisible: !state.isVisible,
+  }),
+});
+const fetchUserReducer = createReducer(
+  initialUserState,
+  createHandlers<UserState>(commonTypes.FETCH_USER),
 );
-const toggleWalletModalReducer = createReducer<WalletModalState>(
-  initialWalletModalState,
-  {
-    [commonTypes.TOGGLE_WALLET_MODAL]: (state) => ({
-      isVisible: !state.isVisible,
-    }),
-  },
-);
+const toggleDiscordModalReducer = createReducer<ModalState>(initialModalState, {
+  [commonTypes.TOGGLE_DISCORD_MODAL]: (state) => ({
+    isVisible: !state.isVisible,
+  }),
+});
 
 export default combineReducers({
   connection: setConnectionReducer,
   socket: setSocketReducer,
   wallet: setWalletReducer,
   solanaHealth: solanaHealthReducer,
+  user: fetchUserReducer,
   fetchSolanaTimestamp: fetchSolanaTimestampReducer,
   notification: setNotificationReducer,
   walletModal: composeReducers(setWalletModalReducer, toggleWalletModalReducer),
+  discordModal: toggleDiscordModalReducer,
 });
