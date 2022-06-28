@@ -4,7 +4,7 @@ import commonSagas from './common/sagas';
 import tokenListSagas from './tokenList/sagas';
 import userTokensSagas from './userTokens/sagas';
 import prismSagas from './prism/sagas';
-import statsSagas from './stats/sagas';
+import statisticsSagas from './stats/sagas';
 
 export default function* rootSaga(): Generator {
   yield all([
@@ -12,6 +12,6 @@ export default function* rootSaga(): Generator {
     call(tokenListSagas),
     call(userTokensSagas),
     call(prismSagas),
-    call(statsSagas),
+    call(statisticsSagas),
   ]);
 }
