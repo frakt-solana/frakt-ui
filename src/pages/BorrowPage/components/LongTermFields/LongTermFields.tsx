@@ -43,9 +43,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
     [ltvPercents]: `${ltvPercents}%`,
   };
 
-  const value = ltv ? ltv : (ltvPercents + 10) / 2;
-
-  const loanValue = parseFloat(valuation) * (value / 100);
+  const loanValue = parseFloat(valuation) * (ltv / 100);
   const mintingFee = loanValue * 0.01;
 
   const liquidationPrice = loanValue + loanValue * (collaterizationRate / 100);
@@ -53,13 +51,13 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
   const liquidationDrop =
     ((parseFloat(valuation) - liquidationPrice) / parseFloat(valuation)) * 100;
 
-  const risk = getRisk({ LTV: value, limits: [10, ltvPercents] });
+  const risk = getRisk({ LTV: ltv, limits: [10, ltvPercents] });
 
   return (
     <div className={styles.fieldWrapper}>
       <div className={styles.sliderWrapper}>
         <p className={styles.sliderLabel}>
-          loan to value: {value}%{' '}
+          loan to value: {ltv}%{' '}
           <Tooltip
             placement="bottom"
             trigger="hover"
@@ -71,7 +69,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
         <Slider
           marks={marks}
           className={styles.slider}
-          value={value}
+          value={ltv}
           step={1}
           setValue={setLtv}
           min={10}
