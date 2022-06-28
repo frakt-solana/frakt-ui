@@ -220,3 +220,11 @@ export const getDiscordUri = (wallet: web3.PublicKey | string): string => {
     redirectUri,
   )}&response_type=code&scope=identify&state=${wallet}`;
 };
+
+export const getDiscordAvatarUrl = (
+  discordId: string,
+  hash: string,
+): string | null =>
+  discordId && hash
+    ? `https://cdn.discordapp.com/avatars/${discordId}/${hash}.png`
+    : null;

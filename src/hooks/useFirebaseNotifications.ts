@@ -21,18 +21,17 @@ export const useFirebaseNotifications = (): void => {
   const dispatch = useDispatch();
   const walletPublicKey = useSelector(selectWalletPublicKey);
   useEffect(() => {
-    if (walletPublicKey && dispatch) {
+    if (walletPublicKey && dispatch && 'serviceWorker' in navigator) {
       const app = initializeApp(firebaseConfig);
       const messaging = getMessaging(app);
       getToken(messaging, { vapidKey: process.env.FCM_VAPID }).then((token) => {
         dispatch(commonActions.sendFcmToken(token));
       });
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker
-          .register('/firebase-messaging-sw.js')
-          .then(() => {})
-          .catch(() => {});
-      }
+
+      navigator.serviceWorker
+        .register('/firebase-messaging-sw.js')
+        .then(() => {})
+        .catch(() => {});
     }
   }, [walletPublicKey, dispatch]);
 };
