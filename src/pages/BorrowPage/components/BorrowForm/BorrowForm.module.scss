@@ -18,6 +18,14 @@
   text-transform: uppercase;
 }
 
+.detailsDesc {
+  font: var(--font-text-5);
+  font-weight: 400;
+  line-height: 18px;
+  padding-top: 10px;
+  max-width: 275px;
+}
+
 .continueBtnContainer {
   width: 100%;
 }
