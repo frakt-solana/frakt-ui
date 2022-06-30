@@ -8,6 +8,7 @@ import LiquidationsList from '../LiquidationsList';
 import styles from './Liquidations.module.scss';
 import GraceCard from '../GraceCard/GraceCard';
 import { liquidationsActions } from '../../../../state/liquidations/actions';
+import LiquidationRaffleCard from '../LiquidationRaffleCard';
 
 const Liquidations: FC = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,11 @@ const Liquidations: FC = () => {
         setValue={setTabValue}
         type="secondary"
       />
+      {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
+        <LiquidationsList withRafflesInfo>
+          <LiquidationRaffleCard />
+        </LiquidationsList>
+      )}
       {tabValue === LiquidationsTabsNames.GRACE && (
         <LiquidationsList>
           <GraceCard />
