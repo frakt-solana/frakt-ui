@@ -11,6 +11,7 @@ import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
 import { selectLiquidityPools } from '../../state/loans/selectors';
 import { useLoansPage, LoanTabsNames } from './hooks';
+import Liquidations from './components/Liquidations';
 
 const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();
@@ -47,7 +48,7 @@ const LoansPage: FC = () => {
             )}
           </>
         )}
-        {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
+        {tabValue === LoanTabsNames.LIQUIDATIONS && <Liquidations />}
         {tabValue === LoanTabsNames.LOANS && <MyLoansTab />}
       </Container>
     </AppLayout>
