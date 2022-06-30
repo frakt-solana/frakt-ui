@@ -119,10 +119,13 @@ export const usePoolModal = (
 
   const onWithdrawValueChange = (nextValue: string): void => {
     setValue(InputControlsNames.WITHDRAW_VALUE, nextValue);
-    caclPercentOfBalance(nextValue, depositValue);
+    caclPercentOfBalance(nextValue, depositAmount);
   };
 
-  const caclPercentOfBalance = (nextValue: string, balance: string): void => {
+  const caclPercentOfBalance = (
+    nextValue: string,
+    balance: string | number,
+  ): void => {
     const percentOfBalance = (parseFloat(nextValue) / Number(balance)) * 100;
 
     if (percentOfBalance >= 0 && percentOfBalance <= 100) {
