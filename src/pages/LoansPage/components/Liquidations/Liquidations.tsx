@@ -1,22 +1,25 @@
 import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { useLiquidationsPage } from './hooks';
+import { liquidationsActions } from '../../../../state/liquidations/actions';
+import { useLiquidationsPage } from '.';
+import LiquidationRaffleCard from '../LiquidationRaffleCard';
 import { LiquidationsTabsNames } from '../../model';
 import { Tabs } from '../../../../components/Tabs';
+import NoWinningRaffles from '../NoWinningRaffles';
 import LiquidationsList from '../LiquidationsList';
 import styles from './Liquidations.module.scss';
 import GraceCard from '../GraceCard/GraceCard';
-import { liquidationsActions } from '../../../../state/liquidations/actions';
-import LiquidationRaffleCard from '../LiquidationRaffleCard';
+import WonRaffleCard from '../WonRaffleCard';
 
 const Liquidations: FC = () => {
+  const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
+  const isRafflesCards = true;
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(liquidationsActions.fetchGraceList());
   }, [dispatch]);
-
-  const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
 
   return (
     <>
@@ -37,6 +40,14 @@ const Liquidations: FC = () => {
           <GraceCard />
         </LiquidationsList>
       )}
+      {tabValue === LiquidationsTabsNames.RAFFLES &&
+        (isRafflesCards ? (
+          <LiquidationsList>
+            <WonRaffleCard />
+          </LiquidationsList>
+        ) : (
+          <NoWinningRaffles />
+        ))}
     </>
   );
 };
