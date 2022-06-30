@@ -55,6 +55,10 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
 
   return (
     <div className={styles.fieldWrapper}>
+      <p className={styles.fieldDesc}>
+        Choose the amount, lowest interest. No time limit, but keep an eye on FP
+        for health.
+      </p>
       <div className={styles.sliderWrapper}>
         <p className={styles.sliderLabel}>
           loan to value: {ltv}%{' '}
