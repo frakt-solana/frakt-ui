@@ -1,5 +1,7 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
+import { liquidationsActions } from '../../../../state/liquidations/actions';
 import { useLiquidationsPage } from '.';
 import LiquidationRaffleCard from '../LiquidationRaffleCard';
 import { LiquidationsTabsNames } from '../../model';
@@ -13,6 +15,11 @@ import WonRaffleCard from '../WonRaffleCard';
 const Liquidations: FC = () => {
   const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
   const isRafflesCards = true;
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(liquidationsActions.fetchGraceList());
+  }, [dispatch]);
 
   return (
     <>
