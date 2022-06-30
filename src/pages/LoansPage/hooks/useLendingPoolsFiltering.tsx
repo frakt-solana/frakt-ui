@@ -78,14 +78,14 @@ export const useLendingPoolsFiltering: UseLendingPoolsFiltering = ({
             return compareNumbers(
               poolA.depositApr,
               poolB.depositApr,
-              sortOrder === 'desc',
+              sortOrder === 'asc',
             );
           }
           if (sortField === SortField.TOTAL_LIQUIDITY) {
             return compareNumbers(
               poolA.totalLiquidity,
               poolB.totalLiquidity,
-              sortOrder === 'desc',
+              sortOrder === 'asc',
             );
           }
           return 0;
@@ -103,19 +103,19 @@ export const SORT_VALUES: PoolsSortValue[] = [
     label: (
       <span className={styles.sortName}>
         Liquidity
-        <ArrowDownSmallIcon className={styles.arrowUp} />
+        <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'totalLiquidity_desc',
+    value: 'totalLiquidity_asc',
   },
   {
     label: (
       <span className={styles.sortName}>
         Liquidity
-        <ArrowDownSmallIcon className={styles.arrowDown} />
+        <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'totalLiquidity_asc',
+    value: 'totalLiquidity_desc',
   },
 
   {
