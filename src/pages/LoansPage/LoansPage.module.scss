@@ -35,6 +35,68 @@
   }
 }
 
+.searchInput {
+  max-width: 330px;
+  margin-right: 20px;
+
+  @media screen and (max-width: 370px) {
+    margin-bottom: 20px;
+  }
+}
+
+.filters {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px 30px;
+
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+    margin-bottom: 35px;
+  }
+}
+
+.searchIcon {
+  margin-right: 5px;
+
+  svg {
+    width: 14px;
+    color: var(--color-gray-03);
+  }
+}
+
+.sortingSelect {
+  width: unset;
+  margin-left: 8px;
+}
+
+.sortingSelectContainer {
+  svg {
+    position: relative;
+    top: 2px;
+
+    path {
+      stroke: var(--accent-color-1);
+    }
+  }
+}
+
+.sortWrapper {
+  flex-shrink: 0;
+
+  .arrowDown,
+  .arrowUp {
+    path {
+      stroke: var(--accent-color-1);
+    }
+  }
+
+  .arrowDown {
+    transform: rotate(180deg);
+  }
+}
+
 .loader {
   height: 100%;
   display: flex;
