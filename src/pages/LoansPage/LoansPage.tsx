@@ -11,10 +11,28 @@ import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
 import { selectLiquidityPools } from '../../state/loans/selectors';
 import { useLoansPage, LoanTabsNames } from './hooks';
+import { SearchInput } from '../../components/SearchInput';
+import { ControlledToggle } from '../../components/Toggle/Toggle';
+import { Controller } from 'react-hook-form';
+import { Select } from '../../components/Select';
+import {
+  SORT_VALUES,
+  useLendingPoolsFiltering,
+} from './hooks/useLendingPoolsFiltering';
+import { useWallet } from '@solana/wallet-adapter-react';
+
+export enum InputControlsNames {
+  SHOW_STAKED = 'showStaked',
+  SORT = 'sort',
+}
 
 const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();
   const liquidityPools = useSelector(selectLiquidityPools);
+  const { control, setSearch, pools } = useLendingPoolsFiltering({
+    liquidityPools,
+  });
+  const { connected } = useWallet();
 
   return (
     <AppLayout>
@@ -31,9 +49,39 @@ const LoansPage: FC = () => {
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
         {tabValue === LoanTabsNames.LENDING && (
           <>
-            {liquidityPools ? (
+            <div className={styles.sortWrapper}>
+              <SearchInput
+                onChange={(event) => setSearch(event.target.value || '')}
+                className={styles.searchInput}
+                placeholder="Search by pool name"
+              />
+              <div className={styles.filters}>
+                {connected && (
+                  <ControlledToggle
+                    control={control}
+                    name={InputControlsNames.SHOW_STAKED}
+                    label="Staked only"
+                  />
+                )}
+                <Controller
+                  control={control}
+                  name={InputControlsNames.SORT}
+                  render={({ field: { ref, ...field } }) => (
+                    <Select
+                      valueContainerClassName={styles.sortingSelectContainer}
+                      className={styles.sortingSelect}
+                      label="Sort by"
+                      name={InputControlsNames.SORT}
+                      options={SORT_VALUES}
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            {pools ? (
               <div className={styles.sortWrapper}>
-                {liquidityPools?.map((liquidityPool) => (
+                {pools?.map((liquidityPool) => (
                   <LendingPool
                     key={liquidityPool.pubkey}
                     liquidityPool={liquidityPool}
