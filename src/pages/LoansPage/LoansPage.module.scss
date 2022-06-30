@@ -69,6 +69,10 @@
 .sortingSelect {
   width: unset;
   margin-left: 8px;
+
+  span {
+    color: var(--white-color);
+  }
 }
 
 .sortingSelectContainer {
@@ -77,8 +81,12 @@
     top: 2px;
 
     path {
-      stroke: var(--accent-color-1);
+      stroke: var(--accent-color-1) !important;
     }
+  }
+
+  .sortName {
+    color: var(--accent-color-1);
   }
 }
 
@@ -88,7 +96,7 @@
   .arrowDown,
   .arrowUp {
     path {
-      stroke: var(--accent-color-1);
+      stroke: var(--white-color);
     }
   }
 
