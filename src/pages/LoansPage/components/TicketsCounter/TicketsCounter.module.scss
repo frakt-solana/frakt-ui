@@ -1,0 +1,13 @@
+.ticket {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.value {
+  font: var(--font-text-3);
+
+  @media screen and (max-width: 510px) {
+    font-size: 15px;
+  }
+}
