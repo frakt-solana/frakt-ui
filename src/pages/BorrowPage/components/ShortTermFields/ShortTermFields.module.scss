@@ -3,6 +3,13 @@
   flex-direction: column;
 }
 
+.fieldDesc {
+  font: var(--font-text-5);
+  font-weight: 400;
+  line-height: 18px;
+  padding-top: 10px;
+}
+
 .valueField {
   display: flex;
   justify-content: space-between;
