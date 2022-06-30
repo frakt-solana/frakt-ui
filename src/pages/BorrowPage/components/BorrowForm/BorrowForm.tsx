@@ -56,9 +56,6 @@ export const BorrowForm: FC<BorrowFormProps> = ({
             label="Flip loan"
           />
         </div>
-        <p className={styles.detailsDesc}>
-          Repay anytime. Liquidations happen on end time
-        </p>
         {formField === FormFieldTypes.SHORT_TERM_FIELD && (
           <ShortTermFields nft={selectedNft} />
         )}
