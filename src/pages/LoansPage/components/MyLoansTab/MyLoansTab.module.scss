@@ -2,6 +2,12 @@
   padding-top: 20px;
 }
 
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .connectWallet {
   padding-top: 24px;
   display: flex;
@@ -22,4 +28,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.search {
+  max-width: 330px;
+  margin-bottom: 20px;
+}
+
+.valuesWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.value {
+  color: var(--color-gray-4);
+  span {
+    color: var(--white-color);
+  }
 }

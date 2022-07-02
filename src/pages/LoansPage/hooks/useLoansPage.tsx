@@ -27,6 +27,8 @@ export const useLoansPage = (): {
   setTabValue: (value: string) => void;
   searchItems: (value?: string) => void;
   harvestLiquidity: (liquidityPool: string) => void;
+  search: string;
+  setSearch?: (value?: string) => void;
 } => {
   const wallet = useWallet();
   const connection = useConnection();
@@ -39,10 +41,10 @@ export const useLoansPage = (): {
     tabs: LOANS_TABS,
     defaultValue: LOANS_TABS[0].value,
   });
-  const [, setSearchString] = useState<string>('');
+  const [search, setSearch] = useState<string>('');
 
   const searchItems = useDebounce((search: string) => {
-    setSearchString(search.toUpperCase());
+    setSearch(search.toUpperCase());
   }, 300);
 
   const harvestLiquidity = async (liquidityPool: string): Promise<void> => {
@@ -54,7 +56,9 @@ export const useLoansPage = (): {
   };
 
   return {
+    search,
     searchItems,
+    setSearch,
     loanTabs,
     tabValue,
     setTabValue,
