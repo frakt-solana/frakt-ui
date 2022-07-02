@@ -38,8 +38,9 @@
 .searchInput {
   max-width: 330px;
   margin-right: 20px;
+  width: unset;
 
-  @media screen and (max-width: 370px) {
+  @media screen and (max-width: 468px) {
     margin-bottom: 20px;
   }
 }
@@ -48,11 +49,9 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  flex-wrap: wrap;
   gap: 15px 30px;
 
   @media screen and (max-width: 1023px) {
-    width: 100%;
     margin-bottom: 35px;
   }
 }
@@ -67,19 +66,16 @@
 }
 
 .sortingSelect {
-  width: unset;
   margin-left: 8px;
 
   span {
+    display: flex;
     color: var(--white-color);
   }
 }
 
 .sortingSelectContainer {
   svg {
-    position: relative;
-    top: 2px;
-
     path {
       stroke: var(--accent-color-1) !important;
     }
@@ -95,6 +91,9 @@
 
   .arrowDown,
   .arrowUp {
+    margin-top: 2px;
+    margin-left: 3px;
+
     path {
       stroke: var(--white-color);
     }
