@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+
+import { selectLiquidityPools } from '../../../state/loans/selectors';
 import { compareNumbers } from '../../../contexts/liquidityPools';
 import { LiquidityPool } from '../../../state/loans/types';
 import { ArrowDownSmallIcon } from '../../../icons';
@@ -27,17 +31,17 @@ enum SortField {
   TOTAL_LIQUIDITY = 'totalLiquidity',
 }
 
-type UseLendingPoolsFiltering = (params: {
-  liquidityPools: LiquidityPool[];
-}) => {
+type UseLendingPoolsFiltering = () => {
   control: Control<FilterFormFieldsValues>;
   pools: LiquidityPool[];
   setSearch: (value?: string) => void;
+  showStakedOnlyToggle: boolean;
 };
 
-export const useLendingPoolsFiltering: UseLendingPoolsFiltering = ({
-  liquidityPools,
-}) => {
+export const useLendingPoolsFiltering: UseLendingPoolsFiltering = () => {
+  const liquidityPools = useSelector(selectLiquidityPools);
+  const { connected } = useWallet();
+
   const { control, watch } = useForm({
     defaultValues: {
       [FilterFormInputsNames.SHOW_STAKED]: false,
@@ -95,7 +99,12 @@ export const useLendingPoolsFiltering: UseLendingPoolsFiltering = ({
     return [];
   }, [liquidityPools, sort, searchString, showStaked]);
 
-  return { control, pools: filteredPools, setSearch: searchDebounced };
+  return {
+    control,
+    pools: filteredPools,
+    setSearch: searchDebounced,
+    showStakedOnlyToggle: connected,
+  };
 };
 
 export const SORT_VALUES: PoolsSortValue[] = [

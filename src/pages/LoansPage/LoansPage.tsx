@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { Controller } from 'react-hook-form';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { MyLoansTab } from './components/MyLoansTab';
@@ -9,17 +9,14 @@ import LendingPool from './components/LendingPool';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
-import { selectLiquidityPools } from '../../state/loans/selectors';
 import { useLoansPage, LoanTabsNames } from './hooks';
 import { SearchInput } from '../../components/SearchInput';
 import { ControlledToggle } from '../../components/Toggle/Toggle';
-import { Controller } from 'react-hook-form';
 import { Select } from '../../components/Select';
 import {
   SORT_VALUES,
   useLendingPoolsFiltering,
 } from './hooks/useLendingPoolsFiltering';
-import { useWallet } from '@solana/wallet-adapter-react';
 
 export enum InputControlsNames {
   SHOW_STAKED = 'showStaked',
@@ -28,11 +25,8 @@ export enum InputControlsNames {
 
 const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();
-  const liquidityPools = useSelector(selectLiquidityPools);
-  const { control, setSearch, pools } = useLendingPoolsFiltering({
-    liquidityPools,
-  });
-  const { connected } = useWallet();
+  const { control, setSearch, pools, showStakedOnlyToggle } =
+    useLendingPoolsFiltering();
 
   return (
     <AppLayout>
@@ -56,7 +50,7 @@ const LoansPage: FC = () => {
                 placeholder="Search by pool name"
               />
               <div className={styles.filters}>
-                {connected && (
+                {showStakedOnlyToggle && (
                   <ControlledToggle
                     control={control}
                     name={InputControlsNames.SHOW_STAKED}
