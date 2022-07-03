@@ -1,20 +1,26 @@
 import { Loan } from '@frakt-protocol/frakt-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../../../components/Button';
 import { SearchInput } from '../../../../components/SearchInput';
+import { Select } from '../../../../components/Select';
 import { commonActions } from '../../../../state/common/actions';
 import { selectUserLoans } from '../../../../state/loans/selectors';
 import { LoansList } from '../../../WalletPage/components/LoansList';
-import { useLoansPage } from '../../hooks';
+import {
+  FilterFormInputsNames,
+  SORT_VALUES,
+  useLoansFiltering,
+} from '../../hooks/useLoansFiltering';
 import styles from './MyLoansTab.module.scss';
 
 export const MyLoansTab = (): JSX.Element => {
   const { connected } = useWallet();
-
-  const { search, searchItems, setSearch } = useLoansPage();
   const userLoans: Loan[] = useSelector(selectUserLoans);
+
+  const { control, setSearch, loans } = useLoansFiltering();
 
   const totalDebt = userLoans.reduce(
     (acc, { repayValue }) => acc + repayValue,
@@ -29,29 +35,40 @@ export const MyLoansTab = (): JSX.Element => {
     <div className={styles.wrapper}>
       {connected ? (
         <>
-          <div className={styles.content}>
+          <div className={styles.sortWrapper}>
             <SearchInput
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value || '');
-                searchItems(e.target.value || '');
-              }}
-              className={styles.search}
-              placeholder="Search by NFT name"
+              onChange={(event) => setSearch(event.target.value || '')}
+              className={styles.searchInput}
+              placeholder="Search by Nft name"
             />
-            <div className={styles.valuesWrapper}>
-              <p className={styles.value}>
-                Total borrowed: <span>{totalBorrowed} SOL</span>
-              </p>
-              <p className={styles.value}>
-                Total Debt: <span>{totalDebt} SOL</span>
-              </p>
+            <div className={styles.content}>
+              <div className={styles.valuesWrapper}>
+                <p className={styles.value}>
+                  Total borrowed: <span>{totalBorrowed.toFixed(2)} SOL</span>
+                </p>
+                <p className={styles.value}>
+                  Total Debt: <span>{totalDebt.toFixed(2)} SOL</span>
+                </p>
+              </div>
             </div>
-            <div>
-              <p>Selected collections</p>
+            <div className={styles.filters}>
+              <Controller
+                control={control}
+                name={FilterFormInputsNames.SORT}
+                render={({ field: { ref, ...field } }) => (
+                  <Select
+                    valueContainerClassName={styles.sortingSelectContainer}
+                    className={styles.sortingSelect}
+                    label="Sort by"
+                    name={FilterFormInputsNames.SORT}
+                    options={SORT_VALUES}
+                    {...field}
+                  />
+                )}
+              />
             </div>
           </div>
-          <LoansList />
+          <LoansList loans={loans} />
         </>
       ) : (
         <ConnectWalletSection />
