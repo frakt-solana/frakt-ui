@@ -1,21 +1,20 @@
 import { TOKEN_PROGRAM_ID } from './../getArweaveMetadata/arweave.constant';
-import { Spl, SPL_ACCOUNT_LAYOUT } from '@raydium-io/raydium-sdk';
-import { AccountInfo, Connection, PublicKey } from '@solana/web3.js';
+import { web3, raydium, BN } from '@frakt-protocol/frakt-sdk';
 import {
   AccountInfoData,
   AccountInfoParsed,
   TokenView,
 } from './accounts.model';
 import { AccountLayout } from '@solana/spl-token';
-import BN from 'bn.js';
 
 export const decodeSplTokenAccountData = (
   tokenAccountDataEncoded: Buffer,
-): AccountInfoData => SPL_ACCOUNT_LAYOUT.decode(tokenAccountDataEncoded);
+): AccountInfoData =>
+  raydium.SPL_ACCOUNT_LAYOUT.decode(tokenAccountDataEncoded);
 
 type ParseTokenAccount = (params: {
-  tokenAccountPubkey: PublicKey;
-  tokenAccountEncoded: AccountInfo<Buffer>;
+  tokenAccountPubkey: web3.PublicKey;
+  tokenAccountEncoded: web3.AccountInfo<Buffer>;
 }) => AccountInfoParsed | null;
 
 export const parseTokenAccount: ParseTokenAccount = ({
@@ -34,11 +33,11 @@ export const getTokenAccount = async ({
   owner,
   connection,
 }: {
-  tokenMint: PublicKey;
-  owner: PublicKey;
-  connection: Connection;
+  tokenMint: web3.PublicKey;
+  owner: web3.PublicKey;
+  connection: web3.Connection;
 }): Promise<AccountInfoParsed> => {
-  const tokenAccountPubkey = await Spl.getAssociatedTokenAccount({
+  const tokenAccountPubkey = await raydium.Spl.getAssociatedTokenAccount({
     mint: tokenMint,
     owner,
   });
@@ -57,8 +56,8 @@ export const getTokenAccountBalance = (
   lpTokenAccountInfo?.accountInfo?.amount.toNumber() / 10 ** lpDecimals || 0;
 
 type getAllUserTokens = (props: {
-  connection: Connection;
-  walletPublicKey: PublicKey;
+  connection: web3.Connection;
+  walletPublicKey: web3.PublicKey;
 }) => Promise<TokenView[]>;
 
 export const getAllUserTokens: getAllUserTokens = async ({
@@ -85,12 +84,12 @@ export const getAllUserTokens: getAllUserTokens = async ({
 
       return {
         tokenAccountPubkey: pubkey.toBase58(),
-        mint: new PublicKey(parsedData.mint).toBase58(),
-        owner: new PublicKey(parsedData.owner).toBase58(),
+        mint: new web3.PublicKey(parsedData.mint).toBase58(),
+        owner: new web3.PublicKey(parsedData.owner).toBase58(),
         amount: amountNum,
         amountBN: new BN(parsedData.amount, 10, 'le'),
         delegateOption: !!parsedData.delegateOption,
-        delegate: new PublicKey(parsedData.delegate).toBase58(),
+        delegate: new web3.PublicKey(parsedData.delegate).toBase58(),
         state: parsedData.state,
         isNativeOption: !!parsedData.isNativeOption,
         isNative: new BN(parsedData.isNative, 10, 'le').toNumber(),
@@ -100,7 +99,9 @@ export const getAllUserTokens: getAllUserTokens = async ({
           'le',
         ).toNumber(),
         closeAuthorityOption: !!parsedData.closeAuthorityOption,
-        closeAuthority: new PublicKey(parsedData.closeAuthority).toBase58(),
+        closeAuthority: new web3.PublicKey(
+          parsedData.closeAuthority,
+        ).toBase58(),
       };
     }) || []
   );

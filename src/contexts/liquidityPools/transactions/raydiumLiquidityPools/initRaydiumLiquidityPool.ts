@@ -1,16 +1,4 @@
-import {
-  Liquidity,
-  LiquidityAssociatedPoolKeysV4,
-  Spl,
-} from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-import {
-  Keypair,
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
-import BN from 'bn.js';
+import { web3, utils, TokenInfo, raydium, BN } from '@frakt-protocol/frakt-sdk';
 import moment from 'moment';
 
 import { SOL_TOKEN } from '../../../../utils';
@@ -18,13 +6,13 @@ import {
   signAndConfirmTransaction,
   WalletAndConnection,
 } from '../../../../utils/transactions';
-import { getTokenAccount } from '../../liquidityPools.helpers';
+
 export interface InitRaydiumLiquidityPoolParams {
   baseToken: TokenInfo;
   quoteToken: TokenInfo;
   baseAmount: BN;
   quoteAmount: BN;
-  associatedPoolKeys: LiquidityAssociatedPoolKeysV4;
+  associatedPoolKeys: raydium.LiquidityAssociatedPoolKeysV4;
 }
 
 export interface InitRaydiumLiquidityPoolRawParams
@@ -40,26 +28,26 @@ export const rawInitRaydiumLiquidityPool = async ({
   baseAmount,
   quoteAmount,
 }: InitRaydiumLiquidityPoolRawParams): Promise<void> => {
-  const transaction = new Transaction();
-  const signers: Keypair[] = [];
+  const transaction = new web3.Transaction();
+  const signers: web3.Keypair[] = [];
 
-  const frontInstructions: TransactionInstruction[] = [];
-  const endInstructions: TransactionInstruction[] = [];
+  const frontInstructions: web3.TransactionInstruction[] = [];
+  const endInstructions: web3.TransactionInstruction[] = [];
 
-  const baseTokenAccount = await Spl.getAssociatedTokenAccount({
-    mint: new PublicKey(baseToken.address),
+  const baseTokenAccount = await raydium.Spl.getAssociatedTokenAccount({
+    mint: new web3.PublicKey(baseToken.address),
     owner: wallet.publicKey,
   });
 
-  let quoteTokenAccount = await Spl.getAssociatedTokenAccount({
-    mint: new PublicKey(quoteToken.address),
+  let quoteTokenAccount = await raydium.Spl.getAssociatedTokenAccount({
+    mint: new web3.PublicKey(quoteToken.address),
     owner: wallet.publicKey,
   });
 
   //? If quoteTokenMint is WSOL
   if (quoteToken.address === SOL_TOKEN.address) {
     const { newAccount: wsolAccount, instructions: wrapSolInstructions } =
-      await Spl.makeCreateWrappedNativeAccountInstructions({
+      await raydium.Spl.makeCreateWrappedNativeAccountInstructions({
         connection,
         owner: wallet.publicKey,
         payer: wallet.publicKey,
@@ -73,7 +61,7 @@ export const rawInitRaydiumLiquidityPool = async ({
     }
 
     endInstructions.push(
-      Spl.makeCloseAccountInstruction({
+      raydium.Spl.makeCloseAccountInstruction({
         tokenAccount: wsolAccount.publicKey,
         owner: wallet.publicKey,
         payer: wallet.publicKey,
@@ -84,7 +72,7 @@ export const rawInitRaydiumLiquidityPool = async ({
   }
 
   frontInstructions.push(
-    Spl.makeTransferInstruction({
+    raydium.Spl.makeTransferInstruction({
       source: baseTokenAccount,
       destination: associatedPoolKeys.baseVault,
       owner: wallet.publicKey,
@@ -93,7 +81,7 @@ export const rawInitRaydiumLiquidityPool = async ({
   );
 
   frontInstructions.push(
-    Spl.makeTransferInstruction({
+    raydium.Spl.makeTransferInstruction({
       source: quoteTokenAccount,
       destination: associatedPoolKeys.quoteVault,
       owner: wallet.publicKey,
@@ -101,12 +89,12 @@ export const rawInitRaydiumLiquidityPool = async ({
     }),
   );
 
-  const lpAta = await Spl.getAssociatedTokenAccount({
+  const lpAta = await raydium.Spl.getAssociatedTokenAccount({
     mint: associatedPoolKeys.lpMint,
     owner: wallet.publicKey,
   });
 
-  const lpTokenAccount = await getTokenAccount({
+  const lpTokenAccount = await utils.getTokenAccount({
     tokenMint: associatedPoolKeys.lpMint,
     owner: wallet.publicKey,
     connection,
@@ -115,7 +103,7 @@ export const rawInitRaydiumLiquidityPool = async ({
   //? if lp ata not exist, you need create it first
   if (!lpTokenAccount) {
     frontInstructions.push(
-      Spl.makeCreateAssociatedTokenAccountInstruction({
+      raydium.Spl.makeCreateAssociatedTokenAccountInstruction({
         mint: associatedPoolKeys.lpMint,
         associatedAccount: lpAta,
         payer: wallet.publicKey,
@@ -125,7 +113,7 @@ export const rawInitRaydiumLiquidityPool = async ({
   }
 
   endInstructions.push(
-    await Liquidity.makeInitPoolInstruction({
+    await raydium.Liquidity.makeInitPoolInstruction({
       poolKeys: associatedPoolKeys,
       userKeys: {
         lpTokenAccount: lpAta,

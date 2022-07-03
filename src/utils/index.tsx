@@ -1,12 +1,9 @@
 import { notification } from 'antd';
-import { AccountInfo, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import BN from 'bn.js';
-import { WSOL } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
+import { web3, raydium, BN, TokenInfo } from '@frakt-protocol/frakt-sdk';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
-import { UserNFT } from '../contexts/userTokens';
+import { UserNFT } from '../state/userTokens/types';
 import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../config';
 
 export const notify: Notify = ({
@@ -24,9 +21,12 @@ export const notify: Notify = ({
 
 export const DECIMALS_PER_FRKT = 1e8;
 
+//? Using for fetching prices of tokens in USD
+export const COINGECKO_URL = process.env.COINGECKO_URL;
+
 export const SOL_TOKEN: TokenInfo = {
   chainId: 101,
-  address: WSOL.mint,
+  address: raydium.WSOL.mint,
   name: 'SOL',
   decimals: 9,
   symbol: 'SOL',
@@ -51,6 +51,38 @@ export const FRKT_TOKEN: TokenInfo = {
     website: 'https://frakt.xyz/',
   },
   tags: ['utility-token'],
+};
+
+export const USDT_TOKEN = {
+  chainId: 101,
+  address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  symbol: 'USDT',
+  name: 'USDT',
+  decimals: 6,
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.svg',
+  tags: ['stablecoin'],
+  extensions: {
+    coingeckoId: 'tether',
+    serumV3Usdc: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
+    website: 'https://tether.to/',
+  },
+};
+
+export const USDC_TOKEN = {
+  chainId: 101,
+  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  symbol: 'USDC',
+  name: 'USD Coin',
+  decimals: 6,
+  logoURI:
+    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png',
+  tags: ['stablecoin'],
+  extensions: {
+    coingeckoId: 'usd-coin',
+    serumV3Usdt: '77quYg4MGneUdjgXCunt9GgM1usmrxKY31twEy3WHwcS',
+    website: 'https://www.centre.io/',
+  },
 };
 
 export const decimalBNToString = (
@@ -112,8 +144,8 @@ export const getFrktBalanceValue = (balance: BN): string => {
   return `${frktBalance !== '0' ? frktBalance : '--'}`;
 };
 
-export const getSolBalanceValue = (account: AccountInfo<Buffer>): string =>
-  `${formatNumber.format((account?.lamports || 0) / LAMPORTS_PER_SOL)}`;
+export const getSolBalanceValue = (account: web3.AccountInfo<Buffer>): string =>
+  `${formatNumber.format((account?.lamports || 0) / web3.LAMPORTS_PER_SOL)}`;
 
 export const getTokenBalanceValue = (amountBN: BN, decimals: number): string =>
   `${formatNumber.format(
@@ -157,3 +189,39 @@ export const getNftCreators = (nft: UserNFT): string[] => {
       ?.map(({ address }) => address) || []
   );
 };
+
+export const fetchSolanaPriceUSD = async (): Promise<number> => {
+  try {
+    const result = await (
+      await fetch(`${COINGECKO_URL}/simple/price?ids=solana&vs_currencies=usd`)
+    ).json();
+
+    return result?.solana?.usd || 0;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('coingecko api error: ', error);
+    return 0;
+  }
+};
+export const getStakingPointsURL = (walletAddress: web3.PublicKey): string =>
+  `https://frakt-stats.herokuapp.com/staking/${walletAddress}`;
+
+export const getCorrectSolWalletBalance = (
+  solWalletBalance: string,
+): string => {
+  return solWalletBalance.split(',').join('');
+};
+
+export const getDiscordUri = (wallet: web3.PublicKey | string): string => {
+  const redirectUri = `https://${process.env.BACKEND_DOMAIN}/user`;
+  const clientId = process.env.DISCORD_CLIENT_ID;
+
+  return `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+    redirectUri,
+  )}&response_type=code&scope=identify&state=${wallet}`;
+};
+
+export const getDiscordAvatarUrl = (discordId = '', hash = ''): string | null =>
+  discordId && hash
+    ? `https://cdn.discordapp.com/avatars/${discordId}/${hash}.png`
+    : null;

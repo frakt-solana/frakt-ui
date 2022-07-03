@@ -1,25 +1,30 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { UserNFT, useUserTokens } from '../../contexts/userTokens';
+import { UserNFT } from '../../state/userTokens/types';
 import { useDebounce } from '../../hooks';
-import { useFakeInfinityScroll } from '../FakeInfinityScroll';
+import { selectUserTokensState } from '../../state/userTokens/selectors';
+import { useFakeInfinityScroll } from '../InfinityScroll';
+import { BorrowNft } from '../../state/loans/types';
 
 export const useSelectLayout = (): {
-  onDeselect: (nft?: UserNFT) => void;
-  selectedNfts: UserNFT[];
-  setSelectedNfts: Dispatch<SetStateAction<UserNFT[]>>;
-  onMultiSelect: (nft: UserNFT) => void;
-  onSelect: (nft: UserNFT) => void;
+  onDeselect: (nft?: BorrowNft) => void;
+  selectedNfts: BorrowNft[];
+  setSelectedNfts: Dispatch<SetStateAction<BorrowNft[]>>;
+  onMultiSelect: (nft: BorrowNft) => void;
+  onSelect: (nft: BorrowNft) => void;
   nfts: UserNFT[];
   searchItems: (search: string) => void;
   loading: boolean;
   connected: boolean;
 } => {
   const { connected } = useWallet();
-  const { nfts: rawNfts, nftsLoading: loading } = useUserTokens();
+  const { nfts: rawNfts, nftsLoading: loading } = useSelector(
+    selectUserTokensState,
+  );
 
-  const [selectedNfts, setSelectedNfts] = useState<UserNFT[]>([]);
+  const [selectedNfts, setSelectedNfts] = useState<BorrowNft[]>([]);
   const [searchString, setSearchString] = useState<string>('');
   const { setItemsToShow } = useFakeInfinityScroll(15);
 
@@ -28,7 +33,7 @@ export const useSelectLayout = (): {
     setSearchString(search.toUpperCase());
   }, 300);
 
-  const onDeselect = (nft?: UserNFT): void => {
+  const onDeselect = (nft?: BorrowNft): void => {
     if (nft) {
       setSelectedNfts(
         selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
@@ -38,7 +43,7 @@ export const useSelectLayout = (): {
     }
   };
 
-  const onMultiSelect = (nft: UserNFT): void => {
+  const onMultiSelect = (nft: BorrowNft): void => {
     selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
       ? setSelectedNfts(
           selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),
@@ -46,7 +51,7 @@ export const useSelectLayout = (): {
       : setSelectedNfts([...selectedNfts, nft]);
   };
 
-  const onSelect = (nft: UserNFT): void => {
+  const onSelect = (nft: BorrowNft): void => {
     selectedNfts.find((selectedNft) => selectedNft?.mint === nft.mint)
       ? setSelectedNfts(
           selectedNfts.filter((selectedNft) => selectedNft?.mint !== nft.mint),

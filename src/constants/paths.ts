@@ -4,6 +4,7 @@ export enum POOL_TABS {
   BUY = 'buy',
   SELL = 'sell',
   SWAP = 'swap',
+  STAKE = 'stake',
   INFO = 'info',
 }
 
@@ -19,13 +20,14 @@ export const PATHS = {
   POOL_BUY: createPoolLink(POOL_TABS.BUY),
   POOL_SELL: createPoolLink(POOL_TABS.SELL),
   POOL_SWAP: createPoolLink(POOL_TABS.SWAP),
+  POOL_STAKE: createPoolLink(POOL_TABS.STAKE),
   POOL_INFO: createPoolLink(POOL_TABS.INFO),
   WALLET: '/wallet',
   PAGE_404: '/404',
   WALLET_PUBKEY: '/:walletPubkey',
-  EARN: '/earn',
   TEST: '/market_test',
   BORROW: '/borrow',
   LOANS: '/loans',
+  STATS: '/stats',
   ROADMAP: 'https://trello.com/b/jt9JRdLg/frakt-public-roadmap',
 };

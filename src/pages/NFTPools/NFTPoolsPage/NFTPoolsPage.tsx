@@ -1,4 +1,5 @@
 import { FC, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Controller } from 'react-hook-form';
 
 import { ArrowDownSmallIcon } from '../../../icons';
@@ -15,7 +16,7 @@ import { Loader } from '../../../components/Loader';
 import { CommunityPoolState } from '../../../utils/cacher/nftPools';
 import { Container } from '../../../components/Layout';
 import { SearchInput } from '../../../components/SearchInput';
-import { useTokenListContext } from '../../../contexts/TokenList';
+import { selectTokenListState } from '../../../state/tokenList/selectors';
 import { TokenInfo } from '@solana/spl-token-registry';
 import { useAPR, usePoolTokensPrices } from '../hooks';
 import { usePoolsFiltering } from './hooks';
@@ -23,7 +24,7 @@ import { usePoolsFiltering } from './hooks';
 export const NFTPoolsPage: FC = () => {
   const { pools: rawPools, loading: poolsLoading } = useNftPools();
   const { loading: tokensMapLoading, fraktionTokensMap } =
-    useTokenListContext();
+    useSelector(selectTokenListState);
 
   useNftPoolsInitialFetch();
   useNftPoolsPolling();
@@ -71,7 +72,9 @@ export const NFTPoolsPage: FC = () => {
     <AppLayout>
       <Container component="main" className={styles.container}>
         <h1 className={styles.title}>Pools</h1>
-        <h2 className={styles.subtitle}>Buy, sell, and swap NFTs instantly</h2>
+        <h2 className={styles.subtitle}>
+          Buy, sell, swap and stake NFTs instantly
+        </h2>
 
         <div className={styles.searchWrapper}>
           <SearchInput

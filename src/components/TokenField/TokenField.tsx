@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import classNames from 'classnames/bind';
-import styles from './styles.module.scss';
-import { ChevronDownIcon } from '../../icons';
-import { SelectTokenModal } from '../SelectTokenModal';
-import NumericInput from '../NumericInput';
+import React, { FC, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
+import classNames from 'classnames';
+
+import { SelectTokenModal } from '../SelectTokenModal';
+import { ChevronDownIcon } from '../../icons';
+import NumericInput from '../NumericInput';
+import styles from './styles.module.scss';
 import { SOL_TOKEN } from '../../utils';
 
 export interface TokenFieldProps {
@@ -27,9 +28,10 @@ export interface TokenFieldProps {
   placeholder?: string;
   amountMaxLength?: number;
   disabled?: boolean;
+  labelRight?: boolean;
 }
 
-const TokenField = ({
+const TokenField: FC<TokenFieldProps> = ({
   tokensList,
   onTokenChange,
   currentToken,
@@ -46,8 +48,9 @@ const TokenField = ({
   amountMaxLength,
   lpTokenSymbol,
   placeholder = '0.0',
+  labelRight,
   disabled = false,
-}: TokenFieldProps): JSX.Element => {
+}) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -59,16 +62,20 @@ const TokenField = ({
         { [styles.error]: error },
       ])}
     >
-      {!!label && (
-        <div className={styles.label}>
-          {label}
-          {!!balance && (
-            <span>
-              BALANCE: {balance} {currentToken?.symbol}
-            </span>
-          )}
-        </div>
-      )}
+      <div
+        className={classNames(
+          styles.labelWrapper,
+          labelRight && styles.labelPositionRight,
+        )}
+      >
+        {!!label && <div className={styles.label}>{label}</div>}
+        {!!balance && (
+          <span className={styles.label}>
+            BALANCE: {balance} {currentToken?.symbol}
+          </span>
+        )}
+      </div>
+
       <div
         className={classNames([styles.root, className])}
         onFocus={() => setIsFocused(true)}
@@ -130,11 +137,11 @@ const TokenField = ({
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>
+
         {!!tokensList && !!onTokenChange && (
           <SelectTokenModal
             title={modalTitle}
             visible={isModalOpen}
-            tokensList={tokensList}
             balances={balances}
             onChange={onTokenChange}
             onCancel={() => setIsModalOpen(false)}
@@ -155,7 +162,7 @@ interface TokenFieldFormProps
   maxLength?: number;
 }
 
-export const TokenFieldForm: React.FC<TokenFieldFormProps> = ({
+export const TokenFieldForm: FC<TokenFieldFormProps> = ({
   onChange,
   value,
   ...props

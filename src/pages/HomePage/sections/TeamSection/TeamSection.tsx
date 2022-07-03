@@ -129,27 +129,28 @@ const MEMBERS = [
   },
 ];
 
-export const TeamSection: FC<{ navRef?: { current: HTMLParagraphElement } }> =
-  ({ navRef }) => {
-    return (
-      <Container component="section" className={styles.root}>
-        <h2 className={styles.title} ref={navRef} id={TEAM_SECTION_ID}>
-          Meet the team
-        </h2>
-        <ul className={styles.teamList}>
-          {MEMBERS.map(({ name, photoUrl, position, socialLink }, idx) => (
-            <li key={idx} className={styles.teamItem}>
-              <img src={photoUrl} alt={name} className={styles.teamPhoto} />
-              <div className={styles.teamInfo}>
-                <p className={styles.teamName}>{name}</p>
-                <div className={styles.teamPosition}>
-                  {position}
-                  {socialLink}
-                </div>
+export const TeamSection: FC<{
+  navRef?: { current: HTMLParagraphElement };
+}> = ({ navRef }) => {
+  return (
+    <Container component="section" className={styles.root}>
+      <h2 className={styles.title} ref={navRef} id={TEAM_SECTION_ID}>
+        Meet the team
+      </h2>
+      <ul className={styles.teamList}>
+        {MEMBERS.map(({ name, photoUrl, position, socialLink }, idx) => (
+          <li key={idx} className={styles.teamItem}>
+            <img src={photoUrl} alt={name} className={styles.teamPhoto} />
+            <div className={styles.teamInfo}>
+              <p className={styles.teamName}>{name}</p>
+              <div className={styles.teamPosition}>
+                {position}
+                {socialLink}
               </div>
-            </li>
-          ))}
-        </ul>
-      </Container>
-    );
-  };
+            </div>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  );
+};

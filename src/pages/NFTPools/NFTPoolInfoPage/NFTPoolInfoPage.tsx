@@ -1,4 +1,5 @@
 import { FC, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { TokenInfo } from '@solana/spl-token-registry';
@@ -7,19 +8,15 @@ import styles from './NFTPoolInfoPage.module.scss';
 import { HeaderInfo } from './components/HeaderInfo';
 import { SolanaIcon } from '../../../icons';
 import { usePublicKeyParam } from '../../../hooks';
-import {
-  NFTPoolPageLayout,
-  PoolPageType,
-} from '../components/NFTPoolPageLayout';
+import { NFTPoolPageLayout } from '../components/NFTPoolPageLayout';
 import {
   useNftPool,
   useNftPoolsInitialFetch,
   useNftPoolsPolling,
 } from '../../../contexts/nftPools';
 import { Loader } from '../../../components/Loader';
-import { useTokenListContext } from '../../../contexts/TokenList';
-import { LinkWithArrow } from '../../../components/LinkWithArrow';
-import { PATHS } from '../../../constants';
+import { selectTokenListState } from '../../../state/tokenList/selectors';
+import { POOL_TABS } from '../../../constants';
 import {
   Price,
   useAPR,
@@ -28,8 +25,9 @@ import {
   usePoolTokensPrices,
 } from '../hooks';
 import { SELL_COMMISSION_PERCENT } from '../constants';
-import { PoolStats, useCachedPoolsStats } from '../../PoolsPage';
 import { formatNumberWithSpaceSeparator } from '../../../contexts/liquidityPools';
+import { useCachedPoolsStats } from '../NFTPoolStakePage/hooks';
+import { PoolStats } from '../model';
 
 export const NFTPoolInfoPage = (): JSX.Element => {
   const poolPubkey = usePoolPubkeyParam();
@@ -43,7 +41,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
   const poolPublicKey = pool?.publicKey?.toBase58();
 
   const { loading: tokensMapLoading, fraktionTokensMap: tokensMap } =
-    useTokenListContext();
+    useSelector(selectTokenListState);
 
   const poolTokenInfo = useMemo(() => {
     return tokensMap.get(pool?.fractionMint?.toBase58());
@@ -79,7 +77,7 @@ export const NFTPoolInfoPage = (): JSX.Element => {
           hidden={pageLoading}
         />
       }
-      pageType={PoolPageType.INFO}
+      tab={POOL_TABS.INFO}
     >
       {loading ? (
         <Loader size="large" />
@@ -130,11 +128,6 @@ const LiquiditySection: FC<LiquiditySectionProps> = ({ poolStats }) => {
       <h5 className={styles.cardTitle}>Liquidity</h5>
       <p className={styles.liquiditySubtitle}>Volume</p>
       <p>$ {formatNumberWithSpaceSeparator(poolStats?.volume || 0)}</p>
-      <LinkWithArrow
-        to={`${PATHS.EARN}`}
-        label="Earn"
-        className={styles.liquidityLink}
-      />
     </div>
   );
 };

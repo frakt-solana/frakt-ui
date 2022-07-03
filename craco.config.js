@@ -8,6 +8,7 @@ module.exports = ({ env }) => {
 
   const plugins = [
     new Dotenv({
+      systemvars: true,
       path: './.env.local',
     }),
   ];

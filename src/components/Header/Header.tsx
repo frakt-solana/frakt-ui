@@ -1,8 +1,10 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
+import { selectWalletModalVisible } from '../../state/common/selectors';
 import styles from './styles.module.scss';
 import { Container } from '../Layout';
 import {
@@ -15,7 +17,6 @@ import { PATHS } from '../../constants';
 import ConnectButton from '../ConnectButton';
 import ConnectedButton from '../ConnectedButton';
 import WalletContent from '../WalletContent';
-import { useWalletModal } from '../../contexts/WalletModal';
 
 interface HeaderProps {
   className?: string;
@@ -24,7 +25,7 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ className, customHeader }) => {
   const { connected } = useWallet();
-  const { visible } = useWalletModal();
+  const visible = useSelector(selectWalletModalVisible);
 
   return (
     <header className={classNames(styles.root, styles.header, className)}>

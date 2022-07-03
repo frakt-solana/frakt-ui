@@ -1,31 +1,37 @@
-import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey } from '@solana/web3.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Control, useForm } from 'react-hook-form';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { Percent } from '@raydium-io/raydium-sdk';
+import { useParams } from 'react-router-dom';
+import { useWallet } from '@solana/wallet-adapter-react';
 
-import {
-  UserNFT,
-  UserNFTWithCollection,
-  useUserTokens,
-} from '../../contexts/userTokens';
-import { useDebounce } from '../../hooks';
+import { web3, raydium, TokenInfo } from '@frakt-protocol/frakt-sdk';
+
+import { UserNFT, UserNFTWithCollection } from '../../state/userTokens/types';
+import { NftPoolData } from '../../utils/cacher/nftPools/nftPools.model';
+import { useConnection, useDebounce } from '../../hooks';
 import { useUserSplAccount } from '../../utils/accounts';
 import { SORT_VALUES } from './components/NFTPoolNFTsList';
 import { LOTTERY_TICKET_ACCOUNT_LAYOUT } from './constants';
-import { FilterFormFieldsValues, FilterFormInputsNames } from './model';
 import {
+  FilterFormFieldsValues,
+  FilterFormInputsNames,
+  PoolStats,
+} from './model';
+import {
+  FusionPool,
+  getFusionApr,
   PoolDataByMint,
-  sumFusionAndRaydiumApr,
   useLiquidityPools,
 } from '../../contexts/liquidityPools';
 import { getInputAmount, getOutputAmount } from '../../components/SwapForm';
 import { SOL_TOKEN, swapStringKeysAndValues } from '../../utils';
-import { useCachedFusionPools, useCachedPoolsStats } from '../PoolsPage';
-import { useParams } from 'react-router-dom';
+import {
+  useCachedFusionPoolsForStats,
+  useCachedPoolsStats,
+} from './NFTPoolStakePage/hooks';
 import { CUSTOM_POOLS_URLS } from '../../utils/cacher/nftPools';
+import { selectUserTokensState } from '../../state/userTokens/selectors';
+import { userTokensActions } from '../../state/userTokens/actions';
 
 type UseNFTsFiltering = (nfts: UserNFTWithCollection[]) => {
   control: Control<FilterFormFieldsValues>;
@@ -75,7 +81,7 @@ export const useNFTsFiltering: UseNFTsFiltering = (nfts) => {
 };
 
 type SubscribeOnLotteryTicketChanges = (
-  lotteryTicketPublicKey: PublicKey,
+  lotteryTicketPublicKey: web3.PublicKey,
   callback: (value: string) => void,
 ) => void;
 
@@ -86,7 +92,7 @@ type UseLotteryTicketSubscription = () => {
 
 export const useLotteryTicketSubscription: UseLotteryTicketSubscription =
   () => {
-    const { connection } = useConnection();
+    const connection = useConnection();
     const wallet = useWallet();
 
     const subscriptionId = useRef<number>();
@@ -196,7 +202,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
           payToken: poolTokensInfo?.[idx],
           payAmount: 1,
           receiveToken: SOL_TOKEN,
-          slippage: new Percent(1, 100),
+          slippage: new raydium.Percent(1, 100),
         });
 
         const { amountIn: buyPrice } = getInputAmount({
@@ -205,7 +211,7 @@ export const usePoolTokensPrices: UsePoolTokensPrices = (
           payToken: SOL_TOKEN,
           receiveAmount: 1,
           receiveToken: poolTokensInfo?.[idx],
-          slippage: new Percent(1, 100),
+          slippage: new raydium.Percent(1, 100),
         });
 
         return map.set(poolTokensInfo?.[idx]?.address, {
@@ -274,22 +280,25 @@ export const useUserRawNfts: UseUserRawNfts = () => {
     nfts: rawNfts,
     loading: userTokensLoading,
     nftsLoading,
-    fetchUserNfts,
     rawUserTokensByMint,
-    removeTokenOptimistic,
-  } = useUserTokens();
+  } = useSelector(selectUserTokensState);
+  const dispatch = useDispatch();
+  const fetchUserNfts = () => dispatch(userTokensActions.fetchWalletNfts());
+  const removeTokenOptimistic = (mints) =>
+    dispatch(userTokensActions.removeTokenOptimistic(mints));
 
   useEffect(() => {
     if (
       connected &&
       !userTokensLoading &&
       !nftsLoading &&
-      Object.keys(rawUserTokensByMint).length
+      Object.keys(rawUserTokensByMint).length &&
+      !rawNfts.length
     ) {
       fetchUserNfts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, userTokensLoading, nftsLoading]);
+  }, [connected, rawNfts.length]);
 
   return {
     rawNfts,
@@ -301,11 +310,13 @@ export const useUserRawNfts: UseUserRawNfts = () => {
 type UseAPR = (poolTokenInfo?: TokenInfo) => {
   loading: boolean;
   liquidityAPR: number;
+  inventoryAPR: number;
+  raydiumPoolLiquidityUSD: number;
 };
 
 export const useAPR: UseAPR = (poolTokenInfo) => {
-  const { fusionPoolsByMint, loading: fusionPoolsLoading } =
-    useCachedFusionPools();
+  const { fusionPools, loading: fusionPoolsLoading } =
+    useCachedFusionPoolsForStats();
 
   const { poolDataByMint, loading: liquidityPoolsLoading } =
     useLiquidityPools();
@@ -313,11 +324,40 @@ export const useAPR: UseAPR = (poolTokenInfo) => {
   const { poolsStatsByBaseTokenMint, loading: poolsStatsLoading } =
     useCachedPoolsStats();
 
-  const fusionPoolInfo = useMemo(() => {
-    const poolData = poolDataByMint.get(poolTokenInfo?.address);
+  const liquidityFusionPoolInfo = useMemo(() => {
+    if (poolDataByMint?.size && poolTokenInfo?.address && fusionPools?.length) {
+      const poolData = poolDataByMint.get(poolTokenInfo?.address);
+      const lpMint = poolData?.poolConfig?.lpMint.toBase58();
 
-    return fusionPoolsByMint.get(poolData?.poolConfig?.lpMint.toBase58());
-  }, [poolDataByMint, poolTokenInfo?.address, fusionPoolsByMint]);
+      const liquidityFusionPool =
+        fusionPools?.find(({ router }) => {
+          return (
+            router.tokenMintInput === lpMint &&
+            router.tokenMintOutput === poolTokenInfo?.address
+          );
+        }) || null;
+
+      return liquidityFusionPool;
+    }
+
+    return null;
+  }, [poolDataByMint, poolTokenInfo?.address, fusionPools]);
+
+  const inventoryFusionPoolInfo = useMemo(() => {
+    if (poolTokenInfo?.address && fusionPools?.length) {
+      const inventoryFusionPool =
+        fusionPools?.find(({ router }) => {
+          return (
+            router.tokenMintInput === poolTokenInfo?.address &&
+            router.tokenMintOutput === poolTokenInfo?.address
+          );
+        }) || null;
+
+      return inventoryFusionPool;
+    }
+
+    return null;
+  }, [poolTokenInfo?.address, fusionPools]);
 
   const poolStats = poolsStatsByBaseTokenMint.get(poolTokenInfo?.address);
 
@@ -326,8 +366,21 @@ export const useAPR: UseAPR = (poolTokenInfo) => {
 
   return {
     loading,
-    liquidityAPR: sumFusionAndRaydiumApr(fusionPoolInfo, poolStats) || 0,
+    liquidityAPR:
+      sumFusionAndRaydiumApr(liquidityFusionPoolInfo, poolStats) || 0,
+    inventoryAPR: getFusionApr(inventoryFusionPoolInfo?.router) || 0,
+    raydiumPoolLiquidityUSD: poolStats?.liquidity || 0,
   };
+};
+
+export const sumFusionAndRaydiumApr = (
+  fusionPool: FusionPool,
+  poolStats: PoolStats,
+): number => {
+  if (fusionPool?.router) {
+    return getFusionApr(fusionPool.router) + poolStats?.apr;
+  }
+  return poolStats?.apr || 0;
 };
 
 type UsePoolPubkeyParam = () => string;

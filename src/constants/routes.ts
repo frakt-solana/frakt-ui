@@ -6,16 +6,17 @@ import {
   HomePage,
   SwapPage,
   WalletPage,
-  PoolsPage,
   NFTPoolsPage,
   NFTPoolBuyPage,
   NFTPoolSellPage,
   NFTPoolSwapPage,
   NFTPoolInfoPage,
+  StatsPage,
   // NFTPoolsTestPage,
   LoansPage,
   BorrowPage,
 } from '../pages';
+import { NFTPoolStakePage } from '../pages/NFTPools/NFTPoolStakePage';
 
 interface Route {
   path: string;
@@ -66,6 +67,11 @@ export const routes: Route[] = [
   },
   {
     exact: true,
+    path: PATHS.POOL_STAKE,
+    component: NFTPoolStakePage,
+  },
+  {
+    exact: true,
     path: PATHS.POOL_INFO,
     component: NFTPoolInfoPage,
   },
@@ -81,8 +87,8 @@ export const routes: Route[] = [
   },
   {
     exact: true,
-    path: PATHS.EARN,
-    component: PoolsPage,
+    path: PATHS.STATS,
+    component: StatsPage,
   },
   {
     exact: true,

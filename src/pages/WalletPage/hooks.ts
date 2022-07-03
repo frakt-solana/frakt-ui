@@ -1,15 +1,16 @@
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { getAllUserTokens } from '../../utils/accounts';
-import { useTokenListContext } from '../../contexts/TokenList';
+import { selectTokenListState } from '../../state/tokenList/selectors';
 import {
   NameServiceResponse,
   useNameServiceInfo,
 } from '../../utils/nameService';
 import { TokenInfoWithAmount } from './components/TokensTab/TokensTab';
+import { useConnection } from '../../hooks';
 
 type UseWalletTokens = (props: { walletPubkey: string }) => {
   userTokens: TokenInfoWithAmount[];
@@ -17,12 +18,13 @@ type UseWalletTokens = (props: { walletPubkey: string }) => {
 };
 
 export const useWalletTokens: UseWalletTokens = ({ walletPubkey }) => {
-  const { fraktionTokensMap, loading: tokensLoading } = useTokenListContext();
+  const { fraktionTokensMap, loading: tokensLoading } =
+    useSelector(selectTokenListState);
 
   const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const fetchUserTokens = async () => {
     try {
@@ -74,7 +76,7 @@ type UseNameService = (props: { walletPubkey: string }) => {
 };
 
 export const useNameService: UseNameService = ({ walletPubkey }) => {
-  const { connection } = useConnection();
+  const connection = useConnection();
 
   const { info: nameServiceInfo, getInfo: getNameServiceInfo } =
     useNameServiceInfo();

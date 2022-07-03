@@ -9,11 +9,13 @@
 }
 
 .detailsTitle {
-  font: var(--font-btn-small);
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
+  color: var(--gray-color-3);
+  font: var(--font-text-5);
+  text-transform: uppercase;
 }
 
 .continueBtnContainer {
@@ -24,4 +26,10 @@
   width: 100%;
   justify-content: center;
   font: var(--font-btn-small);
+}
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }

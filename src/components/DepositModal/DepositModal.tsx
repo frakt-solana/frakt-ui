@@ -1,7 +1,6 @@
 import { FC } from 'react';
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
 import { Controller } from 'react-hook-form';
+import { raydium, TokenInfo } from '@frakt-protocol/frakt-sdk';
 
 import { InputControlsNames, useDeposit } from './hooks';
 import Checkbox from '../CustomCheckbox';
@@ -16,14 +15,14 @@ import {
   sumFusionAndRaydiumApr,
 } from '../../contexts/liquidityPools';
 import { LoadingModal } from '../LoadingModal';
-import { PoolStats } from '../../pages/PoolsPage';
+import { PoolStats } from '../../pages/NFTPools/model';
 
 interface DepositModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   onCancel: () => void;
   tokenInfo: TokenInfo;
-  poolConfig: LiquidityPoolKeysV4;
+  poolConfig: raydium.LiquidityPoolKeysV4;
   fusionPoolInfo: FusionPoolInfo;
   poolStats: PoolStats;
 }

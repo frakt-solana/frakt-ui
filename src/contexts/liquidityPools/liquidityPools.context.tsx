@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { TokenInfo } from '@solana/spl-token-registry';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
-import { useTokenListContext } from '../TokenList';
+import { selectTokenListState } from '../../state/tokenList/selectors';
 import {
   fetchRaydiumPoolsInfo,
   addRaydiumLiquidity,
@@ -19,6 +20,7 @@ import {
   LiquidityPoolsProviderType,
   PoolDataByMint,
 } from './liquidityPools.model';
+import { useConnection } from '../../hooks';
 
 export const LiquidityPoolsContext =
   React.createContext<LiquidityPoolsContextValues>({
@@ -37,8 +39,8 @@ export const LiquidityPoolsContext =
 export const LiquidityPoolsProvider: LiquidityPoolsProviderType = ({
   children,
 }) => {
-  const { fraktionTokensMap } = useTokenListContext();
-  const { connection } = useConnection();
+  const { fraktionTokensMap } = useSelector(selectTokenListState);
+  const connection = useConnection();
   const wallet = useWallet();
 
   const [loading, setLoading] = useState<boolean>(true);

@@ -1,31 +1,28 @@
-import { PublicKey } from '@solana/web3.js';
-import {
-  addToWhitelist,
-  Provider,
-} from '@frakters/community-pools-client-library-v2';
+import { web3, pools } from '@frakt-protocol/frakt-sdk';
 
 import {
+  showSolscanLinkNotification,
   signAndConfirmTransaction,
-  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
 import { AddToWhiteListTransactionRawParams } from './index';
+import { notify } from '../../../utils';
+import { captureSentryError } from '../../../utils/sentry';
+import { NotifyType } from '../../../utils/solanaUtils';
 
-const rawAddToWhitelistOwner = async ({
+export const addToWhitelistOwner = async ({
   communityPoolAddress,
   whitelistedAddress,
   connection,
   wallet,
 }: AddToWhiteListTransactionRawParams): Promise<void> => {
-  await addToWhitelist(
-    {
+  try {
+    await pools.addToWhitelist({
       isCreator: true,
-      communityPool: new PublicKey(communityPoolAddress),
-      whitelistedAddress: new PublicKey(whitelistedAddress),
-    },
-    {
-      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      communityPool: new web3.PublicKey(communityPoolAddress),
+      whitelistedAddress: new web3.PublicKey(whitelistedAddress),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
       userPubkey: wallet.publicKey,
-      provider: new Provider(connection, wallet, null),
+      connection,
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
           transaction,
@@ -34,10 +31,22 @@ const rawAddToWhitelistOwner = async ({
           signers,
         });
       },
-    },
-  );
-};
+    });
+  } catch (error) {
+    const isNotConfirmed = showSolscanLinkNotification(error);
 
-export const addToWhitelistOwner = wrapTxnWithTryCatch(rawAddToWhitelistOwner, {
-  onErrorMessage: { message: 'Transaction failed' },
-});
+    if (!isNotConfirmed) {
+      notify({
+        message: 'Transaction failed',
+        type: NotifyType.ERROR,
+      });
+    }
+
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'addToWhitelistOwner',
+      params: { whitelistedAddress, communityPoolAddress },
+    });
+  }
+};

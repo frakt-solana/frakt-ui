@@ -1,7 +1,7 @@
 import { Dictionary } from 'lodash';
 import { NftPoolData, PoolWhitelistType } from '../../utils/cacher/nftPools';
 
-import { UserNFT } from '../userTokens';
+import { UserNFT } from '../../state/userTokens/types';
 
 export const getWhitelistedMintsDictionary = (
   pool: NftPoolData,

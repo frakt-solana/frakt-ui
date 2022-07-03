@@ -1,0 +1,217 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-top: 30px;
+}
+
+.title {
+  font: var(--font-h4);
+  margin-bottom: 20px;
+}
+
+.block {
+  width: 100%;
+  overflow: hidden;
+}
+
+.lendingConainer {
+  display: flex;
+  min-width: 559px;
+
+  @media screen and (max-width: 1240px) {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    min-width: 100%;
+  }
+}
+
+.cardContainer {
+  min-width: 559px;
+
+  @media screen and (max-width: 768px) {
+    min-width: unset;
+  }
+}
+
+.subtitle {
+  font: var(--font-text-1);
+  margin-bottom: 20px;
+}
+
+.cards {
+  display: flex;
+  padding-bottom: 10px;
+
+  @media screen and (max-width: 1240px) {
+    justify-content: center;
+  }
+
+  @media screen and (max-width: 768px) {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-color-3);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--black-color);
+  border: 1px solid var(--color-gray-4);
+  border-radius: 10px;
+  max-width: 215px;
+  padding: 20px;
+  margin-right: -43px;
+}
+
+.nftImage {
+  width: 175px;
+  height: 175px;
+}
+
+.nftName {
+  font: var(--font-text-3);
+  padding-top: 10px;
+  flex-grow: 1;
+}
+
+.cardTitle {
+  padding: 10px 0 5px;
+  color: var(--color-gray-4);
+  font: var(--font-text-5);
+  text-transform: uppercase;
+}
+
+.nftValue {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  height: 24px;
+  width: 24px;
+  margin-left: 5px;
+}
+
+.line {
+  background: var(--color-gray-4);
+  margin: 0 30px;
+  min-width: 1px;
+
+  @media screen and (max-width: 1240px) {
+    margin: 20px 0 30px;
+    height: 1px;
+    width: 100%;
+  }
+}
+
+.table {
+  height: 291px;
+  overflow: auto;
+  padding-right: 10px;
+  scrollbar-gutter: stable;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-color-3);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 663px;
+}
+
+.headerValues {
+  display: flex;
+  justify-content: space-between;
+  max-width: 220px;
+  width: 100%;
+}
+
+.headerTitle {
+  color: var(--color-gray-4);
+  font: var(--font-text-5);
+  text-transform: uppercase;
+}
+
+.tableInfo {
+  display: flex;
+  align-items: center;
+}
+
+.tableRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-gray-4);
+  padding: 10px 0 8px;
+  min-width: 663px;
+
+  &::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--gray-color-3) !important;
+  }
+}
+
+.rowImage {
+  height: 24px;
+  width: 24px;
+  margin: 0 5px 0 10px;
+}
+
+.tableStats {
+  display: flex;
+  justify-content: space-between;
+  max-width: 270px;
+  width: 100%;
+
+  & p {
+    min-width: 78px;
+    text-align: right;
+  }
+}
+
+.mockImages {
+  display: flex;
+  margin: 0 5px 0 10px;
+  position: relative;
+
+  &::before {
+    content: attr(aria-valuenow) '+54';
+    background: var(--accent-color-1);
+    color: var(--white-color);
+    position: absolute;
+    font: var(--font-smallest);
+    padding: 2px 4px 4px 5px;
+    top: -4px;
+    left: 7px;
+    border-radius: 10px;
+    transform: translateX(-13px);
+    width: 29px;
+    height: 16px;
+  }
+}
+
+.mockImages .rowImage {
+  margin: 0;
+}

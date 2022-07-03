@@ -1,13 +1,13 @@
-import BN, { max, min } from 'bn.js';
 import {
+  BN,
   MainRouterView,
   SecondaryRewardView,
   SecondStakeAccountView,
   StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
+} from '@frakt-protocol/frakt-sdk';
 
-import { PoolStats } from '../../pages/PoolsPage';
 import { FusionPoolInfo, RaydiumPoolInfo } from './liquidityPools.model';
+import { PoolStats } from '../../pages/NFTPools/model';
 
 export const calculateTVL = (
   poolInfo: RaydiumPoolInfo,
@@ -160,14 +160,13 @@ export const calcTotalForCreateLiquidity = (
 export const calcFusionMainRewards = (
   mainRouter: MainRouterView,
   stakeAccount: StakeAccountView,
+  solanaTimestamp: number, //? Unix timestamp
 ): number => {
   if (!mainRouter || !stakeAccount) return 0;
 
-  const checkDate = Math.floor(Date.now() / 1000);
-
   const reward =
     ((Number(mainRouter.cumulative) +
-      Number(mainRouter.apr) * (checkDate - Number(mainRouter.lastTime)) -
+      Number(mainRouter.apr) * (solanaTimestamp - Number(mainRouter.lastTime)) -
       Number(stakeAccount.stakedAtCumulative)) *
       Number(stakeAccount.amount)) /
     (1e10 / Number(mainRouter.decimalsInput)) /
@@ -182,6 +181,7 @@ export const caclFusionSecondRewards = (
   secondaryReward: SecondaryRewardView,
   secondaryStakeAccount: SecondStakeAccountView,
   mainRouter: MainRouterView,
+  solanaTimestamp: number, //? Unix timestamp
 ): number => {
   if (
     !stakeAccount ||
@@ -194,14 +194,14 @@ export const caclFusionSecondRewards = (
   let check_date: BN;
 
   if (Number(stakeAccount.stakeEnd) > 0) {
-    const check_date1 = min(
-      new BN(Math.floor(Date.now() / 1000)),
+    const check_date1 = BN.min(
+      new BN(solanaTimestamp),
       new BN(stakeAccount.stakeEnd),
     );
-    check_date = min(check_date1, new BN(secondaryReward.endTime));
+    check_date = BN.min(check_date1, new BN(secondaryReward.endTime));
   } else {
-    check_date = min(
-      new BN(Math.floor(Date.now() / 1000)),
+    check_date = BN.min(
+      new BN(solanaTimestamp),
       new BN(secondaryReward.endTime),
     );
   }
@@ -209,7 +209,7 @@ export const caclFusionSecondRewards = (
   if (secondaryReward && secondaryStakeAccount) {
     const calculation =
       ((check_date.toNumber() -
-        max(
+        BN.max(
           new BN(secondaryStakeAccount.lastHarvestedAt),
           new BN(stakeAccount.stakedAt),
         ).toNumber()) *
@@ -221,7 +221,7 @@ export const caclFusionSecondRewards = (
   } else {
     const calculation =
       ((check_date.toNumber() -
-        max(
+        BN.max(
           new BN(secondaryReward.startTime),
           new BN(stakeAccount.stakedAt),
         ).toNumber()) *
@@ -239,19 +239,27 @@ export const getStakedBalance = (
   lpDecimals: number,
 ): number => Number(fusionPoolInfo?.stakeAccount?.amount) / 10 ** lpDecimals;
 
+export const getFusionApr = (fusionPoolRouter: MainRouterView): number => {
+  const SECONDS_IN_YEAR = 31536000;
+
+  if (fusionPoolRouter) {
+    const { apr, endTime, decimalsInput } = fusionPoolRouter;
+
+    return (
+      (((Number(apr) * Number(endTime)) / SECONDS_IN_YEAR) * 1e2) /
+      (1e10 / Number(decimalsInput))
+    );
+  }
+
+  return 0;
+};
+
 export const sumFusionAndRaydiumApr = (
   fusionPoolInfo: FusionPoolInfo,
   poolStats: PoolStats,
 ): number => {
   if (fusionPoolInfo?.mainRouter) {
-    const SECONDS_IN_YEAR = 31536000;
-    const { apr, endTime, decimalsInput } = fusionPoolInfo.mainRouter;
-
-    return (
-      (((Number(apr) * Number(endTime)) / SECONDS_IN_YEAR) * 1e2) /
-        (1e10 / Number(decimalsInput)) +
-      poolStats?.apr
-    );
+    return getFusionApr(fusionPoolInfo.mainRouter) + poolStats?.apr;
   }
   return poolStats?.apr || 0;
 };

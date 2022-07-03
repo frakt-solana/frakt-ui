@@ -1,14 +1,16 @@
 import BN from 'bn.js';
+import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { AccountInfo } from '@solana/web3.js';
 import { TokenInfo } from '@solana/spl-token-registry';
 
 import { decimalBNToString, SOL_TOKEN } from '../../utils';
-import { RawUserTokensByMint, useUserTokens } from '../../contexts/userTokens';
+import { selectUserTokensState } from '../../state/userTokens/selectors';
+import { RawUserTokensByMint } from '../../state/userTokens/types';
 import TokenField, { TokenFieldProps } from './TokenField';
 import { useNativeAccount } from '../../utils/accounts';
 
-const getTokenBalance = (
+export const getTokenBalance = (
   token: TokenInfo,
   account: AccountInfo<Buffer>,
   rawUserTokensByMint: RawUserTokensByMint,
@@ -61,10 +63,11 @@ export const TokenFieldWithBalance = ({
   showMaxButton = false,
   disabled = false,
   lpBalance,
+  labelRight,
   lpTokenSymbol,
 }: TokenFieldWithBalanceProps): JSX.Element => {
   const { connected } = useWallet();
-  const { rawUserTokensByMint } = useUserTokens();
+  const { rawUserTokensByMint } = useSelector(selectUserTokensState);
   const { account } = useNativeAccount();
 
   const balances = getMintBalanceMap(tokensList, account, rawUserTokensByMint);
@@ -97,6 +100,7 @@ export const TokenFieldWithBalance = ({
       error={error}
       placeholder={placeholder}
       disabled={disabled}
+      labelRight={labelRight}
     />
   );
 };

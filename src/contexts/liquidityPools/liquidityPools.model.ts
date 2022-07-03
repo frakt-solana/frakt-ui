@@ -1,6 +1,14 @@
-import { LiquidityPoolKeysV4 } from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-import BN from 'bn.js';
+import {
+  BN,
+  raydium,
+  TokenInfo,
+  MainPoolConfigView,
+  MainRouterView,
+  SecondStakeAccountView,
+  SecondaryRewardView,
+  StakeAccountView,
+} from '@frakt-protocol/frakt-sdk';
+
 import { ReactNode } from 'react';
 
 import {
@@ -12,20 +20,13 @@ import {
   RemoveLiquidityTransactionParams,
   SwapTransactionParams,
 } from './transactions/raydiumLiquidityPools';
-import {
-  MainPoolConfigView,
-  MainRouterView,
-  SecondStakeAccountView,
-  SecondaryRewardView,
-  StakeAccountView,
-} from '@frakters/frkt-multiple-reward/lib/accounts';
 
 export interface LiquidityPoolsContextValues {
   loading: boolean;
   poolDataByMint: PoolDataByMint;
   fetchRaydiumPoolsInfo: (
-    raydiumPoolConfigs: LiquidityPoolKeysV4[],
-  ) => Promise<RaydiumPoolInfo[]>;
+    raydiumPoolConfigs: raydium.LiquidityPoolKeysV4[],
+  ) => Promise<raydium.LiquidityPoolInfo[]>;
   raydiumSwap: (params: SwapTransactionParams) => Promise<boolean | void>;
   createRaydiumLiquidityPool: (params: any) => Promise<void>;
   addRaydiumLiquidity: (
@@ -65,7 +66,7 @@ export type FusionPoolInfoByMint = Map<string, FusionPoolInfo>;
 
 export interface PoolData {
   tokenInfo: TokenInfo;
-  poolConfig: LiquidityPoolKeysV4;
+  poolConfig: raydium.LiquidityPoolKeysV4;
 }
 
 export type FetchPoolDataByMint = ({
@@ -101,4 +102,13 @@ export interface FusionPoolInfo {
 
 export interface secondaryRewardWithTokenInfo extends SecondaryRewardView {
   tokenInfo: TokenInfo[];
+}
+
+export interface FusionPool {
+  router: MainRouterView;
+  stakeAccounts: StakeAccountView[];
+  secondaryRewards: {
+    rewards: SecondaryRewardView;
+    stakeAccounts: SecondStakeAccountView[];
+  }[];
 }

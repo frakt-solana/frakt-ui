@@ -2,8 +2,11 @@
   opacity: 1;
 }
 
-.rc-tooltip-placement-bottom .rc-tooltip-arrow, .rc-tooltip-placement-bottomLeft .rc-tooltip-arrow, .rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
-  border-bottom-color: var(--white-color);
+.rc-tooltip-placement-bottom .rc-tooltip-arrow,
+.rc-tooltip-placement-bottomLeft .rc-tooltip-arrow,
+.rc-tooltip-placement-bottomRight .rc-tooltip-arrow {
+  // border-bottom-color: var(--white-color);
+  opacity: 0;
 }
 
 .rc-tooltip-inner {
@@ -13,7 +16,6 @@
   font-size: 16px;
   padding: 8px;
 }
-
 
 .rc-tooltip.custom-animation-appear,
 .rc-tooltip.custom-animation-enter {

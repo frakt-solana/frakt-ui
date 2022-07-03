@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import classNames from 'classnames';
 import { TokenInfo } from '@solana/spl-token-registry';
 
-import { UserNFTWithCollection } from '../../../../../contexts/userTokens';
+import { UserNFTWithCollection } from '../../../../../state/userTokens/types';
 import styles from './SellingModal.module.scss';
 import {
   CurrencySelector,

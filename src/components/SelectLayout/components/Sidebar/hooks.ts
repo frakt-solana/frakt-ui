@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+
+import { BorrowNft } from '../../../../state/loans/types';
 import { useHeaderState } from '../../../Layout/headerState';
-import { UserNFT } from '../../../../contexts/userTokens';
 
 export const useSidebar = (
-  nfts: UserNFT[],
+  nfts: BorrowNft[],
 ): {
   isSidebarVisible: boolean;
   isHeaderHidden: boolean;

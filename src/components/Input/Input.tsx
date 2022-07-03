@@ -1,6 +1,6 @@
-import React, { LegacyRef } from 'react';
+import React, { Ref } from 'react';
 import styles from './styles.module.scss';
-import { Input as InputAnt, InputProps as InputPropsAnt } from 'antd';
+import { Input as InputAnt, InputRef, InputProps as InputPropsAnt } from 'antd';
 import classNames from 'classnames';
 
 export interface InputProps extends InputPropsAnt {
@@ -38,7 +38,7 @@ export const Input = React.forwardRef(
         className={classNames(styles.input, className, {
           [styles.inputError]: error,
         })}
-        ref={ref as LegacyRef<InputAnt>}
+        ref={ref as Ref<InputRef>}
         {...props}
         onChange={onChange}
       />

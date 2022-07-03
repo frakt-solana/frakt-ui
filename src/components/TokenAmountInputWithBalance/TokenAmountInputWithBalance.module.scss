@@ -1,0 +1,19 @@
+// .tokenAmountInputWithBalance {
+// }
+
+.tokenAmountInputWithBalanceValue {
+  text-align: end;
+  font: var(--font-text-6);
+  color: var(--white-color);
+  margin-bottom: 5px;
+}
+
+.tokenAmountInputWithBalanceBtn {
+  text-decoration: underline;
+  cursor: pointer;
+  transition: opacity var(--transition-1);
+
+  &:hover {
+    opacity: 0.75;
+  }
+}

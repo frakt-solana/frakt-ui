@@ -1,12 +1,12 @@
 import { FC, useEffect } from 'react';
 import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
 
 import Header from '../Header';
 import NotificationBar from '../NotificationBar';
 import styles from './styles.module.scss';
-import { useWalletModal } from '../../contexts/WalletModal';
-import { useHealthModal } from '../../contexts/HealthModal';
 import { HeaderStateProvider, useHeaderState } from './headerState';
+import { commonActions } from '../../state/common/actions';
 
 interface LayoutProps {
   customHeader?: JSX.Element;
@@ -21,12 +21,11 @@ export const Layout: FC<LayoutProps> = ({
   className = '',
   contentClassName = '',
 }) => {
-  const { visible, setVisible } = useWalletModal();
-  const health = useHealthModal();
+  const dispatch = useDispatch();
   const { isHeaderHidden, onContentScroll } = useHeaderState();
 
   useEffect(() => {
-    visible && setVisible(false);
+    dispatch(commonActions.setWalletModal({ isVisible: false }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
@@ -45,17 +44,7 @@ export const Layout: FC<LayoutProps> = ({
       >
         {children}
       </div>
-      <NotificationBar
-        mode={health?.config?.mode}
-        className={classNames(styles.notificationBar, {
-          [styles.notificationBarHide]: !health.visible,
-        })}
-        handleClose={() => {
-          health.setVisible(false);
-        }}
-      >
-        {health?.config?.content}
-      </NotificationBar>
+      <NotificationBar />
       <div className={styles.noise} />
     </div>
   );

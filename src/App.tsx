@@ -11,18 +11,21 @@ import {
   WalletProvider,
 } from '@solana/wallet-adapter-react';
 import { FC } from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
 // import { IntercomProvider } from 'react-use-intercom';
 
 import { Router } from './router';
+import store from './state/store';
 import { UserTokensProvider } from './contexts/userTokens';
-import { TokenListContextProvider } from './contexts/TokenList';
 import { ENDPOINT } from './config';
-import { WalletModalProvider } from './contexts/WalletModal';
-import { HealthModalProvider } from './contexts/HealthModal';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';
-import { LoansProvider } from './contexts/loans';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
+import { createBrowserHistory } from 'history';
+import { initSentry } from './utils/sentry';
+
+const history = createBrowserHistory();
+initSentry(history);
 
 const wallets = [
   getPhantomWallet(),
@@ -34,28 +37,22 @@ const wallets = [
 
 const App: FC = () => {
   return (
-    <ConnectionProvider endpoint={ENDPOINT}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          <HealthModalProvider>
-            {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
-            <TokenListContextProvider>
-              <UserTokensProvider>
-                <LiquidityPoolsProvider>
-                  <NftPoolsProvider>
-                    <LoansProvider>
-                      <Router />
-                    </LoansProvider>
-                  </NftPoolsProvider>
-                </LiquidityPoolsProvider>
-              </UserTokensProvider>
-            </TokenListContextProvider>
-            {/* <IntercomService /> */}
-            {/* </IntercomProvider> */}
-          </HealthModalProvider>
-        </WalletModalProvider>
-      </WalletProvider>
-    </ConnectionProvider>
+    <ReduxProvider store={store}>
+      <ConnectionProvider endpoint={ENDPOINT}>
+        <WalletProvider wallets={wallets} autoConnect>
+          {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
+          <UserTokensProvider>
+            <LiquidityPoolsProvider>
+              <NftPoolsProvider>
+                <Router />
+              </NftPoolsProvider>
+            </LiquidityPoolsProvider>
+          </UserTokensProvider>
+          {/* <IntercomService /> */}
+          {/* </IntercomProvider> */}
+        </WalletProvider>
+      </ConnectionProvider>
+    </ReduxProvider>
   );
 };
 

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { UserNFT } from '../../../../contexts/userTokens';
+import { UserNFT } from '../../../../state/userTokens/types';
 import { CopyClipboardIcon } from '../../../../icons';
 import { copyToClipboard } from '../../../../utils';
 import { shortenAddress } from '../../../../utils/solanaUtils';

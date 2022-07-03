@@ -1,37 +1,38 @@
 import { FC } from 'react';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 
 import LoanCard from '../../../../components/LoanCard';
 import styles from './LoansList.module.scss';
-import FakeInfinityScroll, {
+import InfinityScroll, {
   useFakeInfinityScroll,
-} from '../../../../components/FakeInfinityScroll';
-import { LoanWithArweaveMetadata } from '../../../../contexts/loans';
+} from '../../../../components/InfinityScroll';
+import {
+  selectUserLoans,
+  selectUserLoansPending,
+} from '../../../../state/loans/selectors';
+import { Loan } from '../../../../state/loans/types';
 
 interface LoansListProps {
   className?: string;
-  loansWithArweaveMetadata?: LoanWithArweaveMetadata[];
-  loading?: boolean;
 }
 
-export const LoansList: FC<LoansListProps> = ({
-  className,
-  loansWithArweaveMetadata = [],
-  loading = false,
-}) => {
+export const LoansList: FC<LoansListProps> = ({ className }) => {
   const { itemsToShow, next } = useFakeInfinityScroll(12);
+  const userLoans: Loan[] = useSelector(selectUserLoans);
+  const loading: boolean = useSelector(selectUserLoansPending);
 
   return (
-    <FakeInfinityScroll
+    <InfinityScroll
       itemsToShow={itemsToShow}
       isLoading={loading}
       next={next}
       wrapperClassName={classNames(styles.loansList, className)}
       emptyMessage="Loans not found"
     >
-      {loansWithArweaveMetadata.map((loanWithArweaveMetadata, idx) => (
-        <LoanCard key={idx} loanWithArweaveMetadata={loanWithArweaveMetadata} />
+      {userLoans.map((loan) => (
+        <LoanCard key={loan?.mint} loan={loan} />
       ))}
-    </FakeInfinityScroll>
+    </InfinityScroll>
   );
 };

@@ -1,11 +1,12 @@
 import { useMemo, useRef } from 'react';
 
+import { DiscordModal } from '../../components/DiscordModal';
 import { AppLayout } from '../../components/Layout/AppLayout';
 import Statistics from './sections/Statistics/Statistics';
 import { FullPotentialSection } from './sections/FullPotentialSection';
-import { OurTokensSection } from './sections/OurTokensSection';
+// import { OurTokensSection } from './sections/OurTokensSection';
 import { TeamSection } from './sections/TeamSection';
-import { TestimonialsSection } from './sections/TestimonialsSection';
+// import { TestimonialsSection } from './sections/TestimonialsSection';
 // import PartnersSection from './sections/PartnersSection';
 import { Footer } from './sections/Footer';
 import { CustomHeader } from './CustomHeader';
@@ -33,11 +34,12 @@ const HomePage = (): JSX.Element => {
       <MainSection />
       <Statistics />
       <FullPotentialSection navRef={sectionRef1} />
-      <OurTokensSection navRef={sectionRef2} />
-      <TestimonialsSection />
+      {/* <OurTokensSection navRef={sectionRef2} /> */}
+      {/* <TestimonialsSection /> */}
       {/* <PartnersSection navRef={sectionRef3} /> */}
       <TeamSection navRef={sectionRef4} />
       <Footer navRef={sectionRef5} />
+      <DiscordModal />
     </AppLayout>
   );
 };

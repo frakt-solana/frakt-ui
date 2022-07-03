@@ -1,14 +1,13 @@
-import { PublicKey } from '@solana/web3.js';
-import {
-  addToWhitelist,
-  Provider,
-} from '@frakters/community-pools-client-library-v2';
+import { web3, pools } from '@frakt-protocol/frakt-sdk';
 
 import {
+  showSolscanLinkNotification,
   signAndConfirmTransaction,
   WalletAndConnection,
-  wrapTxnWithTryCatch,
 } from '../../../utils/transactions';
+import { notify } from '../../../utils';
+import { NotifyType } from '../../../utils/solanaUtils';
+import { captureSentryError } from '../../../utils/sentry';
 
 export interface AddToWhiteListTransactionParams {
   communityPoolAddress: string;
@@ -19,22 +18,20 @@ export interface AddToWhiteListTransactionRawParams
   extends AddToWhiteListTransactionParams,
     WalletAndConnection {}
 
-const rawAddToWhitelist = async ({
+export const addToWhitelistTransaction = async ({
   connection,
   wallet,
   communityPoolAddress,
   whitelistedAddress,
 }: AddToWhiteListTransactionRawParams): Promise<void> => {
-  await addToWhitelist(
-    {
+  try {
+    await pools.addToWhitelist({
       isCreator: false,
-      communityPool: new PublicKey(communityPoolAddress),
-      whitelistedAddress: new PublicKey(whitelistedAddress),
-    },
-    {
-      programId: new PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
+      communityPool: new web3.PublicKey(communityPoolAddress),
+      whitelistedAddress: new web3.PublicKey(whitelistedAddress),
+      programId: new web3.PublicKey(process.env.COMMUNITY_POOLS_PUBKEY),
       userPubkey: wallet.publicKey,
-      provider: new Provider(connection, wallet, null),
+      connection,
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
           transaction,
@@ -43,13 +40,22 @@ const rawAddToWhitelist = async ({
           signers,
         });
       },
-    },
-  );
-};
+    });
+  } catch (error) {
+    const isNotConfirmed = showSolscanLinkNotification(error);
 
-export const addToWhitelistTransaction = wrapTxnWithTryCatch(
-  rawAddToWhitelist,
-  {
-    onErrorMessage: { message: 'Transaction failed' },
-  },
-);
+    if (!isNotConfirmed) {
+      notify({
+        message: 'Transaction failed',
+        type: NotifyType.ERROR,
+      });
+    }
+
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'addToWhitelist',
+      params: { whitelistedAddress, communityPoolAddress },
+    });
+  }
+};

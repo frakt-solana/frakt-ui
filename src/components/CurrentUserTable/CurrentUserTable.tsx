@@ -4,19 +4,26 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { formatNumber, shortenAddress } from '../../utils/solanaUtils';
 import { SolanaIcon, UserIcon } from '../../icons';
 import { useNativeAccount } from '../../utils/accounts';
-import styles from './styles.module.scss';
+import { getDiscordUri, getDiscordAvatarUrl } from '../../utils';
 import { PATHS } from '../../constants';
 import { LinkWithArrow } from '../LinkWithArrow';
+import { UserState } from '../../state/common/types';
+import DiscordIcon from '../../icons/DiscordIcon2';
+
+import styles from './styles.module.scss';
 
 interface CurrentUserTableProps {
   className?: string;
+  user?: UserState;
 }
 
 const CurrentUserTable = ({
   className = '',
+  user = null,
 }: CurrentUserTableProps): JSX.Element => {
   const { disconnect, publicKey } = useWallet();
   const { account } = useNativeAccount();
+  const avatarUrl = getDiscordAvatarUrl(user?.discordId, user?.avatar);
 
   if (!publicKey) {
     return null;
@@ -36,7 +43,7 @@ const CurrentUserTable = ({
   return (
     <div className={`${className} ${styles.wrapper}`}>
       <div className={styles.userWrapper}>
-        <UserIcon />
+        <UserIcon className={styles.avatar} url={avatarUrl} />
         <div className={styles.userInfo}>
           <p className={styles.userKey}>
             {shortenAddress(`${publicKey || ''}`)}
@@ -49,6 +56,15 @@ const CurrentUserTable = ({
         </div>
       </div>
       {getBalanceValue()}
+      {!user && (
+        <a
+          href={getDiscordUri(publicKey)}
+          className={styles.discordButton}
+          rel="noopener noreferrer"
+        >
+          <DiscordIcon className={styles.logo} /> Link discord
+        </a>
+      )}
       <button onClick={disconnect} className={styles.disconnectButton}>
         Disconnect wallet
       </button>

@@ -1,15 +1,15 @@
-import { WSOL } from '@raydium-io/raydium-sdk';
+import { FC } from 'react';
+import { raydium } from '@frakt-protocol/frakt-sdk';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
-import styles from './styles.module.scss';
 import SwapForm from '../../components/SwapForm';
 import { Loader } from '../../components/Loader';
-import { useLiquidityPools } from '../../contexts/liquidityPools';
+import styles from './styles.module.scss';
+import { selectLoading } from '../../state/tokenList/selectors';
+import { useSelector } from 'react-redux';
 
-const SwapPage = (): JSX.Element => {
-  const { loading: poolsDataLoading } = useLiquidityPools();
-
-  const loading = poolsDataLoading;
+const SwapPage: FC = () => {
+  const loading = useSelector(selectLoading);
 
   return (
     <AppLayout contentClassName={styles.exchange}>
@@ -23,7 +23,7 @@ const SwapPage = (): JSX.Element => {
             <Loader size={'large'} />
           </div>
         ) : (
-          <SwapForm defaultTokenMint={WSOL.mint} />
+          <SwapForm defaultTokenMint={raydium.WSOL.mint} />
         )}
       </div>
     </AppLayout>

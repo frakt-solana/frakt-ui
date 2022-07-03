@@ -1,21 +1,12 @@
-import {
-  Liquidity,
-  LiquidityPoolKeysV4,
-  Percent,
-  TokenAmount,
-  Token,
-} from '@raydium-io/raydium-sdk';
-import { TokenInfo } from '@solana/spl-token-registry';
-
-import { RaydiumPoolInfo } from '../../contexts/liquidityPools';
+import { raydium, TokenInfo } from '@frakt-protocol/frakt-sdk';
 
 interface AmountOutParams {
-  poolKeys: LiquidityPoolKeysV4;
-  poolInfo: RaydiumPoolInfo;
+  poolKeys: raydium.LiquidityPoolKeysV4;
+  poolInfo: raydium.LiquidityPoolInfo;
   payToken: TokenInfo;
   payAmount: number;
   receiveToken: TokenInfo;
-  slippage?: Percent;
+  slippage?: raydium.Percent;
 }
 
 export const getOutputAmount = ({
@@ -24,15 +15,15 @@ export const getOutputAmount = ({
   payToken,
   payAmount,
   receiveToken,
-  slippage = new Percent(1, 100),
+  slippage = new raydium.Percent(1, 100),
 }: AmountOutParams): {
   amountOut: string;
   minAmountOut: string;
   priceImpact: string;
 } => {
   try {
-    const amountIn = new TokenAmount(
-      new Token(
+    const amountIn = new raydium.TokenAmount(
+      new raydium.Token(
         payToken.address,
         payToken.decimals,
         payToken.symbol,
@@ -42,15 +33,14 @@ export const getOutputAmount = ({
       false,
     );
 
-    const { amountOut, minAmountOut, priceImpact } = Liquidity.computeAmountOut(
-      {
+    const { amountOut, minAmountOut, priceImpact } =
+      raydium.Liquidity.computeAmountOut({
         poolKeys,
         poolInfo,
         amountIn,
         currencyOut: receiveToken,
         slippage,
-      },
-    );
+      });
 
     return {
       amountOut: amountOut.toSignificant(),
@@ -69,12 +59,12 @@ export const getOutputAmount = ({
 };
 
 interface AmountInParams {
-  poolKeys: LiquidityPoolKeysV4;
-  poolInfo: RaydiumPoolInfo;
+  poolKeys: raydium.LiquidityPoolKeysV4;
+  poolInfo: raydium.LiquidityPoolInfo;
   receiveToken: TokenInfo;
   receiveAmount: number;
   payToken: TokenInfo;
-  slippage?: Percent;
+  slippage?: raydium.Percent;
 }
 
 export const getInputAmount = ({
@@ -83,15 +73,15 @@ export const getInputAmount = ({
   receiveToken,
   receiveAmount,
   payToken,
-  slippage = new Percent(1, 100),
+  slippage = new raydium.Percent(1, 100),
 }: AmountInParams): {
   amountIn: string;
   maxAmountIn: string;
   priceImpact: string;
 } => {
   try {
-    const amountOut = new TokenAmount(
-      new Token(
+    const amountOut = new raydium.TokenAmount(
+      new raydium.Token(
         receiveToken.address,
         receiveToken.decimals,
         receiveToken.symbol,
@@ -101,13 +91,14 @@ export const getInputAmount = ({
       false,
     );
 
-    const { amountIn, maxAmountIn, priceImpact } = Liquidity.computeAmountIn({
-      poolKeys,
-      poolInfo,
-      amountOut,
-      currencyIn: payToken,
-      slippage,
-    });
+    const { amountIn, maxAmountIn, priceImpact } =
+      raydium.Liquidity.computeAmountIn({
+        poolKeys,
+        poolInfo,
+        amountOut,
+        currencyIn: payToken,
+        slippage,
+      });
 
     return {
       amountIn: amountIn.toSignificant(),
@@ -126,12 +117,12 @@ export const getInputAmount = ({
 };
 
 interface ComputeAnotherAmountParams {
-  poolKeys: LiquidityPoolKeysV4;
-  poolInfo: RaydiumPoolInfo;
+  poolKeys: raydium.LiquidityPoolKeysV4;
+  poolInfo: raydium.LiquidityPoolInfo;
   token: TokenInfo;
   amount: number;
   anotherCurrency: TokenInfo;
-  slippage?: Percent;
+  slippage?: raydium.Percent;
 }
 
 export const computeAnotherAmount = ({
@@ -140,25 +131,31 @@ export const computeAnotherAmount = ({
   token,
   amount,
   anotherCurrency,
-  slippage = new Percent(1, 100),
+  slippage = new raydium.Percent(1, 100),
 }: ComputeAnotherAmountParams): {
   anotherAmount: string;
   maxAnotherAmount: string;
 } => {
   try {
-    const tokenAmount = new TokenAmount(
-      new Token(token.address, token.decimals, token.symbol, token.name),
+    const tokenAmount = new raydium.TokenAmount(
+      new raydium.Token(
+        token.address,
+        token.decimals,
+        token.symbol,
+        token.name,
+      ),
       amount,
       false,
     );
 
-    const { anotherAmount, maxAnotherAmount } = Liquidity.computeAnotherAmount({
-      poolKeys,
-      poolInfo,
-      amount: tokenAmount,
-      anotherCurrency,
-      slippage,
-    });
+    const { anotherAmount, maxAnotherAmount } =
+      raydium.Liquidity.computeAnotherAmount({
+        poolKeys,
+        poolInfo,
+        amount: tokenAmount,
+        anotherCurrency,
+        slippage,
+      });
 
     return {
       anotherAmount: anotherAmount.toSignificant(),
