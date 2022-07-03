@@ -14,6 +14,7 @@ import { caclTimeToRepay } from '../../../utils/loans';
 
 type FilterFormFieldsValues = {
   [FilterFormInputsNames.SORT]: LoansSortValue;
+  [FilterFormInputsNames.LOANS_STATUS]: StatusLoanNames;
 };
 
 type LoansSortValue = {
@@ -23,6 +24,7 @@ type LoansSortValue = {
 
 export enum FilterFormInputsNames {
   SORT = 'sort',
+  LOANS_STATUS = 'loansStatus',
 }
 
 enum SortField {
@@ -30,6 +32,12 @@ enum SortField {
   TIME_TO_REPAY = 'timeToRepay',
   HEALTH = 'health',
   CREATION = 'creation',
+}
+
+export enum StatusLoanNames {
+  SHOW_ALL_LOANS = 'showAllLoans',
+  SHOW_PRICE_BASED_LOANS = 'showPriceBasedLoans',
+  SHOW_TIME_BASED_LOANS = 'showTimeBasedLoans',
 }
 
 type UseLoansFiltering = () => {
@@ -46,6 +54,7 @@ export const useLoansFiltering: UseLoansFiltering = () => {
   const { control, watch } = useForm({
     defaultValues: {
       [FilterFormInputsNames.SORT]: SORT_VALUES[0],
+      [FilterFormInputsNames.LOANS_STATUS]: StatusLoanNames.SHOW_ALL_LOANS,
     },
   });
 
@@ -56,6 +65,7 @@ export const useLoansFiltering: UseLoansFiltering = () => {
   }, 300);
 
   const sort = watch(FilterFormInputsNames.SORT);
+  const showLoansStatus = watch(FilterFormInputsNames.LOANS_STATUS);
 
   const filteredLoans = useMemo(() => {
     if (userLoans?.length) {
@@ -64,6 +74,23 @@ export const useLoansFiltering: UseLoansFiltering = () => {
       return userLoans
         .filter((loan) => {
           const nftName = loan.name;
+
+          const showAllLoans =
+            showLoansStatus === StatusLoanNames.SHOW_ALL_LOANS;
+
+          const showPriceBasedLoans =
+            showLoansStatus === StatusLoanNames.SHOW_PRICE_BASED_LOANS;
+
+          const showTimeBasedLoans =
+            showLoansStatus === StatusLoanNames.SHOW_TIME_BASED_LOANS;
+
+          const removePriceBased =
+            !showPriceBasedLoans && loan.isPriceBased && !showAllLoans;
+
+          const removeTimeBased =
+            !showTimeBasedLoans && !loan.isPriceBased && !showAllLoans;
+
+          if (removePriceBased || removeTimeBased) return false;
 
           return nftName.toUpperCase().includes(searchString);
         })
@@ -115,7 +142,7 @@ export const useLoansFiltering: UseLoansFiltering = () => {
         });
     }
     return [];
-  }, [userLoans, sort, searchString]);
+  }, [userLoans, sort, searchString, showLoansStatus]);
 
   return {
     control,
