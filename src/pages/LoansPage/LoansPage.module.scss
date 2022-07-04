@@ -51,8 +51,8 @@
   align-items: center;
   gap: 15px 30px;
 
-  @media screen and (max-width: 1023px) {
-    margin-bottom: 35px;
+  @media screen and (max-width: 655px) {
+    margin-top: 25px;
   }
 }
 
@@ -66,6 +66,7 @@
 }
 
 .sortingSelect {
+  width: unset;
   margin-left: 8px;
 
   span {
