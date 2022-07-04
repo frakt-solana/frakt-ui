@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { Socket } from 'socket.io-client';
 import { pathOr, identity } from 'ramda';
 import moment from 'moment';
 
@@ -29,7 +30,7 @@ export const selectConnection = createSelector(
 
 export const selectSocket = createSelector(
   [pathOr(null, ['common', 'socket', 'socket'])],
-  identity,
+  (socket: Socket) => socket,
 );
 
 export const selectWalletPublicKey = createSelector(
