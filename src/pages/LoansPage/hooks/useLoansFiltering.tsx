@@ -12,11 +12,11 @@ import { ArrowDownSmallIcon } from '../../../icons';
 import { Loan } from '../../../state/loans/types';
 
 type FilterFormFieldsValues = {
-  [FilterFormInputsNames.SORT]: LoansSortValue;
+  [FilterFormInputsNames.SORT]: LoansValue;
   [FilterFormInputsNames.LOANS_STATUS]: any;
 };
 
-export type LoansSortValue = {
+export type LoansValue = {
   label: JSX.Element;
   value: string;
 };
@@ -42,7 +42,7 @@ export enum StatusLoanNames {
 type UseLoansFiltering = ({
   selectedCollections,
 }: {
-  selectedCollections: LoansSortValue[];
+  selectedCollections: LoansValue[];
 }) => {
   control: Control<FilterFormFieldsValues>;
   loans: Loan[];
@@ -161,7 +161,7 @@ export const useLoansFiltering: UseLoansFiltering = ({
   };
 };
 
-export const SORT_VALUES: LoansSortValue[] = [
+export const SORT_VALUES: LoansValue[] = [
   {
     label: (
       <span className={styles.sortName}>
@@ -230,7 +230,7 @@ export const SORT_VALUES: LoansSortValue[] = [
   },
 ];
 
-export const SORT_LOANS_TYPE_VALUES: LoansSortValue[] = [
+export const SORT_LOANS_TYPE_VALUES: LoansValue[] = [
   {
     label: <span className={styles.sortName}>All</span>,
     value: 'showAllLoans',

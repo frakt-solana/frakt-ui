@@ -6,6 +6,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media screen and (max-width: 1180px) {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .connectWallet {
@@ -49,8 +54,10 @@
   align-items: center;
   gap: 15px 30px;
 
-  @media screen and (max-width: 1023px) {
-    margin-bottom: 35px;
+  @media screen and (max-width: 1180px) {
+    margin: 20px 0;
+    width: 100%;
+    justify-content: space-evenly;
   }
 }
 
@@ -103,5 +110,9 @@
 
   .arrowDown {
     transform: rotate(180deg);
+  }
+
+  @media screen and (max-width: 1180px) {
+    flex-direction: column;
   }
 }

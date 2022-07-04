@@ -12,7 +12,7 @@ import { selectUserLoans } from '../../../../state/loans/selectors';
 import { LoansList } from '../../../WalletPage/components/LoansList';
 import {
   FilterFormInputsNames,
-  LoansSortValue,
+  LoansValue,
   SORT_LOANS_TYPE_VALUES,
   SORT_VALUES,
   useLoansFiltering,
@@ -23,9 +23,9 @@ export const MyLoansTab = (): JSX.Element => {
   const { connected } = useWallet();
   const userLoans: Loan[] = useSelector(selectUserLoans);
 
-  const [selectedCollections, setSelectedCollections] = useState<
-    LoansSortValue[]
-  >([]);
+  const [selectedCollections, setSelectedCollections] = useState<LoansValue[]>(
+    [],
+  );
 
   const { control, loans } = useLoansFiltering({
     selectedCollections,

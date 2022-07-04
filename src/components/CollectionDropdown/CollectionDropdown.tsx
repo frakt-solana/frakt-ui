@@ -1,5 +1,5 @@
-import { FC, useState } from 'react';
-import ReactSelect, { components, MultiValue } from 'react-select';
+import { FC } from 'react';
+import ReactSelect, { components } from 'react-select';
 import classNames from 'classnames';
 
 import styles from './CollectionDropdown.module.scss';
@@ -70,11 +70,14 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
     indicatorSeparator: () => ({ display: 'none' }),
     clearIndicator: () => ({ display: 'none' }),
     dropdownIndicator: () => ({
-      color: 'hsl(0, 0%, 80%)',
+      color: 'hsl(0, 0%, 40%)',
       padding: 8,
       marginLeft: '-10px',
       marginTop: 5,
-      '&:hover': { color: 'hsl(0, 0%, 20%)' },
+      '&:hover': {
+        color: 'hsl(0, 0%, 20%)',
+        transition: 'opacity var(--transition-1)',
+      },
     }),
     menuList: () => ({ padding: '6px 0' }),
   };
