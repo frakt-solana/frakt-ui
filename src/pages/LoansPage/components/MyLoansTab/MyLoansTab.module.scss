@@ -43,16 +43,6 @@
   }
 }
 
-.searchInput {
-  max-width: 330px;
-  margin-right: 20px;
-  width: unset;
-
-  @media screen and (max-width: 468px) {
-    margin-bottom: 20px;
-  }
-}
-
 .filters {
   display: flex;
   justify-content: flex-end;
@@ -64,17 +54,9 @@
   }
 }
 
-.searchIcon {
-  margin-right: 5px;
-
-  svg {
-    width: 14px;
-    color: var(--color-gray-03);
-  }
-}
-
 .sortingSelect {
   margin-left: 8px;
+  width: unset;
 
   span {
     display: flex;

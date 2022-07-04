@@ -1,23 +1,22 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 
-import { selectUserLoans } from '../../../state/loans/selectors';
+import styles from '../components/MyLoansTab/MyLoansTab.module.scss';
 import { compareNumbers } from '../../../contexts/liquidityPools';
+import { selectUserLoans } from '../../../state/loans/selectors';
+import { caclTimeToRepay } from '../../../utils/loans';
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Loan } from '../../../state/loans/types';
-import styles from '../components/MyLoansTab/MyLoansTab.module.scss';
-import { useDebounce } from '../../../hooks';
-import { caclTimeToRepay } from '../../../utils/loans';
 
 type FilterFormFieldsValues = {
   [FilterFormInputsNames.SORT]: LoansSortValue;
-  [FilterFormInputsNames.LOANS_STATUS]: StatusLoanNames;
+  [FilterFormInputsNames.LOANS_STATUS]: any;
 };
 
-type LoansSortValue = {
+export type LoansSortValue = {
   label: JSX.Element;
   value: string;
 };
@@ -40,13 +39,18 @@ export enum StatusLoanNames {
   SHOW_TIME_BASED_LOANS = 'showTimeBasedLoans',
 }
 
-type UseLoansFiltering = () => {
+type UseLoansFiltering = ({
+  selectedCollections,
+}: {
+  selectedCollections: LoansSortValue[];
+}) => {
   control: Control<FilterFormFieldsValues>;
   loans: Loan[];
-  setSearch: (value?: string) => void;
 };
 
-export const useLoansFiltering: UseLoansFiltering = () => {
+export const useLoansFiltering: UseLoansFiltering = ({
+  selectedCollections,
+}) => {
   const userLoans: Loan[] = useSelector(selectUserLoans);
 
   const { connected } = useWallet();
@@ -54,15 +58,11 @@ export const useLoansFiltering: UseLoansFiltering = () => {
   const { control, watch } = useForm({
     defaultValues: {
       [FilterFormInputsNames.SORT]: SORT_VALUES[0],
-      [FilterFormInputsNames.LOANS_STATUS]: StatusLoanNames.SHOW_ALL_LOANS,
+      [FilterFormInputsNames.LOANS_STATUS]: SORT_LOANS_TYPE_VALUES[0],
     },
   });
 
-  const [searchString, setSearchString] = useState<string>('');
-
-  const searchDebounced = useDebounce((search: string): void => {
-    setSearchString(search.toUpperCase());
-  }, 300);
+  const selectedCollectionsName = selectedCollections.map(({ value }) => value);
 
   const sort = watch(FilterFormInputsNames.SORT);
   const showLoansStatus = watch(FilterFormInputsNames.LOANS_STATUS);
@@ -74,15 +74,20 @@ export const useLoansFiltering: UseLoansFiltering = () => {
       return userLoans
         .filter((loan) => {
           const nftName = loan.name;
+          const collectionName = loan.collectionName;
 
-          const showAllLoans =
-            showLoansStatus === StatusLoanNames.SHOW_ALL_LOANS;
+          const showSelectedCollections =
+            selectedCollectionsName.includes(collectionName);
+
+          const state = (showLoansStatus as any).value;
+
+          const showAllLoans = state === StatusLoanNames.SHOW_ALL_LOANS;
 
           const showPriceBasedLoans =
-            showLoansStatus === StatusLoanNames.SHOW_PRICE_BASED_LOANS;
+            state === StatusLoanNames.SHOW_PRICE_BASED_LOANS;
 
           const showTimeBasedLoans =
-            showLoansStatus === StatusLoanNames.SHOW_TIME_BASED_LOANS;
+            state === StatusLoanNames.SHOW_TIME_BASED_LOANS;
 
           const removePriceBased =
             !showPriceBasedLoans && loan.isPriceBased && !showAllLoans;
@@ -90,9 +95,14 @@ export const useLoansFiltering: UseLoansFiltering = () => {
           const removeTimeBased =
             !showTimeBasedLoans && !loan.isPriceBased && !showAllLoans;
 
-          if (removePriceBased || removeTimeBased) return false;
+          const showChoisedCollection = selectedCollectionsName.length
+            ? !showSelectedCollections
+            : false;
 
-          return nftName.toUpperCase().includes(searchString);
+          if (removePriceBased || removeTimeBased || showChoisedCollection)
+            return false;
+
+          return nftName;
         })
         .sort((loanA, loanB) => {
           if (sortField === SortField.DEBT) {
@@ -142,12 +152,11 @@ export const useLoansFiltering: UseLoansFiltering = () => {
         });
     }
     return [];
-  }, [userLoans, sort, searchString, showLoansStatus]);
+  }, [userLoans, sort, showLoansStatus, selectedCollectionsName]);
 
   return {
     control,
     loans: filteredLoans,
-    setSearch: searchDebounced,
     showStakedOnlyToggle: connected,
   };
 };
@@ -176,7 +185,7 @@ export const SORT_VALUES: LoansSortValue[] = [
         <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'Dept_asc',
+    value: 'dept_asc',
   },
   {
     label: (
@@ -185,7 +194,7 @@ export const SORT_VALUES: LoansSortValue[] = [
         <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'Dept_desc',
+    value: 'dept_desc',
   },
   {
     label: (
@@ -218,5 +227,20 @@ export const SORT_VALUES: LoansSortValue[] = [
       </span>
     ),
     value: 'health_desc',
+  },
+];
+
+export const SORT_LOANS_TYPE_VALUES: LoansSortValue[] = [
+  {
+    label: <span className={styles.sortName}>All</span>,
+    value: 'showAllLoans',
+  },
+  {
+    label: <span className={styles.sortName}>Perpetual</span>,
+    value: 'showPriceBasedLoans',
+  },
+  {
+    label: <span className={styles.sortName}>Flip</span>,
+    value: 'showTimeBasedLoans',
   },
 ];
