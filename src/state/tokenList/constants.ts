@@ -2,7 +2,7 @@ export const ADDITIONAL_TOKENS = [
   {
     chainId: 101,
     address: 'BCcbS6zHr9Hsqc9KWAJC1iDRYMov8U9UpBCAsDu2vb9S',
-    symbol: 'rSKULLS',
+    symbol: 'rSKLLY',
     name: 'Random Disarticulated Skullys',
     decimals: 9,
     logoURI:
