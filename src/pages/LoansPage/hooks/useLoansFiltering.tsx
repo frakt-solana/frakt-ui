@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Control, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { uniqBy, prop } from 'ramda';
 import moment from 'moment';
 
 import styles from '../components/MyLoansTab/MyLoansTab.module.scss';
@@ -13,7 +14,7 @@ import { Loan } from '../../../state/loans/types';
 
 type FilterFormFieldsValues = {
   [FilterFormInputsNames.SORT]: LoansValue;
-  [FilterFormInputsNames.LOANS_STATUS]: any;
+  [FilterFormInputsNames.LOANS_STATUS]: LoansValue;
 };
 
 export type LoansValue = {
@@ -46,14 +47,16 @@ type UseLoansFiltering = ({
 }) => {
   control: Control<FilterFormFieldsValues>;
   loans: Loan[];
+  totalDebt: number;
+  totalBorrowed: number;
+  sortValueOption: LoansValue[];
 };
 
 export const useLoansFiltering: UseLoansFiltering = ({
   selectedCollections,
 }) => {
-  const userLoans: Loan[] = useSelector(selectUserLoans);
-
   const { connected } = useWallet();
+  const userLoans: Loan[] = useSelector(selectUserLoans);
 
   const { control, watch } = useForm({
     defaultValues: {
@@ -62,10 +65,31 @@ export const useLoansFiltering: UseLoansFiltering = ({
     },
   });
 
+  const showLoansStatus = watch(FilterFormInputsNames.LOANS_STATUS);
+  const sort = watch(FilterFormInputsNames.SORT);
+
   const selectedCollectionsName = selectedCollections.map(({ value }) => value);
 
-  const sort = watch(FilterFormInputsNames.SORT);
-  const showLoansStatus = watch(FilterFormInputsNames.LOANS_STATUS);
+  const uniqCollections = uniqBy(prop('collectionName'), userLoans);
+
+  const totalDebt = userLoans.reduce(
+    (acc, { repayValue }) => acc + repayValue,
+    0,
+  );
+
+  const totalBorrowed = userLoans.reduce(
+    (acc, { loanValue }) => acc + loanValue,
+    0,
+  );
+
+  const sortValueOption = uniqCollections.map(({ collectionName }) => {
+    return [
+      {
+        label: <span className={styles.sortName}>{collectionName}</span>,
+        value: collectionName,
+      },
+    ][0];
+  });
 
   const filteredLoans = useMemo(() => {
     if (userLoans?.length) {
@@ -76,10 +100,10 @@ export const useLoansFiltering: UseLoansFiltering = ({
           const nftName = loan.name;
           const collectionName = loan.collectionName;
 
-          const showSelectedCollections =
+          const selectedCollections =
             selectedCollectionsName.includes(collectionName);
 
-          const state = (showLoansStatus as any).value;
+          const state = showLoansStatus.value;
 
           const showAllLoans = state === StatusLoanNames.SHOW_ALL_LOANS;
 
@@ -95,11 +119,11 @@ export const useLoansFiltering: UseLoansFiltering = ({
           const removeTimeBased =
             !showTimeBasedLoans && !loan.isPriceBased && !showAllLoans;
 
-          const showChoisedCollection = selectedCollectionsName.length
-            ? !showSelectedCollections
+          const showSelectedCollection = selectedCollectionsName.length
+            ? !selectedCollections
             : false;
 
-          if (removePriceBased || removeTimeBased || showChoisedCollection)
+          if (removePriceBased || removeTimeBased || showSelectedCollection)
             return false;
 
           return nftName;
@@ -158,6 +182,9 @@ export const useLoansFiltering: UseLoansFiltering = ({
     control,
     loans: filteredLoans,
     showStakedOnlyToggle: connected,
+    totalDebt,
+    totalBorrowed,
+    sortValueOption,
   };
 };
 
@@ -185,7 +212,7 @@ export const SORT_VALUES: LoansValue[] = [
         <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'dept_asc',
+    value: 'debt_asc',
   },
   {
     label: (
@@ -194,7 +221,7 @@ export const SORT_VALUES: LoansValue[] = [
         <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'dept_desc',
+    value: 'debt_desc',
   },
   {
     label: (

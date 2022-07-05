@@ -14,7 +14,7 @@ interface CollectionDropdownProps {
   options: Option[];
   className?: string;
   wrapperClassName?: string;
-  setValues?: any;
+  setValues?: (value) => void;
   values?: any;
 }
 
@@ -47,12 +47,19 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
         '&:hover': { opacity: 1, backgroundColor: 'var(--color-gray-7)' },
       };
     },
+    valueContainer: (styles) => {
+      return {
+        ...styles,
+        padding: 0,
+      };
+    },
     menu: (styles) => {
       return {
         ...styles,
         backgroundColor: 'var(--black-color)',
         border: '1px solid var(--gray-color-3)',
         borderRadius: 0,
+        overlay: 'auto',
         zIndex: 5,
       };
     },
@@ -70,16 +77,28 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
     indicatorSeparator: () => ({ display: 'none' }),
     clearIndicator: () => ({ display: 'none' }),
     dropdownIndicator: () => ({
-      color: 'hsl(0, 0%, 40%)',
+      color: 'hsl(0, 0%, 80%)',
       padding: 8,
       marginLeft: '-10px',
       marginTop: 5,
       '&:hover': {
-        color: 'hsl(0, 0%, 20%)',
-        transition: 'opacity var(--transition-1)',
+        color: 'hsl(0, 0%, 40%)',
+        transition: 'var(--transition-1)',
       },
     }),
-    menuList: () => ({ padding: '6px 0' }),
+    menuList: (styles) => {
+      return {
+        ...styles,
+        padding: '6px 0',
+        '&::-webkit-scrollbar': {
+          width: 5,
+        },
+
+        '&::-webkit-scrollbar-track': {
+          background: 'var(--color-gray-4)',
+        },
+      };
+    },
   };
 
   const Option = (props) => {
@@ -109,7 +128,7 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
       controlShouldRenderValue={false}
       hideSelectedOptions={false}
       closeMenuOnSelect={false}
-      maxMenuHeight={500}
+      maxMenuHeight={200}
       isMulti
     />
   );

@@ -13,28 +13,6 @@
   }
 }
 
-.connectWallet {
-  padding-top: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.connectWalletText {
-  font: var(--font-text-1);
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.connectWalletBtn {
-  width: 222px;
-  height: 48px;
-  padding: unset;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .valuesWrapper {
   display: flex;
   align-items: center;
@@ -45,6 +23,13 @@
   color: var(--color-gray-4);
   span {
     color: var(--white-color);
+  }
+
+  @media screen and (max-width: 780px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
   }
 }
 
@@ -57,7 +42,16 @@
   @media screen and (max-width: 1180px) {
     margin: 20px 0;
     width: 100%;
-    justify-content: space-evenly;
+    justify-content: space-between;
+  }
+}
+
+.filtersContent {
+  display: flex;
+
+  @media screen and (max-width: 780px) {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -80,6 +74,9 @@
 
   .sortName {
     color: var(--accent-color-1);
+  }
+  @media screen and (max-width: 780px) {
+    font-size: 15px;
   }
 }
 

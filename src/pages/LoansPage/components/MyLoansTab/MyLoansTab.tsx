@@ -1,15 +1,11 @@
-import { Loan } from '@frakt-protocol/frakt-sdk';
+import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 
-import Button from '../../../../components/Button';
 import { CollectionDropdown } from '../../../../components/CollectionDropdown';
-import { Select } from '../../../../components/Select';
-import { commonActions } from '../../../../state/common/actions';
-import { selectUserLoans } from '../../../../state/loans/selectors';
 import { LoansList } from '../../../WalletPage/components/LoansList';
+import ConnectWalletSection from '../ConnectWalletSection';
+import { Select } from '../../../../components/Select';
 import {
   FilterFormInputsNames,
   LoansValue,
@@ -19,35 +15,17 @@ import {
 } from '../../hooks/useLoansFiltering';
 import styles from './MyLoansTab.module.scss';
 
-export const MyLoansTab = (): JSX.Element => {
+export const MyLoansTab: FC = () => {
   const { connected } = useWallet();
-  const userLoans: Loan[] = useSelector(selectUserLoans);
 
   const [selectedCollections, setSelectedCollections] = useState<LoansValue[]>(
     [],
   );
 
-  const { control, loans } = useLoansFiltering({
-    selectedCollections,
-  });
-
-  const totalDebt = userLoans.reduce(
-    (acc, { repayValue }) => acc + repayValue,
-    0,
-  );
-  const totalBorrowed = userLoans.reduce(
-    (acc, { loanValue }) => acc + loanValue,
-    0,
-  );
-
-  const sortValueOption = userLoans.map(({ collectionName }) => {
-    return [
-      {
-        label: <span className={styles.sortName}>{collectionName}</span>,
-        value: collectionName,
-      },
-    ][0];
-  });
+  const { control, loans, totalBorrowed, totalDebt, sortValueOption } =
+    useLoansFiltering({
+      selectedCollections,
+    });
 
   return (
     <div className={styles.wrapper}>
@@ -65,26 +43,28 @@ export const MyLoansTab = (): JSX.Element => {
               </div>
             </div>
             <div className={styles.filters}>
-              <Controller
-                control={control}
-                name={FilterFormInputsNames.LOANS_STATUS}
-                render={({ field: { ref, ...field } }) => (
-                  <Select
-                    valueContainerClassName={styles.sortingSelectContainer}
-                    className={styles.sortingSelect}
-                    label="Loan Type"
-                    name={FilterFormInputsNames.LOANS_STATUS}
-                    options={SORT_LOANS_TYPE_VALUES}
-                    {...field}
-                  />
-                )}
-              />
-              <CollectionDropdown
-                options={sortValueOption}
-                values={selectedCollections}
-                setValues={(value) => setSelectedCollections(value)}
-                className={styles.sortingSelect}
-              />
+              <div className={styles.filtersContent}>
+                <Controller
+                  control={control}
+                  name={FilterFormInputsNames.LOANS_STATUS}
+                  render={({ field: { ref, ...field } }) => (
+                    <Select
+                      valueContainerClassName={styles.sortingSelectContainer}
+                      className={styles.sortingSelect}
+                      label="Loan Type"
+                      name={FilterFormInputsNames.LOANS_STATUS}
+                      options={SORT_LOANS_TYPE_VALUES}
+                      {...field}
+                    />
+                  )}
+                />
+                <CollectionDropdown
+                  options={sortValueOption}
+                  values={selectedCollections}
+                  setValues={(value) => setSelectedCollections(value)}
+                  className={styles.sortingSelect}
+                />
+              </div>
               <Controller
                 control={control}
                 name={FilterFormInputsNames.SORT}
@@ -106,27 +86,6 @@ export const MyLoansTab = (): JSX.Element => {
       ) : (
         <ConnectWalletSection />
       )}
-    </div>
-  );
-};
-
-const ConnectWalletSection = () => {
-  const dispatch = useDispatch();
-
-  return (
-    <div className={styles.connectWallet}>
-      <p className={styles.connectWalletText}>
-        Connect your wallet to check if you have any active loans
-      </p>
-      <Button
-        type="alternative"
-        className={styles.connectWalletBtn}
-        onClick={() =>
-          dispatch(commonActions.setWalletModal({ isVisible: true }))
-        }
-      >
-        Connect wallet
-      </Button>
     </div>
   );
 };
