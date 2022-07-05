@@ -42,6 +42,16 @@ const fetchRaffleListSaga = function* () {
   }
 };
 
+const txRaffleTrySaga = function* (action) {
+  console.log(action.payload, 'TRY');
+  yield;
+};
+
+const txLiquidateSaga = function* (action) {
+  console.log(action.payload, 'LIQUIDATE');
+  yield;
+};
+
 const subscribeWonRaffleListSaga = function* (list: WonRaffleListItem[]) {
   yield put(liquidationsActions.setWonRaffleList(list));
 };
@@ -61,6 +71,8 @@ const liquidationsSagas = (socket: Socket) =>
     yield all([
       takeLatest(liquidationsTypes.FETCH_RAFFLE_LIST, fetchRaffleListSaga),
     ]);
+    yield all([takeLatest(liquidationsTypes.TX_RAFFLE_TRY, txRaffleTrySaga)]);
+    yield all([takeLatest(liquidationsTypes.TX_LIQUIDATE, txLiquidateSaga)]);
     yield all([takeLatest(wonRafflesStream, subscribeWonRaffleListSaga)]);
     yield all([takeLatest(lotteryTicketsStream, subscribeLotteryTicketsSaga)]);
   };

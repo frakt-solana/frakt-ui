@@ -15,14 +15,21 @@ import {
   selectSocket,
   selectWalletPublicKey,
 } from '../../../../state/common/selectors';
+import {
+  selectGraceList,
+  selectRaffleList,
+  selectWonRaffleList,
+} from '../../../../state/liquidations/selectors';
 
 const Liquidations: FC = () => {
   const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
-  const isRafflesCards = true;
 
   const dispatch = useDispatch();
   const socket = useSelector(selectSocket);
   const publicKey = useSelector(selectWalletPublicKey);
+  const graceList = useSelector(selectGraceList);
+  const raffleList = useSelector(selectRaffleList);
+  const wonRaffleList = useSelector(selectWonRaffleList);
 
   useEffect(() => {
     dispatch(liquidationsActions.fetchGraceList());
@@ -30,14 +37,9 @@ const Liquidations: FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (socket) {
-      socket.emit('lottery-tickets-subscribe');
-    }
-  }, [socket]);
-
-  useEffect(() => {
     if (publicKey && socket) {
       socket.emit('won-raffles-subscribe', { wallet: publicKey, limit: 20 });
+      socket.emit('lottery-tickets-subscribe', publicKey);
     }
   }, [socket, publicKey]);
 
@@ -52,18 +54,24 @@ const Liquidations: FC = () => {
       />
       {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
         <LiquidationsList withRafflesInfo>
-          <LiquidationRaffleCard />
+          {raffleList.map((item) => (
+            <LiquidationRaffleCard key={item.nftMint} data={item} />
+          ))}
         </LiquidationsList>
       )}
       {tabValue === LiquidationsTabsNames.GRACE && (
         <LiquidationsList>
-          <GraceCard />
+          {graceList.map((item) => (
+            <GraceCard key={item.nftMint} data={item} />
+          ))}
         </LiquidationsList>
       )}
       {tabValue === LiquidationsTabsNames.RAFFLES &&
-        (isRafflesCards ? (
+        (wonRaffleList.length ? (
           <LiquidationsList>
-            <WonRaffleCard />
+            {wonRaffleList.map((item) => (
+              <WonRaffleCard key={item.nftMint} data={item} />
+            ))}
           </LiquidationsList>
         ) : (
           <NoWinningRaffles />

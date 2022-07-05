@@ -1,35 +1,63 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
 
+import { ConfirmModal } from '../../../../components/ConfirmModal';
+import { LoadingModal } from '../../../../components/LoadingModal';
 import Button from '../../../../components/Button';
+import { liquidationsActions } from '../../../../state/liquidations/actions';
 import styles from './WonRaffleCard.module.scss';
 
-const WonRaffleCard: FC = () => {
+const WonRaffleCard: FC<{ data }> = ({ data }) => {
+  const [tryId, setTryId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleClick = (evt) => {
+    setTryId(data.nftMint);
+  };
+
+  const handleSumit = () => {
+    setTryId(null);
+    setIsLoading(true);
+    dispatch(liquidationsActions.txLiquidate(data.nftMint));
+  };
+
   return (
     <div className={styles.card}>
       <div className={styles.nftInfo}>
-        <img
-          className={styles.nftImage}
-          src="https://img.raydium.io/icon/6j28waP2NyoCBJrrVNHZuEzLDL25DXdNxMFsMNMxYht7.png"
-        />
+        <img className={styles.nftImage} src={data.nftImageUrl} />
         <div>
-          <p className={styles.nftName}>MonkeBack #4739</p>
+          <p className={styles.nftName}>{data.nftName}</p>
         </div>
       </div>
 
       <div className={styles.statsValue}>
         <div className={classNames(styles.totalValue, styles.opacity)}>
           <p className={styles.subtitle}>floor price</p>
-          <p className={styles.value}>150 SOL</p>
+          <p className={styles.value}>{`${data.nftFloorPrice} SOL`}</p>
         </div>
         <div className={styles.totalValue}>
           <p className={styles.subtitle}>liquidation price</p>
-          <p className={styles.value}>70 SOL</p>
+          <p className={styles.value}>{`${data.liquidationPrice} SOL`}</p>
         </div>
-        <Button type="alternative" className={styles.btn}>
+        <Button type="alternative" className={styles.btn} onClick={handleClick}>
           Liquidate
         </Button>
       </div>
+      <ConfirmModal
+        visible={tryId}
+        onCancel={() => setTryId(null)}
+        onSubmit={handleSumit}
+        title="Ready?"
+        subtitle={`You are about to confirm the transaction to liquidate and aquire ${data.nftName}`}
+        btnAgree="Let's go"
+      />
+      <LoadingModal
+        title="Please approve transaction"
+        visible={isLoading}
+        onCancel={() => setIsLoading(false)}
+      />
     </div>
   );
 };
