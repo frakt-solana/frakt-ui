@@ -2,7 +2,7 @@ export interface TotalStats {
   lockedNftsInPools: number;
   poolsTvl: number;
   poolsVolumeAllTime: number;
-  totalIssuedInLoans: number;
+  totalIssued: number;
   loansTvl: number;
   loansVolumeAllTime: number;
 }
@@ -21,6 +21,7 @@ export interface LastLoans {
 }
 
 export interface LedningPools {
+  collectionsCount?: number;
   apr: number;
   image: string;
   nftName: string;

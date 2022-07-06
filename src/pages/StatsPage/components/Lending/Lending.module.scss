@@ -191,13 +191,15 @@
   }
 }
 
-.mockImages {
+.poolImage {
   display: flex;
   margin: 0 5px 0 10px;
   position: relative;
+}
 
+.poolImageWithLabel {
   &::before {
-    content: attr(aria-valuenow) '+54';
+    content: attr(data-collections-amount);
     background: var(--accent-color-1);
     color: var(--white-color);
     position: absolute;
@@ -212,6 +214,6 @@
   }
 }
 
-.mockImages .rowImage {
+.poolImage .rowImage {
   margin: 0;
 }
