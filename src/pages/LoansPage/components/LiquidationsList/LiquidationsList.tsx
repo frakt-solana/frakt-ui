@@ -1,5 +1,6 @@
 import { FC, ReactNode } from 'react';
 import { Controller } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { TicketsRefillCountdown } from '../TicketsRefillCountdown';
 import {
@@ -12,6 +13,7 @@ import { Select } from '../../../../components/Select';
 import styles from './LiquidationsList.module.scss';
 import { TicketsCounter } from '../TicketsCounter';
 import { CollectionDropdown } from '../../../../components/CollectionDropdown';
+import { selectLotteryTickets } from '../../../../state/liquidations/selectors';
 
 interface LiquidationsListProps {
   children: ReactNode;
@@ -23,6 +25,7 @@ const LiquidationsList: FC<LiquidationsListProps> = ({
   withRafflesInfo,
 }) => {
   const { control, setSearch } = useLiquidationsPage();
+  const lotteryTickets = useSelector(selectLotteryTickets);
 
   return (
     <>
@@ -34,8 +37,8 @@ const LiquidationsList: FC<LiquidationsListProps> = ({
         />
         {withRafflesInfo && (
           <div className={styles.rafflesInfo}>
-            <TicketsCounter tickets={25} />
-            <TicketsRefillCountdown />
+            <TicketsCounter tickets={lotteryTickets.quantity} />
+            {/* <TicketsRefillCountdown /> */}
           </div>
         )}
         <div className={styles.sortWrapper}>

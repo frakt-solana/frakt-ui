@@ -5,11 +5,10 @@ import classNames from 'classnames';
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
 import Button from '../../../../components/Button';
-import { Ticket } from '../../../../icons';
 import { liquidationsActions } from '../../../../state/liquidations/actions';
-import styles from './LiquidationRaffleCard.module.scss';
+import styles from './WonRaffleCard.module.scss';
 
-const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
+const WonRaffleCard: FC<{ data }> = ({ data }) => {
   const [tryId, setTryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -21,7 +20,7 @@ const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
   const handleSumit = () => {
     setTryId(null);
     setIsLoading(true);
-    dispatch(liquidationsActions.txRaffleTry(data.nftMint));
+    dispatch(liquidationsActions.txLiquidate(data.nftMint));
   };
 
   return (
@@ -32,6 +31,7 @@ const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
           <p className={styles.nftName}>{data.nftName}</p>
         </div>
       </div>
+
       <div className={styles.statsValue}>
         <div className={classNames(styles.totalValue, styles.opacity)}>
           <p className={styles.subtitle}>floor price</p>
@@ -42,8 +42,7 @@ const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
           <p className={styles.value}>{`${data.liquidationPrice} SOL`}</p>
         </div>
         <Button type="alternative" className={styles.btn} onClick={handleClick}>
-          <Ticket className={styles.ticket} />
-          Try
+          Liquidate
         </Button>
       </div>
       <ConfirmModal
@@ -51,7 +50,7 @@ const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
         onCancel={() => setTryId(null)}
         onSubmit={handleSumit}
         title="Ready?"
-        subtitle={`You are about to confirm the transaction to try your chance in raffle for ${data.nftName}`}
+        subtitle={`You are about to confirm the transaction to liquidate and aquire ${data.nftName}`}
         btnAgree="Let's go"
       />
       <LoadingModal
@@ -63,4 +62,4 @@ const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
   );
 };
 
-export default LiquidationRaffleCard;
+export default WonRaffleCard;
