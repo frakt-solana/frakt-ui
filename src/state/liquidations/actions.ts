@@ -15,7 +15,11 @@ export const liquidationsTypes = {
   SET_WON_RAFFLE_LIST: 'liquidations/SET_WON_RAFFLE_LIST',
   SET_LOTTERY_TICKETS_LIST: 'liquidations/SET_LOTTERY_TICKETS_LIST',
   TX_RAFFLE_TRY: 'liquidations/TX_RAFFLE_TRY',
+  TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE:
+    'liquidations/TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE',
   TX_LIQUIDATE: 'liquidations/TX_LIQUIDATE',
+  TX_LIQUIDATE_OPTIMISTIC_RESPONSE:
+    'liquidations/TX_LIQUIDATE_OPTIMISTIC_RESPONSE',
 };
 
 export const liquidationsActions = {
@@ -63,8 +67,16 @@ export const liquidationsActions = {
     liquidationsTypes.TX_RAFFLE_TRY,
     (payload) => ({ payload }),
   ),
+  txRaffleTryOptimisticResponse: createCustomAction(
+    liquidationsTypes.TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE,
+    (payload) => ({ payload }),
+  ),
   txLiquidate: createCustomAction(
     liquidationsTypes.TX_LIQUIDATE,
+    (payload) => ({ payload }),
+  ),
+  txLiquidateOptimisticResponse: createCustomAction(
+    liquidationsTypes.TX_LIQUIDATE_OPTIMISTIC_RESPONSE,
     (payload) => ({ payload }),
   ),
 };

@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { pathOr, identity, applySpec, length } from 'ramda';
+import { pathOr, identity, applySpec, length, head } from 'ramda';
 
 export const selectGraceList = createSelector(
   [pathOr([], ['liquidations', 'graceList', 'data'])],
@@ -20,5 +20,6 @@ export const selectLotteryTickets = createSelector(
   [pathOr([], ['liquidations', 'lotteryTicketsList', 'data', 'nftMints'])],
   applySpec<{ quantity: number }>({
     quantity: length,
+    attempt: head,
   }),
 );

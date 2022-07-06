@@ -1,10 +1,24 @@
-import { all, call, takeLatest, put } from 'redux-saga/effects';
+import { web3, loans } from '@frakt-protocol/frakt-sdk';
+import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { Socket } from 'socket.io-client';
 
+import {
+  signAndConfirmTransaction,
+  showSolscanLinkNotification,
+} from '../../utils/transactions';
+import { notify } from '../../utils';
+import { NotifyType } from '../../utils/solanaUtils';
+import { captureSentryError } from '../../utils/sentry';
 import { liquidationsTypes, liquidationsActions } from './actions';
 import { WonRaffleListItem } from './types';
 import { networkRequest } from '../../utils/state';
+import {
+  selectConnection,
+  selectWallet,
+  selectWalletPublicKey,
+} from '../common/selectors';
+import { selectLotteryTickets } from './selectors';
 
 const wonRafflesChannel = (socket: Socket) =>
   eventChannel((emit) => {
@@ -45,8 +59,50 @@ const fetchRaffleListSaga = function* (action) {
 };
 
 const txRaffleTrySaga = function* (action) {
-  console.log(action.payload, 'TRY');
-  yield;
+  const connection = yield select(selectConnection);
+  const publicKey = yield select(selectWalletPublicKey);
+  const wallet = yield select(selectWallet);
+  const lotteryTickets = yield select(selectLotteryTickets);
+
+  const params = {
+    connection,
+    programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+    admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+    user: publicKey,
+    liquidationLot: new web3.PublicKey(action.payload.liquidationLotPubkey),
+    attemptsNftMint: new web3.PublicKey(lotteryTickets.attempt),
+    sendTxn: async (transaction, signers) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        wallet,
+        signers,
+      });
+    },
+  };
+  try {
+    const { loanPubkey } = yield call(loans.getLotTicket, params);
+    yield put(
+      liquidationsActions.txRaffleTryOptimisticResponse(lotteryTickets.attempt),
+    );
+    console.log(loanPubkey, 'loanPubkey');
+  } catch (error) {
+    const isNotConfirmed = showSolscanLinkNotification(error);
+
+    if (!isNotConfirmed) {
+      notify({
+        message: 'Transaction failed',
+        type: NotifyType.ERROR,
+      });
+    }
+
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'getLotTicket',
+      params,
+    });
+  }
 };
 
 const txLiquidateSaga = function* (action) {

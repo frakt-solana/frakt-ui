@@ -45,8 +45,8 @@ export const commonActions = {
   })),
   setWallet: createCustomAction(
     commonTypes.SET_WALLET,
-    (wallet: { publicKey: PublicKey }) => ({
-      payload: wallet,
+    (payload: { publicKey: PublicKey; wallet }) => ({
+      payload,
     }),
   ),
   setNotification: createCustomAction(

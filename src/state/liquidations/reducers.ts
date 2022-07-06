@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 import { createReducer } from 'typesafe-actions';
+import { over, lensPath, without } from 'ramda';
 
 import { AsyncState } from '../../utils/state';
 import {
   createHandlers,
+  composeReducers,
   createInitialAsyncState,
 } from '../../utils/state/reducers';
 import { liquidationsTypes } from './actions';
@@ -48,9 +50,20 @@ const setLotteryTicketsListReducer = createReducer(
   },
 );
 
+const txRaffleTryOptimisticReducer = createReducer(
+  initialLotteryTicketsListState,
+  {
+    [liquidationsTypes.TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE]: (state, action) =>
+      over(lensPath(['data', 'nftMints']), without([action.payload]), state),
+  },
+);
+
 export default combineReducers({
   graceList: fetchGraceListReducer,
   raffleList: fetchRaffleListReducer,
   wonRaffleList: setWonRaffleListReducer,
-  lotteryTicketsList: setLotteryTicketsListReducer,
+  lotteryTicketsList: composeReducers(
+    setLotteryTicketsListReducer,
+    txRaffleTryOptimisticReducer,
+  ),
 });
