@@ -21,7 +21,7 @@ export const liquidationsTypes = {
 export const liquidationsActions = {
   fetchGraceList: createCustomAction(
     liquidationsTypes.FETCH_GRACE_LIST,
-    () => null,
+    (params?) => ({ payload: params }),
   ),
   fetchGraceListPending: createCustomAction(
     liquidationsTypes.FETCH_GRACE_LIST__PENDING,
@@ -37,7 +37,7 @@ export const liquidationsActions = {
   ),
   fetchRaffleList: createCustomAction(
     liquidationsTypes.FETCH_RAFFLE_LIST,
-    () => null,
+    (params?) => ({ payload: params }),
   ),
   fetchRaffleListPending: createCustomAction(
     liquidationsTypes.FETCH_RAFFLE_LIST__PENDING,

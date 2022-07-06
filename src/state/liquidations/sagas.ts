@@ -18,7 +18,8 @@ const lotteryTicketsChannel = (socket: Socket) =>
     return () => socket.off('lottery-tickets');
   });
 
-const fetchGraceListSaga = function* () {
+const fetchGraceListSaga = function* (action) {
+  console.log('GRACE LIST PARAM', action.payload);
   yield put(liquidationsActions.fetchGraceListPending());
   try {
     const data = yield call(networkRequest, {
@@ -30,7 +31,8 @@ const fetchGraceListSaga = function* () {
   }
 };
 
-const fetchRaffleListSaga = function* () {
+const fetchRaffleListSaga = function* (action) {
+  console.log('RAFFLE LIST PARAM', action.payload);
   yield put(liquidationsActions.fetchRaffleListPending());
   try {
     const data = yield call(networkRequest, {
