@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 
+import { liquidationsActions } from '../../../../state/liquidations/actions';
 import { Tab, useTabs } from '../../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../../icons';
 import styles from './Liquidations.module.scss';
@@ -11,14 +13,29 @@ import {
   LiquiditionsSortValue,
 } from '../../model';
 
-export const useLiquidationsPage = (): {
+type UseLiquidationsPage = () => {
   control: Control<FilterFormFieldsValues>;
   setSearch: (value?: string) => void;
   liquidationTabs: Tab[];
   tabValue: string;
   setTabValue: (value: string) => void;
-} => {
-  const [, setSearchString] = useState<string>('');
+};
+
+export const useLiquidationsPage: UseLiquidationsPage = () => {
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortBy, setSortBy] = useState<string>('nftName');
+  const [search, setSearch] = useState<string>('');
+  const stringRef = useRef(null);
+
+  const { control, watch } = useForm({
+    defaultValues: {
+      [LiquidationsListFormNames.SORT]: SORT_VALUES[0],
+      [LiquidationsListFormNames.COLLECTIONS_SORT]: null,
+    },
+  });
+
+  const sort = watch(LiquidationsListFormNames.SORT);
+  const dispatch = useDispatch();
 
   const {
     tabs: liquidationTabs,
@@ -29,20 +46,39 @@ export const useLiquidationsPage = (): {
     defaultValue: LIQUIDATIONS_TABS[0].value,
   });
 
-  const { control } = useForm({
-    defaultValues: {
-      [LiquidationsListFormNames.SORT]: SORT_VALUES[0],
-      [LiquidationsListFormNames.COLLECTIONS_SORT]: null,
-    },
-  });
+  const fetchGraceList = () => {
+    dispatch(
+      liquidationsActions.fetchGraceList({
+        sortBy,
+        sortOrder,
+        searchStr: stringRef.current,
+      }),
+    );
+  };
 
   const searchDebounced = useDebounce((search: string) => {
-    setSearchString(search.toUpperCase());
+    stringRef.current = search;
+    fetchGraceList();
   }, 300);
+
+  useEffect(() => {
+    const [sortField, sortOrder] = sort.value.split('_');
+
+    setSortBy(sortField);
+    setSortOrder(sortOrder);
+
+    fetchGraceList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort]);
+
+  useEffect(() => {
+    searchDebounced(search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   return {
     control,
-    setSearch: searchDebounced,
+    setSearch,
     liquidationTabs,
     tabValue,
     setTabValue,
@@ -56,7 +92,7 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
         Name <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'name_asc',
+    value: 'nftName_asc',
   },
   {
     label: (
@@ -64,7 +100,23 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
         Name <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'name_desc',
+    value: 'nftName_desc',
+  },
+  {
+    label: (
+      <span className={styles.sortName}>
+        Liquidation Price <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'liquidationPrice_asc',
+  },
+  {
+    label: (
+      <span className={styles.sortName}>
+        Liquidation Price <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'liquidationPrice_desc',
   },
 ];
 
@@ -76,10 +128,6 @@ export const SORT_COLLECTIONS_VALUES: LiquiditionsSortValue[] = [
   {
     label: <span className={styles.sortName}>Okay Bears</span>,
     value: 'Okay_bears',
-  },
-  {
-    label: <span className={styles.sortName}>Carton Kids</span>,
-    value: 'carton_kids',
   },
 ];
 

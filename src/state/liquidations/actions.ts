@@ -1,6 +1,6 @@
 import { createCustomAction } from 'typesafe-actions';
 
-import { GraceListItem } from './types';
+import { GraceListItem, GraceListState } from './types';
 import { ServerError } from '../../utils/state';
 
 export const liquidationsTypes = {
@@ -13,7 +13,9 @@ export const liquidationsTypes = {
 export const liquidationsActions = {
   fetchGraceList: createCustomAction(
     liquidationsTypes.FETCH_GRACE_LIST,
-    () => null,
+    (payload?: GraceListState) => ({
+      payload,
+    }),
   ),
   fetchGraceListPending: createCustomAction(
     liquidationsTypes.FETCH_GRACE_LIST__PENDING,

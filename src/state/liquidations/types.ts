@@ -12,3 +12,9 @@ export interface GraceListItem {
   startedAt: string;
   expiredAt: string;
 }
+
+export interface GraceListState {
+  sortBy?: string;
+  sortOrder?: string;
+  searchStr?: string;
+}

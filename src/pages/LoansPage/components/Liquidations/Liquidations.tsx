@@ -11,12 +11,12 @@ import { liquidationsActions } from '../../../../state/liquidations/actions';
 import LiquidationRaffleCard from '../LiquidationRaffleCard';
 
 const Liquidations: FC = () => {
+  const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(liquidationsActions.fetchGraceList());
   }, [dispatch]);
-
-  const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
 
   return (
     <>
