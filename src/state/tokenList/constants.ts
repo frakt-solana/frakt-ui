@@ -16,8 +16,8 @@ export const ADDITIONAL_TOKENS = [
   {
     chainId: 101,
     address: '4TchixmssSQHbvhEoZT1bA7hYPXwwNWxLq1Yvv7pa5c1',
-    symbol: 'rMBACK',
-    name: 'Random MonkeBacks',
+    symbol: 'rBACK',
+    name: 'Random backNFT',
     decimals: 9,
     logoURI:
       'https://raw.githubusercontent.com/frakt-solana/fraktion-tokens-list/main/token_custom_images/rMBACK.png',

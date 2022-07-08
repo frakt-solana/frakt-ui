@@ -11,7 +11,7 @@ export const VISIBLE_POOLS = [
   '6oufJYFSNcWEBV465FDywN2VbYftnXff9KuNnebkc8YD', //? Samo
   '8ezfmbfr5rRNrvM1z4ZqWTjf9mbcpozpgFxgSbmmR2c2', //? Aiternate
   'MQsojARJzgiexPwQ5gQrWQxdGC4UF8MxpYFaL3XrxyR', //? Disarticulated Skullys
-  '6DzpHakkCTpcVAr8EmKiKwJm6T2wgT56p8x4Adn1Ltbj', //? MonkeBacks
+  // '6DzpHakkCTpcVAr8EmKiKwJm6T2wgT56p8x4Adn1Ltbj', //? MonkeBacks
   // '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv', //? Sol Patrol
   // '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr', //? thugbirds
 ];
