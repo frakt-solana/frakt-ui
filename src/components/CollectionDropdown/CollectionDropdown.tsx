@@ -53,6 +53,12 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
         padding: 0,
       };
     },
+    input: (styles) => {
+      return {
+        ...styles,
+        margin: 0,
+      };
+    },
     menu: (styles) => {
       return {
         ...styles,
@@ -66,7 +72,7 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
     placeholder: (styles) => {
       return {
         ...styles,
-        width: 182,
+        margin: 0,
         color: 'var(--white-color)',
         '@media (max-width: 780px)': {
           width: '100%',
@@ -79,7 +85,6 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
     dropdownIndicator: () => ({
       color: 'hsl(0, 0%, 80%)',
       padding: 8,
-      marginLeft: '-10px',
       marginTop: 5,
       '&:hover': {
         color: 'hsl(0, 0%, 40%)',
