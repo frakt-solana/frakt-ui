@@ -14,14 +14,14 @@ const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleClick = (evt) => {
+  const handleClick = () => {
     setTryId(data.nftMint);
   };
 
   const handleSumit = () => {
     setTryId(null);
     setIsLoading(true);
-    dispatch(liquidationsActions.txRaffleTry(data.nftMint));
+    dispatch(liquidationsActions.txRaffleTry(data));
   };
 
   return (

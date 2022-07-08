@@ -11,7 +11,7 @@ export const UserTokensProvider = ({
 }: {
   children: JSX.Element;
 }): JSX.Element => {
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey, wallet } = useWallet();
   const dispatch = useDispatch();
   const socket = useSelector(selectSocket);
 
@@ -30,7 +30,7 @@ export const UserTokensProvider = ({
 
   useEffect(() => {
     if (connected) {
-      dispatch(commonActions.setWallet({ publicKey }));
+      dispatch(commonActions.setWallet({ publicKey, wallet }));
       dispatch(userTokensActions.fetchUserTokens(publicKey));
       dispatch(commonActions.fetchUser(publicKey));
     }
