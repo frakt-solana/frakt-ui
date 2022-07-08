@@ -24,13 +24,14 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
   const {
     name,
     pubkey: liquidityPoolPubkey,
-    borrowApr,
+    borrowApr: rawBorrowApr,
     depositApr,
     totalLiquidity,
     userActiveLoansAmount,
     totalBorrowed,
     utilizationRate,
     userDeposit,
+    isPriceBased,
   } = liquidityPool;
 
   const openPoolModal = (tab: TabsNames) => {
@@ -40,6 +41,9 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
       setPoolModalVisible(tab);
     }
   };
+
+  const YEAR_APR = 52;
+  const borrowApr = isPriceBased ? rawBorrowApr : rawBorrowApr * YEAR_APR;
 
   return (
     <>
