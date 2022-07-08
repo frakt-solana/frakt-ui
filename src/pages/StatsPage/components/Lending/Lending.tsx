@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import classNames from 'classnames';
 
 import { LastLoans, LedningPools } from '../../../../state/stats/types';
 import { SOL_TOKEN } from '../../../../utils';
@@ -44,26 +45,34 @@ const Lending: FC<LendingProps> = ({ lendingPools, lastLoans }) => {
                   <p className={styles.headerTitle}>TVL</p>
                 </div>
               </div>
-              {lendingPools.map(({ nftName, apr, image, tvl }, idx) => (
-                <div key={idx} className={styles.tableRow}>
-                  <div className={styles.tableInfo}>
-                    <p className={styles.rowNumber}>{idx + 1}</p>
-                    {image?.length > 1 ? (
-                      <div className={styles.mockImages}>
-                        <img className={styles.rowImage} src={image[0]} />
-                        <img className={styles.rowImage} src={image[1]} />
-                      </div>
-                    ) : (
-                      <img className={styles.rowImage} src={image} />
-                    )}
-                    <p className={styles.rowTitle}>{nftName}</p>
+              {lendingPools.map(
+                ({ nftName, apr, image, tvl, collectionsCount }, idx) => (
+                  <div key={idx} className={styles.tableRow}>
+                    <div className={styles.tableInfo}>
+                      <p className={styles.rowNumber}>{idx + 1}</p>
+                      {image?.length > 1 ? (
+                        <div
+                          className={classNames(styles.poolImage, {
+                            [styles.poolImageWithLabel]:
+                              collectionsCount - 2 > 0,
+                          })}
+                          data-collections-amount={`+${collectionsCount - 2}`}
+                        >
+                          <img className={styles.rowImage} src={image[0]} />
+                          <img className={styles.rowImage} src={image[1]} />
+                        </div>
+                      ) : (
+                        <img className={styles.rowImage} src={image} />
+                      )}
+                      <p className={styles.rowTitle}>{nftName}</p>
+                    </div>
+                    <div className={styles.tableStats}>
+                      <p>{apr.toFixed(2)} %</p>
+                      <p>{tvl.toFixed(2)} SOL</p>
+                    </div>
                   </div>
-                  <div className={styles.tableStats}>
-                    <p>{apr.toFixed(2)} %</p>
-                    <p>{tvl.toFixed(2)} SOL</p>
-                  </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </div>
         </div>

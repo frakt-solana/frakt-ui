@@ -63,7 +63,7 @@
   margin-left: 4px;
 
   &::before {
-    content: attr(aria-valuenow) '+54';
+    content: attr(data-collections-amount);
     background: var(--accent-color-1);
     color: var(--white-color);
     position: absolute;
