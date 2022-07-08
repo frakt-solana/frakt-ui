@@ -9,7 +9,9 @@ export const VISIBLE_POOLS = [
   'CUvaGx32Z1p9Wia2Xheod37ii62byAxhNv8r2UJX729Y', //? Frakt
   'FvKPzBfDx6AgBhkwweFnth2g9Mfd21vT9Lr7yoxUQsp8', //? Gnomies
   '6oufJYFSNcWEBV465FDywN2VbYftnXff9KuNnebkc8YD', //? Samo
-  // '8ezfmbfr5rRNrvM1z4ZqWTjf9mbcpozpgFxgSbmmR2c2', //? Aiternate
+  '8ezfmbfr5rRNrvM1z4ZqWTjf9mbcpozpgFxgSbmmR2c2', //? Aiternate
+  'MQsojARJzgiexPwQ5gQrWQxdGC4UF8MxpYFaL3XrxyR', //? Disarticulated Skullys
+  // '6DzpHakkCTpcVAr8EmKiKwJm6T2wgT56p8x4Adn1Ltbj', //? MonkeBacks
   // '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv', //? Sol Patrol
   // '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr', //? thugbirds
 ];
@@ -28,4 +30,6 @@ export const CUSTOM_POOLS_URLS = {
   '7Bjj5LSjvC6Sumvx3L3gK25AGVGhFfPyZWkm1xep8kXv': 'sol_patrol',
   '3da5KmaRp9gHx2wzv8PdZHpxXWvbHMRUxCK9FCLvHGZr': 'thugbirdz',
   '6oufJYFSNcWEBV465FDywN2VbYftnXff9KuNnebkc8YD': 'samo',
+  '6DzpHakkCTpcVAr8EmKiKwJm6T2wgT56p8x4Adn1Ltbj': 'monkebacks',
+  MQsojARJzgiexPwQ5gQrWQxdGC4UF8MxpYFaL3XrxyR: 'dskullys',
 };
