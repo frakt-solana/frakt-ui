@@ -1,8 +1,9 @@
 import { all, call, takeLatest, put } from 'redux-saga/effects';
-import { over, filter, lensProp, propEq } from 'ramda';
+import { over, filter, lensProp, propEq, compose, concat } from 'ramda';
 
 import { tokenListTypes, tokenListActions } from './actions';
 import { networkRequest } from '../../utils/state';
+import { ADDITIONAL_TOKENS } from './constants';
 
 const fetchTokenListSaga = function* () {
   yield put(tokenListActions.fetchTokenListPending());
@@ -10,9 +11,20 @@ const fetchTokenListSaga = function* () {
     const data = yield call(networkRequest, {
       url: process.env.SOLANA_TOKENS_LIST,
     });
+
+    const filterMainnetTokens = over(
+      lensProp<any>('tokens'),
+      filter(propEq('chainId', 101)),
+    );
+
+    const addNotListedTokens = over(
+      lensProp<any>('tokens'),
+      concat(ADDITIONAL_TOKENS),
+    );
+
     yield put(
       tokenListActions.fetchTokenListFulfilled(
-        over(lensProp('tokens'), filter(propEq('chainId', 101)), data),
+        compose(addNotListedTokens, filterMainnetTokens)(data),
       ),
     );
   } catch (error) {
