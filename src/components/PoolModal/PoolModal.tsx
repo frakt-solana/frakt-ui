@@ -96,7 +96,7 @@ export const PoolModal: FC<PoolModalProps> = ({
             step={1}
           />
           <div className={styles.info}>
-            <span className={styles.infoTitle}>Deposit APR</span>
+            <span className={styles.infoTitle}>Deposit yield</span>
             <span className={styles.infoValue}>{apr.toFixed(2)}%</span>
           </div>
           <div className={styles.info}>
