@@ -2,29 +2,32 @@ import { FC, ReactNode } from 'react';
 import { Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { TicketsRefillCountdown } from '../TicketsRefillCountdown';
 import {
   SORT_COLLECTIONS_VALUES,
   SORT_VALUES,
   useLiquidationsPage,
 } from '../Liquidations';
+import { selectLotteryTickets } from '../../../../state/liquidations/selectors';
+import { CollectionDropdown } from '../../../../components/CollectionDropdown';
+import { FetchItemsParams } from '../../../../state/liquidations/types';
 import { SearchInput } from '../../../../components/SearchInput';
 import { Select } from '../../../../components/Select';
 import styles from './LiquidationsList.module.scss';
 import { TicketsCounter } from '../TicketsCounter';
-import { CollectionDropdown } from '../../../../components/CollectionDropdown';
-import { selectLotteryTickets } from '../../../../state/liquidations/selectors';
 
 interface LiquidationsListProps {
   children: ReactNode;
   withRafflesInfo?: boolean;
+  fetchItemsFunc?: (params: FetchItemsParams) => void;
 }
 
 const LiquidationsList: FC<LiquidationsListProps> = ({
   children,
   withRafflesInfo,
+  fetchItemsFunc,
 }) => {
-  const { control, setSearch } = useLiquidationsPage();
+  const { control, setSearch } = useLiquidationsPage(fetchItemsFunc);
+
   const lotteryTickets = useSelector(selectLotteryTickets);
 
   return (

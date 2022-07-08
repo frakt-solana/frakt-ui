@@ -13,7 +13,7 @@ export interface GraceListItem {
   expiredAt: string;
 }
 
-export interface GraceListState {
+export interface FetchItemsParams {
   sortBy?: string;
   sortOrder?: string;
   searchStr?: string;

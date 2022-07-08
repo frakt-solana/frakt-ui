@@ -1,27 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 
-import { liquidationsActions } from '../../../../state/liquidations/actions';
-import { Tab, useTabs } from '../../../../components/Tabs';
+import { Tab } from '../../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../../icons';
-import styles from './Liquidations.module.scss';
+import styles from '../LiquidationsList/LiquidationsList.module.scss';
 import { useDebounce } from '../../../../hooks';
 import {
   FilterFormFieldsValues,
   LiquidationsListFormNames,
   LiquiditionsSortValue,
 } from '../../model';
+import { FetchItemsParams } from '../../../../state/liquidations/types';
 
-type UseLiquidationsPage = () => {
+type FetchDataFunc = (params: FetchItemsParams) => void;
+
+type UseLiquidationsPage = (fetchItemsFunc: FetchDataFunc) => {
   control: Control<FilterFormFieldsValues>;
   setSearch: (value?: string) => void;
-  liquidationTabs: Tab[];
-  tabValue: string;
-  setTabValue: (value: string) => void;
 };
 
-export const useLiquidationsPage: UseLiquidationsPage = () => {
+export const useLiquidationsPage: UseLiquidationsPage = (
+  fetchItemsFunc: FetchDataFunc,
+) => {
   const [sortOrder, setSortOrder] = useState<string>('asc');
   const [sortBy, setSortBy] = useState<string>('nftName');
   const [search, setSearch] = useState<string>('');
@@ -35,30 +35,24 @@ export const useLiquidationsPage: UseLiquidationsPage = () => {
   });
 
   const sort = watch(LiquidationsListFormNames.SORT);
-  const dispatch = useDispatch();
 
-  const {
-    tabs: liquidationTabs,
-    value: tabValue,
-    setValue: setTabValue,
-  } = useTabs({
-    tabs: LIQUIDATIONS_TABS,
-    defaultValue: LIQUIDATIONS_TABS[0].value,
-  });
+  const fetchItems = (): void => {
+    const rawSearchStr = stringRef.current
+      ? `search=${stringRef.current}&`
+      : '';
+    const rawSortBy = sortBy ? `sortBy=${sortBy}&` : '';
+    const rawSortOrder = sortOrder ? `sort=${sortOrder}&` : '';
 
-  const fetchGraceList = () => {
-    dispatch(
-      liquidationsActions.fetchGraceList({
-        sortBy,
-        sortOrder,
-        searchStr: stringRef.current,
-      }),
-    );
+    fetchItemsFunc({
+      sortBy: rawSortBy,
+      sortOrder: rawSortOrder,
+      searchStr: rawSearchStr,
+    });
   };
 
-  const searchDebounced = useDebounce((search: string) => {
+  const searchDebounced = useDebounce((search: string): void => {
     stringRef.current = search;
-    fetchGraceList();
+    fetchItems();
   }, 300);
 
   useEffect(() => {
@@ -67,7 +61,7 @@ export const useLiquidationsPage: UseLiquidationsPage = () => {
     setSortBy(sortField);
     setSortOrder(sortOrder);
 
-    fetchGraceList();
+    fetchItems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
@@ -79,9 +73,6 @@ export const useLiquidationsPage: UseLiquidationsPage = () => {
   return {
     control,
     setSearch,
-    liquidationTabs,
-    tabValue,
-    setTabValue,
   };
 };
 

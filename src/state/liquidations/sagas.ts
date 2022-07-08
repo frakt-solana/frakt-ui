@@ -19,24 +19,16 @@ const lotteryTicketsChannel = (socket: Socket) =>
   });
 
 const fetchGraceListSaga = function* (action) {
-  console.log(action);
-  const isSearch = action?.payload?.searchStr
-    ? `search=${action?.payload?.searchStr}&`
-    : '';
-  const isSortBy = action?.payload?.isSortBy
-    ? `sortBy=${action?.payload?.isSortBy}&`
-    : '';
-  const isSortOrder = action?.payload?.isSortOrder
-    ? `sort=${action?.payload?.isSortOrder}`
-    : '';
+  const searchStr = action.payload?.searchStr;
+  const sortBy = action.payload?.sortBy;
+  const sortOrder = action.payload?.sortOrder;
 
-  console.log('GRACE LIST PARAM', action?.payload);
+  console.log('GRACE LIST PARAM', action);
   yield put(liquidationsActions.fetchGraceListPending());
   try {
     const data = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/grace-list?${isSearch}${isSortBy}${isSortOrder}`,
+      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/grace-list?${searchStr}${sortBy}${sortOrder}`,
     });
-    console.log(data);
     yield put(liquidationsActions.fetchGraceListFulfilled(data));
   } catch (error) {
     yield put(liquidationsActions.fetchGraceListFailed(error));
@@ -44,11 +36,15 @@ const fetchGraceListSaga = function* (action) {
 };
 
 const fetchRaffleListSaga = function* (action) {
-  console.log('RAFFLE LIST PARAM', action.payload);
+  const searchStr = action.payload?.searchStr;
+  const sortBy = action.payload?.sortBy;
+  const sortOrder = action.payload?.sortOrder;
+
+  console.log('RAFFLE LIST PARAM', action);
   yield put(liquidationsActions.fetchRaffleListPending());
   try {
     const data = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/liquidation`,
+      url: `https://${process.env.BACKEND_DOMAIN}/liquidation?${searchStr}${sortBy}${sortOrder}`,
     });
     yield put(liquidationsActions.fetchRaffleListFulfilled(data));
   } catch (error) {

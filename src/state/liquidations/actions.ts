@@ -1,6 +1,6 @@
 import { createCustomAction } from 'typesafe-actions';
 
-import { GraceListItem, GraceListState, RaffleListItem } from './types';
+import { GraceListItem, FetchItemsParams, RaffleListItem } from './types';
 import { ServerError } from '../../utils/state';
 
 export const liquidationsTypes = {
@@ -21,7 +21,7 @@ export const liquidationsTypes = {
 export const liquidationsActions = {
   fetchGraceList: createCustomAction(
     liquidationsTypes.FETCH_GRACE_LIST,
-    (params?: GraceListState) => ({ payload: params }),
+    (params?: FetchItemsParams) => ({ payload: params }),
   ),
   fetchGraceListPending: createCustomAction(
     liquidationsTypes.FETCH_GRACE_LIST__PENDING,
@@ -37,7 +37,7 @@ export const liquidationsActions = {
   ),
   fetchRaffleList: createCustomAction(
     liquidationsTypes.FETCH_RAFFLE_LIST,
-    (params?) => ({ payload: params }),
+    (params?: FetchItemsParams) => ({ payload: params }),
   ),
   fetchRaffleListPending: createCustomAction(
     liquidationsTypes.FETCH_RAFFLE_LIST__PENDING,
