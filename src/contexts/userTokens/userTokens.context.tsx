@@ -37,7 +37,7 @@ export const UserTokensProvider = ({
     return () => {
       dispatch(userTokensActions.clearTokens());
     };
-  }, [connected, dispatch, publicKey]);
+  }, [connected, dispatch, publicKey, wallet]);
 
   return <div>{children}</div>;
 };

@@ -37,7 +37,6 @@ const fetchGraceListSaga = function* (action) {
   const sortBy = action.payload?.sortBy;
   const sortOrder = action.payload?.sortOrder;
 
-  console.log('GRACE LIST PARAM', action);
   yield put(liquidationsActions.fetchGraceListPending());
   try {
     const data = yield call(networkRequest, {
@@ -54,7 +53,6 @@ const fetchRaffleListSaga = function* (action) {
   const sortBy = action.payload?.sortBy;
   const sortOrder = action.payload?.sortOrder;
 
-  console.log('RAFFLE LIST PARAM', action);
   yield put(liquidationsActions.fetchRaffleListPending());
   try {
     const data = yield call(networkRequest, {
@@ -89,11 +87,10 @@ const txRaffleTrySaga = function* (action) {
     },
   };
   try {
-    const { loanPubkey } = yield call(loans.getLotTicket, params);
+    yield call(loans.getLotTicket, params);
     yield put(
       liquidationsActions.txRaffleTryOptimisticResponse(lotteryTickets.attempt),
     );
-    console.log(loanPubkey, 'loanPubkey');
   } catch (error) {
     const isNotConfirmed = showSolscanLinkNotification(error);
 
@@ -143,7 +140,6 @@ const txLiquidateSaga = function* (action) {
     yield put(
       liquidationsActions.txLiquidateOptimisticResponse(action.payload.nftMint),
     );
-    console.log('Success');
   } catch (error) {
     const isNotConfirmed = showSolscanLinkNotification(error);
 
