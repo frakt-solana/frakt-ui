@@ -141,7 +141,7 @@ const LoanCardValues: FC<{
         <div className={styles.valuesWrapperRow}>
           <div className={styles.valueWrapper}>
             <div className={styles.valueWithTooltip}>
-              <p className={styles.valueTitle}>Interest rate</p>
+              <p className={styles.valueTitle}>Borrow interest</p>
               <Tooltip
                 placement="bottom"
                 overlay="The current yearly interest rate paid by borrowers"

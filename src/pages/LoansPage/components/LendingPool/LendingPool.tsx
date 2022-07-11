@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useDispatch } from 'react-redux';
 import classNames from 'classnames';
@@ -64,11 +65,27 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
               <p className={styles.value}>{totalLiquidity.toFixed(2)} SOL</p>
             </div>
             <div className={styles.totalValue}>
-              <p className={styles.title}>Deposit APR</p>
+              <p className={styles.title}>
+                Deposit yeild
+                <Tooltip
+                  placement="bottom"
+                  overlay="The current yearly interest rate paid by borrowers"
+                >
+                  <QuestionCircleOutlined className={styles.questionIcon} />
+                </Tooltip>
+              </p>
               <p className={styles.value}>{depositApr.toFixed(2)} %</p>
             </div>
             <div className={styles.totalValue}>
-              <p className={styles.title}>Interest rate</p>
+              <p className={styles.title}>
+                Borrow interest
+                <Tooltip
+                  placement="bottom"
+                  overlay="The current yearly interest rate paid by borrowers based on the current utilization rate"
+                >
+                  <QuestionCircleOutlined className={styles.questionIcon} />
+                </Tooltip>
+              </p>
               <p className={styles.value}>{borrowApr?.toFixed(2) || 0} %</p>
             </div>
             <div className={styles.totalValue}>
