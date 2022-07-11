@@ -33,14 +33,13 @@ export const selectSocket = createSelector(
   (socket: Socket) => socket,
 );
 
-export const selectWalletPublicKey = createSelector(
-  [pathOr('', ['common', 'wallet', 'wallet', 'publicKey'])],
+export const selectWallet = createSelector(
+  [pathOr({}, ['common', 'wallet', 'wallet'])],
   identity,
 );
 
-// TODO: refactor
-export const selectWallet = createSelector(
-  [pathOr({}, ['common', 'wallet', 'wallet', 'wallet'])],
+export const selectWalletPublicKey = createSelector(
+  [pathOr('', ['common', 'wallet', 'wallet', 'publicKey'])],
   identity,
 );
 

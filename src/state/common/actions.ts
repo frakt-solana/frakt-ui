@@ -43,12 +43,9 @@ export const commonActions = {
   setSocket: createCustomAction(commonTypes.SET_SOCKET, (socket: Socket) => ({
     payload: socket,
   })),
-  setWallet: createCustomAction(
-    commonTypes.SET_WALLET,
-    (payload: { publicKey: PublicKey; wallet }) => ({
-      payload,
-    }),
-  ),
+  setWallet: createCustomAction(commonTypes.SET_WALLET, (payload) => ({
+    payload,
+  })),
   setNotification: createCustomAction(
     commonTypes.SET_NOTIFICATION,
     (payload: NotificationState) => ({ payload }),
