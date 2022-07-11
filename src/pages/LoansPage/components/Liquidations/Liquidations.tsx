@@ -84,13 +84,12 @@ const Liquidations: FC = () => {
       )}
       {tabValue === LiquidationsTabsNames.RAFFLES &&
         (wonRaffleList.length ? (
-          <></>
+          <LiquidationsList>
+            {wonRaffleList.map((item) => (
+              <WonRaffleCard key={item.nftMint} data={item} />
+            ))}
+          </LiquidationsList>
         ) : (
-          // <LiquidationsList>
-          //   {wonRaffleList.map((item) => (
-          //     <WonRaffleCard key={item.nftMint} data={item} />
-          //   ))}
-          // </LiquidationsList>
           <NoWinningRaffles />
         ))}
     </>
