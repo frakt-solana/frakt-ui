@@ -72,16 +72,6 @@ export const useLoansFiltering: UseLoansFiltering = ({
 
   const uniqCollections = uniqBy(prop('collectionName'), userLoans);
 
-  const totalDebt = userLoans.reduce(
-    (acc, { repayValue }) => acc + repayValue,
-    0,
-  );
-
-  const totalBorrowed = userLoans.reduce(
-    (acc, { loanValue }) => acc + loanValue,
-    0,
-  );
-
   const sortValueOption = uniqCollections.map(({ collectionName }) => {
     return [
       {
@@ -177,6 +167,16 @@ export const useLoansFiltering: UseLoansFiltering = ({
     }
     return [];
   }, [userLoans, sort, showLoansStatus, selectedCollectionsName]);
+
+  const totalDebt = filteredLoans.reduce(
+    (acc, { repayValue }) => acc + repayValue,
+    0,
+  );
+
+  const totalBorrowed = filteredLoans.reduce(
+    (acc, { loanValue }) => acc + loanValue,
+    0,
+  );
 
   return {
     control,
