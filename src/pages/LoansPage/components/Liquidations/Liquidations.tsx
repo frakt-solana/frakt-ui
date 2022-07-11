@@ -2,10 +2,10 @@ import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { liquidationsActions } from '../../../../state/liquidations/actions';
-import { useLiquidationsPage } from '.';
+import { LIQUIDATIONS_TABS } from '.';
 import LiquidationRaffleCard from '../LiquidationRaffleCard';
 import { LiquidationsTabsNames } from '../../model';
-import { Tabs } from '../../../../components/Tabs';
+import { Tabs, useTabs } from '../../../../components/Tabs';
 import NoWinningRaffles from '../NoWinningRaffles';
 import LiquidationsList from '../LiquidationsList';
 import styles from './Liquidations.module.scss';
@@ -22,7 +22,14 @@ import {
 } from '../../../../state/liquidations/selectors';
 
 const Liquidations: FC = () => {
-  const { liquidationTabs, tabValue, setTabValue } = useLiquidationsPage();
+  const {
+    tabs: liquidationTabs,
+    value: tabValue,
+    setValue: setTabValue,
+  } = useTabs({
+    tabs: LIQUIDATIONS_TABS,
+    defaultValue: LIQUIDATIONS_TABS[0].value,
+  });
 
   const dispatch = useDispatch();
   const socket = useSelector(selectSocket);
@@ -53,14 +60,23 @@ const Liquidations: FC = () => {
         type="secondary"
       />
       {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
-        <LiquidationsList withRafflesInfo>
+        <LiquidationsList
+          withRafflesInfo
+          fetchItemsFunc={(params) =>
+            dispatch(liquidationsActions.fetchRaffleList(params))
+          }
+        >
           {raffleList.map((item) => (
             <LiquidationRaffleCard key={item.nftMint} data={item} />
           ))}
         </LiquidationsList>
       )}
       {tabValue === LiquidationsTabsNames.GRACE && (
-        <LiquidationsList>
+        <LiquidationsList
+          fetchItemsFunc={(params) =>
+            dispatch(liquidationsActions.fetchGraceList(params))
+          }
+        >
           {graceList.map((item) => (
             <GraceCard key={item.nftMint} data={item} />
           ))}

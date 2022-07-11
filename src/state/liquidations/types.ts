@@ -13,6 +13,11 @@ export interface GraceListItem {
   expiredAt: string;
 }
 
+export interface FetchItemsParams {
+  sortBy?: string;
+  sortOrder?: string;
+  searchStr?: string;
+}
 export interface RaffleListItem {
   pubkey: string;
   nftMint: string;

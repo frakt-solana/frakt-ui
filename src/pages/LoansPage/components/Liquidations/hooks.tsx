@@ -1,51 +1,78 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 
-import { Tab, useTabs } from '../../../../components/Tabs';
+import { Tab } from '../../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../../icons';
-import styles from './Liquidations.module.scss';
+import styles from '../LiquidationsList/LiquidationsList.module.scss';
 import { useDebounce } from '../../../../hooks';
 import {
   FilterFormFieldsValues,
   LiquidationsListFormNames,
   LiquiditionsSortValue,
 } from '../../model';
+import { FetchItemsParams } from '../../../../state/liquidations/types';
 
-export const useLiquidationsPage = (): {
+type FetchDataFunc = (params: FetchItemsParams) => void;
+
+type UseLiquidationsPage = (fetchItemsFunc: FetchDataFunc) => {
   control: Control<FilterFormFieldsValues>;
   setSearch: (value?: string) => void;
-  liquidationTabs: Tab[];
-  tabValue: string;
-  setTabValue: (value: string) => void;
-} => {
-  const [, setSearchString] = useState<string>('');
+};
 
-  const {
-    tabs: liquidationTabs,
-    value: tabValue,
-    setValue: setTabValue,
-  } = useTabs({
-    tabs: LIQUIDATIONS_TABS,
-    defaultValue: LIQUIDATIONS_TABS[0].value,
-  });
+export const useLiquidationsPage: UseLiquidationsPage = (
+  fetchItemsFunc: FetchDataFunc,
+) => {
+  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [sortBy, setSortBy] = useState<string>('nftName');
+  const [search, setSearch] = useState<string>('');
+  const stringRef = useRef(null);
 
-  const { control } = useForm({
+  const { control, watch } = useForm({
     defaultValues: {
       [LiquidationsListFormNames.SORT]: SORT_VALUES[0],
       [LiquidationsListFormNames.COLLECTIONS_SORT]: null,
     },
   });
 
-  const searchDebounced = useDebounce((search: string) => {
-    setSearchString(search.toUpperCase());
+  const sort = watch(LiquidationsListFormNames.SORT);
+
+  const fetchItems = (): void => {
+    const rawSearchStr = stringRef.current
+      ? `search=${stringRef.current}&`
+      : '';
+    const rawSortBy = sortBy ? `sortBy=${sortBy}&` : '';
+    const rawSortOrder = sortOrder ? `sort=${sortOrder}&` : '';
+
+    fetchItemsFunc({
+      sortBy: rawSortBy,
+      sortOrder: rawSortOrder,
+      searchStr: rawSearchStr,
+    });
+  };
+
+  const searchDebounced = useDebounce((search: string): void => {
+    stringRef.current = search;
+    fetchItems();
   }, 300);
+
+  useEffect(() => {
+    const [sortField, sortOrder] = sort.value.split('_');
+
+    setSortBy(sortField);
+    setSortOrder(sortOrder);
+
+    fetchItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort]);
+
+  useEffect(() => {
+    searchDebounced(search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   return {
     control,
-    setSearch: searchDebounced,
-    liquidationTabs,
-    tabValue,
-    setTabValue,
+    setSearch,
   };
 };
 
@@ -56,7 +83,7 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
         Name <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
-    value: 'name_asc',
+    value: 'nftName_asc',
   },
   {
     label: (
@@ -64,7 +91,23 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
         Name <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
-    value: 'name_desc',
+    value: 'nftName_desc',
+  },
+  {
+    label: (
+      <span className={styles.sortName}>
+        Liquidation Price <ArrowDownSmallIcon className={styles.arrowDown} />
+      </span>
+    ),
+    value: 'liquidationPrice_asc',
+  },
+  {
+    label: (
+      <span className={styles.sortName}>
+        Liquidation Price <ArrowDownSmallIcon className={styles.arrowUp} />
+      </span>
+    ),
+    value: 'liquidationPrice_desc',
   },
 ];
 
@@ -76,10 +119,6 @@ export const SORT_COLLECTIONS_VALUES: LiquiditionsSortValue[] = [
   {
     label: <span className={styles.sortName}>Okay Bears</span>,
     value: 'Okay_bears',
-  },
-  {
-    label: <span className={styles.sortName}>Carton Kids</span>,
-    value: 'carton_kids',
   },
 ];
 
