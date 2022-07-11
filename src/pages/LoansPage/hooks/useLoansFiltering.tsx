@@ -75,7 +75,7 @@ export const useLoansFiltering: UseLoansFiltering = ({
   const sortValueOption = uniqCollections.map(({ collectionName }) => {
     return [
       {
-        label: <span className={styles.sortName}>{collectionName}</span>,
+        label: <span>{collectionName}</span>,
         value: collectionName,
       },
     ][0];

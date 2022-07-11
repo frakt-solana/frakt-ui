@@ -37,14 +37,13 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
       height: 24,
       justifyContent: 'flex-end',
     }),
-    option: (base, state) => {
+    option: (base) => {
       return {
         ...base,
         backgroundColor: 'transparent',
         padding: '7.5px 20px',
         cursor: 'pointer',
-        opacity: state.isSelected ? 1 : 0.3,
-        '&:hover': { opacity: 1, backgroundColor: 'var(--color-gray-7)' },
+        '&:hover': { backgroundColor: 'transparent' },
       };
     },
     valueContainer: (styles) => {
@@ -57,6 +56,7 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
       return {
         ...styles,
         margin: 0,
+        color: 'transparent',
       };
     },
     menu: (styles) => {
@@ -74,6 +74,7 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
         ...styles,
         margin: 0,
         color: 'var(--white-color)',
+
         '@media (max-width: 780px)': {
           width: '100%',
           fontSize: 15,
@@ -95,6 +96,7 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
       return {
         ...styles,
         padding: '6px 0',
+        opacity: 1,
         '&::-webkit-scrollbar': {
           width: 5,
         },
