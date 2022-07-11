@@ -206,3 +206,12 @@
 .reward {
   font: var(--font-text-3);
 }
+
+.questionIcon {
+  width: 18px;
+  margin-left: 5px;
+
+  svg {
+    fill: var(--accent-color-1);
+  }
+}
