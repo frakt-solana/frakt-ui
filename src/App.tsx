@@ -16,7 +16,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { Router } from './router';
 import store from './state/store';
-import { UserTokensProvider } from './contexts/userTokens';
+import { UserTokensProvider } from './contexts/userTokens/userTokens.context';
 import { ENDPOINT } from './config';
 import { LiquidityPoolsProvider } from './contexts/liquidityPools';
 import { NftPoolsProvider } from './contexts/nftPools';

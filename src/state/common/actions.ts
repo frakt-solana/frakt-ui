@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import { Socket } from 'socket.io-client';
 import { createCustomAction } from 'typesafe-actions';
 
