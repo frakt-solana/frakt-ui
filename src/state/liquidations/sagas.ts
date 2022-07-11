@@ -106,8 +106,53 @@ const txRaffleTrySaga = function* (action) {
 };
 
 const txLiquidateSaga = function* (action) {
-  console.log(action.payload, 'LIQUIDATE');
-  yield;
+  const connection = yield select(selectConnection);
+  const publicKey = yield select(selectWalletPublicKey);
+  const wallet = yield select(selectWallet);
+
+  const params = {
+    connection,
+    programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+    admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+    user: publicKey,
+    liquidityPool: new web3.PublicKey(action.payload.liquidityPool),
+    royaltyAddress: new web3.PublicKey(action.payload.royaltyAddress),
+    lotTicket: new web3.PublicKey(action.payload.winningLotTicketPubkey),
+    collectionInfo: new web3.PublicKey(action.payload.collectionInfo),
+    loan: new web3.PublicKey(action.payload.loan),
+    liquidationLot: new web3.PublicKey(action.payload.liquidationLotPubkey),
+    nftMint: new web3.PublicKey(action.payload.nftMint),
+    sendTxn: async (transaction) => {
+      await signAndConfirmTransaction({
+        transaction,
+        connection,
+        wallet,
+      });
+    },
+  };
+  try {
+    yield call(loans.redeemWinningLotTicket, params);
+    yield put(
+      liquidationsActions.txLiquidateOptimisticResponse(action.payload.nftMint),
+    );
+    console.log('Success');
+  } catch (error) {
+    const isNotConfirmed = showSolscanLinkNotification(error);
+
+    if (!isNotConfirmed) {
+      notify({
+        message: 'Transaction failed',
+        type: NotifyType.ERROR,
+      });
+    }
+
+    captureSentryError({
+      error,
+      wallet,
+      transactionName: 'redeemWinningLotTicket',
+      params,
+    });
+  }
 };
 
 const subscribeWonRaffleListSaga = function* (list: WonRaffleListItem[]) {

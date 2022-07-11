@@ -39,7 +39,7 @@ const WonRaffleCard: FC<{ data }> = ({ data }) => {
         </div>
         <div className={styles.totalValue}>
           <p className={styles.subtitle}>liquidation price</p>
-          <p className={styles.value}>{`${data.liquidationPrice} SOL`}</p>
+          <p className={styles.value}>{`${data.paybackPriceWithGrace} SOL`}</p>
         </div>
         <Button type="alternative" className={styles.btn} onClick={handleClick}>
           Liquidate
