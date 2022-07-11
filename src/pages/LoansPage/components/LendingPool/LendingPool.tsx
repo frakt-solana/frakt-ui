@@ -69,7 +69,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
                 Deposit yeild
                 <Tooltip
                   placement="bottom"
-                  overlay="The current yearly interest rate paid by borrowers"
+                  overlay="Yearly rewards based on the current utilization rate and borrow interest"
                 >
                   <QuestionCircleOutlined className={styles.questionIcon} />
                 </Tooltip>
