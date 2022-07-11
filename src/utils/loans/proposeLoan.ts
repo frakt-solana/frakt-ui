@@ -38,7 +38,7 @@ export const proposeLoan: ProposeLoan = async ({
       proposedNftPrice: new BN(proposedNftPrice),
       isPriceBased,
       loanToValue: new BN(loanToValue),
-      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      admin: new web3.PublicKey(process.env.LOANS_FEE_ADMIN_PUBKEY),
       sendTxn: async (transaction, signers) => {
         await signAndConfirmTransaction({
           transaction,
