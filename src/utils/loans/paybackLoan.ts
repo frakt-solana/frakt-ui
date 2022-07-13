@@ -1,4 +1,4 @@
-import { web3, loans } from '@frakt-protocol/frakt-sdk';
+import { web3, loans, BN } from '@frakt-protocol/frakt-sdk';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 
 import { captureSentryError } from '../sentry';
@@ -14,12 +14,14 @@ type PaybackLoan = (props: {
   connection: web3.Connection;
   wallet: WalletContextState;
   loan: Loan;
+  paybackAmount?: BN;
 }) => Promise<boolean>;
 
 export const paybackLoan: PaybackLoan = async ({
   connection,
   wallet,
   loan,
+  paybackAmount,
 }): Promise<boolean> => {
   try {
     await loans.paybackLoan({
@@ -32,6 +34,7 @@ export const paybackLoan: PaybackLoan = async ({
       liquidityPool: new web3.PublicKey(loan.liquidityPool),
       collectionInfo: new web3.PublicKey(loan.collectionInfo),
       royaltyAddress: new web3.PublicKey(loan.royaltyAddress),
+      paybackAmount,
       sendTxn: async (transaction) => {
         await signAndConfirmTransaction({
           transaction,

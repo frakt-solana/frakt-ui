@@ -1,14 +1,12 @@
 import { useState } from 'react';
 
-import { Loan } from '../../../../state/loans/types';
-
-type UsePartialRepayModal = (priceBasedLoan: Loan) => {
+type UsePartialRepayModal = () => {
   visible: boolean;
   open: () => void;
   close: () => void;
 };
 
-export const usePartialRepayModal: UsePartialRepayModal = (priceBasedLoan) => {
+export const usePartialRepayModal: UsePartialRepayModal = () => {
   const [visible, setVisible] = useState<boolean>(false);
 
   return {

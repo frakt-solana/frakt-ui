@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
@@ -17,8 +17,6 @@ import {
   SORT_VALUES,
   useLendingPoolsFiltering,
 } from './hooks/useLendingPoolsFiltering';
-import { loans, web3 } from '@frakt-protocol/frakt-sdk';
-import { useConnection } from '../../hooks';
 
 export enum InputControlsNames {
   SHOW_STAKED = 'showStaked',
@@ -29,19 +27,6 @@ const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();
   const { control, setSearch, pools, showStakedOnlyToggle } =
     useLendingPoolsFiltering();
-
-  const connection = useConnection();
-
-  useEffect(() => {
-    (async () => {
-      const data = await loans.getAllProgramAccounts(
-        new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-        connection,
-      );
-
-      console.log(data);
-    })();
-  }, []);
 
   return (
     <AppLayout>
