@@ -113,7 +113,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
         className={classNames(styles.staticValue)}
         style={{ marginTop: 20, marginBottom: 10 }}
       >
-        <p className={styles.staticValueTitle}>Interest rate</p>
+        <p className={styles.staticValueTitle}>Borrow interest</p>
         <p className={styles.staticValueData}>
           {borrowAPRPercents.toFixed(0)}%
           <Tooltip

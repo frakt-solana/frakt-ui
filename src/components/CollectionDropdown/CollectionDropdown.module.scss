@@ -1,0 +1,11 @@
+.checkbox {
+  font: var(--font-text-3);
+
+  :global {
+    .ant-checkbox {
+      + span {
+        padding-left: 10px !important;
+      }
+    }
+  }
+}

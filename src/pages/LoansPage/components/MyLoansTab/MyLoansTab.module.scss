@@ -2,24 +2,116 @@
   padding-top: 20px;
 }
 
-.connectWallet {
-  padding-top: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.connectWalletText {
-  font: var(--font-text-1);
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.connectWalletBtn {
-  width: 222px;
-  height: 48px;
-  padding: unset;
+.content {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+
+  @media screen and (max-width: 1180px) {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.valuesWrapper {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.value {
+  color: var(--color-gray-4);
+  span {
+    color: var(--white-color);
+  }
+
+  @media screen and (max-width: 780px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+}
+
+.filters {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px 30px;
+
+  @media screen and (max-width: 1180px) {
+    margin: 20px 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+.filtersContent {
+  display: flex;
+  gap: 30px;
+
+  @media screen and (max-width: 780px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
+
+.sortingSelect {
+  margin-left: 8px;
+  width: unset;
+
+  span {
+    display: flex;
+    color: var(--white-color);
+  }
+}
+
+.sortingSelectContainer {
+  svg {
+    path {
+      stroke: var(--accent-color-1) !important;
+    }
+  }
+
+  .sortName {
+    color: var(--accent-color-1);
+  }
+  @media screen and (max-width: 780px) {
+    font-size: 15px;
+  }
+}
+
+.sortWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 20px 0;
+
+  @media screen and (max-width: 1023px) {
+    margin-bottom: 0;
+  }
+}
+
+.sortWrapper {
+  flex-shrink: 0;
+
+  .arrowDown,
+  .arrowUp {
+    margin-top: 2px;
+    margin-left: 3px;
+
+    path {
+      stroke: var(--white-color);
+    }
+  }
+
+  .arrowDown {
+    transform: rotate(180deg);
+  }
+
+  @media screen and (max-width: 1180px) {
+    flex-direction: column;
+  }
 }
