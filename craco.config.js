@@ -29,6 +29,15 @@ module.exports = ({ env }) => {
   return {
     webpack: {
       plugins,
+      configure: (webpackConfig, { env, paths }) => {
+        webpackConfig.module.rules.push({
+          test: /.mjs$/,
+          include: /node_modules/,
+          type: 'javascript/auto',
+        });
+
+        return webpackConfig;
+      },
     },
   };
 };
