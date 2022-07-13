@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { Controller } from 'react-hook-form';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { MyLoansTab } from './components/MyLoansTab';
@@ -9,13 +9,25 @@ import LendingPool from './components/LendingPool';
 import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
-import { selectLiquidityPools } from '../../state/loans/selectors';
 import { useLoansPage, LoanTabsNames } from './hooks';
 import Liquidations from './components/Liquidations';
+import { SearchInput } from '../../components/SearchInput';
+import { ControlledToggle } from '../../components/Toggle/Toggle';
+import { Select } from '../../components/Select';
+import {
+  SORT_VALUES,
+  useLendingPoolsFiltering,
+} from './hooks/useLendingPoolsFiltering';
+
+export enum InputControlsNames {
+  SHOW_STAKED = 'showStaked',
+  SORT = 'sort',
+}
 
 const LoansPage: FC = () => {
   const { loanTabs, tabValue, setTabValue } = useLoansPage();
-  const liquidityPools = useSelector(selectLiquidityPools);
+  const { control, setSearch, pools, showStakedOnlyToggle } =
+    useLendingPoolsFiltering();
 
   return (
     <AppLayout>
@@ -32,9 +44,39 @@ const LoansPage: FC = () => {
         <Tabs tabs={loanTabs} value={tabValue} setValue={setTabValue} />
         {tabValue === LoanTabsNames.LENDING && (
           <>
-            {liquidityPools ? (
+            <div className={styles.sortWrapper}>
+              <SearchInput
+                onChange={(event) => setSearch(event.target.value || '')}
+                className={styles.searchInput}
+                placeholder="Search by pool name"
+              />
+              <div className={styles.filters}>
+                {showStakedOnlyToggle && (
+                  <ControlledToggle
+                    control={control}
+                    name={InputControlsNames.SHOW_STAKED}
+                    label="Staked only"
+                  />
+                )}
+                <Controller
+                  control={control}
+                  name={InputControlsNames.SORT}
+                  render={({ field: { ref, ...field } }) => (
+                    <Select
+                      valueContainerClassName={styles.sortingSelectContainer}
+                      className={styles.sortingSelect}
+                      label="Sort by"
+                      name={InputControlsNames.SORT}
+                      options={SORT_VALUES}
+                      {...field}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            {pools ? (
               <div className={styles.sortWrapper}>
-                {liquidityPools?.map((liquidityPool) => (
+                {pools?.map((liquidityPool) => (
                   <LendingPool
                     key={liquidityPool.pubkey}
                     liquidityPool={liquidityPool}

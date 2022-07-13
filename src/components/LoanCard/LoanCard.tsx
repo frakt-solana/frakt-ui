@@ -1,16 +1,18 @@
 import { FC } from 'react';
-import classNames from 'classnames';
-import moment from 'moment';
 import { useWallet } from '@solana/wallet-adapter-react';
+import classNames from 'classnames';
+import Tooltip from 'rc-tooltip';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
-import { paybackLoan as paybackLoanTx } from '../../utils/loans';
+import {
+  paybackLoan as paybackLoanTx,
+  caclTimeToRepay,
+} from '../../utils/loans';
 import styles from './LoanCard.module.scss';
 import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
 import { Loan } from '../../state/loans/types';
-import Tooltip from 'rc-tooltip';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { HEALTH_TOOLTIP_TEXT } from './constants';
 
@@ -147,7 +149,7 @@ const LoanCardValues: FC<{
         <div className={styles.valuesWrapperRow}>
           <div className={styles.valueWrapper}>
             <div className={styles.valueWithTooltip}>
-              <p className={styles.valueTitle}>Interest rate</p>
+              <p className={styles.valueTitle}>Borrow interest</p>
               <Tooltip
                 placement="bottom"
                 overlay="The current yearly interest rate paid by borrowers"
@@ -193,12 +195,7 @@ const LoanCardValues: FC<{
 const TimeToReturn: FC<{
   loan: Loan;
 }> = ({ loan }) => {
-  const { expiredAt, startedAt } = loan;
-
-  const expiredAtUnix = moment(expiredAt).unix();
-  const startedAtUnix = moment(startedAt).unix();
-
-  const loanDurationInSeconds = expiredAtUnix - startedAtUnix;
+  const { expiredAtUnix, loanDurationInSeconds } = caclTimeToRepay(loan);
 
   const { timeLeft, leftTimeInSeconds } = useCountdown(expiredAtUnix);
 

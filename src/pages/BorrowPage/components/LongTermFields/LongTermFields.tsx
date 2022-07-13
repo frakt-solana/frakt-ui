@@ -55,6 +55,10 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
 
   return (
     <div className={styles.fieldWrapper}>
+      <p className={styles.fieldDesc}>
+        Choose the amount, lowest interest. No time limit, but keep an eye on FP
+        for health.
+      </p>
       <div className={styles.sliderWrapper}>
         <p className={styles.sliderLabel}>
           loan to value: {ltv}%{' '}
@@ -109,7 +113,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
         className={classNames(styles.staticValue)}
         style={{ marginTop: 20, marginBottom: 10 }}
       >
-        <p className={styles.staticValueTitle}>Interest rate</p>
+        <p className={styles.staticValueTitle}>Borrow interest</p>
         <p className={styles.staticValueData}>
           {borrowAPRPercents.toFixed(0)}%
           <Tooltip
@@ -123,7 +127,7 @@ const LongTermFields: FC<ShortTermFields> = ({ nft, ltv, setLtv }) => {
       </div>
 
       <div className={styles.staticValue} style={{ marginBottom: 10 }}>
-        <p className={styles.staticValueTitle}>Fee</p>
+        <p className={styles.staticValueTitle}>Upfront fee</p>
         <p className={styles.staticValueData}>{mintingFee.toFixed(3)} SOL</p>
       </div>
 

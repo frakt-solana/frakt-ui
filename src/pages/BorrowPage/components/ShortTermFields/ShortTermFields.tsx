@@ -22,6 +22,10 @@ export const ShortTermFields: FC<ShortTermFields> = ({ nft }) => {
 
   return (
     <div className={styles.fieldWrapper}>
+      <p className={styles.fieldDesc}>
+        Fixed amount, interest an period. FP doesn{`'`}t matter, just repay in
+        time.
+      </p>
       <div
         className={styles.staticValue}
         style={{ marginBottom: 10, paddingTop: 20 }}

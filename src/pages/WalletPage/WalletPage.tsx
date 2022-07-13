@@ -14,6 +14,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useNameService, useWalletTokens } from './hooks';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { selectUser } from '../../state/common/selectors';
+import { Loan } from '../../state/loans/types';
+import { selectUserLoans } from '../../state/loans/selectors';
 
 export enum WalletTabs {
   TOKENS = 'tokens',
@@ -73,6 +75,7 @@ const WalletPage: FC = () => {
     walletPubkey,
   } = useWalletPage();
   const user = useSelector(selectUser);
+  const userLoans: Loan[] = useSelector(selectUserLoans);
 
   return (
     <AppLayout>
@@ -97,7 +100,7 @@ const WalletPage: FC = () => {
               setValue={setTabValue}
             />
             {tabValue === WalletTabs.LOANS && (
-              <LoansList className={styles.loansList} />
+              <LoansList loans={userLoans} className={styles.loansList} />
             )}
             {tabValue === WalletTabs.TOKENS && (
               <TokensTab userTokens={userTokens} loading={userTokensLoading} />

@@ -52,6 +52,7 @@ export interface Loan {
   pubkey: string;
   mint: string;
   name: string;
+  collectionName: string;
   imageUrl: string;
   isPriceBased: boolean;
 

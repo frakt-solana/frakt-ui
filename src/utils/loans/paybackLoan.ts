@@ -26,7 +26,7 @@ export const paybackLoan: PaybackLoan = async ({
       programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
       connection,
       user: wallet.publicKey,
-      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      admin: new web3.PublicKey(process.env.LOANS_FEE_ADMIN_PUBKEY),
       loan: new web3.PublicKey(loan.pubkey),
       nftMint: new web3.PublicKey(loan.mint),
       liquidityPool: new web3.PublicKey(loan.liquidityPool),

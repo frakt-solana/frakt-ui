@@ -8,7 +8,7 @@ interface CheckboxProps {
   className?: string;
   disabled?: boolean;
   value?: boolean;
-  label?: string;
+  label?: JSX.Element;
   onChange?: (value: boolean) => void;
 }
 
@@ -25,6 +25,8 @@ export const Checkbox: FC<CheckboxProps> = ({
     checked={value}
     onClick={() => onChange(!value)}
   >
-    {label}
+    <p className={classNames(styles.label, { [styles.checkedLabel]: value })}>
+      {label?.props?.children}
+    </p>
   </CheckboxAntd>
 );
