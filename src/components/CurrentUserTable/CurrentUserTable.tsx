@@ -10,7 +10,7 @@ import { PATHS } from '../../constants';
 import { LinkWithArrow } from '../LinkWithArrow';
 import { UserState } from '../../state/common/types';
 import DiscordIcon from '../../icons/DiscordIcon2';
-import { setAmplitudeUserId } from '../../utils/amplitude';
+import { sendAmplitudeData, setAmplitudeUserId } from '../../utils/amplitude';
 import styles from './styles.module.scss';
 
 interface CurrentUserTableProps {
@@ -56,6 +56,7 @@ const CurrentUserTable = ({
           <LinkWithArrow
             to={`${PATHS.WALLET}/${publicKey.toString()}`}
             label="My profile"
+            event="navigation-profile"
             className={styles.myCollectionLink}
           />
         </div>
@@ -67,7 +68,11 @@ const CurrentUserTable = ({
           className={styles.discordButton}
           rel="noopener noreferrer"
         >
-          <DiscordIcon className={styles.logo} /> Link discord
+          <DiscordIcon
+            onClick={() => sendAmplitudeData('navigation-discord')}
+            className={styles.logo}
+          />{' '}
+          Link discord
         </a>
       )}
       <button onClick={disconnect} className={styles.disconnectButton}>

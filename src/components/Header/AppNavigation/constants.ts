@@ -15,6 +15,7 @@ export const NAVIGATION_LINKS = [
   {
     to: PATHS.LOANS,
     label: 'Loans',
+    event: 'navigation-loans',
   },
   {
     to: PATHS.POOLS,

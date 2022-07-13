@@ -12,6 +12,7 @@ import { TabsNames } from '../../../../components/PoolModal/usePoolModal';
 import Tooltip from '../../../../components/Tooltip';
 import { commonActions } from '../../../../state/common/actions';
 import { LiquidityPool } from '../../../../state/loans/types';
+import { sendAmplitudeData } from '../../../../utils/amplitude';
 
 interface LendingPoolProps {
   liquidityPool: LiquidityPool;
@@ -118,7 +119,10 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
               <Button
                 className={styles.btn}
                 type="alternative"
-                onClick={() => openPoolModal(TabsNames.DEPOSIT)}
+                onClick={() => {
+                  openPoolModal(TabsNames.DEPOSIT);
+                  sendAmplitudeData('loans-deposit');
+                }}
               >
                 Deposit
               </Button>

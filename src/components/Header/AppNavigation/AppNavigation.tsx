@@ -7,6 +7,7 @@ import styles from './AppNavigation.module.scss';
 import NavigationLink from '../NavigationLink';
 import { PATHS } from '../../../constants';
 import { Dropdown } from '../../Dropdown';
+import { sendAmplitudeData } from '../../../utils/amplitude';
 
 interface AppNavigationProps {
   className?: string;
@@ -18,7 +19,11 @@ export const DropdownMenuMore: FC = () => {
   return (
     <Dropdown title="More">
       <ul>
-        <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
+        <NavLink
+          className={styles.dropdownLink}
+          to={PATHS.STATS}
+          onClick={() => sendAmplitudeData('navigation-stats')}
+        >
           Stats
         </NavLink>
         <li>
@@ -37,6 +42,7 @@ export const DropdownMenuMore: FC = () => {
             href={process.env.FRAKT_STAKING_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => sendAmplitudeData('navigation-staking')}
           >
             Staking
           </a>
@@ -102,8 +108,12 @@ export const AppNavigation: FC<AppNavigationProps> = ({
       )}
     >
       {!withoutLinks &&
-        NAVIGATION_LINKS.map(({ label, to }, idx) => (
-          <li key={idx} className={styles.navigationItem}>
+        NAVIGATION_LINKS.map(({ label, to, event }, idx) => (
+          <li
+            key={idx}
+            className={styles.navigationItem}
+            onClick={() => sendAmplitudeData(event)}
+          >
             <NavigationLink to={to}>{label}</NavigationLink>
           </li>
         ))}

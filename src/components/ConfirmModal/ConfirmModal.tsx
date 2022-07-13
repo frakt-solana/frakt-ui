@@ -3,6 +3,7 @@ import { FC } from 'react';
 import styles from './styles.module.scss';
 import { Modal } from '../Modal';
 import Button from '../Button';
+import { sendAmplitudeData } from '../../utils/amplitude';
 
 interface ConfirmModalProps {
   visible: boolean;
@@ -35,7 +36,14 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.subtitle}>{subtitle}</p>
         <div className={styles.btnWrapper}>
-          <Button className={styles.btn} type="alternative" onClick={onSubmit}>
+          <Button
+            className={styles.btn}
+            type="alternative"
+            onClick={() => {
+              onSubmit();
+              sendAmplitudeData('loans-confirm-borrow');
+            }}
+          >
             {btnAgree}
           </Button>
           <Button className={styles.btn} type="tertiary" onClick={onCancel}>
