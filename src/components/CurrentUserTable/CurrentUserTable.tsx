@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 
@@ -9,7 +10,7 @@ import { PATHS } from '../../constants';
 import { LinkWithArrow } from '../LinkWithArrow';
 import { UserState } from '../../state/common/types';
 import DiscordIcon from '../../icons/DiscordIcon2';
-
+import { setAmplitudeUserId } from '../../utils/amplitude';
 import styles from './styles.module.scss';
 
 interface CurrentUserTableProps {
@@ -28,6 +29,10 @@ const CurrentUserTable = ({
   if (!publicKey) {
     return null;
   }
+
+  useEffect(() => {
+    setAmplitudeUserId(publicKey?.toBase58());
+  }, [publicKey]);
 
   const getBalanceValue = () => {
     const valueStr = `${formatNumber.format(
