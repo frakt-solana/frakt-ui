@@ -6,6 +6,7 @@ import { LIQUIDATIONS_TABS } from '.';
 import LiquidationRaffleCard from '../LiquidationRaffleCard';
 import { LiquidationsTabsNames } from '../../model';
 import { Tabs, useTabs } from '../../../../components/Tabs';
+import { ConnectWalletSection } from '../../../../components/ConnectWalletSection';
 import NoWinningRaffles from '../NoWinningRaffles';
 import LiquidationsList from '../LiquidationsList';
 import styles from './Liquidations.module.scss';
@@ -19,6 +20,7 @@ import {
   selectGraceList,
   selectRaffleList,
   selectWonRaffleList,
+  selectLotteryTickets,
 } from '../../../../state/liquidations/selectors';
 
 const Liquidations: FC = () => {
@@ -37,6 +39,7 @@ const Liquidations: FC = () => {
   const graceList = useSelector(selectGraceList);
   const raffleList = useSelector(selectRaffleList);
   const wonRaffleList = useSelector(selectWonRaffleList);
+  const lotteryTickets = useSelector(selectLotteryTickets);
 
   useEffect(() => {
     dispatch(liquidationsActions.fetchGraceList());
@@ -50,6 +53,10 @@ const Liquidations: FC = () => {
     }
   }, [socket, publicKey]);
 
+  const handleTryLottery = () => {
+    setTabValue(LIQUIDATIONS_TABS[0].value);
+  };
+
   return (
     <>
       <Tabs
@@ -59,18 +66,25 @@ const Liquidations: FC = () => {
         setValue={setTabValue}
         type="secondary"
       />
-      {tabValue === LiquidationsTabsNames.LIQUIDATIONS && (
-        <LiquidationsList
-          withRafflesInfo
-          fetchItemsFunc={(params) =>
-            dispatch(liquidationsActions.fetchRaffleList(params))
-          }
-        >
-          {raffleList.map((item) => (
-            <LiquidationRaffleCard key={item.nftMint} data={item} />
-          ))}
-        </LiquidationsList>
-      )}
+      {tabValue === LiquidationsTabsNames.LIQUIDATIONS &&
+        (publicKey ? (
+          <LiquidationsList
+            withRafflesInfo
+            fetchItemsFunc={(params) =>
+              dispatch(liquidationsActions.fetchRaffleList(params))
+            }
+          >
+            {raffleList.map((item) => (
+              <LiquidationRaffleCard
+                key={item.nftMint}
+                data={item}
+                disabled={!lotteryTickets.quantity}
+              />
+            ))}
+          </LiquidationsList>
+        ) : (
+          <ConnectWalletSection text="Connect your wallet to check liquidations raffle" />
+        ))}
       {tabValue === LiquidationsTabsNames.GRACE && (
         <LiquidationsList
           fetchItemsFunc={(params) =>
@@ -90,7 +104,7 @@ const Liquidations: FC = () => {
             ))}
           </LiquidationsList>
         ) : (
-          <NoWinningRaffles />
+          <NoWinningRaffles onClick={handleTryLottery} />
         ))}
     </>
   );

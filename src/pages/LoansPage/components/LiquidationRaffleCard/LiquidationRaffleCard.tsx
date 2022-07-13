@@ -9,7 +9,10 @@ import { Ticket } from '../../../../icons';
 import { liquidationsActions } from '../../../../state/liquidations/actions';
 import styles from './LiquidationRaffleCard.module.scss';
 
-const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
+const LiquidationRaffleCard: FC<{ data; disabled: boolean }> = ({
+  data,
+  disabled,
+}) => {
   const [tryId, setTryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -41,7 +44,12 @@ const LiquidationRaffleCard: FC<{ data }> = ({ data }) => {
           <p className={styles.subtitle}>liquidation price</p>
           <p className={styles.value}>{`${data.liquidationPrice} SOL`}</p>
         </div>
-        <Button type="alternative" className={styles.btn} onClick={handleClick}>
+        <Button
+          type="alternative"
+          className={styles.btn}
+          onClick={handleClick}
+          disabled={disabled}
+        >
           <Ticket className={styles.ticket} />
           Try
         </Button>
