@@ -66,7 +66,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
             </div>
             <div className={styles.totalValue}>
               <p className={styles.title}>
-                Deposit yeild
+                Deposit yield
                 <Tooltip
                   placement="bottom"
                   overlay="Yearly rewards based on the current utilization rate and borrow interest"
