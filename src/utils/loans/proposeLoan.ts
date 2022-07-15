@@ -64,13 +64,14 @@ export const proposeLoan: ProposeLoan = async ({
             message: 'Your loan was successfully funded!',
             type: NotifyType.SUCCESS,
           });
+          connection.removeAccountChangeListener(subscribtionId);
         } else if (loanAccountData?.loanStatus?.rejected) {
           notify({
             message: 'Loan funding failed. Please get in touch with us',
             type: NotifyType.ERROR,
           });
+          connection.removeAccountChangeListener(subscribtionId);
         }
-        connection.removeAccountChangeListener(subscribtionId);
       },
     );
 
