@@ -7,7 +7,7 @@ import moment from 'moment';
 
 import styles from '../components/MyLoansTab/MyLoansTab.module.scss';
 import { compareNumbers } from '../../../contexts/liquidityPools';
-import { selectUserLoans } from '../../../state/loans/selectors';
+import { selectLoanNfts } from '../../../state/loans/selectors';
 import { caclTimeToRepay } from '../../../utils/loans';
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Loan } from '../../../state/loans/types';
@@ -56,7 +56,7 @@ export const useLoansFiltering: UseLoansFiltering = ({
   selectedCollections,
 }) => {
   const { connected } = useWallet();
-  const userLoans: Loan[] = useSelector(selectUserLoans);
+  const userLoans: Loan[] = useSelector(selectLoanNfts);
 
   const { control, watch } = useForm({
     defaultValues: {
