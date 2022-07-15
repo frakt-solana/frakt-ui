@@ -15,11 +15,13 @@ export const liquidationsTypes = {
   SET_WON_RAFFLE_LIST: 'liquidations/SET_WON_RAFFLE_LIST',
   SET_LOTTERY_TICKETS_LIST: 'liquidations/SET_LOTTERY_TICKETS_LIST',
   TX_RAFFLE_TRY: 'liquidations/TX_RAFFLE_TRY',
-  TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE:
-    'liquidations/TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE',
+  TX_RAFFLE_TRY__PENDING: 'liquidations/TX_RAFFLE_TRY__PENDING',
+  TX_RAFFLE_TRY__FULFILLED: 'liquidations/TX_RAFFLE_TRY__FULFILLED',
+  TX_RAFFLE_TRY__FAILED: 'liquidations/TX_RAFFLE_TRY__FAILED',
   TX_LIQUIDATE: 'liquidations/TX_LIQUIDATE',
-  TX_LIQUIDATE_OPTIMISTIC_RESPONSE:
-    'liquidations/TX_LIQUIDATE_OPTIMISTIC_RESPONSE',
+  TX_LIQUIDATE__PENDING: 'liquidations/TX_LIQUIDATE__PENDING',
+  TX_LIQUIDATE__FULFILLED: 'liquidations/TX_LIQUIDATE__FULFILLED',
+  TX_LIQUIDATE__FAILED: 'liquidations/TX_LIQUIDATE__FAILED',
 };
 
 export const liquidationsActions = {
@@ -67,16 +69,32 @@ export const liquidationsActions = {
     liquidationsTypes.TX_RAFFLE_TRY,
     (payload) => ({ payload }),
   ),
-  txRaffleTryOptimisticResponse: createCustomAction(
-    liquidationsTypes.TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE,
+  txRaffleTryPending: createCustomAction(
+    liquidationsTypes.TX_RAFFLE_TRY__PENDING,
+    () => null,
+  ),
+  txRaffleTryFulfilled: createCustomAction(
+    liquidationsTypes.TX_RAFFLE_TRY__FULFILLED,
     (payload) => ({ payload }),
+  ),
+  txRaffleTryFailed: createCustomAction(
+    liquidationsTypes.TX_RAFFLE_TRY__FAILED,
+    (error) => ({ payload: error }),
   ),
   txLiquidate: createCustomAction(
     liquidationsTypes.TX_LIQUIDATE,
     (payload) => ({ payload }),
   ),
-  txLiquidateOptimisticResponse: createCustomAction(
-    liquidationsTypes.TX_LIQUIDATE_OPTIMISTIC_RESPONSE,
+  txLiquidatePending: createCustomAction(
+    liquidationsTypes.TX_LIQUIDATE__PENDING,
+    () => null,
+  ),
+  txLiquidateFulfilled: createCustomAction(
+    liquidationsTypes.TX_LIQUIDATE__FULFILLED,
     (payload) => ({ payload }),
+  ),
+  txLiquidateFailed: createCustomAction(
+    liquidationsTypes.TX_LIQUIDATE__FAILED,
+    (error) => ({ payload: error }),
   ),
 };

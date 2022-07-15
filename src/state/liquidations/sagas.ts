@@ -65,6 +65,7 @@ const fetchRaffleListSaga = function* (action) {
 };
 
 const txRaffleTrySaga = function* (action) {
+  yield put(liquidationsActions.txRaffleTryPending());
   const connection = yield select(selectConnection);
   const publicKey = yield select(selectWalletPublicKey);
   const wallet = yield select(selectWallet);
@@ -88,10 +89,9 @@ const txRaffleTrySaga = function* (action) {
   };
   try {
     yield call(loans.getLotTicket, params);
-    yield put(
-      liquidationsActions.txRaffleTryOptimisticResponse(lotteryTickets.attempt),
-    );
+    yield put(liquidationsActions.txRaffleTryFulfilled(lotteryTickets.attempt));
   } catch (error) {
+    yield put(liquidationsActions.txRaffleTryFailed(error));
     const isNotConfirmed = showSolscanLinkNotification(error);
 
     if (!isNotConfirmed) {
@@ -111,6 +111,7 @@ const txRaffleTrySaga = function* (action) {
 };
 
 const txLiquidateSaga = function* (action) {
+  yield put(liquidationsActions.txLiquidatePending());
   const connection = yield select(selectConnection);
   const publicKey = yield select(selectWalletPublicKey);
   const wallet = yield select(selectWallet);
@@ -137,10 +138,9 @@ const txLiquidateSaga = function* (action) {
   };
   try {
     yield call(loans.redeemWinningLotTicket, params);
-    yield put(
-      liquidationsActions.txLiquidateOptimisticResponse(action.payload.nftMint),
-    );
+    yield put(liquidationsActions.txLiquidateFulfilled(action.payload.nftMint));
   } catch (error) {
+    yield put(liquidationsActions.txLiquidateFailed(error));
     const isNotConfirmed = showSolscanLinkNotification(error);
 
     if (!isNotConfirmed) {

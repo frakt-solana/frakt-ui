@@ -23,6 +23,9 @@ export const initialWonRaffleListState: AsyncState<WonRaffleListItem[]> =
 export const initialLotteryTicketsListState: AsyncState<any> =
   createInitialAsyncState<any>(null);
 
+export const initialTxState: AsyncState<unknown> =
+  createInitialAsyncState<unknown>(null);
+
 const fetchGraceListReducer = createReducer(
   initialGraceListState,
   createHandlers<GraceListItem[]>(liquidationsTypes.FETCH_GRACE_LIST),
@@ -50,12 +53,22 @@ const setLotteryTicketsListReducer = createReducer(
   },
 );
 
-const txRaffleTryOptimisticReducer = createReducer(
+const txRaffleTryFulfilledReducer = createReducer(
   initialLotteryTicketsListState,
   {
-    [liquidationsTypes.TX_RAFFLE_TRY_OPTIMISTIC_RESPONSE]: (state, action) =>
+    [liquidationsTypes.TX_RAFFLE_TRY__FULFILLED]: (state, action) =>
       over(lensPath(['data', 'nftMints']), without([action.payload]), state),
   },
+);
+
+const txRaffleTryReducer = createReducer(
+  initialTxState,
+  createHandlers<unknown>(liquidationsTypes.TX_RAFFLE_TRY),
+);
+
+const txLiquidateReducer = createReducer(
+  initialTxState,
+  createHandlers<unknown>(liquidationsTypes.TX_LIQUIDATE),
 );
 
 export default combineReducers({
@@ -64,6 +77,8 @@ export default combineReducers({
   wonRaffleList: setWonRaffleListReducer,
   lotteryTicketsList: composeReducers(
     setLotteryTicketsListReducer,
-    txRaffleTryOptimisticReducer,
+    txRaffleTryFulfilledReducer,
   ),
+  txRaffleTry: txRaffleTryReducer,
+  txLiquidate: txLiquidateReducer,
 });

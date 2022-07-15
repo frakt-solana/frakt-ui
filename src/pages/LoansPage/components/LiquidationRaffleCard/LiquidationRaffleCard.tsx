@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
@@ -7,6 +7,8 @@ import { LoadingModal } from '../../../../components/LoadingModal';
 import Button from '../../../../components/Button';
 import { Ticket } from '../../../../icons';
 import { liquidationsActions } from '../../../../state/liquidations/actions';
+import { selectTxRaffleTryStatus } from '../../../../state/liquidations/selectors';
+import { useOnFulfilled } from '../../../../hooks';
 import styles from './LiquidationRaffleCard.module.scss';
 
 const LiquidationRaffleCard: FC<{ data; disabled: boolean }> = ({
@@ -16,6 +18,10 @@ const LiquidationRaffleCard: FC<{ data; disabled: boolean }> = ({
   const [tryId, setTryId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const txRequestStatus = useSelector(selectTxRaffleTryStatus);
+  useOnFulfilled(txRequestStatus, () => {
+    setIsLoading(false);
+  });
 
   const handleClick = () => {
     setTryId(data.nftMint);

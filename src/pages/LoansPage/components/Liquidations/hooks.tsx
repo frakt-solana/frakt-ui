@@ -111,17 +111,6 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
   },
 ];
 
-export const SORT_COLLECTIONS_VALUES: LiquiditionsSortValue[] = [
-  {
-    label: <span className={styles.sortName}>Degen Ape</span>,
-    value: 'Degen_Ape',
-  },
-  {
-    label: <span className={styles.sortName}>Okay Bears</span>,
-    value: 'Okay_bears',
-  },
-];
-
 export const LIQUIDATIONS_TABS: Tab[] = [
   {
     label: 'Liquidations raffle',

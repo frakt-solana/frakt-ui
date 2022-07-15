@@ -1,5 +1,24 @@
 import { createSelector } from 'reselect';
-import { pathOr, identity, applySpec, length, head } from 'ramda';
+import {
+  pathOr,
+  identity,
+  applySpec,
+  length,
+  head,
+  compose,
+  map,
+  pluck,
+  uniq,
+} from 'ramda';
+
+const createCollectionNameDropdown = compose(
+  map((item: any) => ({
+    label: item,
+    value: item ? item.replace(' ', '_') : '',
+  })),
+  uniq,
+  pluck('nftCollectionName'),
+);
 
 export const selectGraceList = createSelector(
   [pathOr([], ['liquidations', 'graceList', 'data'])],
@@ -22,4 +41,24 @@ export const selectLotteryTickets = createSelector(
     quantity: length,
     attempt: head,
   }),
+);
+
+export const selectTxRaffleTryStatus = createSelector(
+  [pathOr('IDLE', ['liquidations', 'txRaffleTry', 'status'])],
+  identity,
+);
+
+export const selectTxLiquidateStatus = createSelector(
+  [pathOr('IDLE', ['liquidations', 'txLiquidate', 'status'])],
+  identity,
+);
+
+export const selectRaffleListCollections = createSelector(
+  [selectRaffleList],
+  createCollectionNameDropdown,
+);
+
+export const selectWonRaffleListCollections = createSelector(
+  [selectWonRaffleList],
+  createCollectionNameDropdown,
 );
