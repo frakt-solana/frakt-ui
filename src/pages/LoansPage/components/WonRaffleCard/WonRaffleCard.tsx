@@ -1,10 +1,12 @@
 import { FC, useState } from 'react';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
 import Button from '../../../../components/Button';
+import { useNativeAccount } from '../../../../utils/accounts';
 import { selectTxLiquidateStatus } from '../../../../state/liquidations/selectors';
 import { liquidationsActions } from '../../../../state/liquidations/actions';
 import { useOnFulfilled } from '../../../../hooks';
@@ -18,6 +20,9 @@ const WonRaffleCard: FC<{ data }> = ({ data }) => {
   useOnFulfilled(txRequestStatus, () => {
     setIsLoading(false);
   });
+
+  const { account } = useNativeAccount();
+  const balance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
 
   const handleClick = () => {
     setTryId(data.nftMint);
@@ -47,7 +52,12 @@ const WonRaffleCard: FC<{ data }> = ({ data }) => {
           <p className={styles.subtitle}>liquidation price</p>
           <p className={styles.value}>{`${data.paybackPriceWithGrace} SOL`}</p>
         </div>
-        <Button type="alternative" className={styles.btn} onClick={handleClick}>
+        <Button
+          type="alternative"
+          className={styles.btn}
+          onClick={handleClick}
+          disabled={data.paybackPriceWithGrace > balance}
+        >
           Liquidate
         </Button>
       </div>
