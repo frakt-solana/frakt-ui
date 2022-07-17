@@ -15,7 +15,7 @@ import { useNameService, useWalletTokens } from './hooks';
 import { shortenAddress } from '../../utils/solanaUtils';
 import { selectUser } from '../../state/common/selectors';
 import { Loan } from '../../state/loans/types';
-import { selectUserLoans } from '../../state/loans/selectors';
+import { selectLoanNfts } from '../../state/loans/selectors';
 
 export enum WalletTabs {
   TOKENS = 'tokens',
@@ -75,7 +75,7 @@ const WalletPage: FC = () => {
     walletPubkey,
   } = useWalletPage();
   const user = useSelector(selectUser);
-  const userLoans: Loan[] = useSelector(selectUserLoans);
+  const userLoans: Loan[] = useSelector(selectLoanNfts);
 
   return (
     <AppLayout>

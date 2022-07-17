@@ -7,6 +7,7 @@ export const loansTypes = {
   SET_LIQUIDITY_POOLS: 'loans/SET_LIQUIDITY_POOLS',
   SET_BORROW_NFTS: 'loans/SET_BORROW_NFTS',
   ADD_HIDDEN_BORROW_NFT: 'loans/ADD_HIDDEN_BORROW_NFT',
+  ADD_HIDDEN_LOAN_NFT: 'loans/ADD_HIDDEN_LOAN_NFT',
 };
 
 export const loansActions = {
@@ -25,6 +26,10 @@ export const loansActions = {
   ),
   addHiddenBorrowNftMint: createCustomAction(
     loansTypes.ADD_HIDDEN_BORROW_NFT,
+    (mint: string) => ({ payload: mint }),
+  ),
+  addHiddenLoanNftMint: createCustomAction(
+    loansTypes.ADD_HIDDEN_LOAN_NFT,
     (mint: string) => ({ payload: mint }),
   ),
 };

@@ -48,9 +48,17 @@ const addHiddenBorrowNftsReducer = createReducer<string[]>([], {
   ) => [...state, action.payload],
 });
 
+const addHiddenLoanNftsReducer = createReducer<string[]>([], {
+  [loansTypes.ADD_HIDDEN_LOAN_NFT]: (
+    state,
+    action: ReturnType<typeof loansActions.addHiddenLoanNftMint>,
+  ) => [...state, action.payload],
+});
+
 export default combineReducers({
   loans: setLoansReducer,
   liquidityPools: setLiquidityPoolsReducer,
   borrowNfts: setBorrowNftsReducer,
   hiddenBorrowNfts: addHiddenBorrowNftsReducer,
+  hiddenLoanNfts: addHiddenLoanNftsReducer,
 });
