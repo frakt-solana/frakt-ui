@@ -190,10 +190,10 @@ body .slippageInput {
   &:hover,
   &:focus,
   &:focus-visible {
-    border: unset;
+    border: unset !important;
+    padding: unset !important;
+    font-size: 15px !important;
     height: 100%;
-    padding: unset;
-    font-size: 15px;
   }
 }
 
