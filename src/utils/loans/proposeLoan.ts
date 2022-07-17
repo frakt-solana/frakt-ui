@@ -50,7 +50,7 @@ export const proposeLoan: ProposeLoan = async ({
       },
     });
 
-    const subscribtionId = connection.onAccountChange(
+    const subscriptionId = connection.onAccountChange(
       loanPubkey,
       (accountInfo) => {
         const loanAccountData = loans.decodeLoan(
@@ -64,13 +64,14 @@ export const proposeLoan: ProposeLoan = async ({
             message: 'Your loan was successfully funded!',
             type: NotifyType.SUCCESS,
           });
+          connection.removeAccountChangeListener(subscriptionId);
         } else if (loanAccountData?.loanStatus?.rejected) {
           notify({
             message: 'Loan funding failed. Please get in touch with us',
             type: NotifyType.ERROR,
           });
+          connection.removeAccountChangeListener(subscriptionId);
         }
-        connection.removeAccountChangeListener(subscribtionId);
       },
     );
 
