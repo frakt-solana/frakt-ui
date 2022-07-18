@@ -18,14 +18,14 @@ export const DropdownMenuMore: FC = () => {
   return (
     <Dropdown title="More">
       <ul>
+        <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
+          Stats
+        </NavLink>
         <NavLink className={styles.dropdownLink} to={PATHS.POOLS}>
           Pools
         </NavLink>
         <NavLink className={styles.dropdownLink} to={PATHS.SWAP}>
           Swap
-        </NavLink>
-        <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
-          Stats
         </NavLink>
         <li>
           <a
