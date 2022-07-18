@@ -16,14 +16,6 @@ export const NAVIGATION_LINKS = [
     to: PATHS.LOANS,
     label: 'Loans',
   },
-  {
-    to: PATHS.POOLS,
-    label: 'Pools',
-  },
-  {
-    to: PATHS.SWAP,
-    label: 'Swap',
-  },
 ];
 
 export const DROPDOWN_EXTERNAL_LINKS = [
