@@ -7,7 +7,6 @@
     "@bonfida/spl-name-service": "0.1.24",
     "@craco/craco": "^5.7.0",
     "@frakt-protocol/frakt-sdk": "^0.4.1",
-    "@prism-hq/prism-ag": "^0.1.6",
     "@sentry/react": "^7.1.1",
     "@sentry/tracing": "^7.1.1",
     "@solana/spl-token": "0.1.8",
