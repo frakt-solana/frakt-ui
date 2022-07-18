@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
-import { TokenInfo } from '@solana/spl-token-registry';
 import classNames from 'classnames';
+import { TokenInfo } from '@frakt-protocol/frakt-sdk';
 
 import { ChevronDownIcon } from '../../icons';
 import NumericInput from '../NumericInput';
