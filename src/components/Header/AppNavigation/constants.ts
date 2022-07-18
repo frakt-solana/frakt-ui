@@ -8,13 +8,13 @@ import {
 } from '../../../icons';
 
 export const NAVIGATION_LINKS = [
-  // {
-  //   to: PATHS.TEST,
-  //   label: 'Test',
-  // },
   {
     to: PATHS.LOANS,
     label: 'Loans',
+  },
+  {
+    to: PATHS.STATS,
+    label: 'Stats',
   },
 ];
 

@@ -6,6 +6,7 @@ import {
   useAppInit,
   useHealthNotification,
   useFirebaseNotifications,
+  useWebSocketSubscriptions,
 } from './hooks';
 
 export const Router = (): JSX.Element => {
@@ -13,6 +14,7 @@ export const Router = (): JSX.Element => {
   useHealthNotification();
   useConnectionInit();
   useFirebaseNotifications();
+  useWebSocketSubscriptions();
 
   return (
     <BrowserRouter>

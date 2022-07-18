@@ -2,14 +2,10 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { selectSocket } from '../../state/common/selectors';
-import { commonActions } from '../../state/common/actions';
+import { selectSocket } from '../state/common/selectors';
+import { commonActions } from '../state/common/actions';
 
-export const UserTokensProvider = ({
-  children = null,
-}: {
-  children: JSX.Element;
-}): JSX.Element => {
+export const useWebSocketSubscriptions = (): void => {
   const { connected, publicKey } = useWallet();
   const dispatch = useDispatch();
   const socket = useSelector(selectSocket);
@@ -33,6 +29,4 @@ export const UserTokensProvider = ({
       dispatch(commonActions.fetchUser(publicKey));
     }
   }, [connected, dispatch, publicKey]);
-
-  return <div>{children}</div>;
 };

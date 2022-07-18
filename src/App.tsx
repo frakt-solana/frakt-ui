@@ -16,7 +16,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { Router } from './router';
 import store from './state/store';
-import { UserTokensProvider } from './contexts/userTokens';
 import { ENDPOINT } from './config';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { createBrowserHistory } from 'history';
@@ -39,9 +38,7 @@ const App: FC = () => {
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets} autoConnect>
           {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
-          <UserTokensProvider>
-            <Router />
-          </UserTokensProvider>
+          <Router />
           {/* <IntercomService /> */}
           {/* </IntercomProvider> */}
         </WalletProvider>
