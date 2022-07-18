@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import { TokenInfo } from '@solana/spl-token-registry';
 import classNames from 'classnames';
 
-import { SelectTokenModal } from '../SelectTokenModal';
 import { ChevronDownIcon } from '../../icons';
 import NumericInput from '../NumericInput';
 import styles from './styles.module.scss';
@@ -37,10 +36,8 @@ const TokenField: FC<TokenFieldProps> = ({
   currentToken,
   value,
   onValueChange,
-  modalTitle,
   label,
   balance,
-  balances = {},
   style,
   className,
   onUseMaxButtonClick,
@@ -52,7 +49,6 @@ const TokenField: FC<TokenFieldProps> = ({
   disabled = false,
 }) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   return (
     <div
@@ -109,7 +105,6 @@ const TokenField: FC<TokenFieldProps> = ({
             className={classNames(styles.selectTokenBtn, {
               [styles.disabledTokens]: !tokensList || !onTokenChange,
             })}
-            onClick={() => tokensList && setIsModalOpen(true)}
           >
             {lpTokenSymbol && (
               <span className={classNames(styles.tokenName)}>
@@ -137,16 +132,6 @@ const TokenField: FC<TokenFieldProps> = ({
             <ChevronDownIcon className={styles.arrowDownIcon} />
           </button>
         </div>
-
-        {!!tokensList && !!onTokenChange && (
-          <SelectTokenModal
-            title={modalTitle}
-            visible={isModalOpen}
-            balances={balances}
-            onChange={onTokenChange}
-            onCancel={() => setIsModalOpen(false)}
-          />
-        )}
       </div>
     </div>
   );

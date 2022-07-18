@@ -21,12 +21,16 @@ export const DropdownMenuMore: FC = () => {
         <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
           Stats
         </NavLink>
-        <NavLink className={styles.dropdownLink} to={PATHS.POOLS}>
-          Pools
-        </NavLink>
-        <NavLink className={styles.dropdownLink} to={PATHS.SWAP}>
-          Swap
-        </NavLink>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={process.env.FRAKT_POOLS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pools
+          </a>
+        </li>
         <li>
           <a
             className={styles.dropdownLink}

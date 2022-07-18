@@ -18,8 +18,6 @@ import { Router } from './router';
 import store from './state/store';
 import { UserTokensProvider } from './contexts/userTokens';
 import { ENDPOINT } from './config';
-import { LiquidityPoolsProvider } from './contexts/liquidityPools';
-import { NftPoolsProvider } from './contexts/nftPools';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { createBrowserHistory } from 'history';
 import { initSentry } from './utils/sentry';
@@ -42,11 +40,7 @@ const App: FC = () => {
         <WalletProvider wallets={wallets} autoConnect>
           {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
           <UserTokensProvider>
-            <LiquidityPoolsProvider>
-              <NftPoolsProvider>
-                <Router />
-              </NftPoolsProvider>
-            </LiquidityPoolsProvider>
+            <Router />
           </UserTokensProvider>
           {/* <IntercomService /> */}
           {/* </IntercomProvider> */}

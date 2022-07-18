@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { userTokensActions } from '../../state/userTokens/actions';
 import { selectSocket } from '../../state/common/selectors';
 import { commonActions } from '../../state/common/actions';
 
@@ -31,12 +30,8 @@ export const UserTokensProvider = ({
   useEffect(() => {
     if (connected) {
       dispatch(commonActions.setWallet({ publicKey }));
-      dispatch(userTokensActions.fetchUserTokens(publicKey));
       dispatch(commonActions.fetchUser(publicKey));
     }
-    return () => {
-      dispatch(userTokensActions.clearTokens());
-    };
   }, [connected, dispatch, publicKey]);
 
   return <div>{children}</div>;
