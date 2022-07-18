@@ -3,7 +3,11 @@ import {
   LedgerWalletAdapter,
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  SolletExtensionWalletAdapter,
+  SlopeWalletAdapter,
+  GlowWalletAdapter,
+  CoinbaseWalletAdapter,
+  TorusWalletAdapter,
+  MathWalletAdapter,
   SolletWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
@@ -27,9 +31,13 @@ initSentry(history);
 const wallets = [
   new PhantomWalletAdapter(),
   new SolflareWalletAdapter(),
+  new SlopeWalletAdapter(),
+  new GlowWalletAdapter(),
   new LedgerWalletAdapter(),
+  new CoinbaseWalletAdapter(),
+  new TorusWalletAdapter(),
+  new MathWalletAdapter(),
   new SolletWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
-  new SolletExtensionWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
 const App: FC = () => {
