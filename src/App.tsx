@@ -23,13 +23,12 @@ import { NftPoolsProvider } from './contexts/nftPools';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { createBrowserHistory } from 'history';
 import { initSentry } from './utils/sentry';
-import { initAmplitude, sendAmplitudeData } from './utils/amplitude';
+import { initAmplitude } from './utils/amplitude';
 
 const history = createBrowserHistory();
 
 initSentry(history);
 initAmplitude();
-sendAmplitudeData('landingpage-start');
 
 const wallets = [
   getPhantomWallet(),
