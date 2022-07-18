@@ -40,9 +40,9 @@ export const fetchStats = async (): Promise<Stats> => {
       throw new Error('Error fetching statistics');
     }
 
-    const TVL = loansStats.TVL * solanaPriceUSD;
+    const TVL = loansStats?.TVL * solanaPriceUSD || 0;
 
-    const nftsLocked = loansStats.lockedNftsInLoans;
+    const nftsLocked = loansStats?.lockedNftsInLoans || 0;
 
     return {
       TVL,
