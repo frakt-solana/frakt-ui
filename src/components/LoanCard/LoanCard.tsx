@@ -1,7 +1,10 @@
 import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import Tooltip from 'rc-tooltip';
+import { BN } from '@frakt-protocol/frakt-sdk';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import {
@@ -13,13 +16,14 @@ import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
 import { Loan } from '../../state/loans/types';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+
 import { HEALTH_TOOLTIP_TEXT } from './constants';
 import {
   PartialRepayModal,
   usePartialRepayModal,
 } from '../../pages/LoansPage/components/PartialRepayModal';
-import { BN } from '@frakt-protocol/frakt-sdk';
+import { userTokensActions } from '../../state/userTokens/actions';
+import { loansActions } from '../../state/loans/actions';
 
 interface LoanCardProps {
   loan: Loan;
@@ -28,6 +32,7 @@ interface LoanCardProps {
 const usePaybackLoan = (loan: Loan) => {
   const wallet = useWallet();
   const connection = useConnection();
+  const dispatch = useDispatch();
 
   const {
     visible: loadingModalVisible,
@@ -40,6 +45,11 @@ const usePaybackLoan = (loan: Loan) => {
     open: openPartialRepayModal,
     close: closePartialRepayModal,
   } = usePartialRepayModal();
+
+  const removeTokenOptimistic = (mint: string) => {
+    dispatch(loansActions.addHiddenLoanNftMint(mint));
+    dispatch(userTokensActions.removeTokenOptimistic([mint]));
+  };
 
   const onPartialPayback = async (paybackAmount: BN) => {
     try {
@@ -83,6 +93,7 @@ const usePaybackLoan = (loan: Loan) => {
       if (!result) {
         throw new Error('Loan payback failed');
       }
+      removeTokenOptimistic(loan.mint);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
