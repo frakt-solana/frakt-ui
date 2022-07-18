@@ -21,6 +21,12 @@ export const DropdownMenuMore: FC = () => {
         <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
           Stats
         </NavLink>
+        <NavLink className={styles.dropdownLink} to={PATHS.POOLS}>
+          Pools
+        </NavLink>
+        <NavLink className={styles.dropdownLink} to={PATHS.SWAP}>
+          Swap
+        </NavLink>
         <li>
           <a
             className={styles.dropdownLink}
