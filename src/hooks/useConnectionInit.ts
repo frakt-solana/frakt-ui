@@ -1,5 +1,5 @@
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { Connection } from '@solana/web3.js';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -12,7 +12,7 @@ export const useConnectionInit = (): void => {
 
   useEffect(() => {
     if (connection) {
-      dispatch(commonActions.setConnection(new Connection(ENDPOINT)));
+      dispatch(commonActions.setConnection(new web3.Connection(ENDPOINT)));
     }
   }, [connection, dispatch]);
 };
