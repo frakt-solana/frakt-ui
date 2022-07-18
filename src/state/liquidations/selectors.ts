@@ -3,13 +3,19 @@ import {
   pathOr,
   identity,
   applySpec,
-  length,
-  head,
   compose,
   map,
   pluck,
   uniq,
+  converge,
+  concat,
+  evolve,
+  subtract,
+  reject,
+  __,
 } from 'ramda';
+
+import { LotteryTicket } from './types';
 
 const createCollectionNameDropdown = compose(
   map((item: any) => ({
@@ -35,12 +41,36 @@ export const selectWonRaffleList = createSelector(
   identity,
 );
 
-export const selectLotteryTickets = createSelector(
-  [pathOr([], ['liquidations', 'lotteryTicketsList', 'data', 'nftMints'])],
-  applySpec<{ quantity: number }>({
-    quantity: length,
-    attempt: head,
+const selectIgnoreLotteryTickets = createSelector(
+  [pathOr([], ['liquidations', 'ignoreLotteryTicketsList'])],
+  identity,
+);
+
+const selectRawLotteryTickets = createSelector(
+  [pathOr({}, ['liquidations', 'lotteryTicketsList', 'data'])],
+  applySpec<{ quantity: number; tickets: LotteryTicket[] }>({
+    quantity: pathOr(0, ['totalTickets']),
+    tickets: converge(
+      (nftMints: number[], stakedNfts: any) => {
+        const rawNfts = map(applySpec({ nftMint: identity }), nftMints);
+        return concat(rawNfts, stakedNfts);
+      },
+      [pathOr([], ['nftMints']), pathOr([], ['stakedNfts'])],
+    ),
   }),
+);
+
+export const selectLotteryTickets = createSelector(
+  [selectRawLotteryTickets, selectIgnoreLotteryTickets],
+  (lotteryTickets, ignoreNfts) => {
+    return evolve(
+      {
+        quantity: subtract(__, ignoreNfts.length),
+        tickets: reject((ticket: any) => ignoreNfts.includes(ticket.nftMint)),
+      },
+      lotteryTickets,
+    );
+  },
 );
 
 export const selectTxRaffleTryStatus = createSelector(
@@ -54,8 +84,8 @@ export const selectTxLiquidateStatus = createSelector(
 );
 
 export const selectRaffleListCollections = createSelector(
-  [selectRaffleList],
-  createCollectionNameDropdown,
+  [pathOr([], ['liquidations', 'collectionsList', 'data'])],
+  identity,
 );
 
 export const selectWonRaffleListCollections = createSelector(

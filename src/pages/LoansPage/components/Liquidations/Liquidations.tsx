@@ -44,6 +44,7 @@ const Liquidations: FC = () => {
   useEffect(() => {
     dispatch(liquidationsActions.fetchGraceList());
     dispatch(liquidationsActions.fetchRaffleList());
+    dispatch(liquidationsActions.fetchCollectionsList());
   }, [dispatch]);
 
   useEffect(() => {

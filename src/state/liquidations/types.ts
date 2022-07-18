@@ -39,6 +39,22 @@ export interface WonRaffleListItem {
   liquidationPriceBN: string;
 }
 export interface LotteryTickets {
+  totalTickets: number;
   nftMints: string[];
+  stakeNfts: Array<{
+    stakeAccountPublicKey: string;
+    nftMint: string;
+    attempts: number;
+  }>;
   nextRefillIn?: string;
+}
+
+export interface LotteryTicket {
+  nftMint: string;
+  stakeAccountPublicKey?: string;
+  attempts?: number;
+}
+
+export interface CollectionsListItem {
+  name: string;
 }

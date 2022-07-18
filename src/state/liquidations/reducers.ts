@@ -1,21 +1,28 @@
 import { combineReducers } from 'redux';
 import { createReducer } from 'typesafe-actions';
-import { over, lensPath, without } from 'ramda';
+import { append } from 'ramda';
 
 import { AsyncState } from '../../utils/state';
 import {
   createHandlers,
-  composeReducers,
   createInitialAsyncState,
 } from '../../utils/state/reducers';
 import { liquidationsTypes } from './actions';
-import { GraceListItem, RaffleListItem, WonRaffleListItem } from './types';
+import {
+  GraceListItem,
+  RaffleListItem,
+  WonRaffleListItem,
+  CollectionsListItem,
+} from './types';
 
 export const initialGraceListState: AsyncState<GraceListItem[]> =
   createInitialAsyncState<GraceListItem[]>(null);
 
 export const initialRaffleListState: AsyncState<RaffleListItem[]> =
   createInitialAsyncState<RaffleListItem[]>(null);
+
+export const initialCollectionsListState: AsyncState<CollectionsListItem[]> =
+  createInitialAsyncState<CollectionsListItem[]>(null);
 
 export const initialWonRaffleListState: AsyncState<WonRaffleListItem[]> =
   createInitialAsyncState<WonRaffleListItem[]>(null);
@@ -36,6 +43,13 @@ const fetchRaffleListReducer = createReducer(
   createHandlers<RaffleListItem[]>(liquidationsTypes.FETCH_RAFFLE_LIST),
 );
 
+const fetchCollectionsListReducer = createReducer(
+  initialCollectionsListState,
+  createHandlers<CollectionsListItem[]>(
+    liquidationsTypes.FETCH_COLLECTIONS_LIST,
+  ),
+);
+
 const setWonRaffleListReducer = createReducer(initialWonRaffleListState, {
   [liquidationsTypes.SET_WON_RAFFLE_LIST]: (state, action) => ({
     ...state,
@@ -53,14 +67,6 @@ const setLotteryTicketsListReducer = createReducer(
   },
 );
 
-const txRaffleTryFulfilledReducer = createReducer(
-  initialLotteryTicketsListState,
-  {
-    [liquidationsTypes.TX_RAFFLE_TRY__FULFILLED]: (state, action) =>
-      over(lensPath(['data', 'nftMints']), without([action.payload]), state),
-  },
-);
-
 const txRaffleTryReducer = createReducer(
   initialTxState,
   createHandlers<unknown>(liquidationsTypes.TX_RAFFLE_TRY),
@@ -71,14 +77,18 @@ const txLiquidateReducer = createReducer(
   createHandlers<unknown>(liquidationsTypes.TX_LIQUIDATE),
 );
 
+const ignoreLotteryTicketsListReducer = createReducer([], {
+  [liquidationsTypes.TX_RAFFLE_TRY__FULFILLED]: (state, action) =>
+    append(action.payload, state),
+});
+
 export default combineReducers({
   graceList: fetchGraceListReducer,
   raffleList: fetchRaffleListReducer,
+  collectionsList: fetchCollectionsListReducer,
   wonRaffleList: setWonRaffleListReducer,
-  lotteryTicketsList: composeReducers(
-    setLotteryTicketsListReducer,
-    txRaffleTryFulfilledReducer,
-  ),
+  lotteryTicketsList: setLotteryTicketsListReducer,
+  ignoreLotteryTicketsList: ignoreLotteryTicketsListReducer,
   txRaffleTry: txRaffleTryReducer,
   txLiquidate: txLiquidateReducer,
 });

@@ -1,6 +1,11 @@
 import { createCustomAction } from 'typesafe-actions';
 
-import { GraceListItem, FetchItemsParams, RaffleListItem } from './types';
+import {
+  GraceListItem,
+  FetchItemsParams,
+  RaffleListItem,
+  CollectionsListItem,
+} from './types';
 import { ServerError } from '../../utils/state';
 
 export const liquidationsTypes = {
@@ -12,6 +17,12 @@ export const liquidationsTypes = {
   FETCH_RAFFLE_LIST__PENDING: 'liquidations/FETCH_RAFFLE_LIST__PENDING',
   FETCH_RAFFLE_LIST__FULFILLED: 'liquidations/FETCH_RAFFLE_LIST__FULFILLED',
   FETCH_RAFFLE_LIST__FAILED: 'liquidations/FETCH_RAFFLE_LIST__FAILED',
+  FETCH_COLLECTIONS_LIST: 'liquidations/FETCH_COLLECTIONS_LIST',
+  FETCH_COLLECTIONS_LIST__PENDING:
+    'liquidations/FETCH_COLLECTIONS_LIST__PENDING',
+  FETCH_COLLECTIONS_LIST__FULFILLED:
+    'liquidations/FETCH_COLLECTIONS_LIST__FULFILLED',
+  FETCH_COLLECTIONS_LIST__FAILED: 'liquidations/FETCH_COLLECTIONS_LIST__FAILED',
   SET_WON_RAFFLE_LIST: 'liquidations/SET_WON_RAFFLE_LIST',
   SET_LOTTERY_TICKETS_LIST: 'liquidations/SET_LOTTERY_TICKETS_LIST',
   TX_RAFFLE_TRY: 'liquidations/TX_RAFFLE_TRY',
@@ -55,6 +66,22 @@ export const liquidationsActions = {
   ),
   fetchRaffleListFailed: createCustomAction(
     liquidationsTypes.FETCH_RAFFLE_LIST__FAILED,
+    (error: ServerError) => ({ payload: error }),
+  ),
+  fetchCollectionsList: createCustomAction(
+    liquidationsTypes.FETCH_COLLECTIONS_LIST,
+    () => null,
+  ),
+  fetchCollectionsListPending: createCustomAction(
+    liquidationsTypes.FETCH_COLLECTIONS_LIST__PENDING,
+    () => null,
+  ),
+  fetchCollectionsListFulfilled: createCustomAction(
+    liquidationsTypes.FETCH_COLLECTIONS_LIST__FULFILLED,
+    (response: CollectionsListItem[]) => ({ payload: response }),
+  ),
+  fetchCollectionsListFailed: createCustomAction(
+    liquidationsTypes.FETCH_COLLECTIONS_LIST__FAILED,
     (error: ServerError) => ({ payload: error }),
   ),
   setWonRaffleList: createCustomAction(

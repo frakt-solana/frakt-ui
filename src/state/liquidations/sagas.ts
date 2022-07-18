@@ -64,6 +64,18 @@ const fetchRaffleListSaga = function* (action) {
   }
 };
 
+const fetchCollectionsListSaga = function* () {
+  yield put(liquidationsActions.fetchCollectionsListPending());
+  try {
+    const data = yield call(networkRequest, {
+      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/collections`,
+    });
+    yield put(liquidationsActions.fetchCollectionsListFulfilled(data));
+  } catch (error) {
+    yield put(liquidationsActions.fetchCollectionsListFailed(error));
+  }
+};
+
 const txRaffleTrySaga = function* (action) {
   yield put(liquidationsActions.txRaffleTryPending());
   const connection = yield select(selectConnection);
@@ -71,25 +83,56 @@ const txRaffleTrySaga = function* (action) {
   const wallet = yield select(selectWallet);
   const lotteryTickets = yield select(selectLotteryTickets);
 
-  const params = {
-    connection,
-    programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-    admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
-    user: publicKey,
-    liquidationLot: new web3.PublicKey(action.payload.liquidationLotPubkey),
-    attemptsNftMint: new web3.PublicKey(lotteryTickets.attempt),
-    sendTxn: async (transaction, signers) => {
-      await signAndConfirmTransaction({
-        transaction,
-        connection,
-        wallet,
-        signers,
-      });
-    },
-  };
+  let params;
+  let tx;
+
+  if (!lotteryTickets.tickets[0].stakeAccountPubkey) {
+    params = {
+      connection,
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      user: publicKey,
+      liquidationLot: new web3.PublicKey(action.payload.liquidationLotPubkey),
+      attemptsNftMint: new web3.PublicKey(lotteryTickets.tickets[0].nftMint),
+      sendTxn: async (transaction, signers) => {
+        await signAndConfirmTransaction({
+          transaction,
+          connection,
+          wallet,
+          signers,
+        });
+      },
+    };
+    tx = loans.getLotTicket;
+  } else {
+    params = {
+      connection,
+      programId: new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+      admin: new web3.PublicKey(process.env.LOANS_ADMIN_PUBKEY),
+      user: publicKey,
+      liquidationLot: new web3.PublicKey(action.payload.liquidationLotPubkey),
+      attemptsNftMint: new web3.PublicKey(lotteryTickets.tickets[0].nftMint),
+      stakeAccount: new web3.PublicKey(
+        lotteryTickets.tickets[0].stakeAccountPubkey,
+      ),
+      sendTxn: async (transaction, signers) => {
+        await signAndConfirmTransaction({
+          transaction,
+          connection,
+          wallet,
+          signers,
+        });
+      },
+    };
+    tx = loans.getLotTicketByStaking;
+  }
   try {
-    yield call(loans.getLotTicket, params);
-    yield put(liquidationsActions.txRaffleTryFulfilled(lotteryTickets.attempt));
+    yield call(tx, params);
+    yield put(
+      liquidationsActions.txRaffleTryFulfilled(
+        lotteryTickets.tickets[0].nftMint,
+      ),
+    );
   } catch (error) {
     yield put(liquidationsActions.txRaffleTryFailed(error));
     const isNotConfirmed = showSolscanLinkNotification(error);
@@ -177,6 +220,12 @@ const liquidationsSagas = (socket: Socket) =>
     ]);
     yield all([
       takeLatest(liquidationsTypes.FETCH_RAFFLE_LIST, fetchRaffleListSaga),
+    ]);
+    yield all([
+      takeLatest(
+        liquidationsTypes.FETCH_COLLECTIONS_LIST,
+        fetchCollectionsListSaga,
+      ),
     ]);
     yield all([takeLatest(liquidationsTypes.TX_RAFFLE_TRY, txRaffleTrySaga)]);
     yield all([takeLatest(liquidationsTypes.TX_LIQUIDATE, txLiquidateSaga)]);
