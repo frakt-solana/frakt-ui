@@ -1,10 +1,10 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
-  getLedgerWallet,
-  getPhantomWallet,
-  getSolflareWallet,
-  getSolletExtensionWallet,
-  getSolletWallet,
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  SolletExtensionWalletAdapter,
+  SolletWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
   ConnectionProvider,
@@ -25,11 +25,11 @@ const history = createBrowserHistory();
 initSentry(history);
 
 const wallets = [
-  getPhantomWallet(),
-  getSolflareWallet(),
-  getLedgerWallet(),
-  getSolletWallet({ network: WalletAdapterNetwork.Mainnet }),
-  getSolletExtensionWallet({ network: WalletAdapterNetwork.Mainnet }),
+  new PhantomWalletAdapter(),
+  new SolflareWalletAdapter(),
+  new LedgerWalletAdapter(),
+  new SolletWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
+  new SolletExtensionWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
 const App: FC = () => {

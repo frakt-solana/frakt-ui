@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import SwiperCore, { Navigation, Autoplay, Scrollbar } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 
 import styles from './styles.module.scss';
 import { BlockContent } from '../BlockContent';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { PoolsInfoIcon } from '../../../svg';
 import { MockPoolCard } from './MockPoolCard';
 import { POOLS_DATA } from './poolsData';
