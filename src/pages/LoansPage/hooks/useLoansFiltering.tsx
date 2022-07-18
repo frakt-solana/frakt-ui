@@ -130,10 +130,9 @@ export const useLoansFiltering: UseLoansFiltering = ({
           if (sortField === SortField.TIME_TO_REPAY) {
             if (loanA.isPriceBased) return;
 
-            const { loanDurationInSeconds: timeToRepayA } =
-              caclTimeToRepay(loanA);
-            const { loanDurationInSeconds: timeToRepayB } =
-              caclTimeToRepay(loanB);
+            const { expiredAtUnix: timeToRepayA } = caclTimeToRepay(loanA);
+
+            const { expiredAtUnix: timeToRepayB } = caclTimeToRepay(loanB);
 
             return compareNumbers(
               timeToRepayA,
