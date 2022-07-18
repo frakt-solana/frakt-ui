@@ -1,6 +1,6 @@
 {
-  "name": "fraktion",
-  "version": "1.0.0",
+  "name": "frakt-ui",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
@@ -73,7 +73,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/frakt-solana/frakt-web"
+    "url": "https://github.com/frakt-solana/frakt-ui"
   },
   "devDependencies": {
     "@types/bn.js": "^4.11.6",
