@@ -6,6 +6,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import CurrentUserTable from '../CurrentUserTable';
 import { commonActions } from '../../state/common/actions';
 import { selectUser } from '../../state/common/selectors';
+import { sendAmplitudeData } from '../../utils/amplitude';
 
 interface WalletContentProps {
   className?: string;
@@ -20,9 +21,10 @@ const WalletContent = ({ className = '' }: WalletContentProps): JSX.Element => {
     <div className={`${styles.wrapper} ${className}`}>
       <div
         className={styles.overlay}
-        onClick={() =>
-          dispatch(commonActions.setWalletModal({ isVisible: false }))
-        }
+        onClick={() => {
+          dispatch(commonActions.setWalletModal({ isVisible: false }));
+          sendAmplitudeData('navigation-connect');
+        }}
       />
       <div className={`${styles.container} container`}>
         {connected ? (

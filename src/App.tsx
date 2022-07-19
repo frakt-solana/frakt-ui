@@ -24,9 +24,12 @@ import { ENDPOINT } from './config';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { createBrowserHistory } from 'history';
 import { initSentry } from './utils/sentry';
+import { initAmplitude } from './utils/amplitude';
 
 const history = createBrowserHistory();
+
 initSentry(history);
+initAmplitude();
 
 const wallets = [
   new PhantomWalletAdapter(),
