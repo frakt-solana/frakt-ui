@@ -8,6 +8,7 @@ import {
   signAndConfirmTransaction,
   showSolscanLinkNotification,
 } from '../transactions';
+import { showConfetti } from '../../components/Confetti/Confetti';
 
 type ProposeLoan = (props: {
   connection: web3.Connection;
@@ -60,10 +61,12 @@ export const proposeLoan: ProposeLoan = async ({
         );
 
         if (loanAccountData?.loanStatus?.activated) {
+          console.log(accountInfo);
           notify({
             message: 'Your loan was successfully funded!',
             type: NotifyType.SUCCESS,
           });
+          showConfetti();
           connection.removeAccountChangeListener(subscriptionId);
         } else if (loanAccountData?.loanStatus?.rejected) {
           notify({
@@ -74,6 +77,8 @@ export const proposeLoan: ProposeLoan = async ({
         }
       },
     );
+
+    showConfetti();
 
     notify({
       message:

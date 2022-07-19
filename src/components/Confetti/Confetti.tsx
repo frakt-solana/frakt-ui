@@ -1,20 +1,32 @@
-import { FC } from 'react';
+import React from 'react';
+
+import useWindowSize from 'react-use/lib/useWindowSize';
+
 import ReactConfetti from 'react-confetti';
+import { useDispatch } from 'react-redux';
+import { commonActions } from '../../state/common/actions';
 
-const Confetti: FC = () => {
-  const width = window.innerWidth - window.innerWidth * 0.05;
-  const height = window && window.innerHeight;
+export const showConfetti = (): void => {
+  const dispatch = useDispatch();
 
-  return (
-    <>
-      <ReactConfetti
-        width={width}
-        height={height}
-        numberOfPieces={500}
-        recycle={false}
-      />
-    </>
-  );
+  dispatch(commonActions.setConfetti({ isVisible: true }));
+  setTimeout(() => {
+    dispatch(commonActions.setConfetti({ isVisible: false }));
+  }, 3000);
+};
+
+const Confetti: React.FC<{ start: boolean }> = ({ start }) => {
+  const { width, height } = useWindowSize();
+
+  return start ? (
+    <ReactConfetti
+      numberOfPieces={500}
+      recycle={false}
+      run={true}
+      width={width}
+      height={height}
+    />
+  ) : null;
 };
 
 export default Confetti;

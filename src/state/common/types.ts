@@ -52,3 +52,7 @@ export interface UserState {
 export interface ModalState {
   isVisible: boolean;
 }
+
+export interface ConfettiState {
+  isVisible: boolean;
+}

@@ -7,6 +7,7 @@ import {
   NotificationState,
   WalletModalState,
   SolanaHealthState,
+  ConfettiState,
 } from './types';
 
 export const commonTypes = {
@@ -32,6 +33,7 @@ export const commonTypes = {
   FETCH_USER__FULFILLED: 'common/FETCH_USER__FULFILLED',
   FETCH_USER__FAILED: 'common/FETCH_USER__FAILED',
   TOGGLE_DISCORD_MODAL: 'common/TOGGLE_DISCORD_MODAL',
+  SET_CONFETTI: 'common/SET_CONFETTI',
 };
 
 export const commonActions = {
@@ -118,5 +120,9 @@ export const commonActions = {
   toggleDiscordModal: createCustomAction(
     commonTypes.TOGGLE_DISCORD_MODAL,
     () => null,
+  ),
+  setConfetti: createCustomAction(
+    commonTypes.SET_CONFETTI,
+    (payload: ConfettiState) => ({ payload }),
   ),
 };
