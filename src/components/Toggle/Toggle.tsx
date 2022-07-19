@@ -1,9 +1,9 @@
 import { Switch } from 'antd';
-import classNames from 'classnames/bind';
-import { Control, Controller } from 'react-hook-form';
+import classNames from 'classnames';
+
 import styles from './styles.module.scss';
 
-interface IToggleProps {
+interface ToggleProps {
   className?: string;
   disabled?: boolean;
   value?: boolean;
@@ -12,18 +12,13 @@ interface IToggleProps {
   onChange?: (value: any) => void;
 }
 
-interface IControlledToggleProps extends IToggleProps {
-  control: Control<any>;
-  name: string;
-}
-
 const Toggle = ({
   className = '',
   disabled = false,
   onChange = () => {},
   value = false,
   label = null,
-}: IToggleProps): JSX.Element => (
+}: ToggleProps): JSX.Element => (
   <div
     className={classNames(className, styles.filterToggle)}
     onClick={() => onChange(!value)}
@@ -40,20 +35,6 @@ const Toggle = ({
       </p>
     )}
   </div>
-);
-
-export const ControlledToggle = ({
-  control,
-  name,
-  ...props
-}: IControlledToggleProps): JSX.Element => (
-  <Controller
-    control={control}
-    name={name}
-    render={({ field: { ref, ...field } }) => {
-      return <Toggle {...props} {...field} />;
-    }}
-  />
 );
 
 export default Toggle;

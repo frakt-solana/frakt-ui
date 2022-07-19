@@ -11,13 +11,14 @@ import {
   TEAM_SECTION_ID,
   // TECHNICAL_PARTNERS_ID,
 } from '../constants';
+import { sendAmplitudeData } from '../../../utils/amplitude';
 
 interface CustomHeaderProps {
   menuLinksData: { sectionRef: { current: HTMLParagraphElement } }[];
 }
 
 const LINKS = [
-  { id: OUR_PRODUCT_ID, label: 'Our products' },
+  { id: OUR_PRODUCT_ID, label: 'Our products', event: 'landingpage-products' },
   // { id: OUR_TOKENS_ID, label: 'Our tokens' },
   // { id: TECHNICAL_PARTNERS_ID, label: 'Backers' },
   { id: TEAM_SECTION_ID, label: 'Team' },
@@ -36,9 +37,10 @@ export const CustomHeader: FC<CustomHeaderProps> = ({ menuLinksData }) => {
   return (
     <div className={styles.wrapper}>
       <ul className={`${styles.container} container`}>
-        {LINKS.map(({ id, label }, idx) => (
+        {LINKS.map(({ id, label, event }, idx) => (
           <li
             key={idx}
+            onClick={() => sendAmplitudeData(event)}
             className={classNames(styles.item, {
               [styles.active]: activeBlockId === id,
             })}

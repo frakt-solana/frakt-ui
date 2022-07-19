@@ -6,11 +6,11 @@ import { uniqBy, prop } from 'ramda';
 import moment from 'moment';
 
 import styles from '../components/MyLoansTab/MyLoansTab.module.scss';
-import { compareNumbers } from '../../../contexts/liquidityPools';
 import { selectLoanNfts } from '../../../state/loans/selectors';
 import { caclTimeToRepay } from '../../../utils/loans';
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Loan } from '../../../state/loans/types';
+import { compareNumbers } from '../../../utils';
 
 type FilterFormFieldsValues = {
   [FilterFormInputsNames.SORT]: LoansValue;

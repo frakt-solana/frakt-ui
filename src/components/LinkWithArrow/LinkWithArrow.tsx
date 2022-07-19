@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ArrowRightTop } from '../../icons';
+import { sendAmplitudeData } from '../../utils/amplitude';
 
 import styles from './LinkWithArrow.module.scss';
 
@@ -11,6 +12,7 @@ interface LinkWithArrowProps {
   label: string;
   className?: string;
   invert?: boolean;
+  event?: string;
 }
 
 export const LinkWithArrow: FC<LinkWithArrowProps> = ({
@@ -19,6 +21,7 @@ export const LinkWithArrow: FC<LinkWithArrowProps> = ({
   label,
   className,
   invert,
+  event,
 }) => {
   return externalLink ? (
     <a
@@ -37,6 +40,7 @@ export const LinkWithArrow: FC<LinkWithArrowProps> = ({
     </a>
   ) : (
     <NavLink
+      onClick={() => sendAmplitudeData(event)}
       className={classNames(styles.root, className, {
         [styles.invert]: invert,
       })}

@@ -1,1 +1,0 @@
-export { HeaderInfo } from './HeaderInfo';
