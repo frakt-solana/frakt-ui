@@ -11,3 +11,4 @@ export { useAppInit } from './useAppInit';
 export { useHealthNotification } from './useHealthNotification';
 export { useConnection } from './useConnection';
 export { useFirebaseNotifications } from './useFirebaseNotifications';
+export { useWebSocketSubscriptions } from './useWebSocketSubscriptions';

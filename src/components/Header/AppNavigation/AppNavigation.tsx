@@ -1,5 +1,4 @@
 import { FC, ReactElement } from 'react';
-import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { DROPDOWN_EXTERNAL_LINKS, NAVIGATION_LINKS } from './constants';
@@ -18,15 +17,16 @@ export const DropdownMenuMore: FC = () => {
   return (
     <Dropdown title="More">
       <ul>
-        <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
-          Stats
-        </NavLink>
-        <NavLink className={styles.dropdownLink} to={PATHS.POOLS}>
-          Pools
-        </NavLink>
-        <NavLink className={styles.dropdownLink} to={PATHS.SWAP}>
-          Swap
-        </NavLink>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={process.env.FRAKT_POOLS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pools
+          </a>
+        </li>
         <li>
           <a
             className={styles.dropdownLink}
@@ -70,25 +70,6 @@ export const DropdownMenuMore: FC = () => {
             </a>
           </li>
         ))}
-      </ul>
-    </Dropdown>
-  );
-};
-
-export const DropdownMenuDoStuff: FC = () => {
-  return (
-    <Dropdown title="Do stuff">
-      <ul className={styles.list}>
-        <li className={styles.linkList}>
-          <NavLink className={styles.link} to={PATHS.BORROW}>
-            <div className={styles.content}>
-              <p className={styles.title}>Borrow</p>
-              <p className={styles.subtitle}>
-                take loan using NFT as collateral
-              </p>
-            </div>
-          </NavLink>
-        </li>
       </ul>
     </Dropdown>
   );

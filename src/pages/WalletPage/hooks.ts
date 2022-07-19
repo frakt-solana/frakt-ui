@@ -1,75 +1,10 @@
-import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
-import { getAllUserTokens } from '../../utils/accounts';
-import { selectTokenListState } from '../../state/tokenList/selectors';
 import {
   NameServiceResponse,
   useNameServiceInfo,
 } from '../../utils/nameService';
-import { TokenInfoWithAmount } from './components/TokensTab/TokensTab';
 import { useConnection } from '../../hooks';
-
-type UseWalletTokens = (props: { walletPubkey: string }) => {
-  userTokens: TokenInfoWithAmount[];
-  loading: boolean;
-};
-
-export const useWalletTokens: UseWalletTokens = ({ walletPubkey }) => {
-  const { fraktionTokensMap, loading: tokensLoading } =
-    useSelector(selectTokenListState);
-
-  const [userTokens, setUserTokens] = useState<TokenInfoWithAmount[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const connection = useConnection();
-
-  const fetchUserTokens = async () => {
-    try {
-      setLoading(true);
-
-      const userTokens = await getAllUserTokens({
-        connection,
-        walletPublicKey: new PublicKey(walletPubkey),
-      });
-
-      setUserTokens(
-        userTokens
-          .reduce((acc, tokenView) => {
-            const tokenInfo: TokenInfo = fraktionTokensMap.get(
-              String(tokenView.mint),
-            );
-            return tokenInfo
-              ? [...acc, { ...tokenInfo, amountBN: tokenView.amountBN }]
-              : acc;
-          }, [])
-          .sort(
-            (tokenA: TokenInfoWithAmount, tokenB: TokenInfoWithAmount) =>
-              tokenA.amountBN.toNumber() - tokenB.amountBN.toNumber(),
-          ),
-      );
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!tokensLoading && fraktionTokensMap?.size) {
-      fetchUserTokens();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokensLoading, fraktionTokensMap?.size, walletPubkey]);
-
-  return {
-    userTokens,
-    loading: loading || tokensLoading,
-  };
-};
 
 type UseNameService = (props: { walletPubkey: string }) => {
   nameServiceInfo: NameServiceResponse;

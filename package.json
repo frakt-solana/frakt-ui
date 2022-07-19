@@ -1,20 +1,17 @@
 {
-  "name": "fraktion",
-  "version": "1.0.0",
+  "name": "frakt-ui",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@bonfida/spl-name-service": "0.1.24",
-    "@craco/craco": "^5.7.0",
+    "@craco/craco": "^6.4.5",
     "@frakt-protocol/frakt-sdk": "^0.4.1",
-    "@prism-hq/prism-ag": "^0.1.6",
     "@sentry/react": "^7.1.1",
     "@sentry/tracing": "^7.1.1",
-    "@solana/spl-token": "0.1.8",
-    "@solana/spl-token-registry": "^0.2.2791",
-    "@solana/wallet-adapter-base": "^0.7.0",
-    "@solana/wallet-adapter-react": "^0.13.1",
-    "@solana/wallet-adapter-wallets": "^0.11.3",
+    "@solana/wallet-adapter-base": "^0.9.9",
+    "@solana/wallet-adapter-react": "^0.15.8",
+    "@solana/wallet-adapter-wallets": "^0.16.8",
     "antd": "^4.6.6",
     "chart.js": "^3.8.0",
     "classnames": "^2.3.1",
@@ -42,7 +39,8 @@
     "sass": "^1.43.4",
     "socket.io-client": "^4.5.1",
     "swiper": "^7.4.1",
-    "typesafe-actions": "^5.1.0"
+    "typesafe-actions": "^5.1.0",
+    "webpack-dev-server": "^3.11.1"
   },
   "scripts": {
     "start": "cross-env craco start",
@@ -76,7 +74,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/frakt-solana/frakt-web"
+    "url": "https://github.com/frakt-solana/frakt-ui"
   },
   "devDependencies": {
     "@types/bn.js": "^4.11.6",

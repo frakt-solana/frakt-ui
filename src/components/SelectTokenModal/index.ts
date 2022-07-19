@@ -1,1 +1,0 @@
-export { SelectTokenModal } from './SelectTokenModal';
