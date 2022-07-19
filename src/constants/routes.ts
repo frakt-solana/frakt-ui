@@ -4,19 +4,11 @@ import { PATHS } from './paths';
 import {
   Page404,
   HomePage,
-  SwapPage,
   WalletPage,
-  NFTPoolsPage,
-  NFTPoolBuyPage,
-  NFTPoolSellPage,
-  NFTPoolSwapPage,
-  NFTPoolInfoPage,
   StatsPage,
-  // NFTPoolsTestPage,
   LoansPage,
   BorrowPage,
 } from '../pages';
-import { NFTPoolStakePage } from '../pages/NFTPools/NFTPoolStakePage';
 
 interface Route {
   path: string;
@@ -25,11 +17,6 @@ interface Route {
 }
 
 export const routes: Route[] = [
-  // {
-  // exact: true,
-  //   path: PATHS.TEST,
-  //   component: NFTPoolsTestPage,
-  // },
   {
     exact: true,
     path: PATHS.LOANS,
@@ -44,41 +31,6 @@ export const routes: Route[] = [
     exact: true,
     path: PATHS.ROOT,
     component: HomePage,
-  },
-  {
-    exact: true,
-    path: PATHS.POOLS,
-    component: NFTPoolsPage,
-  },
-  {
-    exact: true,
-    path: PATHS.POOL_BUY,
-    component: NFTPoolBuyPage,
-  },
-  {
-    exact: true,
-    path: PATHS.POOL_SELL,
-    component: NFTPoolSellPage,
-  },
-  {
-    exact: true,
-    path: PATHS.POOL_SWAP,
-    component: NFTPoolSwapPage,
-  },
-  {
-    exact: true,
-    path: PATHS.POOL_STAKE,
-    component: NFTPoolStakePage,
-  },
-  {
-    exact: true,
-    path: PATHS.POOL_INFO,
-    component: NFTPoolInfoPage,
-  },
-  {
-    exact: true,
-    path: PATHS.SWAP,
-    component: SwapPage,
   },
   {
     exact: true,

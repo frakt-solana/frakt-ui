@@ -1,10 +1,14 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
-  getLedgerWallet,
-  getPhantomWallet,
-  getSolflareWallet,
-  getSolletExtensionWallet,
-  getSolletWallet,
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+  SlopeWalletAdapter,
+  GlowWalletAdapter,
+  CoinbaseWalletAdapter,
+  TorusWalletAdapter,
+  MathWalletAdapter,
+  SolletWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
   ConnectionProvider,
@@ -16,10 +20,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { Router } from './router';
 import store from './state/store';
-import { UserTokensProvider } from './contexts/userTokens';
 import { ENDPOINT } from './config';
-import { LiquidityPoolsProvider } from './contexts/liquidityPools';
-import { NftPoolsProvider } from './contexts/nftPools';
 // import { IntercomService, INTERCOM_APP_ID } from './utils/intercom';
 import { createBrowserHistory } from 'history';
 import { initSentry } from './utils/sentry';
@@ -31,11 +32,15 @@ initSentry(history);
 initAmplitude();
 
 const wallets = [
-  getPhantomWallet(),
-  getSolflareWallet(),
-  getLedgerWallet(),
-  getSolletWallet({ network: WalletAdapterNetwork.Mainnet }),
-  getSolletExtensionWallet({ network: WalletAdapterNetwork.Mainnet }),
+  new PhantomWalletAdapter(),
+  new SolflareWalletAdapter(),
+  new SlopeWalletAdapter(),
+  new GlowWalletAdapter(),
+  new LedgerWalletAdapter(),
+  new CoinbaseWalletAdapter(),
+  new TorusWalletAdapter(),
+  new MathWalletAdapter(),
+  new SolletWalletAdapter({ network: WalletAdapterNetwork.Mainnet }),
 ];
 
 const App: FC = () => {
@@ -44,13 +49,7 @@ const App: FC = () => {
       <ConnectionProvider endpoint={ENDPOINT}>
         <WalletProvider wallets={wallets} autoConnect>
           {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
-          <UserTokensProvider>
-            <LiquidityPoolsProvider>
-              <NftPoolsProvider>
-                <Router />
-              </NftPoolsProvider>
-            </LiquidityPoolsProvider>
-          </UserTokensProvider>
+          <Router />
           {/* <IntercomService /> */}
           {/* </IntercomProvider> */}
         </WalletProvider>

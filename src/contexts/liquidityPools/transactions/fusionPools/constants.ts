@@ -1,1 +1,0 @@
-export const FUSION_PROGRAM_PUBKEY = process.env.FUSION_PROGRAM_PUBKEY;

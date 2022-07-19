@@ -1,16 +1,17 @@
-import { AccountInfo } from '@solana/web3.js';
 import { useEffect, useState } from 'react';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { useWallet } from '@solana/wallet-adapter-react';
 
-import { useConnection } from '../../../hooks';
+import { useConnection } from '../../hooks';
 
 export const useNativeAccount = (): {
-  account: AccountInfo<Buffer>;
+  account: web3.AccountInfo<Buffer>;
 } => {
   const connection = useConnection();
   const { wallet, publicKey } = useWallet();
 
-  const [nativeAccount, setNativeAccount] = useState<AccountInfo<Buffer>>();
+  const [nativeAccount, setNativeAccount] =
+    useState<web3.AccountInfo<Buffer>>();
 
   useEffect(() => {
     if (!connection || !publicKey) {

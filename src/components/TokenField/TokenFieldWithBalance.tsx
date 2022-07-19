@@ -1,46 +1,6 @@
-import BN from 'bn.js';
-import { useSelector } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { AccountInfo } from '@solana/web3.js';
-import { TokenInfo } from '@solana/spl-token-registry';
 
-import { decimalBNToString, SOL_TOKEN } from '../../utils';
-import { selectUserTokensState } from '../../state/userTokens/selectors';
-import { RawUserTokensByMint } from '../../state/userTokens/types';
 import TokenField, { TokenFieldProps } from './TokenField';
-import { useNativeAccount } from '../../utils/accounts';
-
-export const getTokenBalance = (
-  token: TokenInfo,
-  account: AccountInfo<Buffer>,
-  rawUserTokensByMint: RawUserTokensByMint,
-): string => {
-  if (token?.address === SOL_TOKEN.address) {
-    return decimalBNToString(new BN(account?.lamports || 0), 3, 9);
-  } else {
-    const tokenAccount = rawUserTokensByMint[token?.address];
-
-    return decimalBNToString(
-      tokenAccount?.amountBN || new BN(0),
-      3,
-      token?.decimals || 9,
-    );
-  }
-};
-
-const getMintBalanceMap = (
-  tokensList: TokenInfo[],
-  account: AccountInfo<Buffer>,
-  rawUserTokensByMint: RawUserTokensByMint,
-) => {
-  return tokensList.reduce((acc, token) => {
-    const balance = getTokenBalance(token, account, rawUserTokensByMint);
-
-    balance && balance !== '0' && (acc[token.address] = balance);
-
-    return acc;
-  }, {});
-};
 
 interface TokenFieldWithBalanceProps extends TokenFieldProps {
   showMaxButton?: boolean;
@@ -67,15 +27,9 @@ export const TokenFieldWithBalance = ({
   lpTokenSymbol,
 }: TokenFieldWithBalanceProps): JSX.Element => {
   const { connected } = useWallet();
-  const { rawUserTokensByMint } = useSelector(selectUserTokensState);
-  const { account } = useNativeAccount();
-
-  const balances = getMintBalanceMap(tokensList, account, rawUserTokensByMint);
-
-  const balance = balances[currentToken?.address] || 0;
 
   const onUseMaxButtonClick = () => {
-    lpBalance ? onValueChange(String(lpBalance)) : onValueChange(balance);
+    lpBalance && onValueChange(String(lpBalance));
   };
 
   return (
@@ -89,12 +43,8 @@ export const TokenFieldWithBalance = ({
       label={label}
       style={style}
       className={className}
-      balance={connected && currentToken ? balance : null}
-      balances={balances}
       onUseMaxButtonClick={
-        connected && showMaxButton && balance !== '0.00'
-          ? onUseMaxButtonClick
-          : null
+        connected && showMaxButton ? onUseMaxButtonClick : null
       }
       lpTokenSymbol={lpTokenSymbol}
       error={error}

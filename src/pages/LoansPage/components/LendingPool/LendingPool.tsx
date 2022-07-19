@@ -29,7 +29,6 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
     borrowApr: rawBorrowApr,
     depositApr,
     totalLiquidity,
-    userActiveLoansAmount,
     totalBorrowed,
     utilizationRate,
     userDeposit,
@@ -67,7 +66,7 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
             </div>
             <div className={styles.totalValue}>
               <p className={styles.title}>
-                Deposit yeild
+                Deposit yield
                 <Tooltip
                   placement="bottom"
                   overlay="Yearly rewards based on the current utilization rate and borrow interest"
@@ -100,10 +99,6 @@ const LendingPool: FC<LendingPoolProps> = ({ liquidityPool }) => {
                   <p className={styles.value}>
                     {userDeposit?.depositAmount.toFixed(2) || 0} SOL
                   </p>
-                </div>
-                <div className={styles.totalValue}>
-                  <p className={styles.title}>Your loans</p>
-                  <p className={styles.value}>{userActiveLoansAmount || 0}</p>
                 </div>
               </>
             )}

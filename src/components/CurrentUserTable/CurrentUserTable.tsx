@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 
 import { formatNumber, shortenAddress } from '../../utils/solanaUtils';
 import { SolanaIcon, UserIcon } from '../../icons';
-import { useNativeAccount } from '../../utils/accounts';
+
 import { getDiscordUri, getDiscordAvatarUrl } from '../../utils';
 import { PATHS } from '../../constants';
 import { LinkWithArrow } from '../LinkWithArrow';
@@ -12,6 +12,7 @@ import { UserState } from '../../state/common/types';
 import DiscordIcon from '../../icons/DiscordIcon2';
 import { sendAmplitudeData, setAmplitudeUserId } from '../../utils/amplitude';
 import styles from './styles.module.scss';
+import { useNativeAccount } from '../../utils/accounts/useNativeAccount';
 
 interface CurrentUserTableProps {
   className?: string;
@@ -36,7 +37,7 @@ const CurrentUserTable = ({
 
   const getBalanceValue = () => {
     const valueStr = `${formatNumber.format(
-      (account?.lamports || 0) / LAMPORTS_PER_SOL,
+      (account?.lamports || 0) / web3.LAMPORTS_PER_SOL,
     )}`;
     return (
       <div className={styles.row}>

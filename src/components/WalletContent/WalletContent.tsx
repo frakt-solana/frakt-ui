@@ -31,16 +31,16 @@ const WalletContent = ({ className = '' }: WalletContentProps): JSX.Element => {
           <CurrentUserTable className={styles.itemsContainer} user={user} />
         ) : (
           <div className={styles.itemsContainer}>
-            {wallets.map(({ name, icon: iconUrl }, idx) => (
+            {wallets.map(({ adapter }, idx) => (
               <WalletItem
                 key={idx}
                 onClick={(): void => {
-                  select(name);
+                  select(adapter.name);
                   dispatch(commonActions.setWalletModal({ isVisible: false }));
                 }}
-                imageSrc={iconUrl}
-                imageAlt={name}
-                name={name}
+                imageSrc={adapter.icon}
+                imageAlt={adapter.name}
+                name={adapter.name}
               />
             ))}
           </div>

@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import Tooltip from 'rc-tooltip';
@@ -15,6 +16,7 @@ import Button from '../Button';
 import { Loan } from '../../state/loans/types';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { HEALTH_TOOLTIP_TEXT } from './constants';
+import { loansActions } from '../../state/loans/actions';
 
 interface LoanCardProps {
   loan: Loan;
@@ -23,12 +25,17 @@ interface LoanCardProps {
 const usePaybackLoan = () => {
   const wallet = useWallet();
   const connection = useConnection();
+  const dispatch = useDispatch();
 
   const {
     visible: loadingModalVisible,
     open: openLoadingModal,
     close: closeLoadingModal,
   } = useLoadingModal();
+
+  const removeTokenOptimistic = (mint: string) => {
+    dispatch(loansActions.addHiddenLoanNftMint(mint));
+  };
 
   const paybackLoan = async (loan: Loan) => {
     try {
@@ -43,6 +50,7 @@ const usePaybackLoan = () => {
       if (!result) {
         throw new Error('Loan failed');
       }
+      removeTokenOptimistic(loan.mint);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
