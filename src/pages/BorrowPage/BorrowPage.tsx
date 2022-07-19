@@ -32,9 +32,7 @@ const BorrowPage: FC = () => {
     loading,
   } = useBorrowPage();
 
-  const state = useSelector(selectConfettiVisible);
-
-  console.log(state);
+  const confettiVisible = useSelector(selectConfettiVisible);
 
   return (
     <SelectLayout
@@ -45,7 +43,7 @@ const BorrowPage: FC = () => {
         <BorrowForm selectedNft={selectedNfts?.[0]} onDeselect={onDeselect} />
       }
     >
-      <Confetti start={state} />
+      <Confetti isVisible={confettiVisible} />
       <h1 className={styles.title}>Borrow money</h1>
       <h2 className={styles.subtitle}>
         Select your NFT to use as a collateral

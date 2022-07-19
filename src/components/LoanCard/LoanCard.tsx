@@ -18,6 +18,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 import { HEALTH_TOOLTIP_TEXT } from './constants';
 import { userTokensActions } from '../../state/userTokens/actions';
 import { loansActions } from '../../state/loans/actions';
+import { commonActions } from '../../state/common/actions';
 
 interface LoanCardProps {
   loan: Loan;
@@ -39,6 +40,13 @@ const usePaybackLoan = () => {
     dispatch(userTokensActions.removeTokenOptimistic([mint]));
   };
 
+  const showConfetti = (): void => {
+    dispatch(commonActions.setConfetti({ isVisible: true }));
+    setTimeout(() => {
+      dispatch(commonActions.setConfetti({ isVisible: false }));
+    }, 5000);
+  };
+
   const paybackLoan = async (loan: Loan) => {
     try {
       openLoadingModal();
@@ -52,6 +60,8 @@ const usePaybackLoan = () => {
       if (!result) {
         throw new Error('Loan failed');
       }
+
+      showConfetti();
       removeTokenOptimistic(loan.mint);
     } catch (error) {
       // eslint-disable-next-line no-console

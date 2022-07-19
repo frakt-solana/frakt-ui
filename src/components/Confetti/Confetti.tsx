@@ -1,24 +1,11 @@
-import React from 'react';
-
-import useWindowSize from 'react-use/lib/useWindowSize';
-
+import { FC } from 'react';
 import ReactConfetti from 'react-confetti';
-import { useDispatch } from 'react-redux';
-import { commonActions } from '../../state/common/actions';
 
-export const showConfetti = (): void => {
-  const dispatch = useDispatch();
+const Confetti: FC<{ isVisible: boolean }> = ({ isVisible }) => {
+  const width = window.innerWidth - window.innerWidth * 0.05;
+  const height = window.innerHeight;
 
-  dispatch(commonActions.setConfetti({ isVisible: true }));
-  setTimeout(() => {
-    dispatch(commonActions.setConfetti({ isVisible: false }));
-  }, 3000);
-};
-
-const Confetti: React.FC<{ start: boolean }> = ({ start }) => {
-  const { width, height } = useWindowSize();
-
-  return start ? (
+  return isVisible ? (
     <ReactConfetti
       numberOfPieces={500}
       recycle={false}

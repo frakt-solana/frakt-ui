@@ -9,6 +9,7 @@ import { proposeLoan } from '../../../../utils/loans';
 import { BorrowNft } from '../../../../state/loans/types';
 import { useEffect, useState } from 'react';
 import { loansActions } from '../../../../state/loans/actions';
+import { commonActions } from '../../../../state/common/actions';
 
 export enum FormFieldTypes {
   SHORT_TERM_FIELD = 'shortTermField',
@@ -87,6 +88,13 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
     dispatch(userTokensActions.removeTokenOptimistic([mint]));
   };
 
+  const showConfetti = (): void => {
+    dispatch(commonActions.setConfetti({ isVisible: true }));
+    setTimeout(() => {
+      dispatch(commonActions.setConfetti({ isVisible: false }));
+    }, 5000);
+  };
+
   const onSubmit = async (nft: BorrowNft) => {
     try {
       closeConfirmModal();
@@ -108,6 +116,7 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
         throw new Error('Loan proposing failed');
       }
 
+      showConfetti();
       removeTokenOptimistic(nft.mint);
       onDeselect?.();
     } catch (error) {
