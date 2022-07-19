@@ -17,6 +17,7 @@ export interface FetchItemsParams {
   sortBy?: string;
   sortOrder?: string;
   searchStr?: string;
+  collections?: string;
 }
 export interface RaffleListItem {
   pubkey: string;

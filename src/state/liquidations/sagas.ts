@@ -2,6 +2,8 @@ import { web3, loans } from '@frakt-protocol/frakt-sdk';
 import { all, call, takeLatest, put, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { Socket } from 'socket.io-client';
+import { values, compose, join, reject } from 'ramda';
+import { isNilOrEmpty } from 'ramda-adjunct';
 
 import {
   signAndConfirmTransaction,
@@ -10,6 +12,7 @@ import {
 import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { captureSentryError } from '../../utils/sentry';
+import { parse } from '../../utils/state/qs';
 import { liquidationsTypes, liquidationsActions } from './actions';
 import { WonRaffleListItem } from './types';
 import { networkRequest } from '../../utils/state';
@@ -17,6 +20,7 @@ import {
   selectConnection,
   selectWallet,
   selectWalletPublicKey,
+  selectSocket,
 } from '../common/selectors';
 import { selectLotteryTickets } from './selectors';
 
@@ -36,11 +40,12 @@ const fetchGraceListSaga = function* (action) {
   const searchStr = action.payload?.searchStr;
   const sortBy = action.payload?.sortBy;
   const sortOrder = action.payload?.sortOrder;
+  const collectionsFilter = action.payload?.collections;
 
   yield put(liquidationsActions.fetchGraceListPending());
   try {
     const data = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/grace-list?${searchStr}${sortBy}${sortOrder}`,
+      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/grace-list?${searchStr}${sortBy}${sortOrder}${collectionsFilter}`,
     });
     yield put(liquidationsActions.fetchGraceListFulfilled(data));
   } catch (error) {
@@ -52,11 +57,12 @@ const fetchRaffleListSaga = function* (action) {
   const searchStr = action.payload?.searchStr;
   const sortBy = action.payload?.sortBy;
   const sortOrder = action.payload?.sortOrder;
+  const collectionsFilter = action.payload?.collections;
 
   yield put(liquidationsActions.fetchRaffleListPending());
   try {
     const data = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/liquidation?${searchStr}${sortBy}${sortOrder}`,
+      url: `https://${process.env.BACKEND_DOMAIN}/liquidation?${searchStr}${sortBy}${sortOrder}${collectionsFilter}`,
     });
     yield put(liquidationsActions.fetchRaffleListFulfilled(data));
   } catch (error) {
@@ -64,11 +70,29 @@ const fetchRaffleListSaga = function* (action) {
   }
 };
 
+const updateWonRaffleListSaga = function* (action) {
+  const socket = yield select(selectSocket);
+  const publicKey = yield select(selectWalletPublicKey);
+  const params = compose(
+    parse,
+    join(''),
+    reject(isNilOrEmpty),
+    values,
+  )(action.payload);
+  if (publicKey && socket) {
+    socket.emit('won-raffles-subscribe', {
+      wallet: publicKey,
+      limit: 100,
+      ...params,
+    });
+  }
+};
+
 const fetchCollectionsListSaga = function* () {
   yield put(liquidationsActions.fetchCollectionsListPending());
   try {
     const data = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/collections`,
+      url: `https://${process.env.BACKEND_DOMAIN}/collection`,
     });
     yield put(liquidationsActions.fetchCollectionsListFulfilled(data));
   } catch (error) {
@@ -220,6 +244,12 @@ const liquidationsSagas = (socket: Socket) =>
     ]);
     yield all([
       takeLatest(liquidationsTypes.FETCH_RAFFLE_LIST, fetchRaffleListSaga),
+    ]);
+    yield all([
+      takeLatest(
+        liquidationsTypes.UPDATE_WON_RAFFLE_LIST,
+        updateWonRaffleListSaga,
+      ),
     ]);
     yield all([
       takeLatest(

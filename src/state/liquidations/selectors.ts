@@ -3,10 +3,7 @@ import {
   pathOr,
   identity,
   applySpec,
-  compose,
   map,
-  pluck,
-  uniq,
   converge,
   concat,
   evolve,
@@ -16,15 +13,6 @@ import {
 } from 'ramda';
 
 import { LotteryTicket } from './types';
-
-const createCollectionNameDropdown = compose(
-  map((item: any) => ({
-    label: item,
-    value: item ? item.replace(' ', '_') : '',
-  })),
-  uniq,
-  pluck('nftCollectionName'),
-);
 
 export const selectGraceList = createSelector(
   [pathOr([], ['liquidations', 'graceList', 'data'])],
@@ -83,12 +71,10 @@ export const selectTxLiquidateStatus = createSelector(
   identity,
 );
 
-export const selectRaffleListCollections = createSelector(
+export const selectCollectionsDropdownData = createSelector(
   [pathOr([], ['liquidations', 'collectionsList', 'data'])],
-  identity,
-);
-
-export const selectWonRaffleListCollections = createSelector(
-  [selectWonRaffleList],
-  createCollectionNameDropdown,
+  map((item: any) => ({
+    label: item,
+    value: item,
+  })),
 );

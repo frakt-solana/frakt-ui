@@ -24,6 +24,7 @@ export const liquidationsTypes = {
     'liquidations/FETCH_COLLECTIONS_LIST__FULFILLED',
   FETCH_COLLECTIONS_LIST__FAILED: 'liquidations/FETCH_COLLECTIONS_LIST__FAILED',
   SET_WON_RAFFLE_LIST: 'liquidations/SET_WON_RAFFLE_LIST',
+  UPDATE_WON_RAFFLE_LIST: 'liquidations/UPDATE_WON_RAFFLE_LIST',
   SET_LOTTERY_TICKETS_LIST: 'liquidations/SET_LOTTERY_TICKETS_LIST',
   TX_RAFFLE_TRY: 'liquidations/TX_RAFFLE_TRY',
   TX_RAFFLE_TRY__PENDING: 'liquidations/TX_RAFFLE_TRY__PENDING',
@@ -87,6 +88,10 @@ export const liquidationsActions = {
   setWonRaffleList: createCustomAction(
     liquidationsTypes.SET_WON_RAFFLE_LIST,
     (response) => ({ payload: response }),
+  ),
+  updateWonRaffleList: createCustomAction(
+    liquidationsTypes.UPDATE_WON_RAFFLE_LIST,
+    (params) => ({ payload: params }),
   ),
   setLotteryTicketsList: createCustomAction(
     liquidationsTypes.SET_LOTTERY_TICKETS_LIST,

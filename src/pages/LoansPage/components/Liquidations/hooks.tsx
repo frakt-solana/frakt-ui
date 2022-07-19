@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
+import { compose, join, pluck } from 'ramda';
 
 import { Tab } from '../../../../components/Tabs';
 import { ArrowDownSmallIcon } from '../../../../icons';
@@ -17,6 +18,7 @@ type FetchDataFunc = (params: FetchItemsParams) => void;
 type UseLiquidationsPage = (fetchItemsFunc: FetchDataFunc) => {
   control: Control<FilterFormFieldsValues>;
   setSearch: (value?: string) => void;
+  setCollections: (value?: []) => void;
 };
 
 export const useLiquidationsPage: UseLiquidationsPage = (
@@ -25,6 +27,7 @@ export const useLiquidationsPage: UseLiquidationsPage = (
   const [sortOrder, setSortOrder] = useState<string>('asc');
   const [sortBy, setSortBy] = useState<string>('nftName');
   const [search, setSearch] = useState<string>('');
+  const [collections, setCollections] = useState<[]>([]);
   const stringRef = useRef(null);
 
   const { control, watch } = useForm({
@@ -42,11 +45,19 @@ export const useLiquidationsPage: UseLiquidationsPage = (
       : '';
     const rawSortBy = sortBy ? `sortBy=${sortBy}&` : '';
     const rawSortOrder = sortOrder ? `sort=${sortOrder}&` : '';
+    const rawCollectionsString = collections.length
+      ? `collections=${compose(
+          decodeURIComponent,
+          join(','),
+          pluck('value'),
+        )(collections)}&`
+      : '';
 
     fetchItemsFunc({
       sortBy: rawSortBy,
       sortOrder: rawSortOrder,
       searchStr: rawSearchStr,
+      collections: rawCollectionsString,
     });
   };
 
@@ -70,9 +81,15 @@ export const useLiquidationsPage: UseLiquidationsPage = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
+  useEffect(() => {
+    fetchItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collections]);
+
   return {
     control,
     setSearch,
+    setCollections,
   };
 };
 

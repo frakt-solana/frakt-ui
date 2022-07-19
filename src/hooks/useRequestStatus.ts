@@ -15,6 +15,7 @@ export const useOnFulfilled = (status: string, handler: () => void): void => {
     if (prevStatus === 'PENDING' && status === 'FULFILLED') {
       handler();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 };
 
@@ -25,5 +26,6 @@ export const useOnFailed = (status: string, handler: () => void): void => {
     if (prevStatus === 'PENDING' && status === 'FAILED') {
       handler();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 };
