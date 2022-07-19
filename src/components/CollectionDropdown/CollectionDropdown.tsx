@@ -51,6 +51,7 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
     valueContainer: (styles) => {
       return {
         ...styles,
+        width: '170px',
         padding: 0,
       };
     },
