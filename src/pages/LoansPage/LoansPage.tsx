@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { Controller } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { MyLoansTab } from './components/MyLoansTab';
@@ -17,7 +18,6 @@ import {
   useLendingPoolsFiltering,
 } from './hooks/useLendingPoolsFiltering';
 import Confetti from '../../components/Confetti';
-import { useSelector } from 'react-redux';
 import { selectConfettiVisible } from '../../state/common/selectors';
 import Toggle from '../../components/Toggle';
 
