@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { Socket } from 'socket.io-client';
 import { createCustomAction } from 'typesafe-actions';
 
@@ -40,14 +40,14 @@ export const commonActions = {
   appInit: createCustomAction(commonTypes.APP_INIT, () => null),
   setConnection: createCustomAction(
     commonTypes.SET_CONNECTION,
-    (connection: Connection) => ({ payload: connection }),
+    (connection: web3.Connection) => ({ payload: connection }),
   ),
   setSocket: createCustomAction(commonTypes.SET_SOCKET, (socket: Socket) => ({
     payload: socket,
   })),
   setWallet: createCustomAction(
     commonTypes.SET_WALLET,
-    (wallet: { publicKey: PublicKey }) => ({
+    (wallet: { publicKey: web3.PublicKey }) => ({
       payload: wallet,
     }),
   ),

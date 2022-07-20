@@ -24,8 +24,6 @@ import { Container } from '../../../../components/Layout';
 
 const ECOSYSTEM_LIST = [
   { path: PATHS.LOANS, label: 'Loans' },
-  { path: PATHS.POOLS, label: 'Pools' },
-  { path: PATHS.SWAP, label: 'Swap' },
   { to: PATHS.ROADMAP, label: 'Roadmap' },
 ];
 

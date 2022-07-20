@@ -5,6 +5,7 @@ import Button from '../../../../components/Button';
 import { Container } from '../../../../components/Layout';
 import { LinkWithArrow } from '../../../../components/LinkWithArrow';
 import { PATHS } from '../../../../constants';
+import { sendAmplitudeData } from '../../../../utils/amplitude';
 import styles from './MainSection.module.scss';
 
 export const MainSection: FC = () => {
@@ -19,7 +20,11 @@ export const MainSection: FC = () => {
           <br /> Oh, and get rewarded in the process!
         </h2>
         <NavLink to={PATHS.LOANS}>
-          <Button className={styles.btn} type="alternative">
+          <Button
+            className={styles.btn}
+            type="alternative"
+            onClick={() => sendAmplitudeData('landingpage-launch')}
+          >
             Try it out!
           </Button>
         </NavLink>

@@ -12,7 +12,7 @@ import {
   equals,
 } from 'ramda';
 import { ensureArray, isMap } from 'ramda-adjunct';
-import { TokenInfo } from '@solana/spl-token-registry';
+import { TokenInfo } from '@frakt-protocol/frakt-sdk';
 
 import { TokenListState } from './types';
 import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../../config';

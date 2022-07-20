@@ -9,6 +9,7 @@ import LongTermFields from '../LongTermFields';
 import styles from './BorrowForm.module.scss';
 import { FormFieldTypes, useBorrowForm } from './hooks';
 import { BorrowNft } from '../../../../state/loans/types';
+import { sendAmplitudeData } from '../../../../utils/amplitude';
 
 interface BorrowFormProps {
   selectedNft: BorrowNft;
@@ -46,13 +47,19 @@ export const BorrowForm: FC<BorrowFormProps> = ({
             className={styles.radio}
             checked={formField === FormFieldTypes.LONG_TERM_FIELD}
             disabled={priceBasedDisabled}
-            onClick={() => setFormField(FormFieldTypes.LONG_TERM_FIELD)}
+            onClick={() => {
+              setFormField(FormFieldTypes.LONG_TERM_FIELD);
+              sendAmplitudeData('loans-perpetual');
+            }}
             label="Perpetual loan"
           />
           <Radio
             className={styles.radio}
             checked={formField === FormFieldTypes.SHORT_TERM_FIELD}
-            onClick={() => setFormField(FormFieldTypes.SHORT_TERM_FIELD)}
+            onClick={() => {
+              setFormField(FormFieldTypes.SHORT_TERM_FIELD);
+              sendAmplitudeData('loans-flip');
+            }}
             label="Flip loan"
           />
         </div>

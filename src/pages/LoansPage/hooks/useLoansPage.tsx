@@ -70,6 +70,7 @@ const LOANS_TABS: Tab[] = [
   {
     label: 'Lending',
     value: 'lending',
+    event: 'loans-lending',
   },
   {
     label: 'Liquidations',
@@ -78,6 +79,7 @@ const LOANS_TABS: Tab[] = [
   },
   {
     label: 'My loans',
+    event: 'loans-my-loans',
     value: 'loans',
   },
 ];

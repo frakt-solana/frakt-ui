@@ -1,5 +1,4 @@
 import { FC, ReactElement } from 'react';
-import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { DROPDOWN_EXTERNAL_LINKS, NAVIGATION_LINKS } from './constants';
@@ -7,6 +6,7 @@ import styles from './AppNavigation.module.scss';
 import NavigationLink from '../NavigationLink';
 import { PATHS } from '../../../constants';
 import { Dropdown } from '../../Dropdown';
+import { sendAmplitudeData } from '../../../utils/amplitude';
 
 interface AppNavigationProps {
   className?: string;
@@ -18,9 +18,16 @@ export const DropdownMenuMore: FC = () => {
   return (
     <Dropdown title="More">
       <ul>
-        <NavLink className={styles.dropdownLink} to={PATHS.STATS}>
-          Stats
-        </NavLink>
+        <li>
+          <a
+            className={styles.dropdownLink}
+            href={process.env.FRAKT_POOLS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pools
+          </a>
+        </li>
         <li>
           <a
             className={styles.dropdownLink}
@@ -37,6 +44,7 @@ export const DropdownMenuMore: FC = () => {
             href={process.env.FRAKT_STAKING_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => sendAmplitudeData('navigation-staking')}
           >
             Staking
           </a>
@@ -69,25 +77,6 @@ export const DropdownMenuMore: FC = () => {
   );
 };
 
-export const DropdownMenuDoStuff: FC = () => {
-  return (
-    <Dropdown title="Do stuff">
-      <ul className={styles.list}>
-        <li className={styles.linkList}>
-          <NavLink className={styles.link} to={PATHS.BORROW}>
-            <div className={styles.content}>
-              <p className={styles.title}>Borrow</p>
-              <p className={styles.subtitle}>
-                take loan using NFT as collateral
-              </p>
-            </div>
-          </NavLink>
-        </li>
-      </ul>
-    </Dropdown>
-  );
-};
-
 export const AppNavigation: FC<AppNavigationProps> = ({
   className,
   withoutLinks,
@@ -102,8 +91,12 @@ export const AppNavigation: FC<AppNavigationProps> = ({
       )}
     >
       {!withoutLinks &&
-        NAVIGATION_LINKS.map(({ label, to }, idx) => (
-          <li key={idx} className={styles.navigationItem}>
+        NAVIGATION_LINKS.map(({ label, to, event }, idx) => (
+          <li
+            key={idx}
+            className={styles.navigationItem}
+            onClick={() => sendAmplitudeData(event)}
+          >
             <NavigationLink to={to}>{label}</NavigationLink>
           </li>
         ))}

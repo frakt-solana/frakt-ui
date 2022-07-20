@@ -27,19 +27,19 @@ export const ConnectWalletModal = ({
       <p className={styles.text}>
         Connect with one of available wallet providers or create a new wallet.
       </p>
-      {wallets.map(({ name, icon }, idx) => {
+      {wallets.map(({ adapter }, idx) => {
         return (
           <div
             key={idx}
             className={styles.wallet}
             onClick={() => {
-              select(name);
+              select(adapter.name);
               dispatch(commonActions.setWalletModal({ isVisible: false }));
             }}
           >
             <div className={styles.walletName}>
-              <img src={icon} alt="Wallet icon" />
-              <span>{name}</span>
+              <img src={adapter.icon} alt="Wallet icon" />
+              <span>{adapter.name}</span>
             </div>
             <ArrowRightIcon fill="white" />
           </div>

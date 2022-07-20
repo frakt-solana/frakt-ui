@@ -16,7 +16,6 @@ import Button from '../Button';
 import { Loan } from '../../state/loans/types';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { HEALTH_TOOLTIP_TEXT } from './constants';
-import { userTokensActions } from '../../state/userTokens/actions';
 import { loansActions } from '../../state/loans/actions';
 import { commonActions } from '../../state/common/actions';
 
@@ -37,7 +36,6 @@ const usePaybackLoan = () => {
 
   const removeTokenOptimistic = (mint: string) => {
     dispatch(loansActions.addHiddenLoanNftMint(mint));
-    dispatch(userTokensActions.removeTokenOptimistic([mint]));
   };
 
   const showConfetti = (): void => {

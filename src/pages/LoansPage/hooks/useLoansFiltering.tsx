@@ -6,11 +6,11 @@ import { uniqBy, prop } from 'ramda';
 import moment from 'moment';
 
 import styles from '../components/MyLoansTab/MyLoansTab.module.scss';
-import { compareNumbers } from '../../../contexts/liquidityPools';
 import { selectLoanNfts } from '../../../state/loans/selectors';
 import { caclTimeToRepay } from '../../../utils/loans';
 import { ArrowDownSmallIcon } from '../../../icons';
 import { Loan } from '../../../state/loans/types';
+import { compareNumbers } from '../../../utils';
 
 type FilterFormFieldsValues = {
   [FilterFormInputsNames.SORT]: LoansValue;
@@ -130,10 +130,9 @@ export const useLoansFiltering: UseLoansFiltering = ({
           if (sortField === SortField.TIME_TO_REPAY) {
             if (loanA.isPriceBased) return;
 
-            const { loanDurationInSeconds: timeToRepayA } =
-              caclTimeToRepay(loanA);
-            const { loanDurationInSeconds: timeToRepayB } =
-              caclTimeToRepay(loanB);
+            const { expiredAtUnix: timeToRepayA } = caclTimeToRepay(loanA);
+
+            const { expiredAtUnix: timeToRepayB } = caclTimeToRepay(loanB);
 
             return compareNumbers(
               timeToRepayA,

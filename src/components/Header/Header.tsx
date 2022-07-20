@@ -7,11 +7,7 @@ import classNames from 'classnames';
 import { selectWalletModalVisible } from '../../state/common/selectors';
 import styles from './styles.module.scss';
 import { Container } from '../Layout';
-import {
-  AppNavigation,
-  DropdownMenuDoStuff,
-  DropdownMenuMore,
-} from './AppNavigation';
+import { AppNavigation, DropdownMenuMore } from './AppNavigation';
 import BurgerMenu from '../BurgerMenu';
 import { PATHS } from '../../constants';
 import ConnectButton from '../ConnectButton';
@@ -38,10 +34,14 @@ const Header: FC<HeaderProps> = ({ className, customHeader }) => {
           <DropdownMenuMore />
         </AppNavigation>
         <ul className={styles.buttons}>
-          <li className={styles.bgAccent}>
-            <AppNavigation withoutLinks>
-              <DropdownMenuDoStuff />
-            </AppNavigation>
+          <li>
+            <NavLink
+              className={styles.borrow}
+              activeClassName={styles.borrowActive}
+              to={PATHS.BORROW}
+            >
+              Borrow
+            </NavLink>
           </li>
           <li>
             <div className={styles.profileWrapper}>

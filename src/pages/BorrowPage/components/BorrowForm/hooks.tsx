@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
 import { useConnection } from '../../../../hooks';
-import { userTokensActions } from '../../../../state/userTokens/actions';
 import { proposeLoan } from '../../../../utils/loans';
 import { BorrowNft } from '../../../../state/loans/types';
 import { useEffect, useState } from 'react';
@@ -85,7 +84,6 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
 
   const removeTokenOptimistic = (mint: string) => {
     dispatch(loansActions.addHiddenBorrowNftMint(mint));
-    dispatch(userTokensActions.removeTokenOptimistic([mint]));
   };
 
   const showConfetti = (): void => {

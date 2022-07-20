@@ -1,4 +1,4 @@
-import { TokenInfo } from '@solana/spl-token-registry';
+import { TokenInfo } from '@frakt-protocol/frakt-sdk';
 
 export type TokenListState = {
   tokensList: TokenInfo[];

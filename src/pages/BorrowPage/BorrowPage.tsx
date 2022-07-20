@@ -14,6 +14,7 @@ import { commonActions } from '../../state/common/actions';
 import { BorrowNft } from '../../state/loans/types';
 import Confetti from '../../components/Confetti';
 import { selectConfettiVisible } from '../../state/common/selectors';
+import { sendAmplitudeData } from '../../utils/amplitude';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
   'https://docs.frakt.xyz/frakt/loans/collections-accepted-for-loans';
@@ -62,9 +63,10 @@ const BorrowPage: FC = () => {
         <Button
           type="secondary"
           className={styles.connectBtn}
-          onClick={() =>
-            dispatch(commonActions.setWalletModal({ isVisible: true }))
-          }
+          onClick={() => {
+            dispatch(commonActions.setWalletModal({ isVisible: true }));
+            sendAmplitudeData('loans-connect');
+          }}
         >
           Connect wallet
         </Button>

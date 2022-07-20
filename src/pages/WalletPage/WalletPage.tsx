@@ -5,13 +5,12 @@ import { AppLayout } from '../../components/Layout/AppLayout';
 import { Tab, Tabs, useTabs } from '../../components/Tabs';
 import { ProfileCard } from './components/ProfileCard';
 import { Container } from '../../components/Layout';
-import { TokensTab } from './components/TokensTab';
 import { LoansList } from './components/LoansList';
 import styles from './WalletPage.module.scss';
 import { useParams } from 'react-router-dom';
 import { usePublicKeyParam } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useNameService, useWalletTokens } from './hooks';
+import { useNameService } from './hooks';
 import { shortenAddress } from '../../utils/solanaUtils';
 import {
   selectConfettiVisible,
@@ -37,10 +36,6 @@ const useWalletPage = () => {
 
   const isMyProfile = walletPubkey === wallet.publicKey?.toBase58();
 
-  const { userTokens, loading: userTokensLoading } = useWalletTokens({
-    walletPubkey,
-  });
-
   const {
     tabs,
     value: tabValue,
@@ -60,8 +55,6 @@ const useWalletPage = () => {
     setTabValue,
     isMyProfile,
     pageTitle,
-    userTokens,
-    userTokensLoading,
     nameServiceInfo,
     walletPubkey,
   };
@@ -73,8 +66,6 @@ const WalletPage: FC = () => {
     tabValue,
     setTabValue,
     pageTitle,
-    userTokens,
-    userTokensLoading,
     nameServiceInfo,
     walletPubkey,
   } = useWalletPage();
@@ -107,9 +98,6 @@ const WalletPage: FC = () => {
             />
             {tabValue === WalletTabs.LOANS && (
               <LoansList loans={userLoans} className={styles.loansList} />
-            )}
-            {tabValue === WalletTabs.TOKENS && (
-              <TokensTab userTokens={userTokens} loading={userTokensLoading} />
             )}
           </div>
         </div>
