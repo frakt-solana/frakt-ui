@@ -1,30 +1,22 @@
-import amplitude from 'amplitude-js';
+import * as amplitude from '@amplitude/analytics-browser';
 
 import { AMP_API_KEY } from './constants';
 
 export const initAmplitude = (): void => {
-  amplitude.getInstance().init(AMP_API_KEY, null, {
-    saveEvents: true,
-    includeUtm: true,
-    includeReferrer: true,
-  });
+  amplitude.init(AMP_API_KEY);
 };
 
 export const setAmplitudeUserDevice = (installationToken: string): void => {
-  amplitude.getInstance().setDeviceId(installationToken);
+  amplitude.setDeviceId(installationToken);
 };
 
 export const setAmplitudeUserId = (userId: string): void => {
-  amplitude.getInstance().setUserId(userId);
-};
-
-export const setAmplitudeUserProperties = (properties: unknown): void => {
-  amplitude.getInstance().setUserProperties(properties);
+  amplitude.setUserId(userId);
 };
 
 export const sendAmplitudeData = (
   eventType: string,
   eventProperties?: unknown,
 ): void => {
-  amplitude.getInstance().logEvent(eventType, eventProperties);
+  amplitude.track(eventType, eventProperties);
 };
