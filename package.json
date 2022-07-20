@@ -34,7 +34,6 @@
     "react-router-hash-link": "^2.4.3",
     "react-scripts": "^4.0.3",
     "react-select": "^5.2.1",
-    "react-use": "^17.4.0",
     "react-use-intercom": "^1.5.1",
     "redux": "^4.2.0",
     "redux-saga": "^1.1.3",
