@@ -160,34 +160,26 @@ const txRaffleTrySaga = function* (action) {
     const subscribtionId = connection.onAccountChange(
       lotTicketPubkey,
       (accountInfo) => {
-        console.log(accountInfo.data);
-        console.log(connection);
-        console.log(new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY));
+        const lotAccountData: any = loans.decodeLotTicket(
+          accountInfo.data,
+          lotTicketPubkey,
+          connection,
+          new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+        );
 
-        let lotAccountData: any;
-        try {
-          lotAccountData = loans.decodeLotTicket(
-            accountInfo.data,
-            connection,
-            new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-          );
-          console.log(lotAccountData, 'lotAccountData');
-        } catch (error) {
-          console.log('lotAccountData error', error);
-        }
-
-        if (lotAccountData?.lotTicket?.ticketState === 'winning') {
+        if (lotAccountData?.ticketState === 'winning') {
           notify({
             message: 'Congratulations! Your ticket has won!',
             type: NotifyType.SUCCESS,
           });
-        } else if (lotAccountData?.lotTicket?.ticketState === 'notWinning') {
+          connection.removeAccountChangeListener(subscribtionId);
+        } else if (lotAccountData?.ticketState === 'notWinning') {
           notify({
             message: "Ooops. Your ticket didn't win",
             type: NotifyType.ERROR,
           });
+          connection.removeAccountChangeListener(subscribtionId);
         }
-        connection.removeAccountChangeListener(subscribtionId);
       },
     );
   } catch (error) {
