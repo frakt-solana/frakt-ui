@@ -9,7 +9,7 @@ import {
   signAndConfirmTransaction,
   showSolscanLinkNotification,
 } from '../../utils/transactions';
-import { notify } from '../../utils';
+import { notify, closeNotification } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { captureSentryError } from '../../utils/sentry';
 import { parse } from '../../utils/state/qs';
@@ -136,7 +136,7 @@ const txRaffleTrySaga = function* (action) {
       user: publicKey,
       liquidationLot: new web3.PublicKey(action.payload.liquidationLotPubkey),
       attemptsNftMint: new web3.PublicKey(lotteryTickets.tickets[0].nftMint),
-      stakeAccount: new web3.PublicKey(
+      fraktNftStakeAccount: new web3.PublicKey(
         lotteryTickets.tickets[0].stakeAccountPubkey,
       ),
       sendTxn: async (transaction, signers) => {
@@ -157,6 +157,11 @@ const txRaffleTrySaga = function* (action) {
         lotteryTickets.tickets[0].nftMint,
       ),
     );
+    const loaderNotificationId: any = notify({
+      message: 'Your ticket is trying to win a raffle...',
+      type: NotifyType.INFO,
+      persist: true,
+    });
     const subscribtionId = connection.onAccountChange(
       lotTicketPubkey,
       (accountInfo) => {
@@ -168,12 +173,14 @@ const txRaffleTrySaga = function* (action) {
         );
 
         if (lotAccountData?.ticketState === 'winning') {
+          closeNotification(loaderNotificationId);
           notify({
             message: 'Congratulations! Your ticket has won!',
             type: NotifyType.SUCCESS,
           });
           connection.removeAccountChangeListener(subscribtionId);
         } else if (lotAccountData?.ticketState === 'notWinning') {
+          closeNotification(loaderNotificationId);
           notify({
             message: "Ooops. Your ticket didn't win",
             type: NotifyType.ERROR,
