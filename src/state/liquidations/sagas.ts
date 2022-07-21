@@ -151,11 +151,44 @@ const txRaffleTrySaga = function* (action) {
     tx = loans.getLotTicketByStaking;
   }
   try {
-    yield call(tx, params);
+    const lotTicketPubkey = yield call(tx, params);
     yield put(
       liquidationsActions.txRaffleTryFulfilled(
         lotteryTickets.tickets[0].nftMint,
       ),
+    );
+    const subscribtionId = connection.onAccountChange(
+      lotTicketPubkey,
+      (accountInfo) => {
+        console.log(accountInfo.data);
+        console.log(connection);
+        console.log(new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY));
+
+        let lotAccountData: any;
+        try {
+          lotAccountData = loans.decodeLotTicket(
+            accountInfo.data,
+            connection,
+            new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
+          );
+          console.log(lotAccountData, 'lotAccountData');
+        } catch (error) {
+          console.log('lotAccountData error', error);
+        }
+
+        if (lotAccountData?.lotTicket?.ticketState === 'winning') {
+          notify({
+            message: 'Congratulations! Your ticket has won!',
+            type: NotifyType.SUCCESS,
+          });
+        } else if (lotAccountData?.lotTicket?.ticketState === 'notWinning') {
+          notify({
+            message: "Ooops. Your ticket didn't win",
+            type: NotifyType.ERROR,
+          });
+        }
+        connection.removeAccountChangeListener(subscribtionId);
+      },
     );
   } catch (error) {
     yield put(liquidationsActions.txRaffleTryFailed(error));
