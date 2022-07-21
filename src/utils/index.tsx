@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { web3, raydium, BN, TokenInfo } from '@frakt-protocol/frakt-sdk';
+import { web3, BN, TokenInfo } from '@frakt-protocol/frakt-sdk';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
@@ -25,7 +25,7 @@ export const COINGECKO_URL = process.env.COINGECKO_URL;
 
 export const SOL_TOKEN: TokenInfo = {
   chainId: 101,
-  address: raydium.WSOL.mint,
+  address: 'So11111111111111111111111111111111111111112',
   name: 'SOL',
   decimals: 9,
   symbol: 'SOL',
