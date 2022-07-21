@@ -22,7 +22,6 @@ import {
   PartialRepayModal,
   usePartialRepayModal,
 } from '../../pages/LoansPage/components/PartialRepayModal';
-import { userTokensActions } from '../../state/userTokens/actions';
 import { loansActions } from '../../state/loans/actions';
 
 interface LoanCardProps {
@@ -48,7 +47,6 @@ const usePaybackLoan = (loan: Loan) => {
 
   const removeTokenOptimistic = (mint: string) => {
     dispatch(loansActions.addHiddenLoanNftMint(mint));
-    dispatch(userTokensActions.removeTokenOptimistic([mint]));
   };
 
   const onPartialPayback = async (paybackAmount: BN) => {

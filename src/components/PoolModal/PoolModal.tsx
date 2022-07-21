@@ -9,6 +9,7 @@ import { Slider } from '../Slider';
 import { Modal } from '../Modal';
 import Button from '../Button';
 import { Tabs } from '../Tabs';
+import { sendAmplitudeData } from '../../utils/amplitude';
 
 interface PoolModalProps {
   visible: string;
@@ -106,7 +107,10 @@ export const PoolModal: FC<PoolModalProps> = ({
             </span>
           </div>
           <Button
-            onClick={depositLiquidity}
+            onClick={() => {
+              depositLiquidity();
+              sendAmplitudeData('loans-confirm-deposit');
+            }}
             className={styles.btn}
             type="alternative"
             disabled={isDisabledDepositBtn}

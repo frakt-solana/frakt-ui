@@ -1,4 +1,5 @@
-import { TokenInfo } from '@solana/spl-token-registry';
+import { TokenInfo } from '@frakt-protocol/frakt-sdk';
+
 import { SOL_TOKEN, FRKT_TOKEN } from '../../utils';
 
 //? Tokens info for TokenField component. Added FRKT for future

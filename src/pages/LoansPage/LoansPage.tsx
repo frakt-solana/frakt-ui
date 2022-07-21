@@ -11,12 +11,12 @@ import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
 import { useLoansPage, LoanTabsNames } from './hooks';
 import { SearchInput } from '../../components/SearchInput';
-import { ControlledToggle } from '../../components/Toggle/Toggle';
 import { Select } from '../../components/Select';
 import {
   SORT_VALUES,
   useLendingPoolsFiltering,
 } from './hooks/useLendingPoolsFiltering';
+import Toggle from '../../components/Toggle';
 
 export enum InputControlsNames {
   SHOW_STAKED = 'showStaked',
@@ -51,10 +51,16 @@ const LoansPage: FC = () => {
               />
               <div className={styles.filters}>
                 {showStakedOnlyToggle && (
-                  <ControlledToggle
+                  <Controller
                     control={control}
                     name={InputControlsNames.SHOW_STAKED}
-                    label="Staked only"
+                    render={({ field: { ref, ...field } }) => (
+                      <Toggle
+                        label="Staked only"
+                        name={InputControlsNames.SHOW_STAKED}
+                        {...field}
+                      />
+                    )}
                   />
                 )}
                 <Controller

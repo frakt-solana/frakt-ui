@@ -1,4 +1,4 @@
-import BN from 'bn.js';
+import { BN } from '@frakt-protocol/frakt-sdk';
 
 export const TEN = new BN(10);
 export const HALF_WAD = TEN.pow(new BN(18));

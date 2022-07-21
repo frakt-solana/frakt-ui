@@ -11,8 +11,11 @@ import { TeamSection } from './sections/TeamSection';
 import { Footer } from './sections/Footer';
 import { CustomHeader } from './CustomHeader';
 import { MainSection } from './sections/MainSection';
+import { sendAmplitudeData } from '../../utils/amplitude';
 
 const HomePage = (): JSX.Element => {
+  useMemo(() => sendAmplitudeData('landingpage-start'), []);
+
   const sectionRef1 = useRef<HTMLParagraphElement>();
   const sectionRef2 = useRef<HTMLParagraphElement>();
   const sectionRef3 = useRef<HTMLParagraphElement>();
