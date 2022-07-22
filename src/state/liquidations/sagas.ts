@@ -136,7 +136,7 @@ const txRaffleTrySaga = function* (action) {
       user: publicKey,
       liquidationLot: new web3.PublicKey(action.payload.liquidationLotPubkey),
       attemptsNftMint: new web3.PublicKey(lotteryTickets.tickets[0].nftMint),
-      fraktNftStakeAccount: new web3.PublicKey(
+      fraktNftStake: new web3.PublicKey(
         lotteryTickets.tickets[0].stakeAccountPubkey,
       ),
       sendTxn: async (transaction, signers) => {

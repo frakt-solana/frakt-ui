@@ -10,23 +10,32 @@ import {
   subtract,
   reject,
   __,
+  useWith,
+  pluck,
 } from 'ramda';
 
-import { LotteryTicket } from './types';
+import { LotteryTicket, RaffleListItem } from './types';
 
 export const selectGraceList = createSelector(
   [pathOr([], ['liquidations', 'graceList', 'data'])],
   identity,
 );
 
-export const selectRaffleList = createSelector(
-  [pathOr([], ['liquidations', 'raffleList', 'data'])],
-  identity,
-);
-
 export const selectWonRaffleList = createSelector(
   [pathOr([], ['liquidations', 'wonRaffleList', 'data'])],
   identity,
+);
+
+export const selectRaffleList = createSelector(
+  [pathOr([], ['liquidations', 'raffleList', 'data']), selectWonRaffleList],
+  useWith(
+    (raffleList: Array<RaffleListItem>, wonMints: string[]) =>
+      reject(
+        (item: RaffleListItem) => wonMints.includes(item.nftMint),
+        raffleList,
+      ),
+    [identity, pluck('nftMint')],
+  ),
 );
 
 const selectIgnoreLotteryTickets = createSelector(
