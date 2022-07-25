@@ -59,7 +59,7 @@ export const ShortTermFields: FC<ShortTermFields> = ({ nft }) => {
 
       {!!feeDiscountPercents && (
         <div className={styles.staticValue} style={{ marginBottom: 10 }}>
-          <p className={styles.staticValueTitle}>holder{`'`}s discount</p>
+          <p className={styles.staticValueTitle}>Holder discount</p>
           <p className={styles.staticValueData}>{feeDiscountPercents}%</p>
         </div>
       )}
