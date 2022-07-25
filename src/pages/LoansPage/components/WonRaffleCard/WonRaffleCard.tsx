@@ -5,6 +5,7 @@ import classNames from 'classnames';
 
 import { ConfirmModal } from '../../../../components/ConfirmModal';
 import { LoadingModal } from '../../../../components/LoadingModal';
+import Tooltip from '../../../../components/Tooltip';
 import Button from '../../../../components/Button';
 import { useNativeAccount } from '../../../../utils/accounts';
 import { selectTxLiquidateStatus } from '../../../../state/liquidations/selectors';
@@ -23,6 +24,7 @@ const WonRaffleCard: FC<{ data }> = ({ data }) => {
 
   const { account } = useNativeAccount();
   const balance = (account?.lamports || 0) / LAMPORTS_PER_SOL;
+  const hasBalanceDeficit = data.paybackPriceWithGrace > balance;
 
   const handleClick = () => {
     setTryId(data.nftMint);
@@ -52,14 +54,28 @@ const WonRaffleCard: FC<{ data }> = ({ data }) => {
           <p className={styles.subtitle}>liquidation price</p>
           <p className={styles.value}>{`${data.paybackPriceWithGrace} SOL`}</p>
         </div>
-        <Button
-          type="alternative"
-          className={styles.btn}
-          onClick={handleClick}
-          disabled={data.paybackPriceWithGrace > balance}
-        >
-          Liquidate
-        </Button>
+        {hasBalanceDeficit ? (
+          <Tooltip placement="top" overlay="Not enough SOL">
+            <div>
+              <Button
+                type="alternative"
+                className={styles.btn}
+                onClick={handleClick}
+                disabled
+              >
+                Liquidate
+              </Button>
+            </div>
+          </Tooltip>
+        ) : (
+          <Button
+            type="alternative"
+            className={styles.btn}
+            onClick={handleClick}
+          >
+            Liquidate
+          </Button>
+        )}
       </div>
       <ConfirmModal
         visible={tryId}
