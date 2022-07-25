@@ -138,7 +138,7 @@ export const LIQUIDATIONS_TABS: Tab[] = [
     value: 'grace',
   },
   {
-    label: 'Won raffles',
+    label: 'Raffles I won',
     value: 'raffles',
   },
 ];
