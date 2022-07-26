@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { useSelectLayout, SelectLayout } from '../../components/SelectLayout';
 import { LinkWithArrow } from '../../components/LinkWithArrow';
@@ -12,8 +12,6 @@ import Button from '../../components/Button';
 import { useBorrowPage } from './hooks';
 import { commonActions } from '../../state/common/actions';
 import { BorrowNft } from '../../state/loans/types';
-import Confetti from '../../components/Confetti';
-import { selectConfettiVisible } from '../../state/common/selectors';
 import { sendAmplitudeData } from '../../utils/amplitude';
 
 const ACCEPTED_FOR_LOANS_COLLECTIONS_LINK =
@@ -33,8 +31,6 @@ const BorrowPage: FC = () => {
     loading,
   } = useBorrowPage();
 
-  const confettiVisible = useSelector(selectConfettiVisible);
-
   return (
     <SelectLayout
       selectedNfts={selectedNfts}
@@ -44,7 +40,6 @@ const BorrowPage: FC = () => {
         <BorrowForm selectedNft={selectedNfts?.[0]} onDeselect={onDeselect} />
       }
     >
-      <Confetti isVisible={confettiVisible} />
       <h1 className={styles.title}>Borrow money</h1>
       <h2 className={styles.subtitle}>
         Select your NFT to use as a collateral

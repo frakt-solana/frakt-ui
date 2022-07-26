@@ -88,9 +88,6 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
 
   const showConfetti = (): void => {
     dispatch(commonActions.setConfetti({ isVisible: true }));
-    setTimeout(() => {
-      dispatch(commonActions.setConfetti({ isVisible: false }));
-    }, 5000);
   };
 
   const onSubmit = async (nft: BorrowNft) => {
@@ -104,7 +101,7 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
         wallet,
         valuation: parseFloat(nft?.valuation),
         isPriceBased: formField === FormFieldTypes.LONG_TERM_FIELD,
-        showConfetti: () => showConfetti(),
+        onApprove: showConfetti,
         loanToValue:
           formField === FormFieldTypes.LONG_TERM_FIELD
             ? priceBasedLTV

@@ -12,13 +12,9 @@ import { usePublicKeyParam } from '../../hooks';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useNameService } from './hooks';
 import { shortenAddress } from '../../utils/solanaUtils';
-import {
-  selectConfettiVisible,
-  selectUser,
-} from '../../state/common/selectors';
+import { selectUser } from '../../state/common/selectors';
 import { Loan } from '../../state/loans/types';
 import { selectLoanNfts } from '../../state/loans/selectors';
-import Confetti from '../../components/Confetti';
 
 export enum WalletTabs {
   TOKENS = 'tokens',
@@ -71,12 +67,10 @@ const WalletPage: FC = () => {
   } = useWalletPage();
   const user = useSelector(selectUser);
   const userLoans: Loan[] = useSelector(selectLoanNfts);
-  const confettiVisible = useSelector(selectConfettiVisible);
 
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <Confetti isVisible={confettiVisible} />
         <div className={styles.pageHeader}>
           <div className={styles.titleContainer}>
             <h2 className={styles.title}>{pageTitle}</h2>

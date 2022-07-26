@@ -40,9 +40,6 @@ const usePaybackLoan = () => {
 
   const showConfetti = (): void => {
     dispatch(commonActions.setConfetti({ isVisible: true }));
-    setTimeout(() => {
-      dispatch(commonActions.setConfetti({ isVisible: false }));
-    }, 5000);
   };
 
   const paybackLoan = async (loan: Loan) => {
@@ -56,7 +53,7 @@ const usePaybackLoan = () => {
       });
 
       if (!result) {
-        throw new Error('Loan failed');
+        throw new Error('Payback failed');
       }
 
       showConfetti();

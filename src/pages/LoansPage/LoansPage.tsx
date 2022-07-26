@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { Controller } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { AppLayout } from '../../components/Layout/AppLayout';
 import { MyLoansTab } from './components/MyLoansTab';
@@ -17,8 +16,6 @@ import {
   SORT_VALUES,
   useLendingPoolsFiltering,
 } from './hooks/useLendingPoolsFiltering';
-import Confetti from '../../components/Confetti';
-import { selectConfettiVisible } from '../../state/common/selectors';
 import Toggle from '../../components/Toggle';
 
 export enum InputControlsNames {
@@ -31,12 +28,9 @@ const LoansPage: FC = () => {
   const { control, setSearch, pools, showStakedOnlyToggle } =
     useLendingPoolsFiltering();
 
-  const confettiVisible = useSelector(selectConfettiVisible);
-
   return (
     <AppLayout>
       <Container component="main" className={styles.container}>
-        <Confetti isVisible={confettiVisible} />
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Loans</h1>
