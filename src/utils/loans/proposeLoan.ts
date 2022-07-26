@@ -16,6 +16,7 @@ type ProposeLoan = (props: {
   valuation: number; //? SOL Lamports
   loanToValue: number; //? Percent
   isPriceBased?: boolean;
+  showConfetti?: () => void;
 }) => Promise<boolean>;
 
 export const proposeLoan: ProposeLoan = async ({
@@ -25,6 +26,7 @@ export const proposeLoan: ProposeLoan = async ({
   valuation,
   loanToValue: rawloanToValue,
   isPriceBased = false,
+  showConfetti,
 }): Promise<boolean> => {
   const proposedNftPrice = valuation * 10 ** SOL_TOKEN.decimals;
   const loanToValue = rawloanToValue * 100; //? Percent 20% ==> 2000
@@ -64,6 +66,8 @@ export const proposeLoan: ProposeLoan = async ({
             message: 'Your loan was successfully funded!',
             type: NotifyType.SUCCESS,
           });
+          showConfetti();
+
           connection.removeAccountChangeListener(subscriptionId);
         } else if (loanAccountData?.loanStatus?.rejected) {
           notify({
