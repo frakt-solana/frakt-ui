@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 import { useWallet } from '@solana/wallet-adapter-react';
 import classNames from 'classnames';
 import Tooltip from 'rc-tooltip';
+import { BN } from '@frakt-protocol/frakt-sdk';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 import { LoadingModal, useLoadingModal } from '../LoadingModal';
 import {
@@ -14,8 +16,12 @@ import { useConnection, useCountdown } from '../../hooks';
 import { SOL_TOKEN } from '../../utils';
 import Button from '../Button';
 import { Loan } from '../../state/loans/types';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+
 import { HEALTH_TOOLTIP_TEXT } from './constants';
+import {
+  PartialRepayModal,
+  usePartialRepayModal,
+} from '../../pages/LoansPage/components/PartialRepayModal';
 import { loansActions } from '../../state/loans/actions';
 import { commonActions } from '../../state/common/actions';
 
@@ -23,7 +29,7 @@ interface LoanCardProps {
   loan: Loan;
 }
 
-const usePaybackLoan = () => {
+const usePaybackLoan = (loan: Loan) => {
   const wallet = useWallet();
   const connection = useConnection();
   const dispatch = useDispatch();
@@ -34,6 +40,12 @@ const usePaybackLoan = () => {
     close: closeLoadingModal,
   } = useLoadingModal();
 
+  const {
+    visible: partialRepayModalVisible,
+    open: openPartialRepayModal,
+    close: closePartialRepayModal,
+  } = usePartialRepayModal();
+
   const removeTokenOptimistic = (mint: string) => {
     dispatch(loansActions.addHiddenLoanNftMint(mint));
   };
@@ -42,8 +54,39 @@ const usePaybackLoan = () => {
     dispatch(commonActions.setConfetti({ isVisible: true }));
   };
 
-  const paybackLoan = async (loan: Loan) => {
+  const onPartialPayback = async (paybackAmount: BN) => {
     try {
+      openLoadingModal();
+      closePartialRepayModal();
+
+      const result = await paybackLoanTx({
+        connection,
+        wallet,
+        loan,
+        paybackAmount,
+      });
+
+      if (!result) {
+        throw new Error('Payback failed');
+      }
+
+      showConfetti();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      closeLoadingModal();
+    }
+  };
+
+  const onPayback = async () => {
+    try {
+      const { isPriceBased } = loan;
+
+      if (isPriceBased) {
+        openPartialRepayModal();
+        return;
+      }
+
       openLoadingModal();
 
       const result = await paybackLoanTx({
@@ -67,21 +110,26 @@ const usePaybackLoan = () => {
   };
 
   return {
-    paybackLoan,
+    onPartialPayback,
+    closePartialRepayModal,
+    partialRepayModalVisible,
+    onPayback,
     closeLoadingModal,
     loadingModalVisible,
   };
 };
 
 const LoanCard: FC<LoanCardProps> = ({ loan }) => {
-  const { paybackLoan, closeLoadingModal, loadingModalVisible } =
-    usePaybackLoan();
+  const {
+    closeLoadingModal,
+    loadingModalVisible,
+    partialRepayModalVisible,
+    closePartialRepayModal,
+    onPartialPayback,
+    onPayback,
+  } = usePaybackLoan(loan);
 
   const { imageUrl, name } = loan;
-
-  const onPayback = () => {
-    paybackLoan(loan);
-  };
 
   return (
     <>
@@ -106,6 +154,12 @@ const LoanCard: FC<LoanCardProps> = ({ loan }) => {
           </div>
         </div>
       </div>
+      <PartialRepayModal
+        visible={partialRepayModalVisible}
+        onCancel={closePartialRepayModal}
+        onPartialPayback={onPartialPayback}
+        loan={loan}
+      />
       <LoadingModal
         title="Please approve transaction"
         visible={loadingModalVisible}
