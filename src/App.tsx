@@ -25,6 +25,7 @@ import { ENDPOINT } from './config';
 import { createBrowserHistory } from 'history';
 import { initSentry } from './utils/sentry';
 import { initAmplitude } from './utils/amplitude';
+import Confetti from './components/Confetti';
 
 const history = createBrowserHistory();
 
@@ -50,6 +51,7 @@ const App: FC = () => {
         <WalletProvider wallets={wallets} autoConnect>
           {/* <IntercomProvider appId={INTERCOM_APP_ID}> */}
           <Router />
+          <Confetti />
           {/* <IntercomService /> */}
           {/* </IntercomProvider> */}
         </WalletProvider>
