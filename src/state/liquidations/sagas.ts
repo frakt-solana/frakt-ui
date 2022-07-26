@@ -45,7 +45,7 @@ const fetchGraceListSaga = function* (action) {
   yield put(liquidationsActions.fetchGraceListPending());
   try {
     const data = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/grace-list?${searchStr}${sortBy}${sortOrder}${collectionsFilter}`,
+      url: `https://${process.env.BACKEND_DOMAIN}/liquidation/grace-list?${searchStr}${sortBy}${sortOrder}${collectionsFilter}limit=1000`,
     });
     yield put(liquidationsActions.fetchGraceListFulfilled(data));
   } catch (error) {
@@ -62,7 +62,7 @@ const fetchRaffleListSaga = function* (action) {
   yield put(liquidationsActions.fetchRaffleListPending());
   try {
     const data = yield call(networkRequest, {
-      url: `https://${process.env.BACKEND_DOMAIN}/liquidation?${searchStr}${sortBy}${sortOrder}${collectionsFilter}`,
+      url: `https://${process.env.BACKEND_DOMAIN}/liquidation?${searchStr}${sortBy}${sortOrder}${collectionsFilter}limit=1000`,
     });
     yield put(liquidationsActions.fetchRaffleListFulfilled(data));
   } catch (error) {
@@ -82,7 +82,7 @@ const updateWonRaffleListSaga = function* (action) {
   if (publicKey && socket) {
     socket.emit('won-raffles-subscribe', {
       wallet: publicKey,
-      limit: 100,
+      limit: 1000,
       ...params,
     });
   }
