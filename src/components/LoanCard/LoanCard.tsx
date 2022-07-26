@@ -17,6 +17,7 @@ import { Loan } from '../../state/loans/types';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { HEALTH_TOOLTIP_TEXT } from './constants';
 import { loansActions } from '../../state/loans/actions';
+import { commonActions } from '../../state/common/actions';
 
 interface LoanCardProps {
   loan: Loan;
@@ -37,6 +38,10 @@ const usePaybackLoan = () => {
     dispatch(loansActions.addHiddenLoanNftMint(mint));
   };
 
+  const showConfetti = (): void => {
+    dispatch(commonActions.setConfetti({ isVisible: true }));
+  };
+
   const paybackLoan = async (loan: Loan) => {
     try {
       openLoadingModal();
@@ -48,8 +53,10 @@ const usePaybackLoan = () => {
       });
 
       if (!result) {
-        throw new Error('Loan failed');
+        throw new Error('Payback failed');
       }
+
+      showConfetti();
       removeTokenOptimistic(loan.mint);
     } catch (error) {
       // eslint-disable-next-line no-console
