@@ -1,8 +1,6 @@
 import { FC } from 'react';
-import classNames from 'classnames/bind';
 
 import { Input, InputProps } from '../Input';
-import styles from './styles.module.scss';
 
 export interface NumericInputProps extends Omit<InputProps, 'onChange'> {
   value?: string;
@@ -49,7 +47,7 @@ const NumericInput: FC<NumericInputProps> = ({
       onChange={onChangeHanlder}
       placeholder={placeholder}
       maxLength={25}
-      className={classNames([styles.numberInput, className])}
+      className={className}
       error={error}
       readOnly={readonly}
       {...props}

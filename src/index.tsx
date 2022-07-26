@@ -1,10 +1,10 @@
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.dark.css';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/navigation/navigation.scss';
-import 'swiper/modules/pagination/pagination.scss';
-import 'swiper/modules/thumbs/thumbs.scss';
-import 'swiper/modules/lazy/lazy.scss';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/thumbs';
+import 'swiper/css/lazy';
 
 import App from './App';
 import './scss/styles.scss';

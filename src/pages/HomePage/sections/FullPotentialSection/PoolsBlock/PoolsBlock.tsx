@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import SwiperCore, { Navigation, Autoplay, Scrollbar } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import styles from './styles.module.scss';
 import { BlockContent } from '../BlockContent';

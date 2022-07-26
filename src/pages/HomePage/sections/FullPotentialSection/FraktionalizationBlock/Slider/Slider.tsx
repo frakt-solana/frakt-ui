@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Autoplay, FreeMode, Navigation, Pagination } from 'swiper';
 
 import styles from './Slider.module.scss';

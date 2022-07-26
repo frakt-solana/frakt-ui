@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore, { Navigation, Scrollbar } from 'swiper';
 import classNames from 'classnames';
 

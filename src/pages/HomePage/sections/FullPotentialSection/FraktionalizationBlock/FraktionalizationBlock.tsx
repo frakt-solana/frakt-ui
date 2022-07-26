@@ -1,7 +1,5 @@
 import { FC } from 'react';
-import classNames from 'classnames';
 
-import styles from './styles.module.scss';
 import { BlockContent } from '../BlockContent';
 import { Slider } from './Slider';
 import { FraktionalizationInfoIcon } from '../../../svg';
@@ -14,7 +12,7 @@ export const FraktionalizationBlock: FC<FraktionalizationBlockProps> = ({
   className,
 }) => {
   return (
-    <div className={classNames(className, styles.block)}>
+    <div className={className}>
       <Slider />
       <BlockContent
         title={'Fraktionalization'}
