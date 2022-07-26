@@ -23,6 +23,7 @@ import {
   usePartialRepayModal,
 } from '../../pages/LoansPage/components/PartialRepayModal';
 import { loansActions } from '../../state/loans/actions';
+import { commonActions } from '../../state/common/actions';
 
 interface LoanCardProps {
   loan: Loan;
@@ -49,6 +50,10 @@ const usePaybackLoan = (loan: Loan) => {
     dispatch(loansActions.addHiddenLoanNftMint(mint));
   };
 
+  const showConfetti = (): void => {
+    dispatch(commonActions.setConfetti({ isVisible: true }));
+  };
+
   const onPartialPayback = async (paybackAmount: BN) => {
     try {
       openLoadingModal();
@@ -62,8 +67,10 @@ const usePaybackLoan = (loan: Loan) => {
       });
 
       if (!result) {
-        throw new Error('Loan payback failed');
+        throw new Error('Payback failed');
       }
+
+      showConfetti();
     } catch (error) {
       console.error(error);
     } finally {
@@ -89,8 +96,10 @@ const usePaybackLoan = (loan: Loan) => {
       });
 
       if (!result) {
-        throw new Error('Loan payback failed');
+        throw new Error('Payback failed');
       }
+
+      showConfetti();
       removeTokenOptimistic(loan.mint);
     } catch (error) {
       // eslint-disable-next-line no-console

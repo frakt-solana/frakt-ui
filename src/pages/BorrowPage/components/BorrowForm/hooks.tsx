@@ -8,6 +8,7 @@ import { proposeLoan } from '../../../../utils/loans';
 import { BorrowNft } from '../../../../state/loans/types';
 import { useEffect, useState } from 'react';
 import { loansActions } from '../../../../state/loans/actions';
+import { commonActions } from '../../../../state/common/actions';
 
 export enum FormFieldTypes {
   SHORT_TERM_FIELD = 'shortTermField',
@@ -85,6 +86,10 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
     dispatch(loansActions.addHiddenBorrowNftMint(mint));
   };
 
+  const showConfetti = (): void => {
+    dispatch(commonActions.setConfetti({ isVisible: true }));
+  };
+
   const onSubmit = async (nft: BorrowNft) => {
     try {
       closeConfirmModal();
@@ -96,6 +101,7 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
         wallet,
         valuation: parseFloat(nft?.valuation),
         isPriceBased: formField === FormFieldTypes.LONG_TERM_FIELD,
+        onApprove: showConfetti,
         loanToValue:
           formField === FormFieldTypes.LONG_TERM_FIELD
             ? priceBasedLTV
