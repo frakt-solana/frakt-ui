@@ -173,6 +173,7 @@ const txRaffleTrySaga = function* (action) {
         );
 
         if (lotAccountData?.ticketState === 'winning') {
+          console.log('The ticket has won!', lotAccountData);
           closeNotification(loaderNotificationId);
           notify({
             message: 'Congratulations! Your ticket has won!',
@@ -180,6 +181,7 @@ const txRaffleTrySaga = function* (action) {
           });
           connection.removeAccountChangeListener(subscribtionId);
         } else if (lotAccountData?.ticketState === 'notWinning') {
+          console.log('The ticket has lost...!', lotAccountData);
           closeNotification(loaderNotificationId);
           notify({
             message: "Ooops. Your ticket didn't win",

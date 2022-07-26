@@ -130,7 +130,7 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
 
 export const LIQUIDATIONS_TABS: Tab[] = [
   {
-    label: 'Liquidations raffle',
+    label: 'Ongoing raffles',
     value: 'liquidations',
   },
   {
