@@ -157,10 +157,12 @@ const txRaffleTrySaga = function* (action) {
         lotteryTickets.tickets[0].nftMint,
       ),
     );
-    const loaderNotificationId: any = notify({
+    const loaderNotificationId = Math.random().toString(36);
+    notify({
       message: 'Your ticket is trying to win a raffle...',
       type: NotifyType.INFO,
       persist: true,
+      key: loaderNotificationId,
     });
     const subscribtionId = connection.onAccountChange(
       lotTicketPubkey,
@@ -173,7 +175,6 @@ const txRaffleTrySaga = function* (action) {
         );
 
         if (lotAccountData?.ticketState === 'winning') {
-          console.log('The ticket has won!', lotAccountData);
           closeNotification(loaderNotificationId);
           notify({
             message: 'Congratulations! Your ticket has won!',
@@ -181,7 +182,6 @@ const txRaffleTrySaga = function* (action) {
           });
           connection.removeAccountChangeListener(subscribtionId);
         } else if (lotAccountData?.ticketState === 'notWinning') {
-          console.log('The ticket has lost...!', lotAccountData);
           closeNotification(loaderNotificationId);
           notify({
             message: "Ooops. Your ticket didn't win",

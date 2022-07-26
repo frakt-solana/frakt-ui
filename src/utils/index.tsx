@@ -11,13 +11,15 @@ export const notify: Notify = ({
   description = null,
   type = NotifyType.INFO,
   persist = false,
+  key = '',
 }) => {
-  return notification[type]({
+  notification[type]({
     className: 'fraktion__notification',
     message,
     description,
     placement: 'bottomRight',
     duration: persist ? 0 : 4.5,
+    key,
   });
 };
 
