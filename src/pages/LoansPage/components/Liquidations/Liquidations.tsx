@@ -79,7 +79,7 @@ const Liquidations: FC = () => {
               <LiquidationRaffleCard
                 key={item.nftMint}
                 data={item}
-                disabled={!lotteryTickets.quantity}
+                disabled={lotteryTickets.quantity < 1}
               />
             ))}
           </LiquidationsList>
