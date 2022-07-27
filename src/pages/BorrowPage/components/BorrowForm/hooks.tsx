@@ -4,11 +4,11 @@ import { useDispatch } from 'react-redux';
 import { useConfirmModal } from '../../../../components/ConfirmModal';
 import { useLoadingModal } from '../../../../components/LoadingModal';
 import { useConnection } from '../../../../hooks';
-import { userTokensActions } from '../../../../state/userTokens/actions';
 import { proposeLoan } from '../../../../utils/loans';
 import { BorrowNft } from '../../../../state/loans/types';
 import { useEffect, useState } from 'react';
 import { loansActions } from '../../../../state/loans/actions';
+import { commonActions } from '../../../../state/common/actions';
 
 export enum FormFieldTypes {
   SHORT_TERM_FIELD = 'shortTermField',
@@ -84,7 +84,10 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
 
   const removeTokenOptimistic = (mint: string) => {
     dispatch(loansActions.addHiddenBorrowNftMint(mint));
-    dispatch(userTokensActions.removeTokenOptimistic([mint]));
+  };
+
+  const showConfetti = (): void => {
+    dispatch(commonActions.setConfetti({ isVisible: true }));
   };
 
   const onSubmit = async (nft: BorrowNft) => {
@@ -98,6 +101,7 @@ export const useBorrowForm: UseBorrowForm = ({ onDeselect, selectedNft }) => {
         wallet,
         valuation: parseFloat(nft?.valuation),
         isPriceBased: formField === FormFieldTypes.LONG_TERM_FIELD,
+        onApprove: showConfetti,
         loanToValue:
           formField === FormFieldTypes.LONG_TERM_FIELD
             ? priceBasedLTV

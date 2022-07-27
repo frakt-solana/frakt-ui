@@ -58,6 +58,9 @@ export const selectLiquidityPools: (
 export const selectHiddenBorrowNfts: (state: string[]) => string[] =
   createSelector([pathOr([], ['loans', 'hiddenBorrowNfts'])], identity);
 
+export const selectHiddenLoanNfts: (state: string[]) => string[] =
+  createSelector([pathOr([], ['loans', 'hiddenLoanNfts'])], identity);
+
 export const selectAllBorrowNfts: (state: BorrowNft[]) => BorrowNft[] =
   createSelector([pathOr([], ['loans', 'borrowNfts'])], identity);
 
@@ -67,3 +70,9 @@ export const selectBorrowNfts: (state: BorrowNft[]) => BorrowNft[] =
     (hiddenBorrowNfts, borrowNfts) =>
       borrowNfts?.filter(({ mint }) => !hiddenBorrowNfts.includes(mint)) || [],
   );
+
+export const selectLoanNfts: (state: Loan[]) => Loan[] = createSelector(
+  [selectHiddenLoanNfts, selectUserLoans],
+  (hiddenLoanNfts, loanNfts) =>
+    loanNfts?.filter(({ mint }) => !hiddenLoanNfts.includes(mint)) || [],
+);

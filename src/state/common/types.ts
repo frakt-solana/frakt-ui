@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from '@solana/web3.js';
+import { web3 } from '@frakt-protocol/frakt-sdk';
 import { Socket } from 'socket.io-client';
 
 export interface NotificationState {
@@ -26,7 +26,7 @@ export interface SolanaHealthState {
 }
 
 export interface ConnectionState {
-  connection: Connection;
+  connection: web3.Connection;
 }
 
 export interface SocketState {
@@ -35,7 +35,7 @@ export interface SocketState {
 
 export interface WalletState {
   wallet: {
-    publicKey: PublicKey | null;
+    publicKey: web3.PublicKey | null;
   };
 }
 
@@ -50,5 +50,9 @@ export interface UserState {
 }
 
 export interface ModalState {
+  isVisible: boolean;
+}
+
+export interface ConfettiState {
   isVisible: boolean;
 }

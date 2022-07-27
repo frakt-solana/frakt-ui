@@ -18,6 +18,7 @@ import {
   ModalState,
   WalletState,
   UserState,
+  ConfettiState,
 } from './types';
 
 export const initialSolanaHealthState: AsyncState<SolanaHealthState> =
@@ -42,6 +43,7 @@ export const initialNotificationState: NotificationState = {
   config: null,
 };
 export const initialModalState: ModalState = { isVisible: false };
+export const initialConfettiState: ModalState = { isVisible: false };
 
 const solanaHealthReducer = createReducer(
   initialSolanaHealthState,
@@ -117,6 +119,12 @@ const toggleDiscordModalReducer = createReducer<ModalState>(initialModalState, {
   }),
 });
 
+const setConfettiReducer = createReducer<ConfettiState>(initialConfettiState, {
+  [commonTypes.SET_CONFETTI]: (state) => ({
+    isVisible: !state.isVisible,
+  }),
+});
+
 export default combineReducers({
   connection: setConnectionReducer,
   socket: setSocketReducer,
@@ -127,4 +135,5 @@ export default combineReducers({
   notification: setNotificationReducer,
   walletModal: composeReducers(setWalletModalReducer, toggleWalletModalReducer),
   discordModal: toggleDiscordModalReducer,
+  confetti: setConfettiReducer,
 });

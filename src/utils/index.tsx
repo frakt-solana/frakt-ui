@@ -1,9 +1,8 @@
 import { notification } from 'antd';
-import { web3, raydium, BN, TokenInfo } from '@frakt-protocol/frakt-sdk';
+import { web3, BN, TokenInfo } from '@frakt-protocol/frakt-sdk';
 import { Dictionary } from 'lodash';
 
 import { formatNumber, Notify, NotifyType } from './solanaUtils';
-import { UserNFT } from '../state/userTokens/types';
 import { FRKT_TOKEN_MINT_PUBLIC_KEY } from '../config';
 
 export const notify: Notify = ({
@@ -34,7 +33,7 @@ export const COINGECKO_URL = process.env.COINGECKO_URL;
 
 export const SOL_TOKEN: TokenInfo = {
   chainId: 101,
-  address: raydium.WSOL.mint,
+  address: 'So11111111111111111111111111111111111111112',
   name: 'SOL',
   decimals: 9,
   symbol: 'SOL',
@@ -183,21 +182,6 @@ export const swapStringKeysAndValues = (
   return Object.fromEntries(swapped);
 };
 
-export const getNftCreator = (nft: UserNFT): string => {
-  return (
-    nft?.metadata?.properties?.creators?.find(({ verified }) => verified)
-      ?.address || ''
-  );
-};
-
-export const getNftCreators = (nft: UserNFT): string[] => {
-  return (
-    nft?.metadata?.properties?.creators
-      ?.filter(({ verified }) => verified)
-      ?.map(({ address }) => address) || []
-  );
-};
-
 export const fetchSolanaPriceUSD = async (): Promise<number> => {
   try {
     const result = await (
@@ -233,3 +217,13 @@ export const getDiscordAvatarUrl = (discordId = '', hash = ''): string | null =>
   discordId && hash
     ? `https://cdn.discordapp.com/avatars/${discordId}/${hash}.png`
     : null;
+
+export const compareNumbers = (
+  numberA = 0,
+  numberB = 0,
+  desc = true,
+): number => {
+  if (desc) {
+    if (numberA > numberB) return -1;
+  } else if (numberB > numberA) return -1;
+};

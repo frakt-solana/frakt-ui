@@ -12,3 +12,4 @@ export { useHealthNotification } from './useHealthNotification';
 export { useConnection } from './useConnection';
 export { useFirebaseNotifications } from './useFirebaseNotifications';
 export { useOnFulfilled, useOnFailed } from './useRequestStatus';
+export { useWebSocketSubscriptions } from './useWebSocketSubscriptions';

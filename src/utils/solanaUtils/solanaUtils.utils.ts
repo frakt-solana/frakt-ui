@@ -1,9 +1,5 @@
-import BN from 'bn.js';
-import { MintInfo } from '@solana/spl-token';
-import { TokenInfo } from '@solana/spl-token-registry';
-import { PublicKey } from '@solana/web3.js';
+import { web3, TokenInfo, BN } from '@frakt-protocol/frakt-sdk';
 
-import { TokenAccount } from './solanaUtils.model';
 import { WAD, ZERO } from './solanaUtils.constants';
 
 export type KnownTokenMap = Map<string, TokenInfo>;
@@ -21,7 +17,7 @@ export const shortenAddress = (address: string, chars = 4): string => {
 
 export const getTokenName = (
   map: KnownTokenMap,
-  mint?: string | PublicKey,
+  mint?: string | web3.PublicKey,
   shorten = true,
 ): string => {
   const mintAddress = typeof mint === 'string' ? mint : mint?.toBase58();
@@ -52,19 +48,6 @@ export const getTokenByName = (
   return token;
 };
 
-export const getTokenIcon = (
-  map: KnownTokenMap,
-  mintAddress?: string | PublicKey,
-): string | undefined => {
-  const address =
-    typeof mintAddress === 'string' ? mintAddress : mintAddress?.toBase58();
-  if (!address) {
-    return;
-  }
-
-  return map.get(address)?.logoURI;
-};
-
 export const isKnownMint = (
   map: KnownTokenMap,
   mintAddress: string,
@@ -83,44 +66,8 @@ export const chunks = <T>(array: T[], size: number): T[][] => {
   );
 };
 
-export const toLamports = (
-  account?: TokenAccount | number,
-  mint?: MintInfo,
-): number => {
-  if (!account) {
-    return 0;
-  }
-
-  const amount =
-    typeof account === 'number' ? account : account.info.amount?.toNumber();
-
-  const precision = Math.pow(10, mint?.decimals || 0);
-  return Math.floor(amount * precision);
-};
-
 export const wadToLamports = (amount?: BN): BN => {
   return amount?.div(WAD) || ZERO;
-};
-
-export const fromLamports = (
-  account?: TokenAccount | number | BN,
-  mint?: MintInfo,
-  rate = 1.0,
-): number => {
-  if (!account) {
-    return 0;
-  }
-
-  const amount = Math.floor(
-    typeof account === 'number'
-      ? account
-      : BN.isBN(account)
-      ? account.toNumber()
-      : account.info.amount.toNumber(),
-  );
-
-  const precision = Math.pow(10, mint?.decimals || 0);
-  return (amount / precision) * rate;
 };
 
 const SI_SYMBOL = ['', 'k', 'M', 'G', 'T', 'P', 'E'];
@@ -139,26 +86,6 @@ const abbreviateNumber = (number: number, precision: number): string => {
 
 export const formatAmount = (val: number, precision = 6, abbr = true): string =>
   abbr ? abbreviateNumber(val, precision) : val.toFixed(precision);
-
-export const formatTokenAmount = (
-  account?: TokenAccount,
-  mint?: MintInfo,
-  rate = 1.0,
-  prefix = '',
-  suffix = '',
-  precision = 6,
-  abbr = false,
-): string => {
-  if (!account) {
-    return '';
-  }
-
-  return `${[prefix]}${formatAmount(
-    fromLamports(account, mint, rate),
-    precision,
-    abbr,
-  )}${suffix}`;
-};
 
 export const formatUSD = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -199,21 +126,3 @@ export const formatPct = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
-
-export const convert = (
-  account?: TokenAccount | number,
-  mint?: MintInfo,
-  rate = 1.0,
-): number => {
-  if (!account) {
-    return 0;
-  }
-
-  const amount =
-    typeof account === 'number' ? account : account.info.amount?.toNumber();
-
-  const precision = Math.pow(10, mint?.decimals || 0);
-  const result = (amount / precision) * rate;
-
-  return result;
-};

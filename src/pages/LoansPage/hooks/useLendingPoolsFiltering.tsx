@@ -4,11 +4,11 @@ import { Control, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { selectLiquidityPools } from '../../../state/loans/selectors';
-import { compareNumbers } from '../../../contexts/liquidityPools';
 import { LiquidityPool } from '../../../state/loans/types';
 import { ArrowDownSmallIcon } from '../../../icons';
 import styles from '../LoansPage.module.scss';
 import { useDebounce } from '../../../hooks';
+import { compareNumbers } from '../../../utils';
 
 type FilterFormFieldsValues = {
   [FilterFormInputsNames.SORT]: PoolsSortValue;
