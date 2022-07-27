@@ -24,15 +24,15 @@ type UseLiquidationsPage = (fetchItemsFunc: FetchDataFunc) => {
 export const useLiquidationsPage: UseLiquidationsPage = (
   fetchItemsFunc: FetchDataFunc,
 ) => {
-  const [sortOrder, setSortOrder] = useState<string>('asc');
-  const [sortBy, setSortBy] = useState<string>('nftName');
+  const [sortOrder, setSortOrder] = useState<string>('desc');
+  const [sortBy, setSortBy] = useState<string>('liquidationPrice');
   const [search, setSearch] = useState<string>('');
   const [collections, setCollections] = useState<[]>([]);
   const stringRef = useRef(null);
 
   const { control, watch } = useForm({
     defaultValues: {
-      [LiquidationsListFormNames.SORT]: SORT_VALUES[0],
+      [LiquidationsListFormNames.SORT]: SORT_VALUES[2],
       [LiquidationsListFormNames.COLLECTIONS_SORT]: null,
     },
   });
