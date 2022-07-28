@@ -61,7 +61,7 @@ export const PartialRepayModal: FC<PartialRepayModalProps> = ({
     //? Prevent rounding problems
     const paybackAmountBN =
       partialPercent > 98
-        ? new BN(loan?.repayValueLamports)
+        ? new BN(0) //? 0 === Repay all
         : new BN(parseFloat(paybackAmount) * 10 ** SOL_TOKEN.decimals);
 
     onPartialPayback(paybackAmountBN);
