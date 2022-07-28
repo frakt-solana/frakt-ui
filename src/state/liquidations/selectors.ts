@@ -12,6 +12,11 @@ import {
   __,
   useWith,
   pluck,
+  compose,
+  mapObjIndexed,
+  groupBy,
+  prop,
+  length,
 } from 'ramda';
 
 import { LotteryTicket, RaffleListItem } from './types';
@@ -86,4 +91,9 @@ export const selectCollectionsDropdownData = createSelector(
     label: item,
     value: item,
   })),
+);
+
+export const selectRaffleNotifications = createSelector(
+  [pathOr([], ['liquidations', 'raffleNotifications', 'data'])],
+  compose(mapObjIndexed(length), groupBy(prop('ticketState'))),
 );

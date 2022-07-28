@@ -6,7 +6,8 @@ import { selectSocket } from '../state/common/selectors';
 import { commonActions } from '../state/common/actions';
 
 export const useWebSocketSubscriptions = (): void => {
-  const { connected, publicKey } = useWallet();
+  const wallet = useWallet();
+  const { connected, publicKey } = wallet;
   const dispatch = useDispatch();
   const socket = useSelector(selectSocket);
 
@@ -25,8 +26,8 @@ export const useWebSocketSubscriptions = (): void => {
 
   useEffect(() => {
     if (connected) {
-      dispatch(commonActions.setWallet({ publicKey }));
+      dispatch(commonActions.setWallet(wallet));
       dispatch(commonActions.fetchUser(publicKey));
     }
-  }, [connected, dispatch, publicKey]);
+  }, [connected, dispatch, publicKey, wallet]);
 };

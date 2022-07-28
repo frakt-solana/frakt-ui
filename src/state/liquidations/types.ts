@@ -59,3 +59,9 @@ export interface LotteryTicket {
 export interface CollectionsListItem {
   name: string;
 }
+
+export interface RaffleNotifications {
+  notWinning?: number;
+  winning?: number;
+  toBeRevealed?: number;
+}

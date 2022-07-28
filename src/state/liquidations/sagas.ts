@@ -9,7 +9,7 @@ import {
   signAndConfirmTransaction,
   showSolscanLinkNotification,
 } from '../../utils/transactions';
-import { notify, closeNotification } from '../../utils';
+import { notify } from '../../utils';
 import { NotifyType } from '../../utils/solanaUtils';
 import { captureSentryError } from '../../utils/sentry';
 import { parse } from '../../utils/state/qs';
@@ -34,6 +34,12 @@ const lotteryTicketsChannel = (socket: Socket) =>
   eventChannel((emit) => {
     socket.on('lottery-tickets', (response) => emit(response));
     return () => socket.off('lottery-tickets');
+  });
+
+const raffleNotificationsChannel = (socket: Socket) =>
+  eventChannel((emit) => {
+    socket.on('raffle-notifications', (response) => emit(response));
+    return () => socket.off('raffle-notifications');
   });
 
 const fetchGraceListSaga = function* (action) {
@@ -151,45 +157,11 @@ const txRaffleTrySaga = function* (action) {
     tx = loans.getLotTicketByStaking;
   }
   try {
-    const lotTicketPubkey = yield call(tx, params);
+    yield call(tx, params);
     yield put(
       liquidationsActions.txRaffleTryFulfilled(
         lotteryTickets.tickets[0].nftMint,
       ),
-    );
-    const loaderNotificationId = Math.random().toString(36);
-    notify({
-      message: 'Your ticket is trying to win a raffle...',
-      type: NotifyType.INFO,
-      persist: true,
-      key: loaderNotificationId,
-    });
-    const subscribtionId = connection.onAccountChange(
-      lotTicketPubkey,
-      (accountInfo) => {
-        const lotAccountData: any = loans.decodeLotTicket(
-          accountInfo.data,
-          lotTicketPubkey,
-          connection,
-          new web3.PublicKey(process.env.LOANS_PROGRAM_PUBKEY),
-        );
-
-        if (lotAccountData?.ticketState === 'winning') {
-          closeNotification(loaderNotificationId);
-          notify({
-            message: 'Congratulations! Your ticket has won!',
-            type: NotifyType.SUCCESS,
-          });
-          connection.removeAccountChangeListener(subscribtionId);
-        } else if (lotAccountData?.ticketState === 'notWinning') {
-          closeNotification(loaderNotificationId);
-          notify({
-            message: "Ooops. Your ticket didn't win",
-            type: NotifyType.ERROR,
-          });
-          connection.removeAccountChangeListener(subscribtionId);
-        }
-      },
     );
   } catch (error) {
     yield put(liquidationsActions.txRaffleTryFailed(error));
@@ -268,10 +240,18 @@ const subscribeLotteryTicketsSaga = function* (list) {
   yield put(liquidationsActions.setLotteryTicketsList(list));
 };
 
+const subscribeRaffleNotificationsSaga = function* (loans) {
+  yield put(liquidationsActions.setRaffleNotifications(loans));
+};
+
 const liquidationsSagas = (socket: Socket) =>
   function* (): Generator {
     const wonRafflesStream: any = yield call(wonRafflesChannel, socket);
     const lotteryTicketsStream: any = yield call(lotteryTicketsChannel, socket);
+    const raffleNotificationsStream: any = yield call(
+      raffleNotificationsChannel,
+      socket,
+    );
 
     yield all([
       takeLatest(liquidationsTypes.FETCH_GRACE_LIST, fetchGraceListSaga),
@@ -295,6 +275,9 @@ const liquidationsSagas = (socket: Socket) =>
     yield all([takeLatest(liquidationsTypes.TX_LIQUIDATE, txLiquidateSaga)]);
     yield all([takeLatest(wonRafflesStream, subscribeWonRaffleListSaga)]);
     yield all([takeLatest(lotteryTicketsStream, subscribeLotteryTicketsSaga)]);
+    yield all([
+      takeLatest(raffleNotificationsStream, subscribeRaffleNotificationsSaga),
+    ]);
   };
 
 export default liquidationsSagas;

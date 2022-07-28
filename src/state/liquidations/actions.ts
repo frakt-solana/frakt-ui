@@ -26,6 +26,7 @@ export const liquidationsTypes = {
   SET_WON_RAFFLE_LIST: 'liquidations/SET_WON_RAFFLE_LIST',
   UPDATE_WON_RAFFLE_LIST: 'liquidations/UPDATE_WON_RAFFLE_LIST',
   SET_LOTTERY_TICKETS_LIST: 'liquidations/SET_LOTTERY_TICKETS_LIST',
+  SET_RAFFLE_NOTIFICATIONS: 'liquidations/SET_RAFFLE_NOTIFICATIONS',
   TX_RAFFLE_TRY: 'liquidations/TX_RAFFLE_TRY',
   TX_RAFFLE_TRY__PENDING: 'liquidations/TX_RAFFLE_TRY__PENDING',
   TX_RAFFLE_TRY__FULFILLED: 'liquidations/TX_RAFFLE_TRY__FULFILLED',
@@ -95,6 +96,10 @@ export const liquidationsActions = {
   ),
   setLotteryTicketsList: createCustomAction(
     liquidationsTypes.SET_LOTTERY_TICKETS_LIST,
+    (response) => ({ payload: response }),
+  ),
+  setRaffleNotifications: createCustomAction(
+    liquidationsTypes.SET_RAFFLE_NOTIFICATIONS,
     (response) => ({ payload: response }),
   ),
   txRaffleTry: createCustomAction(
