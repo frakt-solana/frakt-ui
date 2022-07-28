@@ -7,7 +7,7 @@
     "@ant-design/icons": "^4.7.0",
     "@bonfida/spl-name-service": "0.1.24",
     "@craco/craco": "^6.4.5",
-    "@frakt-protocol/frakt-sdk": "^0.4.1",
+    "@frakt-protocol/frakt-sdk": "^0.6.2-beta.4",
     "@sentry/react": "^7.1.1",
     "@sentry/tracing": "^7.1.1",
     "@solana/wallet-adapter-base": "^0.9.9",
