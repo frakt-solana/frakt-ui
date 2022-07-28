@@ -50,7 +50,7 @@ const NFTCheckbox = ({
           <p className={styles.root__title}>{name}</p>
           {!!loanValue && (
             <div className={styles.ltvWrapper}>
-              <p className={styles.ltvTitle}>Loan value</p>
+              <p className={styles.ltvTitle}>To borrow</p>
               <div className={styles.ltvContent}>
                 <p className={styles.ltvText}>{loanValue}</p>
                 <div className={styles.tokenInfo}>
