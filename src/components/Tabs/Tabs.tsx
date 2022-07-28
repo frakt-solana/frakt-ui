@@ -17,6 +17,10 @@ export interface TabsProps {
   setValue: (value: string) => void;
   className?: string;
   type?: 'primary' | 'secondary';
+  renderTip?: {
+    tabValue: string;
+    value: string;
+  };
 }
 
 export const Tabs: FC<TabsProps> = ({
@@ -25,6 +29,7 @@ export const Tabs: FC<TabsProps> = ({
   setValue,
   className,
   type = 'primary',
+  renderTip,
 }) => {
   return (
     <div className={classNames(styles.tabsWrapper, className)}>
@@ -48,6 +53,9 @@ export const Tabs: FC<TabsProps> = ({
           disabled={disabled}
         >
           {label}
+          {renderTip && renderTip.tabValue === tabValue ? (
+            <div className={styles.tip}>{renderTip.value}</div>
+          ) : null}
         </button>
       ))}
     </div>

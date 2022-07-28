@@ -58,6 +58,15 @@ const Liquidations: FC = () => {
     setTabValue(LIQUIDATIONS_TABS[0].value);
   };
 
+  const renderTip = wonRaffleList.length
+    ? {
+        renderTip: {
+          tabValue: LiquidationsTabsNames.RAFFLES,
+          value: wonRaffleList.length.toString(),
+        },
+      }
+    : {};
+
   return (
     <>
       <Tabs
@@ -66,6 +75,7 @@ const Liquidations: FC = () => {
         value={tabValue}
         setValue={setTabValue}
         type="secondary"
+        {...renderTip}
       />
       {tabValue === LiquidationsTabsNames.LIQUIDATIONS &&
         (publicKey ? (
