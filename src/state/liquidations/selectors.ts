@@ -7,7 +7,7 @@ import {
   converge,
   concat,
   evolve,
-  subtract,
+  filter,
   reject,
   __,
   useWith,
@@ -49,8 +49,9 @@ const selectIgnoreLotteryTickets = createSelector(
 );
 
 const gatherNfts = converge(
-  (nftMints: number[], stakedNfts: any) => {
+  (nftMints: number[], _stakedNfts: any) => {
     const rawNfts = map(applySpec({ nftMint: identity }), nftMints);
+    const stakedNfts = filter((item: any) => item.attemps > 0, _stakedNfts);
     return concat(rawNfts, stakedNfts);
   },
   [pathOr([], ['nftMints']), pathOr([], ['stakedNfts'])],

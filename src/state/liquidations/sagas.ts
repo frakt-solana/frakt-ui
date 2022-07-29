@@ -160,7 +160,10 @@ const txRaffleTrySaga = function* (action) {
     yield call(tx, params);
     yield put(
       liquidationsActions.txRaffleTryFulfilled(
-        lotteryTickets.tickets[0].nftMint,
+        lotteryTickets.tickets[0].attemps &&
+          lotteryTickets.tickets[0].attemps > 1
+          ? ''
+          : lotteryTickets.tickets[0].nftMint,
       ),
     );
   } catch (error) {
