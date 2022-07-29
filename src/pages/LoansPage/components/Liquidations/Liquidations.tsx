@@ -67,7 +67,7 @@ const Liquidations: FC = () => {
   }, [socket, publicKey]);
 
   useEffect(() => {
-    if (raffleNotifications.notWinning) {
+    if (raffleNotifications.notWinning || raffleNotifications.rejected) {
       notify({
         message: "Ooops. Your ticket didn't win :(",
         type: NotifyType.ERROR,

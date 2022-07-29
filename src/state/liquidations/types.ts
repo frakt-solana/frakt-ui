@@ -64,4 +64,5 @@ export interface RaffleNotifications {
   notWinning?: number;
   winning?: number;
   toBeRevealed?: number;
+  rejected?: number;
 }
