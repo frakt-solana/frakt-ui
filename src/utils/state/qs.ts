@@ -5,7 +5,12 @@ import split from 'ramda/es/split';
 import last from 'ramda/es/last';
 import ifElse from 'ramda/es/ifElse';
 import isEmpty from 'ramda/es/isEmpty';
-import { compact } from 'ramda-adjunct';
+import concat from 'ramda/es/concat';
+import join from 'ramda/es/join';
+import toPairs from 'ramda/es/toPairs';
+import allPass from 'ramda/es/allPass';
+import { compact, isNotEmpty, isNotNil } from 'ramda-adjunct';
+import { pickBy } from 'ramda';
 
 export const parse = ifElse(
   isEmpty,
@@ -17,5 +22,17 @@ export const parse = ifElse(
     split('&'),
     last,
     split('?'),
+  ),
+);
+
+export const stringify = ifElse(
+  isEmpty,
+  () => '',
+  compose(
+    concat('?'),
+    join('&'),
+    map(join('=')),
+    toPairs,
+    pickBy(allPass([isNotNil, isNotEmpty])),
   ),
 );

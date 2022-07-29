@@ -15,8 +15,8 @@ export interface GraceListItem {
 
 export interface FetchItemsParams {
   sortBy?: string;
-  sortOrder?: string;
-  searchStr?: string;
+  sort?: string;
+  search?: string;
   collections?: string;
 }
 export interface RaffleListItem {

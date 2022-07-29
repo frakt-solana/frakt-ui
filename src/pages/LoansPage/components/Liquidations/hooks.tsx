@@ -32,33 +32,26 @@ export const useLiquidationsPage: UseLiquidationsPage = (
 
   const { control, watch } = useForm({
     defaultValues: {
-      [LiquidationsListFormNames.SORT]: SORT_VALUES[2],
+      [LiquidationsListFormNames.SORT]: SORT_VALUES[3],
       [LiquidationsListFormNames.COLLECTIONS_SORT]: null,
     },
   });
 
   const sort = watch(LiquidationsListFormNames.SORT);
 
-  const fetchItems = (): void => {
-    const rawSearchStr = stringRef.current
-      ? `search=${stringRef.current}&`
-      : '';
-    const rawSortBy = sortBy ? `sortBy=${sortBy}&` : '';
-    const rawSortOrder = sortOrder ? `sort=${sortOrder}&` : '';
-    const rawCollectionsString = collections.length
-      ? `collections=${compose(
-          decodeURIComponent,
-          join(','),
-          pluck('value'),
-        )(collections)}&`
-      : '';
-
-    fetchItemsFunc({
-      sortBy: rawSortBy,
-      sortOrder: rawSortOrder,
-      searchStr: rawSearchStr,
-      collections: rawCollectionsString,
-    });
+  const fetchItems = (params = {}): void => {
+    const query = {
+      sortBy,
+      sort: sortOrder,
+      search: stringRef.current,
+      collections: compose(
+        decodeURIComponent,
+        join(','),
+        pluck('value'),
+      )(collections),
+      ...params,
+    };
+    fetchItemsFunc(query);
   };
 
   const searchDebounced = useDebounce((search: string): void => {
@@ -72,7 +65,7 @@ export const useLiquidationsPage: UseLiquidationsPage = (
     setSortBy(sortField);
     setSortOrder(sortOrder);
 
-    fetchItems();
+    fetchItems({ sortBy: sortField, sort: sortOrder });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
@@ -97,7 +90,7 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
   {
     label: (
       <span className={styles.sortName}>
-        Name <ArrowDownSmallIcon className={styles.arrowDown} />
+        Name <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'nftName_asc',
@@ -105,7 +98,7 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
   {
     label: (
       <span className={styles.sortName}>
-        Name <ArrowDownSmallIcon className={styles.arrowUp} />
+        Name <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'nftName_desc',
@@ -113,7 +106,7 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
   {
     label: (
       <span className={styles.sortName}>
-        Liquidation Price <ArrowDownSmallIcon className={styles.arrowDown} />
+        Liquidation Price <ArrowDownSmallIcon className={styles.arrowUp} />
       </span>
     ),
     value: 'liquidationPrice_asc',
@@ -121,7 +114,7 @@ export const SORT_VALUES: LiquiditionsSortValue[] = [
   {
     label: (
       <span className={styles.sortName}>
-        Liquidation Price <ArrowDownSmallIcon className={styles.arrowUp} />
+        Liquidation Price <ArrowDownSmallIcon className={styles.arrowDown} />
       </span>
     ),
     value: 'liquidationPrice_desc',
