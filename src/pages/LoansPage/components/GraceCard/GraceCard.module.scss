@@ -6,6 +6,7 @@
   display: flex;
   justify-content: space-between;
   padding: 20px;
+  margin-bottom: 20px;
 
   @media screen and (max-width: 767px) {
     align-items: unset;

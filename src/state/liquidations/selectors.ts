@@ -48,17 +48,19 @@ const selectIgnoreLotteryTickets = createSelector(
   identity,
 );
 
+const gatherNfts = converge(
+  (nftMints: number[], stakedNfts: any) => {
+    const rawNfts = map(applySpec({ nftMint: identity }), nftMints);
+    return concat(rawNfts, stakedNfts);
+  },
+  [pathOr([], ['nftMints']), pathOr([], ['stakedNfts'])],
+);
+
 const selectRawLotteryTickets = createSelector(
   [pathOr({}, ['liquidations', 'lotteryTicketsList', 'data'])],
   applySpec<{ quantity: number; tickets: LotteryTicket[] }>({
-    quantity: pathOr(0, ['totalTickets']),
-    tickets: converge(
-      (nftMints: number[], stakedNfts: any) => {
-        const rawNfts = map(applySpec({ nftMint: identity }), nftMints);
-        return concat(rawNfts, stakedNfts);
-      },
-      [pathOr([], ['nftMints']), pathOr([], ['stakedNfts'])],
-    ),
+    quantity: gatherNfts,
+    tickets: gatherNfts,
   }),
 );
 
@@ -67,7 +69,10 @@ export const selectLotteryTickets = createSelector(
   (lotteryTickets, ignoreNfts) => {
     return evolve(
       {
-        quantity: subtract(__, ignoreNfts.length),
+        quantity: compose(
+          length,
+          reject((ticket: any) => ignoreNfts.includes(ticket.nftMint)),
+        ),
         tickets: reject((ticket: any) => ignoreNfts.includes(ticket.nftMint)),
       },
       lotteryTickets,
