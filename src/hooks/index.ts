@@ -11,4 +11,5 @@ export { useAppInit } from './useAppInit';
 export { useHealthNotification } from './useHealthNotification';
 export { useConnection } from './useConnection';
 export { useFirebaseNotifications } from './useFirebaseNotifications';
+export { useOnFulfilled, useOnFailed, usePrevious } from './useRequestStatus';
 export { useWebSocketSubscriptions } from './useWebSocketSubscriptions';

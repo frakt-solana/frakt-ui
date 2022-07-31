@@ -62,6 +62,7 @@ export interface Loan {
 
   startedAt: string; //? Date
   expiredAt?: string; //? Date
+  isGracePeriod?: boolean;
 
   liquidityPool: string;
   collectionInfo: string;

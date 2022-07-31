@@ -58,7 +58,7 @@ const Statistics: FC = () => {
   const isTvlRefVisible = useOnScreen(tvlRef);
 
   useEffect(() => {
-    if (!loading && isTvlRefVisible) {
+    if (!loading && isTvlRefVisible && stats) {
       updateTvlCount(stats.TVL);
     }
     if (!loading && isLockedNFTRef) {
@@ -70,7 +70,7 @@ const Statistics: FC = () => {
       resetTvlCount();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, isTvlRefVisible, isLockedNFTRef]);
+  }, [loading, isTvlRefVisible, isLockedNFTRef, stats]);
 
   return (
     <Container component="section" className={styles.root}>

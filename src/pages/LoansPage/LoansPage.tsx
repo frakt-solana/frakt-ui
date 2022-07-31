@@ -10,6 +10,7 @@ import styles from './LoansPage.module.scss';
 import { Tabs } from '../../components/Tabs';
 import { Loader } from '../../components/Loader';
 import { useLoansPage, LoanTabsNames } from './hooks';
+import Liquidations from './components/Liquidations';
 import { SearchInput } from '../../components/SearchInput';
 import { Select } from '../../components/Select';
 import {
@@ -95,7 +96,7 @@ const LoansPage: FC = () => {
             )}
           </>
         )}
-        {tabValue === LoanTabsNames.LIQUIDATIONS && <div />}
+        {tabValue === LoanTabsNames.LIQUIDATIONS && <Liquidations />}
         {tabValue === LoanTabsNames.LOANS && <MyLoansTab />}
       </Container>
     </AppLayout>

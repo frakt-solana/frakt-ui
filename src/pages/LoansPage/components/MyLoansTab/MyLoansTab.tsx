@@ -1,10 +1,9 @@
 import { FC, useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { ConnectWalletSection } from '../../../../components/ConnectWalletSection';
 import { Controller } from 'react-hook-form';
-
 import { CollectionDropdown } from '../../../../components/CollectionDropdown';
 import { LoansList } from '../../../WalletPage/components/LoansList';
-import ConnectWalletSection from '../ConnectWalletSection';
 import { Select } from '../../../../components/Select';
 import {
   FilterFormInputsNames,
@@ -84,7 +83,7 @@ export const MyLoansTab: FC = () => {
           <LoansList loans={loans} />
         </>
       ) : (
-        <ConnectWalletSection />
+        <ConnectWalletSection text="Connect your wallet to check if you have any active loans" />
       )}
     </div>
   );

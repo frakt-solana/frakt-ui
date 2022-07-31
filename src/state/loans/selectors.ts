@@ -8,27 +8,40 @@ import {
   reverse,
   propOr,
   ifElse,
+  concat,
+  map,
+  assoc,
 } from 'ramda';
 import { isArray } from 'ramda-adjunct';
 
 import { BorrowNft, LiquidityPool, Loan } from './types';
-import {
-  selectWalletPublicKey,
-  // selectSolanaTimestamp,
-} from '../common/selectors';
 
 // const isOwnedByUser = curry((publicKey) =>
 //   publicKey ? propEq('user', publicKey.toBase58()) : false,
 // );
 
-export const selectUserLoans: (state: Loan[]) => Loan[] = createSelector(
-  [pathOr([], ['loans', 'loans', 'data']), selectWalletPublicKey],
+const selectGraceLots: (state) => Loan[] = createSelector(
+  [pathOr([], ['loans', 'loans', 'data', 'graceLots'])],
   identity,
 );
 
-export const selectUserLoansPending = createSelector(
-  [pathEq(['loans', 'loans', 'data'], null)],
+const selectRestLoans: (state) => Loan[] = createSelector(
+  [pathOr([], ['loans', 'loans', 'data', 'loans'])],
   identity,
+);
+
+export const selectUserLoans: (state) => Loan[] = createSelector(
+  [selectGraceLots, selectRestLoans],
+  (graceLots, restLoans) =>
+    concat(map(assoc('isGracePeriod', true), graceLots), restLoans),
+);
+
+export const selectUserLoansPending: (state) => boolean = createSelector(
+  [
+    pathEq(['loans', 'loans', 'data', 'graceLots'], null),
+    pathEq(['loans', 'loans', 'data', 'loans'], null),
+  ],
+  (graceLotsNull, restLoansNull) => graceLotsNull && restLoansNull,
 );
 
 export const selectLiquidityPools: (
@@ -58,8 +71,8 @@ export const selectBorrowNfts: (state: BorrowNft[]) => BorrowNft[] =
       borrowNfts?.filter(({ mint }) => !hiddenBorrowNfts.includes(mint)) || [],
   );
 
-export const selectLoanNfts: (state: Loan[]) => Loan[] = createSelector(
+export const selectLoanNfts: (state) => Loan[] = createSelector(
   [selectHiddenLoanNfts, selectUserLoans],
-  (hiddenLoanNfts, loanNfts) =>
+  (hiddenLoanNfts: string[], loanNfts: Loan[]) =>
     loanNfts?.filter(({ mint }) => !hiddenLoanNfts.includes(mint)) || [],
 );

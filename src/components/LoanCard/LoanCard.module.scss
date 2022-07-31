@@ -27,6 +27,13 @@
   }
 }
 
+.isGracePeriodCard {
+  border: 1px solid #fd9b66;
+  &:before {
+    border: 1px solid #fd9b66;
+  }
+}
+
 .image {
   width: 100%;
   background-color: var(--gray-color-7);
@@ -38,6 +45,10 @@
     display: block;
     padding-bottom: 100%;
   }
+}
+
+.isGracePeriodImage {
+  border-bottom: 1px solid #fd9b66;
 }
 
 .content {

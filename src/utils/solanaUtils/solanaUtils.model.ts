@@ -10,6 +10,8 @@ export interface NotifyOject {
   message: string;
   description?: string | ReactNode;
   type?: NotifyType;
+  persist?: boolean;
+  key?: string;
 }
 
 export type Notify = (value: NotifyOject) => void;

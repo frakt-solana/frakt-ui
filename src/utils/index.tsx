@@ -9,13 +9,21 @@ export const notify: Notify = ({
   message = '',
   description = null,
   type = NotifyType.INFO,
+  persist = false,
+  key = '',
 }) => {
   notification[type]({
     className: 'fraktion__notification',
     message,
     description,
     placement: 'bottomRight',
+    duration: persist ? 0 : 4.5,
+    key,
   });
+};
+
+export const closeNotification = (id: string): void => {
+  notification.close(id);
 };
 
 export const DECIMALS_PER_FRKT = 1e8;

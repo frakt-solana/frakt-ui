@@ -37,18 +37,21 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
       height: 24,
       justifyContent: 'flex-end',
     }),
+
     option: (base) => {
       return {
         ...base,
         backgroundColor: 'transparent',
         padding: '7.5px 20px',
         cursor: 'pointer',
+
         '&:hover': { backgroundColor: 'transparent' },
       };
     },
     valueContainer: (styles) => {
       return {
         ...styles,
+        width: '170px',
         padding: 0,
       };
     },
@@ -86,6 +89,7 @@ export const CollectionDropdown: FC<CollectionDropdownProps> = ({
     dropdownIndicator: () => ({
       color: 'hsl(0, 0%, 80%)',
       padding: 8,
+
       marginTop: 5,
       '&:hover': {
         color: 'hsl(0, 0%, 40%)',

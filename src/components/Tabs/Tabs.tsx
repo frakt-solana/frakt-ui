@@ -16,9 +16,21 @@ export interface TabsProps {
   value: string;
   setValue: (value: string) => void;
   className?: string;
+  type?: 'primary' | 'secondary';
+  renderTip?: {
+    tabValue: string;
+    value: string;
+  };
 }
 
-export const Tabs: FC<TabsProps> = ({ tabs, value, setValue, className }) => {
+export const Tabs: FC<TabsProps> = ({
+  tabs,
+  value,
+  setValue,
+  className,
+  type = 'primary',
+  renderTip,
+}) => {
   return (
     <div className={classNames(styles.tabsWrapper, className)}>
       {tabs.map(({ label, event, value: tabValue, disabled }) => (
@@ -26,7 +38,12 @@ export const Tabs: FC<TabsProps> = ({ tabs, value, setValue, className }) => {
           key={tabValue}
           className={classNames([
             styles.tab,
-            { [styles.tabActive]: tabValue === value },
+            styles[type],
+            {
+              [type === 'primary'
+                ? styles.tabActive
+                : styles.tabActiveSecondary]: tabValue === value,
+            },
           ])}
           name={tabValue}
           onClick={() => {
@@ -36,6 +53,9 @@ export const Tabs: FC<TabsProps> = ({ tabs, value, setValue, className }) => {
           disabled={disabled}
         >
           {label}
+          {renderTip && renderTip.tabValue === tabValue ? (
+            <div className={styles.tip}>{renderTip.value}</div>
+          ) : null}
         </button>
       ))}
     </div>

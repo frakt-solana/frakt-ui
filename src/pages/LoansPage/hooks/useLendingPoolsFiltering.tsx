@@ -70,7 +70,9 @@ export const useLendingPoolsFiltering: UseLendingPoolsFiltering = () => {
           if (removeBecauseUserDoesntStake) return false;
 
           const poolName = pool.name;
-          return poolName.toUpperCase().includes(searchString);
+          return poolName
+            ? poolName.toUpperCase().includes(searchString)
+            : false;
         })
         .sort((poolA, poolB) => {
           if (sortField === SortField.NAME) {

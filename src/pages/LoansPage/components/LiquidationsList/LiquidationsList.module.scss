@@ -1,0 +1,106 @@
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 32px;
+  margin-bottom: 20px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.searchInput {
+  max-width: 330px;
+  margin-right: 20px;
+
+  @media screen and (max-width: 795px) {
+    max-width: 245px;
+  }
+
+  @media screen and (max-width: 510px) {
+    max-width: 180px;
+  }
+  @media screen and (max-width: 440px) {
+    max-width: 134px;
+  }
+}
+
+.searchIcon {
+  margin-right: 5px;
+
+  svg {
+    width: 14px;
+    color: var(--color-gray-03);
+  }
+}
+
+.sortingSelect {
+  :global {
+    .custom-select__control {
+      @media screen and (max-width: 550px) {
+        justify-content: flex-end;
+      }
+    }
+  }
+  span {
+    color: var(--white-color);
+  }
+}
+
+.sortingSelectValueContainer {
+  @media screen and (max-width: 550px) {
+    font-size: 15px;
+  }
+
+  svg {
+    position: relative;
+    top: 2px;
+
+    path {
+      stroke: var(--accent-color-1) !important;
+    }
+  }
+
+  .sortName {
+    color: var(--accent-color-1);
+  }
+}
+
+.sortWrapper {
+  display: flex;
+  gap: 35px;
+
+  .arrowDown,
+  .arrowUp {
+    path {
+      stroke: var(--white-color);
+    }
+  }
+
+  .arrowDown {
+    transform: rotate(180deg);
+  }
+
+  @media screen and (max-width: 780px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.rafflesInfo {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+
+  @media screen and (max-width: 1250px) {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 20px;
+  }
+}
